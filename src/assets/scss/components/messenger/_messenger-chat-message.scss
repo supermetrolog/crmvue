@@ -400,7 +400,7 @@
 
 .messenger-chat-template-survey {
     &__header {
-        @include mixins.flex-box($gap: 10px, $a: flex-end);
+        @include mixins.flex-box($gap: 10px, $a: flex-end, $wrap: true);
         text-align: start;
         margin: 0 10px;
         padding: 5px 0;
@@ -424,11 +424,20 @@
         @include mixins.flex-box($d: column, $gap: 5px);
         padding: 5px 10px;
 
+        &__header {
+            .chip__content {
+                width: max-content;
+            }
+        }
+
         &__title {
             text-align: start;
             margin-right: 0;
-            max-width: 85%;
             font-size: 14px;
+
+            &.dashed {
+                text-decoration: line-through;
+            }
         }
 
         &__description {

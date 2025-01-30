@@ -3,6 +3,12 @@
         <Spinner v-if="isLoading" label="Загрузка результатов.." class="absolute-center" />
         <div v-else-if="quiz">
             <MessengerQuizPreviewInfo :quiz="quiz" />
+            <MessengerQuizPreviewTasks
+                v-if="quiz.tasks.length"
+                v-model:tasks="quiz.tasks"
+                @hide="$emit('hide')"
+                class="messenger-quiz-preview__element mb-2"
+            />
             <div v-if="quiz.questions.length" class="messenger-quiz-preview__list">
                 <MessengerQuizPreviewQuestion
                     v-for="question in quiz.questions"
@@ -42,7 +48,9 @@ import MessengerQuizPreviewInfo from '@/components/Messenger/Quiz/Preview/Messen
 import { quizEffectKinds } from '@/const/quiz.js';
 import MessengerQuizPreviewCompanyTemplate from '@/components/Messenger/Quiz/Preview/Template/MessengerQuizPreviewCompanyTemplate.vue';
 import MessengerQuizPreviewRequestsTemplate from '@/components/Messenger/Quiz/Preview/Template/MessengerQuizPreviewRequestsTemplate.vue';
+import MessengerQuizPreviewTasks from '@/components/Messenger/Quiz/Preview/MessengerQuizPreviewTasks.vue';
 
+defineEmits(['hide']);
 const props = defineProps({
     quizId: {
         type: Number,

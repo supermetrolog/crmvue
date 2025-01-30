@@ -3,7 +3,7 @@
         ref="tabs"
         @clicked="handler"
         @changed="onChange"
-        :class="{ closed: closed }"
+        :class="{ closed: closed, sticky: sticky }"
         :cache-lifetime="0"
         :options="{ useUrlFragment: false }"
         v-bind="$attrs"
@@ -20,18 +20,10 @@ import { nextTick, onMounted, provide, ref } from 'vue';
 
 const emit = defineEmits(['changed']);
 const props = defineProps({
-    closed: {
-        type: Boolean,
-        default: false
-    },
-    alwaysRender: {
-        type: Boolean,
-        default: false
-    },
-    withTransition: {
-        type: Boolean,
-        default: false
-    }
+    closed: Boolean,
+    alwaysRender: Boolean,
+    withTransition: Boolean,
+    sticky: Boolean
 });
 
 provide('always-render', props.alwaysRender);

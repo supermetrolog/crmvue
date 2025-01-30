@@ -2,42 +2,25 @@
     <div class="messenger-chat">
         <MessengerTabs @switch="switchTab" :current="currentTab" :tabs="tabs">
             <template #quiz>
-                <tippy tag="div" class="messenger-chat__tab-quiz">
-                    <template #default>
-                        <div v-if="isLoading" class="messenger-tabs__loading">
-                            <Spinner class="absolute-center mini" />
-                        </div>
-                        <template v-else>
-                            <i class="fa-solid fa-phone-volume messenger-chat__icon-phone" />
-                            <span v-if="currentDialog?.last_call">Опрос {{ lastCallDate }}</span>
-                            <span v-else>ЗАПОЛНИТЕ ОПРОС!</span>
-                        </template>
-                    </template>
-                    <template #content>
-                        <div v-if="isLoading" class="d-flex align-items-center gap-2 p-2">
-                            <Spinner class="mini" />
-                            <p>Загрузка данных о последнем звонке..</p>
-                        </div>
-                        <div v-else-if="currentDialog">
-                            <div v-if="shouldCall" class="mb-1">
-                                <p class="messenger-warning">ИНФОРМАЦИЯ УСТАРЕЛА!</p>
-                                <p class="messenger-warning">СОЗВОНИТЕСЬ И ЗАПОЛНИТЕ ОПРОСНИК!</p>
-                            </div>
-                            <p v-if="currentDialog?.last_call">
-                                Последний опрос был заполнен {{ lastCallDate }}, звонивший:
-                                {{ currentDialog.last_call.user.userProfile.medium_name }}
-                            </p>
-                            <p v-else>Звонок по объекту отсутствует или не заполнен.</p>
-                        </div>
-                    </template>
-                </tippy>
+                <MessengerChatForObjectCallTab
+                    :loading="isLoading"
+                    :company
+                    :dialog="currentDialog"
+                />
             </template>
         </MessengerTabs>
         <MessengerChatLoader v-if="isLoading" />
         <div v-else-if="currentPanel && currentChat" class="messenger-chat__wrapper">
             <AnimationTransition :speed="0.4">
-                <MessengerChatContent v-if="currentTab === messenger.chatTabs.CHAT" />
-                <MessengerQuiz v-else @completed="switchTab(messenger.chatTabs.CHAT)" />
+                <MessengerChatContent
+                    v-if="currentTab === messenger.chatTabs.CHAT"
+                    :disabled="isWithoutActiveContacts"
+                />
+                <MessengerQuiz
+                    v-else
+                    @completed="switchTab(messenger.chatTabs.CHAT)"
+                    :disabled="!hasActiveContact"
+                />
             </AnimationTransition>
             <MessengerQuizHelper ref="quizHelper" />
             <MessengerChatSettings ref="chatSettings" />
@@ -60,16 +43,16 @@ import MessengerSchedule from '@/components/Messenger/Schedule/MessengerSchedule
 import MessengerChatSettings from '@/components/Messenger/Chat/Settings/MessengerChatSettings.vue';
 import FormModalMessageAlert from '@/components/Forms/FormModalMessageAlert.vue';
 import { computed, provide, useTemplateRef, watch } from 'vue';
-import { toDateFormat } from '@/utils/formatters/date.js';
 import { ucFirst } from '@/utils/formatters/string.js';
 import { useNotify } from '@/utils/use/useNotify.js';
 import { useDelayedLoader } from '@/composables/useDelayedLoader.js';
 import { useAsyncPopup } from '@/composables/useAsyncPopup.js';
 import MessengerTabs from '@/components/Messenger/MessengerTabs.vue';
 import MessengerQuizHelper from '@/components/Messenger/Quiz/MessengerQuizHelper.vue';
-import Spinner from '@/components/common/Spinner.vue';
-import { Tippy } from 'vue-tippy';
 import { messenger } from '@/const/messenger.js';
+import { isActiveContact, isPersonalContact } from '@/utils/helpers/models/contact.js';
+import MessengerChatForObjectCallTab from '@/components/Messenger/Chat/MessengerChatForObjectCallTab.vue';
+import { CALL_STATUSES } from '@/components/Messenger/Quiz/useMessengerQuiz.js';
 
 const store = useStore();
 const notify = useNotify();
@@ -87,23 +70,18 @@ const quizHelper = useTemplateRef('quizHelper');
 const chatSettings = useTemplateRef('chatSettings');
 
 const currentTab = computed(() => store.state.Messenger.currentChatTab);
-
 const currentDialog = computed(() => store.state.Messenger.currentDialog);
-const shouldCall = computed(() => {
-    return (
-        store.getters['Messenger/currentDaysCountAfterLastCall'] >=
-        import.meta.env.VITE_VUE_APP_MESSENGER_DATE_FROM_CALL_DANGER
-    );
-});
-const lastCallDate = computed(() =>
-    toDateFormat(currentDialog.value.last_call.created_at, 'D.MM.YY')
-);
 
 const quizTabClass = computed(() => {
+    if (company.value && !hasActiveContact.value)
+        return 'not-selectable dashboard-bg-gray text-white';
+
     const daysAfterLastCall = store.getters['Messenger/currentDaysCountAfterLastCall'];
     let baseClass = 'not-selectable';
 
     if (daysAfterLastCall <= import.meta.env.VITE_VUE_APP_MESSENGER_DATE_FROM_CALL_WARNING) {
+        if (currentDialog.value.last_call.status !== CALL_STATUSES.COMPLETED)
+            return `${baseClass} dashboard-bg-gray text-white`;
         return `${baseClass} success`;
     }
 
@@ -120,7 +98,7 @@ const tabs = computed(() => [
         id: messenger.chatTabs.SURVEY,
         key: 'quiz',
         label: 'Заполните опрос',
-        class: !isLoading.value ? quizTabClass.value : 'not-selectable'
+        class: !isLoading.value && currentDialog.value ? quizTabClass.value : 'not-selectable'
     }
 ]);
 
@@ -182,4 +160,19 @@ const switchTab = tabId => {
 
     store.state.Messenger.currentChatTab = tabId;
 };
+
+// contacts
+
+const company = computed(() => store.state.Messenger.currentPanel);
+
+const contacts = computed(() => {
+    return company.value.contacts.filter(isPersonalContact);
+});
+
+const isWithoutActiveContacts = computed(() => company.value.active_contacts_count === 0);
+
+const hasActiveContact = computed(() => {
+    if (company.value) return contacts.value.some(isActiveContact);
+    return false;
+});
 </script>

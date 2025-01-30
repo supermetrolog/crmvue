@@ -101,6 +101,7 @@ import { floorOptions } from '@/const/options/floor.options.js';
 import { locationOptions } from '@/const/options/location.options.js';
 import FormOfferSearchExternal from '@/components/Forms/Offer/FormOfferSearchExternal.vue';
 import { useSelectedFilters } from '@/composables/useSelectedFilters.js';
+import { singleToArrayByKeys } from '@/utils/helpers/object/singleToArrayByKeys.js';
 
 const isMobile = useMobile();
 const store = useStore();
@@ -236,16 +237,28 @@ const { humanizedSelectedQueryFilters } = useSelectedFilters({}, gettersForFilte
 
 const searchFavoritesOffers = () => store.dispatch('SEARCH_FAVORITES_OFFERS');
 
+const formKeysOnlyArray = [
+    'purposes',
+    'class',
+    'gates',
+    'region',
+    'direction',
+    'district_moscow',
+    'object_type',
+    'floor_types'
+];
+
 const getOffers = async (withLoader = true) => {
     isLoading.value = withLoader;
 
     const query = { ...route.query };
+    singleToArrayByKeys(query, formKeysOnlyArray);
 
     query.type_id = [2, 3];
     query.expand =
         'contact.emails,contact.phones,' +
         'object,' +
-        'company.mainContact.phones,company.mainContact.emails,company.objects_count,company.requests_count,company.contacts_count,' +
+        'company.mainContact.phones,company.mainContact.emails,company.objects_count,company.requests_count,company.active_contacts_count,' +
         'offer,' +
         'consultant.userProfile';
 

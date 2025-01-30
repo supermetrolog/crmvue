@@ -19,7 +19,10 @@
                 :min-height="700"
                 title="Просмотр результатов опросника"
             >
-                <MessengerQuizPreview :quiz-id="previewedSurveyId" />
+                <MessengerQuizPreview
+                    @hide="surveyPreviewIsOpen = false"
+                    :quiz-id="previewedSurveyId"
+                />
             </Modal>
         </template>
     </div>

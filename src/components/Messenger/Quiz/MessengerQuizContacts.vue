@@ -33,9 +33,9 @@
                 class="messenger-quiz-header__contact"
             />
         </div>
-        <Button v-if="!contacts.length" icon small disabled>
+        <Button v-if="!contacts.length" @click="$emit('show-archived')" icon small>
             <i class="fa-solid fa-archive" />
-            <span>Показать архивные (в разработке)</span>
+            <span>Показать архивные ({{ archivedContactsCount ?? 0 }})</span>
         </Button>
         <Modal
             @close="closeCommentsModal"
@@ -58,7 +58,7 @@ import MessengerQuizContactsComments from '@/components/Messenger/Quiz/Messenger
 import Button from '@/components/common/Button.vue';
 
 const currentContact = defineModel('contact');
-const emit = defineEmits(['suggest-create', 'edit', 'selected']);
+const emit = defineEmits(['suggest-create', 'edit', 'selected', 'show-archived']);
 const props = defineProps({
     contacts: {
         type: Array,
@@ -72,7 +72,8 @@ const props = defineProps({
         type: String,
         default: 'Список контактов'
     },
-    grid: Boolean
+    grid: Boolean,
+    archivedContactsCount: Number
 });
 
 const contactsListEl = useTemplateRef('contactsListEl');

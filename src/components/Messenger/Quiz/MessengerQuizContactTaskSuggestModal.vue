@@ -13,5 +13,5 @@
 import Button from '@/components/common/Button.vue';
 import UiModal from '@/components/common/UI/UiModal.vue';
 
-defineEmits(['created-contact', 'create-task']);
+defineEmits(['create-contact', 'create-task']);
 </script>

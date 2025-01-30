@@ -6,7 +6,7 @@
                 v-tippy="'Контакт в пассиве'"
                 class="fa-solid fa-phone-slash mr-1"
             ></i>
-            <span>{{ fullName }}</span>
+            <span :class="{ 'text-through': isPassive }">{{ fullName }}</span>
         </p>
         <p v-if="contact.position" class="company-contact__position">{{ position }}</p>
         <p v-else-if="contact.position_unknown" class="company-contact__position">

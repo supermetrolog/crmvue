@@ -66,8 +66,20 @@
 }
 
 .company-preview-rating {
-    color: #b80000;
     font-size: 18px;
+
+    &.danger {
+        color: variables.$color_danger;
+    }
+
+    &.normal {
+        color: variables.$color_primary;
+    }
+
+    &.good{
+        color: variables.$color_warning;
+    }
+
 }
 
 .company-preview-tab {

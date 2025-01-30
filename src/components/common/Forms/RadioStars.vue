@@ -2,7 +2,15 @@
     <div class="form__control">
         <div class="form__label" :class="{ required: required }">
             <span v-if="label">{{ label }}</span>
-            <div tabindex="0" class="form__stars">
+            <div
+                tabindex="0"
+                class="form__stars text-warning"
+                :class="{
+                    danger: currentPercent < 40,
+                    normal: currentPercent >= 40 && currentPercent < 75,
+                    good: currentPercent >= 75
+                }"
+            >
                 <button
                     v-for="key in max"
                     :key="key"
@@ -10,10 +18,7 @@
                     tabindex="-1"
                     class="form__star"
                 >
-                    <i
-                        class="fa-star text-warning"
-                        :class="key <= field ? 'fa-solid' : 'fa-regular'"
-                    />
+                    <i class="fa-star" :class="key <= modelValue ? 'fa-solid' : 'fa-regular'" />
                 </button>
             </div>
         </div>
@@ -29,10 +34,7 @@ import { computed } from 'vue';
 
 const modelValue = defineModel({ type: Number, default: null });
 const props = defineProps({
-    required: {
-        type: Boolean,
-        default: false
-    },
+    required: Boolean,
     v: {
         type: Object,
         default: null
@@ -47,11 +49,11 @@ const props = defineProps({
     }
 });
 
-const field = computed(() => modelValue.value);
-
 const validate = () => {
     if (props.v) props.v.$touch();
 };
+
+const currentPercent = computed(() => (modelValue.value / props.max) * 100);
 
 const onChange = value => {
     if (value > props.max) return;

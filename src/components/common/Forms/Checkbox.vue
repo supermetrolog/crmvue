@@ -23,7 +23,7 @@ import { toRef } from 'vue';
 import ValidationMessage from '@/components/common/Forms/VaildationMessage.vue';
 
 const emit = defineEmits(['change']);
-const modelValue = defineModel({ type: Boolean, default: false });
+const modelValue = defineModel({ type: [Boolean, Number], default: false });
 const props = defineProps({
     required: {
         type: Boolean,

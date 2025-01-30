@@ -4,6 +4,7 @@
         <AnimationTransition>
             <MessengerChatPinned v-if="pinnedMessage" :message="pinnedMessage" />
         </AnimationTransition>
+        <MessengerChatContentDisabled v-if="disabled" />
         <VirtualDragList
             ref="virtual"
             v-model="messages"
@@ -87,6 +88,9 @@ import EmptyLabel from '@/components/common/EmptyLabel.vue';
 import MessengerChatMessage from '@/components/Messenger/Chat/Message/MessengerChatMessage.vue';
 import Loader from '@/components/common/Loader.vue';
 import { vIntersectionObserver } from '@vueuse/components';
+import MessengerChatContentDisabled from '@/components/Messenger/Chat/MessengerChatContentDisabled.vue';
+
+defineProps({ disabled: Boolean });
 
 const store = useStore();
 
