@@ -1,7 +1,7 @@
 <template>
     <div class="messenger-quiz-question">
         <div class="messenger-quiz-question__header">
-            <span class="messenger-quiz-question__title">
+            <span class="messenger-quiz-question__title" :class="{ dashed: hasUnknownAnswer }">
                 {{ question.text }}
             </span>
             <Chip v-if="hasMainQuestion" :class="mainQuestionClass">
@@ -41,13 +41,15 @@
                 }"
             />
         </div>
-        <MessengerChatMessageAdditionsTask
-            v-for="task in tasks"
-            :key="task.id"
-            :addition="task"
-            :show-tags="false"
-            class="messenger-quiz-question__task"
-        />
+        <div v-if="!short">
+            <MessengerChatMessageAdditionsTask
+                v-for="task in tasks"
+                :key="task.id"
+                :addition="task"
+                :show-tags="false"
+                class="messenger-quiz-question__task"
+            />
+        </div>
     </div>
 </template>
 <script setup>
@@ -55,12 +57,14 @@ import Chip from '@/components/common/Chip.vue';
 import { computed } from 'vue';
 import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
 import MessengerChatMessageAdditionsTask from '@/components/Messenger/Chat/Message/Additions/MessengerChatMessageAdditionsTask.vue';
+import { isNullish } from '@/utils/helpers/common/isNullish.js';
 
 const props = defineProps({
     question: {
         type: Object,
         required: true
-    }
+    },
+    short: Boolean
 });
 
 //  main
@@ -80,6 +84,8 @@ const mainQuestionClass = computed(() => {
         return 'dashboard-bg-danger text-white';
     return 'dashboard-bg-light';
 });
+
+const hasUnknownAnswer = computed(() => isNullish(mainQuestionAnswer.value));
 
 // tabs
 

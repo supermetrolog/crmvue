@@ -10,9 +10,11 @@
                     v-model:contact="currentRecipient"
                     @suggest-create="suggestCreateContact"
                     @edit="editContact"
+                    @show-archived="archivedContactsIsVisible = true"
                     label="Список доступных контактов"
                     :contacts="availableContacts"
                     :selected-contacts="selectedContacts"
+                    :archived-contacts-count="archivedContactsCount"
                 />
                 <MessengerQuizForm
                     ref="quizForm"
@@ -61,8 +63,16 @@
         <MessengerQuizContactTaskSuggestModal
             v-model:visible="taskSuggestionIsVisible"
             @create-task="confirmTaskSuggestion"
-            @created-contact="createContact"
+            @create-contact="createContact"
         />
+        <UiModal
+            v-model:visible="archivedContactsIsVisible"
+            :width="1100"
+            :min-height="400"
+            title="Список архивных контактов компании"
+        >
+            <MessengerQuizArchivedContacts @edit="editContact" :company-id="company?.id" />
+        </UiModal>
         <teleport to="body">
             <FormCompanyContact
                 v-if="formIsVisible"
@@ -105,6 +115,8 @@ import MessengerQuizContactTaskSuggestModal from '@/components/Messenger/Quiz/Me
 import { getContactFullName } from '@/utils/formatters/models/contact.js';
 import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
 import { useMessengerQuiz } from '@/components/Messenger/Quiz/useMessengerQuiz.js';
+import UiModal from '@/components/common/UI/UiModal.vue';
+import MessengerQuizArchivedContacts from '@/components/Messenger/Quiz/MessengerQuizArchivedContacts.vue';
 
 const SCHEDULING_CALL_DURATION = 7; // days
 
@@ -436,14 +448,21 @@ async function fetchContacts() {
     contactsIsLoading.value = false;
 }
 
-onMounted(async () => {
+async function fetchArchivedContactsCount() {
+    const response = await api.contacts.list({ company_id: company.value.id, status: 0, type: 0 });
+    if (response) archivedContactsCount.value = response.data.length;
+}
+
+onMounted(() => {
     if (!store.state.User.consultantList.length) store.dispatch('FETCH_CONSULTANT_LIST');
 
-    await fetchContacts();
+    fetchContacts();
+    fetchArchivedContactsCount();
 });
 
 function onContactCreated(contact) {
     contacts.value.unshift(contact);
+    fetchArchivedContactsCount();
 }
 
 async function onContactUpdated(_, contact) {
@@ -455,6 +474,7 @@ async function onContactUpdated(_, contact) {
     }
 
     store.commit('Messenger/onContactUpdated', contact);
+    fetchArchivedContactsCount();
 }
 
 function closeForm() {
@@ -479,6 +499,10 @@ function selectNextContact(contact) {
     selectContact(contact);
     currentRecipient.value = contact;
 }
+
+const archivedContactsIsVisible = ref(false);
+
+const archivedContactsCount = ref(0);
 
 // COMPUTES
 

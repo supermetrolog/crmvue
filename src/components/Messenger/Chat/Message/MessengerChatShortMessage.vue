@@ -1,5 +1,5 @@
 <template>
-    <div class="messenger-chat-message">
+    <div class="messenger-chat-message messenger-chat-message--not-viewed">
         <div class="messenger-chat-message__wrapper">
             <Avatar :src="message.from.model.userProfile.avatar" size="55" />
             <div class="messenger-chat-message__content">

@@ -19,9 +19,11 @@
     }
 
     &__column {
-        padding: 10px 0 0;
+        padding: 10px 5px 0 0;
         width: 50%;
         position: relative;
+        max-height: 500px;
+        overflow-y: auto;
 
         &:first-child {
             padding-right: 9px;

@@ -5,6 +5,7 @@
                 v-for="question in survey.questions"
                 :key="question.id"
                 :question="question"
+                :short
                 class="messenger-quiz-preview__element"
             >
                 <template
@@ -37,7 +38,8 @@ const props = defineProps({
     survey: {
         type: Object,
         required: true
-    }
+    },
+    short: Boolean
 });
 
 const questionWithCompaniesInfo = computed(() => {
