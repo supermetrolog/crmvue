@@ -45,19 +45,17 @@ const props = defineProps({
 const questionEls = useTemplateRef('questionEls');
 
 function getForm() {
-    const form = questionEls.value.map(element => element.getForm());
+    const form = questionEls.value.map(element => element.getForm()).flat();
 
     if (isNotNullish(questionWithRequestNoRelevant.value)) {
-        const questionIndex = form.findIndex(element =>
-            element.some(
-                answer =>
-                    answer.question_answer_id ===
-                    questionWithRequestNoRelevant.value.answers['text-answer'][0].id
-            )
+        const mainAnswer = form.find(
+            answer =>
+                answer.question_answer_id ===
+                questionWithRequestNoRelevant.value.answers['yes-no'][0].id
         );
 
-        if (questionIndex !== -1) {
-            form[questionIndex].find(
+        if (mainAnswer && isNotNullish(mainAnswer.value)) {
+            form.find(
                 answer =>
                     answer.question_answer_id ===
                     questionWithRequestNoRelevant.value.answers['text-answer'][0].id
@@ -65,7 +63,7 @@ function getForm() {
         }
     }
 
-    return form.flat();
+    return form;
 }
 
 defineExpose({ getForm });
