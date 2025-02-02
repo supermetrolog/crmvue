@@ -69,6 +69,8 @@ import { computed, toRef, useTemplateRef, watch } from 'vue';
 import { useDelayedLoader } from '@/composables/useDelayedLoader.js';
 import { useSkeleton } from '@/composables/useSkeleton.js';
 import MessengerDialogCompany from '@/components/Messenger/Dialog/Company/MessengerDialogCompany.vue';
+import { useMessengerContext } from '@/components/Messenger/useMessengerContext.js';
+import { messenger } from '@/const/messenger.js';
 
 const filters = defineModel('filters');
 defineEmits(['load']);
@@ -111,9 +113,13 @@ watch(isLoading, value => {
     if (props.companies.length && value) virtualList.value.scrollToTop();
 });
 
+const { currentContentTab } = useMessengerContext();
+
 const selectPanel = options => {
     store.dispatch('Messenger/selectPanel', options);
     store.dispatch('Messenger/selectChat', options);
+
+    currentContentTab.value = messenger.dialogTypes.COMPANY;
 };
 
 const updateCall = async (payload, record) => {

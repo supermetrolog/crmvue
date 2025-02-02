@@ -12,7 +12,6 @@ import { isNumeric } from '@/utils/helpers/common/isNumeric.js';
 import { isNotEmptyString } from '@/utils/helpers/string/isNotEmptyString.js';
 
 const needCacheMessage = (dialogID, asideID, panelID) => {
-    // Лучше не трогать условие.. Оно долго выводилось
     return Boolean(
         panelID !== null && (dialogID !== asideID || panelID === dialogID || asideID !== panelID)
     );
@@ -60,6 +59,7 @@ const getInitialState = () => ({
     currentPanelCompanyID: null,
     currentPanelUserID: null,
     currentAsidePanel: null,
+    currentContentPanel: null,
 
     currentChatTab: messenger.chatTabs.CHAT,
     currentSurveyType: null,
@@ -107,24 +107,9 @@ const Messenger = {
         setDialogs(state, dialogs) {
             [state.chatMembersObject, state.chatMembersCompany] = [...dialogs];
         },
-        setConsultantsDialogs(state, dialogs) {
-            state.chatMembersUser = dialogs;
-        },
         addDialogs(state, { dialogType, dialogs, pagination }) {
             state[`chatMembers${dialogType}`].data.push(...dialogs);
             state[`chatMembers${dialogType}`].pagination = pagination;
-        },
-        setQuerySearch(state, value) {
-            state.querySearch = value;
-        },
-        setConsultantsQuerySearch(state, value) {
-            state.consultantsQuerySearch = value;
-        },
-        setNewMessage(state, value) {
-            state.newMessage = value;
-        },
-        setCurrentCategory(state, value) {
-            state.currentCategory = value;
         },
         setCachedMessage(state) {
             if (!state.newMessage.length) {
@@ -142,7 +127,6 @@ const Messenger = {
         clearCachedMessage(state, chatMemberID) {
             delete state.cachedNewMessages[chatMemberID];
         },
-
         setMessages(state, messages) {
             state.messages = messagesToSections(messages).messages;
         },
@@ -202,58 +186,18 @@ const Messenger = {
                 }
             } else state.currentRecipient = null;
         },
-        setCurrentDialog(state, value) {
-            state.currentDialog = value;
-        },
-        setCurrentPanel(state, value) {
-            state.currentPanel = value;
-        },
         updateCurrentPanel(state, value) {
             Object.assign(state.currentPanel, value);
-        },
-        setCurrentPanelID(state, value) {
-            state.currentPanelID = value;
         },
         setCurrentChat(state, value) {
             state.newMessage = '';
             state.currentChat = value;
         },
-        setCurrentPinned(state, value) {
-            state.currentPinned = value;
-        },
-
-        setCurrentAsideDialogID(state, value) {
-            state.currentAsideDialogID = value;
-        },
-        setCurrentPanelDialogID(state, value) {
-            state.currentPanelDialogID = value;
-        },
-        setCurrentPanelCompanyID(state, value) {
-            state.currentPanelCompanyID = value;
-        },
-        setCurrentPanelUserID(state, value) {
-            state.currentPanelUserID = value;
-        },
-        setCurrentDialogType(state, value) {
-            state.currentDialogType = value;
-        },
-
-        setLoadingAside(state, value) {
-            state.loadingAside = value;
-        },
-        setLoadingPanel(state, value) {
-            state.loadingPanel = value;
-        },
-        setLoadingChat(state, value) {
-            state.loadingChat = value;
-        },
-
         addAddition(state, { messageID, additionType, addition }) {
             const currentMessage = state.messages.find(message => message.id === messageID);
 
             if (currentMessage) currentMessage[`${additionType}s`].push(addition);
         },
-
         deleteAddition(state, { additionType, messageID, additionID }) {
             const currentMessage = state.messages.find(message => message.id === messageID);
 
@@ -291,25 +235,13 @@ const Messenger = {
                 state.counts[modelType] = statistics[0];
             });
         },
-        setLastNotViewedMessage(state, messageID) {
-            state.lastNotViewedMessageID = messageID;
-        },
-        setLessThenMessageId(state, messageID) {
-            state.lessThenMessageId = messageID;
-        },
         clearCountersInterval(state) {
             clearInterval(state.countersInterval);
             state.countersInterval = null;
         },
-        setTags(state, tags) {
-            state.tags = tags;
-        },
         setCurrentAsidePanel(state, value) {
             if (messenger.tabsGroups[state.currentAsidePanel] !== messenger.tabsGroups[value]) {
-                state.currentPanelCompanyID = null;
                 state.currentAsideDialogID = null;
-                state.currentPanelDialogID = null;
-                state.currentChat = null;
             }
 
             state.currentAsidePanel = value;
@@ -427,9 +359,6 @@ const Messenger = {
                 state.currentDialog.model.id === id
             )
                 state.currentDialog.model.logo = logo?.src;
-        },
-        selectChatTab(state, tab) {
-            state.currentChatTab = tab;
         }
     },
     actions: {
@@ -446,7 +375,7 @@ const Messenger = {
                 });
         },
         async updateDialogs({ state, commit }, payload) {
-            commit('setLoadingAside', true);
+            state.loadingAside = true;
 
             if (isNotNullish(state.querySearch) && isNotEmptyString(state.querySearch)) {
                 if (isNumeric(state.querySearch)) {
@@ -467,11 +396,11 @@ const Messenger = {
                 commit('setDialogs', chats);
             }
 
-            commit('setLoadingAside', false);
+            state.loadingAside = false;
             return null;
         },
-        async updateConsultantsDialogs({ state, commit }, payload) {
-            commit('setLoadingAside', true);
+        async updateConsultantsDialogs({ state }, payload) {
+            state.loadingAside = true;
 
             const chats = await api.messenger.getChats({
                 model_type: 'user',
@@ -479,9 +408,11 @@ const Messenger = {
                 ...payload
             });
 
-            if (chats) commit('setConsultantsDialogs', chats);
+            if (chats) {
+                state.chatMembersUser = chats;
+            }
 
-            commit('setLoadingAside', false);
+            state.loadingAside = false;
             return null;
         },
         async selectPanel(
@@ -493,21 +424,25 @@ const Messenger = {
             commit('setCurrentRecipient', { contact: null });
 
             if (dialogID === state.currentAsideDialogID) {
-                commit('setCurrentAsideDialogID', null);
-                commit('setCurrentPanel', null);
-                commit('setCurrentPanelID', null);
-                commit('setCurrentPanelCompanyID', null);
-                commit('setCurrentPanelUserID', null);
-                commit('setCurrentDialogType', null);
+                state.currentAsideDialogID = null;
+                state.currentPanel = null;
+                state.currentPanel = null;
+                state.currentPanelID = null;
+                state.currentPanelCompanyID = null;
+                state.currentPanelUserID = null;
+                state.currentDialogType = null;
                 return;
             }
 
-            commit('setCurrentAsideDialogID', dialogID);
-            commit('setCurrentPanelCompanyID', companyID);
-            commit('setCurrentPanelUserID', userID);
-            commit('setCurrentDialogType', dialogType);
+            state.loadingPanel = true;
 
-            commit('setLoadingPanel', true);
+            state.currentPanel = null;
+
+            state.currentAsideDialogID = dialogID;
+            state.currentPanelCompanyID = companyID;
+            state.currentPanelUserID = userID;
+            state.currentDialogType = dialogType;
+            state.currentContentPanel = dialogType;
 
             let data = null;
 
@@ -517,21 +452,20 @@ const Messenger = {
                 data = await api.messenger.getPanel(companyID);
             }
 
-            commit('setCurrentPanel', data || null);
-            commit('setLoadingPanel', false);
+            state.currentPanel = data;
+            state.loadingPanel = false;
         },
-        async selectPanelWithoutDialog({ commit }, companyID) {
-            commit('setCurrentPanelID', null);
-            commit('setCurrentAsideDialogID', null);
-            commit('setCurrentPanelCompanyID', companyID);
-            commit('setCurrentDialogType', 'object');
+        async selectPanelWithoutDialog({ state }, companyID) {
+            state.currentPanelID = null;
+            state.currentAsideDialogID = null;
+            state.currentPanelCompanyID = companyID;
+            state.currentDialogType = 'object';
 
-            commit('setLoadingPanel', true);
+            state.loadingPanel = true;
 
-            const data = await api.messenger.getPanel(companyID);
+            state.currentPanel = await api.messenger.getPanel(companyID);
 
-            commit('setCurrentPanel', data || null);
-            commit('setLoadingPanel', false);
+            state.loadingPanel = false;
         },
         async updatePanel({ commit, state }) {
             const panel = await api.messenger.getPanel(state.currentPanelCompanyID);
@@ -549,7 +483,7 @@ const Messenger = {
                 commit('setCachedMessage');
 
             if (!state.currentAsideDialogID && !state.currentPanelCompanyID) {
-                commit('setCurrentPanelDialogID', null);
+                state.currentPanelDialogID = null;
                 return;
             }
 
@@ -557,62 +491,64 @@ const Messenger = {
             if (getters.hasCachedMessage) commit('setCurrentRecipient', { contact: null });
 
             if (dialogID === state.currentPanelDialogID) {
-                commit('setCurrentPanelDialogID', null);
+                state.currentPanelDialogID = null;
+                state.currentPinned = null;
                 commit('setCurrentChat', false);
-                commit('setCurrentPinned', null);
                 return;
             }
 
-            commit('setCurrentCategory', null);
-            commit('setCurrentDialogType', dialogType);
-            commit('setCurrentPanelDialogID', dialogID);
+            state.currentCategory = null;
+            state.currentDialog = null;
+            state.currentDialogType = dialogType;
+            state.currentPanelDialogID = dialogID;
+            state.lastNotViewedMessageID = null;
             commit('setMessages', []);
-            commit('setLastNotViewedMessage', null);
-            commit('setLoadingChat', true);
+
+            state.loadingChat = true;
 
             const dialog = await api.messenger.getDialog(dialogID);
             if (!dialog) {
-                commit('setLoadingChat', false);
+                state.loadingChat = false;
                 return false;
             }
 
-            commit('setCurrentDialog', dialog);
-            commit('selectChatTab', messenger.chatTabs.CHAT);
+            state.currentDialog = dialog;
+            state.currentChatTab = messenger.chatTabs.CHAT;
 
             const [messages, pinned] = await Promise.all([
                 api.messenger.getMessages(dialogID),
                 api.messenger.getPinned(dialogID)
             ]);
 
-            commit('setCurrentPinned', pinned);
+            state.currentPinned = pinned;
 
             if (messages.length) {
                 commit('setMessages', messages);
-                commit('setLessThenMessageId', messages[0].id);
+                state.lessThenMessageId = messages[0].id;
             }
 
             commit('setCurrentChat', true);
-            commit('setLoadingChat', false);
+            state.loadingChat = false;
         },
         async selectSurvey({ commit, state }, { dialogID, dialogType }) {
             if (dialogID === state.currentPanelDialogID) {
-                commit('selectChatTab', messenger.chatTabs.SURVEY);
+                state.currentChatTab = messenger.chatTabs.SURVEY;
                 return;
             }
 
-            commit('setCurrentCategory', null);
-            commit('setCurrentDialogType', dialogType);
-            commit('setCurrentPanelDialogID', dialogID);
+            state.currentCategory = null;
+            state.currentDialogType = dialogType;
+            state.currentPanelDialogID = dialogID;
+            state.lastNotViewedMessageID = null;
             commit('setMessages', []);
-            commit('setLastNotViewedMessage', null);
-            commit('setLoadingChat', true);
+            state.loadingChat = true;
 
             const dialog = await api.messenger.getDialog(dialogID);
 
             commit('setCurrentChat', true);
-            commit('setCurrentDialog', dialog);
-            commit('selectChatTab', messenger.chatTabs.SURVEY);
-            commit('setLoadingChat', false);
+            state.currentDialog = dialog;
+            state.currentChatTab = messenger.chatTabs.SURVEY;
+            state.loadingChat = false;
         },
         async getCompanyChats(_, { companyID, modelType, page = 1 }) {
             const data = await api.messenger.getChats({
@@ -639,7 +575,7 @@ const Messenger = {
                 response.is_viewed = true;
 
                 commit('addMessages', [response]);
-                commit('setNewMessage', '');
+                state.newMessage = null;
 
                 return true;
             }
@@ -664,40 +600,16 @@ const Messenger = {
 
             if (updatedMessage) {
                 commit('updateMessage', updatedMessage);
-                if (state.currentPinned && id === state.currentPinned.id)
-                    commit('setCurrentPinned', updatedMessage);
+
+                if (state.currentPinned && id === state.currentPinned.id) {
+                    state.currentPinned = updatedMessage;
+                }
 
                 return true;
             }
 
             notify('Произошла ошибка при отправке запроса');
             return false;
-        },
-        async reportContact(context, { contact }) {
-            // ONLY TESTING
-            notify(`${contact.full_name} отмечен(а) как неактуальный контакт`, { duration: 3000 });
-
-            context.commit('addMessages', [
-                {
-                    id: context.state.messages.length + 1,
-                    sender: null,
-                    text: `<b>${context.rootGetters.THIS_USER?.userProfile?.full_name}</b> отметил контакт <b>${contact.full_name}</b> как <b>неактуальный</b>.`
-                }
-            ]);
-
-            return true;
-        },
-        async sendBreakObject(context) {
-            // ONLY TESTING
-            context.commit('addMessages', [
-                {
-                    id: context.state.messages.length + 1,
-                    sender: null,
-                    text: `<b>${context.rootGetters.THIS_USER?.userProfile?.full_name}</b> отметил объект снесенным.`
-                }
-            ]);
-
-            return true;
         },
         async addAlert({ commit }, { messageID, options }) {
             const addition = await api.notification.createFromMessage(messageID, options);
@@ -785,21 +697,21 @@ const Messenger = {
             });
         },
 
-        async pinMessage({ state, commit }, message) {
+        async pinMessage({ state }, message) {
             const pinned = await api.messenger.pinMessage(state.currentDialog.id, message.id);
 
             if (pinned) {
-                commit('setCurrentPinned', message);
+                state.currentPinned = message;
                 return true;
             }
 
             return false;
         },
-        async unpinMessage({ state, commit }) {
+        async unpinMessage({ state }) {
             const unpinned = await api.messenger.unpinMessage(state.currentDialog.id);
 
             if (unpinned) {
-                commit('setCurrentPinned', null);
+                state.currentPinned = null;
                 return true;
             }
 
@@ -842,7 +754,7 @@ const Messenger = {
 
             if (messages?.length) {
                 commit('unshiftMessages', messages);
-                commit('setLessThenMessageId', messages[0].id);
+                state.lessThenMessageId = messages[0].id;
             }
 
             return messages?.length < 30;
@@ -850,9 +762,9 @@ const Messenger = {
         setCurrentMessageFromCache({ state, commit }) {
             const cachedMessage = state.cachedNewMessages[state.currentPanelDialogID];
 
-            commit('setNewMessage', cachedMessage.message);
+            state.newMessage = cachedMessage?.message;
+            state.currentCategory = cachedMessage?.tag;
             commit('setCurrentRecipient', { contactID: cachedMessage.contact });
-            commit('setCurrentCategory', cachedMessage.tag);
         },
         async readMessages({ commit }, messageID) {
             const reads = await api.messenger.readMessages(messageID);
@@ -864,19 +776,19 @@ const Messenger = {
 
             return false;
         },
-        async fetchTags({ commit, state }) {
+        async fetchTags({ state }) {
             if (state.tags.length) return state.tags;
 
             const response = await api.messengerTag.list();
             if (response) {
-                commit('setTags', response.data);
+                state.tags = response.data;
                 return response.data;
             }
 
             return null;
         },
-        async refreshTags({ commit, dispatch }) {
-            commit('setTags', []);
+        async refreshTags({ state, dispatch }) {
+            state.tags = [];
             dispatch('fetchTags');
         },
         async refreshMessages({ state, commit }) {
@@ -884,7 +796,7 @@ const Messenger = {
 
             if (messages.length) {
                 commit('setMessages', messages);
-                commit('setLessThenMessageId', messages[0].id);
+                state.lessThenMessageId = messages[0].id;
             }
         },
         async onSurveyCompleted({ state }, chatMemberId) {

@@ -71,58 +71,37 @@
         </div>
         <HoverActions>
             <HoverActionsButton
-                @click="updateContactModalVisible = true"
+                @click="updateContactModalIsVisible = true"
                 :disabled="contact.general"
                 label="Редактировать"
             >
                 <i class="fa-solid fa-pen"></i>
             </HoverActionsButton>
-            <HoverActionsButton
-                @click="reportContact({ contact })"
-                label="Не актуален"
-                :disabled="contact.not_actual"
-            >
-                <i class="fa-solid fa-user-slash"></i>
-            </HoverActionsButton>
         </HoverActions>
         <teleport to="body">
             <FormCompanyContact
-                v-if="updateContactModalVisible"
-                @close="updateContactModalVisible = false"
+                v-if="updateContactModalIsVisible"
+                @close="updateContactModalIsVisible = false"
                 :formdata="contact"
             />
         </teleport>
     </div>
 </template>
-<script>
-import { entityOptions } from '@/const/options/options';
+<script setup>
 import HoverActions from '@/components/common/HoverActions/HoverActions.vue';
 import HoverActionsButton from '@/components/common/HoverActions/HoverActionsButton.vue';
-import { mapActions } from 'vuex';
 import FormCompanyContact from '@/components/Forms/Company/FormCompanyContact.vue';
+import { computed, ref } from 'vue';
+import { contactOptions } from '@/const/options/contact.options.js';
 
-export default {
-    name: 'MessengerChatFormRecipientCard',
-    components: { FormCompanyContact, HoverActionsButton, HoverActions },
-    props: {
-        contact: {
-            type: Object,
-            required: true
-        }
-    },
-    data() {
-        return {
-            updateContactModalVisible: false
-        };
-    },
-    computed: {
-        position() {
-            return entityOptions.contact.position[this.contact.position];
-        }
-    },
-    methods: {
-        ...mapActions({ reportContact: 'Messenger/reportContact' })
-        // TODO: Сделать обновление контакта в интерфейсе: или запрашивать данные о компании еще раз или отправить данные из формы и АККУРАТНО заменить различия в текущем на данные из формы
+const props = defineProps({
+    contact: {
+        type: Object,
+        required: true
     }
-};
+});
+
+const updateContactModalIsVisible = ref(false);
+
+const position = computed(() => contactOptions.position[props.contact.position]);
 </script>

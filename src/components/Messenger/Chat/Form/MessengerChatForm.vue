@@ -26,8 +26,8 @@ defineProps({
 const store = useStore();
 
 const currentComponent = computed(() => {
-    if (store.state.Messenger.currentAsidePanel)
-        return COMPONENTS[store.state.Messenger.currentAsidePanel];
+    if (store.state.Messenger.currentContentPanel)
+        return COMPONENTS[store.state.Messenger.currentContentPanel];
     return COMPONENTS[messenger.tabs.OBJECTS];
 });
 </script>

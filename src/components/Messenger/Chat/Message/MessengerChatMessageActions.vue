@@ -16,7 +16,7 @@
             >
                 <i class="fa-solid fa-exclamation"></i>
             </HoverActionsButton>
-            <HoverActionsButton @click="createTask(message.id)" label="Добавить задачу">
+            <HoverActionsButton @click="$emit('create-task')" label="Добавить задачу">
                 <i class="fa-solid fa-bolt"></i>
             </HoverActionsButton>
             <HoverActionsButton
@@ -55,7 +55,7 @@ import { computed, inject } from 'vue';
 import dayjs from 'dayjs';
 import { dayjsFromMoscow } from '@/utils/formatters/date.js';
 
-defineEmits(['pin', 'edit', 'pin-to-object', 'delete', 'reply']);
+defineEmits(['pin', 'edit', 'pin-to-object', 'delete', 'reply', 'create-task']);
 const props = defineProps({
     message: {
         type: Object,
@@ -73,7 +73,6 @@ const props = defineProps({
 
 const store = useStore();
 const $createAddition = inject('$createAddition');
-const createTask = inject('$createTask');
 
 const isRecent = computed(
     () => dayjs().diff(dayjsFromMoscow(props.message.created_at), 'minute') < 10

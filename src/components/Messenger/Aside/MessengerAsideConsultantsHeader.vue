@@ -36,7 +36,7 @@ const querySearch = computed({
         return store.state.Messenger.consultantsQuerySearch;
     },
     set(value) {
-        store.commit('Messenger/setConsultantsQuerySearch', value);
+        store.state.Messenger.consultantsQuerySearch = value;
         debouncedUpdate();
     }
 });

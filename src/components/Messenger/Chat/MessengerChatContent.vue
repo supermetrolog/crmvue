@@ -37,6 +37,7 @@
                         @deleted="onMessageDeleted(message.id)"
                         @reply="replyTo = message"
                         @cancel-reply="replyTo = null"
+                        @create-task="createTaskForMessage(message.id)"
                         :message="message"
                         :pinned="message.id === pinnedMessage?.id"
                         :reply="message.id === replyTo?.id"
@@ -48,6 +49,7 @@
                         @deleted="onMessageDeleted(message.id)"
                         @reply="replyTo = message"
                         @cancel-reply="replyTo = null"
+                        @create-task="createTaskForMessage(message.id)"
                         :self="message.from.model.id === currentUser.id"
                         :message="message"
                         :pinned="message.id === pinnedMessage?.id"
@@ -89,6 +91,7 @@ import MessengerChatMessage from '@/components/Messenger/Chat/Message/MessengerC
 import Loader from '@/components/common/Loader.vue';
 import { vIntersectionObserver } from '@vueuse/components';
 import MessengerChatContentDisabled from '@/components/Messenger/Chat/MessengerChatContentDisabled.vue';
+import { useMessengerChatContext } from '@/components/Messenger/Chat/useMessengerChatContext.js';
 
 defineProps({ disabled: Boolean });
 
@@ -178,4 +181,8 @@ onMounted(() => {
         scrollToCorrectPosition();
     }
 });
+
+// tasks
+
+const { createTaskForMessage } = useMessengerChatContext();
 </script>

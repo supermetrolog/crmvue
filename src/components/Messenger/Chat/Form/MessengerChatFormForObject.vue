@@ -107,7 +107,7 @@ const message = computed({
         return store.state.Messenger.newMessage;
     },
     set(value) {
-        store.commit('Messenger/setNewMessage', value);
+        store.state.Messenger.newMessage = value;
     }
 });
 
@@ -116,7 +116,7 @@ const currentCategory = computed({
         return store.state.Messenger.currentCategory;
     },
     set(value) {
-        store.commit('Messenger/setCurrentCategory', value);
+        store.state.Messenger.currentCategory = value;
     }
 });
 

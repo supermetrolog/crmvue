@@ -33,7 +33,7 @@ const tabs = [
 ];
 
 const store = useStore();
-const { isLoading } = useDelayedLoader();
+const { isLoading } = useDelayedLoader(store.state.Messenger.loadingPanel);
 
 const currentTab = shallowRef(PANEL_TABS.USER);
 
