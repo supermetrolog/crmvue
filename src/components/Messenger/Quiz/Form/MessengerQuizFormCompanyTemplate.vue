@@ -65,8 +65,6 @@ function getForm() {
         }
     }
 
-    console.log(form);
-
     return form.flat();
 }
 
