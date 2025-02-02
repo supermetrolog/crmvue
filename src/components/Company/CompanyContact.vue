@@ -39,9 +39,9 @@
 </template>
 <script setup>
 import { computed } from 'vue';
-import { entityOptions } from '@/const/options/options.js';
 import PhoneNumber from '@/components/common/PhoneNumber.vue';
 import { contactOptions } from '@/const/options/contact.options.js';
+import { getContactFullName } from '@/utils/formatters/models/contact.js';
 
 defineEmits(['open-phone']);
 const props = defineProps({
@@ -60,12 +60,6 @@ const props = defineProps({
 });
 
 const position = computed(() => contactOptions.position[props.contact.position]);
-const fullName = computed(() => {
-    if (props.contact.full_name) return props.contact.full_name;
-    if (props.contact.type === entityOptions.contact.typeStatement.GENERAL)
-        return 'Основной контакт';
-    return 'Без имени';
-});
-
+const fullName = computed(() => getContactFullName(props.contact));
 const isPassive = computed(() => props.contact.status === 0);
 </script>
