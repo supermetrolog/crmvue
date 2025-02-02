@@ -22,8 +22,7 @@
         padding: 10px 5px 0 0;
         width: 50%;
         position: relative;
-        max-height: 500px;
-        overflow-y: auto;
+        max-height: 600px;
 
         &:first-child {
             padding-right: 9px;
@@ -145,6 +144,11 @@
             background-color: #d6d6d6;
             box-shadow: unset;
         }
+    }
+
+    &__chat-notification {
+        max-height: 250px;
+        overflow-y: auto;
     }
 
     &__form {
@@ -362,11 +366,11 @@
 .task-card-contacts {
     padding: 5px 0;
     min-width: 400px;
-    min-height: 400px;
+    min-height: 350px;
 
     &__list {
         @include mixins.flex-box($d: column, $gap: 10px);
-        max-height: 500px;
+        max-height: 400px;
         overflow-y: auto;
         scrollbar-gutter: stable;
         padding-right: 5px;
