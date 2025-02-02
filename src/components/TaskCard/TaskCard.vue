@@ -137,6 +137,8 @@ import TaskCardComments from '@/components/TaskCard/TaskCardComments.vue';
 import TaskCardHistory from '@/components/TaskCard/History/TaskCardHistory.vue';
 import { useDelayedLoader } from '@/composables/useDelayedLoader.js';
 import { useFavoriteTasks } from '@/composables/useFavoriteTasks.js';
+import { useEventBus } from '@vueuse/core';
+import { TASK_EVENTS } from '@/const/events/task.js';
 
 const DAYS_TO_IMPOSSIBLE = 14;
 
@@ -185,10 +187,13 @@ onMounted(() => {
     if (canBeViewed.value) debouncedReadTask();
 });
 
+const bus = useEventBus(TASK_EVENTS.READ);
+
 async function readTask() {
     const response = await api.task.read(props.task.id);
 
     if (response) {
+        bus.emit();
         emit('read');
         notify.success('Задача помечена прочитанной');
     }
