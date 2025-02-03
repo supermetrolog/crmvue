@@ -42,24 +42,6 @@
                                 }
                             "
                         />
-                        <Input
-                            v-model="form.nameRu"
-                            label="Название RU"
-                            placeholder="Название (Ru)"
-                            class="col-md-4 col-12"
-                            :v="v$.form.nameRu"
-                            reactive
-                        />
-                        <Input
-                            v-model="form.nameEng"
-                            label="Название ENG"
-                            placeholder="Название (Eng)"
-                            class="col-md-4 col-12"
-                            :v="v$.form.nameEng"
-                            reactive
-                        />
-                    </FormGroup>
-                    <FormGroup>
                         <MultiSelect
                             v-model="form.activityGroup"
                             title="Группа деятельности"
@@ -74,11 +56,13 @@
                             class="col-12 col-md-4"
                             :options="ActivityProfileList"
                         />
+                    </FormGroup>
+                    <FormGroup>
                         <DoubleInput
                             v-model:first="form.dateStart"
                             v-model:second="form.dateEnd"
                             label="Дата"
-                            class="col-12 col-md-4"
+                            class="col-12"
                             type="date"
                             :validators="formDateValidators"
                         />
@@ -116,8 +100,7 @@ import {
     CompanyCategories
 } from '@/const/const.js';
 import Button from '@/components/common/Button.vue';
-import { helpers } from '@vuelidate/validators';
-import { maxDate, onlyEnglish, onlyRussian } from '@//validators';
+import { maxDate } from '@//validators';
 import DoubleInput from '@/components/common/Forms/DoubleInput.vue';
 import { deleteEmptyFields } from '@/utils/helpers/object/deleteEmptyFields.js';
 import Modal from '@/components/common/Modal.vue';
@@ -125,7 +108,6 @@ import { computed, reactive, shallowRef } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useSearchForm } from '@/composables/useSearchForm.js';
 import { useStore } from 'vuex';
-import useValidate from '@vuelidate/core';
 import RadioOptions from '@/components/common/Forms/RadioOptions.vue';
 import CheckboxOptions from '@/components/common/Forms/CheckboxOptions.vue';
 
@@ -137,8 +119,6 @@ const emit = defineEmits(['search', 'reset']);
 
 const formTemplate = {
     all: null,
-    nameRu: null,
-    nameEng: null,
     consultant_id: null,
     categories: [],
     activityGroup: null,
@@ -169,27 +149,12 @@ const setQueryFields = async () => {
     await router.replace({ query });
 };
 
-const rules = {
-    form: {
-        nameRu: {
-            onlyRussian: helpers.withMessage('Название должно быть на русском языке', onlyRussian)
-        },
-        nameEng: {
-            onlyEnglish: helpers.withMessage(
-                'Название должно быть на английском языке',
-                onlyEnglish
-            )
-        }
-    }
-};
-
 const onSubmit = query => {
     emit('search', query);
 };
 
 const FETCH_CONSULTANT_LIST = () => store.dispatch('FETCH_CONSULTANT_LIST');
 
-const v$ = useValidate(rules, { form });
 const { filtersCount, resetForm } = useSearchForm(form, {
     template: formTemplate,
     submit: onSubmit,
