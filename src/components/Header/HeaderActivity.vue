@@ -27,11 +27,13 @@
 
 <script setup>
 import Loader from '@/components/common/Loader.vue';
-import { computed, onMounted, ref } from 'vue';
+import { computed, onMounted, ref, watch } from 'vue';
 import api from '@/api/api.js';
 import dayjs from 'dayjs';
 import UserPreview from '@/components/User/UserPreview.vue';
 import { userOptions } from '@/const/options/user.options.js';
+
+const emit = defineEmits(['online-updated']);
 
 const isLoading = ref(true);
 const users = ref([]);
@@ -53,6 +55,13 @@ const fetchUsers = async () => {
 
     isLoading.value = false;
 };
+
+watch(
+    () => onlineUsers.value.length,
+    () => {
+        emit('online-updated', onlineUsers.value.length);
+    }
+);
 
 onMounted(() => {
     fetchUsers();

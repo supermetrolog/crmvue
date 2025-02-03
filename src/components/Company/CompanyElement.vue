@@ -10,7 +10,7 @@
             <div class="company-element__body">
                 <router-link
                     class="company-element__name"
-                    :to="'/companies/' + company.id"
+                    :to="{ name: 'company', params: { id: company.id } }"
                     target="_blank"
                 >
                     <i
@@ -31,22 +31,9 @@
             </div>
         </div>
         <p class="company-element__info">
-            <span>
-                {{
-                    plural(
-                        company?.active_contacts_count ?? 0,
-                        '%d контакт',
-                        '%d контакта',
-                        '%d контактов'
-                    )
-                }},
-            </span>
-            <span>
-                {{ plural(company.requests_count, '%d запрос', '%d запроса', '%d запросов') }},
-            </span>
-            <span>
-                {{ plural(company.objects_count, '%d объект', '%d объекта', '%d объектов') }}
-            </span>
+            <span>{{ pluralContactsCount }}, </span>
+            <span>{{ pluralRequestsCount }}, </span>
+            <span>{{ pluralObjectsCount }}</span>
         </p>
     </div>
 </template>
@@ -56,7 +43,6 @@ import plural from 'plural-ru';
 import { computed } from 'vue';
 import CompanyLogo from '@/components/Company/CompanyLogo.vue';
 import { getCompanyName } from '@/utils/formatters/models/company.js';
-import { isActiveContact, isPersonalContact } from '@/utils/helpers/models/contact.js';
 
 const props = defineProps({
     company: {
@@ -67,4 +53,16 @@ const props = defineProps({
 
 const companyName = computed(() => getCompanyName(props.company));
 const isWithoutActiveContacts = computed(() => props.company.active_contacts_count === 0);
+
+const pluralContactsCount = computed(() =>
+    plural(props.company.active_contacts_count, '%d контакт', '%d контакта', '%d контактов')
+);
+
+const pluralRequestsCount = computed(() =>
+    plural(props.company.requests_count, '%d запрос', '%d запроса', '%d запросов')
+);
+
+const pluralObjectsCount = computed(() =>
+    plural(props.company.objects_count, '%d объект', '%d объекта', '%d объектов')
+);
 </script>

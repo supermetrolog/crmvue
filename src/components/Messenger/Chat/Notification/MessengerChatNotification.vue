@@ -17,6 +17,7 @@
                     @pin="pinMessage"
                     @delete="deleteMessage"
                     @reply="$emit('reply')"
+                    @create-task="$emit('create-task')"
                     :message="message"
                     :pinned="pinned"
                     :editable="false"
@@ -91,7 +92,7 @@ import api from '@/api/api.js';
 import { useIntersectionObserver, useTimeoutFn } from '@vueuse/core';
 import MessengerChatNotificationTemplate from '@/components/Messenger/Chat/Notification/MessengerChatNotificationTemplate.vue';
 
-const emit = defineEmits(['deleted', 'reply', 'cancel-reply', 'viewed']);
+const emit = defineEmits(['deleted', 'reply', 'cancel-reply', 'viewed', 'create-task']);
 const props = defineProps({
     message: {
         type: Object,

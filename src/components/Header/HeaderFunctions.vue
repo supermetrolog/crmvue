@@ -18,7 +18,11 @@
             </div>
         </HoverActionsButton>
         <AnimationTransition>
-            <HeaderActivity v-if="activityIsVisible" v-on-click-outside="activityClickOutside" />
+            <HeaderActivity
+                v-if="activityIsVisible"
+                v-on-click-outside="activityClickOutside"
+                @online-updated="activityCount = $event"
+            />
         </AnimationTransition>
         <HoverActionsButton
             ref="callsButton"

@@ -13,16 +13,27 @@
                 <p class="offer-table-item-call__help">от {{ lastCallDate }}</p>
             </DashboardChip>
             <DashboardChip
-                v-else
+                v-else-if="lastCallIsExpired"
                 v-tippy="
                     `Дата последнего звонка по предложению - ${lastCallDate}. Нажмите, чтобы перейти к опроснику и обновить информацию.`
                 "
                 @click="$emit('to-survey')"
-                class="offer-table-item-call__chip"
-                :class="{ expired: lastCallIsExpired }"
+                class="offer-table-item-call__chip expired"
                 with-icon
             >
                 <i class="fa-solid fa-phone" />
+                <span>Прозвонить!</span>
+            </DashboardChip>
+            <DashboardChip
+                v-else
+                v-tippy="
+                    `Дата последнего звонка по предложению - ${lastCallDate}. Нажмите, чтобы перейти в чат предложения.`
+                "
+                @click="$emit('to-chat')"
+                class="offer-table-item-call__chip"
+                with-icon
+            >
+                <i class="fa-solid fa-comments" />
                 <span>{{ lastCallIsExpired ? 'Прозвонить!' : lastCallDate }}</span>
             </DashboardChip>
         </template>

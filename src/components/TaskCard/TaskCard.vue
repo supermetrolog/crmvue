@@ -137,6 +137,9 @@ import TaskCardComments from '@/components/TaskCard/TaskCardComments.vue';
 import TaskCardHistory from '@/components/TaskCard/History/TaskCardHistory.vue';
 import { useDelayedLoader } from '@/composables/useDelayedLoader.js';
 import { useFavoriteTasks } from '@/composables/useFavoriteTasks.js';
+import { useEventBus } from '@vueuse/core';
+import { TASK_EVENTS } from '@/const/events/task.js';
+import { useAuth } from '@/composables/useAuth.js';
 
 const DAYS_TO_IMPOSSIBLE = 14;
 
@@ -166,6 +169,7 @@ const props = defineProps({
 const notify = useNotify();
 const { confirm } = useConfirm();
 const store = useStore();
+const { currentUserId } = useAuth();
 
 const { isLoading } = useDelayedLoader();
 
@@ -185,10 +189,13 @@ onMounted(() => {
     if (canBeViewed.value) debouncedReadTask();
 });
 
+const taskReadEvent = useEventBus(TASK_EVENTS.READ);
+
 async function readTask() {
     const response = await api.task.read(props.task.id);
 
     if (response) {
+        taskReadEvent.emit();
         emit('read');
         notify.success('Задача помечена прочитанной');
     }
@@ -216,12 +223,23 @@ async function editTask() {
 const moveSettingsIsVisible = ref(false);
 const statusIsChanging = ref(false);
 
+const taskCompleteEvent = useEventBus(TASK_EVENTS.COMPLETE);
+
 async function changeStatus(payload) {
     statusIsChanging.value = true;
     const updated = await api.task.changeStatus(props.task.id, payload.status, payload);
 
     if (updated) {
         notify.success('Статус задачи успешно изменен');
+
+        if (
+            (payload.status === taskOptions.statusTypes.COMPLETED ||
+                payload.status === taskOptions.statusTypes.CANCELED) &&
+            props.task.user_id === currentUserId.value
+        ) {
+            taskCompleteEvent.emit();
+        }
+
         const task = await api.task.getOne(props.task.id);
         if (task) emit('updated', task);
     }
@@ -329,8 +347,12 @@ function toCompany() {
 const assignerFormIsVisible = ref(false);
 const assignerIsChanging = ref(false);
 
+const reassignEventBus = useEventBus(TASK_EVENTS.REASSIGN);
+
 async function assign(payload) {
     assignerIsChanging.value = true;
+
+    const oldUserId = props.task.user_id;
 
     const response = await api.task.assign(props.task.id, {
         user_id: payload.assigner,
@@ -339,6 +361,9 @@ async function assign(payload) {
 
     if (response) {
         notify.success(`Задача успешно назначена на ${response.user.userProfile.medium_name}`);
+
+        reassignEventBus.emit({ task: response, oldUserId });
+
         emit('updated', response);
     }
 

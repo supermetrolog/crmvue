@@ -66,6 +66,7 @@ import { useSkeleton } from '@/composables/useSkeleton.js';
 import MessengerDialogUserSkeleton from '@/components/Messenger/Dialog/MessengerDialogUserSkeleton.vue';
 import { useDebounceFn } from '@vueuse/core';
 import { useMessengerContext } from '@/components/Messenger/useMessengerContext.js';
+import { messenger } from '@/const/messenger.js';
 
 const props = defineProps({
     currentTab: {
@@ -133,9 +134,14 @@ const load = async $state => {
     if (isLastPage) $state.complete();
     else $state.loaded();
 };
+
+const { currentContentTab } = useMessengerContext();
+
 const selectPanel = options => {
     store.dispatch('Messenger/selectPanel', options);
     store.dispatch('Messenger/selectChat', options);
+
+    currentContentTab.value = messenger.dialogTypes.USER;
 };
 
 function resetFilters() {

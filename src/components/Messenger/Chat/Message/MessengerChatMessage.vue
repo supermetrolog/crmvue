@@ -20,6 +20,7 @@
                     @pin-to-object="pinToObject"
                     @delete="deleteMessage"
                     @reply="$emit('reply')"
+                    @create-task="$emit('create-task')"
                     :message="message"
                     :pinned="pinned"
                 />
@@ -98,7 +99,7 @@ const notify = useNotify();
 const { confirm } = useConfirm();
 const { show: showMessageUpdateForm } = useAsyncPopup('messageUpdater');
 
-const emit = defineEmits(['deleted', 'reply', 'cancel-reply', 'viewed']);
+const emit = defineEmits(['deleted', 'reply', 'cancel-reply', 'viewed', 'create-task']);
 const props = defineProps({
     message: {
         type: Object,

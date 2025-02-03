@@ -29,7 +29,7 @@ const PANEL_TABS = {
 const tabs = [{ id: PANEL_TABS.COMPANY, key: 'company', label: 'Компания' }];
 
 const store = useStore();
-const { isLoading } = useDelayedLoader();
+const { isLoading } = useDelayedLoader(store.state.Messenger.loadingPanel);
 
 const currentTab = shallowRef(PANEL_TABS.COMPANY);
 
