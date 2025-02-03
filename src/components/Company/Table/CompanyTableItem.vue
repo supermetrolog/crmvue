@@ -2,11 +2,6 @@
     <Tr class="company-table-item" :class="{ CompanyTableOdd: odd, CompanyTableEven: !odd }">
         <Td class="text-center company-table-item__id">
             <p class="mb-1">{{ company.id }}</p>
-            <div class="company-table-item__buttons">
-                <HoverActionsButton @click="openInChat" label="Открыть в чате">
-                    <i class="fa-solid fa-comment" />
-                </HoverActionsButton>
-            </div>
         </Td>
         <Td class="company-table-item__name" sort="nameRu">
             <div class="company-table-item__main">
@@ -94,18 +89,17 @@
             >
                 Пассив
             </DashboardChip>
-            <DashboardChip
-                v-else-if="isWithoutActiveContacts"
-                with-icon
-                class="dashboard-bg-gray-l offer-table-item__chip"
-            >
-                <i class="fa-solid fa-users-slash" />
-                <span>Без контактов</span>
-            </DashboardChip>
             <DashboardChip v-else class="dashboard-bg-success-l offer-table-item__chip">
                 Актив
             </DashboardChip>
-            <!--            <OfferTableItemCall @click="openSurvey" :call="company.last_call" />-->
+            <CompanyTableItemCall
+                @to-chat="openInChat"
+                @to-survey="openInSurvey"
+                :call="company.last_call"
+                :created-at="company.created_at"
+                :without-contacts="isWithoutActiveContacts"
+                class="my-1"
+            />
             <TableDateBlock
                 class="mt-1"
                 :date="company.updated_at || company.created_at"
@@ -136,13 +130,13 @@ import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
 import CompanyContact from '@/components/Company/CompanyContact.vue';
 import Avatar from '@/components/common/Avatar.vue';
 import TableDateBlock from '@/components/common/Table/TableDateBlock.vue';
-import HoverActionsButton from '@/components/common/HoverActions/HoverActionsButton.vue';
 import { useMessenger } from '@/components/Messenger/useMessenger.js';
 import { getLinkCompany } from '@/utils/url.js';
 import { getCompanyName } from '@/utils/formatters/models/company.js';
 import { ucFirst } from '@/utils/formatters/string.js';
 import CompanyLogo from '@/components/Company/CompanyLogo.vue';
 import { messenger } from '@/const/messenger.js';
+import CompanyTableItemCall from '@/components/Company/Table/CompanyTableItemCall.vue';
 
 const store = useStore();
 const router = useRouter();
