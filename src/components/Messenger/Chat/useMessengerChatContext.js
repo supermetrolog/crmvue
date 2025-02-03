@@ -54,6 +54,10 @@ export function createMessengerChatContext() {
 
                 message = messageTemplate.join(', ') + ', ';
 
+                if (object.consultant) {
+                    userId = object.consultant.id;
+                }
+
                 break;
             }
             case messenger.dialogTypes.COMPANY: {
@@ -66,6 +70,10 @@ export function createMessengerChatContext() {
                 additionalContent.companyName = getCompanyName(company);
 
                 message = messageTemplate.join(', ') + ', ';
+
+                if (company.consultant_id) {
+                    userId = company.consultant_id;
+                }
 
                 break;
             }
