@@ -68,6 +68,8 @@ import { computed, toRef, useTemplateRef, watch } from 'vue';
 import { useSkeleton } from '@/composables/useSkeleton.js';
 import { useDelayedLoader } from '@/composables/useDelayedLoader.js';
 import { useStore } from 'vuex';
+import { messenger } from '@/const/messenger.js';
+import { useMessengerContext } from '@/components/Messenger/useMessengerContext.js';
 
 defineEmits(['load']);
 const props = defineProps({
@@ -112,9 +114,13 @@ watch(isLoading, value => {
     if (props.requests.length && value) virtualList.value.scrollToTop();
 });
 
+const { currentContentTab } = useMessengerContext();
+
 const selectPanel = options => {
     store.dispatch('Messenger/selectPanel', options);
     store.dispatch('Messenger/selectChat', options);
+
+    currentContentTab.value = messenger.dialogTypes.REQUEST;
 };
 
 const updateCall = async (payload, record) => {

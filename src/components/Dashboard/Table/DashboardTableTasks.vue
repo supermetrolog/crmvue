@@ -3,7 +3,7 @@
         <template v-if="isLoading">
             <DashboardTasksItemSkeleton v-for="i in lastElementsCount" :key="i" />
         </template>
-        <template v-else>
+        <template v-else-if="!hidden">
             <DashboardTableTasksItem
                 v-for="task in tasks"
                 :key="task.id"
@@ -58,7 +58,8 @@ const props = defineProps({
     isLoading: {
         type: Boolean,
         default: false
-    }
+    },
+    hidden: Boolean
 });
 
 const { openMessenger } = useMessenger();

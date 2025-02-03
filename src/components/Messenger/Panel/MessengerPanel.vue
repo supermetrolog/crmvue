@@ -13,14 +13,11 @@ import MessengerPanelForObject from '@/components/Messenger/Panel/MessengerPanel
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
 
 const props = defineProps({
-    currentTab: {
-        type: Object,
-        default: null
-    }
+    currentTab: String
 });
 
 const currentMessengerPanelComponent = computed(() => {
-    if (props.currentTab.name === messenger.tabs.USERS) return MessengerPanelForUser;
+    if (props.currentTab === messenger.tabs.USERS) return MessengerPanelForUser;
     else return MessengerPanelForObject;
 });
 </script>

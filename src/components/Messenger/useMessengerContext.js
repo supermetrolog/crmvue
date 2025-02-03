@@ -1,39 +1,41 @@
-import { hasInjectionContext, inject, provide, reactive, shallowReactive } from 'vue';
-import { useAuth } from '@/composables/useAuth.js';
+import { hasInjectionContext, inject, provide, reactive, ref, shallowReactive } from 'vue';
 
-const CURRENT_TAB_INJECTION_KEY = '$messengerCurrentTab';
+const CURRENT_TAB_INJECTION_KEY = '$messengerCurrentAsideTab';
+const CURRENT_CONTENT_TAB_INJECTION_KEY = '$messengerCurrentContentTab';
 const FILTERS_INJECTION_KEY = '$messengerFilters';
 
 export function createMessengerContext() {
-    const { currentUserId } = useAuth();
+    const currentContentTab = ref(null);
 
-    const currentTab = shallowReactive({
+    const currentAsideTab = shallowReactive({
         name: null,
         sort: null
     });
 
     const filters = reactive({
         object: {
-            consultant_ids: [currentUserId.value]
+            consultant_ids: []
         },
         company: {
-            consultant_ids: [currentUserId.value]
+            consultant_ids: []
         },
         user: {
             status: 10
         }
     });
 
-    provide(CURRENT_TAB_INJECTION_KEY, currentTab);
+    provide(CURRENT_TAB_INJECTION_KEY, currentAsideTab);
     provide(FILTERS_INJECTION_KEY, filters);
+    provide(CURRENT_CONTENT_TAB_INJECTION_KEY, currentContentTab);
 
-    return { currentTab, filters };
+    return { currentAsideTab, filters, currentContentTab };
 }
 
 export function useMessengerContext() {
     if (hasInjectionContext()) {
         return {
-            currenTab: inject(CURRENT_TAB_INJECTION_KEY),
+            currentAsideTab: inject(CURRENT_TAB_INJECTION_KEY),
+            currentContentTab: inject(CURRENT_CONTENT_TAB_INJECTION_KEY),
             filters: inject(FILTERS_INJECTION_KEY)
         };
     }

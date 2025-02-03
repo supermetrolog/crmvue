@@ -1,5 +1,5 @@
 <template>
-    <div class="messenger" :class="classList">
+    <div class="messenger" :class="{ active: isOpen, 'has-panel': hasPanel }">
         <teleport to="body">
             <AnimationTransition :speed="0.7">
                 <div
@@ -13,11 +13,11 @@
             <MessengerTaskPreview />
             <FormModalMessage />
         </teleport>
-        <MessengerBar @select="selectTab" :current="currentTab" />
+        <MessengerBar @select="selectTab" :current="currentAsideTab" />
         <div v-if="isActive" ref="body" class="messenger__content">
-            <MessengerAside :current-tab="currentTab" />
-            <MessengerPanel :current-tab="currentTab" />
-            <MessengerChat :current-tab="currentTab" />
+            <MessengerAside :current-tab="currentAsideTab" />
+            <MessengerPanel :current-tab="currentContentTab" />
+            <MessengerChat :current-tab="currentContentTab" />
         </div>
     </div>
 </template>
@@ -56,17 +56,12 @@ const hasPanel = shallowRef(false);
 const isActive = shallowRef(false);
 const timeout = shallowRef(null);
 
-const { currentTab, filters } = createMessengerContext();
+const { currentAsideTab, filters, currentContentTab } = createMessengerContext();
 
 provide('$openAttachments', () => attachments.value?.open());
 
 const currentAsideDialogID = computed(() => store.state.Messenger.currentAsideDialogID);
 const currentPanelCompanyID = computed(() => store.state.Messenger.currentPanelCompanyID);
-
-const classList = computed(() => ({
-    active: isOpen.value,
-    'has-panel': hasPanel.value
-}));
 
 watch(isOpen, value => {
     if (value) {
@@ -124,13 +119,16 @@ const openChat = async (companyID, objectID, modelType = 'object', type = null) 
         return;
     }
 
+    currentContentTab.value = currentAsideTab.name;
+
     if (
         messenger.tabsGroups[modelType] !==
         messenger.tabsGroups[store.state.Messenger.currentDialogType]
     )
-        store.commit('Messenger/setCurrentPanel', null);
+        store.state['Messenger/currentPanel'] = null;
 
     store.commit('Messenger/setCurrentAsidePanel', dialog.model_type);
+    store.state['Messenger/currentContentPanel'] = dialog.model_type;
 
     store.dispatch('Messenger/selectPanel', {
         companyID: companyID,
@@ -146,7 +144,7 @@ const openChat = async (companyID, objectID, modelType = 'object', type = null) 
         anywayOpen: true
     });
 
-    currentTab.name = dialog.model_type;
+    currentAsideTab.name = dialog.model_type;
     isOpen.value = true;
 
     return true;
@@ -182,12 +180,14 @@ const openChatByID = async chatMemberID => {
         case 'user': {
             params.userID = dialog.model.id;
             store.commit('Messenger/setCurrentAsidePanel', messenger.tabs.USERS);
+            store.state['Messenger/currentContentPanel'] = messenger.tabs.USERS;
             break;
         }
     }
 
-    store.commit('Messenger/setCurrentPanel', null);
-    currentTab.name = dialog.model_type;
+    store.state['Messenger/currentPanel'] = null;
+    currentAsideTab.name = dialog.model_type;
+    currentContentTab.value = dialog.model_type;
     isOpen.value = true;
 
     store.dispatch('Messenger/selectPanel', params);
@@ -198,37 +198,42 @@ const openChatByID = async chatMemberID => {
 
 const selectTab = (tab, tabSorting = null) => {
     const oldTab = {
-        name: currentTab.name,
-        sort: currentTab.sort
+        name: currentAsideTab.name,
+        sort: currentAsideTab.sort
     };
 
     if (oldTab.name !== tab) {
-        currentTab.name = tab;
-        currentTab.sort = null;
+        currentAsideTab.name = tab;
+        currentAsideTab.sort = null;
     }
 
-    if (tabSorting === currentTab.sort && oldTab.name === tab) {
-        currentTab.sort = null;
+    if (tabSorting === currentAsideTab.sort && oldTab.name === tab) {
+        currentAsideTab.sort = null;
     } else if (tabSorting !== null) {
-        currentTab.sort = tabSorting;
+        currentAsideTab.sort = tabSorting;
     }
 
     if (tabSorting) filters[tab] = {};
 
     store.commit('Messenger/setCurrentAsidePanel', tab);
 
-    if (tab !== null && messenger.tabsGroups[tab] !== messenger.tabsGroups[oldTab.name])
-        store.commit('Messenger/setCurrentPanel', null);
+    if (tab !== null && messenger.tabsGroups[tab] !== messenger.tabsGroups[oldTab.name]) {
+        store.state['Messenger/currentPanel'] = null;
+    }
 
     if (oldTab.name === null || isOpen.value === false) isOpen.value = true;
     else if (tab === oldTab.name && tabSorting === null) isOpen.value = false;
 };
 
 const openChatByCompanyID = companyID => {
-    store.commit('Messenger/setCurrentPanel', null);
-    currentTab.name = messenger.tabs.OBJECTS;
+    store.state['Messenger/currentPanel'] = null;
+
+    currentAsideTab.name = messenger.tabs.OBJECTS;
+    currentContentTab.name = messenger.tabs.OBJECTS;
+
     isOpen.value = true;
     store.dispatch('Messenger/selectPanelWithoutDialog', companyID);
+
     return true;
 };
 
@@ -243,9 +248,13 @@ const openChatByUserID = async userId => {
         return;
     }
 
-    currentTab.name = messenger.tabs.USERS;
+    currentAsideTab.name = messenger.tabs.USERS;
+    currentContentTab.name = messenger.tabs.USERS;
+
     store.commit('Messenger/setCurrentAsidePanel', messenger.tabs.USERS);
-    store.commit('Messenger/setCurrentPanel', null);
+    store.state['Messenger/currentContentPanel'] = messenger.tabs.USERS;
+    store.state['Messenger/currentPanel'] = null;
+
     isOpen.value = true;
 
     store.dispatch('Messenger/selectPanel', {
@@ -296,7 +305,11 @@ const openSurvey = async (dialogType, objectId, companyID, type = null) => {
     }
 
     store.commit('Messenger/setCurrentAsidePanel', dialog.model_type);
-    currentTab.name = dialog.model_type;
+    store.state['Messenger/currentContentPanel'] = dialog.model_type;
+
+    currentAsideTab.name = dialog.model_type;
+    currentContentTab.name = dialog.model_type;
+
     isOpen.value = true;
 
     store.dispatch('Messenger/selectPanel', {

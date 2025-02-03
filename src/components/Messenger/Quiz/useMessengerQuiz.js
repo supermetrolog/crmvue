@@ -137,7 +137,6 @@ export function useMessengerQuiz() {
     async function createPotentialTasks(contacts, messageId, surveyId = null) {
         const payloads = contacts.reduce((acc, element) => {
             if (contactMustBeDeleted(element)) {
-                console.log('must be deleted');
                 acc.push({
                     contactId: element.entity.id,
                     payload: generateTaskPayload(

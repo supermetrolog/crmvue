@@ -30,6 +30,8 @@ import dayjs from 'dayjs';
 import api from '@/api/api.js';
 import { useNotify } from '@/utils/use/useNotify.js';
 import MessengerChatMessageAdditionsSurvey from '@/components/Messenger/Chat/Message/Additions/MessengerChatMessageAdditionsSurvey.vue';
+import { useEventBus } from '@vueuse/core';
+import { TASK_EVENTS } from '@/const/events/task.js';
 
 defineProps({
     tasks: {
@@ -64,6 +66,8 @@ const userCanEdit = addition => {
     );
 };
 
+const bus = useEventBus(TASK_EVENTS.READ);
+
 const readTask = async task => {
     const payload = {
         chatMemberId: store.state.Messenger.currentDialog.id,
@@ -74,13 +78,18 @@ const readTask = async task => {
     const observed = await api.task.read(task.id);
     task.isLoading = false;
 
-    if (!observed) notify.info('При чтении задачи произошла ошибка. Попробуйте позже.');
+    if (observed) {
+        bus.emit();
 
-    notify.success('Задача успешно прочитана.');
-    store.commit('Messenger/onTaskObserved', payload);
-    const observerIndex = task.observers.findIndex(
-        observer => observer.user_id === store.getters.THIS_USER.id
-    );
-    if (observerIndex !== -1) task.observers[observerIndex].viewed_at = dayjs();
+        notify.success('Задача успешно прочитана.');
+        store.commit('Messenger/onTaskObserved', payload);
+
+        const observerIndex = task.observers.findIndex(
+            observer => observer.user_id === store.getters.THIS_USER.id
+        );
+        if (observerIndex !== -1) task.observers[observerIndex].viewed_at = dayjs();
+    } else {
+        notify.info('При чтении задачи произошла ошибка. Попробуйте позже.');
+    }
 };
 </script>

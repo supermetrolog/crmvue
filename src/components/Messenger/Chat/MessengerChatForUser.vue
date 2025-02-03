@@ -11,7 +11,6 @@
         <MessengerChatEmpty v-else />
         <teleport to="body">
             <MessengerSchedule ref="schedule" />
-            <FormModalTaskStatus ref="taskStatusEditor" />
             <FormModalMessageAlert />
             <FormModalMessage ref="messageUpdate" />
         </teleport>
@@ -25,8 +24,6 @@ import MessengerSchedule from '@/components/Messenger/Schedule/MessengerSchedule
 import MessengerChatSettings from '@/components/Messenger/Chat/Settings/MessengerChatSettings.vue';
 import FormModalMessageAlert from '@/components/Forms/FormModalMessageAlert.vue';
 import FormModalMessage from '@/components/Forms/FormModalMessage.vue';
-import FormModalTaskStatus from '@/components/Forms/FormModalTaskStatus.vue';
-import api from '@/api/api.js';
 import { computed, provide, ref, shallowRef, watch } from 'vue';
 import { ucFirst } from '@/utils/formatters/string.js';
 import { useNotify } from '@/utils/use/useNotify.js';
@@ -54,7 +51,6 @@ const creators = {
 };
 
 const schedule = ref(null);
-const taskStatusEditor = ref(null);
 const messageUpdate = ref(null);
 const chatSettings = ref(null);
 const currentTab = shallowRef(CHAT_TABS.CHAT);
@@ -93,22 +89,8 @@ const editAddition = async ({
     else notify.error(errorMessage ?? 'Произошла ошибка. Попробуйте позже');
 };
 
-const editTaskStatus = async (messageID, task) => {
-    const response = await taskStatusEditor.value.open(task);
-
-    if (response) {
-        const statusUpdated = await api.task.changeStatus(task.id, response.status);
-
-        if (statusUpdated) {
-            task.status = response.status;
-            notify.success('Статус задачи успешно изменен.');
-        }
-    }
-};
-
 provide('$createAddition', createAddition);
 provide('$editAddition', editAddition);
-provide('$editTaskStatus', editTaskStatus);
 provide('$openSchedule', async () => await schedule.value.open());
 provide('$toggleSettings', () => chatSettings.value.toggle());
 provide('$messageUpdate', props => messageUpdate.value.open(props));
@@ -116,7 +98,8 @@ provide('$messageUpdate', props => messageUpdate.value.open(props));
 const currentChat = computed(() => store.state.Messenger.currentChat);
 const currentPanel = computed(() => store.state.Messenger.currentPanel);
 
-const { isLoading } = useDelayedLoader();
+const { isLoading } = useDelayedLoader(store.state.Messenger.loadingChat);
+
 watch(
     () => store.state.Messenger.loadingChat,
     value => {

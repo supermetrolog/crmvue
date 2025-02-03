@@ -44,6 +44,15 @@
             </button>
         </AnimationTransition>
         <button
+            v-if="consultantFilterCanBeUsed"
+            v-tippy="'Показывать только те чаты, где Вы консультант'"
+            @click.stop="toggleConsultantFilter"
+            class="messenger-aside-sorting__button rounded-icon"
+            :class="{ 'dashboard-bg-success text-white': hasConsultantFilter }"
+        >
+            <i class="fa-solid fa-user-tag"></i>
+        </button>
+        <button
             v-tippy="'Фильтр'"
             @click.stop="filersIsOpened = true"
             class="messenger-aside-sorting__button rounded-icon"
@@ -67,6 +76,9 @@ import FormModalMessengerFilters from '@/components/Forms/FormModalMessengerFilt
 import { computed, ref } from 'vue';
 import { isEmpty } from '@/utils/helpers/common/isEmpty.js';
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
+import { useAuth } from '@/composables/useAuth.js';
+import { useStore } from 'vuex';
+import { messenger } from '@/const/messenger.js';
 
 const filters = defineModel('filters');
 // const sorts = defineModel('sort');
@@ -78,9 +90,31 @@ defineProps({
     }
 });
 
+const { currentUserId } = useAuth();
+const store = useStore();
+
 const filersIsOpened = ref(false);
 
 const filtersCount = computed(() => {
     return Object.values(filters.value).filter(element => !isEmpty(element)).length;
+});
+
+const consultantFilterCanBeUsed = computed(() => {
+    return (
+        store.state.Messenger.currentAsidePanel &&
+        store.state.Messenger.currentAsidePanel !== messenger.tabs.USERS
+    );
+});
+
+function toggleConsultantFilter() {
+    if (hasConsultantFilter.value) filters.value.consultant_ids = [];
+    else filters.value.consultant_ids = [currentUserId.value];
+}
+
+const hasConsultantFilter = computed(() => {
+    return (
+        filters.value.consultant_ids?.length &&
+        filters.value.consultant_ids[0] === currentUserId.value
+    );
 });
 </script>

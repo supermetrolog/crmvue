@@ -12,9 +12,9 @@
                 loading-title="Поиск задач.."
             />
             <DashboardTableTasks
-                v-else
                 @hide="emit('close')"
                 @task-updated="onTaskUpdated"
+                :hidden="!count"
                 :tasks="tasks.data"
                 :is-loading="isLoading"
             />

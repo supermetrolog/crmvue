@@ -22,6 +22,9 @@ import api from '@/api/api.js';
 import { useAuth } from '@/composables/useAuth.js';
 import { useDelayedLoader } from '@/composables/useDelayedLoader.js';
 import HeaderSummaryProgressTasksContent from '@/components/Header/Summary/HeaderSummaryProgressTasksContent.vue';
+import { useEventBus } from '@vueuse/core';
+import { TASK_EVENTS } from '@/const/events/task.js';
+import { taskOptions } from '@/const/options/task.options.js';
 
 const { currentUserId } = useAuth();
 
@@ -45,4 +48,29 @@ function onCountUpdated(value) {
 }
 
 onMounted(fetchCounts);
+
+// event bus
+
+const taskCompleteEvent = useEventBus(TASK_EVENTS.COMPLETE);
+const reassignEvent = useEventBus(TASK_EVENTS.REASSIGN);
+
+taskCompleteEvent.on(() => {
+    count.value--;
+});
+
+reassignEvent.on(payload => {
+    if (payload.oldUserId === currentUserId.value) {
+        if (
+            payload.task.status !== taskOptions.clearStatusTypes.COMPLETED &&
+            payload.task.status !== taskOptions.clearStatusTypes.CANCELED
+        )
+            count.value--;
+    } else if (payload.task.user_id === currentUserId.value) {
+        if (
+            payload.task.status !== taskOptions.clearStatusTypes.COMPLETED &&
+            payload.task.status !== taskOptions.clearStatusTypes.CANCELED
+        )
+            count.value++;
+    }
+});
 </script>

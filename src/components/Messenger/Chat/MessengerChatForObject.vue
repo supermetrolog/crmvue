@@ -4,7 +4,7 @@
             <template #quiz>
                 <MessengerChatForObjectCallTab
                     :loading="isLoading"
-                    :company
+                    :company="currentPanel"
                     :dialog="currentDialog"
                 />
             </template>
@@ -73,7 +73,7 @@ const currentTab = computed(() => store.state.Messenger.currentChatTab);
 const currentDialog = computed(() => store.state.Messenger.currentDialog);
 
 const quizTabClass = computed(() => {
-    if (company.value && !hasActiveContact.value)
+    if (currentPanel.value && !hasActiveContact.value)
         return 'not-selectable dashboard-bg-gray text-white';
 
     const daysAfterLastCall = store.getters['Messenger/currentDaysCountAfterLastCall'];
@@ -98,7 +98,10 @@ const tabs = computed(() => [
         id: messenger.chatTabs.SURVEY,
         key: 'quiz',
         label: 'Заполните опрос',
-        class: !isLoading.value && currentDialog.value ? quizTabClass.value : 'not-selectable'
+        class:
+            !isLoading.value && currentDialog.value && currentPanel.value
+                ? quizTabClass.value
+                : 'not-selectable'
     }
 ]);
 
@@ -145,7 +148,7 @@ provide('$toggleSettings', () => chatSettings.value.toggle());
 const currentChat = computed(() => store.state.Messenger.currentChat);
 const currentPanel = computed(() => store.state.Messenger.currentPanel);
 
-const { isLoading } = useDelayedLoader();
+const { isLoading } = useDelayedLoader(store.state.Messenger.loadingChat);
 watch(
     () => store.state.Messenger.loadingChat,
     value => {
@@ -163,16 +166,14 @@ const switchTab = tabId => {
 
 // contacts
 
-const company = computed(() => store.state.Messenger.currentPanel);
-
 const contacts = computed(() => {
-    return company.value.contacts.filter(isPersonalContact);
+    return currentPanel.value.contacts.filter(isPersonalContact);
 });
 
-const isWithoutActiveContacts = computed(() => company.value.active_contacts_count === 0);
+const isWithoutActiveContacts = computed(() => currentPanel.value?.active_contacts_count === 0);
 
 const hasActiveContact = computed(() => {
-    if (company.value) return contacts.value.some(isActiveContact);
+    if (currentPanel.value) return contacts.value.some(isActiveContact);
     return false;
 });
 </script>

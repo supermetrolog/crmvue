@@ -532,7 +532,6 @@ const gettersForFilters = {
     },
     region: value => {
         if (!value || !store.getters.REGION_LIST) return null;
-        console.log(store.getters.REGION_LIST, value);
 
         return value
             .map(key => store.getters.REGION_LIST.find(region => region.value == key)?.label)

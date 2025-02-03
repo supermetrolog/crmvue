@@ -6,6 +6,7 @@
         :on-show="onTriggerContacts"
         :on-hide="onUntriggerContacts"
         :delay="[300, null]"
+        placement="left"
     >
         <template #default>
             <TaskCardButton class="w-100 mt-1">
