@@ -8,7 +8,11 @@
                         v-model:filters="filters"
                         v-model:sort="sorts"
                         @reset="$emit('reset')"
-                    />
+                    >
+                        <template #filters>
+                            <slot name="filters" />
+                        </template>
+                    </MessengerAsideSorting>
                     <MessengerLoader :active="loading" />
                 </div>
             </template>
