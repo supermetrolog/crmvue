@@ -79,7 +79,7 @@ async function fetchFiles() {
     const response = await api.task.getFiles(props.task.id);
     if (response?.length) files.value = response;
 
-    isLoading.value = true;
+    isLoading.value = false;
 }
 
 onMounted(async () => {
