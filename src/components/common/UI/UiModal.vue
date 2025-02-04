@@ -51,7 +51,7 @@ import { computed, onBeforeUnmount, ref, watch } from 'vue';
 import { useTimeoutFn } from '@vueuse/core';
 
 const visibleModel = defineModel('visible');
-const emit = defineEmits(['close']);
+const emit = defineEmits(['close', 'closed']);
 const props = defineProps({
     title: {
         type: String,

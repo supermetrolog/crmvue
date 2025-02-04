@@ -4,7 +4,7 @@
         :width="800"
         :close-on-press-esc="false"
         :close-on-outside-click="false"
-        title="Выбор контакта для прозвона"
+        title="Выбор следующего контакта для звонка"
     >
         <MessengerQuizContacts
             v-model:contact="currentContact"
