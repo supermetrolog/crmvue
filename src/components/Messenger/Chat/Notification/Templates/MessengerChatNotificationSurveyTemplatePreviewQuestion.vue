@@ -33,7 +33,7 @@
         </div>
         <div v-if="hasCheckboxQuestions" class="messenger-quiz-question__interests">
             <Chip
-                v-for="interest in question.answers.checkbox"
+                v-for="interest in selectedCheckboxes"
                 :key="interest.id"
                 :html="interest.value"
                 :class="{
@@ -85,6 +85,12 @@ const mainQuestionClass = computed(() => {
     return 'dashboard-bg-light';
 });
 
+const mainQuestionAnswer = computed(() => {
+    if (props.question.answers['yes-no'][0].surveyQuestionAnswer)
+        return props.question.answers['yes-no'][0].surveyQuestionAnswer.value;
+    return null;
+});
+
 const hasUnknownAnswer = computed(() => isNullish(mainQuestionAnswer.value));
 
 // tabs
@@ -105,14 +111,12 @@ const filledTextAnswers = computed(() => {
     );
 });
 
-const hasCheckboxQuestions = computed(() => Boolean(props.question.answers.checkbox));
-
 // checkbox
 
-const mainQuestionAnswer = computed(() => {
-    if (props.question.answers['yes-no'][0].surveyQuestionAnswer)
-        return props.question.answers['yes-no'][0].surveyQuestionAnswer.value;
-    return null;
+const hasCheckboxQuestions = computed(() => Boolean(props.question.answers.checkbox));
+
+const selectedCheckboxes = computed(() => {
+    return props.question.answers.checkbox.filter(element => element.surveyQuestionAnswer?.value);
 });
 
 // tasks
