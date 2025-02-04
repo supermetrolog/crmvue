@@ -28,6 +28,17 @@
             <div class="task-card-comment__message">
                 <p>{{ comment.message }}</p>
             </div>
+            <div v-if="comment.files?.length" class="task-card-comment__files mt-1">
+                <div class="row">
+                    <File
+                        v-for="file in comment.files"
+                        :key="file.id"
+                        :file="file"
+                        read-only
+                        class="col-3"
+                    />
+                </div>
+            </div>
         </div>
     </div>
 </template>
@@ -38,6 +49,7 @@ import { toBeautifulDateFormat } from '@/utils/formatters/date.js';
 import Avatar from '@/components/common/Avatar.vue';
 import TaskCardButton from '@/components/TaskCard/TaskCardButton.vue';
 import { useAuth } from '@/composables/useAuth.js';
+import File from '@/components/common/Forms/File.vue';
 
 defineEmits(['delete', 'edit']);
 const props = defineProps({
