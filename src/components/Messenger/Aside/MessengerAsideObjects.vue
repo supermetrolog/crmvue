@@ -7,6 +7,9 @@
         :class="{ loading: isLoading }"
         class="messenger-aside-offers"
     >
+        <template #filters>
+            <MessengerAsideFiltersForObjects v-model="filters" />
+        </template>
         <div v-if="isLoading" class="messenger-aside__list">
             <MessengerDialogObjectSkeleton v-for="i in lastElementsCount" :key="i" />
         </div>
@@ -71,6 +74,7 @@ import { useDelayedLoader } from '@/composables/useDelayedLoader.js';
 import { useSkeleton } from '@/composables/useSkeleton.js';
 import { useMessengerContext } from '@/components/Messenger/useMessengerContext.js';
 import { messenger } from '@/const/messenger.js';
+import MessengerAsideFiltersForObjects from '@/components/Messenger/Aside/Filters/MessengerAsideFiltersForObjects.vue';
 
 const filters = defineModel('filters', { type: Object });
 defineEmits(['load']);

@@ -80,9 +80,12 @@ const quizTabClass = computed(() => {
     let baseClass = 'not-selectable';
 
     if (daysAfterLastCall <= import.meta.env.VITE_VUE_APP_MESSENGER_DATE_FROM_CALL_WARNING) {
-        if (currentDialog.value.last_call.status !== CALL_STATUSES.COMPLETED)
-            return `${baseClass} dashboard-bg-gray text-white`;
-        return `${baseClass} success`;
+        if (
+            currentDialog.value.last_call &&
+            currentDialog.value.last_call.status === CALL_STATUSES.COMPLETED
+        )
+            return `${baseClass} success`;
+        return `${baseClass} dashboard-bg-gray text-white`;
     }
 
     if (daysAfterLastCall <= import.meta.env.VITE_VUE_APP_MESSENGER_DATE_FROM_CALL_DANGER) {

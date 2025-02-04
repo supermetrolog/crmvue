@@ -123,6 +123,7 @@
     &__contacts {
         @include mixins.flex-box($a: center, $gap: 10px);
         overflow-x: auto;
+        max-width: min-content;
 
         &::-webkit-scrollbar {
             background-color: unset;

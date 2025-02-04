@@ -62,7 +62,7 @@
             <MessengerDialogPhone
                 @click.stop="$emit('update-call')"
                 :last-call="lastCall"
-                :updated-at="model.updated_at"
+                :updated-at="model.updated_at || model.created_at"
                 :disabled="isDisabled"
             />
             <MessengerDialogFunctions v-if="statistic" :counts="statistic" />

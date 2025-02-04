@@ -67,7 +67,9 @@
                 v-if="filersIsOpened"
                 v-model="filters"
                 @close="filersIsOpened = false"
-            />
+            >
+                <slot name="filters" />
+            </FormModalMessengerFilters>
         </teleport>
     </div>
 </template>
