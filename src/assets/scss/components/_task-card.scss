@@ -247,6 +247,11 @@
     &__tab-link:hover  {
         color: variables.$color_success-dark;
     }
+
+    &__files {
+        max-height: 350px;
+        overflow-y: auto;
+    }
 }
 
 .task-card-modal {

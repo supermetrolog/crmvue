@@ -36,6 +36,7 @@
         color: #7B7B7B;
         @include mixins.light-border;
         @include mixins.transition(border-color, background-color);
+        @include mixins.flex-box($a: center);
 
         &.viewed {
             background-color: rgba(16, 185, 129, 0.8);

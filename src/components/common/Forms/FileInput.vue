@@ -14,13 +14,18 @@
                 @drop.prevent="dropHandler"
                 @dragenter.prevent="isDragEnter = true"
                 class="file-input__field"
-                :class="{ 'file-input__field--dragenter': isDragEnter }"
+                :class="{
+                    'file-input__field--dragenter': isDragEnter,
+                    'file-input__field--short': short
+                }"
             >
                 <i class="file-input__icon fa-solid fa-download" />
-                <p class="file-input__title">Загрузите файл</p>
-                <p class="file-input__description">
-                    Переместите файлы в эту зону или просто кликните для выбора файлов
-                </p>
+                <div class="file-input__helper">
+                    <p class="file-input__title">Загрузите файл</p>
+                    <p class="file-input__description">
+                        Переместите файлы в эту зону или просто кликните для выбора файлов
+                    </p>
+                </div>
             </div>
             <input
                 :id="$id('file')"
@@ -148,7 +153,8 @@ export default {
         custom: {
             type: Boolean,
             default: false
-        }
+        },
+        short: Boolean
     },
     data() {
         return {

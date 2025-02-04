@@ -1057,7 +1057,7 @@
 
     &__field {
         @include mixins.flex-box($a: center, $d: column);
-        margin: 0 auto  ;
+        margin: 0 auto;
         padding: 20px;
         border: 1px dashed #b8becb;
         border-radius: 4px;
@@ -1072,6 +1072,21 @@
         &--dragenter {
             background-color: rgba(16, 185, 129, 0.3);
         }
+
+        &--short {
+            flex-direction: row;
+            gap: 15px;
+            padding: 10px;
+            font-size: 14px;
+        }
+    }
+
+    &__helper {
+        @include mixins.flex-box($a: center, $d: column);
+    }
+
+    &__field--short &__helper {
+        align-items: flex-start;
     }
 
     &__icon {

@@ -98,6 +98,13 @@
                 <Spinner v-if="isLoading" center />
                 <UserPicker v-else v-model="form.observers" :users="consultantsForObservers" />
             </template>
+            <template #5>
+                <FileInput
+                    v-model:native="form.files"
+                    v-model:data="form.currentFiles"
+                    label="Файлы или фотографии к задаче"
+                />
+            </template>
         </Stepper>
     </Modal>
 </template>
@@ -124,6 +131,7 @@ import { useAuth } from '@/composables/useAuth.js';
 import DashboardTableTasksItem from '@/components/Dashboard/Table/TasksItem/DashboardTableTasksItem.vue';
 import { useTimeoutFn } from '@vueuse/core';
 import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
+import FileInput from '@/components/common/Forms/FileInput.vue';
 
 const store = useStore();
 const { getTagsOptions } = useTagsOptions();
@@ -132,19 +140,28 @@ const { currentUser } = useAuth();
 const steps = [
     {
         name: 'user_id',
-        title: 'Выбор сотрудников'
+        title: 'Выбор сотрудников',
+        icon: 'fa-solid fa-user'
     },
     {
         name: 'date',
-        title: 'Выбор даты'
+        title: 'Выбор даты',
+        icon: 'fa-solid fa-clock'
     },
     {
         name: 'message',
-        title: 'Описание задачи'
+        title: 'Описание задачи',
+        icon: 'fa-solid fa-pen'
     },
     {
         name: 'observers',
-        title: 'Наблюдатели'
+        title: 'Наблюдатели',
+        icon: 'fa-solid fa-eye'
+    },
+    {
+        name: 'files',
+        title: 'Файлы',
+        icon: 'fa-solid fa-file-circle-plus'
     }
 ];
 
@@ -215,7 +232,9 @@ const form = ref({
     tags: [],
     user_id: null,
     status: 1,
-    observers: []
+    observers: [],
+    files: [],
+    currentFiles: []
 });
 
 const taskPreview = computed(() => {
@@ -278,7 +297,9 @@ const clearForm = () => {
         user_id: null,
         status: 1,
         tags: [],
-        observers: []
+        observers: [],
+        files: [],
+        currentFiles: []
     };
 };
 
@@ -316,7 +337,9 @@ onPopupShowed(() => {
             tags: props.value.tags ? props.value.tags.map(element => element.id) : [],
             observers: props.value.observers
                 ? props.value.observers.map(element => element.user_id)
-                : []
+                : [],
+            currentFiles: props.value.files,
+            files: []
         };
 
     if (props.value?.focusMessage) autofocusMessage.value = true;
@@ -349,11 +372,13 @@ const formToPayload = () => {
     return {
         start: form.value.date.start,
         end: form.value.date.end,
-        user_id: form.value.user_id,
+        user_id: Number(form.value.user_id),
         message: form.value.message,
         status: form.value.status,
         tag_ids: form.value.tags,
-        observer_ids: form.value.observers
+        observer_ids: form.value.observers,
+        files: form.value.files,
+        currentFiles: form.value.currentFiles
     };
 };
 
