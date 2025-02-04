@@ -10,6 +10,9 @@
                 :loading="isLoading"
                 :title="`Сотрудники (${consultants.length}/${pagination?.totalCount || 0})`"
             >
+                <template #filters>
+                    <MessengerAsideFiltersForConsultants v-model="filters.user" />
+                </template>
                 <div v-if="isLoading" class="messenger-aside__list">
                     <MessengerDialogUserSkeleton v-for="i in lastElementsCount" :key="i" />
                 </div>
@@ -67,6 +70,7 @@ import MessengerDialogUserSkeleton from '@/components/Messenger/Dialog/Messenger
 import { useDebounceFn } from '@vueuse/core';
 import { useMessengerContext } from '@/components/Messenger/useMessengerContext.js';
 import { messenger } from '@/const/messenger.js';
+import MessengerAsideFiltersForConsultants from '@/components/Messenger/Aside/Filters/MessengerAsideFiltersForConsultants.vue';
 
 const props = defineProps({
     currentTab: {

@@ -7,6 +7,9 @@
         :loading="isLoading"
         :title="`Компании (${companies.length}/${pagination?.totalCount || 0})`"
     >
+        <template #filters>
+            <MessengerAsideFiltersForCompanies v-model="filters" />
+        </template>
         <div v-if="isLoading" class="messenger-aside__list">
             <MessengerDialogObjectSkeleton v-for="i in lastElementsCount" :key="i" />
         </div>
@@ -71,6 +74,7 @@ import { useSkeleton } from '@/composables/useSkeleton.js';
 import MessengerDialogCompany from '@/components/Messenger/Dialog/Company/MessengerDialogCompany.vue';
 import { useMessengerContext } from '@/components/Messenger/useMessengerContext.js';
 import { messenger } from '@/const/messenger.js';
+import MessengerAsideFiltersForCompanies from '@/components/Messenger/Aside/Filters/MessengerAsideFiltersForCompanies.vue';
 
 const filters = defineModel('filters');
 defineEmits(['load']);
