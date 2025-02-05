@@ -2,7 +2,9 @@
     <div class="settings-form__header">
         <p class="settings-form__title">
             <span>{{ title }}</span>
-            <span> ({{ size }}/{{ pagination?.totalCount ?? 0 }}) </span>
+            <span v-if="size && pagination?.totalCount">
+                ({{ size }}/{{ pagination?.totalCount ?? 0 }})
+            </span>
         </p>
         <div class="settings-form__actions">
             <slot name="extra" />

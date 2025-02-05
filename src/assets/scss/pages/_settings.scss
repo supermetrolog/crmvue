@@ -45,6 +45,29 @@
 }
 
 .settings-form-element {
+    background-color: variables.$bg-gray-l;
+
+    &.deleted {
+        opacity: .5;
+        @include mixins.transition(opacity);
+
+        &:hover {
+            opacity: 1;
+        }
+    }
+
+    &__header {
+        @include mixins.flex-box($gap: 5px, $a: center);
+        border-bottom: 1px solid rgba(0, 0, 0, .1);
+        font-size: 14px;
+    }
+
+    &__actions {
+        @include mixins.flex-box($gap: 3px);
+    }
+}
+
+.settings-form-element {
     .dashboard-chip {
         @include mixins.flex-box($a: center);
     }
