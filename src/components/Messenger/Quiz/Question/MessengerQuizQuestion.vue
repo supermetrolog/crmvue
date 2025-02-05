@@ -1,184 +1,111 @@
 <template>
     <div class="messenger-quiz-question">
-        <AccordionSimple ref="accordion" opened>
-            <template #title>
-                <div v-if="canEdit" class="messenger-quiz-question__actions">
-                    <Button @click="$emit('edit')" small success>Редактировать</Button>
-                    <Button @click="$emit('delete')" small danger>Удалить</Button>
-                </div>
-                <div class="messenger-quiz-question__header">
-                    <MessengerQuizQuestionSuccessIcon v-if="hasFullAnswer || isDisabled" />
-                    <MessengerQuizQuestionWarningIcon v-else-if="form.main != null" />
-                    <MessengerQuizQuestionDangerIcon v-else />
-                    <p class="messenger-quiz-question__title">
-                        <span v-if="showId" class="mr-1">#{{ question.id }}</span>
-                        <span>{{ question.text }}</span>
-                    </p>
-                    <div v-if="question.answers?.['yes-no']" class="messenger-quiz-question__main">
-                        <RadioChip
-                            v-model="form.main"
-                            :disabled="disabled || disabledByTemplate"
-                            :value="true"
-                            unselect
-                            label="Да"
-                        />
-                        <RadioChip
-                            v-model="form.main"
-                            :disabled="disabled || disabledByTemplate"
-                            :value="false"
-                            unselect
-                            label="Нет"
-                        />
-                        <RadioChip
-                            v-model="hasNullMainAnswer"
-                            :value="true"
-                            :disabled="disabled || disabledByTemplate"
-                            unselect
-                            label="Не ответил"
-                        />
-                    </div>
-                    <MessengerButton
-                        v-else-if="canEdit"
-                        @click="$emit('add-answer', question.id, 'yes-no')"
-                        color="success"
-                        class="messenger-quiz-question__button"
-                    >
-                        <i class="fa-solid fa-plus mr-1" />
-                        <span>Добавить "Да/Нет"</span>
-                    </MessengerButton>
-                    <AccordionSimpleTrigger />
-                </div>
-            </template>
-            <template #body>
-                <DashboardChip v-if="canEdit" class="dashboard-bg-warning-l mb-1">
-                    Основные опции
-                </DashboardChip>
-                <div class="messenger-quiz-question__additions">
-                    <slot name="additions" :disabled="isDisabled" :main-answer="form.main">
-                        <template v-if="question.answers?.tab">
-                            <CheckboxChip
-                                v-for="answer in checkboxTabs"
-                                :key="answer.id"
-                                v-model="form.tab"
-                                @icon-clicked="$emit('edit-answer', answer)"
-                                handled-icon
-                                :value="answer.id"
-                                :text="answer.value"
-                                :icon="canEdit ? 'fa-solid fa-pen' : undefined"
-                                icon-label="Редактировать"
-                                class="mr-1"
-                                :disabled="isDisabled"
-                            />
-                            <RadioChip
-                                v-for="answer in radioTabs"
-                                :key="answer.id"
-                                v-model="form.radio"
-                                :value="answer.id"
-                                :label="answer.value"
-                                unselect
-                                :disabled="isDisabled"
-                            />
-                        </template>
-                        <slot name="after-additions" :disabled="isDisabled" />
-                        <MessengerButton
-                            v-if="canEdit"
-                            @click="$emit('add-answer', question.id, 'tab')"
-                            color="success"
-                            class="messenger-quiz-question__button"
-                        >
-                            <i class="fa-solid fa-plus mr-1" />
-                            <span>Добавить</span>
-                        </MessengerButton>
-                    </slot>
-                </div>
-                <div>
-                    <slot
-                        name="description"
-                        :disabled="isDisabled"
-                        :main-answer="form.main"
-                        :toggle-disabled="toggleDisabled"
-                    >
-                        <DashboardChip v-if="canEdit" class="dashboard-bg-warning-l mt-2 mb-1">
-                            Текстовые поля
-                        </DashboardChip>
-                        <template v-if="question.answers?.['text-answer']">
-                            <div v-for="answer in texts" :key="answer.id" class="position-relative">
-                                <Textarea
-                                    v-model="form.description[answer.id]"
-                                    :placeholder="answer.value"
-                                    class="messenger-quiz-question__field"
-                                    auto-height
-                                    :disabled="isDisabled"
-                                    :min-height="80"
-                                />
-                                <div v-if="canEdit" class="messenger-quiz-question__edits">
-                                    <HoverActionsButton
-                                        @click="$emit('edit-answer', answer)"
-                                        label="Редактировать"
-                                        small
-                                    >
-                                        <i class="fa-solid fa-pen" />
-                                    </HoverActionsButton>
-                                </div>
-                            </div>
-                        </template>
-                        <MessengerButton
-                            v-if="canEdit"
-                            @click="$emit('add-answer', question.id, 'text-answer')"
-                            color="success"
-                            class="messenger-quiz-question__button mt-1 mb-2"
-                        >
-                            <i class="fa-solid fa-plus mr-1" />
-                            <span>Добавить</span>
-                        </MessengerButton>
-                    </slot>
-                </div>
-                <DashboardChip v-if="canEdit" class="dashboard-bg-warning-l">
-                    Дополнительные возможности
-                </DashboardChip>
-                <div
-                    v-if="canEdit || question.answers?.checkbox"
-                    class="messenger-quiz-question__interests"
-                >
-                    <template v-if="question.answers?.checkbox">
+        <div class="messenger-quiz-question__header">
+            <MessengerQuizQuestionPrimaryIcon v-if="isDisabled" />
+            <MessengerQuizQuestionSuccessIcon v-else-if="hasFullAnswer" />
+            <MessengerQuizQuestionWarningIcon v-else-if="form.main != null" />
+            <MessengerQuizQuestionDangerIcon v-else />
+            <p class="messenger-quiz-question__title">
+                <span>{{ question.text }}</span>
+            </p>
+            <div v-if="question.answers?.['yes-no']" class="messenger-quiz-question__main">
+                <RadioChip
+                    v-model="form.main"
+                    :disabled="disabled || disabledByTemplate"
+                    :value="true"
+                    unselect
+                    label="Да"
+                />
+                <RadioChip
+                    v-model="form.main"
+                    :disabled="disabled || disabledByTemplate"
+                    :value="false"
+                    unselect
+                    label="Нет"
+                />
+                <RadioChip
+                    v-model="hasNullMainAnswer"
+                    :value="true"
+                    :disabled="disabled || disabledByTemplate"
+                    unselect
+                    label="Не ответил"
+                />
+            </div>
+        </div>
+        <AnimationTransition :speed="0.5">
+            <div v-show="hasMainAnswer" class="messenger-quiz-question__additions">
+                <slot name="additions" :disabled="isDisabled" :main-answer="form.main">
+                    <template v-if="question.answers?.tab">
                         <CheckboxChip
-                            v-for="answer in checkboxes"
+                            v-for="answer in checkboxTabs"
                             :key="answer.id"
-                            v-model="form.checkbox"
-                            @icon-clicked="$emit('edit-answer', answer)"
-                            handled-icon
+                            v-model="form.tab"
                             :value="answer.id"
                             :text="answer.value"
-                            :icon="canEdit ? 'fa-solid fa-pen' : undefined"
-                            icon-label="Редактировать"
+                            class="mr-1"
+                            :disabled="isDisabled"
+                        />
+                        <RadioChip
+                            v-for="answer in radioTabs"
+                            :key="answer.id"
+                            v-model="form.radio"
+                            :value="answer.id"
+                            :label="answer.value"
+                            unselect
                             :disabled="isDisabled"
                         />
                     </template>
-                    <MessengerButton
-                        v-if="canEdit"
-                        @click="$emit('add-answer', question.id, 'checkbox')"
-                        color="success"
-                        class="messenger-quiz-question__button"
-                    >
-                        <i class="fa-solid fa-plus mr-1" />
-                        <span>Добавить</span>
-                    </MessengerButton>
-                </div>
-                <slot name="after-content" :disabled="isDisabled" />
+                    <slot name="after-additions" :disabled="isDisabled" />
+                </slot>
+            </div>
+        </AnimationTransition>
+        <AnimationTransition :speed="0.5">
+            <div v-show="hasMainAnswer">
+                <slot
+                    name="description"
+                    :disabled="isDisabled"
+                    :main-answer="form.main"
+                    :toggle-disabled="toggleDisabled"
+                >
+                    <template v-if="question.answers?.['text-answer']">
+                        <div v-for="answer in texts" :key="answer.id" class="position-relative">
+                            <Textarea
+                                v-model="form.description[answer.id]"
+                                :placeholder="answer.value"
+                                class="messenger-quiz-question__field"
+                                auto-height
+                                :disabled="isDisabled"
+                                :min-height="80"
+                            />
+                        </div>
+                    </template>
+                </slot>
+            </div>
+        </AnimationTransition>
+        <div
+            v-show="hasMainAnswer"
+            v-if="question.answers?.checkbox"
+            class="messenger-quiz-question__interests"
+        >
+            <template v-if="question.answers?.checkbox">
+                <CheckboxChip
+                    v-for="answer in checkboxes"
+                    :key="answer.id"
+                    v-model="form.checkbox"
+                    handled-icon
+                    :value="answer.id"
+                    :text="answer.value"
+                    :disabled="isDisabled"
+                />
             </template>
-        </AccordionSimple>
+        </div>
+        <slot name="after-content" :disabled="isDisabled" />
     </div>
 </template>
 <script setup>
 import CheckboxChip from '@/components/common/Forms/CheckboxChip.vue';
 import Textarea from '@/components/common/Forms/Textarea.vue';
-import AccordionSimple from '@/components/common/Accordion/AccordionSimple.vue';
 import { computed, reactive, ref, useTemplateRef, watch } from 'vue';
-import Button from '@/components/common/Button.vue';
-import HoverActionsButton from '@/components/common/HoverActions/HoverActionsButton.vue';
-import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
-import MessengerButton from '@/components/Messenger/MessengerButton.vue';
-import AccordionSimpleTrigger from '@/components/common/Accordion/AccordionSimpleTrigger.vue';
 import RadioChip from '@/components/common/Forms/RadioChip.vue';
 import { isNullish } from '@/utils/helpers/common/isNullish.js';
 import { isEmptyArray } from '@/utils/helpers/array/isEmptyArray.js';
@@ -187,20 +114,13 @@ import MessengerQuizQuestionSuccessIcon from '@/components/Messenger/Quiz/Questi
 import MessengerQuizQuestionDangerIcon from '@/components/Messenger/Quiz/Question/MessengerQuizQuestionDangerIcon.vue';
 import MessengerQuizQuestionWarningIcon from '@/components/Messenger/Quiz/Question/MessengerQuizQuestionWarningIcon.vue';
 import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
+import MessengerQuizQuestionPrimaryIcon from '@/components/Messenger/Quiz/Question/MessengerQuizQuestionPrimaryIcon.vue';
+import AnimationTransition from '@/components/common/AnimationTransition.vue';
 
-defineEmits(['edit', 'delete', 'edit-answer', 'add-answer']);
 const props = defineProps({
     question: {
         type: Object,
         required: true
-    },
-    showId: {
-        type: Boolean,
-        default: false
-    },
-    canEdit: {
-        type: Boolean,
-        default: false
     },
     canBeDisabled: {
         type: Boolean,
@@ -230,6 +150,8 @@ watch(
         if (isNotNullish(value)) hasNullMainAnswer.value = false;
     }
 );
+
+const hasMainAnswer = computed(() => isNotNullish(form.main));
 
 const hasFullAnswer = computed(() => {
     if (isNullish(form.main)) return false;

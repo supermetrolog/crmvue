@@ -15,6 +15,10 @@ export default {
         const response = await axios.get(URL, { params });
         return responseToPaginatedData(response);
     },
+    async search(params) {
+        const response = await axios.get(URL, { params });
+        return responseToPaginatedData(response);
+    },
     async get(id) {
         const response = await axios.get(`${URL}/${id}`);
         return responseToData(response);

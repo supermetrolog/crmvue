@@ -6,7 +6,7 @@
         width="1000"
     >
         <Form @submit="onSubmit">
-            <Loader v-if="isLoading" />
+            <Loader v-if="isLoading || optionsLoading" />
             <FormGroup>
                 <MultiSelect
                     v-model="form.category"
@@ -116,7 +116,8 @@ const props = defineProps({
     formData: {
         type: Object,
         default: null
-    }
+    },
+    optionsLoading: Boolean
 });
 
 const categoryOptions = {

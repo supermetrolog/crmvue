@@ -12,17 +12,13 @@
                     :key="contact.entity.id"
                     ref="selectedContactsEls"
                     v-model:form="contact.form"
+                    @set-as-unavailable="setContactAsUnavailable(contact)"
+                    @skip="suggestNextContact"
                     @toggle-call-schedule="$emit('toggle-call-schedule', contact.entity)"
                     :contact="contact.entity"
                     class="messenger-quiz__question"
                 />
             </template>
-            <AnimationTransition v-if="contacts.length && selectedContacts.length" :speed="0.5">
-                <MessengerQuizFormContactSuggestButton
-                    v-if="contactCanBeSuggested"
-                    @click="suggestNextContact"
-                />
-            </AnimationTransition>
             <component
                 :is="currentTemplateComponent"
                 ref="quizForm"
@@ -35,6 +31,12 @@
             @suggest="$emit('suggest-create-contact')"
             @selected="selectNextContact"
             :contacts="availableContacts"
+        />
+        <MessengerQuizFormContactUnavailableModal
+            v-model:visible="unavailableModalIsVisible"
+            v-model:form="currentUnavailableForm"
+            @confirm="confirmUnavailableContact"
+            @cancel="cancelUnavailableContact"
         />
     </div>
 </template>
@@ -49,10 +51,9 @@ import { messenger } from '@/const/messenger.js';
 import MessengerQuizQuestionCall from '@/components/Messenger/Quiz/Question/MessengerQuizQuestionCall.vue';
 import MessengerQuizFormContactSuggestModal from '@/components/Messenger/Quiz/Form/MessengerQuizFormContactSuggestModal.vue';
 import MessengerQuizFormDisabledWindow from '@/components/Messenger/Quiz/Form/MessengerQuizFormDisabledWindow.vue';
-import AnimationTransition from '@/components/common/AnimationTransition.vue';
-import MessengerQuizFormContactSuggestButton from '@/components/Messenger/Quiz/Form/MessengerQuizFormContactSuggestButton.vue';
 import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
 import { isNullish } from '@/utils/helpers/common/isNullish.js';
+import MessengerQuizFormContactUnavailableModal from '@/components/Messenger/Quiz/Form/MessengerQuizFormContactUnavailableModal.vue';
 
 const contactModel = defineModel('contact');
 const selectedContacts = defineModel('selected-contacts');
@@ -134,28 +135,49 @@ defineExpose({
 
 // contacts suggest
 
-const selectedContactsUnavailable = computed(() => {
+const selectedContactsUnavailableOrSkipped = computed(() => {
     return selectedContacts.value.every(element => {
-        if (isNullish(element.form.available)) return false;
+        if (isNullish(element.form.available)) return element.form.skipped;
         if (element.form.available) return isNotNullish(element.form.action);
         return true;
     });
 });
 
 const contactCanBeSuggested = computed(
-    () => availableContactsCount.value > 0 && selectedContactsUnavailable.value
+    () => availableContactsCount.value > 0 && selectedContactsUnavailableOrSkipped.value
 );
 
 const suggestModalIsVisible = ref(false);
 
 function suggestNextContact() {
-    if (!availableContactsCount.value) return;
+    if (!availableContactsCount.value || !contactCanBeSuggested.value) return;
     suggestModalIsVisible.value = true;
 }
 
 function selectNextContact(contact) {
     emit('select-next-contact', contact);
     suggestModalIsVisible.value = false;
+}
+
+// unavailable contacts
+
+const unavailableModalIsVisible = ref(false);
+const currentUnavailableForm = ref(null);
+
+function setContactAsUnavailable(contact) {
+    currentUnavailableForm.value = contact;
+
+    unavailableModalIsVisible.value = true;
+}
+
+function cancelUnavailableContact() {
+    unavailableModalIsVisible.value = false;
+    currentUnavailableForm.value = null;
+}
+
+function confirmUnavailableContact() {
+    unavailableModalIsVisible.value = false;
+    suggestNextContact();
 }
 
 // available contacts
@@ -175,15 +197,17 @@ watch(
     }
 );
 
-const allSelectedContactsIsNegative = computed(() =>
-    selectedContacts.value.every(element => element.form.available === false)
+const allSelectedContactsIsNegativeOrSkipped = computed(() =>
+    selectedContacts.value.every(
+        element => element.form.available === false || element.form.skipped
+    )
 );
 
 const formIsDisabled = computed(() => {
     return (
         props.disabled ||
         !props.contacts.length ||
-        (allSelectedContactsIsNegative.value && !availableContactsCount.value)
+        (allSelectedContactsIsNegativeOrSkipped.value && !availableContactsCount.value)
     );
 });
 

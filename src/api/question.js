@@ -31,8 +31,16 @@ export default {
         const response = await axios.get('/question-answers', { params: { page } });
         return responseToPaginatedData(response);
     },
+    async getAnswersWithQuestions(params) {
+        const response = await axios.get('/question-answers/with-questions', { params });
+        return responseToPaginatedData(response);
+    },
     async list() {
         const response = await axios.get(URL);
+        return responseToPaginatedData(response);
+    },
+    async search(params) {
+        const response = await axios.get(URL, { params });
         return responseToPaginatedData(response);
     },
     async delete(id) {

@@ -106,8 +106,36 @@
     background-color: variables.$color_success_alt;
 }
 
-.br-0 {
-    border-radius: 0;
+.br {
+    &-0 {
+        border-radius: 0;
+    }
+
+    &-1 {
+        border-radius: .25rem;
+    }
+
+    &-2 {
+        border-radius: .5rem;
+    }
+}
+
+.fs {
+    &-1 {
+        font-size: 12px;
+    }
+
+    &-2 {
+        font-size: 14px;
+    }
+
+    &-3 {
+        font-size: 16px;
+    }
+
+    &-4 {
+        font-size: 18px;
+    }
 }
 
 .in-progress {
