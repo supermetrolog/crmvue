@@ -27,12 +27,25 @@
                             Шаблоны продолжительности выполнения
                         </p>
                         <div class="date-range-presets__list">
+                            <template v-if="externalPresets.call">
+                                <DashboardChip
+                                    v-for="preset in callPresets"
+                                    :key="preset.id"
+                                    @click="selectRange(preset.value, preset.unit)"
+                                    class="date-range-presets__item dashboard-bg-success-l"
+                                    :class="{
+                                        active: currentRange === preset.value && !preset.hidden
+                                    }"
+                                >
+                                    {{ preset.label }}
+                                </DashboardChip>
+                            </template>
                             <DashboardChip
                                 v-for="preset in presets"
                                 :key="preset.id"
-                                @click="selectRange(preset.value)"
+                                @click="selectRange(preset.value, preset.unit)"
                                 class="date-range-presets__item dashboard-bg-success-l"
-                                :class="{ active: currentRange === preset.value }"
+                                :class="{ active: currentRange === preset.value && !preset.hidden }"
                             >
                                 {{ preset.label }}
                             </DashboardChip>
@@ -114,7 +127,16 @@ import { useStore } from 'vuex';
 import MultiSelect from '@/components/common/Forms/MultiSelect.vue';
 import TaskTagOption from '@/components/common/Forms/TaskTagOption.vue';
 import { useAsyncPopup } from '@/composables/useAsyncPopup.js';
-import { computed, nextTick, onUnmounted, ref, shallowRef, useTemplateRef, watch } from 'vue';
+import {
+    computed,
+    nextTick,
+    onUnmounted,
+    ref,
+    shallowRef,
+    useTemplateRef,
+    watch,
+    reactive
+} from 'vue';
 import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
 import dayjs from 'dayjs';
 import { useTagsOptions } from '@/composables/options/useTagsOptions.js';
@@ -196,6 +218,37 @@ const presets = [
     }
 ];
 
+const callPresets = [
+    {
+        id: 11,
+        value: 30,
+        hidden: true,
+        unit: 'minute',
+        label: '30 минут'
+    },
+    {
+        id: 12,
+        value: 1,
+        hidden: true,
+        unit: 'hour',
+        label: '1 час'
+    },
+    {
+        id: 13,
+        value: 2,
+        hidden: true,
+        unit: 'hour',
+        label: '2 часа'
+    },
+    {
+        id: 14,
+        value: 3,
+        hidden: true,
+        unit: 'hour',
+        label: '3 часа'
+    }
+];
+
 const autofocusMessage = ref(false);
 
 const step = ref(0);
@@ -216,6 +269,10 @@ const form = ref({
     user_id: null,
     status: 1,
     observers: []
+});
+
+const externalPresets = reactive({
+    call: false
 });
 
 const taskPreview = computed(() => {
@@ -302,6 +359,8 @@ onPopupShowed(() => {
     hasCustomDescription.value = props.value?.customDescription ?? false;
     additionalContent.value = props.value?.additionalContent ?? {};
 
+    externalPresets.call = props.value?.callPresets ?? false;
+
     if (!consultants.value.length) fetchConsultants();
 
     if (props.value)
@@ -367,8 +426,8 @@ const close = () => {
     clearForm();
 };
 
-const selectRange = range => {
-    form.value.date.end = dayjs().add(range, 'day').toDate();
+const selectRange = (range, unit = 'day') => {
+    form.value.date.end = dayjs().add(range, unit).toDate();
 };
 
 const isEditing = computed(() => isNotNullish(props.value?.id));

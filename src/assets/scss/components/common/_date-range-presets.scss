@@ -9,6 +9,11 @@
 
     &__list {
         @include mixins.flex-box($d: column, $gap: 10px);
+        overflow-y: auto;
+        max-height: 400px;
+        margin-right: -5px;
+        padding: 5px;
+        border: 1px solid rgba(0, 0, 0, .1);
     }
 
     &__item {

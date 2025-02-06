@@ -118,7 +118,7 @@ import { useMessengerQuiz } from '@/components/Messenger/Quiz/useMessengerQuiz.j
 import UiModal from '@/components/common/UI/UiModal.vue';
 import MessengerQuizArchivedContacts from '@/components/Messenger/Quiz/MessengerQuizArchivedContacts.vue';
 
-const SCHEDULING_CALL_DURATION = 7; // days
+const SCHEDULING_CALL_DURATION = 1; // days
 
 const emit = defineEmits(['complete']);
 defineProps({ disabled: Boolean });
@@ -281,7 +281,8 @@ async function scheduleCall(contact) {
         message: `Прозвонить контакта (${getContactFullName(contact)})`,
         step: TASK_FORM_STEPS.DATE,
         end: dayjs().add(SCHEDULING_CALL_DURATION, 'day').toDate(),
-        user_id: currentUser.value.id
+        user_id: currentUser.value.id,
+        callPresets: true
     });
 
     if (taskPayload) {
