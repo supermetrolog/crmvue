@@ -1,7 +1,7 @@
 <template>
     <Modal @close="toggle" :show="isOpened" class="modal-previewer" :title="title" :width="width">
         <template #header>
-            <Button v-tippy="'В разработке..'" class="ml-2" small icon>
+            <Button v-tippy="'В разработке..'" disabled class="ml-2" small icon>
                 <span>Скачать фотографии</span>
                 <i class="fa-regular fa-image" />
             </Button>

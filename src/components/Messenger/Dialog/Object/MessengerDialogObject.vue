@@ -13,7 +13,17 @@
                     class="messenger-dialog-offer__image"
                     alt="file image"
                 />
-                <span class="messenger-dialog-offer__id">ID{{ model.object.id }}</span>
+                <div class="messenger-dialog-offer__preview-header">
+                    <span class="messenger-dialog-offer__id">ID{{ model.object.id }}</span>
+                    <UiButtonIcon
+                        v-if="hasModalPreview"
+                        @click.stop.prevent="$emit('show-preview')"
+                        small
+                        label="Открыть просмотр фото"
+                        class="bg-white"
+                        icon="fa-solid fa-image"
+                    />
+                </div>
                 <Avatar
                     v-if="model.object.consultant"
                     :size="30"
@@ -55,8 +65,9 @@ import { useStore } from 'vuex';
 import MessengerDialogObjectDealType from '@/components/Messenger/Dialog/Object/MessengerDialogObjectDealType.vue';
 import OfferTableItemPreviewMotionSlider from '@/components/Offer/TableItem/OfferTableItemPreviewMotionSlider.vue';
 import Avatar from '@/components/common/Avatar.vue';
+import UiButtonIcon from '@/components/common/UI/UiButtonIcon.vue';
 
-defineEmits(['update-call']);
+defineEmits(['update-call', 'show-preview']);
 const props = defineProps({
     model: {
         type: Object,
@@ -81,7 +92,8 @@ const props = defineProps({
     motionSlider: {
         type: Boolean,
         default: false
-    }
+    },
+    hasModalPreview: Boolean
 });
 
 const store = useStore();

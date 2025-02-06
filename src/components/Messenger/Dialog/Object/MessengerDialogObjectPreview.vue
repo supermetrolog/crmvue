@@ -1,7 +1,7 @@
 <template>
     <MessengerDialogObjectPreviewSkeleton v-if="isLoading" />
     <div v-else class="messenger-dialog-object-preview">
-        <MessengerDialogPreviewTab title="Проверьте выбранный тип и назнечение!">
+        <MessengerDialogPreviewTab title="Проверьте выбранный тип и назначение!">
             <EditableObjectPurposes
                 @update="updatePurposes"
                 :purposes="object.purposes"
