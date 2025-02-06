@@ -29,9 +29,7 @@ const store = useStore();
 
 const company = computed(() => store.state.Messenger.currentPanel);
 const mainContact = computed(() => {
-    const contact = company.value.contacts.find(
-        contact => contact.type === contactOptions.typeStatement.GENERAL
-    );
+    const contact = company.value.generalContact;
 
     if (contact)
         return {

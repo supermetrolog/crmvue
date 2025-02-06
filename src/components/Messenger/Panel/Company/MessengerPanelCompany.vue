@@ -194,15 +194,11 @@ const hasUndefinedName = computed(() => {
 });
 
 const website = computed(() => {
-    const generalContact = props.company.contacts.find(
-        contact => contact.type === contactOptions.typeStatement.GENERAL
-    );
+    if (!props.company.generalContact) return null;
 
-    if (generalContact && generalContact.websites.length) {
-        return toCorrectUrl(generalContact.websites[0].website);
-    }
-
-    return null;
+    return props.company.generalContact.websites.length
+        ? props.company.generalContact.websites[0].website
+        : null;
 });
 const activityGroup = computed(() => {
     return companyOptions.activityGroup[props.company.activityGroup];
