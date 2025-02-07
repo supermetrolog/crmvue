@@ -53,38 +53,19 @@
                 </TaskCardButton>
             </div>
         </div>
-        <Modal
+        <UiModal
+            v-model:visible="editFormIsVisible"
             @close="closeEditForm"
-            :show="editFormIsVisible"
-            width="500"
+            :width="500"
+            custom-close
             title="Редактирование комментария"
         >
-            <Loader v-if="isUpdating" small />
-            <Form>
-                <Textarea
-                    v-model="editingComment.message"
-                    class="mb-1 task-card__textarea"
-                    label="Комментарий"
-                    :disabled="isUpdating"
-                    auto-height
-                />
-            </Form>
-            <div class="d-flex gap-2">
-                <TaskCardButton
-                    @click.prevent="updateComment"
-                    :disabled="!editingComment.message.length || isUpdating"
-                >
-                    Сохранить
-                </TaskCardButton>
-                <TaskCardButton @click.prevent="openFileDialog" :disabled="isCreating || true">
-                    <i class="fa-solid fa-file-circle-plus mr-1" />
-                    <span>Прикрепить файл</span>
-                </TaskCardButton>
-                <TaskCardButton @click.prevent="closeEditForm" :disabled="isUpdating">
-                    Отмена
-                </TaskCardButton>
-            </div>
-        </Modal>
+            <FormTaskComment
+                @close="closeEditForm"
+                @updated="updateComment"
+                :form-data="editingComment"
+            />
+        </UiModal>
     </div>
 </template>
 
@@ -97,14 +78,14 @@ import { useNotify } from '@/utils/use/useNotify.js';
 import Loader from '@/components/common/Loader.vue';
 import TaskCardButton from '@/components/TaskCard/TaskCardButton.vue';
 import { useConfirm } from '@/composables/useConfirm.js';
-import Modal from '@/components/common/Modal.vue';
-import Form from '@/components/common/Forms/Form.vue';
 import Spinner from '@/components/common/Spinner.vue';
 import InfiniteLoading from 'v3-infinite-loading';
 import { isNullish } from '@/utils/helpers/common/isNullish.js';
 import { spliceById } from '@/utils/helpers/array/spliceById.js';
 import File from '@/components/common/Forms/File.vue';
 import FileInput from '@/components/common/Forms/FileInput.vue';
+import FormTaskComment from '@/components/Forms/FormTaskComment.vue';
+import UiModal from '@/components/common/UI/UiModal.vue';
 
 const emit = defineEmits(['created', 'deleted']);
 const props = defineProps({
@@ -153,30 +134,17 @@ async function loadComments($state) {
 
 const editFormIsVisible = ref(false);
 const editingComment = ref(null);
-const isUpdating = ref(false);
 
 function editComment(comment) {
-    editingComment.value = {
-        id: comment.id,
-        message: comment.message
-    };
-
+    editingComment.value = comment;
     editFormIsVisible.value = true;
 }
 
-async function updateComment() {
-    isUpdating.value = true;
+function updateComment(response) {
+    const commentIndex = comments.value.findIndex(comment => comment.id === response.id);
+    if (commentIndex !== -1) Object.assign(comments.value[commentIndex], response);
 
-    const response = await api.taskComment.update(editingComment.value.id, editingComment.value);
-
-    if (response) {
-        const commentIndex = comments.value.findIndex(comment => comment.id === response.id);
-        if (commentIndex !== -1) Object.assign(comments.value[commentIndex], response);
-
-        closeEditForm();
-    }
-
-    isUpdating.value = false;
+    closeEditForm();
 }
 
 function closeEditForm() {
