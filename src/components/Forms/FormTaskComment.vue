@@ -67,7 +67,7 @@ const props = defineProps({
 const form = reactive({
     message: props.formData.message,
     files: [],
-    current_files: props.formData.files
+    current_files: [...props.formData.files]
 });
 
 const isUpdating = ref(false);

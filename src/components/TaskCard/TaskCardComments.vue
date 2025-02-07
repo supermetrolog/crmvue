@@ -6,6 +6,7 @@
                 <TaskCardComment
                     v-for="comment in comments"
                     :key="comment.id"
+                    @preview="openPreview(comment.files, $event)"
                     @delete="deleteComment(comment.id)"
                     @edit="editComment(comment)"
                     :comment="comment"
@@ -86,6 +87,7 @@ import File from '@/components/common/Forms/File.vue';
 import FileInput from '@/components/common/Forms/FileInput.vue';
 import FormTaskComment from '@/components/Forms/FormTaskComment.vue';
 import UiModal from '@/components/common/UI/UiModal.vue';
+import { usePreviewer } from '@/composables/usePreviewer.js';
 
 const emit = defineEmits(['created', 'deleted']);
 const props = defineProps({
@@ -174,7 +176,7 @@ const isCreating = ref(false);
 const newComment = shallowRef('');
 
 async function addComment() {
-    if (!newComment.value?.length) return;
+    if (!newComment.value?.length && !files.value.length) return;
 
     isCreating.value = true;
 
@@ -205,5 +207,21 @@ function openFileDialog() {
 
 function deleteFile(fileIndex) {
     files.value.splice(fileIndex, 1);
+}
+
+// preview
+
+const { preview } = usePreviewer();
+
+function openPreview(files, id) {
+    preview(
+        files
+            .filter(file => file.mime_type === 'image/jpeg')
+            .map(file => ({
+                id: file.id,
+                src: file.src
+            })),
+        id
+    );
 }
 </script>

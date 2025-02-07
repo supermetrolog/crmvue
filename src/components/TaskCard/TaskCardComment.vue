@@ -29,11 +29,13 @@
                 <p>{{ comment.message }}</p>
             </div>
             <div v-if="comment.files?.length" class="task-card-comment__files mt-1">
-                <div class="row">
+                <div class="row mx-0">
                     <File
                         v-for="file in comment.files"
                         :key="file.id"
+                        @preview="$emit('preview', file.id)"
                         :file="file"
+                        custom-preview
                         read-only
                         class="col-3"
                     />
@@ -51,7 +53,7 @@ import TaskCardButton from '@/components/TaskCard/TaskCardButton.vue';
 import { useAuth } from '@/composables/useAuth.js';
 import File from '@/components/common/Forms/File.vue';
 
-defineEmits(['delete', 'edit']);
+defineEmits(['delete', 'edit', 'preview']);
 const props = defineProps({
     comment: {
         type: Object,
