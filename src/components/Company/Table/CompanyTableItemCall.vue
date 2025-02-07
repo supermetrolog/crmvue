@@ -31,7 +31,7 @@
                     `Не дозвонились. Дата звонка - ${lastCallDate}. Нажмите, чтобы перейти к опроснику и обновить информацию.`
                 "
                 @click="$emit('to-survey')"
-                class="offer-table-item-call__chip warning"
+                class="offer-table-item-call__chip dashboard-bg-gray-l"
                 with-icon
             >
                 <i class="fa-solid fa-phone-slash" />
@@ -65,7 +65,7 @@
                 'К компании не прикреплен активный контакт. Нажмите, чтобы перейти в чат компании.'
             "
             @click="$emit('to-chat')"
-            class="offer-table-item-call__chip dashboard-bg-gray-l"
+            class="offer-table-item-call__chip warning"
         >
             <p>Нет контактов</p>
         </DashboardChip>
