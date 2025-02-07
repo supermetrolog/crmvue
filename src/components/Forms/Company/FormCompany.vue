@@ -567,6 +567,6 @@ const getAddress = async query => {
 };
 
 if (props.formData) {
-    normalizeDataForCompanyForm(form);
+    normalizeDataForCompanyForm(form, props.formData);
 }
 </script>

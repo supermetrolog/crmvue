@@ -25,7 +25,8 @@ export function useTaskManager() {
             step = TASK_FORM_STEPS.USER,
             focusMessage = false,
             customDescription = true,
-            additionalContent = {}
+            additionalContent = {},
+            callPresets = false
         } = template;
 
         return show({
@@ -38,7 +39,8 @@ export function useTaskManager() {
             step,
             focusMessage,
             customDescription,
-            additionalContent
+            additionalContent,
+            callPresets
         });
     }
 
