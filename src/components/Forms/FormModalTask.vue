@@ -11,7 +11,7 @@
         </div>
         <Stepper v-model:step="step" @complete="submit" :steps="steps" :v="v$.form" keep-alive>
             <template #1>
-                <Spinner v-if="isLoading" center />
+                <Spinner v-if="consultantsIsLoading" center />
                 <UserPicker
                     v-else
                     v-model="form.user_id"
@@ -95,11 +95,13 @@
                 </div>
             </template>
             <template #4>
-                <Spinner v-if="isLoading" center />
+                <Spinner v-if="consultantsIsLoading" center />
                 <UserPicker v-else v-model="form.observers" :users="consultantsForObservers" />
             </template>
             <template #5>
+                <Spinner v-if="filesIsLoading" label="Загрузка файлов.." center />
                 <FileInput
+                    v-else
                     v-model:native="form.files"
                     v-model:data="form.currentFiles"
                     label="Файлы или фотографии к задаче"
@@ -132,6 +134,7 @@ import DashboardTableTasksItem from '@/components/Dashboard/Table/TasksItem/Dash
 import { useTimeoutFn } from '@vueuse/core';
 import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
 import FileInput from '@/components/common/Forms/FileInput.vue';
+import api from '@/api/api.js';
 
 const store = useStore();
 const { getTagsOptions } = useTagsOptions();
@@ -217,7 +220,7 @@ const autofocusMessage = ref(false);
 
 const step = ref(0);
 const consultants = ref([]);
-const isLoading = ref(false);
+const consultantsIsLoading = ref(false);
 const hasCustomDescription = ref(false);
 const additionalContent = shallowRef({});
 
@@ -304,9 +307,11 @@ const clearForm = () => {
 };
 
 const fetchConsultants = async () => {
-    isLoading.value = true;
+    consultantsIsLoading.value = true;
+
     consultants.value = await store.dispatch('getConsultants');
-    isLoading.value = false;
+
+    consultantsIsLoading.value = false;
 };
 
 const {
@@ -325,7 +330,7 @@ onPopupShowed(() => {
 
     if (!consultants.value.length) fetchConsultants();
 
-    if (props.value)
+    if (props.value) {
         form.value = {
             message: props.value.message,
             date: {
@@ -338,9 +343,12 @@ onPopupShowed(() => {
             observers: props.value.observers
                 ? props.value.observers.map(element => element.user_id)
                 : [],
-            currentFiles: props.value.files,
+            currentFiles: [],
             files: []
         };
+
+        if (isEditing.value && props.value.files_count > 0) fetchFiles();
+    }
 
     if (props.value?.focusMessage) autofocusMessage.value = true;
 });
@@ -378,7 +386,7 @@ const formToPayload = () => {
         tag_ids: form.value.tags,
         observer_ids: form.value.observers,
         files: form.value.files,
-        currentFiles: form.value.currentFiles
+        currentFiles: form.value.currentFiles.map(element => element.id)
     };
 };
 
@@ -401,4 +409,17 @@ const isEditing = computed(() => isNotNullish(props.value?.id));
 onUnmounted(() => {
     destroyPopup();
 });
+
+// files
+
+const filesIsLoading = ref(false);
+
+async function fetchFiles() {
+    filesIsLoading.value = true;
+
+    const response = await api.task.getFiles(props.value.id);
+    if (response) form.value.currentFiles = response;
+
+    filesIsLoading.value = false;
+}
 </script>
