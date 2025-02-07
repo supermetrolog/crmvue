@@ -37,7 +37,7 @@
 
 <script setup>
 import api from '@/api/api.js';
-import { onMounted, ref, shallowRef } from 'vue';
+import { onMounted, ref, shallowRef, watch } from 'vue';
 import { useNotify } from '@/utils/use/useNotify.js';
 import Loader from '@/components/common/Loader.vue';
 import TaskCardButton from '@/components/TaskCard/TaskCardButton.vue';
@@ -68,6 +68,14 @@ const openPreview = id => {
 };
 
 // fetch
+
+watch(
+    () => props.task?.updated_at,
+    () => {
+        if (props.task.files_count > 0) fetchFiles();
+        else files.value = [];
+    }
+);
 
 const isLoading = ref(false);
 const isError = ref(false);
