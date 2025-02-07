@@ -103,7 +103,7 @@
                 <FileInput
                     v-else
                     v-model:native="form.files"
-                    v-model:data="form.currentFiles"
+                    v-model:data="form.current_files"
                     label="Файлы или фотографии к задаче"
                 />
             </template>
@@ -237,7 +237,7 @@ const form = ref({
     status: 1,
     observers: [],
     files: [],
-    currentFiles: []
+    current_files: []
 });
 
 const taskPreview = computed(() => {
@@ -302,7 +302,7 @@ const clearForm = () => {
         tags: [],
         observers: [],
         files: [],
-        currentFiles: []
+        current_files: []
     };
 };
 
@@ -343,7 +343,7 @@ onPopupShowed(() => {
             observers: props.value.observers
                 ? props.value.observers.map(element => element.user_id)
                 : [],
-            currentFiles: [],
+            current_files: [],
             files: []
         };
 
@@ -386,7 +386,7 @@ const formToPayload = () => {
         tag_ids: form.value.tags,
         observer_ids: form.value.observers,
         files: form.value.files,
-        currentFiles: form.value.currentFiles.map(element => element.id)
+        current_files: form.value.current_files.map(element => element.id)
     };
 };
 
@@ -418,7 +418,7 @@ async function fetchFiles() {
     filesIsLoading.value = true;
 
     const response = await api.task.getFiles(props.value.id);
-    if (response) form.value.currentFiles = response;
+    if (response) form.value.current_files = response;
 
     filesIsLoading.value = false;
 }
