@@ -13,8 +13,8 @@
                 <template v-else>
                     <div
                         v-if="message.message"
+                        ref="messageElement"
                         class="messenger-chat-message__body"
-                        v-html="message.message"
                     ></div>
                 </template>
                 <AnimationTransition>
@@ -47,12 +47,13 @@
     </div>
 </template>
 <script setup>
-import { computed, provide } from 'vue';
+import { computed, provide, toRef, useTemplateRef } from 'vue';
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
 import MessengerChatMessageAttachments from '@/components/Messenger/Chat/Message/MessengerChatMessageAttachments.vue';
 import { ucFirst } from '@/utils/formatters/string.js';
 import { entityOptions } from '@/const/options/options.js';
 import MessengerChatNotificationTemplate from '@/components/Messenger/Chat/Notification/MessengerChatNotificationTemplate.vue';
+import { useLinkify } from '@/composables/useLinkify.js';
 
 const props = defineProps({
     message: {
@@ -79,4 +80,10 @@ const recipientUsername = computed(() => {
     if (contact.type === entityOptions.contact.typeStatement.GENERAL) return 'Общий контакт';
     return contact.first_name + (contact.last_name ? ` ${contact.last_name}` : '');
 });
+
+// linkify
+
+const messageElement = useTemplateRef('messageElement');
+
+useLinkify(toRef(props.message, 'message'), messageElement);
 </script>

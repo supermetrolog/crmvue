@@ -5,8 +5,8 @@
             <div class="messenger-chat-message__content">
                 <div
                     v-if="message.message"
+                    ref="messageElement"
                     class="messenger-chat-message__body"
-                    v-html="message.message"
                 ></div>
                 <div v-if="message.files.length" class="px-2 my-1">
                     <DashboardChip class="dashboard-bg-success-l">
@@ -40,10 +40,11 @@
 <script setup>
 import { entityOptions } from '@/const/options/options';
 import Avatar from '@/components/common/Avatar.vue';
-import { computed } from 'vue';
+import { computed, toRef, useTemplateRef } from 'vue';
 import { ucFirst } from '@/utils/formatters/string.js';
 import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
 import plural from 'plural-ru';
+import { useLinkify } from '@/composables/useLinkify.js';
 
 const props = defineProps({
     message: {
@@ -83,4 +84,10 @@ const recipientUsername = computed(() => {
 const pluralFilesLength = computed(() => {
     return plural(props.message.files.length, '+%d файл', '+%d файла', '+%d файлов');
 });
+
+// linkify
+
+const messageElement = useTemplateRef('messageElement');
+
+useLinkify(toRef(props.message, 'message'), messageElement);
 </script>
