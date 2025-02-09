@@ -15,7 +15,8 @@
                     class="col-12"
                     required
                 />
-                <Input v-model="form.group" :v="v$.form.group" label="Группа" class="col-12" />
+                <Input v-model="form.group" :v="v$.form.group" label="Группа" class="col-6" />
+                <Input v-model="form.template" :v="v$.form.template" label="Шаблон" class="col-6" />
                 <div class="mx-auto d-flex gap-2">
                     <FormSubmit success>Сохранить</FormSubmit>
                     <Button
@@ -39,7 +40,7 @@ import FormSubmit from '@/components/common/Forms/FormSubmit.vue';
 import useVuelidate from '@vuelidate/core';
 import api from '@/api/api.js';
 import { useNotify } from '@/utils/use/useNotify.js';
-import { helpers, required } from '@vuelidate/validators';
+import { helpers, maxLength, required } from '@vuelidate/validators';
 import Input from '@/components/common/Forms/Input.vue';
 import Loader from '@/components/common/Loader.vue';
 import Modal from '@/components/common/Modal.vue';
@@ -63,6 +64,9 @@ const v$ = useVuelidate(
         form: {
             text: {
                 required: helpers.withMessage('Заполните поле', required)
+            },
+            template: {
+                max: helpers.withMessage('Не более 32 символов', maxLength(32))
             }
         }
     },

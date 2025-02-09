@@ -181,14 +181,11 @@ async function send() {
 
     const chatMemberId = store.state.Messenger.currentDialog.id;
 
-    const answers = quizForm.value.getForm();
+    const { answers, isCanceled } = quizForm.value.getForm();
+
     finalSelectedContacts.value = selectedContacts.value.map(element => element.entity);
 
-    const hasAnswers = answers.some(element => {
-        return isNotNullish(element.type) && element.type === 'main' && element.value !== undefined;
-    });
-
-    if (hasAnswers) {
+    if (!isCanceled) {
         finalContact.value = currentRecipient.value;
 
         await showFinalContactPicker();
