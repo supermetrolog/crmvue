@@ -24,8 +24,8 @@
                 </AccordionSimple>
                 <div
                     v-if="message.message"
+                    ref="messageElement"
                     class="messenger-chat-message__body"
-                    v-html="message.message"
                 ></div>
                 <div class="messenger-chat-message__footer">
                     <span>{{ username }}, </span>
@@ -55,7 +55,7 @@
 </template>
 <script setup>
 import { entityOptions } from '@/const/options/options';
-import { computed } from 'vue';
+import { computed, toRef, useTemplateRef } from 'vue';
 import { toDateFormat } from '@/utils/formatters/date.js';
 import { ucFirst } from '@/utils/formatters/string.js';
 import Avatar from '@/components/common/Avatar.vue';
@@ -65,6 +65,7 @@ import MessengerChatMessageAttachments from '@/components/Messenger/Chat/Message
 import AccordionSimpleTriggerButton from '@/components/common/Accordion/AccordionSimpleTriggerButton.vue';
 import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
 import { useStore } from 'vuex';
+import { useLinkify } from '@/composables/useLinkify.js';
 
 const props = defineProps({
     message: {
@@ -107,4 +108,10 @@ const recipientUsername = computed(() => {
 const filesCountText = computed(() =>
     plural(props.message.files.length, '+ %d файл', '+ %d файла', '+ %d файлов')
 );
+
+// linkify
+
+const messageElement = useTemplateRef('messageElement');
+
+useLinkify(toRef(props.message, 'message'), messageElement);
 </script>

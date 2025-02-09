@@ -577,7 +577,7 @@ const Messenger = {
                 response.is_viewed = true;
 
                 commit('addMessages', [response]);
-                state.newMessage = null;
+                state.newMessage = '';
 
                 return true;
             }

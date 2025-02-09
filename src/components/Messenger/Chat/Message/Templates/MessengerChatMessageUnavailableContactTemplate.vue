@@ -9,12 +9,13 @@
                 </span>
             </span>
         </p>
-        <div class="messenger-chat-message-template__body" v-html="message.message"></div>
+        <div ref="messageElement" class="messenger-chat-message-template__body"></div>
     </div>
 </template>
 <script setup>
-import { computed } from 'vue';
+import { computed, toRef, useTemplateRef } from 'vue';
 import { getContactFullName } from '@/utils/formatters/models/contact.js';
+import { useLinkify } from '@/composables/useLinkify.js';
 
 const props = defineProps({
     message: {
@@ -24,4 +25,10 @@ const props = defineProps({
 });
 
 const contactName = computed(() => getContactFullName(props.message.contacts[0]));
+
+// linkify
+
+const messageElement = useTemplateRef('messageElement');
+
+useLinkify(toRef(props.message, 'message'), messageElement);
 </script>

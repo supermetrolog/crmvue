@@ -31,6 +31,8 @@
     "crypto-js": "^4.2.0",
     "dayjs": "^1.11.13",
     "gsap": "^3.12.5",
+    "linkify-html": "^4.2.0",
+    "linkifyjs": "^4.2.0",
     "maska": "^1.4.2",
     "plural-ru": "^2.0.2",
     "quill": "^2.0.2",

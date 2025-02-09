@@ -140,7 +140,6 @@ const sendMessage = async () => {
     if (!canBeSend.value) return;
 
     isLoading.value = true;
-    message.value = message.value.replace(/(https?\S*)/g, '<a href="$1" target="_blank">$1</a>');
 
     const send = await store.dispatch('Messenger/sendMessage', {
         tag_ids: currentCategory.value ? [currentCategory.value] : [],

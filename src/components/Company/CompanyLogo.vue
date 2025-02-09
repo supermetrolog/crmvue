@@ -16,18 +16,12 @@ import NoImage from '@/components/common/NoImage.vue';
 import LazyImage from '@/components/common/LazyImage.vue';
 
 const props = defineProps({
-    src: {
-        type: [String, null],
-        required: true
-    },
+    src: String,
     companyId: {
         type: Number,
         required: true
     },
-    companyName: {
-        type: String,
-        default: null
-    },
+    companyName: String,
     size: {
         type: Number,
         default: 100

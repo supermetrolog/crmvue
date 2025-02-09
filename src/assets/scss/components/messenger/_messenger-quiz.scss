@@ -148,8 +148,6 @@
     }
 
     &__additions {
-        margin-top: 5px;
-        margin-bottom: 10px;
         @include mixins.flex-box($wrap: true);
 
         .checkbox-chip__label {
@@ -272,6 +270,12 @@
         &:hover {
             background-color: variables.$color_warning!important;
             color: #fff;
+        }
+    }
+
+    &__no-answer {
+        &.active {
+            background-color: variables.$color_warning;
         }
     }
 }
