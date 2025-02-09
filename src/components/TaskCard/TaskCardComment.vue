@@ -25,19 +25,18 @@
                     </template>
                 </template>
             </div>
-            <div class="task-card-comment__message">
-                <p>{{ comment.message }}</p>
-            </div>
+            <div ref="messageElement" class="task-card-comment__message"></div>
         </div>
     </div>
 </template>
 
 <script setup>
-import { computed } from 'vue';
+import { computed, toRef, useTemplateRef } from 'vue';
 import { toBeautifulDateFormat } from '@/utils/formatters/date.js';
 import Avatar from '@/components/common/Avatar.vue';
 import TaskCardButton from '@/components/TaskCard/TaskCardButton.vue';
 import { useAuth } from '@/composables/useAuth.js';
+import { useLinkify } from '@/composables/useLinkify.js';
 
 defineEmits(['delete', 'edit']);
 const props = defineProps({
@@ -62,4 +61,10 @@ const canBeEdited = computed(
 const canBeDeleted = computed(
     () => currentUserIsModerator.value || props.comment.created_by_id === currentUserId.value
 );
+
+// linkify
+
+const messageElement = useTemplateRef('messageElement');
+
+useLinkify(toRef(props.comment, 'message'), messageElement);
 </script>

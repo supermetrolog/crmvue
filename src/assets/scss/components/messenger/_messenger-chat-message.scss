@@ -221,6 +221,11 @@
         color: #f1f1f1;
     }
 
+    &.deleted {
+        opacity: .5;
+        pointer-events: none;
+    }
+
     &.observing:not(.observed) {
         background-color: rgba(246, 236, 55, 0.2);
     }

@@ -7,14 +7,23 @@
                 Не удалось заполнить опросник
             </span>
         </p>
-        <div class="messenger-chat-message-template__body" v-html="message.message"></div>
+        <div ref="messageElement" class="messenger-chat-message-template__body"></div>
     </div>
 </template>
 <script setup>
-defineProps({
+import { toRef, useTemplateRef } from 'vue';
+import { useLinkify } from '@/composables/useLinkify.js';
+
+const props = defineProps({
     message: {
         type: Object,
         required: true
     }
 });
+
+// linkify
+
+const messageElement = useTemplateRef('messageElement');
+
+useLinkify(toRef(props.message, 'message'), messageElement);
 </script>

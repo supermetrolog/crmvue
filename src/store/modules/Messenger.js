@@ -262,6 +262,8 @@ const Messenger = {
                 state.counts[modelType].unread_task_count--;
         },
         onMessagesReads(state, messageId) {
+            if (!state.currentDialog) return;
+
             const chatMemberStateName = 'chatMembers' + ucFirst(state.currentDialog.model_type);
             const chatMemberIndex = state[chatMemberStateName].data.findIndex(
                 element => element.id === state.currentDialog.id
@@ -575,7 +577,7 @@ const Messenger = {
                 response.is_viewed = true;
 
                 commit('addMessages', [response]);
-                state.newMessage = null;
+                state.newMessage = '';
 
                 return true;
             }

@@ -4,6 +4,7 @@
             v-for="task in tasks"
             :key="task.id"
             @read="readTask(task)"
+            @deleted="$emit('task-deleted', task.id)"
             :addition="task"
             :editable="userCanEdit(task)"
             :draggable="userCanDrag(task)"
@@ -33,6 +34,7 @@ import MessengerChatMessageAdditionsSurvey from '@/components/Messenger/Chat/Mes
 import { useEventBus } from '@vueuse/core';
 import { TASK_EVENTS } from '@/const/events/task.js';
 
+defineEmits(['task-deleted']);
 defineProps({
     tasks: {
         type: Array,

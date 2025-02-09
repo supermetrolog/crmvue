@@ -1,95 +1,71 @@
 <template>
     <div class="messenger-quiz-question">
-        <AccordionSimple ref="accordion" opened>
-            <template #title>
-                <div class="messenger-quiz-question__header">
-                    <MessengerQuizQuestionSuccessIcon v-if="hasFullAnswer" />
-                    <MessengerQuizQuestionWarningIcon v-else-if="hasNegativeAnswer" />
-                    <MessengerQuizQuestionPrimaryIcon v-else-if="form.skipped" />
-                    <MessengerQuizQuestionDangerIcon v-else />
-                    <p class="messenger-quiz-question__title">
-                        <span class="mr-1">Удалось дозвониться до</span>
-                        <Tippy interactive :interactive-border="20">
-                            <template #default>
-                                <span class="messenger-quiz-question__contact">
-                                    {{ contact.first_name }}
-                                </span>
-                            </template>
-                            <template #content>
-                                <ContactCard :contact="contact" />
-                            </template>
-                        </Tippy>
-                        <span>?</span>
-                    </p>
-                    <div class="messenger-quiz-question__main d-flex gap-1">
-                        <RadioChip v-model="form.available" :value="true" unselect label="Да" />
-                        <RadioChip v-model="form.available" :value="false" unselect label="Нет" />
-                        <RadioChip
-                            v-model="form.skipped"
-                            :value="true"
-                            unselect
-                            label="Пропустить"
-                        />
-                    </div>
-                    <AccordionSimpleTrigger />
+        <div class="messenger-quiz-question__header">
+            <MessengerQuizQuestionSuccessIcon v-if="hasFullAnswer" />
+            <MessengerQuizQuestionWarningIcon v-else-if="hasNegativeAnswer" />
+            <MessengerQuizQuestionPrimaryIcon v-else-if="form.skipped" />
+            <MessengerQuizQuestionDangerIcon v-else />
+            <p class="messenger-quiz-question__title">
+                <span class="mr-1">Удалось дозвониться до</span>
+                <Tippy interactive :interactive-border="20">
+                    <template #default>
+                        <span class="messenger-quiz-question__contact">
+                            {{ contact.first_name }}
+                        </span>
+                    </template>
+                    <template #content>
+                        <ContactCard :contact="contact" />
+                    </template>
+                </Tippy>
+                <span>?</span>
+            </p>
+            <div class="messenger-quiz-question__main d-flex gap-1">
+                <RadioChip v-model="form.available" :value="true" unselect label="Да" />
+                <RadioChip v-model="form.available" :value="false" unselect label="Нет" />
+                <RadioChip v-model="form.skipped" :value="true" unselect label="Пропустить" />
+            </div>
+        </div>
+        <AnimationTransition :speed="0.25">
+            <div v-if="hasAnyAnswer && hasNegativeAnswer">
+                <div class="messenger-quiz-question__additions d-flex align-items-start">
+                    <RadioOptions
+                        v-model="form.reason"
+                        :v="v$.reason"
+                        required
+                        :options="REASON_OPTIONS"
+                    />
+                    <MessengerQuizQuestionCallSchedule
+                        @click="$emit('toggle-call-schedule')"
+                        :scheduled-date="form.scheduled"
+                        class="ml-2"
+                    />
                 </div>
-            </template>
-            <template #body>
+            </div>
+            <div v-else-if="hasAnyAnswer && hasPositiveAnswer">
+                <div class="messenger-quiz-question__additions d-flex align-items-start">
+                    <RadioChip v-model="form.action" :value="1" label="Удалить контакт" unselect />
+                    <RadioChip v-model="form.action" :value="2" label="Перенести" unselect />
+                    <MessengerQuizQuestionCallSchedule
+                        @click="$emit('toggle-call-schedule')"
+                        :scheduled-date="form.scheduled"
+                        class="ml-2"
+                    />
+                </div>
                 <AnimationTransition :speed="0.25">
-                    <div v-if="hasAnyAnswer && hasNegativeAnswer">
-                        <div class="messenger-quiz-question__additions d-flex align-items-start">
-                            <RadioOptions
-                                v-model="form.reason"
-                                :v="v$.reason"
-                                required
-                                :options="REASON_OPTIONS"
-                            />
-                            <MessengerQuizQuestionCallSchedule
-                                @click="$emit('toggle-call-schedule')"
-                                :scheduled-date="form.scheduled"
-                                class="ml-2"
-                            />
-                        </div>
-                    </div>
-                    <div v-else-if="hasAnyAnswer && hasPositiveAnswer">
-                        <div class="messenger-quiz-question__additions d-flex align-items-start">
-                            <RadioChip
-                                v-model="form.action"
-                                :value="1"
-                                label="Удалить контакт"
-                                unselect
-                            />
-                            <RadioChip
-                                v-model="form.action"
-                                :value="2"
-                                label="Перенести"
-                                unselect
-                            />
-                            <MessengerQuizQuestionCallSchedule
-                                @click="$emit('toggle-call-schedule')"
-                                :scheduled-date="form.scheduled"
-                                class="ml-2"
-                            />
-                        </div>
-                        <AnimationTransition :speed="0.25">
-                            <Textarea
-                                v-if="form.action"
-                                v-model="form.description"
-                                placeholder="Подробности о контакте. Почему удалить/перенести?"
-                                :min-height="60"
-                                auto-height
-                            />
-                        </AnimationTransition>
-                    </div>
+                    <Textarea
+                        v-if="form.action"
+                        v-model="form.description"
+                        placeholder="Подробности о контакте. Почему удалить/перенести?"
+                        :min-height="60"
+                        auto-height
+                    />
                 </AnimationTransition>
-            </template>
-        </AccordionSimple>
+            </div>
+        </AnimationTransition>
     </div>
 </template>
 <script setup>
-import AccordionSimple from '@/components/common/Accordion/AccordionSimple.vue';
 import { computed, watch } from 'vue';
-import AccordionSimpleTrigger from '@/components/common/Accordion/AccordionSimpleTrigger.vue';
 import RadioChip from '@/components/common/Forms/RadioChip.vue';
 import MessengerQuizQuestionSuccessIcon from '@/components/Messenger/Quiz/Question/MessengerQuizQuestionSuccessIcon.vue';
 import MessengerQuizQuestionDangerIcon from '@/components/Messenger/Quiz/Question/MessengerQuizQuestionDangerIcon.vue';

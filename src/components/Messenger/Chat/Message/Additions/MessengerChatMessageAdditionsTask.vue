@@ -4,7 +4,8 @@
             completed: isCompleted,
             expired: isExpired,
             observing: isObserving,
-            observed: isObserved
+            observed: isObserved,
+            deleted: isDeleted
         }"
     >
         <template v-if="addition.tags.length && showTags" #header>
@@ -75,7 +76,10 @@
         <template #content>
             Задача #{{ addition.id }} для {{ usersText }} до {{ expiredDate }}
         </template>
-        <template v-if="isCompleted" #external>
+        <template v-if="isDeleted" #external>
+            <DashboardChip class="dashboard-bg-danger text-white">Удалено</DashboardChip>
+        </template>
+        <template v-else-if="isCompleted" #external>
             <DashboardChip class="dashboard-bg-success text-white">Выполнено</DashboardChip>
         </template>
     </MessengerChatMessageAdditionsItem>
@@ -91,8 +95,9 @@ import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
 import { Tippy } from 'vue-tippy';
 import { useAsyncPopup } from '@/composables/useAsyncPopup.js';
 import { dayjsFromMoscow, toDateFormat } from '@/utils/formatters/date.js';
+import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
 
-const emit = defineEmits(['read']);
+const emit = defineEmits(['read', 'deleted']);
 const props = defineProps({
     addition: {
         type: Object,
@@ -125,6 +130,8 @@ const isCompleted = computed(
         props.addition.status === taskOptions.statusTypes.CANCELED
 );
 
+const isDeleted = computed(() => isNotNullish(props.addition.deleted_at));
+
 const isObserving = computed(() => {
     return props.addition.observers.some(
         observer => observer.user_id === store.getters.THIS_USER.id
@@ -146,8 +153,14 @@ const observers = computed(() => props.addition.observers.slice(0, 3));
 const observersDiff = computed(() => props.addition.observers.length - 3);
 
 const showPreview = async () => {
+    if (isDeleted.value) return;
+
     const task = await showTaskPreviewer({ task: props.addition });
-    if (task) Object.assign(props.addition, task);
+    if (task) {
+        Object.assign(props.addition, task);
+
+        if (isNotNullish(task.deleted_at)) emit('deleted');
+    }
 };
 
 const read = () => {

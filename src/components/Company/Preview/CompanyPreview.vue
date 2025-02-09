@@ -87,7 +87,7 @@ const props = defineProps({
     }
 });
 
-const generalContact = computed(() => props.company.contacts.find(item => item.type === 1));
+const generalContact = computed(() => props.company.generalContact);
 
 const websites = computed(() => {
     return generalContact.value.websites.map(website => ({

@@ -19,8 +19,7 @@
                     class="messenger-quiz__question"
                 />
             </template>
-            <component
-                :is="currentTemplateComponent"
+            <MessengerQuizFormTemplate
                 ref="quizForm"
                 :questions="filteredQuestions"
                 :disabled="formIsDisabled"
@@ -42,8 +41,6 @@
 </template>
 <script setup>
 import { useStore } from 'vuex';
-import MessengerQuizFormObjectTemplate from '@/components/Messenger/Quiz/Form/MessengerQuizFormObjectTemplate.vue';
-import MessengerQuizFormCompanyTemplate from '@/components/Messenger/Quiz/Form/MessengerQuizFormCompanyTemplate.vue';
 import { computed, onMounted, ref, useTemplateRef, watch } from 'vue';
 import Loader from '@/components/common/Loader.vue';
 import { quizQuestionsGroups } from '@/const/quiz.js';
@@ -54,6 +51,7 @@ import MessengerQuizFormDisabledWindow from '@/components/Messenger/Quiz/Form/Me
 import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
 import { isNullish } from '@/utils/helpers/common/isNullish.js';
 import MessengerQuizFormContactUnavailableModal from '@/components/Messenger/Quiz/Form/MessengerQuizFormContactUnavailableModal.vue';
+import MessengerQuizFormTemplate from '@/components/Messenger/Quiz/Form/MessengerQuizFormTemplate.vue';
 
 const contactModel = defineModel('contact');
 const selectedContacts = defineModel('selected-contacts');
@@ -74,21 +72,17 @@ const props = defineProps({
     availableContacts: {
         type: Array,
         required: true
+    },
+    canBeDisabled: {
+        type: Boolean,
+        default: true
     }
 });
-
-const TEMPLATES = {
-    object: MessengerQuizFormObjectTemplate,
-    company: MessengerQuizFormCompanyTemplate,
-    request: MessengerQuizFormObjectTemplate
-};
 
 const store = useStore();
 const quizForm = useTemplateRef('quizForm');
 
 const isLoading = ref(false);
-
-const currentTemplateComponent = computed(() => TEMPLATES[store.state.Messenger.currentDialogType]);
 
 const currentQuestionGroup = computed(() => {
     if (store.state.Messenger.currentDialogType === messenger.dialogTypes.COMPANY)
@@ -123,13 +117,16 @@ onMounted(() => {
 });
 
 const getForm = () => {
-    return quizForm.value?.getForm();
+    return { answers: quizForm.value?.getForm(), isCanceled: formIsDisabled.value };
 };
 
 defineExpose({
     getForm,
     validate() {
-        return selectedContactsEls.value.every(element => element.validate());
+        return (
+            selectedContactsEls.value.every(element => element.validate()) &&
+            (formIsDisabled.value || quizForm.value?.validate())
+        );
     }
 });
 
