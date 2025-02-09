@@ -130,7 +130,7 @@ const isCompleted = computed(
         props.addition.status === taskOptions.statusTypes.CANCELED
 );
 
-const isDeleted = computed(() => isNotNullish(props.addition.created_at));
+const isDeleted = computed(() => isNotNullish(props.addition.deleted_at));
 
 const isObserving = computed(() => {
     return props.addition.observers.some(
