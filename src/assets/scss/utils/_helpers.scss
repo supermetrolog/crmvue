@@ -106,8 +106,36 @@
     background-color: variables.$color_success_alt;
 }
 
-.br-0 {
-    border-radius: 0;
+.br {
+    &-0 {
+        border-radius: 0;
+    }
+
+    &-1 {
+        border-radius: .25rem;
+    }
+
+    &-2 {
+        border-radius: .5rem;
+    }
+}
+
+.fs {
+    &-1 {
+        font-size: 12px;
+    }
+
+    &-2 {
+        font-size: 14px;
+    }
+
+    &-3 {
+        font-size: 16px;
+    }
+
+    &-4 {
+        font-size: 18px;
+    }
 }
 
 .in-progress {
@@ -132,4 +160,40 @@
     width: 20px;
     border-radius: 50%;
     border: 1px solid #cecece;
+}
+
+.ui-linkify {
+    display: inline-block;
+    text-decoration: underline;
+    padding: 1px 3px;
+    border-radius: 3px;
+
+    &__button {
+        background-color: #fff;
+        border: 1px solid variables.$bg-gray-l;
+        border-radius: 5px;
+        height: 23px;
+        width: 23px;
+        font-size: 13px;
+        margin-right: 3px;
+        cursor: pointer;
+        @include mixins.flex-box($a: center, $j: center);
+        @include mixins.transition(background-color, opacity, color);
+        opacity: .5;
+        display: inline-flex;
+
+        &:hover {
+            background-color: variables.$bg-primary-l;
+            opacity: 1;
+        }
+
+        &.copied {
+            background-color: variables.$bg-primary;
+            color: #fff;
+        }
+
+        i {
+            pointer-events: none;
+        }
+    }
 }

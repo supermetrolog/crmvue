@@ -19,6 +19,10 @@ export default {
         const response = await axios.get(URL, { params: { page } });
         return responseToPaginatedData(response);
     },
+    async search(params) {
+        const response = await axios.get(URL, { params });
+        return responseToPaginatedData(response);
+    },
     async delete(id) {
         const response = await axios.delete(`${URL}/${id}`);
         return responseHasStatus(response, STATUS_SUCCESS);

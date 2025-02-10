@@ -151,9 +151,8 @@ import Rating from '@/components/common/Rating.vue';
 import MessengerPanelCompanyTabs from '@/components/Messenger/Panel/Company/MessengerPanelCompanyTabs.vue';
 import { computed, ref } from 'vue';
 import { getCompanyName, getCompanyShortName } from '@/utils/formatters/models/company.js';
-import { toCorrectUrl, ucFirst } from '@/utils/formatters/string.js';
+import { ucFirst } from '@/utils/formatters/string.js';
 import { companyOptions } from '@/const/options/company.options.js';
-import { contactOptions } from '@/const/options/contact.options.js';
 import { alg } from '@/utils/alg.js';
 import { useMessenger } from '@/components/Messenger/useMessenger.js';
 import { messenger } from '@/const/messenger.js';
@@ -194,15 +193,11 @@ const hasUndefinedName = computed(() => {
 });
 
 const website = computed(() => {
-    const generalContact = props.company.contacts.find(
-        contact => contact.type === contactOptions.typeStatement.GENERAL
-    );
+    if (!props.company.generalContact) return null;
 
-    if (generalContact && generalContact.websites.length) {
-        return toCorrectUrl(generalContact.websites[0].website);
-    }
-
-    return null;
+    return props.company.generalContact.websites.length
+        ? props.company.generalContact.websites[0].website
+        : null;
 });
 const activityGroup = computed(() => {
     return companyOptions.activityGroup[props.company.activityGroup];

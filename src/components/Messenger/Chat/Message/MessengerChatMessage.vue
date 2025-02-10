@@ -37,8 +37,8 @@
                 />
                 <div
                     v-else-if="message.message"
+                    ref="messageElement"
                     class="messenger-chat-message__body"
-                    v-html="message.message"
                 ></div>
                 <AnimationTransition>
                     <MessengerChatMessageAttachments
@@ -82,7 +82,7 @@ import MessengerChatMessageActions from '@/components/Messenger/Chat/Message/Mes
 import MessengerChatMessageAdditions from '@/components/Messenger/Chat/Message/Additions/MessengerChatMessageAdditions.vue';
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
 import MessengerChatMessageAttachments from '@/components/Messenger/Chat/Message/MessengerChatMessageAttachments.vue';
-import { computed, provide, ref, useTemplateRef } from 'vue';
+import { computed, provide, ref, toRef, useTemplateRef } from 'vue';
 import { useNotify } from '@/utils/use/useNotify.js';
 import { ucFirst } from '@/utils/formatters/string.js';
 import { useConfirm } from '@/composables/useConfirm.js';
@@ -93,6 +93,7 @@ import MessengerChatMessageReply from '@/components/Messenger/Chat/Message/Messe
 import { useAsyncPopup } from '@/composables/useAsyncPopup.js';
 import { useIntersectionObserver, useTimeoutFn } from '@vueuse/core';
 import MessengerChatMessageTemplate from '@/components/Messenger/Chat/Message/MessengerChatMessageTemplate.vue';
+import { useLinkify } from '@/composables/useLinkify.js';
 
 const store = useStore();
 const notify = useNotify();
@@ -235,4 +236,10 @@ const { stop } = useIntersectionObserver(
     },
     { immediate: props.canBeViewed }
 );
+
+// message linkify
+
+const messageElement = useTemplateRef('messageElement');
+
+useLinkify(toRef(props.message, 'message'), messageElement);
 </script>

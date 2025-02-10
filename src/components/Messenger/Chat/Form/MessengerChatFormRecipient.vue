@@ -85,9 +85,7 @@ const store = useStore();
 
 const company = computed(() => store.state.Messenger.currentPanel);
 const mainContact = computed(() => {
-    const mainContact = company.value.contacts.find(
-        contact => contact.type === entityOptions.contact.typeStatement.GENERAL
-    );
+    const mainContact = company.value.generalContact;
 
     if (mainContact)
         return {

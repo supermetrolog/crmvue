@@ -54,9 +54,7 @@
                         </div>
                     </template>
                     <p class="task-card__label my-1">Описание задачи:</p>
-                    <div class="task-card__message">
-                        <p>{{ task.message }}</p>
-                    </div>
+                    <div ref="messageElement" class="task-card__message"></div>
                 </div>
                 <TaskCardInfo :task />
                 <Tabs nav-class="task-card__tabs" nav-item-link-class="task-card__tab-link">
@@ -113,7 +111,7 @@
 
 <script setup>
 import TaskCardStatus from '@/components/TaskCard/TaskCardModalStatus.vue';
-import { computed, onMounted, ref } from 'vue';
+import { computed, onMounted, ref, toRef, useTemplateRef } from 'vue';
 import api from '@/api/api.js';
 import { useNotify } from '@/utils/use/useNotify.js';
 import { useConfirm } from '@/composables/useConfirm.js';
@@ -142,6 +140,7 @@ import { useFavoriteTasks } from '@/composables/useFavoriteTasks.js';
 import { useEventBus } from '@vueuse/core';
 import { TASK_EVENTS } from '@/const/events/task.js';
 import { useAuth } from '@/composables/useAuth.js';
+import { useLinkify } from '@/composables/useLinkify.js';
 import TaskCardFiles from '@/components/TaskCard/TaskCardFiles.vue';
 
 const DAYS_TO_IMPOSSIBLE = 14;
@@ -156,18 +155,9 @@ const emit = defineEmits([
     'files-count-changed'
 ]);
 const props = defineProps({
-    task: {
-        type: [Object, null],
-        required: true
-    },
-    editable: {
-        type: Boolean,
-        default: false
-    },
-    draggable: {
-        type: Boolean,
-        default: false
-    }
+    task: Object,
+    editable: Boolean,
+    draggable: Boolean
 });
 
 const notify = useNotify();
@@ -387,4 +377,10 @@ const status = computed(() => taskOptions.status[props.task.status]);
 const statusIcon = computed(() => taskOptions.statusIcon[props.task.status]);
 
 const endDate = computed(() => toDateFormat(props.task.end, 'D.MM.MYY'));
+
+// linkify
+
+const messageElement = useTemplateRef('messageElement');
+
+useLinkify(toRef(props.task, 'message'), messageElement);
 </script>

@@ -36,8 +36,8 @@
                     />
                     <div
                         v-if="message.message"
+                        ref="messageElement"
                         class="messenger-chat-message__body"
-                        v-html="message.message"
                     ></div>
                 </template>
                 <AnimationTransition>
@@ -75,7 +75,7 @@
     </div>
 </template>
 <script setup>
-import { computed, provide, ref, useTemplateRef } from 'vue';
+import { computed, provide, ref, toRef, useTemplateRef } from 'vue';
 import MessengerChatMessageReplyInfo from '@/components/Messenger/Chat/Message/MessengerChatMessageReplyInfo.vue';
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
 import MessengerChatMessageReply from '@/components/Messenger/Chat/Message/MessengerChatMessageReply.vue';
@@ -91,6 +91,7 @@ import { useConfirm } from '@/composables/useConfirm.js';
 import api from '@/api/api.js';
 import { useIntersectionObserver, useTimeoutFn } from '@vueuse/core';
 import MessengerChatNotificationTemplate from '@/components/Messenger/Chat/Notification/MessengerChatNotificationTemplate.vue';
+import { useLinkify } from '@/composables/useLinkify.js';
 
 const emit = defineEmits(['deleted', 'reply', 'cancel-reply', 'viewed', 'create-task']);
 const props = defineProps({
@@ -199,4 +200,10 @@ const { stop } = useIntersectionObserver(
     },
     { immediate: props.canBeViewed }
 );
+
+// ling
+
+const messageElement = useTemplateRef('messageElement');
+
+useLinkify(toRef(props.message, 'message'), messageElement);
 </script>

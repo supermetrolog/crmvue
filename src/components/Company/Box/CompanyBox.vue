@@ -288,7 +288,7 @@ const categories = computed(() => {
 });
 
 const websites = computed(() => {
-    let commonContact = props.company.contacts.find(contact => contact.type === 1);
+    let commonContact = props.company.generalContact;
     if (commonContact) return commonContact.websites.map(item => item.website);
     return [];
 });

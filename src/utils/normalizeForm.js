@@ -1,8 +1,9 @@
 import { isNullish } from '@/utils/helpers/common/isNullish.js';
 import { isEmptyArray } from '@/utils/helpers/array/isEmptyArray.js';
 
-export function normalizeDataForCompanyForm(data) {
-    data.contacts = data.contacts.find(item => item.type === 1);
+export function normalizeDataForCompanyForm(data, company) {
+    data.contacts = company.generalContact;
+
     if (!data.contacts)
         data.contacts = {
             emails: [],
