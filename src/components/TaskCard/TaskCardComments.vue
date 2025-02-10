@@ -88,6 +88,7 @@ import FileInput from '@/components/common/Forms/FileInput.vue';
 import FormTaskComment from '@/components/Forms/FormTaskComment.vue';
 import UiModal from '@/components/common/UI/UiModal.vue';
 import { usePreviewer } from '@/composables/usePreviewer.js';
+import { isImageMedia } from '@/utils/helpers/models/media.js';
 
 const emit = defineEmits(['created', 'deleted']);
 const props = defineProps({
@@ -215,12 +216,10 @@ const { preview } = usePreviewer();
 
 function openPreview(files, id) {
     preview(
-        files
-            .filter(file => file.mime_type === 'image/jpeg')
-            .map(file => ({
-                id: file.id,
-                src: file.src
-            })),
+        files.filter(isImageMedia).map(file => ({
+            id: file.id,
+            src: file.src
+        })),
         id
     );
 }

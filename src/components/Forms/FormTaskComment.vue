@@ -2,23 +2,23 @@
     <div>
         <Loader v-if="isUpdating" small />
         <Form>
-            <div v-if="form.files?.length" class="row mb-1">
+            <div v-if="form.files?.length" class="d-flex flex-wrap gap-1">
                 <File
                     v-for="(file, key) in form.files"
                     :key="file"
                     @delete="deleteFile(key)"
                     :file="file"
-                    class="file--new col-3"
+                    class="file--new task-card-comment__file"
                 />
             </div>
             <FileInput ref="fileInputElement" v-model:native="form.files" hidden custom />
-            <div v-if="form.current_files?.length" class="row mb-1">
+            <div v-if="form.current_files?.length" class="d-flex flex-wrap gap-1 mt-1">
                 <File
                     v-for="(file, key) in form.current_files"
                     :key="file"
                     @delete="deleteCurrentFile(key)"
                     :file="file"
-                    class="col-3"
+                    class="task-card-comment__file"
                 />
             </div>
             <Textarea

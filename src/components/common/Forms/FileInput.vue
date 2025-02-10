@@ -300,6 +300,10 @@ export default {
             }
 
             this.setProperties(files);
+        },
+        clear() {
+            this.localFiles = [];
+            this.$emit('update:native', this.localFiles);
         }
     },
     created() {

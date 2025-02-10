@@ -22,7 +22,7 @@
         padding: 10px 5px 0 0;
         width: 50%;
         position: relative;
-        max-height: 600px;
+        max-height: 800px;
 
         &:first-child {
             padding-right: 9px;
@@ -249,8 +249,12 @@
     }
 
     &__files {
-        max-height: 350px;
+        max-height: 450px;
         overflow-y: auto;
+    }
+
+    &__histories {
+        max-height: 300px;
     }
 }
 
@@ -365,6 +369,16 @@
 
     &__body {
         @include mixins.flex-box($d: column, $gap: 5px);
+    }
+
+    &__files {
+        @include mixins.flex-box($gap: 5px, $wrap: true);
+    }
+
+    &__file {
+        width: calc(20% - 4px);
+        border: 1px solid rgba(0, 0, 0, .1);
+        border-radius: 5px;
     }
 }
 

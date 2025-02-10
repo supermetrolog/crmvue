@@ -4,7 +4,7 @@
         <Spinner v-if="isLoading" />
         <div v-else-if="files.length" class="task-card__comments-list">
             <div class="task-card__list col-12 position-relative">
-                <Loader v-if="isCreating" small class="center" />
+                <Loader v-if="isDeleting" small class="center" />
                 <div class="row">
                     <File
                         v-for="file in files"
@@ -21,7 +21,13 @@
         </div>
         <p v-else>Файлы отсутствуют..</p>
         <div class="task-card__form">
-            <FileInput v-model:native="newFiles" class="col-12" short item-class="col-3" />
+            <FileInput
+                ref="fileInputEl"
+                v-model:native="newFiles"
+                class="col-12"
+                short
+                item-class="col-3"
+            />
             <div class="col-12 mt-2">
                 <TaskCardButton
                     @click.prevent="addFiles"
@@ -37,7 +43,7 @@
 
 <script setup>
 import api from '@/api/api.js';
-import { onMounted, ref, shallowRef, watch } from 'vue';
+import { onMounted, ref, shallowRef, useTemplateRef, watch } from 'vue';
 import { useNotify } from '@/utils/use/useNotify.js';
 import Loader from '@/components/common/Loader.vue';
 import TaskCardButton from '@/components/TaskCard/TaskCardButton.vue';
@@ -115,11 +121,17 @@ function canBeEdit(file) {
     );
 }
 
+const isDeleting = ref(false);
+
 async function deleteFile(fileId) {
     const confirmed = await confirm('Вы уверены, что хотите безвозвратно удалить файл?');
     if (!confirmed) return;
 
-    const deleted = await api.task.deleteFiles(props.task.id, { file_ids: [fileId] });
+    isDeleting.value = true;
+
+    const deleted = await api.task.deleteFiles(props.task.id, { media_ids: [fileId] });
+
+    isDeleting.value = false;
 
     if (deleted) {
         spliceById(files.value, fileId);
@@ -128,6 +140,8 @@ async function deleteFile(fileId) {
 }
 
 // CREATE
+
+const fileInputEl = useTemplateRef('fileInputEl');
 
 const isCreating = ref(false);
 const newFiles = ref([]);
@@ -141,6 +155,7 @@ async function addFiles() {
 
     if (response) {
         newFiles.value = [];
+        fileInputEl.value.clear();
         notify.success('Файлы успешно добавлены.');
 
         files.value = response;
