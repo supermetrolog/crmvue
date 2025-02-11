@@ -239,6 +239,40 @@ const initForm = () => {
     if (hasCheckboxQuestions.value) form.checkbox = [];
 };
 
+function setForm(payload) {
+    if (hasMainQuestion.value && Object.hasOwn(payload, 'main')) {
+        if (isNotNullish(payload.main.value)) form.main = payload.main.value;
+        else hasNullMainAnswer.value = true;
+    }
+
+    if (hasTabQuestions.value && Object.hasOwn(payload, 'tab')) {
+        form.tab = payload.tab.reduce((acc, element) => {
+            if (element.field === 2 && element.value) acc.push(element.id);
+            return acc;
+        }, []);
+
+        const radioValue = payload.tab.find(element => {
+            return element.field === 4 && element.value;
+        });
+
+        if (radioValue) form.radio = radioValue.id;
+    }
+
+    if (hasTextQuestions.value && Object.hasOwn(payload, 'text-answer')) {
+        form.description = payload['text-answer'].reduce((acc, element) => {
+            acc[element.id] = element.value;
+            return acc;
+        }, {});
+    }
+
+    if (hasCheckboxQuestions.value && Object.hasOwn(payload, 'checkbox')) {
+        form.checkbox = payload.checkbox.reduce((acc, element) => {
+            if (element.value) acc.push(element.id);
+            return acc;
+        }, []);
+    }
+}
+
 watch(
     () => props.question,
     () => {
@@ -339,5 +373,5 @@ function getMainAnswer() {
     return form.main;
 }
 
-defineExpose({ getForm, validate, setCustomCompleted, getMainAnswer });
+defineExpose({ getForm, validate, setCustomCompleted, getMainAnswer, setForm });
 </script>

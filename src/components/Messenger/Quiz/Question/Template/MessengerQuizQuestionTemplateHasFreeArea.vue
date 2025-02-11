@@ -26,6 +26,7 @@ import MessengerQuizFormCustomFreeArea from '@/components/Messenger/Quiz/Form/Cu
 import { quizEffectKinds } from '@/const/quiz.js';
 import { isNullish } from '@/utils/helpers/common/isNullish.js';
 import { useNotify } from '@/utils/use/useNotify.js';
+import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
 
 defineProps({
     question: {
@@ -89,7 +90,31 @@ function validate() {
     return true;
 }
 
-defineExpose({ getForm, validate });
+function setForm(form) {
+    if (isNotNullish(form.main?.value) && form.tab?.length) {
+        const mustBeDeletedAnswer = form.tab.find(answer =>
+            answer.effects.has(quizEffectKinds.OBJECT_FREE_AREA_MUST_BE_DELETED)
+        );
+
+        if (mustBeDeletedAnswer) deleteCurrentFreeAreaModelValue.value = mustBeDeletedAnswer.value;
+
+        const mustBeEditedAnswer = form.tab.find(answer =>
+            answer.effects.has(quizEffectKinds.OBJECT_FREE_AREA_MUST_BE_EDIT)
+        );
+
+        if (mustBeEditedAnswer?.value) conditionModelValue.value = 1;
+
+        const alreadyDescribedAnswer = form.tab.find(answer =>
+            answer.effects.has(quizEffectKinds.OBJECT_FREE_AREA_ALREADY_DESCRIBED)
+        );
+
+        if (alreadyDescribedAnswer?.value) conditionModelValue.value = 0;
+    }
+
+    templateRef.value.setForm(form);
+}
+
+defineExpose({ getForm, validate, setForm });
 
 // injection
 

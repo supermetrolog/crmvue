@@ -193,7 +193,13 @@ async function send() {
         loaders.final = true;
 
         loaders.surveyCreating = true;
-        const createdSurvey = await createSurvey(finalContact.value, answers);
+        const createdSurvey = await createSurvey(
+            finalContact.value,
+            answers.map(element => ({
+                question_answer_id: element.question_answer_id,
+                value: element.value
+            }))
+        );
         loaders.surveyCreating = false;
 
         if (!createdSurvey) {
