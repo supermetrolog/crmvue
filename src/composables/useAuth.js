@@ -2,6 +2,7 @@ import { computed, shallowRef } from 'vue';
 import { hasAccessTokenInLocalStorage } from '@/services/localStorage.js';
 import { useStore } from 'vuex';
 import { userOptions } from '@/const/options/user.options.js';
+import { createSharedComposable } from '@vueuse/core';
 
 const isAuth = shallowRef(false);
 const redirectRoute = shallowRef(null);
@@ -32,7 +33,7 @@ function hasAccessToken() {
     return hasAccessTokenInLocalStorage();
 }
 
-export function useAuth() {
+export const useAuth = createSharedComposable(() => {
     const store = useStore();
 
     const currentUser = computed(() => store.state.User.user);
@@ -60,4 +61,4 @@ export function useAuth() {
         currentUserIsModerator,
         currentUserIsDirector
     };
-}
+});
