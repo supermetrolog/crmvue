@@ -1,7 +1,7 @@
 <template>
     <div>
         <Spinner v-if="isLoading" class="small" label="Загрузка истории.." />
-        <div v-else-if="histories.length" class="task-card__comments-list">
+        <div v-else-if="histories.length" class="task-card__comments-list task-card__histories">
             <div class="task-card__list position-relative">
                 <TaskCardHistoryItem
                     v-for="(history, index) in histories"

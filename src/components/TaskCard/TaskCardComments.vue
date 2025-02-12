@@ -6,6 +6,7 @@
                 <TaskCardComment
                     v-for="comment in comments"
                     :key="comment.id"
+                    @preview="openPreview(comment.files, $event)"
                     @delete="deleteComment(comment.id)"
                     @edit="editComment(comment)"
                     :comment="comment"
@@ -24,6 +25,16 @@
         </div>
         <p v-else>Комментарии отсутствуют..</p>
         <div class="task-card__form">
+            <div v-if="files.length" class="row mb-1">
+                <File
+                    v-for="(file, key) in files"
+                    :key="file"
+                    @delete="deleteFile(key)"
+                    :file="file"
+                    class="col-3"
+                />
+            </div>
+            <FileInput ref="fileInputElement" v-model:native="files" hidden custom />
             <Textarea
                 v-model="newComment"
                 class="mb-1 task-card__textarea"
@@ -33,58 +44,51 @@
             <div class="d-flex gap-2">
                 <TaskCardButton
                     @click.prevent="addComment"
-                    :disabled="!newComment?.length || isCreating"
+                    :disabled="(!newComment?.length && !files.length) || isCreating"
                 >
                     Отправить
                 </TaskCardButton>
+                <TaskCardButton @click.prevent="openFileDialog" :disabled="isCreating">
+                    <i class="fa-solid fa-file-circle-plus mr-1" />
+                    <span>Прикрепить файл</span>
+                </TaskCardButton>
             </div>
         </div>
-        <Modal
+        <UiModal
+            v-model:visible="editFormIsVisible"
             @close="closeEditForm"
-            :show="editFormIsVisible"
-            width="500"
+            :width="500"
+            custom-close
             title="Редактирование комментария"
         >
-            <Loader v-if="isUpdating" small />
-            <Form>
-                <Textarea
-                    v-model="editingComment.message"
-                    class="mb-1 task-card__textarea"
-                    label="Комментарий"
-                    :disabled="isUpdating"
-                    auto-height
-                />
-            </Form>
-            <div class="d-flex gap-2">
-                <TaskCardButton
-                    @click.prevent="updateComment"
-                    :disabled="!editingComment.message.length || isUpdating"
-                >
-                    Сохранить
-                </TaskCardButton>
-                <TaskCardButton @click.prevent="closeEditForm" :disabled="isUpdating">
-                    Отмена
-                </TaskCardButton>
-            </div>
-        </Modal>
+            <FormTaskComment
+                @close="closeEditForm"
+                @updated="updateComment"
+                :form-data="editingComment"
+            />
+        </UiModal>
     </div>
 </template>
 
 <script setup>
 import api from '@/api/api.js';
 import TaskCardComment from '@/components/TaskCard/TaskCardComment.vue';
-import { ref, shallowRef, watch } from 'vue';
+import { ref, shallowRef, useTemplateRef, watch } from 'vue';
 import Textarea from '@/components/common/Forms/Textarea.vue';
 import { useNotify } from '@/utils/use/useNotify.js';
 import Loader from '@/components/common/Loader.vue';
 import TaskCardButton from '@/components/TaskCard/TaskCardButton.vue';
 import { useConfirm } from '@/composables/useConfirm.js';
-import Modal from '@/components/common/Modal.vue';
-import Form from '@/components/common/Forms/Form.vue';
 import Spinner from '@/components/common/Spinner.vue';
 import InfiniteLoading from 'v3-infinite-loading';
 import { isNullish } from '@/utils/helpers/common/isNullish.js';
 import { spliceById } from '@/utils/helpers/array/spliceById.js';
+import File from '@/components/common/Forms/File.vue';
+import FileInput from '@/components/common/Forms/FileInput.vue';
+import FormTaskComment from '@/components/Forms/FormTaskComment.vue';
+import UiModal from '@/components/common/UI/UiModal.vue';
+import { usePreviewer } from '@/composables/usePreviewer.js';
+import { isImageMedia } from '@/utils/helpers/models/media.js';
 
 const emit = defineEmits(['created', 'deleted']);
 const props = defineProps({
@@ -133,30 +137,17 @@ async function loadComments($state) {
 
 const editFormIsVisible = ref(false);
 const editingComment = ref(null);
-const isUpdating = ref(false);
 
 function editComment(comment) {
-    editingComment.value = {
-        id: comment.id,
-        message: comment.message
-    };
-
+    editingComment.value = comment;
     editFormIsVisible.value = true;
 }
 
-async function updateComment() {
-    isUpdating.value = true;
+function updateComment(response) {
+    const commentIndex = comments.value.findIndex(comment => comment.id === response.id);
+    if (commentIndex !== -1) Object.assign(comments.value[commentIndex], response);
 
-    const response = await api.taskComment.update(editingComment.value.id, editingComment.value);
-
-    if (response) {
-        const commentIndex = comments.value.findIndex(comment => comment.id === response.id);
-        if (commentIndex !== -1) Object.assign(comments.value[commentIndex], response);
-
-        closeEditForm();
-    }
-
-    isUpdating.value = false;
+    closeEditForm();
 }
 
 function closeEditForm() {
@@ -186,18 +177,50 @@ const isCreating = ref(false);
 const newComment = shallowRef('');
 
 async function addComment() {
-    if (!newComment.value?.length) return;
+    if (!newComment.value?.length && !files.value.length) return;
 
     isCreating.value = true;
 
-    const response = await api.task.createComment(props.task.id, { message: newComment.value });
+    const response = await api.task.createComment(props.task.id, {
+        message: newComment.value,
+        files: files.value
+    });
 
     if (response) {
         newComment.value = '';
+        files.value = [];
+
         notify.success('Комментарий успешно добавлен.');
         emit('created', response);
     }
 
     isCreating.value = false;
+}
+
+// files
+
+const fileInputElement = useTemplateRef('fileInputElement');
+const files = ref([]);
+
+function openFileDialog() {
+    fileInputElement.value.clickOpenFile();
+}
+
+function deleteFile(fileIndex) {
+    files.value.splice(fileIndex, 1);
+}
+
+// preview
+
+const { preview } = usePreviewer();
+
+function openPreview(files, id) {
+    preview(
+        files.filter(isImageMedia).map(file => ({
+            id: file.id,
+            src: file.src
+        })),
+        id
+    );
 }
 </script>

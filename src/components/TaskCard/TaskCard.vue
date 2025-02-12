@@ -68,8 +68,11 @@
                     <Tab :name="`История (${task.histories_count})`">
                         <TaskCardHistory @created="$emit('history-changed', $event)" :task />
                     </Tab>
-                    <Tab name="Файлы">
-                        <InProgress />
+                    <Tab :name="`Файлы (${task.files_count ?? 0})`">
+                        <TaskCardFiles
+                            @count-changed="$emit('files-count-changed', $event)"
+                            :task
+                        />
                     </Tab>
                 </Tabs>
                 <AnimationTransition :speed="0.3">
@@ -130,7 +133,6 @@ import TaskCardAssigner from '@/components/TaskCard/TaskCardModalAssigner.vue';
 import EmptyData from '@/components/common/EmptyData.vue';
 import Tabs from '@/components/common/Tabs/Tabs.vue';
 import Tab from '@/components/common/Tabs/Tab.vue';
-import InProgress from '@/components/common/InProgress.vue';
 import TaskCardComments from '@/components/TaskCard/TaskCardComments.vue';
 import TaskCardHistory from '@/components/TaskCard/History/TaskCardHistory.vue';
 import { useDelayedLoader } from '@/composables/useDelayedLoader.js';
@@ -139,6 +141,7 @@ import { useEventBus } from '@vueuse/core';
 import { TASK_EVENTS } from '@/const/events/task.js';
 import { useAuth } from '@/composables/useAuth.js';
 import { useLinkify } from '@/composables/useLinkify.js';
+import TaskCardFiles from '@/components/TaskCard/TaskCardFiles.vue';
 
 const DAYS_TO_IMPOSSIBLE = 14;
 
@@ -148,7 +151,8 @@ const emit = defineEmits([
     'read',
     'added-comment',
     'deleted-comment',
-    'history-changed'
+    'history-changed',
+    'files-count-changed'
 ]);
 const props = defineProps({
     task: Object,

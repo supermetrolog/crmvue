@@ -13,13 +13,13 @@ const URL = '/tasks';
 export default {
     async createFromMessage(messageID, options) {
         const url = `/chat-member-messages/create-task/${messageID}`;
-        const response = await axios.post(url, options);
+        const response = await axios.postForm(url, options);
         return responseToData(response);
     },
     async create(options, config = { many: false }) {
         const url = config.many ? '/tasks/for-users' : URL;
 
-        const response = await axios.post(url, {
+        const response = await axios.postForm(url, {
             ...options,
             end: dayjs(options.end).format('YYYY-MM-DD HH:mm:ss'),
             start: dayjs().format('YYYY-MM-DD HH:mm:ss')
@@ -40,7 +40,7 @@ export default {
         return responseHasStatus(response, STATUS_SUCCESS);
     },
     async update(taskId, payload) {
-        const response = await axios.put(`${URL}/${taskId}`, {
+        const response = await axios.putForm(`${URL}/${taskId}`, {
             ...payload,
             end: dayjs(payload.end).format('YYYY-MM-DD HH:mm:ss')
         });
@@ -54,7 +54,7 @@ export default {
         return responseToData(response);
     },
     async createComment(id, payload) {
-        const response = await axios.post(`${URL}/${id}/comments`, payload);
+        const response = await axios.postForm(`${URL}/${id}/comments`, payload);
         return responseToData(response);
     },
     async loadComments(id, lastCommentId) {
@@ -87,6 +87,18 @@ export default {
     },
     async getComments(taskID) {
         const response = await axios.get(`${URL}/${taskID}/comments`);
+        return responseToData(response);
+    },
+    async getFiles(taskId) {
+        const response = await axios.get(`${URL}/${taskId}/files`);
+        return responseToData(response);
+    },
+    async deleteFiles(taskId, payload) {
+        const response = await axios.delete(`${URL}/${taskId}/files`, { data: payload });
+        return responseHasStatus(response, STATUS_SUCCESS);
+    },
+    async addFiles(taskId, payload) {
+        const response = await axios.postForm(`${URL}/${taskId}/files`, payload);
         return responseToData(response);
     },
     async read(taskID) {
