@@ -1,8 +1,16 @@
 <template>
     <div class="messenger-quiz messenger-chat__content">
         <MessengerChatHeader />
-        <MessengerQuizPreviews v-show="!isGeneralLoading" class="my-2" />
-        <Spinner v-if="isGeneralLoading" class="absolute-center" label="Загрузка данных.." />
+        <MessengerQuizPreviews
+            v-show="!isGeneralLoading"
+            @last-survey-loaded="lastSurveyOnLoad"
+            class="my-2"
+        />
+        <Spinner
+            v-if="isGeneralLoading || lastSurveyIsLoading"
+            class="absolute-center"
+            label="Загрузка данных.."
+        />
         <template v-else>
             <div class="messenger-quiz__wrapper">
                 <Loader v-if="loaders.final" :label="currentLoadingLabel" class="my-4" />
@@ -26,10 +34,12 @@
                     @change-last-contact="changeLastContact"
                     :contacts="availableContacts"
                     :available-contacts="notSelectedContacts"
-                    :disabled
+                    :disabled="disabled"
+                    :can-be-created="canBeCreated"
+                    :last-survey="lastSurvey"
                 />
                 <MessengerQuizFooter
-                    v-if="contacts.length && !disabled"
+                    v-if="contacts.length && !disabled && canBeCreated"
                     @complete="send"
                     @object-destroyed="onObjectDestroyed"
                     @object-sold="onObjectSold"
@@ -113,15 +123,40 @@ import { useMessengerQuizContactSuggest } from '@/components/Messenger/Quiz/useM
 import MessengerQuizPreviews from '@/components/Messenger/Quiz/MessengerQuizPreviews.vue';
 import MessengerQuizContactTaskSuggestModal from '@/components/Messenger/Quiz/MessengerQuizContactTaskSuggestModal.vue';
 import { getContactFullName } from '@/utils/formatters/models/contact.js';
-import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
 import { useMessengerQuiz } from '@/components/Messenger/Quiz/useMessengerQuiz.js';
 import UiModal from '@/components/common/UI/UiModal.vue';
 import MessengerQuizArchivedContacts from '@/components/Messenger/Quiz/MessengerQuizArchivedContacts.vue';
+import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
+import { isNullish } from '@/utils/helpers/common/isNullish.js';
+import { useSurveyEditing } from '@/components/Survey/useSurveyEditing.js';
 
 const SCHEDULING_CALL_DURATION = 1; // days
 
 const emit = defineEmits(['complete']);
 defineProps({ disabled: Boolean });
+
+// remaining last survey
+
+const lastSurveyIsLoading = ref(true);
+const lastSurvey = ref(null);
+
+const { currentUserIsAdmin } = useAuth();
+const { remainingTimeInMinutes } = useSurveyEditing(lastSurvey);
+
+function lastSurveyOnLoad(survey) {
+    if (isNotNullish(survey)) lastSurvey.value = survey;
+    lastSurveyIsLoading.value = false;
+}
+
+const canBeCreated = computed(() => {
+    return (
+        currentUserIsAdmin.value ||
+        (isNotNullish(lastSurvey.value) && remainingTimeInMinutes.value <= 0) ||
+        (!lastSurveyIsLoading.value && isNullish(lastSurvey.value))
+    );
+});
+
+//
 
 const store = useStore();
 const notify = useNotify();

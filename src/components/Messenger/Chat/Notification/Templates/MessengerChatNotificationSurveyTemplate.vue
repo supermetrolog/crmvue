@@ -38,7 +38,7 @@
     </div>
 </template>
 <script setup>
-import { computed, onMounted, ref } from 'vue';
+import { computed, onMounted, ref, toRef } from 'vue';
 import { entityOptions } from '@/const/options/options.js';
 import api from '@/api/api.js';
 import MessengerChatNotificationSurveyTemplateSkeleton from '@/components/Messenger/Chat/Notification/Templates/MessengerChatNotificationSurveyTemplateSkeleton.vue';
@@ -47,9 +47,7 @@ import { useDelayedLoader } from '@/composables/useDelayedLoader.js';
 import MessengerChatMessageAdditions from '@/components/Messenger/Chat/Message/Additions/MessengerChatMessageAdditions.vue';
 import UiButtonIcon from '@/components/common/UI/UiButtonIcon.vue';
 import { useAsyncPopup } from '@/composables/useAsyncPopup.js';
-import { useAuth } from '@/composables/useAuth.js';
-import { dayjsFromMoscow } from '@/utils/formatters/date.js';
-import dayjs from 'dayjs';
+import { useSurveyEditing } from '@/components/Survey/useSurveyEditing.js';
 
 const props = defineProps({
     message: {
@@ -138,31 +136,11 @@ function showPreview() {
 
 // edit
 
-const { currentUserIsAdmin, currentUserId } = useAuth();
-
-const editTimeLimit = 60 * 12;
-
-const remainingTimeInMinutes = computed(() => {
-    return (
-        editTimeLimit - dayjs().diff(dayjsFromMoscow(props.message.surveys[0].created_at), 'minute')
-    );
-});
+const { canBeEdit, remainingTimeLabel } = useSurveyEditing(toRef(() => props.message.surveys[0]));
 
 const editButtonLabel = computed(() => {
-    if (currentUserIsAdmin.value) return 'Редактировать';
-
-    if (remainingTimeInMinutes.value < 60)
-        return `Редактировать (осталось ${remainingTimeInMinutes.value} мин.)`;
-
-    return `Редактировать (осталось ${Math.ceil(remainingTimeInMinutes.value / 60)} ч.)`;
-});
-
-const canBeEdit = computed(() => {
-    return (
-        survey.value &&
-        ((survey.value.user_id === currentUserId.value && remainingTimeInMinutes.value > 0) ||
-            currentUserIsAdmin.value)
-    );
+    if (remainingTimeLabel.value) return `Редактировать (осталось ${remainingTimeLabel.value})`;
+    return 'Редактировать';
 });
 
 async function editSurvey() {
