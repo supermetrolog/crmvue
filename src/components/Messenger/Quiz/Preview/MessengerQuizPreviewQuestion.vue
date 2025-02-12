@@ -40,7 +40,7 @@
             </div>
             <p v-else>Без ответа</p>
         </div>
-        <div v-if="hasTabQuestions" class="messenger-quiz-question__additions">
+        <div v-if="hasTabQuestions" class="messenger-quiz-question__additions gap-1 my-1">
             <Chip
                 v-for="addition in question.answers.tab"
                 :key="addition.id"
@@ -71,7 +71,7 @@
                 </div>
             </slot>
         </div>
-        <div v-if="hasCheckboxQuestions" class="messenger-quiz-question__interests">
+        <div v-if="hasCheckboxQuestions" class="d-flex gap-1 flex-wrap mt-1">
             <Chip
                 v-for="interest in question.answers.checkbox"
                 :key="interest.id"

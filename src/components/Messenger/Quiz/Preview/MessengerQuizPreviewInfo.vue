@@ -33,6 +33,13 @@
                 <DashboardChip class="ml-auto dashboard-bg-gray-l">
                     {{ createdAt }}
                 </DashboardChip>
+                <UiButtonIcon
+                    @click="$emit('edit')"
+                    small
+                    icon="fa-solid fa-pen"
+                    label="Редактировать"
+                    class="dashboard-bg-gray-l"
+                />
             </div>
         </DashboardCard>
     </div>
@@ -46,7 +53,9 @@ import { quizQuestionsGroupsLabel } from '@/const/quiz.js';
 import { Tippy } from 'vue-tippy';
 import ContactCard from '@/components/Contact/Card/ContactCard.vue';
 import Avatar from '@/components/common/Avatar.vue';
+import UiButtonIcon from '@/components/common/UI/UiButtonIcon.vue';
 
+defineEmits(['edit']);
 const props = defineProps({
     quiz: {
         type: Object,

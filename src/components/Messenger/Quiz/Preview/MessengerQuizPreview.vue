@@ -1,17 +1,17 @@
 <template>
     <div class="messenger-quiz-preview">
         <Spinner v-if="isLoading" label="Загрузка результатов.." class="absolute-center" />
-        <div v-else-if="quiz">
-            <MessengerQuizPreviewInfo :quiz="quiz" />
+        <div v-else-if="currentQuiz">
+            <MessengerQuizPreviewInfo @edit="$emit('edit', currentQuiz)" :quiz="currentQuiz" />
             <MessengerQuizPreviewTasks
-                v-if="quiz.tasks.length"
-                v-model:tasks="quiz.tasks"
+                v-if="currentQuiz.tasks.length"
+                v-model:tasks="currentQuiz.tasks"
                 @hide="$emit('hide')"
                 class="messenger-quiz-preview__element mb-2"
             />
-            <div v-if="quiz.questions.length" class="messenger-quiz-preview__list">
+            <div v-if="currentQuiz.questions.length" class="messenger-quiz-preview__list">
                 <MessengerQuizPreviewQuestion
-                    v-for="question in quiz.questions"
+                    v-for="question in currentQuiz.questions"
                     :key="question.id"
                     :question="question"
                     class="messenger-quiz-preview__element"
@@ -49,19 +49,19 @@ import { quizEffectKinds } from '@/const/quiz.js';
 import MessengerQuizPreviewCompanyTemplate from '@/components/Messenger/Quiz/Preview/Template/MessengerQuizPreviewCompanyTemplate.vue';
 import MessengerQuizPreviewRequestsTemplate from '@/components/Messenger/Quiz/Preview/Template/MessengerQuizPreviewRequestsTemplate.vue';
 import MessengerQuizPreviewTasks from '@/components/Messenger/Quiz/Preview/MessengerQuizPreviewTasks.vue';
+import { isNullish } from '@/utils/helpers/common/isNullish.js';
+import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
 
-defineEmits(['hide']);
+defineEmits(['hide', 'edit']);
 const props = defineProps({
-    quizId: {
-        type: Number,
-        required: true
-    }
+    quizId: Number,
+    quiz: Object
 });
 
-const isLoading = ref(true);
+const isLoading = ref(isNullish(props.quiz));
 
 const questionWithCompaniesInfo = computed(() => {
-    return quiz.value.questions.find(question => {
+    return currentQuiz.value.questions.find(question => {
         return (
             'text-answer' in question.answers &&
             question.answers['text-answer'].some(element =>
@@ -74,7 +74,7 @@ const questionWithCompaniesInfo = computed(() => {
 });
 
 const questionWithRelevantRequestsInfo = computed(() => {
-    return quiz.value.questions.find(question => {
+    return currentQuiz.value.questions.find(question => {
         return (
             'text-answer' in question.answers &&
             question.answers['text-answer'].some(element =>
@@ -86,13 +86,19 @@ const questionWithRelevantRequestsInfo = computed(() => {
     });
 });
 
-const quiz = ref(null);
+const localQuiz = ref(null);
+
+const currentQuiz = computed(() => {
+    return props.quiz ?? localQuiz.value;
+});
 
 async function fetchQuiz() {
     isLoading.value = true;
-    quiz.value = await api.survey.get(props.quizId);
+    localQuiz.value = await api.survey.get(props.quizId);
     isLoading.value = false;
 }
 
-onMounted(fetchQuiz);
+onMounted(() => {
+    if (isNullish(props.quiz) && isNotNullish(props.quizId)) fetchQuiz();
+});
 </script>

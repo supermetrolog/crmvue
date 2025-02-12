@@ -6,12 +6,23 @@
             :notifications="message.notifications"
         />
         <p class="messenger-chat-template-survey__header">
-            <UiButtonIcon
-                @click="showPreview"
-                small
-                label="Подробнее"
-                icon="fa-solid fa-file-lines"
-            />
+            <span class="d-flex gap-1">
+                <UiButtonIcon
+                    @click="showPreview"
+                    small
+                    label="Подробнее"
+                    icon="fa-solid fa-file-lines"
+                    :disabled="surveyIsLoading"
+                />
+                <UiButtonIcon
+                    v-if="canBeEdit"
+                    @click="editSurvey"
+                    small
+                    :disabled="surveyIsLoading"
+                    :label="editButtonLabel"
+                    icon="fa-solid fa-pen"
+                />
+            </span>
             <span class="messenger-chat-template-survey__title">Опросник заполнен!</span>
             <span class="messenger-chat-template-survey__info">
                 <span v-tippy="originalDate" class="mr-1">{{ formattedDate }},</span>
@@ -36,6 +47,9 @@ import { useDelayedLoader } from '@/composables/useDelayedLoader.js';
 import MessengerChatMessageAdditions from '@/components/Messenger/Chat/Message/Additions/MessengerChatMessageAdditions.vue';
 import UiButtonIcon from '@/components/common/UI/UiButtonIcon.vue';
 import { useAsyncPopup } from '@/composables/useAsyncPopup.js';
+import { useAuth } from '@/composables/useAuth.js';
+import { dayjsFromMoscow } from '@/utils/formatters/date.js';
+import dayjs from 'dayjs';
 
 const props = defineProps({
     message: {
@@ -114,9 +128,38 @@ async function fetchSurvey() {
 
 onMounted(fetchSurvey);
 
+// show
+
 const { show: showSurvey } = useAsyncPopup('surveyPreview');
 
 function showPreview() {
-    showSurvey({ surveyId: survey.value.id });
+    showSurvey({ survey: survey.value });
+}
+
+// edit
+
+const { currentUserIsAdmin, currentUserId } = useAuth();
+
+const surveyCreatedAtDiff = computed(() => {
+    return dayjs().diff(dayjsFromMoscow(props.message.surveys[0].created_at), 'minute');
+});
+
+const editButtonLabel = computed(() => {
+    if (currentUserIsAdmin.value) return 'Редактировать';
+
+    return `Редактировать (осталось ${15 - surveyCreatedAtDiff.value} мин.)`;
+});
+
+const canBeEdit = computed(() => {
+    return (
+        survey.value &&
+        ((survey.value.created_by_id === currentUserId.value && surveyCreatedAtDiff.value <= 15) ||
+            currentUserIsAdmin.value)
+    );
+});
+
+async function editSurvey() {
+    const updatedSurvey = await showSurvey({ survey: survey.value, editMode: true });
+    if (updatedSurvey) Object.assign(survey.value, updatedSurvey);
 }
 </script>
