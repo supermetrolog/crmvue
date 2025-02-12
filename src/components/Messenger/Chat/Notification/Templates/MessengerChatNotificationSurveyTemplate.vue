@@ -140,20 +140,27 @@ function showPreview() {
 
 const { currentUserIsAdmin, currentUserId } = useAuth();
 
-const surveyCreatedAtDiff = computed(() => {
-    return dayjs().diff(dayjsFromMoscow(props.message.surveys[0].created_at), 'minute');
+const editTimeLimit = 60 * 12;
+
+const remainingTimeInMinutes = computed(() => {
+    return (
+        editTimeLimit - dayjs().diff(dayjsFromMoscow(props.message.surveys[0].created_at), 'minute')
+    );
 });
 
 const editButtonLabel = computed(() => {
     if (currentUserIsAdmin.value) return 'Редактировать';
 
-    return `Редактировать (осталось ${15 - surveyCreatedAtDiff.value} мин.)`;
+    if (remainingTimeInMinutes.value < 60)
+        return `Редактировать (осталось ${remainingTimeInMinutes.value} мин.)`;
+
+    return `Редактировать (осталось ${Math.ceil(remainingTimeInMinutes.value / 60)} ч.)`;
 });
 
 const canBeEdit = computed(() => {
     return (
         survey.value &&
-        ((survey.value.created_by_id === currentUserId.value && surveyCreatedAtDiff.value <= 15) ||
+        ((survey.value.user_id === currentUserId.value && remainingTimeInMinutes.value > 0) ||
             currentUserIsAdmin.value)
     );
 });
