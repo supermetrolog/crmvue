@@ -16,7 +16,8 @@
                     viewed: viewed[index]
                 }"
             >
-                <span class="stepper__step-id">{{ index + 1 }}</span>
+                <i v-if="step.icon" class="mr-2 icon" :class="step.icon" />
+                <span v-else class="stepper__step-id">{{ index + 1 }}</span>
                 <span>{{ step.title }}</span>
             </a>
         </div>

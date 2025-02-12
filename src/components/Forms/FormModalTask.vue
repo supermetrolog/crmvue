@@ -11,7 +11,7 @@
         </div>
         <Stepper v-model:step="step" @complete="submit" :steps="steps" :v="v$.form" keep-alive>
             <template #1>
-                <Spinner v-if="isLoading" center />
+                <Spinner v-if="consultantsIsLoading" center />
                 <UserPicker
                     v-else
                     v-model="form.user_id"
@@ -108,8 +108,17 @@
                 </div>
             </template>
             <template #4>
-                <Spinner v-if="isLoading" center />
+                <Spinner v-if="consultantsIsLoading" center />
                 <UserPicker v-else v-model="form.observers" :users="consultantsForObservers" />
+            </template>
+            <template #5>
+                <Spinner v-if="filesIsLoading" label="Загрузка файлов.." center />
+                <FileInput
+                    v-else
+                    v-model:native="form.files"
+                    v-model:data="form.current_files"
+                    label="Файлы или фотографии к задаче"
+                />
             </template>
         </Stepper>
     </Modal>
@@ -146,6 +155,8 @@ import { useAuth } from '@/composables/useAuth.js';
 import DashboardTableTasksItem from '@/components/Dashboard/Table/TasksItem/DashboardTableTasksItem.vue';
 import { useTimeoutFn } from '@vueuse/core';
 import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
+import FileInput from '@/components/common/Forms/FileInput.vue';
+import api from '@/api/api.js';
 
 const store = useStore();
 const { getTagsOptions } = useTagsOptions();
@@ -154,19 +165,28 @@ const { currentUser } = useAuth();
 const steps = [
     {
         name: 'user_id',
-        title: 'Выбор сотрудников'
+        title: 'Выбор сотрудников',
+        icon: 'fa-solid fa-user'
     },
     {
         name: 'date',
-        title: 'Выбор даты'
+        title: 'Выбор даты',
+        icon: 'fa-solid fa-clock'
     },
     {
         name: 'message',
-        title: 'Описание задачи'
+        title: 'Описание задачи',
+        icon: 'fa-solid fa-pen'
     },
     {
         name: 'observers',
-        title: 'Наблюдатели'
+        title: 'Наблюдатели',
+        icon: 'fa-solid fa-eye'
+    },
+    {
+        name: 'files',
+        title: 'Файлы',
+        icon: 'fa-solid fa-file-circle-plus'
     }
 ];
 
@@ -253,7 +273,7 @@ const autofocusMessage = ref(false);
 
 const step = ref(0);
 const consultants = ref([]);
-const isLoading = ref(false);
+const consultantsIsLoading = ref(false);
 const hasCustomDescription = ref(false);
 const additionalContent = shallowRef({});
 
@@ -268,7 +288,9 @@ const form = ref({
     tags: [],
     user_id: null,
     status: 1,
-    observers: []
+    observers: [],
+    files: [],
+    current_files: []
 });
 
 const externalPresets = reactive({
@@ -335,14 +357,18 @@ const clearForm = () => {
         user_id: null,
         status: 1,
         tags: [],
-        observers: []
+        observers: [],
+        files: [],
+        current_files: []
     };
 };
 
 const fetchConsultants = async () => {
-    isLoading.value = true;
+    consultantsIsLoading.value = true;
+
     consultants.value = await store.dispatch('getConsultants');
-    isLoading.value = false;
+
+    consultantsIsLoading.value = false;
 };
 
 const {
@@ -363,7 +389,7 @@ onPopupShowed(() => {
 
     if (!consultants.value.length) fetchConsultants();
 
-    if (props.value)
+    if (props.value) {
         form.value = {
             message: props.value.message,
             date: {
@@ -375,8 +401,13 @@ onPopupShowed(() => {
             tags: props.value.tags ? props.value.tags.map(element => element.id) : [],
             observers: props.value.observers
                 ? props.value.observers.map(element => element.user_id)
-                : []
+                : [],
+            current_files: [],
+            files: []
         };
+
+        if (isEditing.value && props.value.files_count > 0) fetchFiles();
+    }
 
     if (props.value?.focusMessage) autofocusMessage.value = true;
 });
@@ -408,11 +439,13 @@ const formToPayload = () => {
     return {
         start: form.value.date.start,
         end: form.value.date.end,
-        user_id: form.value.user_id,
+        user_id: Number(form.value.user_id),
         message: form.value.message,
         status: form.value.status,
         tag_ids: form.value.tags,
-        observer_ids: form.value.observers
+        observer_ids: form.value.observers,
+        files: form.value.files,
+        current_files: form.value.current_files.map(element => element.id)
     };
 };
 
@@ -435,4 +468,17 @@ const isEditing = computed(() => isNotNullish(props.value?.id));
 onUnmounted(() => {
     destroyPopup();
 });
+
+// files
+
+const filesIsLoading = ref(false);
+
+async function fetchFiles() {
+    filesIsLoading.value = true;
+
+    const response = await api.task.getFiles(props.value.id);
+    if (response) form.value.current_files = response;
+
+    filesIsLoading.value = false;
+}
 </script>

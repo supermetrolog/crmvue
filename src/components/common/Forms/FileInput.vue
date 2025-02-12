@@ -14,13 +14,18 @@
                 @drop.prevent="dropHandler"
                 @dragenter.prevent="isDragEnter = true"
                 class="file-input__field"
-                :class="{ 'file-input__field--dragenter': isDragEnter }"
+                :class="{
+                    'file-input__field--dragenter': isDragEnter,
+                    'file-input__field--short': short
+                }"
             >
                 <i class="file-input__icon fa-solid fa-download" />
-                <p class="file-input__title">Загрузите файл</p>
-                <p class="file-input__description">
-                    Переместите файлы в эту зону или просто кликните для выбора файлов
-                </p>
+                <div class="file-input__helper">
+                    <p class="file-input__title">Загрузите файл</p>
+                    <p class="file-input__description">
+                        Переместите файлы в эту зону или просто кликните для выбора файлов
+                    </p>
+                </div>
             </div>
             <input
                 :id="$id('file')"
@@ -148,7 +153,8 @@ export default {
         custom: {
             type: Boolean,
             default: false
-        }
+        },
+        short: Boolean
     },
     data() {
         return {
@@ -207,9 +213,11 @@ export default {
         deleteLocalFile(index) {
             this.localFiles = this.localFiles.filter((_, idx) => idx != index);
         },
-        getFileType(meta) {
+        getFileTypeByName(meta) {
             let extension = meta.split('.').slice(-1)[0];
-
+            return this.getFileTypeByExtension(extension);
+        },
+        getFileTypeByExtension(extension) {
             return (
                 this.allowedTypeList.find(element => element.extensions.includes(extension)) ||
                 this.unknownFileType
@@ -229,7 +237,7 @@ export default {
         setProperties(files) {
             files.forEach(file => {
                 file.created_at = 'Только что';
-                file.fileType = this.getFileType(file.name);
+                file.fileType = this.getFileTypeByName(file.name);
 
                 if (file.type.match('image')) {
                     if (file.size >= SIZE_TO_COMPRESSION) {
@@ -252,16 +260,23 @@ export default {
             });
         },
         createFileObject(element) {
+            if (element.extension) {
+                return {
+                    ...element,
+                    fileType: this.getFileTypeByExtension(element.extension)
+                };
+            }
+
             if (element.type) {
                 return {
                     ...element,
-                    fileType: this.getFileType(element.name, true)
+                    fileType: this.getFileTypeByName(element.name, true)
                 };
             }
 
             return {
                 src: (this.apiUrl || this.$url.api.objects()) + element,
-                fileType: this.getFileType(element)
+                fileType: this.getFileTypeByName(element)
             };
         },
         setExistFiles() {
@@ -285,6 +300,10 @@ export default {
             }
 
             this.setProperties(files);
+        },
+        clear() {
+            this.localFiles = [];
+            this.$emit('update:native', this.localFiles);
         }
     },
     created() {

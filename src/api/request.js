@@ -31,7 +31,7 @@ export default {
             'regions.info,' +
                 'directions,' +
                 'districts,' +
-                'company,company.contacts_count,company.objects_count,company.requests_count,' +
+                'company,company.contacts_count,company.active_contacts_count,company.objects_count,company.requests_count,' +
                 'consultant.userProfile,' +
                 'timeline_progress,' +
                 'gateTypes,' +

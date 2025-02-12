@@ -11,6 +11,7 @@
                 @read="readTask"
                 @added-comment="onAddedComment"
                 @deleted-comment="onDeletedComment"
+                @files-count-changed="onChangedFilesCount"
                 class="messenger-task-previewer"
                 :task="currentTask"
                 :draggable="userCanDrag"
@@ -90,6 +91,10 @@ function onAddedComment(comment) {
 function onDeletedComment(commentId) {
     currentTask.value.comments_count--;
     spliceById(currentTask.value.last_comments, commentId);
+}
+
+function onChangedFilesCount(count) {
+    currentTask.value.files_count = count;
 }
 
 const userCanEdit = computed(() => {

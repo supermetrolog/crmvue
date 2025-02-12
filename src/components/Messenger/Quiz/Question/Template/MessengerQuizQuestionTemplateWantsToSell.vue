@@ -80,7 +80,25 @@ function validate() {
     return true;
 }
 
-defineExpose({ getForm, validate });
+function setForm(form) {
+    if (form.main?.value && form.tab?.length) {
+        const mustBeEditedAnswer = form.tab.find(answer =>
+            answer.effects.has(quizEffectKinds.COMPANY_WANTS_TO_SELL_MUST_BE_EDITED)
+        );
+
+        if (mustBeEditedAnswer?.value) conditionModelValue.value = 1;
+
+        const alreadyDescribedAnswer = form.tab.find(answer =>
+            answer.effects.has(quizEffectKinds.COMPANY_WANTS_TO_SELL_ALREADY_DESCRIBED)
+        );
+
+        if (alreadyDescribedAnswer?.value) conditionModelValue.value = 0;
+    }
+
+    templateRef.value.setForm(form);
+}
+
+defineExpose({ getForm, validate, setForm });
 
 // injection
 

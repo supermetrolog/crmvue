@@ -46,5 +46,9 @@ function validate() {
     return templateRef.value.validate();
 }
 
-defineExpose({ getForm, validate });
+function setForm(form) {
+    templateRef.value.setForm(form);
+}
+
+defineExpose({ getForm, validate, setForm });
 </script>

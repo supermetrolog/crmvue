@@ -8,6 +8,7 @@
     >
         <template #description="{ mainAnswer, toggleDisabled, disabled }">
             <MessengerQuizFormRequestsNoRelevantPicker
+                ref="pickerElement"
                 v-model="requestsForm"
                 @set-as-disabled="() => (disabled ? null : toggleDisabled())"
                 :company-id="companyId"
@@ -23,6 +24,8 @@ import MessengerQuizQuestionTemplateDefault from '@/components/Messenger/Quiz/Qu
 import MessengerQuizFormRequestsNoRelevantPicker from '@/components/Messenger/Quiz/Form/MessengerQuizFormRequestsNoRelevantPicker.vue';
 import { useStore } from 'vuex';
 import { messenger } from '@/const/messenger.js';
+import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
+import { isArray } from '@/utils/helpers/array/isArray.js';
 
 defineProps({
     question: {
@@ -66,8 +69,6 @@ function getForm() {
         if (answer) answer.value = toRaw(requestsForm);
     }
 
-    console.log(form);
-
     return form;
 }
 
@@ -75,5 +76,23 @@ function validate() {
     return templateRef.value.validate();
 }
 
-defineExpose({ getForm, validate });
+const pickerElement = useTemplateRef('pickerElement');
+
+function setForm(form) {
+    const requestsAnswer = form['text-answer'].find(answer =>
+        answer.effects.has(quizEffectKinds.REQUESTS_NO_LONGER_RELEVANT)
+    );
+
+    if (
+        requestsAnswer &&
+        isNotNullish(requestsAnswer.value) &&
+        (isArray(requestsAnswer.value?.actual) || isArray(requestsAnswer.value?.archived))
+    ) {
+        pickerElement.value.setValue(requestsAnswer.value);
+    }
+
+    templateRef.value.setForm(form);
+}
+
+defineExpose({ getForm, validate, setForm });
 </script>

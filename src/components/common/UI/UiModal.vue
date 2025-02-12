@@ -75,7 +75,8 @@ const props = defineProps({
     closeOnPressEsc: {
         type: Boolean,
         default: true
-    }
+    },
+    customClose: Boolean
 });
 
 const minHeightSize = computed(() => props.minHeight + 'px');
@@ -83,8 +84,12 @@ const minHeightSize = computed(() => props.minHeight + 'px');
 // close logic
 
 function close() {
-    visibleModel.value = false;
-    emit('closed');
+    if (props.customClose) {
+        emit('close');
+    } else {
+        visibleModel.value = false;
+        emit('closed');
+    }
 }
 
 const canBeClosed = ref(true);

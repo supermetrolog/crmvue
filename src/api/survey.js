@@ -26,5 +26,9 @@ export default {
     async update(id, payload) {
         const response = await axios.put(`${URL}/${id}`, payload);
         return responseToData(response);
+    },
+    async updateWithAnswers(id, payload) {
+        const response = await axios.put(`${URL}/${id}/with-survey-question-answer`, payload);
+        return responseToData(response);
     }
 };

@@ -83,4 +83,22 @@ onMounted(async () => {
     if (!requests.value.length) emit('set-as-disabled');
     modelValue.value.archived = requests.value.map(request => request.id);
 });
+
+function setValue(value) {
+    selectedRequestsSet.value.clear();
+
+    if (value.archived?.length) {
+        modelValue.value.archived = [...value.archived];
+    } else {
+        modelValue.value.archived = [];
+    }
+
+    if (value.actual?.length) {
+        value.actual.forEach(id => {
+            selectRequest(id);
+        });
+    }
+}
+
+defineExpose({ setValue });
 </script>

@@ -67,7 +67,9 @@ const historyTextByType = {
     restored: 'Задача восстановлена',
     status_changed: 'Статус задачи изменен',
     assigned: 'Изменен исполнитель',
-    observed: 'Просмотрел задачу'
+    observed: 'Просмотрел задачу',
+    file_created: 'Добавил новый файл',
+    file_deleted: 'Удалил файл'
 };
 
 export const taskOptions = {

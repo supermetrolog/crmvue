@@ -17,6 +17,7 @@ import MessengerQuizFormCompanyPicker from '@/components/Messenger/Quiz/Form/Mes
 import { ref, useTemplateRef } from 'vue';
 import { quizEffectKinds } from '@/const/quiz.js';
 import MessengerQuizQuestionTemplateDefault from '@/components/Messenger/Quiz/Question/Template/MessengerQuizQuestionTemplateDefault.vue';
+import { isArray } from '@/utils/helpers/array/isArray.js';
 
 defineProps({
     question: {
@@ -64,5 +65,21 @@ function validate() {
     return templateRef.value.validate();
 }
 
-defineExpose({ getForm, validate });
+function setForm(form) {
+    const companiesAnswer = form['text-answer'].find(answer =>
+        answer.effects.has(quizEffectKinds.COMPANIES_ON_OBJECT_IDENTIFIED)
+    );
+
+    if (companiesAnswer && isArray(companiesAnswer.value)) {
+        companies.value = companiesAnswer.value.map(companyInfo => ({
+            id: companyInfo.company_id,
+            area: companyInfo.area,
+            name: `Компания #${companyInfo.company_id}`
+        }));
+    }
+
+    templateRef.value.setForm(form);
+}
+
+defineExpose({ getForm, validate, setForm });
 </script>

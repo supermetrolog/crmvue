@@ -36,5 +36,11 @@ function validate() {
     return questionEls.value.every(element => element.validate());
 }
 
-defineExpose({ getForm, validate });
+function setForm(form) {
+    form.forEach((question, key) => {
+        questionEls.value[key].setForm(question);
+    });
+}
+
+defineExpose({ getForm, validate, setForm });
 </script>

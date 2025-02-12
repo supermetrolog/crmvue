@@ -18,7 +18,7 @@ export default {
         return responseToData(response);
     },
     async update(id, payload) {
-        const response = await axios.put(`${URL}/${id}`, payload);
+        const response = await axios.putForm(`${URL}/${id}`, payload);
         return responseToData(response);
     }
 };
