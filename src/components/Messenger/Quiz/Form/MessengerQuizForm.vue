@@ -1,12 +1,17 @@
 <template>
     <div class="messenger-quiz__content">
-        <MessengerQuizFormDisabledWindow
-            v-if="disabled"
-            @suggest-contact="$emit('suggest-create-contact')"
-        />
-        <Loader v-if="isLoading" />
+        <Spinner v-if="isLoading" small label="Загрузка вопросов.." />
         <template v-else>
-            <template v-if="!disabled">
+            <MessengerQuizFormDisabledWindow
+                v-if="disabled"
+                @suggest-contact="$emit('suggest-create-contact')"
+            />
+            <MessengerQuizFormRemainingWindow
+                v-else-if="!canBeCreated"
+                @edit="editSurvey"
+                :last-survey="lastSurvey"
+            />
+            <template v-else>
                 <MessengerQuizQuestionCall
                     v-for="contact in selectedContacts"
                     :key="contact.entity.id"
@@ -42,7 +47,6 @@
 <script setup>
 import { useStore } from 'vuex';
 import { computed, onMounted, ref, useTemplateRef, watch } from 'vue';
-import Loader from '@/components/common/Loader.vue';
 import { quizQuestionsGroups } from '@/const/quiz.js';
 import { messenger } from '@/const/messenger.js';
 import MessengerQuizQuestionCall from '@/components/Messenger/Quiz/Question/MessengerQuizQuestionCall.vue';
@@ -52,6 +56,9 @@ import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
 import { isNullish } from '@/utils/helpers/common/isNullish.js';
 import MessengerQuizFormContactUnavailableModal from '@/components/Messenger/Quiz/Form/MessengerQuizFormContactUnavailableModal.vue';
 import MessengerQuizFormTemplate from '@/components/Messenger/Quiz/Form/MessengerQuizFormTemplate.vue';
+import MessengerQuizFormRemainingWindow from '@/components/Messenger/Quiz/Form/MessengerQuizFormRemainingWindow.vue';
+import { useAsyncPopup } from '@/composables/useAsyncPopup.js';
+import Spinner from '@/components/common/Spinner.vue';
 
 const contactModel = defineModel('contact');
 const selectedContacts = defineModel('selected-contacts');
@@ -76,7 +83,9 @@ const props = defineProps({
     canBeDisabled: {
         type: Boolean,
         default: true
-    }
+    },
+    canBeCreated: Boolean,
+    lastSurvey: Object
 });
 
 const store = useStore();
@@ -209,4 +218,12 @@ const formIsDisabled = computed(() => {
 });
 
 const selectedContactsEls = useTemplateRef('selectedContactsEls');
+
+// edit
+
+const { show: showSurvey } = useAsyncPopup('surveyPreview');
+
+function editSurvey() {
+    showSurvey({ surveyId: props.lastSurvey.id, editMode: true });
+}
 </script>

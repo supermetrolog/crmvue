@@ -31,13 +31,21 @@
                     </template>
                 </Tippy>
                 <DashboardChip class="ml-auto dashboard-bg-gray-l">
-                    {{ createdAt }}
+                    <span>{{ createdAt }}</span>
+                    <span
+                        v-if="quiz.created_at !== quiz.updated_at"
+                        v-tippy="`Редактирован - ${updatedAt}`"
+                        class="fs-1 ml-1 text-grey"
+                    >
+                        (ред.)
+                    </span>
                 </DashboardChip>
                 <UiButtonIcon
+                    v-if="editable && canBeEdit"
                     @click="$emit('edit')"
                     small
                     icon="fa-solid fa-pen"
-                    label="Редактировать"
+                    :label="editButtonLabel"
                     class="dashboard-bg-gray-l"
                 />
             </div>
@@ -46,20 +54,25 @@
 </template>
 <script setup>
 import DashboardCard from '@/components/Dashboard/Card/DashboardCard.vue';
-import { computed } from 'vue';
-import { toDateFormat } from '@/utils/formatters/date.js';
+import { computed, toRef } from 'vue';
+import { toBeautifulDateFormat } from '@/utils/formatters/date.js';
 import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
 import { quizQuestionsGroupsLabel } from '@/const/quiz.js';
 import { Tippy } from 'vue-tippy';
 import ContactCard from '@/components/Contact/Card/ContactCard.vue';
 import Avatar from '@/components/common/Avatar.vue';
 import UiButtonIcon from '@/components/common/UI/UiButtonIcon.vue';
+import { useSurveyEditing } from '@/components/Survey/useSurveyEditing.js';
 
 defineEmits(['edit']);
 const props = defineProps({
     quiz: {
         type: Object,
         required: true
+    },
+    editable: {
+        type: Boolean,
+        default: true
     }
 });
 
@@ -71,5 +84,13 @@ const groupName = computed(() => {
     return 'Без группы';
 });
 
-const createdAt = computed(() => toDateFormat(props.quiz.created_at));
+const createdAt = computed(() => toBeautifulDateFormat(props.quiz.created_at));
+const updatedAt = computed(() => toBeautifulDateFormat(props.quiz.updated_at));
+
+const { canBeEdit, remainingTimeLabel } = useSurveyEditing(toRef(props, 'quiz'));
+
+const editButtonLabel = computed(() => {
+    if (remainingTimeLabel.value) return `Редактировать (осталось ${remainingTimeLabel.value})`;
+    return 'Редактировать';
+});
 </script>
