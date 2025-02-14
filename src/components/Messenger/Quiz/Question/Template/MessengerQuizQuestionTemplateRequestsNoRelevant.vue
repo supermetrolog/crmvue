@@ -62,7 +62,7 @@ function getForm() {
 
     const mainAnswer = form.find(answer => answer.type === 'main');
 
-    if (mainAnswer) {
+    if (mainAnswer && isNotNullish(mainAnswer.value)) {
         const answer = form.find(answer =>
             answer.effects.has(quizEffectKinds.REQUESTS_NO_LONGER_RELEVANT)
         );
