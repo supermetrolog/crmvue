@@ -20,6 +20,9 @@
         <template #chip="{ option, removeByIndex, index }">
             <ConsultantPickerOptionChip @remove="removeByIndex(index)" :option="option" />
         </template>
+        <template v-if="$slots.after" #after>
+            <slot name="after" />
+        </template>
     </MultiSelect>
 </template>
 <script setup>

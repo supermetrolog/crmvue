@@ -15,10 +15,17 @@ export function useProductRangesOptions() {
         () => store.dispatch('FETCH_COMPANY_PRODUCT_RANGE_LIST')
     );
 
+    async function getFlattedProductRangesOptions() {
+        if (!productRangesOptions.value.length) await getProductRangeOptions();
+
+        return productRangesOptions.value.map(item => item.product);
+    }
+
     return {
         productRangesOptions,
         refreshProductRangesOptions,
         getProductRangeOptions,
+        getFlattedProductRangesOptions,
         isFetching
     };
 }
