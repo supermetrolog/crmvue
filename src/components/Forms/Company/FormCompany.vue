@@ -223,6 +223,7 @@
                         <SearchableOptionsPicker
                             v-model="form.activity_group_ids"
                             :options="ActivityGroupList"
+                            :v="v$.form.activity_group_ids"
                             :transform="Number"
                             :multiple-label="activityGroupMultipleLabelFn"
                             title="Группа деятельности"
@@ -236,6 +237,7 @@
                         <SearchableOptionsPicker
                             v-model="form.activity_profile_ids"
                             :options="ActivityProfileList"
+                            :v="v$.form.activity_profile_ids"
                             :transform="Number"
                             :multiple-label="activityProfileMultipleLabelFn"
                             title="Профиль деятельности"
