@@ -52,12 +52,12 @@
                         </CompanyBoxRow>
                         <CompanyBoxRow label="Группа деятельности">
                             <span v-if="hasActivityGroup">
-                                {{ activityGroup }}
+                                {{ activityGroups }}
                             </span>
                         </CompanyBoxRow>
                         <CompanyBoxRow label="Профиль деятельности">
                             <span v-if="hasActivityProfile">
-                                {{ activityProfile }}
+                                {{ activityProfiles }}
                             </span>
                         </CompanyBoxRow>
                         <CompanyBoxRow label="Номенклатура товара">
@@ -296,15 +296,19 @@ const websites = computed(() => {
 const createdAt = computed(() => toDateFormat(props.company.created_at, 'DD.MM.YYYY'));
 const updatedAt = computed(() => toDateFormat(props.company.updated_at, 'DD.MM.YYYY'));
 
-const hasActivityGroup = computed(() => isNotNullish(props.company.activityGroup));
-const hasActivityProfile = computed(() => isNotNullish(props.company.activityProfile));
+const hasActivityGroup = computed(() => isNotNullish(props.company.activity_groups?.length));
+const hasActivityProfile = computed(() => isNotNullish(props.company.activity_profiles?.length));
 
-const activityGroup = computed(() => {
-    return ActivityGroupList[props.company.activityGroup].label;
+const activityGroups = computed(() => {
+    return props.company.activity_groups
+        .map(el => ActivityGroupList[el.activity_group_id].label)
+        .join(', ');
 });
 
-const activityProfile = computed(() => {
-    return ActivityProfileList[props.company.activityProfile].label;
+const activityProfiles = computed(() => {
+    return props.company.activity_profiles
+        .map(el => ActivityProfileList[el.activity_profile_id].label)
+        .join(', ');
 });
 
 const companyName = computed(() => getCompanyName(props.company));

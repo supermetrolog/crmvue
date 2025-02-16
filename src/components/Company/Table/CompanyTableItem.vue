@@ -25,7 +25,7 @@
                         {{ company.companyGroup.full_name }}
                     </p>
                     <span
-                        v-if="company.activityProfile !== null"
+                        v-if="company.activity_profiles?.length"
                         class="company-table-item__profile"
                     >
                         {{ activityProfile }}
@@ -148,16 +148,26 @@ const props = defineProps({
 });
 
 const activeRequests = computed(() => props.company.requests.filter(({ status }) => status === 1));
+
 const archiveRequests = computed(() => props.company.requests.filter(({ status }) => status === 2));
+
 const isThereDropdown = computed(
     () =>
         activeRequests.value.length || archiveRequests.value.length || props.company.objects.length
 );
-const activityProfile = computed(() => ActivityProfileList[props.company.activityProfile].label);
+
+const activityProfile = computed(() =>
+    props.company.activity_profiles
+        .map(el => ActivityProfileList[el.activity_profile_id].label)
+        .join(', ')
+);
+
 const categories = computed(() =>
     props.company.categories.map(({ category }) => CompanyCategories[category])
 );
+
 const isPassive = computed(() => props.company.status === 0);
+
 const isWithoutActiveContacts = computed(() => props.company.active_contacts_count === 0);
 
 const passiveWhyComment = computed(() => {

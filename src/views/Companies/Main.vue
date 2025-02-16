@@ -139,6 +139,19 @@ const gettersForFilters = {
     status: value => {
         if (!value) return null;
         return ActivePassive[value];
+    },
+    productRanges: value => {
+        return value.join(', ');
+    },
+    activity_group_ids: value => {
+        if (isArray(value) && !isEmptyArray(value))
+            return value.map(group => companyOptions.activityGroup[group]).join(', ');
+        return null;
+    },
+    activity_profile_ids: value => {
+        if (isArray(value) && !isEmptyArray(value))
+            return value.map(profile => companyOptions.activityProfile[profile]).join(', ');
+        return null;
     }
 };
 

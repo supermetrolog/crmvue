@@ -98,16 +98,16 @@
                 Сайт: не заполнен
             </p>
             <ul class="messenger-panel-company__options">
-                <li v-if="activityGroup" class="messenger-panel-company__option">
-                    <span>- {{ activityGroup }}</span>
+                <li v-if="activityGroups" class="messenger-panel-company__option">
+                    <span>- {{ activityGroups }}</span>
                 </li>
                 <li v-else class="messenger-panel-company__option">
                     <span class="messenger-warning messenger-warning--animated"
                         >- Группа деятельности не заполнена</span
                     >
                 </li>
-                <li v-if="activityProfile" class="messenger-panel-company__option">
-                    <span>- {{ activityProfile }}</span>
+                <li v-if="activityProfiles" class="messenger-panel-company__option">
+                    <span>- {{ activityProfiles }}</span>
                 </li>
                 <li v-else class="messenger-panel-company__option">
                     <span class="messenger-warning messenger-warning--animated"
@@ -199,12 +199,19 @@ const website = computed(() => {
         ? props.company.generalContact.websites[0].website
         : null;
 });
-const activityGroup = computed(() => {
-    return companyOptions.activityGroup[props.company.activityGroup];
+
+const activityGroups = computed(() => {
+    return props.company.activity_groups
+        .map(el => companyOptions.activityGroup[el.activity_group_id])
+        .join(', ');
 });
-const activityProfile = computed(() => {
-    return companyOptions.activityProfile[props.company.activityProfile];
+
+const activityProfiles = computed(() => {
+    return props.company.activity_profiles
+        .map(el => companyOptions.activityProfile[el.activity_profile_id])
+        .join(', ');
 });
+
 const productRanges = computed(() => {
     return props.company.productRanges.map(element => ucFirst(element.product)).join(', ');
 });

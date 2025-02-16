@@ -12,6 +12,7 @@
                 :text="option.label"
                 :disabled="disabled"
                 :property="property"
+                show-checkbox
             />
         </div>
         <ValidationMessage v-if="hasValidationError" :message="v.$errors[0].$message" />

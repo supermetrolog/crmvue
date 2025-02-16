@@ -51,21 +51,31 @@
                         <ConsultantPicker
                             v-model="form.agent_id"
                             :options="getConsultantsOptions"
-                            class="col-12 col-md-3"
+                            class="col-12 col-md-4"
                         />
                         <MultiSelect
                             v-model="form.deal_type"
                             label="Тип сделки"
-                            class="col-md-3 col-12 mb-2"
+                            class="col-md-4 col-12 mb-2"
                             :options="DealTypeList"
                             placeholder="Выберите тип.."
                         />
-                        <hr class="col-12" />
+                        <Input
+                            v-model="form.rangeMinElectricity"
+                            placeholder="не менее"
+                            maska="##########"
+                            label="Электричество"
+                            class="col-md-4 col-12"
+                            unit="кВт"
+                            type="number"
+                            :v="v$.form.rangeMinElectricity"
+                            reactive
+                        />
                         <DoubleInput
                             v-model:first="form.rangeMinArea"
                             v-model:second="form.rangeMaxArea"
                             label="S пола"
-                            class="col-md-3 col-12"
+                            class="col-md-4 col-12"
                             unit="м<sup>2</sup>"
                             type="number"
                             :validators="formAreaValidators"
@@ -75,7 +85,7 @@
                             v-model:first="form.rangeMinPricePerFloor"
                             v-model:second="form.rangeMaxPricePerFloor"
                             label="Цена (продажи, аренды, о-х)"
-                            class="col-md-3 col-12"
+                            class="col-md-4 col-12"
                             unit="₽"
                             type="number"
                             reactive
@@ -85,22 +95,11 @@
                             v-model:first="form.rangeMinCeilingHeight"
                             v-model:second="form.rangeMaxCeilingHeight"
                             label="Высота потолков"
-                            class="col-md-3 col-12"
+                            class="col-md-4 col-12"
                             unit="м"
                             type="number"
                             reactive
                             :validators="formCeilingHeightValidators"
-                        />
-                        <Input
-                            v-model="form.rangeMinElectricity"
-                            placeholder="не менее"
-                            maska="##########"
-                            label="Электричество"
-                            class="col-md-3 col-12"
-                            unit="кВт"
-                            type="number"
-                            :v="v$.form.rangeMinElectricity"
-                            reactive
                         />
                         <hr class="col-12" />
                         <MultiSelect

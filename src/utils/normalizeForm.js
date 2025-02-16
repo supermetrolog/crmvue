@@ -1,5 +1,6 @@
 import { isNullish } from '@/utils/helpers/common/isNullish.js';
 import { isEmptyArray } from '@/utils/helpers/array/isEmptyArray.js';
+import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
 
 export function normalizeDataForCompanyForm(data, company) {
     data.contacts = company.generalContact;
@@ -10,6 +11,20 @@ export function normalizeDataForCompanyForm(data, company) {
             phones: [],
             websites: []
         };
+
+    if (company.productRanges?.length) {
+        data.productRanges = company.productRanges.map(el => ({
+            product: el.product.toLowerCase()
+        }));
+    }
+
+    if (isNotNullish(company.activity_profiles)) {
+        data.activity_profile_ids = company.activity_profiles.map(el => el.activity_profile_id);
+    }
+
+    if (isNotNullish(company.activity_groups)) {
+        data.activity_group_ids = company.activity_groups.map(el => el.activity_group_id);
+    }
 
     return data;
 }
