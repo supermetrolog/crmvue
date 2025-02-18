@@ -42,6 +42,7 @@
                     :toggle-disabled="toggleDisabled"
                     :toggle-hidden="toggleHidden"
                     :hidden="hiddenByTemplate"
+                    :set-main-answer="setMainAnswer"
                     :set-completed="setCustomCompleted"
                 />
                 <div
@@ -76,6 +77,7 @@
                 :disabled="isDisabled"
                 :main-answer="form.main"
                 :toggle-disabled="toggleDisabled"
+                :set-main-answer="setMainAnswer"
             >
                 <template v-if="question.answers?.['text-answer'] && !isDisabled">
                     <div v-for="answer in texts" :key="answer.id" class="position-relative">
@@ -354,6 +356,10 @@ const isCustomCompleted = ref(false);
 
 function setCustomCompleted(value) {
     isCustomCompleted.value = value;
+}
+
+function setMainAnswer() {
+    form.main = false;
 }
 
 // validation
