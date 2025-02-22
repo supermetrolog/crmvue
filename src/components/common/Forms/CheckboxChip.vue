@@ -8,7 +8,8 @@
                 disabled: isDisabled,
                 'checkbox-chip__label--danger': danger,
                 'checkbox-chip__label--icon': !text && icon,
-                invalid: hasValidationError && !disabled
+                invalid: hasValidationError && !disabled,
+                'checkbox-chip__label--show-checkbox': showCheckbox
             }"
         >
             <input
@@ -20,7 +21,9 @@
                 :true-value="1"
                 :false-value="disabledValue"
                 type="checkbox"
+                class="checkbox-chip__input"
             />
+            <input v-show="showCheckbox" :disabled="disabled" :checked="isActive" type="checkbox" />
             {{ text }}
             <i v-if="icon" v-tippy="iconLabel" @click="onIconClick" :class="icon"></i>
         </label>
@@ -39,18 +42,12 @@ const props = defineProps({
         type: [String, Number, null],
         default: null
     },
-    required: {
-        type: Boolean,
-        default: false
-    },
+    required: Boolean,
     name: {
         type: String,
         default: null
     },
-    disabled: {
-        type: Boolean,
-        default: false
-    },
+    disabled: Boolean,
     value: {
         type: [String, Number, Boolean],
         default: false
@@ -59,10 +56,7 @@ const props = defineProps({
         type: String,
         default: null
     },
-    danger: {
-        type: Boolean,
-        default: false
-    },
+    danger: Boolean,
     v: {
         type: Object,
         default: null
@@ -79,18 +73,13 @@ const props = defineProps({
         type: [Number, String],
         default: 0
     },
-    reactive: {
-        type: Boolean,
-        default: false
-    },
+    reactive: Boolean,
     iconLabel: {
         type: String,
         default: null
     },
-    handledIcon: {
-        type: Boolean,
-        default: false
-    }
+    handledIcon: Boolean,
+    showCheckbox: Boolean
 });
 
 const { hasValidationError, validate } = useFormControlValidation(toRef(props, 'v'), modelValue, {

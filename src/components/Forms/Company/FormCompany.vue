@@ -219,7 +219,37 @@
                     </FormGroup>
                 </Tab>
                 <Tab required name="Деятельность">
-                    <div class="row">
+                    <FormGroup>
+                        <SearchableOptionsPicker
+                            v-model="form.activity_group_ids"
+                            :options="ActivityGroupList"
+                            :v="v$.form.activity_group_ids"
+                            :transform="Number"
+                            :multiple-label="activityGroupMultipleLabelFn"
+                            title="Группа деятельности"
+                            label="Группа дея-ти (new)"
+                            class="col-12 col-md-6"
+                            mode="multiple"
+                            multiple-property="label"
+                            multiple
+                            required
+                        />
+                        <SearchableOptionsPicker
+                            v-model="form.activity_profile_ids"
+                            :options="ActivityProfileList"
+                            :v="v$.form.activity_profile_ids"
+                            :transform="Number"
+                            :multiple-label="activityProfileMultipleLabelFn"
+                            title="Профиль деятельности"
+                            label="Профиль деятельности (new)"
+                            class="col-12 col-md-6"
+                            mode="multiple"
+                            multiple-property="label"
+                            multiple
+                            required
+                        />
+                    </FormGroup>
+                    <FormGroup>
                         <MultiSelect
                             v-model="form.activityGroup"
                             :v="v$.form.activityGroup"
@@ -240,6 +270,8 @@
                         />
                         <MultiSelect
                             v-model="form.productRanges"
+                            option-label-prop="product"
+                            option-value-prop="product"
                             mode="tags"
                             :close-on-select="false"
                             :loading="false"
@@ -249,9 +281,10 @@
                             label="Номенклатура товара"
                             class="col-12 mt-2"
                             :options="getProductRangeOptions"
-                            name="product"
+                            object
                         />
-                    </div>
+                    </FormGroup>
+                    <FormDivider />
                     <div class="row mt-2">
                         <Textarea v-model="form.description" label="Описание" class="col-12" />
                     </div>
@@ -434,6 +467,8 @@ import CheckboxOptions from '@/components/common/Forms/CheckboxOptions.vue';
 import { useValidationNotify } from '@/composables/useValidationNotify.js';
 import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
 import FormDivider from '@/components/common/Forms/FormDivider.vue';
+import SearchableOptionsPicker from '@/components/common/Forms/SearchableOptionsPicker.vue';
+import plural from 'plural-ru';
 
 const emit = defineEmits(['updated', 'created', 'close']);
 const props = defineProps({
@@ -488,7 +523,10 @@ const { form } = useFormData(
         passive_why: null,
         passive_why_comment: null,
         files: [],
-        new_files: []
+        new_files: [],
+
+        activity_group_ids: [],
+        activity_profile_ids: []
     }),
     props.formData
 );
@@ -568,5 +606,20 @@ const getAddress = async query => {
 
 if (props.formData) {
     normalizeDataForCompanyForm(form, props.formData);
+}
+
+// options
+
+function activityProfileMultipleLabelFn(elements) {
+    return plural(
+        elements.length,
+        'Выбран %d профиль',
+        'Выбраны %d профиля',
+        'Выбрано %d профилей'
+    );
+}
+
+function activityGroupMultipleLabelFn(elements) {
+    return plural(elements.length, 'Выбрана %d группа', 'Выбрано %d группы', 'Выбрано %d групп');
 }
 </script>

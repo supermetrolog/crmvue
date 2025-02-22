@@ -22,8 +22,12 @@
         <UiChip v-for="category in categories" :key="category.id" color="dark">
             {{ category.label }}
         </UiChip>
-        <UiChip color="dark">{{ activityGroup }}</UiChip>
-        <UiChip color="dark">{{ activityProfile }}</UiChip>
+        <UiChip v-for="group in activityGroups" :key="group.id" color="dark">
+            {{ group.label }}
+        </UiChip>
+        <UiChip v-for="profile in activityProfiles" :key="profile.id" color="dark">
+            {{ profile.label }}
+        </UiChip>
         <UiChip v-for="productRange in productRanges" :key="productRange.id" color="dark">
             {{ productRange.label }}
         </UiChip>
@@ -62,8 +66,18 @@ const categories = computed(() => {
     }));
 });
 
-const activityGroup = computed(() => ActivityGroupList[props.company.activityGroup].label);
-const activityProfile = computed(() => ActivityProfileList[props.company.activityProfile].label);
+const activityGroups = computed(() =>
+    props.company.activity_groups.map(el => ({
+        id: el.id,
+        label: ActivityGroupList[el.activity_group_id].label
+    }))
+);
+const activityProfiles = computed(() =>
+    props.company.activity_profiles.map(el => ({
+        id: el.id,
+        label: ActivityProfileList[el.activity_profile_id].label
+    }))
+);
 
 const productRanges = computed(() => {
     return props.company.productRanges.map((range, index) => ({

@@ -113,6 +113,12 @@ export const validationRulesForCompany = {
             'Заполните данные физ.лица для обращения',
             customRequiredIndividualFullName
         )
+    },
+    activity_group_ids: {
+        required: helpers.withMessage('Выберите группу деятельности', required)
+    },
+    activity_profile_ids: {
+        required: helpers.withMessage('Выберите профиль деятельности', required)
     }
 };
 

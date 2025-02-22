@@ -1,5 +1,5 @@
 <template>
-    <div class="form__control" :class="{ 'form__control--disabled': disabled }">
+    <div class="form__control">
         <label for="" :class="{ required: required }">
             <span v-if="label" class="form__label">
                 {{ label }}
@@ -8,6 +8,8 @@
                 ref="multiselect"
                 v-model="field"
                 @change="onChange($event)"
+                :value-prop="optionValueProp"
+                :label="optionLabelProp"
                 class="form__multiselect"
                 :class="[validationClass, extraClasses, { filled: hasValue }]"
                 :placeholder="placeholder"
@@ -55,8 +57,13 @@
                     >
                         <div class="multiselect-tag">
                             <span>
-                                <slot name="tag" :option="option" :disabled="disabled">
-                                    {{ option.label }}
+                                <slot
+                                    name="tag"
+                                    :option="option"
+                                    :disabled="disabled"
+                                    :value-prop="optionLabelProp"
+                                >
+                                    {{ option[optionLabelProp] }}
                                 </slot>
                             </span>
                             <i
@@ -71,7 +78,14 @@
             </Multiselect>
         </label>
         <ValidationMessage v-if="hasValidationError" :message="v.$errors[0].$message" />
-        <div v-if="multiple && field?.length && localeOptions?.length" class="form__chips mt-2">
+        <div v-if="$slots.after" class="mt-2">
+            <slot name="after" />
+        </div>
+        <div
+            v-if="multiple && field?.length && localeOptionsLength"
+            class="form__chips mt-2"
+            :class="{ disabled: disabled }"
+        >
             <div
                 v-for="(element, index) in selectedOptions"
                 :key="multipleProperty ? element.value : element"
@@ -136,22 +150,10 @@ const props = defineProps({
         type: Boolean,
         default: true
     },
-    clearOnSelect: {
-        type: Boolean,
-        default: false
-    },
-    searchable: {
-        type: Boolean,
-        default: false
-    },
-    createTag: {
-        type: Boolean,
-        default: false
-    },
-    canDeselect: {
-        type: Boolean,
-        default: false
-    },
+    clearOnSelect: Boolean,
+    searchable: Boolean,
+    createTag: Boolean,
+    canDeselect: Boolean,
     filterResults: {
         type: Boolean,
         default: true
@@ -172,22 +174,13 @@ const props = defineProps({
         type: String,
         default: ''
     },
-    loading: {
-        type: Boolean,
-        default: false
-    },
+    loading: Boolean,
     name: {
         type: String,
         default: null
     },
-    hideSelected: {
-        type: Boolean,
-        default: false
-    },
-    groups: {
-        type: Boolean,
-        default: false
-    },
+    hideSelected: Boolean,
+    groups: Boolean,
     multipleLabel: {
         type: Function,
         default: n => {
@@ -199,10 +192,7 @@ const props = defineProps({
             );
         }
     },
-    multiple: {
-        type: Boolean,
-        default: false
-    },
+    multiple: Boolean,
     multipleProperty: {
         type: String,
         default: undefined
@@ -219,27 +209,34 @@ const props = defineProps({
         type: [Boolean, Number],
         default: false
     },
-    required: {
-        type: Boolean,
-        default: false
-    },
+    required: Boolean,
     placement: {
         type: String,
         default: 'bottom'
     },
-    object: {
-        type: Boolean,
-        default: false
-    },
+    object: Boolean,
     appendToBody: {
         type: Boolean,
         default: true
+    },
+    optionLabelProp: {
+        type: String,
+        default: 'label'
+    },
+    optionValueProp: {
+        type: String,
+        default: 'value'
     }
 });
 
 const modelValue = defineModel();
 const field = ref(modelValue.value);
 const localeOptions = ref([]);
+
+const localeOptionsLength = computed(() => {
+    if (isArray(localeOptions.value)) return localeOptions.value.length;
+    return Object.keys(localeOptions.value).length;
+});
 
 const { hasValidationError, validate, validationClass } = useFormControlValidation(
     toRef(props, 'v'),
