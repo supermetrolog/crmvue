@@ -6,7 +6,7 @@ import { taskOptions } from '@/const/options/task.options.js';
 import { getContactFullName } from '@/utils/formatters/models/contact.js';
 import { isNotEmptyString } from '@/utils/helpers/string/isNotEmptyString.js';
 import { capitalizeString } from '@/utils/helpers/string/capitalizeString.js';
-import { messengerTemplates } from '@/const/messenger.js';
+import { messenger, messengerTemplates, objectChatMemberTypes } from '@/const/messenger.js';
 import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
 
 export const CONTACT_CALL_ACTIONS = {
@@ -51,17 +51,17 @@ export function useMessengerQuiz() {
     const store = useStore();
     const { currentUserId } = useAuth();
 
-    async function createSurvey(contact, answers, retry = 3) {
+    async function createSurvey(contact, answers, chatMemberId = null, retry = 3) {
         const createdSurvey = await api.survey.create({
             contact_id: contact.id,
             user_id: currentUserId.value,
-            chat_member_id: store.state.Messenger.currentDialog.id,
+            chat_member_id: chatMemberId ?? store.state.Messenger.currentDialog.id,
             question_answers: answers
         });
 
         if (createdSurvey) return createdSurvey;
 
-        if (retry > 0) return await createSurvey(contact, answers, retry - 1);
+        if (retry > 0) return await createSurvey(contact, answers, chatMemberId, retry - 1);
 
         return null;
     }
@@ -194,12 +194,54 @@ export function useMessengerQuiz() {
         return await sendMessageWithRetrying(chatMemberId, messagePayload);
     }
 
+    async function createRelatedSurveys(contact, payload) {
+        const formattedPayload = Object.keys(payload).map(key => {
+            return {
+                objectId: key,
+                answers: Object.keys(payload[key].answer).map(answerKey => ({
+                    question_answer_id: answerKey,
+                    value: payload[key].answer[answerKey]
+                }))
+            };
+        });
+
+        const chatMembers = await api.messenger.getChats({
+            object_ids: formattedPayload.map(element => element.objectId),
+            model_type: messenger.dialogTypes.OBJECT,
+            company_id: contact.company_id,
+            type: objectChatMemberTypes.RENT_OR_SALE
+        });
+
+        const chatMembersMap = chatMembers.data.reduce((acc, element) => {
+            acc[element.model.object_id] = element.id;
+            return acc;
+        }, {});
+
+        const preparedPayload = formattedPayload.reduce((acc, element) => {
+            if (chatMembersMap[element.objectId]) {
+                acc.push({
+                    chatMemberId: chatMembersMap[element.objectId],
+                    answers: element.answers
+                });
+            }
+
+            return acc;
+        }, []);
+
+        await Promise.allSettled(
+            preparedPayload.map(element =>
+                createSurvey(contact, element.answers, element.chatMemberId)
+            )
+        );
+    }
+
     return {
         createSurvey,
         findSurveyMessage,
         createPotentialTasks,
         createCallsWithContacts,
         createScheduledCallTasks,
-        sendMessageAboutSurveyIsUnavailable
+        sendMessageAboutSurveyIsUnavailable,
+        createRelatedSurveys
     };
 }

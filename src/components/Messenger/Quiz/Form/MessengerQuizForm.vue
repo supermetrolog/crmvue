@@ -23,11 +23,28 @@
                     :contact="contact.entity"
                     class="messenger-quiz__question"
                 />
+                <div
+                    v-if="isObjectQuestionGroup"
+                    class="messenger-quiz__question messenger-quiz-question"
+                >
+                    <Checkbox v-model="withRelated" class="messenger-quiz__related">
+                        <div class="messenger-quiz__related-text">
+                            <span>Заполнить по всем объектам собственника</span>
+                            <i
+                                v-tippy="
+                                    'Для каждого объекта собственника будет создан опросник и соответствующие задачи при необходимости.'
+                                "
+                                class="fa-regular fa-question-circle fs-4"
+                            />
+                        </div>
+                    </Checkbox>
+                </div>
             </template>
             <MessengerQuizFormTemplate
                 ref="quizForm"
                 :questions="filteredQuestions"
                 :disabled="formIsDisabled"
+                :with-related
             />
         </template>
         <MessengerQuizFormContactSuggestModal
@@ -47,9 +64,9 @@
 <script setup>
 import { useStore } from 'vuex';
 import { computed, onMounted, ref, useTemplateRef, watch } from 'vue';
-import { quizQuestionsGroups } from '@/const/quiz.js';
+import { quizEffectKinds, quizQuestionsGroups } from '@/const/quiz.js';
 import { messenger } from '@/const/messenger.js';
-import MessengerQuizQuestionCall from '@/components/Messenger/Quiz/Question/MessengerQuizQuestionCall.vue';
+import MessengerQuizQuestionCall from '@/components/Messenger/Quiz/Question/Call/MessengerQuizQuestionCall.vue';
 import MessengerQuizFormContactSuggestModal from '@/components/Messenger/Quiz/Form/MessengerQuizFormContactSuggestModal.vue';
 import MessengerQuizFormDisabledWindow from '@/components/Messenger/Quiz/Form/MessengerQuizFormDisabledWindow.vue';
 import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
@@ -59,6 +76,7 @@ import MessengerQuizFormTemplate from '@/components/Messenger/Quiz/Form/Messenge
 import MessengerQuizFormRemainingWindow from '@/components/Messenger/Quiz/Form/MessengerQuizFormRemainingWindow.vue';
 import { useAsyncPopup } from '@/composables/useAsyncPopup.js';
 import Spinner from '@/components/common/Spinner.vue';
+import Checkbox from '@/components/common/Forms/Checkbox.vue';
 
 const contactModel = defineModel('contact');
 const selectedContacts = defineModel('selected-contacts');
@@ -109,6 +127,10 @@ const currentQuestionGroup = computed(() => {
     return quizQuestionsGroups.COMPANY;
 });
 
+const isObjectQuestionGroup = computed(
+    () => currentQuestionGroup.value === quizQuestionsGroups.OBJECT
+);
+
 const questions = computed(() => store.state.Quizz.questions);
 
 const filteredQuestions = computed(() =>
@@ -125,8 +147,106 @@ onMounted(() => {
     if (!questions.value?.length) fetchQuestions();
 });
 
+const withRelated = ref(false);
+
 const getForm = () => {
-    return { answers: quizForm.value?.getForm(), isCanceled: formIsDisabled.value };
+    const form = quizForm.value?.getForm();
+
+    if (currentQuestionGroup.value === quizQuestionsGroups.COMPANY) return form;
+
+    // objects group
+
+    const relatedAnswers = {
+        objects: {},
+        offers: []
+    };
+
+    const freeAreaMustBeEditAnswer = form.find(answer =>
+        answer.effects.has(quizEffectKinds.OBJECT_FREE_AREA_MUST_BE_EDIT)
+    );
+
+    if (freeAreaMustBeEditAnswer && freeAreaMustBeEditAnswer.value) {
+        const filteredOffers = freeAreaMustBeEditAnswer.form.offers.reduce(
+            (acc, offer) => {
+                const payload = {
+                    id: offer.id,
+                    comment: offer.form.comment
+                };
+
+                if (offer.form.action === 0) acc.deleted.push(payload);
+                if (offer.form.action === 1) acc.edited.push(payload);
+                if (offer.form.action === 2) acc.skipped.push(payload);
+
+                return acc;
+            },
+            { deleted: [], edited: [], skipped: [] }
+        );
+
+        freeAreaMustBeEditAnswer.form.objects.forEach(object => {
+            relatedAnswers.objects[object.id] = {
+                answer: object.answer
+            };
+        });
+
+        relatedAnswers.offers.push(filteredOffers);
+    }
+
+    const wantsToSellMustBeEditAnswer = form.find(answer =>
+        answer.effects.has(quizEffectKinds.COMPANY_WANTS_TO_SELL_MUST_BE_EDITED)
+    );
+
+    if (wantsToSellMustBeEditAnswer && wantsToSellMustBeEditAnswer.value) {
+        const filteredOffers = wantsToSellMustBeEditAnswer.form.offers.reduce(
+            (acc, offer) => {
+                const payload = {
+                    id: offer.id,
+                    comment: offer.form.comment
+                };
+
+                if (offer.form.action === 0) acc.deleted.push(payload);
+                if (offer.form.action === 1) acc.edited.push(payload);
+                if (offer.form.action === 2) acc.skipped.push(payload);
+
+                return acc;
+            },
+            { deleted: [], edited: [], skipped: [] }
+        );
+
+        wantsToSellMustBeEditAnswer.form.objects.forEach(object => {
+            if (relatedAnswers.objects[object.id]) {
+                Object.assign(relatedAnswers.objects[object.id].answer, object.answer);
+            } else {
+                relatedAnswers.objects[object.id] = {
+                    answer: object.answer
+                };
+            }
+        });
+
+        relatedAnswers.offers.push(filteredOffers);
+    }
+
+    const companiesIdentifiedAnswer = form.find(answer =>
+        answer.effects.has(quizEffectKinds.COMPANIES_ON_OBJECT_IDENTIFIED)
+    );
+
+    if (companiesIdentifiedAnswer) {
+        companiesIdentifiedAnswer.form.objects.forEach(object => {
+            if (relatedAnswers.objects[object.id]) {
+                Object.assign(relatedAnswers.objects[object.id].answer, object.answer);
+            } else {
+                relatedAnswers.objects[object.id] = {
+                    answer: object.answer
+                };
+            }
+        });
+    }
+
+    return {
+        answers: form,
+        isCanceled: formIsDisabled.value,
+        relatedAnswers,
+        withRelated: withRelated.value
+    };
 };
 
 defineExpose({

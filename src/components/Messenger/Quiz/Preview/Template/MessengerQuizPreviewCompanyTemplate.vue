@@ -25,6 +25,7 @@ import MessengerQuizPreviewCompany from '@/components/Messenger/Quiz/Preview/Mes
 import { getCompanyName } from '@/utils/formatters/models/company.js';
 import { isNullish } from '@/utils/helpers/common/isNullish.js';
 import { isArray } from '@/utils/helpers/array/isArray.js';
+import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
 
 const props = defineProps({
     answers: {
@@ -55,10 +56,12 @@ async function fetchCompanies() {
         return;
     }
 
-    const companyIds = answers.map(company => company.company_id);
+    const companyIds = answers.map(company => company.company_id).filter(isNotNullish);
 
-    const companies = await api.companies.searchCompanies({ id: companyIds });
-    if (companies.data.length) injectCompanyNames(companies.data);
+    if (companyIds.length) {
+        const companies = await api.companies.searchCompanies({ id: companyIds });
+        if (companies.data.length) injectCompanyNames(companies.data);
+    }
 
     isLoading.value = false;
 }

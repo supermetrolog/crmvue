@@ -122,6 +122,16 @@
         color: #fff;
         @include mixins.flex-box($a: center, $j: center, $d: column, $gap: 5px);
     }
+
+    &__related {
+        font-weight: 500;
+        margin-left: 3.5px;
+    }
+
+    &__related-text {
+        margin-left: 9px;
+        @include mixins.flex-box($a: center, $gap: 5px);
+    }
 }
 
 .messenger-quiz-question {
@@ -797,5 +807,129 @@
 
     .dashboard-card-task__body {
         background-color: #fff;
+    }
+}
+
+.messenger-quiz-question-template-offer {
+    font-size: 13px;
+    flex-basis: calc(50% - 5px);
+    background-color: #fff;
+    border: 1px solid rgba(0, 0, 0, .1);
+    border-radius: 5px;
+    padding: 3px 5px;
+    cursor: pointer;
+    @include mixins.transition(background-color);
+
+    &:hover:not(.disabled), &.active:not(.disabled) {
+        background-color: variables.$bg-success-l;
+    }
+
+    &.disabled {
+        pointer-events: none;
+        opacity: .7;
+    }
+
+    &__checkbox {
+        pointer-events: none;
+    }
+
+    &__body {
+        @include mixins.flex-box($gap: 5px);
+    }
+
+    &__preview {
+        width: 170px;
+        min-width: 170px;
+        height: 90px;
+        position: relative;
+
+        .offer-table-item-motion-slider img {
+            height: 100%;
+        }
+    }
+
+    &__preview-header {
+        position: absolute;
+        top: 1px;
+        left: 1px;
+        z-index: 5;
+        @include mixins.flex-box($gap: 3px, $a: center);
+    }
+
+    .dashboard-chip {
+        font-size: 13px;
+        padding: 4px 8px;
+    }
+
+    &__chips {
+        position: absolute;
+        left: 5px;
+        bottom: 5px;
+        @include mixins.flex-box($gap: 5px, $a: center);
+    }
+
+    &__avatar {
+        border: 1px solid rgba(0, 0, 0, .25);
+        @include mixins.transition(opacity);
+    }
+
+    &:has(&__preview:hover) .messenger-quiz-form-offer-picker-element__avatar {
+        opacity: .2;
+    }
+
+    &__address {
+        @include mixins.text-overflow(3, break-all);
+
+        .tooltip {
+            margin-right: 5px;
+        }
+    }
+
+    &__footer {
+        margin: 5px 0;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+    }
+
+    &__column {
+        background-color: variables.$color_light;
+        padding: 5px;
+        border-radius: 5px;
+        box-shadow: 0 0 1px 1px rgba(0, 0, 0, .1);
+    }
+}
+
+.messenger-quiz-form-offer-picker {
+    &__tabs {
+        margin-top: 10px;
+        position: relative;
+        @include mixins.flex-box($gap: 5px);
+
+        &::before {
+            content: "";
+            display: block;
+            height: 2px;
+            background-color: rgba(138, 138, 138, 0.3);
+            width: 100%;
+            position: absolute;
+            bottom: -5px;
+        }
+    }
+
+    &__tab {
+        color: variables.$color_dark_grey;
+        padding: 5px;
+        font-weight: 500;
+        transition: color 0.3s ease;
+
+        &:hover {
+            color: variables.$cl-success
+        }
+
+        &.is-active {
+            color: variables.$cl-success;
+            border-bottom: 2px solid rgb(16, 185, 129);
+        }
     }
 }

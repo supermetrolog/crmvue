@@ -14,21 +14,38 @@
                 :disabled="mainAnswer !== true"
                 :hidden="hidden"
                 class="mt-1"
-                :class="{ 'mb-2': mainAnswer }"
+            />
+        </template>
+        <template v-if="currentObject" #after-content="{ mainAnswer }">
+            <MessengerQuizQuestionTemplateHasFreeAreaPicker
+                v-model:offers="offersForm"
+                v-model:objects="objectsForm"
+                :main-answer="mainAnswer"
+                :company-id="currentObject.company_id"
+                :disabled="
+                    conditionModelValue === 0 || deleteCurrentFreeAreaModelValue || !withRelated
+                "
+                :edit-mode="conditionModelValue === 1"
+                :passive-mode="mainAnswer === false"
+                :question
+                :ignored-effects
+                class="mt-2"
             />
         </template>
     </MessengerQuizQuestionTemplateDefault>
 </template>
 <script setup>
-import { ref, useTemplateRef, watch } from 'vue';
+import { computed, ref, useTemplateRef, watch } from 'vue';
 import MessengerQuizQuestionTemplateDefault from '@/components/Messenger/Quiz/Question/Template/MessengerQuizQuestionTemplateDefault.vue';
 import MessengerQuizFormCustomFreeArea from '@/components/Messenger/Quiz/Form/Custom/MessengerQuizFormCustomFreeArea.vue';
 import { quizEffectKinds } from '@/const/quiz.js';
 import { isNullish } from '@/utils/helpers/common/isNullish.js';
 import { useNotify } from '@/utils/use/useNotify.js';
 import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
+import { useStore } from 'vuex';
+import MessengerQuizQuestionTemplateHasFreeAreaPicker from '@/components/Messenger/Quiz/Question/Template/HasFreeArea/MessengerQuizQuestionTemplateHasFreeAreaPicker.vue';
 
-defineProps({
+const props = defineProps({
     question: {
         type: Object,
         required: true
@@ -37,7 +54,8 @@ defineProps({
         type: Boolean,
         default: true
     },
-    disabled: Boolean
+    disabled: Boolean,
+    withRelated: Boolean
 });
 
 const ignoredEffects = new Set([
@@ -62,7 +80,7 @@ function getForm() {
         const actionAnswerMustBeEnabled =
             mainAnswer.value === false && deleteCurrentFreeAreaModelValue.value;
 
-        injectActionAnswerToForm(form, actionAnswerMustBeEnabled);
+        injectActionAnswerToForm(form, actionAnswerMustBeEnabled, mainAnswer.value);
 
         if (mainAnswer.value === true) {
             injectConditionAnswerToForm(form);
@@ -123,7 +141,28 @@ function injectConditionAnswerToForm(form) {
         const answer = form.find(answer =>
             answer.effects.has(quizEffectKinds.OBJECT_FREE_AREA_MUST_BE_EDIT)
         );
-        if (answer) answer.value = true;
+
+        if (answer) {
+            answer.value = true;
+
+            if (props.withRelated) {
+                const relatedForm = Object.values(objectsForm.value).map(element => {
+                    return {
+                        id: element.id,
+                        answer: {
+                            ...element.answer.description,
+                            ...element.answer.main,
+                            ...element.answer.tab
+                        }
+                    };
+                });
+
+                answer.form = {
+                    offers: Object.values(offersForm.value),
+                    objects: relatedForm
+                };
+            }
+        }
     } else {
         const answer = form.find(answer =>
             answer.effects.has(quizEffectKinds.OBJECT_FREE_AREA_ALREADY_DESCRIBED)
@@ -144,14 +183,53 @@ function cancelConditionAnswerInForm(form) {
     if (answer) answer.value = false;
 }
 
-function injectActionAnswerToForm(form, value) {
+function injectActionAnswerToForm(form, value, mainAnswer) {
     const answer = form.find(answer =>
         answer.effects.has(quizEffectKinds.OBJECT_FREE_AREA_MUST_BE_DELETED)
     );
-    if (answer) answer.value = value;
+
+    if (answer) {
+        answer.value = value;
+
+        if (mainAnswer === false) {
+            answer.form = {
+                offers: Object.values(offersForm.value)
+            };
+        }
+    }
 }
 
 watch(conditionModelValue, value => {
     templateRef.value.setCustomCompleted(value === 0);
 });
+
+// modelValue
+
+const store = useStore();
+
+const currentObject = computed(() => {
+    return store.state.Messenger.currentDialog?.model?.object;
+});
+
+// form
+
+const offersForm = ref({});
+const objectsForm = ref({});
+
+watch(deleteCurrentFreeAreaModelValue, value => {
+    if (value) markOffersAsDisabled();
+    else markOffersAsActive();
+});
+
+function markOffersAsDisabled() {
+    Object.values(offersForm.value).forEach(offer => {
+        offer.form.disabled = true;
+    });
+}
+
+function markOffersAsActive() {
+    Object.values(offersForm.value).forEach(offer => {
+        offer.form.disabled = false;
+    });
+}
 </script>

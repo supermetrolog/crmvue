@@ -696,13 +696,30 @@
     cursor: pointer;
     padding: 5px 15px;
     border: 1px solid #d1d5db;
-    border-radius: 15px;
     min-height: 35px;
     min-width: 35px;
     background-color: #fff;
+    border-radius: 4px;
+
+    &--rounded {
+        border-radius: 15px;
+    }
 
     &__input {
         display: none;
+    }
+
+    &--show-radio &__input {
+        height: 15px;
+        width: 15px;
+        margin: 0;
+        display: block;
+        accent-color: #fff;
+    }
+
+    &--show-radio {
+        @include mixins.flex-box($gap: 5px, $a: center);
+        padding-left: 10px;
     }
 
     &:hover {

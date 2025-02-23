@@ -26,5 +26,6 @@ export const quizEffectKinds = {
     COMPANY_WANTS_TO_BUY_OR_BUILD: 'company-wants-to-buy-or-build',
     COMPANY_HAS_NEW_REQUEST: 'company-has-new-request',
     COMPANY_PLANNED_DEVELOP: 'company-planned-develop',
-    COMPANY_WANTS_TO_SELL_ALREADY_DESCRIBED: 'company-wants-to-sell-already-described'
+    COMPANY_WANTS_TO_SELL_ALREADY_DESCRIBED: 'company-wants-to-sell-already-described',
+    COMPANY_WANTS_TO_SELL_MUST_BE_DELETED: 'company-wants-to-sell-must-be-deleted'
 };

@@ -43,7 +43,8 @@ defineProps({
         type: Boolean,
         default: true
     },
-    disabled: Boolean
+    disabled: Boolean,
+    withRelated: Boolean
 });
 
 const store = useStore();

@@ -5,22 +5,24 @@
         ref="questionElement"
         :question="question"
         :can-be-disabled="canBeDisabled"
+        :with-related="withRelated"
     />
 </template>
 <script setup>
 import { computed, useTemplateRef } from 'vue';
-import MessengerQuizQuestionTemplateHasFreeArea from '@/components/Messenger/Quiz/Question/Template/MessengerQuizQuestionTemplateHasFreeArea.vue';
+import MessengerQuizQuestionTemplateHasFreeArea from '@/components/Messenger/Quiz/Question/Template/HasFreeArea/MessengerQuizQuestionTemplateHasFreeArea.vue';
 import MessengerQuizQuestionTemplateDefault from '@/components/Messenger/Quiz/Question/Template/MessengerQuizQuestionTemplateDefault.vue';
-import MessengerQuizQuestionTemplateCompaniesIdentified from '@/components/Messenger/Quiz/Question/Template/MessengerQuizQuestionTemplateCompaniesIdentified.vue';
-import MessengerQuizQuestionTemplateRequestsNoRelevant from '@/components/Messenger/Quiz/Question/Template/MessengerQuizQuestionTemplateRequestsNoRelevant.vue';
-import MessengerQuizQuestionTemplateWantsToSell from '@/components/Messenger/Quiz/Question/Template/MessengerQuizQuestionTemplateWantsToSell.vue';
+import MessengerQuizQuestionTemplateCompaniesIdentified from '@/components/Messenger/Quiz/Question/Template/CompaniesIdentified/MessengerQuizQuestionTemplateCompaniesIdentified.vue';
+import MessengerQuizQuestionTemplateRequestsNoRelevant from '@/components/Messenger/Quiz/Question/Template/RequestsNoRelevant/MessengerQuizQuestionTemplateRequestsNoRelevant.vue';
+import MessengerQuizQuestionTemplateWantsToSell from '@/components/Messenger/Quiz/Question/Template/WantsToSell/MessengerQuizQuestionTemplateWantsToSell.vue';
 
 const props = defineProps({
     question: {
         type: Object,
         required: true
     },
-    canBeDisabled: Boolean
+    canBeDisabled: Boolean,
+    withRelated: Boolean
 });
 
 const TEMPLATES = {

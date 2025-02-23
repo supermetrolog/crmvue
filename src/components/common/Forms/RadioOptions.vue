@@ -12,6 +12,8 @@
                 :unselect="unselect"
                 :disabled="disabled"
                 :class="[itemClass, { invalid: hasValidationError }]"
+                :show-radio
+                :rounded
             />
         </div>
         <ValidationMessage v-if="hasValidationError" :message="v.$errors[0].$message" />
@@ -27,33 +29,20 @@ import { useFormControlValidation } from '@/composables/useFormControlValidation
 const modelValue = defineModel({ type: [Number, String, Boolean] });
 
 const props = defineProps({
-    label: {
-        type: String,
-        default: null
-    },
     options: {
         type: [Array, Object],
         required: true
     },
-    v: {
-        type: Object,
-        default: null
-    },
-    disabled: {
+    v: Object,
+    label: String,
+    itemClass: String,
+    disabled: Boolean,
+    required: Boolean,
+    unselect: Boolean,
+    showRadio: Boolean,
+    rounded: {
         type: Boolean,
-        default: false
-    },
-    required: {
-        type: Boolean,
-        default: false
-    },
-    unselect: {
-        type: Boolean,
-        default: false
-    },
-    itemClass: {
-        type: String,
-        default: null
+        default: true
     }
 });
 

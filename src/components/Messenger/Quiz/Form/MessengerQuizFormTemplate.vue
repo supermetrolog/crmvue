@@ -8,6 +8,7 @@
             :disabled
             class="messenger-quiz__question"
             :can-be-disabled="question.id !== QUESTION_WITH_ANY_ACTIVE_BODY"
+            :with-related
         />
     </div>
 </template>
@@ -22,7 +23,8 @@ defineProps({
         type: Array,
         required: true
     },
-    disabled: Boolean
+    disabled: Boolean,
+    withRelated: Boolean
 });
 const questionEls = useTemplateRef('questionEls');
 

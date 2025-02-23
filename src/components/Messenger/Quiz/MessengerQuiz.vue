@@ -179,13 +179,15 @@ const loaders = reactive({
     messageCreating: false,
     tasksCreating: false,
     callsCreating: false,
-    scheduledCallsCreating: false
+    scheduledCallsCreating: false,
+    relationCreating: false
 });
 
 const currentLoadingLabel = computed(() => {
     if (loaders.surveyCreating) return 'Сохранение результатов опроса..';
     if (loaders.messageSearching) return 'Отправка сообщений в чат..';
     if (loaders.messageCreating) return 'Отправка сообщений в чат..';
+    if (loaders.relationCreating) return 'Сохранение связанных опросов..';
     if (loaders.tasksCreating) return 'Создание задач..';
     if (loaders.callsCreating) return 'Фиксация звонков..';
     if (loaders.scheduledCallsCreating) return 'Сохранение запланированных звонков..';
@@ -202,7 +204,8 @@ const {
     createPotentialTasks,
     createCallsWithContacts,
     createScheduledCallTasks,
-    sendMessageAboutSurveyIsUnavailable
+    sendMessageAboutSurveyIsUnavailable,
+    createRelatedSurveys
 } = useMessengerQuiz();
 
 async function send() {
@@ -216,49 +219,57 @@ async function send() {
 
     const chatMemberId = store.state.Messenger.currentDialog.id;
 
-    const { answers, isCanceled } = quizForm.value.getForm();
+    const { answers, isCanceled, relatedAnswers, withRelated } = quizForm.value.getForm();
 
     finalSelectedContacts.value = selectedContacts.value.map(element => element.entity);
 
     if (!isCanceled) {
         finalContact.value = currentRecipient.value;
+        //
+        // await showFinalContactPicker();
+        //
+        // loaders.final = true;
+        //
+        // loaders.surveyCreating = true;
+        // const createdSurvey = await createSurvey(
+        //     finalContact.value,
+        //     answers.map(element => ({
+        //         question_answer_id: element.question_answer_id,
+        //         value: element.value
+        //     }))
+        // );
+        // loaders.surveyCreating = false;
+        //
+        // if (!createdSurvey) {
+        //     notify.info('Произошла ошибка при сохранении опросника, попробуйте позже');
+        //     loaders.final = false;
+        //     return;
+        // }
+        //
+        // loaders.callsCreating = true;
+        // await createCallsWithContacts(
+        //     selectedContacts.value.filter(element => element.entity.id !== finalContact.value.id),
+        //     chatMemberId
+        // );
+        // loaders.callsCreating = false;
+        //
+        // loaders.messageSearching = true;
+        // const surveyMessage = await findSurveyMessage(createdSurvey.id, chatMemberId);
+        // loaders.messageSearching = false;
+        //
+        // if (!surveyMessage) {
+        //     notify.info(
+        //         'Не удалось установить связь с чатом, создайте задачи по контактам вручную..'
+        //     );
+        //     loaders.final = false;
+        //     return;
+        // }
 
-        await showFinalContactPicker();
+        if (withRelated) {
+            loaders.relationCreating = true;
+            await createRelatedSurveys(finalContact.value, relatedAnswers.objects);
+            loaders.relationCreating = false;
 
-        loaders.final = true;
-
-        loaders.surveyCreating = true;
-        const createdSurvey = await createSurvey(
-            finalContact.value,
-            answers.map(element => ({
-                question_answer_id: element.question_answer_id,
-                value: element.value
-            }))
-        );
-        loaders.surveyCreating = false;
-
-        if (!createdSurvey) {
-            notify.info('Произошла ошибка при сохранении опросника, попробуйте позже');
-            loaders.final = false;
-            return;
-        }
-
-        loaders.callsCreating = true;
-        await createCallsWithContacts(
-            selectedContacts.value.filter(element => element.entity.id !== finalContact.value.id),
-            chatMemberId
-        );
-        loaders.callsCreating = false;
-
-        loaders.messageSearching = true;
-        const surveyMessage = await findSurveyMessage(createdSurvey.id, chatMemberId);
-        loaders.messageSearching = false;
-
-        if (!surveyMessage) {
-            notify.info(
-                'Не удалось установить связь с чатом, создайте задачи по контактам вручную..'
-            );
-            loaders.final = false;
             return;
         }
 

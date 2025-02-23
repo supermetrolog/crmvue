@@ -9,40 +9,60 @@
         <template #before-additions="{ mainAnswer, hidden, toggleHidden }">
             <MessengerQuizFormCustomFreeArea
                 v-model:condition="conditionModelValue"
+                v-model:delete="deleteCurrentArea"
                 @change-hidden="toggleHidden"
                 :disabled="mainAnswer !== true"
                 :hidden="hidden"
-                :class="{ 'mb-2': mainAnswer }"
+                class="mt-1"
+            />
+        </template>
+        <template v-if="currentObject" #after-content="{ mainAnswer }">
+            <MessengerQuizQuestionTemplateWantsToSellPicker
+                v-model:offers="offersForm"
+                v-model:objects="objectsForm"
+                :main-answer="mainAnswer"
+                :company-id="currentObject.company_id"
+                :disabled="conditionModelValue === 0 || deleteCurrentArea || !withRelated"
+                :edit-mode="conditionModelValue === 1"
+                :passive-mode="mainAnswer === false"
+                class="mt-2"
+                :question
+                :ignored-effects
             />
         </template>
     </MessengerQuizQuestionTemplateDefault>
 </template>
 <script setup>
-import { ref, useTemplateRef, watch } from 'vue';
+import { computed, ref, useTemplateRef, watch } from 'vue';
 import MessengerQuizQuestionTemplateDefault from '@/components/Messenger/Quiz/Question/Template/MessengerQuizQuestionTemplateDefault.vue';
 import MessengerQuizFormCustomFreeArea from '@/components/Messenger/Quiz/Form/Custom/MessengerQuizFormCustomFreeArea.vue';
 import { quizEffectKinds } from '@/const/quiz.js';
 import { isNullish } from '@/utils/helpers/common/isNullish.js';
 import { useNotify } from '@/utils/use/useNotify.js';
+import MessengerQuizQuestionTemplateWantsToSellPicker from '@/components/Messenger/Quiz/Question/Template/WantsToSell/MessengerQuizQuestionTemplateWantsToSellPicker.vue';
+import { useStore } from 'vuex';
 
 defineProps({
-    question: {
-        type: Object,
-        required: true
-    },
     canBeDisabled: {
         type: Boolean,
         default: true
     },
-    disabled: Boolean
+    disabled: Boolean,
+    withRelated: Boolean,
+    question: {
+        type: Object,
+        required: true
+    }
 });
 
 const ignoredEffects = new Set([
     quizEffectKinds.COMPANY_WANTS_TO_SELL_MUST_BE_EDITED,
-    quizEffectKinds.COMPANY_WANTS_TO_SELL_ALREADY_DESCRIBED
+    quizEffectKinds.COMPANY_WANTS_TO_SELL_ALREADY_DESCRIBED,
+    quizEffectKinds.COMPANY_WANTS_TO_SELL_MUST_BE_DELETED
 ]);
 
 const conditionModelValue = ref(null);
+const deleteCurrentArea = ref(false);
 
 // form
 
@@ -58,6 +78,18 @@ function getForm() {
             injectConditionAnswerToForm(form);
         } else {
             cancelConditionAnswerInForm(form);
+        }
+
+        if (mainAnswer.value === false) {
+            const answer = form.find(answer =>
+                answer.effects.has(quizEffectKinds.COMPANY_WANTS_TO_SELL_MUST_BE_DELETED)
+            );
+
+            if (answer) {
+                answer.form = {
+                    offers: Object.values(offersForm.value)
+                };
+            }
         }
     }
 
@@ -107,7 +139,25 @@ function injectConditionAnswerToForm(form) {
         const answer = form.find(answer =>
             answer.effects.has(quizEffectKinds.COMPANY_WANTS_TO_SELL_MUST_BE_EDITED)
         );
-        if (answer) answer.value = true;
+        if (answer) {
+            answer.value = true;
+
+            const relatedForm = Object.values(objectsForm.value).map(element => {
+                return {
+                    id: element.id,
+                    answer: {
+                        ...element.answer.description,
+                        ...element.answer.main,
+                        ...element.answer.tab
+                    }
+                };
+            });
+
+            answer.form = {
+                offers: Object.values(offersForm.value),
+                objects: relatedForm
+            };
+        }
     } else {
         const answer = form.find(answer =>
             answer.effects.has(quizEffectKinds.COMPANY_WANTS_TO_SELL_ALREADY_DESCRIBED)
@@ -130,5 +180,35 @@ function cancelConditionAnswerInForm(form) {
 
 watch(conditionModelValue, value => {
     templateRef.value.setCustomCompleted(value === 0);
+});
+
+// model value
+
+const offersForm = ref({});
+const objectsForm = ref({});
+
+watch(deleteCurrentArea, value => {
+    if (value) markOffersAsDisabled();
+    else markOffersAsActive();
+});
+
+function markOffersAsDisabled() {
+    Object.values(offersForm.value).forEach(offer => {
+        offer.form.disabled = true;
+    });
+}
+
+function markOffersAsActive() {
+    Object.values(offersForm.value).forEach(offer => {
+        offer.form.disabled = false;
+    });
+}
+
+// modelValue
+
+const store = useStore();
+
+const currentObject = computed(() => {
+    return store.state.Messenger.currentDialog?.model?.object;
 });
 </script>
