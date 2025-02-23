@@ -227,7 +227,7 @@
                             :transform="Number"
                             :multiple-label="activityGroupMultipleLabelFn"
                             title="Группа деятельности"
-                            label="Группа дея-ти (new)"
+                            label="Группа деятельности"
                             class="col-12 col-md-6"
                             mode="multiple"
                             multiple-property="label"
@@ -241,32 +241,12 @@
                             :transform="Number"
                             :multiple-label="activityProfileMultipleLabelFn"
                             title="Профиль деятельности"
-                            label="Профиль деятельности (new)"
+                            label="Профиль деятельности"
                             class="col-12 col-md-6"
                             mode="multiple"
                             multiple-property="label"
                             multiple
                             required
-                        />
-                    </FormGroup>
-                    <FormGroup>
-                        <MultiSelect
-                            v-model="form.activityGroup"
-                            :v="v$.form.activityGroup"
-                            required
-                            title="Группа деятельности"
-                            label="Группа дея-ти"
-                            class="col-6"
-                            :options="ActivityGroupList"
-                        />
-                        <MultiSelect
-                            v-model="form.activityProfile"
-                            :v="v$.form.activityProfile"
-                            required
-                            title="Профиль деятельности"
-                            label="Профиль дея-ти"
-                            class="col-6"
-                            :options="ActivityProfileList"
                         />
                         <MultiSelect
                             v-model="form.productRanges"
@@ -279,7 +259,7 @@
                             create-tag
                             resolve-on-load
                             label="Номенклатура товара"
-                            class="col-12 mt-2"
+                            class="col-12"
                             :options="getProductRangeOptions"
                             object
                         />

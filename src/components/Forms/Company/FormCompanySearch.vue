@@ -65,28 +65,12 @@
                     </FormGroup>
                     <FormGroup>
                         <SearchableOptionsPicker
-                            v-model="form.activityGroup"
-                            :options="ActivityGroupList"
-                            title="Группа деятельности"
-                            label="Группа дея-ти"
-                            class="col-12 col-md-6"
-                        />
-                        <SearchableOptionsPicker
-                            v-model="form.activityProfile"
-                            :options="ActivityProfileList"
-                            title="Профиль деятельности"
-                            label="Профиль деятельности"
-                            class="col-12 col-md-6"
-                        />
-                    </FormGroup>
-                    <FormGroup>
-                        <SearchableOptionsPicker
                             v-model="form.activity_group_ids"
                             :options="ActivityGroupList"
                             :transform="Number"
                             :multiple-label="activityGroupMultipleLabelFn"
                             title="Группа деятельности"
-                            label="Группа дея-ти (new)"
+                            label="Группа деятельности"
                             class="col-12 col-md-6"
                             mode="multiple"
                             multiple-property="label"
@@ -98,14 +82,12 @@
                             :transform="Number"
                             :multiple-label="activityProfileMultipleLabelFn"
                             title="Профиль деятельности"
-                            label="Профиль деятельности (new)"
+                            label="Профиль деятельности"
                             class="col-12 col-md-6"
                             mode="multiple"
                             multiple-property="label"
                             multiple
                         />
-                    </FormGroup>
-                    <FormGroup>
                         <MultiSelect
                             v-model="form.productRanges"
                             :close-on-select="false"
@@ -113,7 +95,7 @@
                             searchable
                             resolve-on-load
                             label="Номенклатура товара"
-                            class="col-12 mt-2"
+                            class="col-12"
                             :options="getFlattedProductRangesOptions"
                             mode="multiple"
                             multiple
