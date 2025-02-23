@@ -1,8 +1,12 @@
 <template>
-    <div class="task-card__files position-relative">
+    <div class="task-card__files task-card-files position-relative">
         <Loader v-if="isCreating" small class="center" />
-        <Spinner v-if="isLoading" />
-        <div v-else-if="files.length" class="task-card__comments-list">
+        <Spinner v-if="isLoading" small label="Загрузка файлов.." />
+        <div
+            v-else-if="files.length"
+            class="task-card__comments-list"
+            :class="{ 'task-card__comments-list--shorted': files.length }"
+        >
             <div class="task-card__list col-12 position-relative">
                 <Loader v-if="isDeleting" small class="center" />
                 <div class="row">
@@ -19,8 +23,8 @@
                 </div>
             </div>
         </div>
-        <p v-else>Файлы отсутствуют..</p>
-        <div class="task-card__form">
+        <p v-else class="col-12">Файлы отсутствуют..</p>
+        <div class="task-card-files__form mb-2">
             <FileInput
                 ref="fileInputEl"
                 v-model:native="newFiles"
@@ -28,15 +32,15 @@
                 short
                 item-class="col-3"
             />
-            <div class="col-12 mt-2">
-                <TaskCardButton
-                    @click.prevent="addFiles"
-                    class="w-100"
-                    :disabled="!newFiles?.length || isCreating"
-                >
-                    Сохранить
-                </TaskCardButton>
-            </div>
+        </div>
+        <div class="col-12">
+            <TaskCardButton
+                @click.prevent="addFiles"
+                class="w-100"
+                :disabled="!newFiles?.length || isCreating"
+            >
+                Сохранить
+            </TaskCardButton>
         </div>
     </div>
 </template>

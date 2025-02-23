@@ -1,6 +1,10 @@
 <template>
-    <div>
-        <div v-if="comments.length" class="task-card__comments-list">
+    <div class="task-card__comments">
+        <div
+            v-if="comments.length"
+            class="task-card__comments-list"
+            :class="{ 'task-card__comments-list--shorted': files.length }"
+        >
             <div class="task-card__list position-relative">
                 <Loader v-if="isCreating" small class="center" />
                 <TaskCardComment
@@ -13,7 +17,7 @@
                     editable
                 />
                 <InfiniteLoading
-                    v-if="infiniteIsActive && task.comments_count > 5"
+                    v-if="infiniteIsActive && task.comments_count > 10"
                     @infinite="loadComments"
                 >
                     <template #complete><span></span></template>
@@ -25,7 +29,7 @@
         </div>
         <p v-else>Комментарии отсутствуют..</p>
         <div class="task-card__form">
-            <div v-if="files.length" class="row mb-1">
+            <div v-if="files.length" class="task-card__form-files row mb-1">
                 <File
                     v-for="(file, key) in files"
                     :key="file"
@@ -35,23 +39,35 @@
                 />
             </div>
             <FileInput ref="fileInputElement" v-model:native="files" hidden custom />
-            <Textarea
-                v-model="newComment"
-                class="mb-1 task-card__textarea"
-                :disabled="isCreating"
-                auto-height
-            />
-            <div class="d-flex gap-2">
-                <TaskCardButton
-                    @click.prevent="addComment"
-                    :disabled="(!newComment?.length && !files.length) || isCreating"
+            <div class="task-card-form">
+                <Button
+                    @click="openFileDialog"
+                    class="task-card-form__button"
+                    :disabled="isCreating"
+                    warning
+                    icon
                 >
-                    Отправить
-                </TaskCardButton>
-                <TaskCardButton @click.prevent="openFileDialog" :disabled="isCreating">
-                    <i class="fa-solid fa-file-circle-plus mr-1" />
-                    <span>Прикрепить файл</span>
-                </TaskCardButton>
+                    <i class="fa-solid fa-paperclip"></i>
+                </Button>
+                <Textarea
+                    ref="textareaEl"
+                    v-model="newComment"
+                    :disabled="isCreating"
+                    placeholder="Напишите сообщение..."
+                    class="task-card-form__editor"
+                    auto-height
+                    :max-height="110"
+                    :min-height="50"
+                />
+                <Button
+                    @click="addComment"
+                    class="task-card-form__button"
+                    :disabled="(!newComment?.length && !files.length) || isCreating"
+                    success
+                    icon
+                >
+                    <i class="fa-solid fa-paper-plane"></i>
+                </Button>
             </div>
         </div>
         <UiModal
@@ -77,7 +93,6 @@ import { ref, shallowRef, useTemplateRef, watch } from 'vue';
 import Textarea from '@/components/common/Forms/Textarea.vue';
 import { useNotify } from '@/utils/use/useNotify.js';
 import Loader from '@/components/common/Loader.vue';
-import TaskCardButton from '@/components/TaskCard/TaskCardButton.vue';
 import { useConfirm } from '@/composables/useConfirm.js';
 import Spinner from '@/components/common/Spinner.vue';
 import InfiniteLoading from 'v3-infinite-loading';
@@ -89,6 +104,8 @@ import FormTaskComment from '@/components/Forms/FormTaskComment.vue';
 import UiModal from '@/components/common/UI/UiModal.vue';
 import { usePreviewer } from '@/composables/usePreviewer.js';
 import { isImageMedia } from '@/utils/helpers/models/media.js';
+import Button from '@/components/common/Button.vue';
+import { usePasteFiles } from '@/composables/usePasteFiles.js';
 
 const emit = defineEmits(['created', 'deleted']);
 const props = defineProps({
@@ -126,7 +143,7 @@ async function loadComments($state) {
 
     if (response) {
         if (response.length) comments.value.push(...response);
-        if (response.length < 5) $state.complete();
+        if (response.length < 10) $state.complete();
         else $state.loaded();
 
         infiniteIsActive.value = false;
@@ -209,6 +226,10 @@ function openFileDialog() {
 function deleteFile(fileIndex) {
     files.value.splice(fileIndex, 1);
 }
+
+const textareaEl = useTemplateRef('textareaEl');
+
+usePasteFiles(textareaEl, files);
 
 // preview
 

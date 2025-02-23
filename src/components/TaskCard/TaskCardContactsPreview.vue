@@ -9,8 +9,8 @@
         placement="left"
     >
         <template #default>
-            <TaskCardButton class="w-100 mt-1">
-                <span>Список контактов</span>
+            <TaskCardButton bordered>
+                <span>Контакты</span>
                 <i class="fa-solid fa-contact-card ml-2"></i>
             </TaskCardButton>
         </template>
