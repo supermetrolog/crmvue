@@ -99,12 +99,6 @@ export const validationRulesForCompany = {
     okpo: {
         minLength: helpers.withMessage('ОКПО не может быть меньше 8 символов', minLength(8))
     },
-    activityGroup: {
-        required: helpers.withMessage('Выберите группу деятельности', required)
-    },
-    activityProfile: {
-        required: helpers.withMessage('Выберите профиль деятельности', required)
-    },
     passive_why: {
         customRequiredPassiveWhy: helpers.withMessage('Выберите причину', customRequiredPassiveWhy)
     },

@@ -466,8 +466,6 @@ const { getProductRangeOptions } = useProductRangesOptions();
 const isLoading = shallowRef(false);
 const { form } = useFormData(
     reactive({
-        activityGroup: null,
-        activityProfile: null,
         basis: null,
         bik: null,
         categories: [],
