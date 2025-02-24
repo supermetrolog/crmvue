@@ -8,6 +8,7 @@ import { isNotEmptyString } from '@/utils/helpers/string/isNotEmptyString.js';
 import { capitalizeString } from '@/utils/helpers/string/capitalizeString.js';
 import { messenger, messengerTemplates, objectChatMemberTypes } from '@/const/messenger.js';
 import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
+import { isValidationError } from '@/api/helpers/error.js';
 
 export const CONTACT_CALL_ACTIONS = {
     DELETE: 1,
@@ -52,18 +53,20 @@ export function useMessengerQuiz() {
     const { currentUserId } = useAuth();
 
     async function createSurvey(contact, answers, chatMemberId = null, retry = 3) {
-        const createdSurvey = await api.survey.create({
-            contact_id: contact.id,
-            user_id: currentUserId.value,
-            chat_member_id: chatMemberId ?? store.state.Messenger.currentDialog.id,
-            question_answers: answers
-        });
+        try {
+            return await api.survey.create({
+                contact_id: contact.id,
+                user_id: currentUserId.value,
+                chat_member_id: chatMemberId ?? store.state.Messenger.currentDialog.id,
+                question_answers: answers
+            });
+        } catch (error) {
+            if (isValidationError(error)) return null;
 
-        if (createdSurvey) return createdSurvey;
+            if (retry > 0) return await createSurvey(contact, answers, chatMemberId, retry - 1);
 
-        if (retry > 0) return await createSurvey(contact, answers, chatMemberId, retry - 1);
-
-        return null;
+            return null;
+        }
     }
 
     async function findSurveyMessage(surveyId, toChatMemberId) {
@@ -177,11 +180,16 @@ export function useMessengerQuiz() {
     }
 
     async function sendMessageWithRetrying(chatMemberId, messagePayload, retry = 3) {
-        const createdMessage = await api.messenger.sendMessage(chatMemberId, messagePayload);
-        if (createdMessage) return createdMessage;
-        if (retry > 0)
-            return await sendMessageWithRetrying(chatMemberId, messagePayload, retry - 1);
-        return null;
+        try {
+            return await api.messenger.sendMessage(chatMemberId, messagePayload);
+        } catch (error) {
+            if (isValidationError(error)) return null;
+
+            if (retry > 0)
+                return await sendMessageWithRetrying(chatMemberId, messagePayload, retry - 1);
+
+            return null;
+        }
     }
 
     async function sendMessageAboutSurveyIsUnavailable(chatMemberId, contacts) {

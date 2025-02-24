@@ -1,1 +1,2 @@
 export const STATUS_SUCCESS = 200;
+export const STATUS_VALIDATION_ERROR = 422;
