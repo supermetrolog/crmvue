@@ -28,6 +28,7 @@
                 class="mt-2"
                 :question
                 :ignored-effects
+                :with-related
             />
         </template>
     </MessengerQuizQuestionTemplateDefault>

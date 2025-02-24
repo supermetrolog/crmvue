@@ -8,7 +8,10 @@
             <DashboardChip v-if="objects.length" class="dashboard-bg-warning-l mb-1">
                 Укажите новых арендаторов на объектах, о которых стало известно.
             </DashboardChip>
-            <div class="d-flex flex-column gap-1">
+            <MessengerQuizQuestionAccordionList
+                :label="`Список объектов (${objects.length})`"
+                close-label="Скрыть список объектов"
+            >
                 <MessengerQuizQuestionTemplateCompaniesIdentifiedPickerObject
                     v-for="object in objects"
                     :key="object.id"
@@ -17,7 +20,7 @@
                     :object
                     :question
                 />
-            </div>
+            </MessengerQuizQuestionAccordionList>
             <DashboardChip v-if="!objects.length" class="dashboard-bg-light" with-icon>
                 <i class="fa-solid fa-ban"></i>
                 <span>У компании нет занесенных объектов.</span>
@@ -40,6 +43,7 @@ import MessengerQuizQuestionTemplateCompaniesIdentifiedPickerObject from '@/comp
 import { getLinkFile } from '@/utils/url.js';
 import { usePreviewer } from '@/composables/usePreviewer.js';
 import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
+import MessengerQuizQuestionAccordionList from '@/components/Messenger/Quiz/Question/MessengerQuizQuestionAccordionList.vue';
 
 const emit = defineEmits(['set-as-disabled']);
 const objectsModelValue = defineModel('objects');

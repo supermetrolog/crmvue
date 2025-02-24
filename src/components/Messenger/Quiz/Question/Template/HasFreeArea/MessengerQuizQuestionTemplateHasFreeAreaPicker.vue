@@ -14,7 +14,11 @@
                 nav-item-link-class="messenger-quiz-form-offer-picker__tab"
             >
                 <Tab :name="`Активная аренда (${offers.length})`">
-                    <div class="d-flex flex-column gap-1">
+                    <MessengerQuizQuestionAccordionList
+                        v-if="offers.length"
+                        :label="`Список предложений (${offers.length})`"
+                        close-label="Скрыть список предложений"
+                    >
                         <MessengerQuizQuestionTemplateHasFreeAreaPickerOffer
                             v-for="offer in offers"
                             :key="offer.id"
@@ -27,36 +31,55 @@
                             :edit-mode
                             :passive-mode
                         />
-                    </div>
-                    <DashboardChip v-if="!offers.length" class="dashboard-bg-light" with-icon>
+                    </MessengerQuizQuestionAccordionList>
+                    <DashboardChip v-else class="dashboard-bg-light" with-icon>
                         <i class="fa-solid fa-ban"></i>
                         <span>У компании нет активных предложений по аренде.</span>
                     </DashboardChip>
                 </Tab>
-                <Tab :name="`Объекты (${objects.length})`">
-                    <DashboardChip v-if="objects.length" class="dashboard-bg-warning-l mb-1">
-                        Выберите объекты, на которых появилась площадь.
-                    </DashboardChip>
-                    <div class="d-flex flex-column gap-1">
-                        <MessengerQuizQuestionTemplateHasFreeAreaPickerObject
-                            v-for="object in objects"
-                            :key="object.id"
-                            v-model="objectsModelValue[object.id].answer"
-                            @show-preview="openPreview(object.photo ?? [])"
-                            @click="toggleObject(object.id)"
-                            :object="object"
-                            :active="objectsModelValue[object.id].selected"
-                            :question
-                            :ignored-effects
-                        />
-                    </div>
-                    <DashboardChip v-if="!objects.length" class="dashboard-bg-light" with-icon>
+                <Tab :name="`Другие объекты (${objects.length})`">
+                    <template v-if="objects.length">
+                        <AnimationTransition :speed="0.4">
+                            <DashboardChip v-if="withRelated" class="dashboard-bg-warning-l mb-1">
+                                Выберите объекты, на которых появилась площадь.
+                            </DashboardChip>
+                            <DashboardChip v-else class="dashboard-bg-warning-l mb-1" with-icon>
+                                <i class="fa-solid fa-warning" />
+                                <span>
+                                    Чтобы заполнить вопрос для других объектов собственника,
+                                    активируйте пункт выше.
+                                </span>
+                            </DashboardChip>
+                        </AnimationTransition>
+                        <MessengerQuizQuestionAccordionList
+                            :label="`Список объектов (${objects.length})`"
+                            close-label="Скрыть список объектов"
+                        >
+                            <MessengerQuizQuestionTemplateHasFreeAreaPickerObject
+                                v-for="object in objects"
+                                :key="object.id"
+                                v-model="objectsModelValue[object.id].answer"
+                                @show-preview="openPreview(object.photo ?? [])"
+                                @click="toggleObject(object.id)"
+                                :object="object"
+                                :active="objectsModelValue[object.id].selected"
+                                :disabled="disabled || !withRelated"
+                                :question
+                                :ignored-effects
+                            />
+                        </MessengerQuizQuestionAccordionList>
+                    </template>
+                    <DashboardChip v-else class="dashboard-bg-light" with-icon>
                         <i class="fa-solid fa-ban"></i>
                         <span>У компании нет занесенных объектов.</span>
                     </DashboardChip>
                 </Tab>
             </Tabs>
-            <div v-else class="d-flex flex-column gap-1">
+            <MessengerQuizQuestionAccordionList
+                v-else
+                :label="`Список предложений (${offers.length})`"
+                close-label="Скрыть список предложений"
+            >
                 <MessengerQuizQuestionTemplateHasFreeAreaPickerOffer
                     v-for="offer in offers"
                     :key="offer.id"
@@ -69,7 +92,7 @@
                     :edit-mode
                     :passive-mode
                 />
-            </div>
+            </MessengerQuizQuestionAccordionList>
         </template>
         <DashboardChip v-else class="dashboard-bg-light" with-icon>
             <i class="fa-solid fa-ban"></i>
@@ -92,6 +115,8 @@ import MessengerQuizQuestionTemplateHasFreeAreaPickerObject from '@/components/M
 import { usePreviewer } from '@/composables/usePreviewer.js';
 import { getLinkFile } from '@/utils/url.js';
 import { useStore } from 'vuex';
+import AnimationTransition from '@/components/common/AnimationTransition.vue';
+import MessengerQuizQuestionAccordionList from '@/components/Messenger/Quiz/Question/MessengerQuizQuestionAccordionList.vue';
 
 const offersModelValue = defineModel('offers');
 const objectsModelValue = defineModel('objects');
@@ -105,6 +130,7 @@ const props = defineProps({
     editMode: Boolean,
     passiveMode: Boolean,
     mainAnswer: Boolean,
+    withRelated: Boolean,
     question: {
         type: Object,
         required: true

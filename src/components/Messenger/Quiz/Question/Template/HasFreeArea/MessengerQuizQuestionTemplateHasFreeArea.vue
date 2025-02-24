@@ -22,13 +22,12 @@
                 v-model:objects="objectsForm"
                 :main-answer="mainAnswer"
                 :company-id="currentObject.company_id"
-                :disabled="
-                    conditionModelValue === 0 || deleteCurrentFreeAreaModelValue || !withRelated
-                "
+                :disabled="conditionModelValue === 0 || deleteCurrentFreeAreaModelValue"
                 :edit-mode="conditionModelValue === 1"
                 :passive-mode="mainAnswer === false"
                 :question
                 :ignored-effects
+                :with-related
                 class="mt-2"
             />
         </template>

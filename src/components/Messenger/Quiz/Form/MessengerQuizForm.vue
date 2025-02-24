@@ -229,7 +229,7 @@ const getForm = () => {
         answer.effects.has(quizEffectKinds.COMPANIES_ON_OBJECT_IDENTIFIED)
     );
 
-    if (companiesIdentifiedAnswer) {
+    if (companiesIdentifiedAnswer && companiesIdentifiedAnswer.form?.objects?.length) {
         companiesIdentifiedAnswer.form.objects.forEach(object => {
             if (relatedAnswers.objects[object.id]) {
                 Object.assign(relatedAnswers.objects[object.id].answer, object.answer);
