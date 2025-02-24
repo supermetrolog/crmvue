@@ -31,7 +31,8 @@
                     </div>
                 </div>
             </div>
-            <div class="row">
+            <FormDivider />
+            <FormGroup>
                 <ConsultantPicker
                     v-model="form.agent_id"
                     :options="getConsultantsOptions"
@@ -40,9 +41,63 @@
                 <MultiSelect
                     v-model="form.deal_type"
                     label="Тип сделки"
-                    class="col-md-2 col-12 mb-2"
+                    class="col-md-4 col-12"
                     :options="DealTypeList"
                     placeholder="Выберите тип.."
+                />
+                <Input
+                    v-model="form.rangeMinElectricity"
+                    placeholder="не менее"
+                    maska="##########"
+                    label="Электричество"
+                    class="col-md-4 col-12"
+                    unit="кВт"
+                    type="number"
+                    :v="v$.form.rangeMinElectricity"
+                    reactive
+                />
+                <DoubleInput
+                    v-model:first="form.rangeMinArea"
+                    v-model:second="form.rangeMaxArea"
+                    label="S пола"
+                    class="col-md-4 col-12"
+                    unit="м<sup>2</sup>"
+                    type="number"
+                    :validators="formAreaValidators"
+                    reactive
+                />
+                <DoubleInput
+                    v-model:first="form.rangeMinPricePerFloor"
+                    v-model:second="form.rangeMaxPricePerFloor"
+                    label="Цена (продажи, аренды, о-х)"
+                    class="col-md-4 col-12"
+                    unit="₽"
+                    type="number"
+                    reactive
+                    :validators="formPricePerFloorValidators"
+                />
+                <DoubleInput
+                    v-model:first="form.rangeMinCeilingHeight"
+                    v-model:second="form.rangeMaxCeilingHeight"
+                    label="Высота потолков"
+                    class="col-md-4 col-12"
+                    unit="м"
+                    type="number"
+                    reactive
+                    :validators="formCeilingHeightValidators"
+                />
+            </FormGroup>
+            <FormDivider />
+            <FormGroup>
+                <MultiSelect
+                    v-model="form.fakeRegion"
+                    @change="changeRegion"
+                    label="Регионы"
+                    placeholder="Выберите регион.."
+                    can-deselect
+                    class="col-md-7 col-12"
+                    searchable
+                    :options="getRegionsOptions"
                 />
                 <Input
                     v-if="hasApproximateDistance"
@@ -65,96 +120,61 @@
                     type="number"
                     reactive
                 />
-                <Input
-                    v-model="form.rangeMinElectricity"
-                    placeholder="не менее"
-                    maska="##########"
-                    label="Электричество"
-                    class="col-md-3 col-12"
-                    unit="кВт"
-                    type="number"
-                    :v="v$.form.rangeMinElectricity"
-                    reactive
-                />
-                <DoubleInput
-                    v-model:first="form.rangeMinArea"
-                    v-model:second="form.rangeMaxArea"
-                    label="S пола"
-                    class="col-md-3 col-12"
-                    unit="м<sup>2</sup>"
-                    type="number"
-                    :validators="formAreaValidators"
-                    reactive
-                />
-                <DoubleInput
-                    v-model:first="form.rangeMinPricePerFloor"
-                    v-model:second="form.rangeMaxPricePerFloor"
-                    label="Цена (продажи, аренды, о-х)"
-                    class="col-md-3 col-12"
-                    unit="₽"
-                    type="number"
-                    reactive
-                    :validators="formPricePerFloorValidators"
-                />
-                <DoubleInput
-                    v-model:first="form.rangeMinCeilingHeight"
-                    v-model:second="form.rangeMaxCeilingHeight"
-                    label="Высота потолков"
-                    class="col-md-3 col-12"
-                    unit="м"
-                    type="number"
-                    reactive
-                    :validators="formCeilingHeightValidators"
-                />
-                <MultiSelect
-                    v-model="form.fakeRegion"
-                    @change="changeRegion"
-                    label="Регионы"
-                    placeholder="Выберите регион.."
-                    can-deselect
-                    class="col-md-3 col-sm-6 col-12"
-                    searchable
-                    :options="getRegionsOptions"
-                />
-            </div>
-            <div class="row mt-2">
                 <AnimationTransition>
-                    <div v-if="form.region.find(item => item == 6)" class="col-12 mb-2">
-                        <span class="form__subtitle">Округа Москвы</span>
-                        <div class="form__row mt-1">
-                            <CheckboxChip
-                                v-for="(districtItem, index) in DistrictList"
-                                :key="index"
-                                v-model="form.district_moscow"
-                                :value="index"
-                                :text="districtItem"
-                            />
-                        </div>
-                    </div>
+                    <CheckboxOptions
+                        v-if="hasDistricts"
+                        v-model="form.district_moscow"
+                        class="col-12"
+                        label="Округа Москвы"
+                        :options="DistrictList"
+                    />
                 </AnimationTransition>
                 <AnimationTransition>
-                    <div v-if="form.region.find(item => item == 1)" class="col-12 mb-2">
+                    <SwitchSlider
+                        v-if="hasDistricts"
+                        v-model="form.outside_mkad"
+                        vertical
+                        label="МКАД"
+                        true-title="Внутри МКАД"
+                        false-title="Снаружи МКАД"
+                        :true-value="0"
+                        :false-value="1"
+                        class="col-5"
+                    />
+                </AnimationTransition>
+                <AnimationTransition>
+                    <div v-if="hasDirections" class="col-12 mb-2">
                         <span class="form__subtitle">Направления МО</span>
                         <div class="form__row mt-1">
                             <CheckboxChip
                                 v-for="(directionItem, index) in DirectionList"
                                 :key="index"
                                 v-model="form.direction"
-                                :value="index"
+                                :value="Number(index)"
                                 :text="directionItem.short"
                             />
                         </div>
+                        <Switch
+                            v-model="form.region_neardy"
+                            class="mt-2"
+                            true-title="Регионы рядом с МО"
+                            false-title="Только в пределах МО"
+                            :transform="Number"
+                        />
                     </div>
                 </AnimationTransition>
+            </FormGroup>
+            <FormDivider />
+            <FormGroup>
                 <CheckboxOptions
                     v-model="form.class"
-                    class="col-md-2 col-12"
+                    class="col-md-3 col-12"
                     label="Классы"
                     :options="ObjectClassList"
                 />
                 <CheckboxOptions
                     v-model="form.gates"
-                    class="col-md-5 col-12"
+                    class="col-md-4 col-12"
                     label="Тип ворот"
                     :options="GateTypeList"
                 />
@@ -164,7 +184,8 @@
                     label="Тип пола"
                     :options="realFloorTypeOptions"
                 />
-            </div>
+            </FormGroup>
+            <FormDivider />
             <p class="form__block">Коммуникации</p>
             <div class="row">
                 <SwitchSlider
@@ -234,9 +255,10 @@
                     :false-value="2"
                 />
             </div>
-            <div class="row mt-2">
+            <FormDivider />
+            <p class="form__block">Тип объекта</p>
+            <FormGroup>
                 <div class="col-12">
-                    <span class="form__subtitle">Тип объекта</span>
                     <div class="row mt-2">
                         <ObjectTypePicker
                             v-model:value="form.purposes"
@@ -264,9 +286,10 @@
                         />
                     </div>
                 </div>
-            </div>
+            </FormGroup>
+            <FormDivider />
             <p class="form__block">Реклама</p>
-            <div class="row">
+            <FormGroup>
                 <SwitchSlider
                     v-model="form.ad_avito"
                     class="col-12 col-lg-6 col-xl-4"
@@ -292,7 +315,7 @@
                     class="col-12 col-lg-6 col-xl-4"
                     label="Бесплатные"
                 />
-            </div>
+            </FormGroup>
         </Form>
     </Modal>
 </template>
@@ -319,7 +342,8 @@ import {
     DirectionList,
     DistrictList,
     GateTypeList,
-    ObjectClassList
+    ObjectClassList,
+    OutsideMkad
 } from '@/const/const.js';
 import { computed, onBeforeUnmount, onMounted, reactive, watch } from 'vue';
 import { deleteEmptyFields } from '@/utils/helpers/object/deleteEmptyFields.js';
@@ -334,6 +358,10 @@ import { useRegionsOptions } from '@/composables/options/useRegionsOptions.js';
 import ConsultantPicker from '@/components/common/Forms/ConsultantPicker/ConsultantPicker.vue';
 import { useConsultantsOptions } from '@/composables/options/useConsultantsOptions.js';
 import { objectPurposesWithSectionsOptions } from '@/const/options/object.options.js';
+import FormDivider from '@/components/common/Forms/FormDivider.vue';
+import FormGroup from '@/components/common/Forms/FormGroup.vue';
+import RadioOptions from '@/components/common/Forms/RadioOptions.vue';
+import Switch from '@/components/common/Forms/Switch.vue';
 
 const emit = defineEmits(['close', 'search', 'reset']);
 
@@ -566,4 +594,7 @@ onMounted(async () => {
 onBeforeUnmount(() => {
     clearTimeout(timeout);
 });
+
+const hasDirections = computed(() => form.region.includes(1));
+const hasDistricts = computed(() => form.region.includes(6));
 </script>

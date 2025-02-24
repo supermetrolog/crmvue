@@ -45,7 +45,10 @@ export const filtersAliases = {
     status: 'Статус:',
     all: 'Поисковой запрос',
     consultant_id: 'Консультант:',
-    agent_id: 'Консультант:'
+    agent_id: 'Консультант:',
+    productRanges: 'Номенклатура:',
+    without_product_ranges: 'Без номенклатуры',
+    with_passive_consultant: 'С неактивными консультантами'
 };
 
 const IGNORING_FILTERS = new Set([

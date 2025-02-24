@@ -1,6 +1,6 @@
 <template>
     <div class="switch-slider" :class="{ disabled: disabled }">
-        <div class="switch-slider__wrapper">
+        <div class="switch-slider__wrapper" :class="{ vertical: vertical }">
             <span v-if="label" class="switch-slider__label">{{ label }}</span>
             <div class="switch-slider__buttons">
                 <button
@@ -41,7 +41,8 @@ defineProps({
     falseTitle: { type: String, default: 'Нет' },
     falseValue: { type: [Number, Boolean], default: 0 },
     unknownTitle: { type: String, default: 'Неважно' },
-    label: { type: String, default: undefined }
+    label: { type: String, default: undefined },
+    vertical: Boolean
 });
 
 const modelValue = defineModel();

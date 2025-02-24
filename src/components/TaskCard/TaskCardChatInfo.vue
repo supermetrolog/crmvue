@@ -1,26 +1,26 @@
 <template>
-    <div>
+    <div class="task-card__relations">
         <div v-if="task.related_by?.chat_member_id" class="task-card__relation">
-            <p class="task-card__label mb-1">По чату в задачнике:</p>
+            <p class="task-card__label mb-1">Привязано к чату:</p>
             <component
                 :is="currentDialogComponent"
                 @click="$emit('to-chat')"
                 :model="task.related_by.chat_member.model"
             />
-            <div class="d-flex mt-1 gap-2">
-                <TaskCardButton @click="$emit('to-chat')" :class="companyId ? 'w-50' : 'w-100'">
-                    <span>Открыть чат</span>
+            <div class="task-card__buttons mt-1">
+                <TaskCardButton @click="$emit('to-chat')" bordered>
+                    <span>Перейти в чат</span>
                     <i class="fa-solid fa-arrow-up-right-from-square ml-2"></i>
                 </TaskCardButton>
-                <TaskCardButton v-if="companyId" @click.prevent="$emit('to-company')" class="w-50">
-                    <span>Открыть компанию</span>
+                <TaskCardButton v-if="companyId" @click.prevent="$emit('to-company')" bordered>
+                    <span>Просмотреть компанию</span>
                     <i class="fa-solid fa-arrow-up-right-from-square ml-2"></i>
                 </TaskCardButton>
+                <TaskCardContactsTippy v-if="companyId" :company-id="companyId" :task="task" />
             </div>
-            <TaskCardContactsTippy v-if="companyId" :company-id="companyId" :task="task" />
         </div>
         <div v-if="task.related_by?.chat_member_message_id" class="task-card__relation">
-            <p class="task-card__label mb-1">Прикреплено к сообщению:</p>
+            <p class="task-card__label mb-1">Привязано к сообщению в чате:</p>
             <MessengerChatShortNotification
                 v-if="chatMemberMessage.is_system"
                 class="task-card__chat-notification"

@@ -84,6 +84,7 @@ import { requestOptions } from '@/const/options/request.options.js';
 import { companyOptions } from '@/const/options/company.options.js';
 import { locationOptions } from '@/const/options/location.options.js';
 import { toNumberOrRangeFormat } from '@/utils/formatters/number.js';
+import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
 
 const props = defineProps({
     request: {
@@ -98,12 +99,28 @@ const isActive = computed(() => props.request.status === requestOptions.statusSt
 const hasActivity = computed(() => {
     return (
         props.request?.company &&
-        (props.request.company.activityGroup !== null ||
-            props.request.company.activityProfile !== null)
+        (props.request.company.activity_profiles?.length ||
+            props.request.company.activity_groups?.length ||
+            isNotNullish(props.request.company.activityGroup) ||
+            isNotNullish(props.request.company.activityProfle))
     );
 });
 
 const categoryName = computed(() => {
+    if (
+        props.request.company.activity_profiles?.length ||
+        props.request.company.activity_groups?.length
+    ) {
+        return [
+            props.request.company.activity_groups
+                .map(el => companyOptions.activityGroup[el.activity_group_id])
+                .join(', '),
+            props.request.company.activity_profiles
+                .map(el => companyOptions.activityProfile[el.activity_profile_id])
+                .join(', ')
+        ].join(': ');
+    }
+
     const activityInfo = [
         companyOptions.activityGroup[props.request.company.activityGroup],
         companyOptions.activityProfile[props.request.company.activityProfile]

@@ -1,0 +1,56 @@
+@use "../../../utils/mixins";
+@use "../../../utils/variables";
+
+.ui-dropdown-actions {
+    border: none!important;
+    box-shadow: 0 1px 5px #0003,0 2px 2px #00000024,0 3px 1px -2px #0000001f!important;
+
+    &__menu {
+        @include mixins.flex-box($d: column);
+    }
+
+    &__button {
+        display: block;
+        padding: 3px 10px 3px 7px;
+        color: inherit;
+        background-color: #fff;
+        border: none;
+        @include mixins.transition(background-color, color);
+
+        &:has(i) {
+            @include mixins.flex-box($gap: 7px, $a: center);
+
+            i {
+                width: 20px;
+            }
+        }
+
+
+        &.active {
+            background-color: variables.$bg-success-l;
+        }
+
+        &:not(:disabled) {
+            cursor: pointer;
+        }
+
+        &:disabled {
+            background-color: variables.$bg-gray-l;
+        }
+
+        @include mixins.hover {
+            background-color: variables.$bg-success;
+            color: #fff;
+        }
+
+        .spinner__clip {
+            height: 20px!important;
+            width: 20px!important;
+            border-width: 3px;
+        }
+    }
+
+    &__element:not(:last-child) &__button {
+        border-bottom: 1px solid rgba(0, 0, 0, .1);
+    }
+}
