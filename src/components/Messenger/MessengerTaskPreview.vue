@@ -1,5 +1,11 @@
 <template>
-    <Modal @close="submit" :show="isVisible" title="Просмотр задачи" :width="1100">
+    <Modal
+        @close="submit"
+        :show="isVisible"
+        title="Просмотр задачи"
+        :width="1100"
+        :blackout-opacity="0.5"
+    >
         <template #container>
             <div v-if="isLoading" class="messenger-task-previewer">
                 <Spinner class="absolute-center" label="Загрузка задачи.." />

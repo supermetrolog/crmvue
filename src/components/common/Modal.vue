@@ -73,6 +73,10 @@ const props = defineProps({
         type: Number,
         default: 50
     },
+    blackoutOpacity: {
+        type: Number,
+        default: 0.25
+    },
     closeOnOutsideClick: {
         type: Boolean,
         default: true
@@ -156,5 +160,9 @@ onBeforeUnmount(() => {
 
 .modal {
     --modal-body-min-height: v-bind(minHeightSize);
+}
+
+.modal__blackout {
+    background-color: rgba(0, 0, 0, v-bind(blackoutOpacity));
 }
 </style>
