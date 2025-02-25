@@ -677,3 +677,15 @@
         font-size: 16px;
     }
 }
+
+.messenger-chat-content {
+    &__disabled {
+        background-color: variables.$color_danger;
+        color: #fff;
+
+        .icon {
+            font-size: 60px;
+            opacity: .5;
+        }
+    }
+}

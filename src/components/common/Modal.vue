@@ -15,7 +15,7 @@
                         animate__headShake: !canBeClosed
                     }"
                 >
-                    <div class="modal__header">
+                    <div v-if="!hideHeader" class="modal__header">
                         <p v-if="title">
                             {{ title }}
                         </p>
@@ -28,7 +28,7 @@
                             ></i>
                         </div>
                     </div>
-                    <div class="modal__body">
+                    <div class="modal__body" :class="bodyClass">
                         <div class="container-fluid">
                             <slot></slot>
                         </div>
@@ -84,7 +84,9 @@ const props = defineProps({
     closeOnPressEsc: {
         type: Boolean,
         default: true
-    }
+    },
+    hideHeader: Boolean,
+    bodyClass: [String, Array, Object]
 });
 
 const alreadyHidden = shallowRef(false);

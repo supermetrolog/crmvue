@@ -123,6 +123,16 @@
         @include mixins.flex-box($a: center, $j: center, $d: column, $gap: 5px);
     }
 
+    &__disabled-body {
+        background-color: variables.$color_danger;
+        color: #fff;
+
+        .icon {
+            font-size: 70px;
+            opacity: .5;
+        }
+    }
+
     &__related {
         font-weight: 500;
         margin-left: 3.5px;

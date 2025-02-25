@@ -15,7 +15,7 @@
                         animate__headShake: !canBeClosed
                     }"
                 >
-                    <div class="modal__header">
+                    <div v-if="!hideHeader" class="modal__header">
                         <p v-if="title">
                             {{ title }}
                         </p>
@@ -28,7 +28,7 @@
                             ></i>
                         </div>
                     </div>
-                    <div class="modal__body">
+                    <div class="modal__body" :class="bodyClass">
                         <div class="container-fluid">
                             <slot :close="close"></slot>
                         </div>
@@ -80,7 +80,9 @@ const props = defineProps({
         type: Boolean,
         default: true
     },
-    customClose: Boolean
+    customClose: Boolean,
+    hideHeader: Boolean,
+    bodyClass: [String, Object, Array]
 });
 
 const minHeightSize = computed(() => props.minHeight + 'px');

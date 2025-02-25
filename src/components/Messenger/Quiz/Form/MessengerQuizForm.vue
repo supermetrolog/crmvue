@@ -8,7 +8,7 @@
             />
             <MessengerQuizFormRemainingWindow
                 v-else-if="!canBeCreated"
-                @edit="editSurvey"
+                @show="showSurvey"
                 :last-survey="lastSurvey"
             />
             <template v-else>
@@ -341,9 +341,9 @@ const selectedContactsEls = useTemplateRef('selectedContactsEls');
 
 // edit
 
-const { show: showSurvey } = useAsyncPopup('surveyPreview');
+const { show: _showSurvey } = useAsyncPopup('surveyPreview');
 
-function editSurvey() {
-    showSurvey({ surveyId: props.lastSurvey.id, editMode: true });
+function showSurvey() {
+    _showSurvey({ surveyId: props.lastSurvey.id });
 }
 </script>
