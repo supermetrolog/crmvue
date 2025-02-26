@@ -298,6 +298,10 @@
             background-color: variables.$color_warning;
         }
     }
+
+    .messenger-chat-message-addition {
+        border-radius: 0!important;
+    }
 }
 
 .messenger-quiz-helper {
@@ -941,5 +945,14 @@
             color: variables.$cl-success;
             border-bottom: 2px solid rgb(16, 185, 129);
         }
+    }
+}
+
+.messenger-quiz-preview-question {
+    &__description {
+        text-align: start;
+        background-color: variables.$color_light;
+        padding: 3px;
+        border: 1px solid rgba(0, 0, 0, 0.1);
     }
 }

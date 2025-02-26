@@ -12,7 +12,7 @@
     <UiModal
         v-model:visible="formIsVisible"
         title="Редактирование опросника"
-        :width="800"
+        :width="1200"
         :min-height="300"
         :close-on-outside-click="false"
         :close-on-press-esc="false"

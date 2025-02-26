@@ -236,7 +236,6 @@ export default {
         },
         setProperties(files) {
             files.forEach(file => {
-                file.created_at = 'Только что';
                 file.fileType = this.getFileTypeByName(file.name);
 
                 if (file.type.match('image')) {

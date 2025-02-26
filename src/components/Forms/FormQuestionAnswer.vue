@@ -124,7 +124,8 @@ const categoryOptions = {
     'yes-no': 'Да/Нет [yes-no]',
     'text-answer': 'Текстовые поля [text-answer]',
     tab: 'Основные опции [tab]',
-    checkbox: 'Дополнительные возможности [checkbox]'
+    checkbox: 'Дополнительные возможности [checkbox]',
+    files: 'Файлы [files]'
 };
 
 const notify = useNotify();

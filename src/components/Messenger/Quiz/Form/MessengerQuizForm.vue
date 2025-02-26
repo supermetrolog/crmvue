@@ -150,7 +150,7 @@ onMounted(() => {
 const withRelated = ref(false);
 
 const getForm = () => {
-    const form = quizForm.value?.getForm();
+    const form = quizForm.value.getForm();
 
     if (currentQuestionGroup.value === quizQuestionsGroups.COMPANY) return form;
 
@@ -165,30 +165,36 @@ const getForm = () => {
         answer.effects.has(quizEffectKinds.OBJECT_FREE_AREA_MUST_BE_EDIT)
     );
 
-    if (freeAreaMustBeEditAnswer && freeAreaMustBeEditAnswer.value) {
-        const filteredOffers = freeAreaMustBeEditAnswer.form.offers.reduce(
-            (acc, offer) => {
-                const payload = {
-                    id: offer.id,
-                    comment: offer.form.comment
-                };
+    if (
+        freeAreaMustBeEditAnswer &&
+        freeAreaMustBeEditAnswer.value &&
+        freeAreaMustBeEditAnswer.form
+    ) {
+        if (freeAreaMustBeEditAnswer.form.offers?.length) {
+            const filteredOffers = freeAreaMustBeEditAnswer.form.offers.reduce(
+                (acc, offer) => {
+                    const payload = {
+                        id: offer.id,
+                        comment: offer.form.comment
+                    };
 
-                if (offer.form.action === 0) acc.deleted.push(payload);
-                if (offer.form.action === 1) acc.edited.push(payload);
-                if (offer.form.action === 2) acc.skipped.push(payload);
+                    if (offer.form.action === 0) acc.deleted.push(payload);
+                    if (offer.form.action === 1) acc.edited.push(payload);
+                    if (offer.form.action === 2) acc.skipped.push(payload);
 
-                return acc;
-            },
-            { deleted: [], edited: [], skipped: [] }
-        );
+                    return acc;
+                },
+                { deleted: [], edited: [], skipped: [] }
+            );
+
+            relatedAnswers.offers.push(filteredOffers);
+        }
 
         freeAreaMustBeEditAnswer.form.objects.forEach(object => {
             relatedAnswers.objects[object.id] = {
                 answer: object.answer
             };
         });
-
-        relatedAnswers.offers.push(filteredOffers);
     }
 
     const wantsToSellMustBeEditAnswer = form.find(answer =>

@@ -108,6 +108,27 @@
                 :disabled="isDisabled"
             />
         </div>
+        <AccordionSimple
+            v-if="hasFilesQuestions"
+            v-show="hasMainAnswer && !hiddenByTemplate && !isDisabled"
+            class="mt-2"
+        >
+            <template #title>
+                <AccordionSimpleTriggerButton
+                    icon="fa-regular fa-file"
+                    label="Файлы и изображения"
+                />
+            </template>
+            <template #body>
+                <FileInput
+                    v-for="answer in filesFields"
+                    :key="answer.id"
+                    v-model:data="form.files[answer.id].old"
+                    v-model:native="form.files[answer.id].new"
+                    short
+                />
+            </template>
+        </AccordionSimple>
         <slot name="after-content" :disabled="isDisabled" :main-answer="form.main" />
     </div>
 </template>
@@ -125,6 +146,9 @@ import MessengerQuizQuestionWarningIcon from '@/components/Messenger/Quiz/Questi
 import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
 import MessengerQuizQuestionPrimaryIcon from '@/components/Messenger/Quiz/Question/Icons/MessengerQuizQuestionPrimaryIcon.vue';
 import { useNotify } from '@/utils/use/useNotify.js';
+import FileInput from '@/components/common/Forms/FileInput.vue';
+import AccordionSimple from '@/components/common/Accordion/AccordionSimple.vue';
+import AccordionSimpleTriggerButton from '@/components/common/Accordion/AccordionSimpleTriggerButton.vue';
 
 const props = defineProps({
     question: {
@@ -191,6 +215,7 @@ const hasMainQuestion = computed(() => Boolean(props.question.answers?.['yes-no'
 const hasTabQuestions = computed(() => Boolean(props.question.answers?.tab));
 const hasTextQuestions = computed(() => Boolean(props.question.answers?.['text-answer']));
 const hasCheckboxQuestions = computed(() => Boolean(props.question.answers?.checkbox));
+const hasFilesQuestions = computed(() => Boolean(props.question.answers?.files));
 
 const checkboxTabs = computed(() => tabs.value.filter(element => element.field_id === 2));
 const radioTabs = computed(() => tabs.value.filter(element => element.field_id === 4));
@@ -212,8 +237,13 @@ const tabs = computed(() =>
 const texts = computed(() =>
     props.question.answers['text-answer'].filter(element => element.deleted_at === null)
 );
+
 const checkboxes = computed(() =>
     props.question.answers.checkbox.filter(element => element.deleted_at === null)
+);
+
+const filesFields = computed(() =>
+    props.question.answers.files.filter(element => element.deleted_at === null)
 );
 
 const isDisabled = computed(() => {
@@ -232,13 +262,25 @@ const initForm = () => {
         form.radio = null;
     }
 
-    if (hasTextQuestions.value)
-        form.description = props.question.answers['text-answer'].reduce((acc, element) => {
+    if (hasTextQuestions.value) {
+        form.description = texts.value.reduce((acc, element) => {
             acc[element.id] = '';
             return acc;
         }, {});
+    }
 
     if (hasCheckboxQuestions.value) form.checkbox = [];
+
+    if (hasFilesQuestions.value) {
+        form.files = filesFields.value.reduce((acc, element) => {
+            acc[element.id] = {
+                new: [],
+                old: []
+            };
+
+            return acc;
+        }, {});
+    }
 };
 
 function setForm(payload) {
@@ -273,6 +315,17 @@ function setForm(payload) {
             return acc;
         }, []);
     }
+
+    if (hasFilesQuestions.value && Object.hasOwn(payload, 'files')) {
+        form.files = payload.files.reduce((acc, element) => {
+            acc[element.id] = {
+                new: [],
+                old: [...element.files]
+            };
+
+            return acc;
+        }, {});
+    }
 }
 
 watch(
@@ -286,60 +339,69 @@ watch(isDisabled, () => {
     accordion.value?.toggle();
 });
 
+function answerToPayload(answer, additional = {}) {
+    return {
+        question_id: props.question.id,
+        question_answer_id: answer.id,
+        effects: new Set(answer.effects.map(element => element.kind)),
+        ...additional
+    };
+}
+
+function answersToPayload(answers, prepareCallback = () => ({})) {
+    return answers.map(element => answerToPayload(element, prepareCallback(element)));
+}
+
 const getForm = () => {
     const list = [];
 
-    if (hasMainQuestion.value)
-        list.push({
-            question_answer_id: props.question.answers['yes-no'][0].id,
+    if (hasMainQuestion.value) {
+        const answers = answersToPayload(props.question.answers['yes-no'], () => ({
             value: hasNullMainAnswer.value ? null : isNullish(form.main) ? undefined : form.main,
-            type: 'main',
-            question_id: props.question.id,
-            effects: new Set(
-                props.question.answers['yes-no'][0].effects.map(element => element.kind)
-            )
-        });
+            type: 'main'
+        }));
+
+        list.push(...answers);
+    }
 
     if (hasTabQuestions.value) {
-        const answers = props.question.answers.tab.map(element => ({
-            question_answer_id: element.id,
+        const answers = answersToPayload(props.question.answers.tab, answer => ({
             value:
                 !hasNullMainAnswer.value &&
-                (form.tab.some(_element => Number(_element) === element.id) ||
-                    element.id === Number(form.radio)),
-            question_id: props.question.id,
-            effects: new Set(element.effects.map(element => element.kind))
+                (form.tab.some(_element => Number(_element) === answer.id) ||
+                    answer.id === Number(form.radio))
         }));
 
         list.push(...answers);
     }
 
     if (hasTextQuestions.value) {
-        const answers = props.question.answers['text-answer'].map(element => {
-            const data = {
-                question_answer_id: element.id,
-                question_id: props.question.id,
-                effects: new Set(element.effects.map(element => element.kind))
-            };
-
-            if (form.description[element.id]?.length && !hasNullMainAnswer.value) {
-                data.value = form.description[element.id];
+        const answers = answersToPayload(texts.value, answer => {
+            if (form.description[answer.id]?.length && !hasNullMainAnswer.value) {
+                return { value: form.description[answer.id] };
             }
 
-            return data;
+            return {};
         });
 
         list.push(...answers);
     }
 
     if (hasCheckboxQuestions.value) {
-        const answers = props.question.answers.checkbox.map(element => ({
-            question_answer_id: element.id,
+        const answers = answersToPayload(checkboxes.value, answer => ({
             value:
                 !hasNullMainAnswer.value &&
-                form.checkbox.some(_element => Number(_element) === element.id),
-            question_id: props.question.id,
-            effects: new Set(element.effects.map(element => element.kind))
+                form.checkbox.some(_element => Number(_element) === answer.id)
+        }));
+
+        list.push(...answers);
+    }
+
+    if (hasFilesQuestions.value) {
+        const answers = answersToPayload(filesFields.value, answer => ({
+            value: form.files[answer.id].length > 0,
+            files: form.files[answer.id].new,
+            file: form.files[answer.id].length > 0
         }));
 
         list.push(...answers);

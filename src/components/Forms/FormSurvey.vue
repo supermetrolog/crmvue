@@ -76,6 +76,14 @@ function generateForm() {
             }));
         }
 
+        if (question.answers?.files?.length) {
+            payload['files'] = question.answers.files.map(answer => ({
+                id: answer.id,
+                effects: new Set(answer.effects.map(effect => effect.kind)),
+                files: answer.surveyQuestionAnswer?.files
+            }));
+        }
+
         return payload;
     });
 }

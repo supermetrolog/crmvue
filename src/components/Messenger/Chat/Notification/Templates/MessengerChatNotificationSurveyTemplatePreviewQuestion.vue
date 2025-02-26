@@ -31,17 +31,31 @@
                 </p>
             </slot>
         </div>
-        <div v-if="hasCheckboxQuestions" class="messenger-quiz-question__interests">
+        <div
+            v-if="hasCheckboxQuestions && selectedCheckboxes.length"
+            class="messenger-quiz-question__interests"
+        >
             <Chip
                 v-for="interest in selectedCheckboxes"
                 :key="interest.id"
                 :html="interest.value"
-                :class="{
-                    'dashboard-bg-success text-white': Boolean(interest.surveyQuestionAnswer?.value)
-                }"
+                class="dashboard-bg-success text-white"
             />
         </div>
-        <div v-if="!short">
+        <div v-if="hasFilesQuestions && fileAnswers.length">
+            <div v-for="answer in fileAnswers" :key="answer.id">
+                <div v-if="answer.surveyQuestionAnswer?.files?.length" class="row">
+                    <File
+                        v-for="file in answer.surveyQuestionAnswer?.files"
+                        :key="file.id"
+                        :file="file"
+                        read-only
+                        class="col-2"
+                    />
+                </div>
+            </div>
+        </div>
+        <div v-if="!short && tasks.length">
             <MessengerChatMessageAdditionsTask
                 v-for="task in tasks"
                 :key="task.id"
@@ -58,6 +72,7 @@ import { computed } from 'vue';
 import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
 import MessengerChatMessageAdditionsTask from '@/components/Messenger/Chat/Message/Additions/MessengerChatMessageAdditionsTask.vue';
 import { isNullish } from '@/utils/helpers/common/isNullish.js';
+import File from '@/components/common/Forms/File.vue';
 
 const props = defineProps({
     question: {
@@ -137,5 +152,15 @@ const tasks = computed(() => {
 
         return acc;
     }, []);
+});
+
+// files
+
+const hasFilesQuestions = computed(() => Boolean(props.question.answers.files));
+
+const fileAnswers = computed(() => {
+    return props.question.answers.files.filter(
+        element => element.surveyQuestionAnswer?.files?.length
+    );
 });
 </script>

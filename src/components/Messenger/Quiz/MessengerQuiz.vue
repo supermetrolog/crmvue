@@ -225,49 +225,51 @@ async function send() {
 
     if (!isCanceled) {
         finalContact.value = currentRecipient.value;
-        //
-        // await showFinalContactPicker();
-        //
-        // loaders.final = true;
-        //
-        // loaders.surveyCreating = true;
-        // const createdSurvey = await createSurvey(
-        //     finalContact.value,
-        //     answers.map(element => ({
-        //         question_answer_id: element.question_answer_id,
-        //         value: element.value
-        //     }))
-        // );
-        // loaders.surveyCreating = false;
-        //
-        // if (!createdSurvey) {
-        //     notify.info('Произошла ошибка при сохранении опросника, попробуйте позже');
-        //     loaders.final = false;
-        //     return;
-        // }
-        //
-        // loaders.callsCreating = true;
-        // await createCallsWithContacts(
-        //     selectedContacts.value.filter(element => element.entity.id !== finalContact.value.id),
-        //     chatMemberId
-        // );
-        // loaders.callsCreating = false;
-        //
-        // loaders.messageSearching = true;
-        // const surveyMessage = await findSurveyMessage(createdSurvey.id, chatMemberId);
-        // loaders.messageSearching = false;
-        //
-        // if (!surveyMessage) {
-        //     notify.info(
-        //         'Не удалось установить связь с чатом, создайте задачи по контактам вручную..'
-        //     );
-        //     loaders.final = false;
-        //     return;
-        // }
+
+        await showFinalContactPicker();
+
+        loaders.final = true;
+
+        loaders.surveyCreating = true;
+        const createdSurvey = await createSurvey(
+            finalContact.value,
+            answers.map(element => ({
+                question_answer_id: element.question_answer_id,
+                value: element.value,
+                files: element.files,
+                file: element.file
+            }))
+        );
+        loaders.surveyCreating = false;
+
+        if (!createdSurvey) {
+            notify.info('Произошла ошибка при сохранении опросника, попробуйте позже');
+            loaders.final = false;
+            return;
+        }
+
+        loaders.callsCreating = true;
+        await createCallsWithContacts(
+            selectedContacts.value.filter(element => element.entity.id !== finalContact.value.id),
+            chatMemberId
+        );
+        loaders.callsCreating = false;
+
+        loaders.messageSearching = true;
+        const surveyMessage = await findSurveyMessage(createdSurvey.id, chatMemberId);
+        loaders.messageSearching = false;
+
+        if (!surveyMessage) {
+            notify.info(
+                'Не удалось установить связь с чатом, создайте задачи по контактам вручную..'
+            );
+            loaders.final = false;
+            return;
+        }
 
         if (withRelated) {
             loaders.relationCreating = true;
-            await createRelatedSurveys(finalContact.value, relatedAnswers.objects);
+            await createRelatedSurveys(finalContact.value, relatedAnswers.objects, createdSurvey);
             loaders.relationCreating = false;
 
             return;
