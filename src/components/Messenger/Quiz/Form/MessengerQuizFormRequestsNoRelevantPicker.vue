@@ -16,7 +16,7 @@
                 />
             </div>
         </template>
-        <DashboardChip v-else class="dashboard-bg-light">
+        <DashboardChip v-else class="dashboard-bg-light mt-1">
             У компании нет активных запросов
         </DashboardChip>
     </div>

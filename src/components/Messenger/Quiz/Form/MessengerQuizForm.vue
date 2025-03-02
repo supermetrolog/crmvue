@@ -23,28 +23,12 @@
                     :contact="contact.entity"
                     class="messenger-quiz__question"
                 />
-                <div
-                    v-if="isObjectQuestionGroup"
-                    class="messenger-quiz__question messenger-quiz-question"
-                >
-                    <Checkbox v-model="withRelated" class="messenger-quiz__related">
-                        <div class="messenger-quiz__related-text">
-                            <span>Заполнить по всем объектам собственника</span>
-                            <i
-                                v-tippy="
-                                    'Для каждого объекта собственника будет создан опросник и соответствующие задачи при необходимости.'
-                                "
-                                class="fa-regular fa-question-circle fs-4"
-                            />
-                        </div>
-                    </Checkbox>
-                </div>
             </template>
             <MessengerQuizFormTemplate
-                ref="quizForm"
-                :questions="filteredQuestions"
+                ref="objectQuizForm"
+                v-model:related="withRelated"
+                :questions="questions"
                 :disabled="formIsDisabled"
-                :with-related
             />
         </template>
         <MessengerQuizFormContactSuggestModal
@@ -64,8 +48,7 @@
 <script setup>
 import { useStore } from 'vuex';
 import { computed, onMounted, ref, useTemplateRef, watch } from 'vue';
-import { quizEffectKinds, quizQuestionsGroups } from '@/const/quiz.js';
-import { messenger } from '@/const/messenger.js';
+import { quizEffectKinds } from '@/const/quiz.js';
 import MessengerQuizQuestionCall from '@/components/Messenger/Quiz/Question/Call/MessengerQuizQuestionCall.vue';
 import MessengerQuizFormContactSuggestModal from '@/components/Messenger/Quiz/Form/MessengerQuizFormContactSuggestModal.vue';
 import MessengerQuizFormDisabledWindow from '@/components/Messenger/Quiz/Form/MessengerQuizFormDisabledWindow.vue';
@@ -76,7 +59,6 @@ import MessengerQuizFormTemplate from '@/components/Messenger/Quiz/Form/Messenge
 import MessengerQuizFormRemainingWindow from '@/components/Messenger/Quiz/Form/MessengerQuizFormRemainingWindow.vue';
 import { useAsyncPopup } from '@/composables/useAsyncPopup.js';
 import Spinner from '@/components/common/Spinner.vue';
-import Checkbox from '@/components/common/Forms/Checkbox.vue';
 
 const contactModel = defineModel('contact');
 const selectedContacts = defineModel('selected-contacts');
@@ -107,35 +89,13 @@ const props = defineProps({
 });
 
 const store = useStore();
-const quizForm = useTemplateRef('quizForm');
+const objectQuizForm = useTemplateRef('objectQuizForm');
 
 const isLoading = ref(false);
 
-const currentQuestionGroup = computed(() => {
-    if (store.state.Messenger.currentDialogType === messenger.dialogTypes.COMPANY)
-        return quizQuestionsGroups.COMPANY;
-
-    if (store.state.Messenger.currentDialogType === messenger.dialogTypes.REQUEST)
-        return quizQuestionsGroups.COMPANY;
-
-    if (
-        store.state.Messenger.currentDialog.model.type ===
-        messenger.objectChatMemberTypes.RENT_OR_SALE
-    )
-        return quizQuestionsGroups.OBJECT;
-
-    return quizQuestionsGroups.COMPANY;
-});
-
-const isObjectQuestionGroup = computed(
-    () => currentQuestionGroup.value === quizQuestionsGroups.OBJECT
-);
+// questions
 
 const questions = computed(() => store.state.Quizz.questions);
-
-const filteredQuestions = computed(() =>
-    questions.value.filter(question => question.group === currentQuestionGroup.value)
-);
 
 const fetchQuestions = async () => {
     isLoading.value = true;
@@ -147,12 +107,12 @@ onMounted(() => {
     if (!questions.value?.length) fetchQuestions();
 });
 
+// form
+
 const withRelated = ref(false);
 
 const getForm = () => {
-    const form = quizForm.value.getForm();
-
-    if (currentQuestionGroup.value === quizQuestionsGroups.COMPANY) return form;
+    const form = objectQuizForm.value.getForm();
 
     // objects group
 
@@ -262,7 +222,7 @@ defineExpose({
     validate() {
         return (
             selectedContactsEls.value.every(element => element.validate()) &&
-            (formIsDisabled.value || quizForm.value?.validate())
+            (formIsDisabled.value || objectQuizForm.value.validate())
         );
     }
 });

@@ -6,7 +6,7 @@
                 <AccordionSimpleTrigger static />
             </div>
         </slot>
-        <div class="accordion-simple__body" :class="{ active: isOpen }">
+        <div class="accordion-simple__body" :class="[{ active: isOpen }, bodyClass]">
             <div v-if="!withoutRender || isOpened" class="accordion-simple__wrapper">
                 <slot name="body"></slot>
             </div>
@@ -20,7 +20,8 @@ import { onBeforeUnmount, provide, ref } from 'vue';
 const props = defineProps({
     title: String,
     opened: Boolean,
-    withoutRender: Boolean
+    withoutRender: Boolean,
+    bodyClass: [String, Array, Object]
 });
 
 const isOpen = ref(props.opened);

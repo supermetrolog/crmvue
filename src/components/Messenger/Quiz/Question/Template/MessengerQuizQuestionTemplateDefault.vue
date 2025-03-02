@@ -1,11 +1,16 @@
 <template>
     <div class="messenger-quiz-question">
         <div class="messenger-quiz-question__header">
+            <Checkbox
+                v-if="selectable && !disabledByTemplate"
+                v-model="selectedModelValue"
+                v-tippy="'Активировать вопрос для заполнения'"
+            />
             <MessengerQuizQuestionPrimaryIcon v-if="isDisabled" />
             <MessengerQuizQuestionSuccessIcon v-else-if="hasFullAnswer || isCustomCompleted" />
             <MessengerQuizQuestionWarningIcon v-else-if="form.main != null" />
             <MessengerQuizQuestionDangerIcon v-else />
-            <p class="messenger-quiz-question__title">
+            <p class="messenger-quiz-question__title" :class="{ disabled: isDisabled }">
                 <span>{{ question.text }}</span>
             </p>
             <div v-if="question.answers?.['yes-no']" class="messenger-quiz-question__main">
@@ -20,7 +25,7 @@
                     v-model="form.main"
                     :disabled="disabled || disabledByTemplate"
                     :value="false"
-                    unselect
+                    unselectё
                     label="Нет"
                 />
                 <RadioChip
@@ -149,6 +154,7 @@ import { useNotify } from '@/utils/use/useNotify.js';
 import FileInput from '@/components/common/Forms/FileInput.vue';
 import AccordionSimple from '@/components/common/Accordion/AccordionSimple.vue';
 import AccordionSimpleTriggerButton from '@/components/common/Accordion/AccordionSimpleTriggerButton.vue';
+import Checkbox from '@/components/common/Forms/Checkbox.vue';
 
 const props = defineProps({
     question: {
@@ -164,11 +170,14 @@ const props = defineProps({
         default: true
     },
     disabled: Boolean,
+    selectable: Boolean,
     ignoredEffects: {
         type: Set,
         default: () => new Set()
     }
 });
+
+const selectedModelValue = defineModel('selected');
 
 const form = reactive({});
 
@@ -313,6 +322,7 @@ function answerToPayload(answer, additional = {}) {
     return {
         question_id: props.question.id,
         question_answer_id: answer.id,
+        question_group: props.question.group,
         effects: new Set(answer.effects.map(element => element.kind)),
         ...additional
     };

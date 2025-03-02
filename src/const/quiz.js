@@ -1,11 +1,8 @@
 export const quizQuestionsGroups = {
     OBJECT: 'object',
-    COMPANY: 'company'
-};
-
-export const quizQuestionsGroupsLabel = {
-    [quizQuestionsGroups.OBJECT]: 'Объектовый',
-    [quizQuestionsGroups.COMPANY]: 'Клиентский'
+    COMPANY: 'company',
+    REQUEST: 'request',
+    COMMON: 'common'
 };
 
 export const quizEffectKinds = {
