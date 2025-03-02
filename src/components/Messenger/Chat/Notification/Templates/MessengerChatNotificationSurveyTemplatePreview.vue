@@ -1,5 +1,28 @@
 <template>
     <div class="messenger-quiz-preview">
+        <div
+            v-if="survey.dependentSurveys.length || survey.related_survey_id"
+            class="messenger-quiz-preview__links"
+        >
+            <MessengerButton
+                v-if="survey.dependentSurveys.length"
+                @click="dependentIsVisible = true"
+                class="small"
+                color="light"
+            >
+                <i class="fa-solid fa-link" />
+                <span>{{ survey.dependentSurveys.length }} связанных опросов</span>
+            </MessengerButton>
+            <MessengerButton
+                v-if="survey.related_survey_id"
+                @click="showRelatedSurvey"
+                class="small"
+                color="light"
+            >
+                <i class="fa-solid fa-chess-king"></i>
+                <span>Создан от основного опроса</span>
+            </MessengerButton>
+        </div>
         <div class="messenger-quiz-preview__list">
             <MessengerChatNotificationSurveyTemplatePreviewQuestion
                 v-for="question in survey.questions"
@@ -25,14 +48,38 @@
                 </template>
             </MessengerChatNotificationSurveyTemplatePreviewQuestion>
         </div>
+        <Teleport to="body">
+            <UiModal
+                v-model:visible="dependentIsVisible"
+                :width="1000"
+                :title="`Связанные опросы (${survey.dependentSurveys.length})`"
+            >
+                <div class="d-flex flex-column gap-2">
+                    <MessengerChatNotificationSurveyTemplatePreviewDependent
+                        v-for="dependent in survey.dependentSurveys"
+                        :key="dependent.id"
+                        @show="openSurvey(dependent.id)"
+                        @to-chat="toOfferChat(dependent.chatMember)"
+                        @edit="editSurvey(dependent.id)"
+                        :survey="dependent"
+                    />
+                </div>
+            </UiModal>
+        </Teleport>
     </div>
 </template>
 <script setup>
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 import MessengerChatNotificationSurveyTemplatePreviewQuestion from '@/components/Messenger/Chat/Notification/Templates/MessengerChatNotificationSurveyTemplatePreviewQuestion.vue';
 import { quizEffectKinds } from '@/const/quiz.js';
 import MessengerQuizPreviewCompanyTemplate from '@/components/Messenger/Quiz/Preview/Template/MessengerQuizPreviewCompanyTemplate.vue';
 import MessengerQuizPreviewRequestsTemplate from '@/components/Messenger/Quiz/Preview/Template/MessengerQuizPreviewRequestsTemplate.vue';
+import MessengerChatNotificationSurveyTemplatePreviewDependent from '@/components/Messenger/Chat/Notification/Templates/MessengerChatNotificationSurveyTemplatePreviewDependent.vue';
+import { useAsyncPopup } from '@/composables/useAsyncPopup.js';
+import UiModal from '@/components/common/UI/UiModal.vue';
+import MessengerButton from '@/components/Messenger/MessengerButton.vue';
+import { useMessenger } from '@/components/Messenger/useMessenger.js';
+import { messenger } from '@/const/messenger.js';
 
 const props = defineProps({
     survey: {
@@ -67,4 +114,41 @@ const questionWithRelevantRequestsInfo = computed(() => {
         );
     });
 });
+
+const { show: showSurvey } = useAsyncPopup('surveyPreview');
+
+const dependentIsVisible = ref(false);
+
+function closeDependentModal() {
+    dependentIsVisible.value = false;
+}
+
+function editSurvey(surveyId) {
+    closeDependentModal();
+    showSurvey({ surveyId: surveyId, editMode: true });
+}
+
+function openSurvey(surveyId) {
+    closeDependentModal();
+    showSurvey({ surveyId: surveyId });
+}
+
+function showRelatedSurvey() {
+    showSurvey({ surveyId: props.survey.related_survey_id });
+}
+
+// chat
+
+const { openChat } = useMessenger();
+
+async function toOfferChat(chat) {
+    const opened = await openChat(
+        chat.model.object.company?.id,
+        chat.model.object.id,
+        messenger.dialogTypes.OBJECT,
+        chat.model.type
+    );
+
+    if (opened) closeDependentModal();
+}
 </script>

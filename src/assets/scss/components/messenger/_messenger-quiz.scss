@@ -366,7 +366,7 @@
 .messenger-quiz-element {
     @include mixins.flex-box($gap: 10px);
     padding: 10px;
-    border-radius: 10px;
+    border-radius: 5px;
     background-color: rgba(211, 211, 211, 0.7);
     cursor: pointer;
     @include mixins.transition(background-color .3s);
@@ -394,9 +394,15 @@
     }
 
     &__element {
-        border-radius: 10px;
+        border-radius: 5px;
         background-color: #F3F3F3;
         width: 100%;
+    }
+
+    &__links {
+        @include mixins.flex-box($gap: 5px, $wrap: true);
+        padding: 5px 10px;
+        margin-top: 5px;
     }
 }
 
@@ -650,6 +656,46 @@
         &:hover {
             background-color: variables.$bg-success!important;
         }
+    }
+}
+
+.messenger-quiz-inline-dependent {
+    background-color: variables.$color_grey_alt;
+    border-radius: 4px;
+    padding: 5px;
+    @include mixins.flex-box($gap: 10px);
+
+    &__chat {
+        padding: 0;
+        height: 112px;
+    }
+
+    &__relation {
+        width: 40%;
+        border-right: 1px solid rgba(0, 0, 0, .1);
+    }
+
+    &__label {
+        color: variables.$color_grey;
+        font-weight: 600;
+        font-size: 14px;
+    }
+
+    &__description {
+        font-size: 14px;
+    }
+
+    &__row {
+        @include mixins.flex-box($gap: 5px, $a: center);
+    }
+
+    &__name {
+        font-weight: 500;
+        color: variables.$color_grey;
+    }
+
+    &__actions {
+        @include mixins.flex-box($gap: 5px, $wrap: true);
     }
 }
 

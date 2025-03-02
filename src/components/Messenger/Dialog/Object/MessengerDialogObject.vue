@@ -43,7 +43,7 @@
                 </p>
             </div>
         </div>
-        <div class="messenger-dialog__footer">
+        <div v-if="!short" class="messenger-dialog__footer">
             <MessengerDialogPhone
                 @click.stop="$emit('update-call')"
                 :last-call="lastCall"
@@ -73,27 +73,13 @@ const props = defineProps({
         type: Object,
         required: true
     },
-    current: {
-        type: Boolean,
-        default: false
-    },
-    lastCall: {
-        type: Object,
-        default: null
-    },
-    statistic: {
-        type: Object,
-        default: null
-    },
-    allDealTypes: {
-        type: Boolean,
-        default: false
-    },
-    motionSlider: {
-        type: Boolean,
-        default: false
-    },
-    hasModalPreview: Boolean
+    current: Boolean,
+    lastCall: Object,
+    statistic: Object,
+    allDealTypes: Boolean,
+    motionSlider: Boolean,
+    hasModalPreview: Boolean,
+    short: Boolean
 });
 
 const store = useStore();

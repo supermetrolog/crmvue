@@ -51,19 +51,25 @@ const {
 } = useAsyncPopup('surveyPreview');
 
 onPopupShowed(() => {
-    if (props.value.survey) {
-        survey.value = toRaw(props.value.survey);
-    } else {
-        surveyId.value = props.value.surveyId ?? props.value.quizId;
-    }
-
-    if (props.value.editMode) openSurveyEditing();
-    else viewIsVisible.value = true;
+    showOrEditSurvey(props.value);
 });
 
 onUnmounted(() => {
     destroyPopup();
 });
+
+function showOrEditSurvey(options) {
+    if (options.survey) {
+        survey.value = toRaw(options.survey);
+        surveyId.value = null;
+    } else {
+        surveyId.value = options.surveyId ?? options.quizId;
+        survey.value = null;
+    }
+
+    if (options.editMode) openSurveyEditing();
+    else viewIsVisible.value = true;
+}
 
 // view
 
