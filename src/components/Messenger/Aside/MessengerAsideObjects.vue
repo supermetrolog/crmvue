@@ -3,7 +3,7 @@
         v-model:filters="filters"
         @reset="resetFilters"
         :loading="isLoading"
-        :title="`Предложения (${objects.length}/${pagination?.totalCount || 0})`"
+        :title="`Предложения (${pagination?.totalCount || 0})`"
         :class="{ loading: isLoading }"
         class="messenger-aside-offers"
     >

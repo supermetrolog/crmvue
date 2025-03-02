@@ -5,7 +5,7 @@
         class="messenger-aside-companies"
         :class="{ loading: isLoading }"
         :loading="isLoading"
-        :title="`Компании (${companies.length}/${pagination?.totalCount || 0})`"
+        :title="`Компании (${pagination?.totalCount || 0})`"
     >
         <template #filters>
             <MessengerAsideFiltersForCompanies v-model="filters" />
