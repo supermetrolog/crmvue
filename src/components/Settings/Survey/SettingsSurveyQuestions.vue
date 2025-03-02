@@ -10,22 +10,43 @@
                 :pagination="questionsPagination"
             />
         </template>
+        <div class="row align-items-end mb-3">
+            <Input
+                v-model="filters.search"
+                class="col-6"
+                label="Поиск"
+                placeholder="ID вопроса, заголовок вопроса, текста ответа.."
+            />
+            <UiCol cols="2">
+                <Button
+                    @click="clearFilters"
+                    :disabled="!hasFilters || isLoading"
+                    danger
+                    сдфыы
+                    icon
+                >
+                    <i class="fa-solid fa-trash" />
+                    <span>Сбросить</span>
+                </Button>
+            </UiCol>
+        </div>
         <div class="d-flex flex-wrap gap-2 mb-2">
             <Loader v-if="questionsIsLoading" small />
-            <SettingsFormRowElement
-                v-for="question in questions"
+            <UiCol v-else-if="!filteredQuestions.length" cols="4" class="mx-auto my-2">
+                <EmptyData>Список вопросов пуст..</EmptyData>
+            </UiCol>
+            <SettingsFormElement
+                v-for="question in filteredQuestions"
                 :key="question.id"
                 @delete="deleteQuestion(question)"
                 @edit="editQuestion(question)"
                 :element="question"
                 can-edit
                 :is-deleted="question.deleted_at !== null"
+                class="h-100"
             >
-                <template #text="{ item }">
-                    <span class="mr-1">#{{ item.id }}</span>
-                    <span>{{ item.text }}</span>
-                </template>
-            </SettingsFormRowElement>
+                <SettingsSurveyQuestionsElement :question />
+            </SettingsFormElement>
         </div>
         <teleport to="body">
             <FormQuestion
@@ -44,12 +65,19 @@ import SettingsFormHeader from '@/components/Settings/SettingsFormHeader.vue';
 import DashboardCard from '@/components/Dashboard/Card/DashboardCard.vue';
 import Loader from '@/components/common/Loader.vue';
 import api from '@/api/api.js';
-import { onMounted, ref, shallowRef } from 'vue';
+import { computed, onMounted, reactive, ref, shallowRef } from 'vue';
 import { useDelayedLoader } from '@/composables/useDelayedLoader.js';
 import FormQuestion from '@/components/Forms/FormQuestion.vue';
 import { useNotify } from '@/utils/use/useNotify.js';
-import SettingsFormRowElement from '@/components/Settings/SettingsFormRowElement.vue';
 import { useConfirm } from '@/composables/useConfirm.js';
+import SettingsFormElement from '@/components/Settings/SettingsFormElement.vue';
+import SettingsSurveyQuestionsElement from '@/components/Settings/Survey/SettingsSurveyQuestionsElement.vue';
+import Button from '@/components/common/Button.vue';
+import Input from '@/components/common/Forms/Input.vue';
+import UiCol from '@/components/common/UI/UiCol.vue';
+import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
+import { isNotEmptyString } from '@/utils/helpers/string/isNotEmptyString.js';
+import EmptyData from '@/components/common/EmptyData.vue';
 
 const onQuestionUpdated = question => {
     const questionElement = questions.value.find(element => element.id === question.id);
@@ -122,4 +150,30 @@ const { isLoading: questionsIsLoading } = useDelayedLoader();
 const questionsPagination = ref(null);
 
 onMounted(fetchQuestions);
+
+// filters
+
+const filters = reactive({
+    search: null
+});
+
+function clearFilters() {
+    filters.search = null;
+}
+
+const hasFilters = computed(() => {
+    return Object.values(filters).some(isNotNullish);
+});
+
+const filteredQuestions = computed(() =>
+    questions.value.filter(question => {
+        if (isNotNullish(filters.search) && isNotEmptyString(filters.search)) {
+            const search = filters.search.toLowerCase();
+
+            return question.text.toLowerCase().includes(search) || question.group?.includes(search);
+        }
+
+        return questions.value;
+    })
+);
 </script>
