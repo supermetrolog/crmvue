@@ -195,6 +195,8 @@ const getForm = () => {
                 answer: object.answer
             };
         });
+
+        freeAreaMustBeEditAnswer.value = freeAreaMustBeEditAnswer.filled;
     }
 
     const wantsToSellMustBeEditAnswer = form.find(answer =>

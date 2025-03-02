@@ -125,7 +125,8 @@ const categoryOptions = {
     'text-answer': 'Текстовые поля [text-answer]',
     tab: 'Основные опции [tab]',
     checkbox: 'Дополнительные возможности [checkbox]',
-    files: 'Файлы [files]'
+    files: 'Файлы [files]',
+    custom: 'Шаблон [custom]'
 };
 
 const notify = useNotify();

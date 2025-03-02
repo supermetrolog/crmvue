@@ -1,6 +1,9 @@
 <template>
     <AccordionSimpleTrigger>
-        <DashboardChip class="accordion-simple-trigger-button w-100 dashboard-bg-light">
+        <DashboardChip
+            class="accordion-simple-trigger-button w-100 dashboard-bg-light"
+            :class="buttonClass"
+        >
             <div class="d-flex justify-content-center align-items-center gap-2">
                 <i v-if="icon" :class="icon" />
                 <span>{{ label }}</span>
@@ -16,6 +19,7 @@ import AccordionSimpleTriggerIcon from '@/components/common/Accordion/AccordionS
 
 defineProps({
     label: { type: String, default: 'Подробнее' },
-    icon: String
+    icon: String,
+    buttonClass: [Array, Object, String]
 });
 </script>

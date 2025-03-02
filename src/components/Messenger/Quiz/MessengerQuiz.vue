@@ -271,8 +271,6 @@ async function send() {
             loaders.relationCreating = true;
             await createRelatedSurveys(finalContact.value, relatedAnswers.objects, createdSurvey);
             loaders.relationCreating = false;
-
-            return;
         }
 
         loaders.tasksCreating = true;

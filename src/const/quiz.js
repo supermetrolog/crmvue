@@ -14,6 +14,7 @@ export const quizEffectKinds = {
     OBJECT_HAS_FREE_AREA: 'object-has-free-area',
     OBJECT_FREE_AREA_ALREADY_DESCRIBED: 'object-free-area-already-described',
     OBJECT_FREE_AREA_MUST_BE_EDIT: 'object-free-area-must-be-edited',
+    OBJECT_FREE_AREA_MUST_BE_EDIT_OFFERS: 'object-free-area-must-be-edited-offers',
     OBJECT_FREE_AREA_MUST_BE_EDIT_DESCRIPTION: 'object-free-area-must-be-edited-description',
     OBJECT_FREE_AREA_MUST_BE_DELETED: 'object-free-area-must-be-deleted',
     COMPANY_HAS_SUBLEASE_OR_STORAGE: 'company-has-sublease-or-storage',

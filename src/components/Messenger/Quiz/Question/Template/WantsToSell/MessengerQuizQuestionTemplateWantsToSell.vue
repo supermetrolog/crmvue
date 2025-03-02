@@ -42,8 +42,10 @@ import { isNullish } from '@/utils/helpers/common/isNullish.js';
 import { useNotify } from '@/utils/use/useNotify.js';
 import MessengerQuizQuestionTemplateWantsToSellPicker from '@/components/Messenger/Quiz/Question/Template/WantsToSell/MessengerQuizQuestionTemplateWantsToSellPicker.vue';
 import { useStore } from 'vuex';
+import { isString } from '@/utils/helpers/string/isString.js';
+import { isNotEmptyString } from '@/utils/helpers/string/isNotEmptyString.js';
 
-defineProps({
+const props = defineProps({
     canBeDisabled: {
         type: Boolean,
         default: true
@@ -135,13 +137,29 @@ defineExpose({ getForm, validate, setForm });
 
 // injection
 
+function answersHasFilledAnswer(answers) {
+    return answers.some(
+        element =>
+            element.value === true || (isString(element.value) && isNotEmptyString(element.value))
+    );
+}
+
 function injectConditionAnswerToForm(form) {
     if (conditionModelValue.value) {
         const answer = form.find(answer =>
             answer.effects.has(quizEffectKinds.COMPANY_WANTS_TO_SELL_MUST_BE_EDITED)
         );
-        if (answer) {
-            answer.value = true;
+
+        if (!answer) return;
+
+        answer.value = true;
+
+        if (props.withRelated) {
+            const tabAnswers = templateRef.value.getTabAnswers();
+            const textAnswers = templateRef.value.getTextAnswers();
+
+            answer.filled =
+                answersHasFilledAnswer(tabAnswers) || answersHasFilledAnswer(textAnswers);
 
             const relatedForm = Object.values(objectsForm.value).map(element => {
                 return {
@@ -158,11 +176,14 @@ function injectConditionAnswerToForm(form) {
                 offers: Object.values(offersForm.value),
                 objects: relatedForm
             };
+        } else {
+            answer.filled = true;
         }
     } else {
         const answer = form.find(answer =>
             answer.effects.has(quizEffectKinds.COMPANY_WANTS_TO_SELL_ALREADY_DESCRIBED)
         );
+
         if (answer) answer.value = true;
     }
 }
