@@ -585,6 +585,8 @@
         padding: 2px 4px;
         background-color: variables.$bg-gray-l;
         border-radius: 5px;
+        display: block;
+        width: max-content;
     }
 
     &__info {

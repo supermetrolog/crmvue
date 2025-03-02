@@ -1,16 +1,13 @@
 <template>
     <div @click="$emit('select')" class="messenger-bar-tab" :class="{ visible: isVisible }">
         <div class="messenger-bar-tab__list">
-            <div v-tippy="label" class="messenger-bar-tab__icon mb-1">
-                <slot name="icon">
-                    <i :class="icon"></i>
-                </slot>
+            <div v-tippy="label" class="messenger-bar-tab__label mb-1">
+                {{ label }}
             </div>
             <Spinner v-if="loading" class="mini" />
-            <Tippy>
+            <Tippy v-if="counts.outdated_call_count_all > 0">
                 <template #default>
                     <MessengerBarElement
-                        v-if="counts.outdated_call_count_all > 0"
                         @click.stop="$emit('select', messenger.tabFilters.CALL)"
                         class="messenger-bar-tab__phone"
                         :class="{
