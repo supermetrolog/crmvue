@@ -1,6 +1,6 @@
 <template>
     <div>
-        <template v-if="props.answers[0].surveyQuestionAnswer">
+        <template v-if="answers[0].surveyQuestionAnswer">
             <template v-if="requests?.actual?.length">
                 <DashboardChip class="mb-1 dashboard-bg-light">Актуальные запросы:</DashboardChip>
                 <div class="d-flex gap-2 flex-wrap">

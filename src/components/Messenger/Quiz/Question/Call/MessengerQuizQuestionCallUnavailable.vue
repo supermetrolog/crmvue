@@ -28,7 +28,7 @@
 import { ref } from 'vue';
 import AccordionSimpleTrigger from '@/components/common/Accordion/AccordionSimpleTrigger.vue';
 import RadioChip from '@/components/common/Forms/RadioChip.vue';
-import MessengerQuizQuestionSuccessIcon from '@/components/Messenger/Quiz/Question/MessengerQuizQuestionSuccessIcon.vue';
+import MessengerQuizQuestionSuccessIcon from '@/components/Messenger/Quiz/Question/Icons/MessengerQuizQuestionSuccessIcon.vue';
 import { Tippy } from 'vue-tippy';
 import ContactCard from '@/components/Contact/Card/ContactCard.vue';
 

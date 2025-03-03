@@ -3,7 +3,7 @@
         <RadioChip
             v-if="disabled"
             v-model="deleteModelValue"
-            label="Убрать текущие площади"
+            label="Убрать все текущие площади"
             :value="true"
             unselect
         />

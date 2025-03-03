@@ -1,5 +1,12 @@
 <template>
-    <label class="form__radio-chip radio-chip" :class="{ active: isActive }">
+    <label
+        class="form__radio-chip radio-chip"
+        :class="{
+            active: isActive,
+            'radio-chip--show-radio': showRadio,
+            'radio-chip--rounded': rounded
+        }"
+    >
         <input
             v-model="field"
             @click="onChange"
@@ -18,25 +25,18 @@ import { computed, ref } from 'vue';
 const emit = defineEmits(['change']);
 const modelValue = defineModel();
 const props = defineProps({
-    required: {
-        type: Boolean,
-        default: false
-    },
-    label: {
-        type: String,
-        default: null
-    },
+    required: Boolean,
+    label: String,
     value: {
         type: [String, Number, Boolean, null],
         default: null
     },
-    unselect: {
+    unselect: Boolean,
+    disabled: Boolean,
+    showRadio: Boolean,
+    rounded: {
         type: Boolean,
-        default: false
-    },
-    disabled: {
-        type: Boolean,
-        default: false
+        default: true
     }
 });
 

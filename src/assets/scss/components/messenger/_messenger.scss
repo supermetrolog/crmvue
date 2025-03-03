@@ -54,12 +54,11 @@
 }
 
 .messenger-bar {
-    transform: translateX(-44px) translateY(calc(50vh - 50%));
+    transform: translateX(-45px) translateY(calc(50vh - 50%));
     position: absolute;
     z-index: 20;
-    box-shadow: 0 0 15px 5px rgba(13, 31, 47, .2);
-    @include mixins.flex-box($a: center, $d: column);
     width: max-content;
+    @include mixins.flex-box($a: center, $d: column, $gap: 7px);
 
     &__company-icon {
         margin-left: -2px;
@@ -71,15 +70,18 @@
 }
 
 .messenger-bar-tab {
-    opacity: .3;
-    background-color: #fff;
+    opacity: .4;
+    background-color: #f3f3f3;
     padding: 8px 7px;
     cursor: pointer;
-    border-left: 1px solid rgba(0, 0, 0, 0.4);
-    border-bottom: 1px solid rgba(0, 0, 0, 0.4);
-    border-top: 1px solid rgba(0, 0, 0, 0.4);
+    border-left: 1px solid rgba(0, 0, 0, 0.1);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+    border-right: 1px solid rgba(220, 220, 220, .2);
+    width: 45px;
+    box-shadow: -10px 0 15px -5px rgba(13, 31, 47, .1);
     @include mixins.transition(color .5s ease-in-out, opacity .5s ease-in-out, background-color);
-    @include mixins.flex-box($a: center);
+    @include mixins.flex-box($a: center, $j: center);
 
     &:hover {
         opacity: 1;
@@ -93,6 +95,11 @@
             opacity: 1;
             box-shadow: 0 0 1px 2px rgba(0, 0, 0, .1);
             filter: grayscale(0);
+        }
+
+        .messenger-bar-tab__label {
+            color: #000;
+            font-weight: 600;
         }
     }
 
@@ -149,9 +156,17 @@
         color: #f93154;
     }
 
-    &__icon  {
-        font-size: 25px;
-        width: 30px;
+    &__label  {
+        writing-mode: vertical-lr;
+        transform: rotate(180deg);
+        padding: 12px 0 8px;
+        font-weight: 500;
+        color: #696969;
+        @include mixins.flex-box($a: center);
+    }
+
+    &__list:has(.messenger-bar-tab__element) &__label {
+        border-top: 2px solid rgba(0, 0, 0, .2);
     }
 }
 

@@ -1,11 +1,16 @@
 <template>
     <div class="messenger-quiz-question">
         <div class="messenger-quiz-question__header">
+            <Checkbox
+                v-if="selectable && !disabledByTemplate"
+                v-model="selectedModelValue"
+                v-tippy="'Активировать вопрос для заполнения'"
+            />
             <MessengerQuizQuestionPrimaryIcon v-if="isDisabled" />
             <MessengerQuizQuestionSuccessIcon v-else-if="hasFullAnswer || isCustomCompleted" />
             <MessengerQuizQuestionWarningIcon v-else-if="form.main != null" />
             <MessengerQuizQuestionDangerIcon v-else />
-            <p class="messenger-quiz-question__title">
+            <p class="messenger-quiz-question__title" :class="{ disabled: isDisabled }">
                 <span>{{ question.text }}</span>
             </p>
             <div v-if="question.answers?.['yes-no']" class="messenger-quiz-question__main">
@@ -20,7 +25,7 @@
                     v-model="form.main"
                     :disabled="disabled || disabledByTemplate"
                     :value="false"
-                    unselect
+                    unselectё
                     label="Нет"
                 />
                 <RadioChip
@@ -108,23 +113,48 @@
                 :disabled="isDisabled"
             />
         </div>
-        <slot name="after-content" :disabled="isDisabled" />
+        <AccordionSimple
+            v-if="hasFilesQuestions"
+            v-show="hasMainAnswer && !hiddenByTemplate && !isDisabled"
+            class="mt-2"
+        >
+            <template #title>
+                <AccordionSimpleTriggerButton
+                    icon="fa-regular fa-file"
+                    label="Файлы и изображения"
+                />
+            </template>
+            <template #body>
+                <FileInput
+                    v-for="answer in filesFields"
+                    :key="answer.id"
+                    v-model:data="form.files[answer.id].old"
+                    v-model:native="form.files[answer.id].new"
+                    short
+                />
+            </template>
+        </AccordionSimple>
+        <slot name="after-content" :disabled="isDisabled" :main-answer="form.main" />
     </div>
 </template>
 <script setup>
 import CheckboxChip from '@/components/common/Forms/CheckboxChip.vue';
 import Textarea from '@/components/common/Forms/Textarea.vue';
-import { computed, reactive, ref, useTemplateRef, watch } from 'vue';
+import { computed, reactive, ref, watch } from 'vue';
 import RadioChip from '@/components/common/Forms/RadioChip.vue';
 import { isNullish } from '@/utils/helpers/common/isNullish.js';
 import { isEmptyArray } from '@/utils/helpers/array/isEmptyArray.js';
 import { isEmpty } from '@/utils/helpers/common/isEmpty.js';
-import MessengerQuizQuestionSuccessIcon from '@/components/Messenger/Quiz/Question/MessengerQuizQuestionSuccessIcon.vue';
-import MessengerQuizQuestionDangerIcon from '@/components/Messenger/Quiz/Question/MessengerQuizQuestionDangerIcon.vue';
-import MessengerQuizQuestionWarningIcon from '@/components/Messenger/Quiz/Question/MessengerQuizQuestionWarningIcon.vue';
+import MessengerQuizQuestionSuccessIcon from '@/components/Messenger/Quiz/Question/Icons/MessengerQuizQuestionSuccessIcon.vue';
+import MessengerQuizQuestionDangerIcon from '@/components/Messenger/Quiz/Question/Icons/MessengerQuizQuestionDangerIcon.vue';
+import MessengerQuizQuestionWarningIcon from '@/components/Messenger/Quiz/Question/Icons/MessengerQuizQuestionWarningIcon.vue';
 import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
-import MessengerQuizQuestionPrimaryIcon from '@/components/Messenger/Quiz/Question/MessengerQuizQuestionPrimaryIcon.vue';
+import MessengerQuizQuestionPrimaryIcon from '@/components/Messenger/Quiz/Question/Icons/MessengerQuizQuestionPrimaryIcon.vue';
 import { useNotify } from '@/utils/use/useNotify.js';
+import FileInput from '@/components/common/Forms/FileInput.vue';
+import AccordionSimple from '@/components/common/Accordion/AccordionSimple.vue';
+import AccordionSimpleTriggerButton from '@/components/common/Accordion/AccordionSimpleTriggerButton.vue';
+import Checkbox from '@/components/common/Forms/Checkbox.vue';
 
 const props = defineProps({
     question: {
@@ -140,11 +170,16 @@ const props = defineProps({
         default: true
     },
     disabled: Boolean,
+    selectable: Boolean,
     ignoredEffects: {
         type: Set,
         default: () => new Set()
     }
 });
+
+const selectedModelValue = defineModel('selected');
+
+const form = reactive({});
 
 const disabledByTemplate = ref(false);
 const hiddenByTemplate = ref(false);
@@ -156,24 +191,6 @@ function toggleDisabled() {
 function toggleHidden() {
     hiddenByTemplate.value = !hiddenByTemplate.value;
 }
-
-const form = reactive({});
-const accordion = useTemplateRef('accordion');
-
-const hasNullMainAnswer = ref(false);
-
-watch(hasNullMainAnswer, value => {
-    if (value) form.main = null;
-});
-
-watch(
-    () => form.main,
-    value => {
-        if (isNotNullish(value)) hasNullMainAnswer.value = false;
-    }
-);
-
-const hasMainAnswer = computed(() => isNotNullish(form.main));
 
 const hasFullAnswer = computed(() => {
     if (isNullish(form.main)) return false;
@@ -187,15 +204,35 @@ const hasFullAnswer = computed(() => {
     return true;
 });
 
-const hasMainQuestion = computed(() => Boolean(props.question.answers?.['yes-no']));
-const hasTabQuestions = computed(() => Boolean(props.question.answers?.tab));
-const hasTextQuestions = computed(() => Boolean(props.question.answers?.['text-answer']));
-const hasCheckboxQuestions = computed(() => Boolean(props.question.answers?.checkbox));
+// main
 
-const checkboxTabs = computed(() => tabs.value.filter(element => element.field_id === 2));
-const radioTabs = computed(() => tabs.value.filter(element => element.field_id === 4));
+const hasNullMainAnswer = ref(false);
+
+const hasMainQuestion = computed(() => Boolean(props.question.answers?.['yes-no']));
+
+const hasMainAnswer = computed(() => isNotNullish(form.main));
+
+watch(hasNullMainAnswer, value => {
+    if (value) form.main = null;
+});
+
+watch(
+    () => form.main,
+    value => {
+        if (isNotNullish(value)) hasNullMainAnswer.value = false;
+    }
+);
+
+function getMainAnswers() {
+    return answersToPayload(props.question.answers['yes-no'], () => ({
+        value: hasNullMainAnswer.value ? null : isNullish(form.main) ? undefined : form.main,
+        type: 'main'
+    }));
+}
 
 // tabs
+
+const hasTabQuestions = computed(() => Boolean(props.question.answers?.tab));
 
 function checkAnswerIsNotIgnored(answer) {
     return answer.effects.every(effect => !props.ignoredEffects.has(effect.kind));
@@ -207,14 +244,83 @@ const tabs = computed(() =>
     )
 );
 
-// other
+const checkboxTabs = computed(() => tabs.value.filter(element => element.field_id === 2));
+const radioTabs = computed(() => tabs.value.filter(element => element.field_id === 4));
+
+function getTabAnswers() {
+    return answersToPayload(props.question.answers.tab, answer => ({
+        value:
+            !hasNullMainAnswer.value &&
+            (form.tab.some(_element => Number(_element) === answer.id) ||
+                answer.id === Number(form.radio))
+    }));
+}
+
+// text
+
+const hasTextQuestions = computed(() => Boolean(props.question.answers?.['text-answer']));
 
 const texts = computed(() =>
     props.question.answers['text-answer'].filter(element => element.deleted_at === null)
 );
+
+function getTextAnswers() {
+    return answersToPayload(texts.value, answer => {
+        if (form.description[answer.id]?.length && !hasNullMainAnswer.value) {
+            return { value: form.description[answer.id] };
+        }
+
+        return {};
+    });
+}
+
+// checkbox
+
+const hasCheckboxQuestions = computed(() => Boolean(props.question.answers?.checkbox));
+
 const checkboxes = computed(() =>
     props.question.answers.checkbox.filter(element => element.deleted_at === null)
 );
+
+function getCheckboxAnswers() {
+    return answersToPayload(checkboxes.value, answer => ({
+        value:
+            !hasNullMainAnswer.value &&
+            form.checkbox.some(_element => Number(_element) === answer.id)
+    }));
+}
+
+// files
+
+const hasFilesQuestions = computed(() => Boolean(props.question.answers?.files));
+
+const filesFields = computed(() =>
+    props.question.answers.files.filter(element => element.deleted_at === null)
+);
+
+function getFilesAnswers() {
+    return answersToPayload(filesFields.value, answer => ({
+        value: form.files[answer.id].new.length > 0,
+        files: form.files[answer.id].new,
+        file: form.files[answer.id].new.length > 0
+    }));
+}
+
+// custom
+
+const hasCustomQuestions = computed(() => Boolean(props.question.answers?.custom));
+
+const customFields = computed(() =>
+    props.question.answers.custom.filter(element => element.deleted_at === null)
+);
+
+function getCustomAnswers() {
+    return answersToPayload(customFields.value, () => ({
+        value: null
+    }));
+}
+
+// other
 
 const isDisabled = computed(() => {
     return (
@@ -224,6 +330,40 @@ const isDisabled = computed(() => {
     );
 });
 
+// form
+
+function answerToPayload(answer, additional = {}) {
+    return {
+        question_id: props.question.id,
+        question_answer_id: answer.id,
+        question_group: props.question.group,
+        effects: new Set(answer.effects.map(element => element.kind)),
+        ...additional
+    };
+}
+
+function answersToPayload(answers, prepareCallback = () => ({})) {
+    return answers.map(element => answerToPayload(element, prepareCallback(element)));
+}
+
+function getForm() {
+    const list = [];
+
+    if (hasMainQuestion.value) list.push(...getMainAnswers());
+
+    if (hasTabQuestions.value) list.push(...getTabAnswers());
+
+    if (hasTextQuestions.value) list.push(...getTextAnswers());
+
+    if (hasCheckboxQuestions.value) list.push(...getCheckboxAnswers());
+
+    if (hasFilesQuestions.value) list.push(...getFilesAnswers());
+
+    if (hasCustomQuestions.value) list.push(...getCustomAnswers());
+
+    return list;
+}
+
 const initForm = () => {
     if (hasMainQuestion.value) form.main = undefined;
 
@@ -232,13 +372,25 @@ const initForm = () => {
         form.radio = null;
     }
 
-    if (hasTextQuestions.value)
-        form.description = props.question.answers['text-answer'].reduce((acc, element) => {
+    if (hasTextQuestions.value) {
+        form.description = texts.value.reduce((acc, element) => {
             acc[element.id] = '';
             return acc;
         }, {});
+    }
 
     if (hasCheckboxQuestions.value) form.checkbox = [];
+
+    if (hasFilesQuestions.value) {
+        form.files = filesFields.value.reduce((acc, element) => {
+            acc[element.id] = {
+                new: [],
+                old: []
+            };
+
+            return acc;
+        }, {});
+    }
 };
 
 function setForm(payload) {
@@ -273,7 +425,20 @@ function setForm(payload) {
             return acc;
         }, []);
     }
+
+    if (hasFilesQuestions.value && Object.hasOwn(payload, 'files')) {
+        form.files = payload.files.reduce((acc, element) => {
+            acc[element.id] = {
+                new: [],
+                old: element.files?.length ? [...element.files] : []
+            };
+
+            return acc;
+        }, {});
+    }
 }
+
+initForm();
 
 watch(
     () => props.question,
@@ -281,74 +446,6 @@ watch(
         initForm();
     }
 );
-
-watch(isDisabled, () => {
-    accordion.value?.toggle();
-});
-
-const getForm = () => {
-    const list = [];
-
-    if (hasMainQuestion.value)
-        list.push({
-            question_answer_id: props.question.answers['yes-no'][0].id,
-            value: hasNullMainAnswer.value ? null : isNullish(form.main) ? undefined : form.main,
-            type: 'main',
-            question_id: props.question.id,
-            effects: new Set(
-                props.question.answers['yes-no'][0].effects.map(element => element.kind)
-            )
-        });
-
-    if (hasTabQuestions.value) {
-        const answers = props.question.answers.tab.map(element => ({
-            question_answer_id: element.id,
-            value:
-                !hasNullMainAnswer.value &&
-                (form.tab.some(_element => Number(_element) === element.id) ||
-                    element.id === Number(form.radio)),
-            question_id: props.question.id,
-            effects: new Set(element.effects.map(element => element.kind))
-        }));
-
-        list.push(...answers);
-    }
-
-    if (hasTextQuestions.value) {
-        const answers = props.question.answers['text-answer'].map(element => {
-            const data = {
-                question_answer_id: element.id,
-                question_id: props.question.id,
-                effects: new Set(element.effects.map(element => element.kind))
-            };
-
-            if (form.description[element.id]?.length && !hasNullMainAnswer.value) {
-                data.value = form.description[element.id];
-            }
-
-            return data;
-        });
-
-        list.push(...answers);
-    }
-
-    if (hasCheckboxQuestions.value) {
-        const answers = props.question.answers.checkbox.map(element => ({
-            question_answer_id: element.id,
-            value:
-                !hasNullMainAnswer.value &&
-                form.checkbox.some(_element => Number(_element) === element.id),
-            question_id: props.question.id,
-            effects: new Set(element.effects.map(element => element.kind))
-        }));
-
-        list.push(...answers);
-    }
-
-    return list;
-};
-
-initForm();
 
 // custom
 
@@ -375,9 +472,22 @@ function validate() {
     return true;
 }
 
+// expose
+
 function getMainAnswer() {
     return form.main;
 }
 
-defineExpose({ getForm, validate, setCustomCompleted, getMainAnswer, setForm });
+defineExpose({
+    validate,
+    getForm,
+    setForm,
+    setCustomCompleted,
+    getMainAnswer,
+    getMainAnswers,
+    getFilesAnswers,
+    getTabAnswers,
+    getCheckboxAnswers,
+    getTextAnswers
+});
 </script>

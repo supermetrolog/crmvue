@@ -1,6 +1,7 @@
 <template>
     <div class="messenger-quiz-form-company-picker-element">
-        <span>{{ company.name }}</span>
+        <i v-if="company.new" class="fa-solid fa-plus" />
+        <span>{{ company.company_name }}</span>
         <template v-if="company.area">
             <i class="fa-solid fa-arrow-right"></i>
             <WithUnitType :unit-type="unitTypes.SQUARE_METERS">

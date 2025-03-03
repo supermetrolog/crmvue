@@ -2,9 +2,6 @@
     <div class="messenger-quiz-preview-info">
         <DashboardCard class="dashboard-bg-light mb-3">
             <div class="messenger-quiz-preview-info__content">
-                <DashboardChip class="dashboard-bg-success-l">
-                    {{ groupName }}
-                </DashboardChip>
                 <DashboardChip class="dashboard-bg-gray-l">
                     <div class="d-flex gap-1">
                         <Avatar :src="quiz.user.userProfile.avatar" :size="20" />
@@ -57,7 +54,6 @@ import DashboardCard from '@/components/Dashboard/Card/DashboardCard.vue';
 import { computed, toRef } from 'vue';
 import { toBeautifulDateFormat } from '@/utils/formatters/date.js';
 import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
-import { quizQuestionsGroupsLabel } from '@/const/quiz.js';
 import { Tippy } from 'vue-tippy';
 import ContactCard from '@/components/Contact/Card/ContactCard.vue';
 import Avatar from '@/components/common/Avatar.vue';
@@ -74,14 +70,6 @@ const props = defineProps({
         type: Boolean,
         default: true
     }
-});
-
-const groupName = computed(() => {
-    if (props.quiz.questions.length) {
-        return quizQuestionsGroupsLabel[props.quiz.questions[0].group];
-    }
-
-    return 'Без группы';
 });
 
 const createdAt = computed(() => toBeautifulDateFormat(props.quiz.created_at));

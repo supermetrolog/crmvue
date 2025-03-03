@@ -1,7 +1,11 @@
 <template>
     <a v-tippy="'Нажмите, чтобы открыть компанию'" :href="companyUrl" target="blank">
         <DashboardChip class="dashboard-bg-success-l text-dark" with-icon>
+            <i v-if="company.new" class="fa-solid fa-plus" />
             <span v-if="name">{{ name }} (#{{ company.company_id }})</span>
+            <span v-else-if="company.new" class="d-flex align-items-center">
+                <span>{{ company.company_name }}</span>
+            </span>
             <span v-else class="d-flex align-items-center">
                 <Spinner v-if="loading" class="mini mr-1" />
                 <span>Компания #{{ company.company_id }}</span>

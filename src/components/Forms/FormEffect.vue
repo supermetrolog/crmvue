@@ -24,7 +24,13 @@
                     required
                 />
                 <Textarea v-model="form.description" class="col-12" label="Описание эффекта" />
-                <div class="mx-auto d-flex gap-2">
+                <Switch
+                    v-model="form.active"
+                    true-title="Активен"
+                    false-title="Отключен"
+                    class="col-12"
+                />
+                <div class="mt-2 mx-auto d-flex gap-2">
                     <FormSubmit success>Сохранить</FormSubmit>
                     <Button v-if="formData" @click="deleteEffect" danger> Удалить </Button>
                 </div>
@@ -47,6 +53,7 @@ import Modal from '@/components/common/Modal.vue';
 import Button from '@/components/common/Button.vue';
 import { useConfirm } from '@/composables/useConfirm.js';
 import Textarea from '@/components/common/Forms/Textarea.vue';
+import Switch from '@/components/common/Forms/Switch.vue';
 
 const emit = defineEmits(['created', 'updated', 'close', 'deleted']);
 const props = defineProps({ formData: { type: Object, default: null } });
@@ -58,7 +65,8 @@ const isLoading = shallowRef(false);
 const form = reactive({
     title: null,
     kind: null,
-    description: null
+    description: null,
+    active: true
 });
 
 const v$ = useVuelidate(
