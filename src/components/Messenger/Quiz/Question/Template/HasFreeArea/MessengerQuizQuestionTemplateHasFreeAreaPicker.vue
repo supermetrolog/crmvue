@@ -146,7 +146,7 @@ const store = useStore();
 
 const currentObject = computed(() => {
     if (store.state.Messenger.currentDialogType === messenger.dialogTypes.OBJECT)
-        return store.state.Messenger.currentDialog.model;
+        return store.state.Messenger.currentDialog.model.object;
     return null;
 });
 
