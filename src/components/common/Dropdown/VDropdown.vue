@@ -1,25 +1,30 @@
 <template>
-    <ExtDropdown ref="dropdown" @visible-change="visibleHandler">
+    <ExtDropdown ref="dropdownEl" @visible-change="visibleHandler">
         <template #trigger>
             <slot name="trigger" />
         </template>
         <slot />
     </ExtDropdown>
 </template>
-<script>
+<script setup>
 import ExtDropdown from 'v-dropdown';
-export default {
-    name: 'VDropdown',
-    components: { ExtDropdown },
-    methods: {
-        eventListener(event) {
-            event.stopPropagation();
-            if (event.code === 'Escape') this.$refs.dropdown.close();
-        },
-        visibleHandler(visible) {
-            if (visible) document.addEventListener('keydown', this.eventListener, true);
-            else document.removeEventListener('keydown', this.eventListener, true);
-        }
-    }
-};
+import { useTemplateRef } from 'vue';
+
+const dropdownEl = useTemplateRef('dropdownEl');
+
+function close() {
+    dropdownEl.value.close();
+}
+
+function eventListener(event) {
+    event.stopPropagation();
+    if (event.code === 'Escape') close();
+}
+
+function visibleHandler(visible) {
+    if (visible) document.addEventListener('keydown', eventListener, true);
+    else document.removeEventListener('keydown', eventListener, true);
+}
+
+defineExpose({ close });
 </script>

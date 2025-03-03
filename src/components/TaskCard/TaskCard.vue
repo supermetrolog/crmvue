@@ -10,7 +10,6 @@
             @assign="assignerFormIsVisible = !assignerFormIsVisible"
             @change-status="moveSettingsIsVisible = !moveSettingsIsVisible"
             @to-impossible="toImpossible"
-            @toggle-favorite="toggleFavoriteTask(task.id)"
             :disabled="moveSettingsIsVisible || assignerFormIsVisible"
             :viewable="canBeViewed"
             :task
@@ -19,44 +18,29 @@
         />
         <div class="task-card__content">
             <div class="task-card__column">
-                <div class="task-card__description">
-                    <div class="task-card__chips">
-                        <DashboardChip class="task-card__chip">
-                            Задача #{{ task.id }}
-                        </DashboardChip>
-                        <DashboardChip class="task-card__chip task-card__status">
-                            <i :class="statusIcon" />
-                            <span>{{ status }}</span>
-                            <span v-if="isCanceled">до {{ impossibleDate }}</span>
-                        </DashboardChip>
+                <div class="task-card__description mb-4">
+                    <div v-if="task.tags?.length" class="task-card__chips mb-2">
                         <DashboardChip
-                            v-if="isAlreadyExpired"
-                            class="dashboard-bg-danger text-white"
+                            v-for="tag in task.tags"
+                            :key="tag.id"
+                            class="task-card__tag"
+                            :style="{ backgroundColor: '#' + tag.color }"
                         >
-                            Просрочено
-                        </DashboardChip>
-                        <DashboardChip v-else class="task-card__chip" with-icon>
-                            <i class="fa-regular fa-clock"></i>
-                            <span>до {{ endDate }}</span>
+                            <span>{{ tag.name ?? tag.label }}</span>
                         </DashboardChip>
                     </div>
-                    <template v-if="task.tags?.length">
-                        <p class="task-card__label my-1">Теги:</p>
-                        <div class="task-card__chips">
-                            <DashboardChip
-                                v-for="tag in task.tags"
-                                :key="tag.id"
-                                class="task-card__tag"
-                                :style="{ backgroundColor: '#' + tag.color }"
-                            >
-                                <span>{{ tag.name ?? tag.label }}</span>
-                            </DashboardChip>
-                        </div>
-                    </template>
-                    <p class="task-card__label my-1">Описание задачи:</p>
                     <div ref="messageElement" class="task-card__message"></div>
                 </div>
-                <TaskCardInfo :task />
+                <TaskCardChatInfo
+                    v-if="task.related_by.chat_member"
+                    @to-chat="toChat"
+                    @to-company="toCompany"
+                    :company-id="objectCompanyId"
+                    :task
+                />
+                <EmptyData v-else class="task-card__empty">Задача не связана с чатом</EmptyData>
+            </div>
+            <div class="task-card__column">
                 <Tabs nav-class="task-card__tabs" nav-item-link-class="task-card__tab-link">
                     <Tab :name="`Комментарии (${task.comments_count ?? 0})`">
                         <TaskCardComments
@@ -95,17 +79,8 @@
                     />
                 </AnimationTransition>
             </div>
-            <div class="task-card__column">
-                <TaskCardChatInfo
-                    v-if="task.related_by.chat_member"
-                    @to-chat="toChat"
-                    @to-company="toCompany"
-                    :company-id="objectCompanyId"
-                    :task
-                />
-                <EmptyData v-else class="task-card__empty">Задача не связана с чатом</EmptyData>
-            </div>
         </div>
+        <TaskCardInfo :task />
     </div>
 </template>
 
@@ -116,13 +91,12 @@ import api from '@/api/api.js';
 import { useNotify } from '@/utils/use/useNotify.js';
 import { useConfirm } from '@/composables/useConfirm.js';
 import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
-import dayjs from 'dayjs';
 import { taskOptions } from '@/const/options/task.options.js';
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
 import { useStore } from 'vuex';
 import { useAsyncPopup } from '@/composables/useAsyncPopup.js';
 import { debounce } from '@/utils/common/debounce.js';
-import { dayjsFromMoscow, toDateFormat } from '@/utils/formatters/date.js';
+import { dayjsFromMoscow } from '@/utils/formatters/date.js';
 import Loader from '@/components/common/Loader.vue';
 import { messenger } from '@/const/messenger.js';
 import { getLinkCompany } from '@/utils/url.js';
@@ -136,7 +110,6 @@ import Tab from '@/components/common/Tabs/Tab.vue';
 import TaskCardComments from '@/components/TaskCard/TaskCardComments.vue';
 import TaskCardHistory from '@/components/TaskCard/History/TaskCardHistory.vue';
 import { useDelayedLoader } from '@/composables/useDelayedLoader.js';
-import { useFavoriteTasks } from '@/composables/useFavoriteTasks.js';
 import { useEventBus } from '@vueuse/core';
 import { TASK_EVENTS } from '@/const/events/task.js';
 import { useAuth } from '@/composables/useAuth.js';
@@ -257,10 +230,6 @@ async function toImpossible() {
     isLoading.value = false;
 }
 
-// FAVORITE
-
-const { toggleFavoriteTask } = useFavoriteTasks();
-
 // STATE CHANGING
 
 async function restore() {
@@ -368,20 +337,6 @@ async function assign(payload) {
 
     assignerIsChanging.value = false;
 }
-
-// ADDITIONAL COMPUTES
-
-const isCompleted = computed(() => props.task.status === taskOptions.statusTypes.COMPLETED);
-const isAlreadyExpired = computed(() => expiredDayjs.value.isBefore(dayjs()) && !isCompleted.value);
-const isCanceled = computed(() => props.task.status === taskOptions.statusTypes.CANCELED);
-
-const expiredDayjs = computed(() => dayjsFromMoscow(props.task.end));
-const impossibleDate = computed(() => toDateFormat(props.task.impossible_to, 'D.MM.YY'));
-
-const status = computed(() => taskOptions.status[props.task.status]);
-const statusIcon = computed(() => taskOptions.statusIcon[props.task.status]);
-
-const endDate = computed(() => toDateFormat(props.task.end, 'D.MM.MYY'));
 
 // linkify
 

@@ -12,21 +12,44 @@
 
     &__header {
         width: 100%;
-        padding-top: 5px;
-        padding-bottom: 10px;
-        border-bottom: 1px solid #afaeae;
-        @include mixins.flex-box($j: space-between);
+        padding: 10px;
+        border-bottom: 1px solid rgba(0, 0, 0, .1);
+        @include mixins.flex-box($gap: 20px, $a: center);
+
+        &--completed {
+            background-color: variables.$color_success_dark;
+
+            .task-card__chip, .ui-button-icon {
+                background-color: variables.$color_grey_alt;
+            }
+        }
+
+        &--expired {
+            background-color: variables.$bg-danger-l;
+
+            .task-card__chip, .ui-button-icon {
+                background-color: #fff;
+            }
+        }
+
+        &--already-expired {
+            background-color: variables.$color_danger;
+
+            .task-card__chip, .ui-button-icon {
+                background-color: variables.$color_grey_alt;
+            }
+        }
     }
 
     &__column {
-        padding: 10px 5px 0 0;
+        padding: 10px;
         width: 50%;
         position: relative;
         max-height: 800px;
 
         &:first-child {
             padding-right: 9px;
-            border-right: 1px solid #afaeae;
+            background-color: #f5f5f5;
         }
 
         &:last-child {
@@ -36,6 +59,7 @@
 
     &__actions {
         @include mixins.flex-box($gap: 10px);
+        margin-left: auto;
     }
 
     &__description {
@@ -48,12 +72,10 @@
     }
 
     &__message {
-        background-color: #e8e5e5;
-        border-radius: 5px;
-        padding: 10px;
         word-break: break-word;
         max-height: 300px;
         overflow-y: auto;
+        overscroll-behavior-y: contain;
     }
 
     &__chip {
@@ -62,6 +84,8 @@
 
     &__tag {
         color: #fff;
+        font-weight: 400!important;
+        padding: 3px 10px!important;
     }
 
     &__chips {
@@ -69,21 +93,33 @@
     }
 
     &__info {
-        display: grid;
-        grid-template-columns: 1fr 2fr;
-        grid-gap: 5px;
+        border-top: 1px solid rgba(0, 0, 0, .1);
+        font-size: 14px;
+        color: variables.$color_dark_grey;
+        padding: 0 10px;
+        @include mixins.flex-box($j: flex-end);
+    }
+
+    &__date {
+        padding: 3px 5px;
+        @include mixins.flex-box($a: center, $gap: 5px);
     }
 
     &__category {
         color: #837f7f;
     }
 
-    &__relation {
-        margin-top: 10px;
+    &__relations {
+        border-bottom: 1px solid rgba(0, 0, 0, .15);
+        padding-bottom: 20px;
     }
 
-    .messenger-dialog {
-        background-color: #d6d6d6;
+    &__relation {
+        margin-top: 10px;
+
+        .messenger-dialog {
+            background-color: #d6d6d6;
+        }
     }
 
     .messenger-dialog-request__id, .messenger-dialog-offer__id {
@@ -100,6 +136,12 @@
         @include mixins.transition(background-color);
         @include mixins.clear-button;
 
+        &--bordered {
+            border: 1px solid rgba(0, 0, 0, .1);
+            background-color: #ebebeb;
+            padding: 3px 7px;
+        }
+
         @include mixins.hover {
             background-color: #B3D7C6;
         }
@@ -109,24 +151,31 @@
         }
     }
 
+    &__buttons {
+        @include mixins.flex-box($gap: 5px, $a: center);
+
+        .task-card__button {
+            flex-grow: 1;
+        }
+    }
+
     &__comments {
-        padding: 10px;
-        background-color: #fff;
-        box-shadow: 0 0 10px 1px rgba(0, 0, 0, .4);
-        position: absolute;
-        width: calc(100% - 20px);
-        top: 20px;
-        left: 10px;
-        height: calc(100% - 40px);
-        border-radius: 10px;
-        @include mixins.flex-box($d: column, $gap: 10px);
+        @include mixins.flex-box($d: column, $j: space-between);
     }
 
     &__comments-list {
         height: 100%;
         overflow-y: auto;
         padding-right: 5px;
-        max-height: 200px;
+        max-height: 460px;
+
+        &--shorted {
+            max-height: 360px;
+        }
+    }
+
+    .tabs-component-panels {
+        padding: 20px 0 0 0!important;
     }
 
     &__list {
@@ -149,12 +198,17 @@
     &__chat-notification {
         max-height: 250px;
         overflow-y: auto;
+        margin: 0;
     }
 
     &__form {
-        border-top: 1px solid #afaeae;
-        margin: 7px 0;
-        padding: 7px 0;
+        margin-top: 20px;
+        @include mixins.flex-box($d: column, $gap: 10px);
+    }
+
+    &__form-files {
+        max-height: 200px;
+        overflow-y: auto;
     }
 
     &__textarea {
@@ -217,7 +271,6 @@
     }
 
     &__tabs {
-        margin-top: 10px;
         position: relative;
         @include mixins.flex-box($gap: 5px);
 
@@ -249,12 +302,51 @@
     }
 
     &__files {
-        max-height: 450px;
+        max-height: 580px;
         overflow-y: auto;
     }
 
     &__histories {
-        max-height: 300px;
+        max-height: 580px;
+    }
+
+    &__dropdown {
+        z-index: 4001!important;
+    }
+}
+
+.task-card-files {
+    &__form {
+        max-height: 400px;
+        overflow-y: auto;
+    }
+}
+
+.task-card-form {
+    @include mixins.flex-box($gap: 10px);
+
+    &__button {
+        height: 50px;
+        width: 50px!important;
+        font-size: 25px;
+        border-radius: 50%;
+    }
+
+    &__editor {
+        width: 100%;
+
+        .form__textarea {
+            height: 50px;
+            border: 1px solid transparent;
+            background-color: #F3F3F3;
+            padding: 10px 15px;
+            border-radius: 5px;
+            outline: none;
+
+            &::-webkit-scrollbar {
+                display: none;
+            }
+        }
     }
 }
 
@@ -263,9 +355,10 @@
     background-color: #fff;
     box-shadow: 0 0 10px 1px rgba(0, 0, 0, .4);
     position: absolute;
-    width: calc(100% - 10px);
+    width: calc(100% - 20px);
+    height: calc(100% - 20px);
     top: 10px;
-    height: calc(100% - 10px);
+    left: 10px;
     border-radius: 10px;
     overflow-y: auto;
     @include mixins.flex-box($d: column, $gap: 10px);

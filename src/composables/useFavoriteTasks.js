@@ -13,12 +13,16 @@ function _useFavoriteTasks() {
     const { currentUserId } = useAuth();
     const notify = useNotify();
 
+    const isLoading = ref(false);
+
     const favoriteTasksEntities = ref([]);
     const favoriteTasksIsLoading = ref(false);
 
     const favoriteTasks = computed(() => favoriteTasksEntities.value.map(element => element.task));
 
     async function addTaskToFavorite(taskId) {
+        isLoading.value = true;
+
         const response = await api.taskFavorite.create({ task_id: taskId });
 
         if (response) {
@@ -26,6 +30,8 @@ function _useFavoriteTasks() {
             favoriteTasksCacheSet.value.add(taskId);
             notify.success('Задача добавлена в избранное.');
         }
+
+        isLoading.value = false;
     }
 
     async function removeTaskFromFavorite(taskId) {
@@ -35,6 +41,8 @@ function _useFavoriteTasks() {
 
         if (isNullish(taskFavorite)) return;
 
+        isLoading.value = true;
+
         const response = await api.taskFavorite.delete(taskFavorite.id);
 
         if (response) {
@@ -42,6 +50,8 @@ function _useFavoriteTasks() {
             favoriteTasksCacheSet.value.delete(taskId);
             notify.info('Задача удалена из избранного.');
         }
+
+        isLoading.value = false;
     }
 
     const fetchFavoriteTasks = useCachedAsyncFunction(async () => {
@@ -99,7 +109,8 @@ function _useFavoriteTasks() {
         toggleFavoriteTask,
         favoriteTasksIsLoading,
         favoriteTasksEntities,
-        changeTaskFavoritePosition
+        changeTaskFavoritePosition,
+        isLoading
     };
 }
 

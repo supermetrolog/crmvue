@@ -443,6 +443,10 @@
 
     &__multiselect {
         margin-top: 3px;
+
+        &.is-disabled {
+            opacity: .6;
+        }
     }
 
     &__label {
@@ -522,6 +526,11 @@
 
     &__chips {
         @include mixins.flex-box($gap: 5px, $wrap: true);
+
+        &.disabled {
+            opacity: .6;
+            pointer-events: none;
+        }
     }
 
     &__tooltip {
@@ -599,6 +608,15 @@
     }
 
     input {
+        padding: 0;
+        margin: 0 5px 1px 0;
+        height: 15px;
+        width: 15px;
+        pointer-events: none;
+        accent-color: #fff;
+    }
+
+    &__input {
         display: none;
     }
 
@@ -666,6 +684,10 @@
             i {
                 margin-left: 0;
             }
+        }
+
+        &--show-checkbox {
+            padding-left: 7px;
         }
     }
 }
@@ -1517,6 +1539,12 @@
     }
 }
 
+.checkbox-options {
+    .checkbox-chip__label {
+        border-radius: 4px;
+    }
+}
+
 .gate-types-picker {
     &__label {
         padding: 5px;
@@ -1575,6 +1603,12 @@
 
     &__wrapper {
         @include mixins.flex-box($gap: 15px, $a: center);
+
+        &.vertical {
+            flex-direction: column;
+            gap: 3px;
+            align-items: flex-start;
+        }
     }
 
     &__label {

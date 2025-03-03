@@ -1,7 +1,11 @@
 <template>
-    <button class="task-card__button">
+    <button class="task-card__button" :class="{ 'task-card__button--bordered': bordered }">
         <slot />
     </button>
 </template>
 
-<script setup></script>
+<script setup>
+defineProps({
+    bordered: Boolean
+});
+</script>
