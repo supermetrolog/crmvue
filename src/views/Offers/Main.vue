@@ -102,6 +102,7 @@ import { locationOptions } from '@/const/options/location.options.js';
 import FormOfferSearchExternal from '@/components/Forms/Offer/FormOfferSearchExternal.vue';
 import { useSelectedFilters } from '@/composables/useSelectedFilters.js';
 import { singleToArrayByKeys } from '@/utils/helpers/object/singleToArrayByKeys.js';
+import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
 
 const isMobile = useMobile();
 const store = useStore();
@@ -251,8 +252,38 @@ const formKeysOnlyArray = [
 const getOffers = async (withLoader = true) => {
     isLoading.value = withLoader;
 
+    const payload = createPayload();
+
+    if (!favoritesOffers.value.length) await searchFavoritesOffers();
+
+    if (route.query.favorites) {
+        payload.original_id = [];
+        payload.object_id = [];
+        payload.complex_id = [];
+
+        favoritesOffers.value.map(element => {
+            payload.original_id.push(element.original_id);
+            payload.object_id.push(element.object_id);
+            payload.complex_id.push(element.complex_id);
+        });
+
+        payload.type_id = [1, 2];
+    }
+
+    await store.dispatch('SEARCH_OFFERS', { query: payload });
+
+    isLoading.value = false;
+};
+
+function createPayload() {
     const query = { ...route.query };
+
     singleToArrayByKeys(query, formKeysOnlyArray);
+
+    if (isNotNullish(query.deal_type) && query.deal_type == 0) {
+        delete query.deal_type;
+        query.deal_types = [0, 3];
+    }
 
     query.type_id = [2, 3];
     query.expand =
@@ -262,24 +293,8 @@ const getOffers = async (withLoader = true) => {
         'offer,' +
         'consultant.userProfile';
 
-    if (!favoritesOffers.value.length) await searchFavoritesOffers();
-    if (route.query.favorites) {
-        query.original_id = [];
-        query.object_id = [];
-        query.complex_id = [];
-
-        favoritesOffers.value.map(element => {
-            query.original_id.push(element.original_id);
-            query.object_id.push(element.object_id);
-            query.complex_id.push(element.complex_id);
-        });
-
-        query.type_id = [1, 2];
-    }
-
-    await store.dispatch('SEARCH_OFFERS', { query });
-    isLoading.value = false;
-};
+    return query;
+}
 
 const deleteFavoriteOffer = async () => {
     const hasFavoritesFilter = route.query.favorites;
