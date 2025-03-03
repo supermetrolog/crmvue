@@ -1,6 +1,9 @@
 <template>
     <div class="messenger-quiz-template">
-        <MessengerQuizFormTemplateAccordion class="mt-2" label="Общие вопросы (2)">
+        <MessengerQuizFormTemplateAccordion
+            class="mt-2"
+            :label="`Общие вопросы (${commonGroupQuestions.length})`"
+        >
             <MessengerQuizQuestion
                 v-for="question in commonGroupQuestions"
                 :key="question.id"
@@ -12,7 +15,10 @@
             />
         </MessengerQuizFormTemplateAccordion>
         <div class="messenger-quiz-template__groups" :class="{ reversed: isObjectChatMember }">
-            <MessengerQuizFormTemplateAccordion class="mt-2" label="Клиентские вопросы (4)">
+            <MessengerQuizFormTemplateAccordion
+                class="mt-2"
+                :label="`Клиентские вопросы (${companyGroupQuestions.length})`"
+            >
                 <MessengerQuizQuestion
                     v-for="question in companyGroupQuestions"
                     :key="question.id"
@@ -24,7 +30,10 @@
                     :selectable="isObjectChatMember"
                 />
             </MessengerQuizFormTemplateAccordion>
-            <MessengerQuizFormTemplateAccordion class="mt-2" label="Вопросы по предложениям (4)">
+            <MessengerQuizFormTemplateAccordion
+                class="mt-2"
+                :label="`Вопросы по предложениям (${objectGroupQuestions.length})`"
+            >
                 <MessengerQuizFormRelationCheckbox v-model="relatedModelValue" />
                 <MessengerQuizQuestion
                     v-for="question in objectGroupQuestions"
