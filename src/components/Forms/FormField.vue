@@ -62,7 +62,8 @@ const fieldOptions = {
     checkbox: 'Checkbox',
     'tab-checkbox': 'Tab-checkbox',
     input: 'Input',
-    textarea: 'Textarea'
+    textarea: 'Textarea',
+    files: 'files'
 };
 
 const fieldTypeOptions = {

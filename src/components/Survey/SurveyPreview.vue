@@ -12,7 +12,7 @@
     <UiModal
         v-model:visible="formIsVisible"
         title="Редактирование опросника"
-        :width="800"
+        :width="1200"
         :min-height="300"
         :close-on-outside-click="false"
         :close-on-press-esc="false"
@@ -51,19 +51,25 @@ const {
 } = useAsyncPopup('surveyPreview');
 
 onPopupShowed(() => {
-    if (props.value.survey) {
-        survey.value = toRaw(props.value.survey);
-    } else {
-        surveyId.value = props.value.surveyId ?? props.value.quizId;
-    }
-
-    if (props.value.editMode) openSurveyEditing();
-    else viewIsVisible.value = true;
+    showOrEditSurvey(props.value);
 });
 
 onUnmounted(() => {
     destroyPopup();
 });
+
+function showOrEditSurvey(options) {
+    if (options.survey) {
+        survey.value = toRaw(options.survey);
+        surveyId.value = null;
+    } else {
+        surveyId.value = options.surveyId ?? options.quizId;
+        survey.value = null;
+    }
+
+    if (options.editMode) openSurveyEditing();
+    else viewIsVisible.value = true;
+}
 
 // view
 

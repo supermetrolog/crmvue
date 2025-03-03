@@ -8,7 +8,7 @@
                 @reset="resetFilters"
                 class="messenger-aside-users"
                 :loading="isLoading"
-                :title="`Сотрудники (${consultants.length}/${pagination?.totalCount || 0})`"
+                :title="`Сотрудники (${pagination?.totalCount || 0})`"
             >
                 <template #filters>
                     <MessengerAsideFiltersForConsultants v-model="filters.user" />

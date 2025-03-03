@@ -1,0 +1,105 @@
+@use "../../../utils/mixins";
+@use "../../../utils/variables";
+
+.ui-button {
+    border-radius: 5px;
+    border: none;
+    padding: 7px 15px;
+    background-color: #11698e;
+    color: #f7f7f7;
+    display: inline-block;
+    width: auto;
+    height: max-content;
+    box-shadow: 0 0 1px 1px rgba(0, 0, 0, 0.1);
+    @include mixins.transition(background-color .2s, opacity .3s);
+
+    &:disabled, &[disabled] {
+        pointer-events: none;
+        opacity: .7;
+    }
+
+    &:not(:disabled) {
+        cursor: pointer;
+    }
+
+    @include mixins.hover {
+        background-color: #085373;
+    }
+
+    &:has(i), &--loading {
+        @include mixins.flex-box($a: center, $gap: 5px);
+    }
+
+    &--small {
+        padding: 4px 10px;
+    }
+
+    &--shadow {
+        box-shadow: 0 2px 5px 0 hsla(0, 0%, 39.2%, .5);
+    }
+
+    &--uppercase {
+        text-transform: uppercase;
+    }
+
+    &--bolder {
+        font-weight: 500;
+    }
+
+    &--rounded {
+        border-radius: 20px;
+    }
+
+    &--rect {
+        border-radius: 2px;
+    }
+
+    @include mixins.bg-color-scheme(
+                    cl-warning #f88f01 #a46104,
+                    cl-success #10b981 #009665,
+                    cl-danger #f93154 #cb1132,
+                    cl-info #e7e7e7 #d3d3d3 #000,
+                    cl-dark #505050 #2a454c,
+                    cl-light #e8e8e8 #c8c8c8 #000000
+    );
+
+    &--outlined {
+        border: 2px solid #11698e;
+        color: #11698e;
+        background-color: #fff;
+
+        &:disabled {
+            border-color: transparent;
+        }
+
+        &:hover {
+            color: #fff!important;
+        }
+
+        &.ui-button {
+            &--cl-warning {
+                border-color: #f88f01;
+                color: #f88f01;
+            }
+
+            &--cl-success {
+                border-color: #10b981;
+                color: #10b981;
+            }
+
+            &--cl-danger {
+                border-color: #f93154;
+                color: #f93154;
+            }
+
+            &--cl-info {
+                border-color: #e7e7e7;
+                color: #4e4e4e;
+
+                &:hover {
+                    color: #000!important;
+                }
+            }
+        }
+    }
+}

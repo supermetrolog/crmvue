@@ -67,21 +67,21 @@
 <script setup>
 import { computed, watch } from 'vue';
 import RadioChip from '@/components/common/Forms/RadioChip.vue';
-import MessengerQuizQuestionSuccessIcon from '@/components/Messenger/Quiz/Question/MessengerQuizQuestionSuccessIcon.vue';
-import MessengerQuizQuestionDangerIcon from '@/components/Messenger/Quiz/Question/MessengerQuizQuestionDangerIcon.vue';
+import MessengerQuizQuestionSuccessIcon from '@/components/Messenger/Quiz/Question/Icons/MessengerQuizQuestionSuccessIcon.vue';
+import MessengerQuizQuestionDangerIcon from '@/components/Messenger/Quiz/Question/Icons/MessengerQuizQuestionDangerIcon.vue';
 import { Tippy } from 'vue-tippy';
 import ContactCard from '@/components/Contact/Card/ContactCard.vue';
-import MessengerQuizQuestionWarningIcon from '@/components/Messenger/Quiz/Question/MessengerQuizQuestionWarningIcon.vue';
+import MessengerQuizQuestionWarningIcon from '@/components/Messenger/Quiz/Question/Icons/MessengerQuizQuestionWarningIcon.vue';
 import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
 import Textarea from '@/components/common/Forms/Textarea.vue';
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
 import RadioOptions from '@/components/common/Forms/RadioOptions.vue';
-import MessengerQuizQuestionCallSchedule from '@/components/Messenger/Quiz/Question/MessengerQuizQuestionCallSchedule.vue';
+import MessengerQuizQuestionCallSchedule from '@/components/Messenger/Quiz/Question/Call/MessengerQuizQuestionCallSchedule.vue';
 import { isNullish } from '@/utils/helpers/common/isNullish.js';
 import useVuelidate from '@vuelidate/core';
 import { helpers, requiredIf } from '@vuelidate/validators';
 import { useValidationNotify } from '@/composables/useValidationNotify.js';
-import MessengerQuizQuestionPrimaryIcon from '@/components/Messenger/Quiz/Question/MessengerQuizQuestionPrimaryIcon.vue';
+import MessengerQuizQuestionPrimaryIcon from '@/components/Messenger/Quiz/Question/Icons/MessengerQuizQuestionPrimaryIcon.vue';
 
 const form = defineModel('form');
 

@@ -170,7 +170,6 @@ const pasteHandler = async event => {
             const file = new File([element], pastedUniqueIndex + '-' + element.name, {
                 type: element.type
             });
-            file.created_at = 'Только что';
 
             pastedUniqueIndex++;
 

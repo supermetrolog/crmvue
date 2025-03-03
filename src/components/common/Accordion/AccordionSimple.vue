@@ -6,77 +6,60 @@
                 <AccordionSimpleTrigger static />
             </div>
         </slot>
-        <div class="accordion-simple__body" :class="{ active: isOpen }">
+        <div class="accordion-simple__body" :class="[{ active: isOpen }, bodyClass]">
             <div v-if="!withoutRender || isOpened" class="accordion-simple__wrapper">
                 <slot name="body"></slot>
             </div>
         </div>
     </div>
 </template>
-<script>
+<script setup>
 import AccordionSimpleTrigger from '@/components/common/Accordion/AccordionSimpleTrigger.vue';
-import { computed } from 'vue';
+import { onBeforeUnmount, provide, ref } from 'vue';
 
-export default {
-    name: 'AccordionSimple',
-    components: { AccordionSimpleTrigger },
-    provide() {
-        return {
-            $accordionIsOpened: computed(() => this.isOpen),
-            $toggleAccordion: () => this.toggle()
-        };
-    },
-    props: {
-        title: {
-            type: String,
-            default: null
-        },
-        opened: {
-            type: Boolean,
-            default: false
-        },
-        withoutRender: {
-            type: Boolean,
-            default: false
-        }
-    },
-    data() {
-        return {
-            isOpen: false,
-            isOpened: false,
-            closingTimeout: null
-        };
-    },
-    methods: {
-        toggle() {
-            this.isOpen = !this.isOpen;
+const props = defineProps({
+    title: String,
+    opened: Boolean,
+    withoutRender: Boolean,
+    bodyClass: [String, Array, Object]
+});
 
-            if (this.withoutRender) {
-                if (this.isOpen) {
-                    this.isOpened = true;
-                    this.clearTimeout();
-                } else this.close();
-            } else this.isOpened = this.isOpen;
-        },
-        close() {
-            clearTimeout(this.closingTimeout);
+const isOpen = ref(props.opened);
+const isOpened = ref(props.opened);
 
-            this.closingTimeout = setTimeout(() => {
-                this.isOpened = false;
-                this.clearTimeout();
-            }, 500);
-        },
-        clearTimeout() {
-            clearTimeout(this.closingTimeout);
-            this.closingTimeout = null;
-        }
-    },
-    created() {
-        this.isOpen = this.opened;
-        this.isOpened = this.opened;
-    },
-    beforeUnmount() {
-        this.clearTimeout();
-    }
-};
+let closingTimeout = null;
+
+function toggle() {
+    isOpen.value = !isOpen.value;
+
+    if (props.withoutRender) {
+        if (isOpen.value) {
+            isOpened.value = true;
+            clear();
+        } else close();
+    } else isOpened.value = isOpen.value;
+}
+
+function close() {
+    clearTimeout(closingTimeout);
+
+    closingTimeout = setTimeout(() => {
+        isOpened.value = false;
+        clear();
+    }, 500);
+}
+
+function clear() {
+    clearTimeout(closingTimeout);
+    closingTimeout = null;
+}
+
+onBeforeUnmount(() => {
+    clearTimeout();
+});
+
+provide('$accordionIsOpened', isOpen);
+provide('$toggleAccordion', toggle);
+
+defineExpose({ toggle, close });
 </script>

@@ -8,7 +8,7 @@ const URL = '/surveys';
 
 export default {
     async create(options) {
-        const response = await axios.post(URL + '/with-survey-question-answer', options);
+        const response = await axios.postForm(URL + '/with-survey-question-answer', options);
         return responseToData(response);
     },
     async get(id) {
@@ -24,11 +24,11 @@ export default {
         return responseHasStatus(response.status, STATUS_SUCCESS);
     },
     async update(id, payload) {
-        const response = await axios.put(`${URL}/${id}`, payload);
+        const response = await axios.putForm(`${URL}/${id}`, payload);
         return responseToData(response);
     },
     async updateWithAnswers(id, payload) {
-        const response = await axios.put(`${URL}/${id}/with-survey-question-answer`, payload);
+        const response = await axios.putForm(`${URL}/${id}/with-survey-question-answer`, payload);
         return responseToData(response);
     }
 };

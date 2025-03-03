@@ -7,5 +7,5 @@
     </div>
 </template>
 <script setup>
-import MessengerChatNotificationSurveyTemplatePreviewQuestionSkeleton from '@/components/Messenger/Chat/Notification/Templates/MessengerChatNotificationSurveyTemplatePreviewQuestionSkeleton.vue';
+import MessengerChatNotificationSurveyTemplatePreviewQuestionSkeleton from '@/components/Messenger/Chat/Notification/Templates/Survey/MessengerChatNotificationSurveyTemplatePreviewQuestionSkeleton.vue';
 </script>

@@ -17,7 +17,7 @@ export function abortRequests() {
 
 export async function axiosResponseErrorInterceptor(error) {
     await setRequestError(error);
-    return null;
+    throw error;
 }
 
 export function setAccessToken(token) {

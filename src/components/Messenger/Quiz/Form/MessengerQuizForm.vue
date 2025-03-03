@@ -8,7 +8,7 @@
             />
             <MessengerQuizFormRemainingWindow
                 v-else-if="!canBeCreated"
-                @edit="editSurvey"
+                @show="showSurvey"
                 :last-survey="lastSurvey"
             />
             <template v-else>
@@ -25,8 +25,9 @@
                 />
             </template>
             <MessengerQuizFormTemplate
-                ref="quizForm"
-                :questions="filteredQuestions"
+                ref="objectQuizForm"
+                v-model:related="withRelated"
+                :questions="questions"
                 :disabled="formIsDisabled"
             />
         </template>
@@ -47,9 +48,8 @@
 <script setup>
 import { useStore } from 'vuex';
 import { computed, onMounted, ref, useTemplateRef, watch } from 'vue';
-import { quizQuestionsGroups } from '@/const/quiz.js';
-import { messenger } from '@/const/messenger.js';
-import MessengerQuizQuestionCall from '@/components/Messenger/Quiz/Question/MessengerQuizQuestionCall.vue';
+import { quizEffectKinds } from '@/const/quiz.js';
+import MessengerQuizQuestionCall from '@/components/Messenger/Quiz/Question/Call/MessengerQuizQuestionCall.vue';
 import MessengerQuizFormContactSuggestModal from '@/components/Messenger/Quiz/Form/MessengerQuizFormContactSuggestModal.vue';
 import MessengerQuizFormDisabledWindow from '@/components/Messenger/Quiz/Form/MessengerQuizFormDisabledWindow.vue';
 import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
@@ -89,31 +89,13 @@ const props = defineProps({
 });
 
 const store = useStore();
-const quizForm = useTemplateRef('quizForm');
+const objectQuizForm = useTemplateRef('objectQuizForm');
 
 const isLoading = ref(false);
 
-const currentQuestionGroup = computed(() => {
-    if (store.state.Messenger.currentDialogType === messenger.dialogTypes.COMPANY)
-        return quizQuestionsGroups.COMPANY;
-
-    if (store.state.Messenger.currentDialogType === messenger.dialogTypes.REQUEST)
-        return quizQuestionsGroups.COMPANY;
-
-    if (
-        store.state.Messenger.currentDialog.model.type ===
-        messenger.objectChatMemberTypes.RENT_OR_SALE
-    )
-        return quizQuestionsGroups.OBJECT;
-
-    return quizQuestionsGroups.COMPANY;
-});
+// questions
 
 const questions = computed(() => store.state.Quizz.questions);
-
-const filteredQuestions = computed(() =>
-    questions.value.filter(question => question.group === currentQuestionGroup.value)
-);
 
 const fetchQuestions = async () => {
     isLoading.value = true;
@@ -125,8 +107,77 @@ onMounted(() => {
     if (!questions.value?.length) fetchQuestions();
 });
 
+// form
+
+const withRelated = ref(false);
+
+function answerFormMustBeProcessed(answer) {
+    return answer && answer.value && answer.form;
+}
+
 const getForm = () => {
-    return { answers: quizForm.value?.getForm(), isCanceled: formIsDisabled.value };
+    const form = objectQuizForm.value.getForm();
+
+    // objects group
+
+    const relatedAnswers = {
+        objects: {}
+    };
+
+    if (withRelated.value) {
+        const freeAreaMustBeEditAnswer = form.find(answer =>
+            answer.effects.has(quizEffectKinds.OBJECT_FREE_AREA_MUST_BE_EDIT)
+        );
+
+        if (answerFormMustBeProcessed(freeAreaMustBeEditAnswer)) {
+            freeAreaMustBeEditAnswer.form.objects.forEach(object => {
+                relatedAnswers.objects[object.id] = {
+                    answer: object.answer
+                };
+            });
+
+            freeAreaMustBeEditAnswer.value = freeAreaMustBeEditAnswer.filled;
+        }
+
+        const wantsToSellMustBeEditAnswer = form.find(answer =>
+            answer.effects.has(quizEffectKinds.COMPANY_WANTS_TO_SELL_MUST_BE_EDITED)
+        );
+
+        if (answerFormMustBeProcessed(wantsToSellMustBeEditAnswer)) {
+            wantsToSellMustBeEditAnswer.form.objects.forEach(object => {
+                if (relatedAnswers.objects[object.id]) {
+                    Object.assign(relatedAnswers.objects[object.id].answer, object.answer);
+                } else {
+                    relatedAnswers.objects[object.id] = {
+                        answer: object.answer
+                    };
+                }
+            });
+        }
+
+        const companiesIdentifiedAnswer = form.find(answer =>
+            answer.effects.has(quizEffectKinds.COMPANIES_ON_OBJECT_IDENTIFIED)
+        );
+
+        if (companiesIdentifiedAnswer && companiesIdentifiedAnswer.form?.objects?.length) {
+            companiesIdentifiedAnswer.form.objects.forEach(object => {
+                if (relatedAnswers.objects[object.id]) {
+                    Object.assign(relatedAnswers.objects[object.id].answer, object.answer);
+                } else {
+                    relatedAnswers.objects[object.id] = {
+                        answer: object.answer
+                    };
+                }
+            });
+        }
+    }
+
+    return {
+        answers: form,
+        isCanceled: formIsDisabled.value,
+        relatedAnswers,
+        withRelated: withRelated.value
+    };
 };
 
 defineExpose({
@@ -134,7 +185,7 @@ defineExpose({
     validate() {
         return (
             selectedContactsEls.value.every(element => element.validate()) &&
-            (formIsDisabled.value || quizForm.value?.validate())
+            (formIsDisabled.value || objectQuizForm.value.validate())
         );
     }
 });
@@ -221,9 +272,9 @@ const selectedContactsEls = useTemplateRef('selectedContactsEls');
 
 // edit
 
-const { show: showSurvey } = useAsyncPopup('surveyPreview');
+const { show: _showSurvey } = useAsyncPopup('surveyPreview');
 
-function editSurvey() {
-    showSurvey({ surveyId: props.lastSurvey.id, editMode: true });
+function showSurvey() {
+    _showSurvey({ surveyId: props.lastSurvey.id });
 }
 </script>

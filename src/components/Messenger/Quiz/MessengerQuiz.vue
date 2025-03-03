@@ -13,7 +13,7 @@
         />
         <template v-else>
             <div class="messenger-quiz__wrapper">
-                <Loader v-if="loaders.final" :label="currentLoadingLabel" class="my-4" />
+                <Loader v-if="isLoading" :label="currentLoadingLabel" class="my-4" />
                 <MessengerQuizContacts
                     v-model:contact="currentRecipient"
                     @suggest-create="suggestCreateContact"
@@ -172,25 +172,35 @@ const {
 
 const isCompleted = ref(false);
 
+const isLoading = ref(false);
 const loaders = reactive({
-    final: false,
     surveyCreating: false,
     messageSearching: false,
     messageCreating: false,
     tasksCreating: false,
     callsCreating: false,
-    scheduledCallsCreating: false
+    scheduledCallsCreating: false,
+    relationCreating: false,
+    companySurveyCreating: false
 });
 
+const loadingLabels = {
+    surveyCreating: 'Сохранение результатов опроса..',
+    messageSearching: 'Поиск сообщений в чате..',
+    messageCreating: 'Отправка сообщений в чат..',
+    tasksCreating: 'Создание задач..',
+    callsCreating: 'Фиксация звонков..',
+    scheduledCallsCreating: 'Сохранение запланированных звонков..',
+    relationCreating: 'Сохранение связанных опросов..',
+    companySurveyCreating: 'Сохранение опроса компании..'
+};
+
 const currentLoadingLabel = computed(() => {
-    if (loaders.surveyCreating) return 'Сохранение результатов опроса..';
-    if (loaders.messageSearching) return 'Отправка сообщений в чат..';
-    if (loaders.messageCreating) return 'Отправка сообщений в чат..';
-    if (loaders.tasksCreating) return 'Создание задач..';
-    if (loaders.callsCreating) return 'Фиксация звонков..';
-    if (loaders.scheduledCallsCreating) return 'Сохранение запланированных звонков..';
-    if (loaders.final) return 'Загрузка результатов..';
-    return null;
+    const keys = Object.keys(loaders).filter(key => loaders[key]);
+
+    if (keys.length) return loadingLabels[keys[0]];
+
+    return 'Загрузка результатов..';
 });
 
 const finalContact = ref(null);
@@ -202,8 +212,26 @@ const {
     createPotentialTasks,
     createCallsWithContacts,
     createScheduledCallTasks,
-    sendMessageAboutSurveyIsUnavailable
+    sendMessageAboutSurveyIsUnavailable,
+    createRelatedSurveys
 } = useMessengerQuiz();
+
+const isObjectChatMember = computed(() => {
+    return (
+        store.state.Messenger.currentDialogType === messenger.dialogTypes.OBJECT &&
+        store.state.Messenger.currentDialog.model.type ===
+            messenger.objectChatMemberTypes.RENT_OR_SALE
+    );
+});
+
+function prepareAnswers(...answers) {
+    return answers.map(element => ({
+        question_answer_id: element.question_answer_id,
+        value: element.value,
+        files: element.files,
+        file: element.file
+    }));
+}
 
 async function send() {
     const valid = quizForm.value.validate();
@@ -216,7 +244,7 @@ async function send() {
 
     const chatMemberId = store.state.Messenger.currentDialog.id;
 
-    const { answers, isCanceled } = quizForm.value.getForm();
+    const { answers, isCanceled, relatedAnswers, withRelated } = quizForm.value.getForm();
 
     finalSelectedContacts.value = selectedContacts.value.map(element => element.entity);
 
@@ -225,22 +253,50 @@ async function send() {
 
         await showFinalContactPicker();
 
-        loaders.final = true;
+        isLoading.value = true;
+
+        const answersByGroup = answers.reduce(
+            (acc, answer) => {
+                acc[answer.question_group].push(answer);
+                return acc;
+            },
+            { common: [], object: [], company: [] }
+        );
 
         loaders.surveyCreating = true;
         const createdSurvey = await createSurvey(
             finalContact.value,
-            answers.map(element => ({
-                question_answer_id: element.question_answer_id,
-                value: element.value
-            }))
+            prepareAnswers(
+                ...answersByGroup.common,
+                ...(isObjectChatMember.value ? answersByGroup.object : answersByGroup.company)
+            )
         );
         loaders.surveyCreating = false;
 
         if (!createdSurvey) {
             notify.info('Произошла ошибка при сохранении опросника, попробуйте позже');
-            loaders.final = false;
+            isLoading.value = false;
             return;
+        }
+
+        if (isObjectChatMember.value) {
+            loaders.companySurveyCreating = true;
+
+            const companyChatMemberId = await api.messenger.getChatMemberIdByQuery({
+                model_type: messenger.dialogTypes.COMPANY,
+                model_id: store.state.Messenger.currentDialog.model.company_id
+            });
+
+            if (companyChatMemberId) {
+                await createSurvey(
+                    finalContact.value,
+                    prepareAnswers(...answersByGroup.common, ...answersByGroup.company),
+                    companyChatMemberId,
+                    createdSurvey.id
+                );
+            }
+
+            loaders.companySurveyCreating = false;
         }
 
         loaders.callsCreating = true;
@@ -258,8 +314,14 @@ async function send() {
             notify.info(
                 'Не удалось установить связь с чатом, создайте задачи по контактам вручную..'
             );
-            loaders.final = false;
+            isLoading.value = false;
             return;
+        }
+
+        if (withRelated) {
+            loaders.relationCreating = true;
+            await createRelatedSurveys(finalContact.value, relatedAnswers.objects, createdSurvey);
+            loaders.relationCreating = false;
         }
 
         loaders.tasksCreating = true;
@@ -270,9 +332,9 @@ async function send() {
         await createScheduledCallTasks(scheduledCalls.value, surveyMessage.id, createdSurvey.id);
         loaders.scheduledCallsCreating = false;
 
-        loaders.final = false;
+        isLoading.value = false;
     } else {
-        loaders.final = true;
+        isLoading.value = true;
 
         loaders.callsCreating = true;
         await createCallsWithContacts(selectedContacts.value, chatMemberId);
@@ -295,7 +357,7 @@ async function send() {
         await createScheduledCallTasks(scheduledCalls.value, createdMessage.id);
         loaders.scheduledCallsCreating = false;
 
-        loaders.final = false;
+        isLoading.value = false;
     }
 
     store.dispatch('Messenger/onSurveyCompleted', chatMemberId);

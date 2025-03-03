@@ -2,7 +2,7 @@
     <div
         class="dashboard-card-task"
         :class="{
-            expired: isAlreadyExpired && !isCanceled,
+            expired: isAlreadyExpired && !isCanceled && isForMe,
             completed: isCompleted,
             self: isForMe,
             myself: isMyTask,

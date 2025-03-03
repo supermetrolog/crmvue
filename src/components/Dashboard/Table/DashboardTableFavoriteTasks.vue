@@ -18,7 +18,7 @@
             </template>
         </VirtualDragList>
         <EmptyData v-if="!favoriteTasksEntities.length">Список избранного пуст..</EmptyData>
-        <Modal @close="previewIsVisible = false" :show="previewIsVisible">
+        <Modal @close="previewIsVisible = false" :show="previewIsVisible" :blackout-opacity="0.5">
             <template #container>
                 <div v-if="previewIsLoading" class="dashboard-tasks-table__card">
                     <Spinner label="Загрузка задачи.." class="absolute-center" />

@@ -6,11 +6,18 @@
         class="messenger-quiz__question"
         :can-be-hidden="false"
     >
-        <template #description="{ mainAnswer, toggleDisabled, disabled }">
+        <template #description="{ mainAnswer, setMainAnswer, toggleDisabled, disabled }">
             <MessengerQuizFormRequestsNoRelevantPicker
                 ref="pickerElement"
                 v-model="requestsForm"
-                @set-as-disabled="() => (disabled ? null : toggleDisabled())"
+                @set-as-disabled="
+                    () => {
+                        if (!disabled) {
+                            toggleDisabled();
+                            setMainAnswer(false);
+                        }
+                    }
+                "
                 :company-id="companyId"
                 :disabled="!mainAnswer"
             />
@@ -36,7 +43,8 @@ defineProps({
         type: Boolean,
         default: true
     },
-    disabled: Boolean
+    disabled: Boolean,
+    withRelated: Boolean
 });
 
 const store = useStore();

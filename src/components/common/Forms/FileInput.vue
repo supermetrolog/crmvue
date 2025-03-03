@@ -14,10 +14,13 @@
                 @drop.prevent="dropHandler"
                 @dragenter.prevent="isDragEnter = true"
                 class="file-input__field"
-                :class="{
-                    'file-input__field--dragenter': isDragEnter,
-                    'file-input__field--short': short
-                }"
+                :class="[
+                    {
+                        'file-input__field--dragenter': isDragEnter,
+                        'file-input__field--short': short
+                    },
+                    fieldClass
+                ]"
             >
                 <i class="file-input__icon fa-solid fa-download" />
                 <div class="file-input__helper">
@@ -110,50 +113,24 @@ export default {
             type: String,
             default: ''
         },
-        single: {
-            type: Boolean,
-            default: false
-        },
+        single: Boolean,
         accept: {
             type: String,
             default: '.*'
         },
-        readOnly: {
-            type: Boolean,
-            default: false
-        },
-        required: {
-            type: Boolean,
-            default: false
-        },
-        onlyImages: {
-            type: Boolean,
-            default: false
-        },
-        apiUrl: {
-            type: String,
-            default: null
-        },
-        onlyLinks: {
-            type: Boolean,
-            default: false
-        },
-        itemClass: {
-            type: String,
-            default: null
-        },
+        readOnly: Boolean,
+        required: Boolean,
+        onlyImages: Boolean,
+        apiUrl: String,
+        onlyLinks: Boolean,
+        itemClass: String,
+        fieldClass: [String, Array, Object],
         itemSize: {
             type: Number,
             default: 50
         },
-        sortable: {
-            type: Boolean,
-            default: false
-        },
-        custom: {
-            type: Boolean,
-            default: false
-        },
+        sortable: Boolean,
+        custom: Boolean,
         short: Boolean
     },
     data() {
@@ -236,7 +213,6 @@ export default {
         },
         setProperties(files) {
             files.forEach(file => {
-                file.created_at = 'Только что';
                 file.fileType = this.getFileTypeByName(file.name);
 
                 if (file.type.match('image')) {

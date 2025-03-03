@@ -12,7 +12,7 @@
             />
             <EmptyData v-if="!tasks.length">Список задач пуст..</EmptyData>
         </template>
-        <Modal @close="previewIsVisible = false" :show="previewIsVisible">
+        <Modal @close="previewIsVisible = false" :show="previewIsVisible" :blackout-opacity="0.5">
             <template #container>
                 <div v-if="previewIsLoading" class="dashboard-tasks-table__card">
                     <Spinner label="Загрузка задачи.." class="absolute-center" />
