@@ -82,6 +82,7 @@
                             @edit="editEffect(element)"
                             :element="element"
                             can-edit
+                            :is-deleted="!element.active"
                         >
                             <template #text="{ item }">
                                 <span class="mr-1">#{{ item.id }}</span>
