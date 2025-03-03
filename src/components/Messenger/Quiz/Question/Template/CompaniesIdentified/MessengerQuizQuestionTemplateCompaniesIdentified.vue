@@ -10,7 +10,7 @@
                 v-if="withRelated"
                 v-model:objects="objectsForm"
                 @set-as-disabled="setMainAnswer(false)"
-                :company-id="currentObject.company_id"
+                :company-id="currentCompanyId"
                 :main-answer="mainAnswer"
                 :disabled="!withRelated"
                 class="mt-2"
@@ -33,6 +33,8 @@ import MessengerQuizQuestionTemplateDefault from '@/components/Messenger/Quiz/Qu
 import { isArray } from '@/utils/helpers/array/isArray.js';
 import MessengerQuizQuestionTemplateCompaniesIdentifiedPicker from '@/components/Messenger/Quiz/Question/Template/CompaniesIdentified/MessengerQuizQuestionTemplateCompaniesIdentifiedPicker.vue';
 import { useStore } from 'vuex';
+import { messenger } from '@/const/messenger.js';
+import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
 
 const props = defineProps({
     question: {
@@ -66,12 +68,14 @@ function injectCompaniesToForm(form, companies, mainAnswer) {
             };
         });
 
-        answer.value = relatedForm.find(element => element.id === currentObject.value.id)?.answer[
-            answer.question_answer_id
-        ];
-        answer.form = {
-            objects: relatedForm.filter(element => element.id !== currentObject.value.id)
-        };
+        if (isNotNullish(currentObject.value)) {
+            answer.value = relatedForm.find(
+                element => element.id === currentObject.value.id
+            )?.answer[answer.question_answer_id];
+            answer.form = {
+                objects: relatedForm.filter(element => element.id !== currentObject.value.id)
+            };
+        }
     } else {
         answer.value = companies.value;
     }
@@ -129,8 +133,16 @@ defineExpose({ getForm, validate, setForm });
 
 const store = useStore();
 
+const currentCompanyId = computed(() => {
+    if (store.state.Messenger.currentDialogType === messenger.dialogTypes.COMPANY)
+        return store.state.Messenger.currentDialog.model_id;
+    return store.state.Messenger.currentDialog.model.object.company_id;
+});
+
 const currentObject = computed(() => {
-    return store.state.Messenger.currentDialog?.model?.object;
+    if (store.state.Messenger.currentDialogType === messenger.dialogTypes.OBJECT)
+        return store.state.Messenger.currentDialog.model;
+    return null;
 });
 
 // form

@@ -291,7 +291,8 @@ async function send() {
                 await createSurvey(
                     finalContact.value,
                     prepareAnswers(...answersByGroup.common, ...answersByGroup.company),
-                    companyChatMemberId
+                    companyChatMemberId,
+                    createdSurvey.id
                 );
             }
 

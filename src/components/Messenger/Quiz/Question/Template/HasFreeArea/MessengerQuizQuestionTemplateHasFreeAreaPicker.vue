@@ -117,6 +117,7 @@ import { getLinkFile } from '@/utils/url.js';
 import { useStore } from 'vuex';
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
 import MessengerQuizQuestionAccordionList from '@/components/Messenger/Quiz/Question/MessengerQuizQuestionAccordionList.vue';
+import { messenger } from '@/const/messenger.js';
 
 const offersModelValue = defineModel('offers');
 const objectsModelValue = defineModel('objects');
@@ -144,7 +145,9 @@ const props = defineProps({
 const store = useStore();
 
 const currentObject = computed(() => {
-    return store.state.Messenger.currentDialog?.model?.object;
+    if (store.state.Messenger.currentDialogType === messenger.dialogTypes.OBJECT)
+        return store.state.Messenger.currentDialog.model;
+    return null;
 });
 
 const isLoading = ref(true);
@@ -180,9 +183,9 @@ async function fetchOffersAndObjects() {
     }
 
     if (objectsResponse?.value?.data?.length > 1) {
-        const filteredObjects = objectsResponse.value.data.filter(
-            object => object.id !== currentObject.value.id
-        );
+        const filteredObjects = isNotNullish(currentObject.value)
+            ? objectsResponse.value.data.filter(object => object.id !== currentObject.value.id)
+            : objectsResponse.value.data;
 
         objects.value = filteredObjects;
         initObjectsModelValue(filteredObjects);
@@ -243,6 +246,7 @@ defineExpose({ setValue });
 function initOffersModelValue(payload) {
     offersModelValue.value = payload.reduce((acc, element) => {
         acc[element.id] = {
+            visual_id: element.visual_id,
             id: element.id,
             form: {
                 disabled: false,
@@ -261,18 +265,21 @@ function initObjectsModelValue(payload) {
             id: element.id,
             selected: false,
             answer: {
-                description: props.question.answers['text-answer'].reduce((acc, el) => {
-                    acc[el.id] = null;
-                    return acc;
-                }, {}),
-                tab: props.question.answers.tab.reduce((acc, el) => {
-                    acc[el.id] = null;
-                    return acc;
-                }, {}),
-                main: props.question.answers['yes-no'].reduce((acc, el) => {
-                    acc[el.id] = false;
-                    return acc;
-                }, {})
+                description:
+                    props.question.answers['text-answer']?.reduce((acc, el) => {
+                        acc[el.id] = null;
+                        return acc;
+                    }, {}) ?? {},
+                tab:
+                    props.question.answers.tab?.reduce((acc, el) => {
+                        acc[el.id] = null;
+                        return acc;
+                    }, {}) ?? {},
+                main:
+                    props.question.answers['yes-no']?.reduce((acc, el) => {
+                        acc[el.id] = false;
+                        return acc;
+                    }, {}) ?? {}
             }
         };
 

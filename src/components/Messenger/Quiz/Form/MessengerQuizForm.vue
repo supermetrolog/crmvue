@@ -111,102 +111,65 @@ onMounted(() => {
 
 const withRelated = ref(false);
 
+function answerFormMustBeProcessed(answer) {
+    return answer && answer.value && answer.form;
+}
+
 const getForm = () => {
     const form = objectQuizForm.value.getForm();
 
     // objects group
 
     const relatedAnswers = {
-        objects: {},
-        offers: []
+        objects: {}
     };
 
-    const freeAreaMustBeEditAnswer = form.find(answer =>
-        answer.effects.has(quizEffectKinds.OBJECT_FREE_AREA_MUST_BE_EDIT)
-    );
-
-    if (
-        freeAreaMustBeEditAnswer &&
-        freeAreaMustBeEditAnswer.value &&
-        freeAreaMustBeEditAnswer.form
-    ) {
-        if (freeAreaMustBeEditAnswer.form.offers?.length) {
-            const filteredOffers = freeAreaMustBeEditAnswer.form.offers.reduce(
-                (acc, offer) => {
-                    const payload = {
-                        id: offer.id,
-                        comment: offer.form.comment
-                    };
-
-                    if (offer.form.action === 0) acc.deleted.push(payload);
-                    if (offer.form.action === 1) acc.edited.push(payload);
-                    if (offer.form.action === 2) acc.skipped.push(payload);
-
-                    return acc;
-                },
-                { deleted: [], edited: [], skipped: [] }
-            );
-
-            relatedAnswers.offers.push(filteredOffers);
-        }
-
-        freeAreaMustBeEditAnswer.form.objects.forEach(object => {
-            relatedAnswers.objects[object.id] = {
-                answer: object.answer
-            };
-        });
-
-        freeAreaMustBeEditAnswer.value = freeAreaMustBeEditAnswer.filled;
-    }
-
-    const wantsToSellMustBeEditAnswer = form.find(answer =>
-        answer.effects.has(quizEffectKinds.COMPANY_WANTS_TO_SELL_MUST_BE_EDITED)
-    );
-
-    if (wantsToSellMustBeEditAnswer && wantsToSellMustBeEditAnswer.value) {
-        const filteredOffers = wantsToSellMustBeEditAnswer.form.offers.reduce(
-            (acc, offer) => {
-                const payload = {
-                    id: offer.id,
-                    comment: offer.form.comment
-                };
-
-                if (offer.form.action === 0) acc.deleted.push(payload);
-                if (offer.form.action === 1) acc.edited.push(payload);
-                if (offer.form.action === 2) acc.skipped.push(payload);
-
-                return acc;
-            },
-            { deleted: [], edited: [], skipped: [] }
+    if (withRelated.value) {
+        const freeAreaMustBeEditAnswer = form.find(answer =>
+            answer.effects.has(quizEffectKinds.OBJECT_FREE_AREA_MUST_BE_EDIT)
         );
 
-        wantsToSellMustBeEditAnswer.form.objects.forEach(object => {
-            if (relatedAnswers.objects[object.id]) {
-                Object.assign(relatedAnswers.objects[object.id].answer, object.answer);
-            } else {
+        if (answerFormMustBeProcessed(freeAreaMustBeEditAnswer)) {
+            freeAreaMustBeEditAnswer.form.objects.forEach(object => {
                 relatedAnswers.objects[object.id] = {
                     answer: object.answer
                 };
-            }
-        });
+            });
 
-        relatedAnswers.offers.push(filteredOffers);
-    }
+            freeAreaMustBeEditAnswer.value = freeAreaMustBeEditAnswer.filled;
+        }
 
-    const companiesIdentifiedAnswer = form.find(answer =>
-        answer.effects.has(quizEffectKinds.COMPANIES_ON_OBJECT_IDENTIFIED)
-    );
+        const wantsToSellMustBeEditAnswer = form.find(answer =>
+            answer.effects.has(quizEffectKinds.COMPANY_WANTS_TO_SELL_MUST_BE_EDITED)
+        );
 
-    if (companiesIdentifiedAnswer && companiesIdentifiedAnswer.form?.objects?.length) {
-        companiesIdentifiedAnswer.form.objects.forEach(object => {
-            if (relatedAnswers.objects[object.id]) {
-                Object.assign(relatedAnswers.objects[object.id].answer, object.answer);
-            } else {
-                relatedAnswers.objects[object.id] = {
-                    answer: object.answer
-                };
-            }
-        });
+        if (answerFormMustBeProcessed(wantsToSellMustBeEditAnswer)) {
+            wantsToSellMustBeEditAnswer.form.objects.forEach(object => {
+                if (relatedAnswers.objects[object.id]) {
+                    Object.assign(relatedAnswers.objects[object.id].answer, object.answer);
+                } else {
+                    relatedAnswers.objects[object.id] = {
+                        answer: object.answer
+                    };
+                }
+            });
+        }
+
+        const companiesIdentifiedAnswer = form.find(answer =>
+            answer.effects.has(quizEffectKinds.COMPANIES_ON_OBJECT_IDENTIFIED)
+        );
+
+        if (companiesIdentifiedAnswer && companiesIdentifiedAnswer.form?.objects?.length) {
+            companiesIdentifiedAnswer.form.objects.forEach(object => {
+                if (relatedAnswers.objects[object.id]) {
+                    Object.assign(relatedAnswers.objects[object.id].answer, object.answer);
+                } else {
+                    relatedAnswers.objects[object.id] = {
+                        answer: object.answer
+                    };
+                }
+            });
+        }
     }
 
     return {

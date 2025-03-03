@@ -306,6 +306,20 @@ function getFilesAnswers() {
     }));
 }
 
+// custom
+
+const hasCustomQuestions = computed(() => Boolean(props.question.answers?.custom));
+
+const customFields = computed(() =>
+    props.question.answers.custom.filter(element => element.deleted_at === null)
+);
+
+function getCustomAnswers() {
+    return answersToPayload(customFields.value, () => ({
+        value: null
+    }));
+}
+
 // other
 
 const isDisabled = computed(() => {
@@ -344,6 +358,8 @@ function getForm() {
     if (hasCheckboxQuestions.value) list.push(...getCheckboxAnswers());
 
     if (hasFilesQuestions.value) list.push(...getFilesAnswers());
+
+    if (hasCustomQuestions.value) list.push(...getCustomAnswers());
 
     return list;
 }

@@ -16,13 +16,13 @@
                 class="mt-1"
             />
         </template>
-        <template v-if="currentObject" #after-content="{ mainAnswer }">
+        <template v-if="currentCompanyId" #after-content="{ mainAnswer }">
             <MessengerQuizQuestionTemplateWantsToSellPicker
                 v-model:offers="offersForm"
                 v-model:objects="objectsForm"
                 :main-answer="mainAnswer"
-                :company-id="currentObject.company_id"
-                :disabled="conditionModelValue === 0 || deleteCurrentArea || !withRelated"
+                :company-id="currentCompanyId"
+                :disabled="conditionModelValue === 0 || deleteCurrentArea"
                 :edit-mode="conditionModelValue === 1"
                 :passive-mode="mainAnswer === false"
                 class="mt-2"
@@ -44,6 +44,7 @@ import MessengerQuizQuestionTemplateWantsToSellPicker from '@/components/Messeng
 import { useStore } from 'vuex';
 import { isString } from '@/utils/helpers/string/isString.js';
 import { isNotEmptyString } from '@/utils/helpers/string/isNotEmptyString.js';
+import { messenger } from '@/const/messenger.js';
 
 const props = defineProps({
     canBeDisabled: {
@@ -77,22 +78,14 @@ function getForm() {
     const mainAnswer = form.find(answer => answer.type === 'main');
 
     if (mainAnswer) {
+        const actionAnswerMustBeEnabled = mainAnswer.value === false && deleteCurrentArea.value;
+
+        injectActionAnswerToForm(form, actionAnswerMustBeEnabled, mainAnswer.value);
+
         if (mainAnswer.value === true) {
             injectConditionAnswerToForm(form);
         } else {
             cancelConditionAnswerInForm(form);
-        }
-
-        if (mainAnswer.value === false) {
-            const answer = form.find(answer =>
-                answer.effects.has(quizEffectKinds.COMPANY_WANTS_TO_SELL_MUST_BE_DELETED)
-            );
-
-            if (answer) {
-                answer.form = {
-                    offers: Object.values(offersForm.value)
-                };
-            }
         }
     }
 
@@ -144,6 +137,11 @@ function answersHasFilledAnswer(answers) {
     );
 }
 
+const offerActionOptions = {
+    PASSIVE: 0,
+    EDIT: 1
+};
+
 function injectConditionAnswerToForm(form) {
     if (conditionModelValue.value) {
         const answer = form.find(answer =>
@@ -154,12 +152,27 @@ function injectConditionAnswerToForm(form) {
 
         answer.value = true;
 
+        const { mustBePassiveOffers, mustBeEditOffers } = Object.values(offersForm.value).reduce(
+            (acc, offer) => {
+                if (offer.form.action === offerActionOptions.PASSIVE)
+                    acc.mustBePassiveOffers.push(offer);
+                else if (offer.form.action === offerActionOptions.EDIT)
+                    acc.mustBeEditOffers.push(offer);
+
+                return acc;
+            },
+            { mustBePassiveOffers: [], mustBeEditOffers: [] }
+        );
+
         if (props.withRelated) {
             const tabAnswers = templateRef.value.getTabAnswers();
             const textAnswers = templateRef.value.getTextAnswers();
 
             answer.filled =
-                answersHasFilledAnswer(tabAnswers) || answersHasFilledAnswer(textAnswers);
+                mustBeEditOffers.length ||
+                mustBePassiveOffers.length ||
+                answersHasFilledAnswer(tabAnswers) ||
+                answersHasFilledAnswer(textAnswers);
 
             const relatedForm = Object.values(objectsForm.value).map(element => {
                 return {
@@ -173,12 +186,30 @@ function injectConditionAnswerToForm(form) {
             });
 
             answer.form = {
-                offers: Object.values(offersForm.value),
                 objects: relatedForm
             };
         } else {
             answer.filled = true;
         }
+
+        const actionAnswer = form.find(answer =>
+            answer.effects.has(quizEffectKinds.COMPANY_WANTS_TO_SELL_MUST_BE_EDITED_OFFERS)
+        );
+
+        if (!actionAnswer) return;
+
+        actionAnswer.value = {
+            passive: mustBePassiveOffers.map(offer => ({
+                visual_id: offer.visual_id,
+                id: offer.id,
+                comment: offer.form.comment
+            })),
+            edit: mustBeEditOffers.map(offer => ({
+                visual_id: offer.visual_id,
+                id: offer.id,
+                comment: offer.form.comment
+            }))
+        };
     } else {
         const answer = form.find(answer =>
             answer.effects.has(quizEffectKinds.COMPANY_WANTS_TO_SELL_ALREADY_DESCRIBED)
@@ -198,6 +229,51 @@ function cancelConditionAnswerInForm(form) {
         answer.effects.has(quizEffectKinds.COMPANY_WANTS_TO_SELL_ALREADY_DESCRIBED)
     );
     if (answer) answer.value = false;
+}
+
+function injectActionAnswerToForm(form, value, mainAnswer) {
+    const answer = form.find(answer =>
+        answer.effects.has(quizEffectKinds.COMPANY_WANTS_TO_SELL_MUST_BE_DELETED)
+    );
+
+    if (isNullish(answer)) return;
+
+    answer.value = value;
+
+    if (mainAnswer === false) {
+        const passiveOffersAnswer = form.find(answer =>
+            answer.effects.has(quizEffectKinds.COMPANY_WANTS_TO_SELL_MUST_BE_DELETED_OFFERS)
+        );
+
+        if (!passiveOffersAnswer) return;
+
+        if (value) {
+            passiveOffersAnswer.value = {
+                passive: Object.values(offersForm.value).map(offerAnswer => {
+                    return {
+                        visual_id: offerAnswer.visual_id,
+                        id: offerAnswer.id
+                    };
+                }),
+                active: []
+            };
+        } else {
+            passiveOffersAnswer.value = Object.values(offersForm.value).reduce(
+                (acc, offerAnswer) => {
+                    const payload = {
+                        visual_id: offerAnswer.visual_id,
+                        id: offerAnswer.id
+                    };
+
+                    if (offerAnswer.form.disabled) acc.passive.push(payload);
+                    else acc.active.push(payload);
+
+                    return acc;
+                },
+                { passive: [], active: [] }
+            );
+        }
+    }
 }
 
 watch(conditionModelValue, value => {
@@ -230,7 +306,9 @@ function markOffersAsActive() {
 
 const store = useStore();
 
-const currentObject = computed(() => {
-    return store.state.Messenger.currentDialog?.model?.object;
+const currentCompanyId = computed(() => {
+    if (store.state.Messenger.currentDialogType === messenger.dialogTypes.COMPANY)
+        return store.state.Messenger.currentDialog.model_id;
+    return store.state.Messenger.currentDialog.model.object.company_id;
 });
 </script>

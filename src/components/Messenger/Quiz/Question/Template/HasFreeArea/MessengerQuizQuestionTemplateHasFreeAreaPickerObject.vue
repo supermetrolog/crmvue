@@ -13,7 +13,7 @@
                     <RadioChip
                         v-for="answer in options"
                         :key="answer.id"
-                        v-model="modelValue.tab[answer.id]"
+                        v-model="radioModelValue"
                         :value="answer.id"
                         :label="answer.value"
                         :rounded="false"
@@ -37,8 +37,10 @@
 import Checkbox from '@/components/common/Forms/Checkbox.vue';
 import Textarea from '@/components/common/Forms/Textarea.vue';
 import MessengerQuizQuestionTemplateObject from '@/components/Messenger/Quiz/Question/Template/Object/MessengerQuizQuestionTemplateObject.vue';
-import { computed, watch } from 'vue';
+import { computed, onMounted, ref, watch } from 'vue';
 import RadioChip from '@/components/common/Forms/RadioChip.vue';
+import { quizEffectKinds } from '@/const/quiz.js';
+import { isNullish } from '@/utils/helpers/common/isNullish.js';
 
 defineEmits(['show-preview']);
 const modelValue = defineModel();
@@ -60,6 +62,12 @@ const props = defineProps({
         default: () => new Set()
     }
 });
+
+const freeAreaMustBeEditAnswer = computed(() =>
+    props.question.answers.tab.find(answer =>
+        answer.effects.some(effect => effect.kind === quizEffectKinds.OBJECT_FREE_AREA_MUST_BE_EDIT)
+    )
+);
 
 const options = computed(() =>
     props.question.answers.tab.filter(
@@ -85,6 +93,8 @@ function clearForm() {
     options.value.forEach(option => {
         modelValue.value.tab[option.id] = null;
     });
+
+    radioModelValue.value = null;
 }
 
 watch(
@@ -92,7 +102,35 @@ watch(
     value => {
         if (!value) clearForm();
 
-        modelValue.value.main[mainOption.value.id] = value;
+        if (mainOption.value) {
+            modelValue.value.main[mainOption.value.id] = value;
+        }
+
+        if (freeAreaMustBeEditAnswer.value) {
+            modelValue.value.tab[freeAreaMustBeEditAnswer.value.id] = value;
+        }
     }
 );
+
+// radio
+
+const radioModelValue = ref(null);
+
+watch(radioModelValue, value => {
+    if (isNullish(value)) return;
+
+    options.value.forEach(option => {
+        modelValue.value.tab[option.id] = value === option.id;
+    });
+});
+
+function setDefaultRadioModelValue() {
+    options.value.forEach(option => {
+        if (modelValue.value.tab[option.id]) radioModelValue.value = option.id;
+    });
+}
+
+onMounted(() => {
+    setDefaultRadioModelValue();
+});
 </script>
