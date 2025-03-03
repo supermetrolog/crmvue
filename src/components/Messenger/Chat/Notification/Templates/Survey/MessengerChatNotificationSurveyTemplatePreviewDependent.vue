@@ -3,11 +3,19 @@
         <div class="messenger-quiz-inline-dependent__relation">
             <p class="messenger-quiz-inline-dependent__label mb-1">Опрос по чату:</p>
             <MessengerDialogObject
+                v-if="survey.chatMember.model_type === messenger.dialogTypes.OBJECT"
                 @click="$emit('to-chat')"
                 class="messenger-quiz-inline-dependent__chat"
                 :model="survey.chatMember.model"
                 short
                 motion-slider
+            />
+            <MessengerDialogCompany
+                v-else
+                @click="$emit('to-chat')"
+                class="messenger-quiz-inline-dependent__chat"
+                :model="survey.chatMember.model"
+                short
             />
         </div>
         <div class="messenger-quiz-inline-dependent__description">
@@ -52,6 +60,8 @@ import { getContactFullName } from '@/utils/formatters/models/contact.js';
 import MessengerDialogObject from '@/components/Messenger/Dialog/Object/MessengerDialogObject.vue';
 import MessengerButton from '@/components/Messenger/MessengerButton.vue';
 import { useSurveyEditing } from '@/components/Survey/useSurveyEditing.js';
+import { messenger } from '@/const/messenger.js';
+import MessengerDialogCompany from '@/components/Messenger/Dialog/Company/MessengerDialogCompany.vue';
 
 defineEmits(['show', 'to-chat', 'edit']);
 const props = defineProps({

@@ -41,8 +41,8 @@
 import { computed, onMounted, ref, toRef } from 'vue';
 import { entityOptions } from '@/const/options/options.js';
 import api from '@/api/api.js';
-import MessengerChatNotificationSurveyTemplateSkeleton from '@/components/Messenger/Chat/Notification/Templates/MessengerChatNotificationSurveyTemplateSkeleton.vue';
-import MessengerChatNotificationSurveyTemplatePreview from '@/components/Messenger/Chat/Notification/Templates/MessengerChatNotificationSurveyTemplatePreview.vue';
+import MessengerChatNotificationSurveyTemplateSkeleton from '@/components/Messenger/Chat/Notification/Templates/Survey/MessengerChatNotificationSurveyTemplateSkeleton.vue';
+import MessengerChatNotificationSurveyTemplatePreview from '@/components/Messenger/Chat/Notification/Templates/Survey/MessengerChatNotificationSurveyTemplatePreview.vue';
 import { useDelayedLoader } from '@/composables/useDelayedLoader.js';
 import MessengerChatMessageAdditions from '@/components/Messenger/Chat/Message/Additions/MessengerChatMessageAdditions.vue';
 import UiButtonIcon from '@/components/common/UI/UiButtonIcon.vue';

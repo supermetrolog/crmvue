@@ -28,7 +28,7 @@
 import MessengerAsideHeading from '@/components/Messenger/Aside/MessengerAsideHeading.vue';
 import AccordionSimple from '@/components/common/Accordion/AccordionSimple.vue';
 import MessengerLoader from '@/components/Messenger/MessengerLoader.vue';
-import { computed, shallowRef } from 'vue';
+import { computed, useTemplateRef } from 'vue';
 import MessengerAsideSorting from '@/components/Messenger/Aside/MessengerAsideSorting.vue';
 
 const filters = defineModel('filters');
@@ -45,7 +45,7 @@ defineProps({
     }
 });
 
-const accordion = shallowRef(null);
+const accordion = useTemplateRef('accordion');
 
 const isOpened = computed(() => {
     if (accordion.value) return accordion.value.isOpened;

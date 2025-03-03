@@ -60,4 +60,6 @@ onBeforeUnmount(() => {
 
 provide('$accordionIsOpened', isOpen);
 provide('$toggleAccordion', toggle);
+
+defineExpose({ toggle, close });
 </script>

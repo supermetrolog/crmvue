@@ -70,11 +70,11 @@
 </template>
 <script setup>
 import { computed, ref } from 'vue';
-import MessengerChatNotificationSurveyTemplatePreviewQuestion from '@/components/Messenger/Chat/Notification/Templates/MessengerChatNotificationSurveyTemplatePreviewQuestion.vue';
+import MessengerChatNotificationSurveyTemplatePreviewQuestion from '@/components/Messenger/Chat/Notification/Templates/Survey/MessengerChatNotificationSurveyTemplatePreviewQuestion.vue';
 import { quizEffectKinds } from '@/const/quiz.js';
 import MessengerQuizPreviewCompanyTemplate from '@/components/Messenger/Quiz/Preview/Template/MessengerQuizPreviewCompanyTemplate.vue';
 import MessengerQuizPreviewRequestsTemplate from '@/components/Messenger/Quiz/Preview/Template/MessengerQuizPreviewRequestsTemplate.vue';
-import MessengerChatNotificationSurveyTemplatePreviewDependent from '@/components/Messenger/Chat/Notification/Templates/MessengerChatNotificationSurveyTemplatePreviewDependent.vue';
+import MessengerChatNotificationSurveyTemplatePreviewDependent from '@/components/Messenger/Chat/Notification/Templates/Survey/MessengerChatNotificationSurveyTemplatePreviewDependent.vue';
 import { useAsyncPopup } from '@/composables/useAsyncPopup.js';
 import UiModal from '@/components/common/UI/UiModal.vue';
 import MessengerButton from '@/components/Messenger/MessengerButton.vue';

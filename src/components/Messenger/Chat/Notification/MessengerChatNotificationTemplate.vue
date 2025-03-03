@@ -8,7 +8,7 @@
 </template>
 <script setup>
 import { computed } from 'vue';
-import MessengerChatNotificationSurveyTemplate from '@/components/Messenger/Chat/Notification/Templates/MessengerChatNotificationSurveyTemplate.vue';
+import MessengerChatNotificationSurveyTemplate from '@/components/Messenger/Chat/Notification/Templates/Survey/MessengerChatNotificationSurveyTemplate.vue';
 import MessengerChatNotificationDefaultTemplate from '@/components/Messenger/Chat/Notification/Templates/MessengerChatNotificationDefaultTemplate.vue';
 
 const TEMPLATES = {

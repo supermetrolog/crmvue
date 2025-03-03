@@ -232,14 +232,6 @@ function cancelConditionAnswerInForm(form) {
 }
 
 function injectActionAnswerToForm(form, value, mainAnswer) {
-    const answer = form.find(answer =>
-        answer.effects.has(quizEffectKinds.COMPANY_WANTS_TO_SELL_MUST_BE_DELETED)
-    );
-
-    if (isNullish(answer)) return;
-
-    answer.value = value;
-
     if (mainAnswer === false) {
         const passiveOffersAnswer = form.find(answer =>
             answer.effects.has(quizEffectKinds.COMPANY_WANTS_TO_SELL_MUST_BE_DELETED_OFFERS)
