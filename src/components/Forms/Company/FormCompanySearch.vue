@@ -89,7 +89,7 @@
                             multiple
                         />
                         <MultiSelect
-                            v-model="form.productRanges"
+                            v-model="form.product_ranges"
                             :close-on-select="false"
                             :loading="false"
                             searchable
@@ -185,7 +185,7 @@ const formTemplate = {
     dateStart: null,
     dateEnd: null,
     status: null,
-    productRanges: [],
+    product_ranges: [],
     without_product_ranges: null,
 
     activity_profile_ids: [],
@@ -208,7 +208,7 @@ const setQueryFields = async () => {
 
     singleToArrayByKeys(form, [
         'categories',
-        'productRanges',
+        'product_ranges',
         'activity_group_ids',
         'activity_profile_ids'
     ]);
@@ -232,7 +232,7 @@ const { filtersCount, resetForm } = useSearchForm(form, {
 watch(
     () => form.without_product_ranges,
     value => {
-        if (value) form.productRanges = [];
+        if (value) form.product_ranges = [];
     }
 );
 
