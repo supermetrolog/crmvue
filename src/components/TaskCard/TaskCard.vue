@@ -19,16 +19,6 @@
         <div class="task-card__content">
             <div class="task-card__column">
                 <div class="task-card__description mb-4">
-                    <div v-if="task.tags?.length" class="task-card__chips mb-2">
-                        <DashboardChip
-                            v-for="tag in task.tags"
-                            :key="tag.id"
-                            class="task-card__tag"
-                            :style="{ backgroundColor: '#' + tag.color }"
-                        >
-                            <span>{{ tag.name ?? tag.label }}</span>
-                        </DashboardChip>
-                    </div>
                     <div ref="messageElement" class="task-card__message"></div>
                 </div>
                 <TaskCardChatInfo

@@ -14,7 +14,7 @@
         width: 100%;
         padding: 10px;
         border-bottom: 1px solid rgba(0, 0, 0, .1);
-        @include mixins.flex-box($gap: 20px, $a: center);
+        @include mixins.flex-box($gap: 10px, $a: center);
 
         &--completed {
             background-color: variables.$color_success_dark;
@@ -59,7 +59,6 @@
 
     &__actions {
         @include mixins.flex-box($gap: 10px);
-        margin-left: auto;
     }
 
     &__description {
@@ -89,7 +88,7 @@
     }
 
     &__chips {
-        @include mixins.flex-box($gap: 5px, $wrap: true);
+        @include mixins.flex-box($gap: 5px, $wrap: true, $a: center);
     }
 
     &__info {

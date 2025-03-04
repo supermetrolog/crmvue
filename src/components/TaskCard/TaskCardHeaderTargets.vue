@@ -4,14 +4,14 @@
             v-if="task.created_by"
             v-tippy="`Создана сотрудником ${task.created_by.userProfile.medium_name}`"
             :src="task.created_by.userProfile.avatar"
-            :size="35"
+            :size="50"
         />
         <i class="task-card__arrow fa-solid fa-arrow-right-long"></i>
         <Tippy v-if="task.user">
             <template #default>
                 <Avatar
                     :src="task.user.userProfile.avatar"
-                    :size="35"
+                    :size="50"
                     rectangle
                     class="dashboard-card-task__user"
                     :class="{
@@ -37,7 +37,7 @@
                         v-for="observer in observers"
                         :key="observer.id"
                         :observer="observer"
-                        :size="30"
+                        :size="45"
                     />
                 </div>
             </template>
