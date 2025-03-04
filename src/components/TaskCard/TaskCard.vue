@@ -18,23 +18,15 @@
         />
         <div class="task-card__content">
             <div class="task-card__column">
-                <div class="task-card__description mb-4">
-                    <div v-if="task.tags?.length" class="task-card__chips mb-2">
-                        <DashboardChip
-                            v-for="tag in task.tags"
-                            :key="tag.id"
-                            class="task-card__tag"
-                            :style="{ backgroundColor: '#' + tag.color }"
-                        >
-                            <span>{{ tag.name ?? tag.label }}</span>
-                        </DashboardChip>
-                    </div>
+                <div class="task-card__description mb-3">
+                    <p class="task-card__label">Задание</p>
                     <div ref="messageElement" class="task-card__message"></div>
                 </div>
                 <TaskCardChatInfo
                     v-if="task.related_by.chat_member"
                     @to-chat="toChat"
                     @to-company="toCompany"
+                    @show-contacts="contactsIsVisible = true"
                     :company-id="objectCompanyId"
                     :task
                 />
@@ -78,6 +70,13 @@
                         :current-assigner="task.user_id"
                     />
                 </AnimationTransition>
+                <AnimationTransition :speed="0.3">
+                    <TaskCardContacts
+                        @close="contactsIsVisible = false"
+                        :visible="contactsIsVisible"
+                        :company-id="objectCompanyId"
+                    />
+                </AnimationTransition>
             </div>
         </div>
         <TaskCardInfo :task />
@@ -90,7 +89,6 @@ import { computed, onMounted, ref, toRef, useTemplateRef } from 'vue';
 import api from '@/api/api.js';
 import { useNotify } from '@/utils/use/useNotify.js';
 import { useConfirm } from '@/composables/useConfirm.js';
-import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
 import { taskOptions } from '@/const/options/task.options.js';
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
 import { useStore } from 'vuex';
@@ -115,6 +113,7 @@ import { TASK_EVENTS } from '@/const/events/task.js';
 import { useAuth } from '@/composables/useAuth.js';
 import { useLinkify } from '@/composables/useLinkify.js';
 import TaskCardFiles from '@/components/TaskCard/TaskCardFiles.vue';
+import TaskCardContacts from '@/components/TaskCard/TaskCardContactsList.vue';
 
 const DAYS_TO_IMPOSSIBLE = 14;
 
@@ -343,4 +342,8 @@ async function assign(payload) {
 const messageElement = useTemplateRef('messageElement');
 
 useLinkify(toRef(props.task, 'message'), messageElement);
+
+// contacts
+
+const contactsIsVisible = ref(false);
 </script>

@@ -1,26 +1,49 @@
 <template>
     <div class="task-card__relations">
         <div v-if="task.related_by?.chat_member_id" class="task-card__relation">
-            <p class="task-card__label mb-1">Привязано к чату:</p>
+            <p class="task-card__label mb-1">Закреплено</p>
             <component
                 :is="currentDialogComponent"
                 @click="$emit('to-chat')"
                 :model="task.related_by.chat_member.model"
             />
-            <div class="task-card__buttons mt-1">
-                <TaskCardButton @click="$emit('to-chat')" bordered>
-                    <span>Перейти в чат</span>
-                    <i class="fa-solid fa-arrow-up-right-from-square ml-2"></i>
-                </TaskCardButton>
-                <TaskCardButton v-if="companyId" @click.prevent="$emit('to-company')" bordered>
-                    <span>Просмотреть компанию</span>
-                    <i class="fa-solid fa-arrow-up-right-from-square ml-2"></i>
-                </TaskCardButton>
-                <TaskCardContactsTippy v-if="companyId" :company-id="companyId" :task="task" />
-            </div>
+            <UiDropdownActions
+                class="task-card__relations-dropdown"
+                menu-class="task-card__dropdown"
+            >
+                <template #trigger>
+                    <UiButtonIcon
+                        class="dashboard-bg-primary-l"
+                        small
+                        label="Подробнее"
+                        icon="fa-solid fa-ellipsis"
+                    />
+                </template>
+                <template #menu>
+                    <UiDropdownActionsButton
+                        @handle="$emit('to-chat')"
+                        label="Перейти в чат"
+                        icon="fa-solid fa-comment-alt"
+                    />
+                    <UiDropdownActionsButton
+                        v-if="companyId"
+                        @handle="$emit('to-company')"
+                        label="Просмотреть компанию"
+                        icon="fa-solid fa-arrow-up-right-from-square"
+                    />
+                    <UiDropdownActionsButton
+                        v-if="companyId"
+                        @handle="$emit('show-contacts')"
+                        label="Список контактов"
+                        icon="fa-solid fa-contact-card"
+                    />
+                </template>
+            </UiDropdownActions>
         </div>
-        <div v-if="task.related_by?.chat_member_message_id" class="task-card__relation">
-            <p class="task-card__label mb-1">Привязано к сообщению в чате:</p>
+        <div
+            v-if="task.related_by?.chat_member_message_id"
+            class="task-card__relation task-card__relation-message"
+        >
             <MessengerChatShortNotification
                 v-if="chatMemberMessage.is_system"
                 class="task-card__chat-notification"
@@ -44,11 +67,12 @@ import MessengerDialogUser from '@/components/Messenger/Dialog/MessengerDialogUs
 import { dayjsFromMoscow } from '@/utils/formatters/date.js';
 import { messenger } from '@/const/messenger.js';
 import MessengerDialogCompany from '@/components/Messenger/Dialog/Company/MessengerDialogCompany.vue';
-import TaskCardButton from '@/components/TaskCard/TaskCardButton.vue';
-import TaskCardContactsTippy from '@/components/TaskCard/TaskCardContactsPreview.vue';
 import MessengerChatShortNotification from '@/components/Messenger/Chat/Notification/MessengerChatShortNotification.vue';
+import UiDropdownActions from '@/components/common/UI/UiDropdownActions.vue';
+import UiDropdownActionsButton from '@/components/common/UI/UiDropdownActionsButton.vue';
+import UiButtonIcon from '@/components/common/UI/UiButtonIcon.vue';
 
-defineEmits(['to-chat', 'to-company']);
+defineEmits(['to-chat', 'to-company', 'show-contacts']);
 const props = defineProps({
     task: {
         type: Object,

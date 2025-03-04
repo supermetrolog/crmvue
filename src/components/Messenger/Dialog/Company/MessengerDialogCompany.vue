@@ -9,7 +9,7 @@
                     :company-id="model.id"
                     :size="75"
                 />
-                <span class="messenger-dialog-company__id">ID{{ model.id }}</span>
+                <span class="messenger-dialog-company__id">{{ model.id }}</span>
                 <Avatar
                     v-if="model.consultant"
                     :size="30"

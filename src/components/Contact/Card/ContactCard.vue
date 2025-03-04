@@ -98,10 +98,8 @@
                 </span>
             </p>
             <p class="contact-card__row">
-                <span class="contact-card__label">Создан: {{ createdAt }}</span>
-            </p>
-            <p class="contact-card__row">
-                <span class="contact-card__label">Обновлен: {{ updatedAt }}</span>
+                <span class="contact-card__label">Создан: {{ createdAt }}</span
+                >, <span class="contact-card__label">обновлен: {{ updatedAt }}</span>
             </p>
         </div>
     </div>
