@@ -77,16 +77,23 @@ export const Menu = {
             url: '/equipments',
             key: 'equipments'
         },
-        {
-            id: 2,
-            name: 'Календарь',
-            icon: 'fa-solid fa-calendar-days',
-            url: '/calendar',
-            exact: true
-        },
+        // {
+        //     id: 2,
+        //     name: 'Календарь',
+        //     icon: 'fa-solid fa-calendar-days',
+        //     url: '/calendar',
+        //     exact: true
+        // },
+        // {
+        //     id: 10,
+        //     name: 'Опросы',
+        //     icon: 'fa-solid fa-square-poll-horizontal',
+        //     url: '/surveys',
+        //     key: 'surveys'
+        // },
         {
             id: 5,
-            name: 'Аккаунт',
+            name: 'Профиль',
             icon: 'fa-solid fa-user-astronaut',
             url: '/account',
             key: 'account'
@@ -111,7 +118,13 @@ export const Menu = {
                     url: '/settings/messenger',
                     icon: 'fa-solid fa-message'
                 },
-                { id: 2, name: 'Задачи', url: '/settings/tasks', icon: 'fa-solid fa-list-check' }
+                { id: 2, name: 'Задачи', url: '/settings/tasks', icon: 'fa-solid fa-list-check' },
+                {
+                    id: 3,
+                    name: 'Инструменты',
+                    url: '/settings/utilities',
+                    icon: 'fa-solid fa-screwdriver-wrench'
+                }
             ]
         },
         {
@@ -215,16 +228,23 @@ export const Menu = {
             url: '/equipments',
             key: 'equipments'
         },
-        {
-            id: 2,
-            name: 'Календарь',
-            icon: 'fa-solid fa-calendar-days',
-            url: '/calendar',
-            key: 'calendar'
-        },
+        // {
+        //     id: 2,
+        //     name: 'Календарь',
+        //     icon: 'fa-solid fa-calendar-days',
+        //     url: '/calendar',
+        //     key: 'calendar'
+        // },
+        // {
+        //     id: 10,
+        //     name: 'Опросы',
+        //     icon: 'fa-solid fa-square-poll-horizontal',
+        //     url: '/surveys',
+        //     key: 'surveys'
+        // },
         {
             id: 5,
-            name: 'Аккаунт',
+            name: 'Профиль',
             icon: 'fa-solid fa-user-astronaut',
             url: '/account',
             key: 'account'
