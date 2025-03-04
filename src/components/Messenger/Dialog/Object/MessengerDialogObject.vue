@@ -14,7 +14,7 @@
                     alt="file image"
                 />
                 <div class="messenger-dialog-offer__preview-header">
-                    <span class="messenger-dialog-offer__id">ID{{ model.object.id }}</span>
+                    <span class="messenger-dialog-offer__id">{{ model.object.id }}</span>
                     <UiButtonIcon
                         v-if="hasModalPreview"
                         @click.stop.prevent="$emit('show-preview')"

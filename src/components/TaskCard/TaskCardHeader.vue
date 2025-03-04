@@ -8,93 +8,111 @@
             'task-card__header--already-expired': isAlreadyExpired
         }"
     >
-        <div class="task-card__chips">
-            <DashboardChip class="task-card__chip"> Задача #{{ task.id }} </DashboardChip>
-            <DashboardChip class="task-card__chip" with-icon>
-                <i class="fa-regular fa-clock"></i>
-                <span>до {{ endDate }}</span>
-            </DashboardChip>
-            <DashboardChip class="task-card__chip task-card__status">
-                <i :class="statusIcon" />
-                <span>{{ status }}</span>
-                <span v-if="isCanceled">до {{ impossibleDate }}</span>
-            </DashboardChip>
+        <div class="task-card__left">
+            <div class="task-card__chips mb-2">
+                <DashboardChip class="task-card__chip"> Задача #{{ task.id }} </DashboardChip>
+                <DashboardChip class="task-card__chip" with-icon>
+                    <i class="fa-regular fa-clock"></i>
+                    <span>до {{ endDate }}</span>
+                </DashboardChip>
+                <DashboardChip class="task-card__chip task-card__status">
+                    <i :class="statusIcon" />
+                    <span>{{ status }}</span>
+                    <span v-if="isCanceled">до {{ impossibleDate }}</span>
+                </DashboardChip>
+                <div class="task-card__actions">
+                    <UiDropdownActions menu-class="task-card__dropdown">
+                        <template #trigger>
+                            <UiButtonIcon
+                                label="Действия над задачей"
+                                :disabled
+                                icon="fa-solid fa-pen"
+                            />
+                        </template>
+                        <template #menu>
+                            <UiDropdownActionsButton
+                                v-if="editable && canBeEdit"
+                                @handle="$emit('edit')"
+                                icon="fa-solid fa-pen"
+                                label="Редактировать"
+                                :disabled
+                            />
+                            <UiDropdownActionsButton
+                                v-if="!isDeleted && draggable && canBeDragged"
+                                @handle="$emit('change-status')"
+                                icon="fa-solid fa-arrow-right-arrow-left"
+                                label="Изменить статус"
+                                :disabled
+                            />
+                            <UiDropdownActionsButton
+                                @handle="toggleFavoriteTask(task.id)"
+                                :icon="isFavorite ? 'fa-solid fa-star' : 'fa-regular fa-star'"
+                                :label="
+                                    isFavorite ? 'Убрать из избранного' : 'Добавить в избранное'
+                                "
+                                :disabled
+                                :active="isFavorite"
+                                :close-on-click="false"
+                                :loading="isLoading"
+                            />
+                            <UiDropdownActionsButton
+                                v-if="viewable"
+                                @handle="$emit('read')"
+                                icon="fa-solid fa-user-check"
+                                label="Отметить прочитанным"
+                            />
+                            <template v-if="!isDeleted">
+                                <UiDropdownActionsButton
+                                    v-if="canBeSuspend"
+                                    @handle="$emit('to-impossible')"
+                                    icon="fa-solid fa-eye-slash"
+                                    label="Отложить"
+                                    :disabled
+                                />
+                                <UiDropdownActionsButton
+                                    v-if="canBeAssigned"
+                                    @handle="$emit('assign')"
+                                    icon="fa-solid fa-user-tag"
+                                    label="Переназначить"
+                                    :disabled
+                                />
+                            </template>
+                            <UiDropdownActionsButton
+                                v-if="task.related_by"
+                                @handle="$emit('to-chat')"
+                                label="Перейти в чат"
+                                icon="fa-solid fa-comment-alt"
+                            />
+                            <UiDropdownActionsButton
+                                v-if="isDeleted && canBeRestored"
+                                @handle="$emit('restore')"
+                                icon="fa-solid fa-trash-restore"
+                                label="Восстановить"
+                                :disabled
+                            />
+                            <UiDropdownActionsButton
+                                v-else-if="canBeDeleted"
+                                @handle="$emit('delete')"
+                                icon="fa-solid fa-trash"
+                                label="Удалить"
+                                :disabled
+                            />
+                        </template>
+                    </UiDropdownActions>
+                </div>
+            </div>
+            <div v-if="task.tags?.length" class="task-card__chips">
+                <DashboardChip
+                    v-for="tag in task.tags"
+                    :key="tag.id"
+                    class="task-card__tag"
+                    :style="{ backgroundColor: '#' + tag.color }"
+                >
+                    <span>{{ tag.name ?? tag.label }}</span>
+                </DashboardChip>
+            </div>
         </div>
-        <div class="task-card__actions">
-            <UiDropdownActions menu-class="task-card__dropdown">
-                <template #trigger>
-                    <UiButtonIcon label="Действия над задачей" :disabled icon="fa-solid fa-pen" />
-                </template>
-                <template #menu>
-                    <UiDropdownActionsButton
-                        v-if="editable && canBeEdit"
-                        @handle="$emit('edit')"
-                        icon="fa-solid fa-pen"
-                        label="Редактировать"
-                        :disabled
-                    />
-                    <UiDropdownActionsButton
-                        v-if="!isDeleted && draggable && canBeDragged"
-                        @handle="$emit('change-status')"
-                        icon="fa-solid fa-arrow-right-arrow-left"
-                        label="Изменить статус"
-                        :disabled
-                    />
-                    <UiDropdownActionsButton
-                        @handle="toggleFavoriteTask(task.id)"
-                        :icon="isFavorite ? 'fa-solid fa-star' : 'fa-regular fa-star'"
-                        :label="isFavorite ? 'Убрать из избранного' : 'Добавить в избранное'"
-                        :disabled
-                        :active="isFavorite"
-                        :close-on-click="false"
-                        :loading="isLoading"
-                    />
-                    <UiDropdownActionsButton
-                        v-if="viewable"
-                        @handle="$emit('read')"
-                        icon="fa-solid fa-user-check"
-                        label="Отметить прочитанным"
-                    />
-                    <template v-if="!isDeleted">
-                        <UiDropdownActionsButton
-                            v-if="canBeSuspend"
-                            @handle="$emit('to-impossible')"
-                            icon="fa-solid fa-eye-slash"
-                            label="Отложить"
-                            :disabled
-                        />
-                        <UiDropdownActionsButton
-                            v-if="canBeAssigned"
-                            @handle="$emit('assign')"
-                            icon="fa-solid fa-user-tag"
-                            label="Переназначить"
-                            :disabled
-                        />
-                    </template>
-                    <UiDropdownActionsButton
-                        v-if="task.related_by"
-                        @handle="$emit('to-chat')"
-                        label="Перейти в чат"
-                        icon="fa-solid fa-comment-alt"
-                    />
-                    <UiDropdownActionsButton
-                        v-if="isDeleted && canBeRestored"
-                        @handle="$emit('restore')"
-                        icon="fa-solid fa-trash-restore"
-                        label="Восстановить"
-                        :disabled
-                    />
-                    <UiDropdownActionsButton
-                        v-else-if="canBeDeleted"
-                        @handle="$emit('delete')"
-                        icon="fa-solid fa-trash"
-                        label="Удалить"
-                        :disabled
-                    />
-                </template>
-            </UiDropdownActions>
-        </div>
-        <TaskCardHeaderTargets :task />
+        <TaskCardHeaderTargets class="ml-auto" :task />
     </div>
 </template>
 
