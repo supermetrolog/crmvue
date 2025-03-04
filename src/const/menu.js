@@ -84,13 +84,13 @@ export const Menu = {
         //     url: '/calendar',
         //     exact: true
         // },
-        {
-            id: 10,
-            name: 'Опросы',
-            icon: 'fa-solid fa-square-poll-horizontal',
-            url: '/surveys',
-            key: 'surveys'
-        },
+        // {
+        //     id: 10,
+        //     name: 'Опросы',
+        //     icon: 'fa-solid fa-square-poll-horizontal',
+        //     url: '/surveys',
+        //     key: 'surveys'
+        // },
         {
             id: 5,
             name: 'Профиль',
@@ -235,13 +235,13 @@ export const Menu = {
         //     url: '/calendar',
         //     key: 'calendar'
         // },
-        {
-            id: 10,
-            name: 'Опросы',
-            icon: 'fa-solid fa-square-poll-horizontal',
-            url: '/surveys',
-            key: 'surveys'
-        },
+        // {
+        //     id: 10,
+        //     name: 'Опросы',
+        //     icon: 'fa-solid fa-square-poll-horizontal',
+        //     url: '/surveys',
+        //     key: 'surveys'
+        // },
         {
             id: 5,
             name: 'Профиль',

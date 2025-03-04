@@ -301,16 +301,16 @@ const routes = [
         },
         component: () => import('../views/Equipments.vue')
     },
-    {
-        path: '/surveys',
-        name: 'surveys',
-        meta: {
-            layout: 'default',
-            auth: { isAuth: true },
-            title: 'Опросы'
-        },
-        component: () => import('../views/Surveys.vue')
-    },
+    // {
+    //     path: '/surveys',
+    //     name: 'surveys',
+    //     meta: {
+    //         layout: 'default',
+    //         auth: { isAuth: true },
+    //         title: 'Опросы'
+    //     },
+    //     component: () => import('../views/Surveys.vue')
+    // },
     {
         path: '/:catchAll(.*)',
         name: 'notfound',
