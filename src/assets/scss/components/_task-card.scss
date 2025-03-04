@@ -66,8 +66,9 @@
     }
 
     &__label {
-        color: #888686;
+        color: #989696;
         font-weight: 500;
+        font-size: 15px;
     }
 
     &__message {
@@ -75,6 +76,7 @@
         max-height: 300px;
         overflow-y: auto;
         overscroll-behavior-y: contain;
+        font-weight: 500;
     }
 
     &__chip {
@@ -115,9 +117,29 @@
 
     &__relation {
         margin-top: 10px;
+        position: relative;
 
         .messenger-dialog {
-            background-color: #d6d6d6;
+            background-color: transparent;
+            border: 1px solid rgba(0, 0, 0, .1);
+            border-radius: 4px;
+            padding: 5px;
+        }
+    }
+
+    &__relation-message {
+        padding-left: 15px;
+
+        &::before {
+            content: "";
+            display: block;
+            width: 10px;
+            height: 50px;
+            position: absolute;
+            top: -10px;
+            left: 5px;
+            border-left: 1px solid rgba(0, 0, 0, .15);
+            border-bottom: 1px solid rgba(0, 0, 0, .15);
         }
     }
 
@@ -166,7 +188,7 @@
         height: 100%;
         overflow-y: auto;
         padding-right: 5px;
-        max-height: 460px;
+        max-height: 320px;
 
         &--shorted {
             max-height: 360px;
@@ -202,6 +224,9 @@
 
     &__form {
         margin-top: 20px;
+        position: absolute;
+        bottom: 10px;
+        width: calc(100% - 20px);
         @include mixins.flex-box($d: column, $gap: 10px);
     }
 
@@ -311,6 +336,12 @@
 
     &__dropdown {
         z-index: 4001!important;
+    }
+
+    &__relations-dropdown {
+        position: absolute;
+        top: 35px;
+        right: 7px;
     }
 }
 
@@ -485,6 +516,25 @@
         overflow-y: auto;
         scrollbar-gutter: stable;
         padding-right: 5px;
+    }
+
+    &__element {
+        max-width: none!important;
+        color: #000;
+
+        .contact-card {
+            &__label {
+                color: #000;
+            }
+
+            &__element {
+                color: #000;
+            }
+
+            &__way {
+                background-color: variables.$bg-gray-l
+            }
+        }
     }
 }
 
