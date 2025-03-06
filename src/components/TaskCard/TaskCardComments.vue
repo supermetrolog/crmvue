@@ -1,5 +1,5 @@
 <template>
-    <div class="task-card__comments">
+    <div class="task-card__comments task-card-comments">
         <div
             v-if="comments.length"
             class="task-card__comments-list"
