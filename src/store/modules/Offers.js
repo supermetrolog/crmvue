@@ -19,11 +19,6 @@ const Offers = {
                 state.offers = data.data;
             }
         },
-        updateOfferById(state, data) {
-            const offerIndex = state.findIndex(offer => offer.original_id === data.original_id);
-
-            state.offers = [...state.slice(0, offerIndex), data, ...state.slice(offerIndex + 1)];
-        },
         addFavoritesOffer(state, data) {
             state.favoritesOffers.push(data);
             state.favoritesOffersCache[data.original_id] = true;
@@ -102,12 +97,6 @@ const Offers = {
             );
             await api.offers.deleteFavoriteOffer(deleteId);
         },
-
-        async TOGGLE_AVITO_AD(_, id) {
-            const status = await api.offers.toggleAvitoAd(id);
-            return status === 200;
-        },
-
         async SEARCH_FAVORITES_OFFERS(context) {
             const data = await api.offers.searchFavoriteOffers({
                 user_id: context.getters.THIS_USER.id
@@ -116,16 +105,6 @@ const Offers = {
                 context.commit('updateFavoritesOffers', data.data);
             }
             return data;
-        },
-
-        async getOffers(context, query) {
-            const data = await api.offers.search(query);
-
-            if (data) {
-                return data.data;
-            }
-
-            return null;
         }
     },
     getters: {
