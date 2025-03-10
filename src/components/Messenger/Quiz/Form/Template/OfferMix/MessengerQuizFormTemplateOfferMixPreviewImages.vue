@@ -5,7 +5,7 @@
             :photos="offer.object?.photo ?? []"
         />
         <div class="messenger-quiz-question-template-offer__preview-header">
-            <span class="messenger-dialog-offer__id">{{ offer.visual_id }}</span>
+            <span class="messenger-dialog-offer__id">{{ offer.object_id }}</span>
             <UiButtonIcon
                 @click.stop.prevent="$emit('show-preview')"
                 small
@@ -15,12 +15,6 @@
             />
         </div>
         <div v-if="offer.consultant" class="messenger-quiz-question-template-offer__chips">
-            <Avatar
-                :size="30"
-                :label="`${offer.consultant.userProfile.medium_name} - консультант`"
-                :src="offer.consultant.userProfile.avatar"
-                class="messenger-quiz-question-template-offer__avatar"
-            />
             <UiButtonIcon
                 v-if="offer.object?.agent_visited"
                 label="Был на объекте"
@@ -44,7 +38,6 @@
 <script setup>
 import { computed } from 'vue';
 import { dealOptions } from '@/const/options/deal.options.js';
-import Avatar from '@/components/common/Avatar.vue';
 import OfferTableItemPreviewMotionSlider from '@/components/Offer/TableItem/OfferTableItemPreviewMotionSlider.vue';
 import UiButtonIcon from '@/components/common/UI/UiButtonIcon.vue';
 

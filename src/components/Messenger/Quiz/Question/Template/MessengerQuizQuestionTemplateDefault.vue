@@ -1,34 +1,26 @@
 <template>
     <div class="messenger-quiz-question">
         <div class="messenger-quiz-question__header">
-            <Checkbox
-                v-if="selectable && !disabledByTemplate"
-                v-model="selectedModelValue"
-                v-tippy="'Активировать вопрос для заполнения'"
-            />
-            <MessengerQuizQuestionPrimaryIcon v-if="isDisabled" />
-            <MessengerQuizQuestionSuccessIcon v-else-if="hasFullAnswer || isCustomCompleted" />
-            <MessengerQuizQuestionWarningIcon v-else-if="form.main != null" />
-            <MessengerQuizQuestionDangerIcon v-else />
             <p class="messenger-quiz-question__title" :class="{ disabled: isDisabled }">
+                <span v-if="number">{{ number }}. </span>
                 <span>{{ question.text }}</span>
             </p>
             <div v-if="question.answers?.['yes-no']" class="messenger-quiz-question__main">
-                <RadioChip
+                <MessengerQuizFormRadioChip
                     v-model="form.main"
                     :disabled="disabled || disabledByTemplate"
                     :value="true"
                     unselect
                     label="Да"
                 />
-                <RadioChip
+                <MessengerQuizFormRadioChip
                     v-model="form.main"
                     :disabled="disabled || disabledByTemplate"
                     :value="false"
-                    unselectё
+                    unselect
                     label="Нет"
                 />
-                <RadioChip
+                <MessengerQuizFormRadioChip
                     v-model="hasNullMainAnswer"
                     :value="true"
                     :disabled="disabled || disabledByTemplate"
@@ -143,18 +135,12 @@ import Textarea from '@/components/common/Forms/Textarea.vue';
 import { computed, reactive, ref, watch } from 'vue';
 import RadioChip from '@/components/common/Forms/RadioChip.vue';
 import { isNullish } from '@/utils/helpers/common/isNullish.js';
-import { isEmptyArray } from '@/utils/helpers/array/isEmptyArray.js';
-import { isEmpty } from '@/utils/helpers/common/isEmpty.js';
-import MessengerQuizQuestionSuccessIcon from '@/components/Messenger/Quiz/Question/Icons/MessengerQuizQuestionSuccessIcon.vue';
-import MessengerQuizQuestionDangerIcon from '@/components/Messenger/Quiz/Question/Icons/MessengerQuizQuestionDangerIcon.vue';
-import MessengerQuizQuestionWarningIcon from '@/components/Messenger/Quiz/Question/Icons/MessengerQuizQuestionWarningIcon.vue';
 import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
-import MessengerQuizQuestionPrimaryIcon from '@/components/Messenger/Quiz/Question/Icons/MessengerQuizQuestionPrimaryIcon.vue';
 import { useNotify } from '@/utils/use/useNotify.js';
 import FileInput from '@/components/common/Forms/FileInput.vue';
 import AccordionSimple from '@/components/common/Accordion/AccordionSimple.vue';
 import AccordionSimpleTriggerButton from '@/components/common/Accordion/AccordionSimpleTriggerButton.vue';
-import Checkbox from '@/components/common/Forms/Checkbox.vue';
+import MessengerQuizFormRadioChip from '@/components/Messenger/Quiz/Form/MessengerQuizFormRadioChip.vue';
 
 const props = defineProps({
     question: {
@@ -170,14 +156,12 @@ const props = defineProps({
         default: true
     },
     disabled: Boolean,
-    selectable: Boolean,
     ignoredEffects: {
         type: Set,
         default: () => new Set()
-    }
+    },
+    number: Number
 });
-
-const selectedModelValue = defineModel('selected');
 
 const form = reactive({});
 
@@ -191,18 +175,6 @@ function toggleDisabled() {
 function toggleHidden() {
     hiddenByTemplate.value = !hiddenByTemplate.value;
 }
-
-const hasFullAnswer = computed(() => {
-    if (isNullish(form.main)) return false;
-
-    if (hasTabQuestions.value && isEmptyArray(form.tab) && isNullish(form.radio)) return false;
-
-    if (hasTextQuestions.value && Object.values(form.description).every(isEmpty)) return false;
-
-    // May be something expressions here if needed
-
-    return true;
-});
 
 // main
 

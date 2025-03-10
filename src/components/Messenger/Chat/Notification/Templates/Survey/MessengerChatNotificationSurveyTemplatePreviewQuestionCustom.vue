@@ -4,8 +4,8 @@
 <script setup>
 import { computed } from 'vue';
 import MessengerQuizPreviewQuestionTemplateDefault from '@/components/Messenger/Quiz/Preview/Template/MessengerQuizPreviewQuestionTemplateDefault.vue';
-import MessengerChatNotificationSurveyTemplatePreviewQuestionCustomWantsToSell from '@/components/Messenger/Chat/Notification/Templates/Survey/MessengerChatNotificationSurveyTemplatePreviewQuestionCustomWantsToSell.vue';
-import MessengerChatNotificationSurveyTemplatePreviewQuestionCustomHasFreeArea from '@/components/Messenger/Chat/Notification/Templates/Survey/MessengerChatNotificationSurveyTemplatePreviewQuestionCustomHasFreeArea.vue';
+import MessengerChatNotificationSurveyTemplatePreviewQuestionCustomRequests from '@/components/Messenger/Chat/Notification/Templates/Survey/MessengerChatNotificationSurveyTemplatePreviewQuestionCustomRequests.vue';
+import MessengerChatNotificationSurveyTemplatePreviewQuestionCustomOffers from '@/components/Messenger/Chat/Notification/Templates/Survey/MessengerChatNotificationSurveyTemplatePreviewQuestionCustomOffers.vue';
 
 const props = defineProps({
     question: {
@@ -15,8 +15,8 @@ const props = defineProps({
 });
 
 const TEMPLATES = {
-    'free-area': MessengerChatNotificationSurveyTemplatePreviewQuestionCustomHasFreeArea,
-    'wants-to-sell': MessengerChatNotificationSurveyTemplatePreviewQuestionCustomWantsToSell
+    requests: MessengerChatNotificationSurveyTemplatePreviewQuestionCustomRequests,
+    offers: MessengerChatNotificationSurveyTemplatePreviewQuestionCustomOffers
 };
 
 const currentComponent = computed(() => {

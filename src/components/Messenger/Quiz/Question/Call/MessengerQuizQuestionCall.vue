@@ -1,12 +1,8 @@
 <template>
     <div class="messenger-quiz-question">
         <div class="messenger-quiz-question__header">
-            <MessengerQuizQuestionSuccessIcon v-if="hasFullAnswer" />
-            <MessengerQuizQuestionWarningIcon v-else-if="hasNegativeAnswer" />
-            <MessengerQuizQuestionPrimaryIcon v-else-if="form.skipped" />
-            <MessengerQuizQuestionDangerIcon v-else />
             <p class="messenger-quiz-question__title">
-                <span class="mr-1">Удалось дозвониться до</span>
+                <span class="mr-1">1. Удалось ли дозвониться до</span>
                 <Tippy interactive :interactive-border="20">
                     <template #default>
                         <span class="messenger-quiz-question__contact">
@@ -20,9 +16,24 @@
                 <span>?</span>
             </p>
             <div class="messenger-quiz-question__main d-flex gap-1">
-                <RadioChip v-model="form.available" :value="true" unselect label="Да" />
-                <RadioChip v-model="form.available" :value="false" unselect label="Нет" />
-                <RadioChip v-model="form.skipped" :value="true" unselect label="Пропустить" />
+                <MessengerQuizFormRadioChip
+                    v-model="form.available"
+                    :value="true"
+                    unselect
+                    label="Да"
+                />
+                <MessengerQuizFormRadioChip
+                    v-model="form.available"
+                    :value="false"
+                    unselect
+                    label="Нет"
+                />
+                <MessengerQuizFormRadioChip
+                    v-model="form.skipped"
+                    :value="true"
+                    unselect
+                    label="Пропустить"
+                />
             </div>
         </div>
         <AnimationTransition :speed="0.25">
@@ -58,6 +69,7 @@
                         placeholder="Подробности о контакте. Почему удалить/перенести?"
                         :min-height="60"
                         auto-height
+                        class="mt-1"
                     />
                 </AnimationTransition>
             </div>
@@ -67,11 +79,8 @@
 <script setup>
 import { computed, watch } from 'vue';
 import RadioChip from '@/components/common/Forms/RadioChip.vue';
-import MessengerQuizQuestionSuccessIcon from '@/components/Messenger/Quiz/Question/Icons/MessengerQuizQuestionSuccessIcon.vue';
-import MessengerQuizQuestionDangerIcon from '@/components/Messenger/Quiz/Question/Icons/MessengerQuizQuestionDangerIcon.vue';
 import { Tippy } from 'vue-tippy';
 import ContactCard from '@/components/Contact/Card/ContactCard.vue';
-import MessengerQuizQuestionWarningIcon from '@/components/Messenger/Quiz/Question/Icons/MessengerQuizQuestionWarningIcon.vue';
 import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
 import Textarea from '@/components/common/Forms/Textarea.vue';
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
@@ -81,7 +90,7 @@ import { isNullish } from '@/utils/helpers/common/isNullish.js';
 import useVuelidate from '@vuelidate/core';
 import { helpers, requiredIf } from '@vuelidate/validators';
 import { useValidationNotify } from '@/composables/useValidationNotify.js';
-import MessengerQuizQuestionPrimaryIcon from '@/components/Messenger/Quiz/Question/Icons/MessengerQuizQuestionPrimaryIcon.vue';
+import MessengerQuizFormRadioChip from '@/components/Messenger/Quiz/Form/MessengerQuizFormRadioChip.vue';
 
 const form = defineModel('form');
 
@@ -117,10 +126,6 @@ watch(
             emit('skip');
         }
     }
-);
-
-const hasFullAnswer = computed(
-    () => hasPositiveAnswer.value || (isNotNullish(form.value.reason) && hasNegativeAnswer.value)
 );
 
 //

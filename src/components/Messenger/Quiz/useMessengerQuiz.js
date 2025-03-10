@@ -6,7 +6,7 @@ import { taskOptions } from '@/const/options/task.options.js';
 import { getContactFullName } from '@/utils/formatters/models/contact.js';
 import { isNotEmptyString } from '@/utils/helpers/string/isNotEmptyString.js';
 import { capitalizeString } from '@/utils/helpers/string/capitalizeString.js';
-import { messenger, messengerTemplates, objectChatMemberTypes } from '@/const/messenger.js';
+import { messenger, messengerTemplates } from '@/const/messenger.js';
 import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
 import { isValidationError } from '@/api/helpers/error.js';
 
@@ -217,42 +217,57 @@ export function useMessengerQuiz() {
     }
 
     async function createRelatedSurveys(contact, payload, relatedSurvey) {
-        const formattedPayload = Object.keys(payload).map(key => {
-            return {
-                objectId: key,
-                answers: Object.keys(payload[key].answer).map(answerKey => ({
-                    question_answer_id: answerKey,
-                    value: payload[key].answer[answerKey]
-                }))
-            };
-        });
+        const payloadWithAnswers = payload.filter(offer => offer.answer === 1);
+        const payloadWithoutUpdates = payload.filter(offer => offer.answer === 3);
 
         const chatMembers = await api.messenger.getChats({
-            object_ids: formattedPayload.map(element => element.objectId),
+            object_ids: payload.map(element => element.object_id),
             model_type: messenger.dialogTypes.OBJECT,
-            company_id: contact.company_id,
-            type: objectChatMemberTypes.RENT_OR_SALE
+            company_id: contact.company_id
         });
 
         const chatMembersMap = chatMembers.data.reduce((acc, element) => {
-            acc[element.model.object_id] = element.id;
+            if (acc[element.model.object_id]) acc[element.model.object_id].push(element.id);
+            else acc[element.model.object_id] = [element.id];
+
             return acc;
         }, {});
 
-        const preparedPayload = formattedPayload.reduce((acc, element) => {
-            if (chatMembersMap[element.objectId]) {
-                acc.push({
-                    chatMemberId: chatMembersMap[element.objectId],
-                    answers: element.answers
-                });
+        const payloadWithAnswersForm = payloadWithAnswers.reduce((acc, element) => {
+            if (chatMembersMap[element.object_id]) {
+                acc.push(
+                    ...chatMembersMap[element.object_id].map(chatMemberId => ({
+                        chatMemberId: chatMemberId,
+                        answers: element.form.map(form => ({
+                            question_answer_id: form.question_answer_id,
+                            value: form.value,
+                            files: form.files,
+                            file: form.file
+                        }))
+                    }))
+                );
+            }
+
+            return acc;
+        }, []);
+
+        const payloadWithoutUpdatesForm = payloadWithoutUpdates.reduce((acc, element) => {
+            if (chatMembersMap[element.object_id]) {
+                acc.push(...chatMembersMap[element.object_id]);
             }
 
             return acc;
         }, []);
 
         await Promise.allSettled(
-            preparedPayload.map(element =>
+            payloadWithAnswersForm.map(element =>
                 createSurvey(contact, element.answers, element.chatMemberId, relatedSurvey.id)
+            )
+        );
+
+        await Promise.allSettled(
+            payloadWithoutUpdatesForm.map(element =>
+                createSurvey(contact, [], element, relatedSurvey.id)
             )
         );
     }

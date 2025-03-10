@@ -11,16 +11,6 @@
             </p>
         </div>
         <div class="d-flex gap-1 flex-wrap">
-            <DashboardChip class="dashboard-bg-success-l">
-                {{ dealType }}
-            </DashboardChip>
-            <DashboardChip
-                v-if="offer.hide_from_market"
-                v-tippy="'Не выгружается'"
-                class="dashboard-bg-warning-l"
-            >
-                <i class="fa-solid fa-eye-slash"></i>
-            </DashboardChip>
             <DashboardChip v-tippy="'Класс объекта'" class="dashboard-bg-gray-l">
                 {{ offer.class_name }}
             </DashboardChip>
@@ -41,10 +31,6 @@
             <DashboardChip v-if="offer.offer?.built_to_suit === 1" class="dashboard-bg-gray-l">
                 Инвестпроект
             </DashboardChip>
-            <DashboardChip v-if="offer.test_only" class="dashboard-bg-gray-l">
-                Тестовый
-            </DashboardChip>
-            <DashboardChip v-if="offer.is_fake" class="dashboard-bg-gray-l"> Фейк </DashboardChip>
         </div>
     </div>
 </template>
@@ -52,7 +38,6 @@
 import WithUnitType from '@/components/common/WithUnitType.vue';
 import { unitTypes } from '@/const/unitTypes.js';
 import { computed } from 'vue';
-import { dealOptions } from '@/const/options/deal.options.js';
 import { toNumberFormat } from '@/utils/formatters/number.js';
 import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
 import { getCompanyName } from '@/utils/formatters/models/company.js';
@@ -63,10 +48,6 @@ const props = defineProps({
         required: true
     }
 });
-
-// computes
-
-const dealType = computed(() => dealOptions.type[props.offer.deal_type]);
 
 // company
 

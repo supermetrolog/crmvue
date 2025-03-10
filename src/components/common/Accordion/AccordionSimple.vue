@@ -1,6 +1,6 @@
 <template>
     <div class="accordion-simple">
-        <slot name="title" :toggle="toggle">
+        <slot name="title" :toggle="toggle" :opened="isOpen">
             <div @click="toggle" class="accordion-simple__header" :class="{ active: isOpen }">
                 <span v-if="title">{{ title }}</span>
                 <AccordionSimpleTrigger static />

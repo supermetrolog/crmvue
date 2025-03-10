@@ -23,15 +23,11 @@
                 <span> - технич.</span>
             </span>
         </div>
-        <DashboardChip v-if="offer.blocks?.length > 1" class="dashboard-bg-gray-l">
-            *собрано из блоков
-        </DashboardChip>
     </div>
 </template>
 <script setup>
 import WithUnitType from '@/components/common/WithUnitType.vue';
 import { unitTypes } from '@/const/unitTypes.js';
-import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
 
 defineProps({
     offer: {

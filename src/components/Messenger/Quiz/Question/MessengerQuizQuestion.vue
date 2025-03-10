@@ -3,16 +3,14 @@
         :is="currentComponent"
         v-bind="$attrs"
         ref="questionElement"
-        v-model:selected="isSelected"
         :question="question"
         :can-be-disabled="canBeDisabled"
-        :with-related="withRelated"
-        :selectable
-        :disabled="disabled || (selectable && !isSelected)"
+        :disabled
+        :number
     />
 </template>
 <script setup>
-import { computed, ref, useTemplateRef } from 'vue';
+import { computed, useTemplateRef } from 'vue';
 import MessengerQuizQuestionTemplateHasFreeArea from '@/components/Messenger/Quiz/Question/Template/HasFreeArea/MessengerQuizQuestionTemplateHasFreeArea.vue';
 import MessengerQuizQuestionTemplateDefault from '@/components/Messenger/Quiz/Question/Template/MessengerQuizQuestionTemplateDefault.vue';
 import MessengerQuizQuestionTemplateCompaniesIdentified from '@/components/Messenger/Quiz/Question/Template/CompaniesIdentified/MessengerQuizQuestionTemplateCompaniesIdentified.vue';
@@ -24,9 +22,11 @@ const props = defineProps({
         type: Object,
         required: true
     },
-    canBeDisabled: Boolean,
-    withRelated: Boolean,
-    selectable: Boolean,
+    number: Number,
+    canBeDisabled: {
+        type: Boolean,
+        default: true
+    },
     disabled: Boolean
 });
 
@@ -41,21 +41,16 @@ const currentComponent = computed(() => {
     return TEMPLATES[props.question.template] ?? MessengerQuizQuestionTemplateDefault;
 });
 
-const isSelected = ref(false);
-
 // form
 
 const templateRef = useTemplateRef('questionElement');
 
 function getForm() {
-    if (!props.selectable || isSelected.value) return templateRef.value.getForm();
-    return null;
+    return templateRef.value.getForm();
 }
 
 function validate() {
-    if (!props.selectable || isSelected.value) return templateRef.value.validate();
-
-    return true;
+    return templateRef.value.validate();
 }
 
 function setForm(form) {

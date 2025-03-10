@@ -1,13 +1,15 @@
 <template>
     <div class="messenger-quiz-question">
         <div class="messenger-quiz-question__header">
-            <span class="messenger-quiz-question__title" :class="{ dashed: hasUnknownAnswer }">
+            <span
+                class="messenger-quiz-question__title"
+                :class="{ dashed: hasMainQuestion && hasUnknownAnswer }"
+            >
                 {{ question.text }}
             </span>
-            <Chip v-if="hasMainQuestion" :class="mainQuestionClass">
+            <Chip v-if="hasMainQuestion" class="ml-auto" :class="mainQuestionClass">
                 {{ mainQuestionText }}
             </Chip>
-            <p v-else>Без ответа</p>
         </div>
         <div
             v-if="hasTabQuestions && selectedTabAnswers.length"
@@ -105,7 +107,10 @@ const mainQuestionClass = computed(() => {
 });
 
 const mainQuestionAnswer = computed(() => {
-    if (props.question.answers['yes-no'][0].surveyQuestionAnswer)
+    if (
+        props.question.answers['yes-no'] &&
+        props.question.answers['yes-no'][0].surveyQuestionAnswer
+    )
         return props.question.answers['yes-no'][0].surveyQuestionAnswer.value;
     return null;
 });

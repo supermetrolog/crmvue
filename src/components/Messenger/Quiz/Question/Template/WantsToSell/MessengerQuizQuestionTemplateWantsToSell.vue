@@ -16,43 +16,22 @@
                 class="mt-1"
             />
         </template>
-        <template v-if="currentCompanyId" #after-content="{ mainAnswer }">
-            <MessengerQuizQuestionTemplateWantsToSellPicker
-                v-model:offers="offersForm"
-                v-model:objects="objectsForm"
-                :main-answer="mainAnswer"
-                :company-id="currentCompanyId"
-                :disabled="conditionModelValue === 0 || deleteCurrentArea"
-                :edit-mode="conditionModelValue === 1"
-                :passive-mode="mainAnswer === false"
-                class="mt-2"
-                :question
-                :ignored-effects
-                :with-related
-            />
-        </template>
     </MessengerQuizQuestionTemplateDefault>
 </template>
 <script setup>
-import { computed, ref, useTemplateRef, watch } from 'vue';
+import { ref, useTemplateRef, watch } from 'vue';
 import MessengerQuizQuestionTemplateDefault from '@/components/Messenger/Quiz/Question/Template/MessengerQuizQuestionTemplateDefault.vue';
 import MessengerQuizFormCustomFreeArea from '@/components/Messenger/Quiz/Form/Custom/MessengerQuizFormCustomFreeArea.vue';
 import { quizEffectKinds } from '@/const/quiz.js';
 import { isNullish } from '@/utils/helpers/common/isNullish.js';
 import { useNotify } from '@/utils/use/useNotify.js';
-import MessengerQuizQuestionTemplateWantsToSellPicker from '@/components/Messenger/Quiz/Question/Template/WantsToSell/MessengerQuizQuestionTemplateWantsToSellPicker.vue';
-import { useStore } from 'vuex';
-import { isString } from '@/utils/helpers/string/isString.js';
-import { isNotEmptyString } from '@/utils/helpers/string/isNotEmptyString.js';
-import { messenger } from '@/const/messenger.js';
 
-const props = defineProps({
+defineProps({
     canBeDisabled: {
         type: Boolean,
         default: true
     },
     disabled: Boolean,
-    withRelated: Boolean,
     question: {
         type: Object,
         required: true
@@ -130,18 +109,6 @@ defineExpose({ getForm, validate, setForm });
 
 // injection
 
-function answersHasFilledAnswer(answers) {
-    return answers.some(
-        element =>
-            element.value === true || (isString(element.value) && isNotEmptyString(element.value))
-    );
-}
-
-const offerActionOptions = {
-    PASSIVE: 0,
-    EDIT: 1
-};
-
 function injectConditionAnswerToForm(form) {
     if (conditionModelValue.value) {
         const answer = form.find(answer =>
@@ -151,65 +118,7 @@ function injectConditionAnswerToForm(form) {
         if (!answer) return;
 
         answer.value = true;
-
-        const { mustBePassiveOffers, mustBeEditOffers } = Object.values(offersForm.value).reduce(
-            (acc, offer) => {
-                if (offer.form.action === offerActionOptions.PASSIVE)
-                    acc.mustBePassiveOffers.push(offer);
-                else if (offer.form.action === offerActionOptions.EDIT)
-                    acc.mustBeEditOffers.push(offer);
-
-                return acc;
-            },
-            { mustBePassiveOffers: [], mustBeEditOffers: [] }
-        );
-
-        if (props.withRelated) {
-            const tabAnswers = templateRef.value.getTabAnswers();
-            const textAnswers = templateRef.value.getTextAnswers();
-
-            answer.filled =
-                mustBeEditOffers.length ||
-                mustBePassiveOffers.length ||
-                answersHasFilledAnswer(tabAnswers) ||
-                answersHasFilledAnswer(textAnswers);
-
-            const relatedForm = Object.values(objectsForm.value).map(element => {
-                return {
-                    id: element.id,
-                    answer: {
-                        ...element.answer.description,
-                        ...element.answer.main,
-                        ...element.answer.tab
-                    }
-                };
-            });
-
-            answer.form = {
-                objects: relatedForm
-            };
-        } else {
-            answer.filled = true;
-        }
-
-        const actionAnswer = form.find(answer =>
-            answer.effects.has(quizEffectKinds.COMPANY_WANTS_TO_SELL_MUST_BE_EDITED_OFFERS)
-        );
-
-        if (!actionAnswer) return;
-
-        actionAnswer.value = {
-            passive: mustBePassiveOffers.map(offer => ({
-                visual_id: offer.visual_id,
-                id: offer.id,
-                comment: offer.form.comment
-            })),
-            edit: mustBeEditOffers.map(offer => ({
-                visual_id: offer.visual_id,
-                id: offer.id,
-                comment: offer.form.comment
-            }))
-        };
+        answer.filled = true;
     } else {
         const answer = form.find(answer =>
             answer.effects.has(quizEffectKinds.COMPANY_WANTS_TO_SELL_ALREADY_DESCRIBED)
@@ -231,76 +140,15 @@ function cancelConditionAnswerInForm(form) {
     if (answer) answer.value = false;
 }
 
-function injectActionAnswerToForm(form, value, mainAnswer) {
-    if (mainAnswer === false) {
-        const passiveOffersAnswer = form.find(answer =>
-            answer.effects.has(quizEffectKinds.COMPANY_WANTS_TO_SELL_MUST_BE_DELETED_OFFERS)
-        );
+function injectActionAnswerToForm(form, value) {
+    const answer = form.find(answer =>
+        answer.effects.has(quizEffectKinds.OBJECT_FREE_AREA_MUST_BE_DELETED)
+    );
 
-        if (!passiveOffersAnswer) return;
-
-        if (value) {
-            passiveOffersAnswer.value = {
-                passive: Object.values(offersForm.value).map(offerAnswer => {
-                    return {
-                        visual_id: offerAnswer.visual_id,
-                        id: offerAnswer.id
-                    };
-                }),
-                active: []
-            };
-        } else {
-            passiveOffersAnswer.value = Object.values(offersForm.value).reduce(
-                (acc, offerAnswer) => {
-                    const payload = {
-                        visual_id: offerAnswer.visual_id,
-                        id: offerAnswer.id
-                    };
-
-                    if (offerAnswer.form.disabled) acc.passive.push(payload);
-                    else acc.active.push(payload);
-
-                    return acc;
-                },
-                { passive: [], active: [] }
-            );
-        }
-    }
+    if (answer) answer.value = value;
 }
 
 watch(conditionModelValue, value => {
     templateRef.value.setCustomCompleted(value === 0);
-});
-
-// model value
-
-const offersForm = ref({});
-const objectsForm = ref({});
-
-watch(deleteCurrentArea, value => {
-    if (value) markOffersAsDisabled();
-    else markOffersAsActive();
-});
-
-function markOffersAsDisabled() {
-    Object.values(offersForm.value).forEach(offer => {
-        offer.form.disabled = true;
-    });
-}
-
-function markOffersAsActive() {
-    Object.values(offersForm.value).forEach(offer => {
-        offer.form.disabled = false;
-    });
-}
-
-// modelValue
-
-const store = useStore();
-
-const currentCompanyId = computed(() => {
-    if (store.state.Messenger.currentDialogType === messenger.dialogTypes.COMPANY)
-        return store.state.Messenger.currentDialog.model_id;
-    return store.state.Messenger.currentDialog.model.object.company_id;
 });
 </script>

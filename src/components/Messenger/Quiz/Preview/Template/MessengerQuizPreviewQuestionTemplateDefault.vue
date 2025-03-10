@@ -2,13 +2,15 @@
     <div class="messenger-quiz-question messenger-quiz-preview-question">
         <div class="messenger-quiz-question__header">
             <i v-if="mainQuestionIcon" :class="mainQuestionIcon" />
-            <p class="messenger-quiz-question__title" :class="{ 'text-through': hasUnknownAnswer }">
+            <p
+                class="messenger-quiz-question__title"
+                :class="{ 'text-through': hasMainQuestion && hasUnknownAnswer }"
+            >
                 {{ question.text }}
             </p>
             <Chip v-if="hasMainQuestion" :class="mainQuestionClass">
                 {{ mainQuestionText }}
             </Chip>
-            <p v-else>Без ответа</p>
         </div>
         <div
             v-if="hasTabQuestions && selectedTabAnswers.length"
@@ -86,7 +88,7 @@ const props = defineProps({
 const hasMainQuestion = computed(() => Boolean(props.question.answers['yes-no']));
 
 const mainQuestionAnswer = computed(() => {
-    if (props.question.answers['yes-no'][0].surveyQuestionAnswer)
+    if (hasMainQuestion.value && props.question.answers['yes-no'][0].surveyQuestionAnswer)
         return props.question.answers['yes-no'][0].surveyQuestionAnswer.value;
     return null;
 });
