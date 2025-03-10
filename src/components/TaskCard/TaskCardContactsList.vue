@@ -1,12 +1,23 @@
 <template>
-    <div class="task-card-contacts">
-        <Spinner v-if="isLoading" label="Загрузка контактов.." class="small absolute-center" />
-        <EmptyLabel v-else-if="isError">Произошла ошибка. Попробуйте позже</EmptyLabel>
-        <EmptyLabel v-else-if="!contacts.length">Список контактов пуст..</EmptyLabel>
-        <div v-show="!isLoading" class="task-card-contacts__list">
-            <ContactCard v-for="contact in contacts" :key="contact.id" :contact="contact" />
+    <TaskCardModal
+        v-if="visible"
+        @close="$emit('close')"
+        :title="`Список контактов (${contacts.length})`"
+    >
+        <div class="task-card-contacts">
+            <Spinner v-if="isLoading" label="Загрузка контактов.." class="small absolute-center" />
+            <EmptyLabel v-else-if="isError">Произошла ошибка. Попробуйте позже</EmptyLabel>
+            <EmptyLabel v-else-if="!contacts.length">Список контактов пуст..</EmptyLabel>
+            <div v-show="!isLoading" class="task-card-contacts__list">
+                <ContactCard
+                    v-for="contact in contacts"
+                    :key="contact.id"
+                    class="task-card-contacts__element"
+                    :contact="contact"
+                />
+            </div>
         </div>
-    </div>
+    </TaskCardModal>
 </template>
 
 <script setup>
@@ -15,6 +26,7 @@ import { ref, shallowRef, watch } from 'vue';
 import api from '@/api/api.js';
 import EmptyLabel from '@/components/common/EmptyLabel.vue';
 import ContactCard from '@/components/Contact/Card/ContactCard.vue';
+import TaskCardModal from '@/components/TaskCard/TaskCardModal.vue';
 
 const props = defineProps({
     companyId: {

@@ -23,5 +23,10 @@ export default {
         const expand = 'offerMix.offer';
         const response = await axios.get(URL, { params: { expand, ...params } });
         return responseToPaginatedData(response);
+    },
+
+    async fixLandPurposes(payload) {
+        const response = await axios.post('/utilities/fix-land-object-purposes', payload);
+        return responseHasStatus(response, STATUS_SUCCESS);
     }
 };

@@ -16,7 +16,7 @@
                 class="messenger-dialog__avatar messenger-dialog-request__avatar"
             />
             <p class="messenger-dialog-request__header">
-                <span class="messenger-dialog-request__id">ID{{ model.id }}</span>
+                <span class="messenger-dialog-request__id">{{ model.id }}</span>
                 <span v-if="model.company" class="messenger-dialog-request__company">
                     от: {{ companyName }}
                 </span>

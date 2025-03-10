@@ -47,7 +47,6 @@
                     <i class="fa-solid fa-pen" />
                     <span>{{ editButtonLabel }}</span>
                 </MessengerButton>
-                {{ remainingTimeLabel }}
             </div>
         </div>
     </div>
