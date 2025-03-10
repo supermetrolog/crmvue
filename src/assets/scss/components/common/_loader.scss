@@ -36,6 +36,14 @@
         color: #fff;
         width: max-content;
     }
+
+    &.global {
+        position: fixed;
+        left: 0;
+        top: 0;
+        background-color: rgba(247, 247, 247, 0.1);
+        backdrop-filter: blur(3px);
+    }
 }
 
 .modal .loader {
