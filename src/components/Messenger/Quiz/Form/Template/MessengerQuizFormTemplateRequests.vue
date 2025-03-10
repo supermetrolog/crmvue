@@ -6,73 +6,73 @@
                 class="messenger-quiz-question__title"
                 :class="{ disabled: disabled }"
             >
-                3. Актуальны ли эти ({{ requests.length }}) текущие запросы?
+                <span>{{ number }}. </span>
+                <span>Актуальны ли эти ({{ requests.length }}) текущие запросы?</span>
             </p>
             <p v-else class="messenger-quiz-question__title disabled">
                 3. У клиента нет запросов..
             </p>
         </div>
-        <AccordionSimple v-if="requests.length" opened class="mt-1">
-            <template #title="{ opened }">
-                <AccordionSimpleTriggerButton
-                    v-if="!opened"
-                    :label="`Запросы клиента (${requests.length})`"
-                />
-                <span v-else></span>
+        <MessengerQuizFormTemplateAccordion
+            v-if="requests.length"
+            class="mt-1"
+            :label="`Запросы клиента (${requests.length})`"
+            :footer-label="`Скрыть запросы (${requests.length})`"
+            list-class="messenger-quiz-question__requests"
+        >
+            <template #actions>
+                <UiButton @click="setAllAnswers(true)" small color="white">
+                    Отметить все "Да"
+                </UiButton>
+                <UiButton @click="setAllAnswers(false)" small color="white">
+                    Отметить все "Нет"
+                </UiButton>
+                <UiButton @click="setAllAnswers(null)" small color="white">
+                    Отметить все "Не ответил"
+                </UiButton>
+                <UiButton @click="resetAllAnswers" small color="white" icon="fa-solid fa-sync">
+                    Сбросить ответы
+                </UiButton>
             </template>
-            <template #body>
-                <div class="d-flex gap-1 px-1 pt-1">
-                    <UiButton @click="setAllAnswers(true)" small color="white">
-                        Отметить все "Да"
-                    </UiButton>
-                    <UiButton @click="setAllAnswers(false)" small color="white">
-                        Отметить все "Нет"
-                    </UiButton>
-                    <UiButton @click="setAllAnswers(null)" small color="white">
-                        Отметить все "Не ответил"
-                    </UiButton>
-                    <UiButton
-                        @click="setAllAnswers(undefined)"
-                        small
-                        color="white"
-                        icon="fa-solid fa-sync"
-                    >
-                        Сбросить ответы
-                    </UiButton>
-                </div>
-                <div
-                    class="messenger-quiz-question__list messenger-quiz-question__requests mt-1 px-1"
-                >
-                    <MessengerQuizFormTemplateRequest
-                        v-for="request in requests"
-                        :key="request.id"
-                        ref="requestEls"
-                        :request="request"
-                    />
-                </div>
-                <AccordionSimpleTriggerButton
-                    class="mt-1"
-                    :label="`Скрыть запросы (${requests.length})`"
+            <template #items>
+                <MessengerQuizFormTemplateRequest
+                    v-for="request in requests"
+                    :key="request.id"
+                    ref="requestEls"
+                    @edit="editRequest(request)"
+                    :request="request"
+                    editable
                 />
             </template>
-        </AccordionSimple>
+        </MessengerQuizFormTemplateAccordion>
+        <Teleport to="body">
+            <FormCompanyRequest
+                v-if="editFormIsVisible"
+                @close="closeEditForm"
+                @updated="updateRequest"
+                :form-data="editedRequest"
+            />
+        </Teleport>
     </div>
 </template>
 <script setup>
-import { useTemplateRef } from 'vue';
-import AccordionSimple from '@/components/common/Accordion/AccordionSimple.vue';
-import AccordionSimpleTriggerButton from '@/components/common/Accordion/AccordionSimpleTriggerButton.vue';
+import { ref, shallowRef, useTemplateRef } from 'vue';
 import MessengerQuizFormTemplateRequest from '@/components/Messenger/Quiz/Form/Template/MessengerQuizFormTemplateRequest.vue';
 import UiButton from '@/components/common/UI/UiButton.vue';
 import { isString } from '@/utils/helpers/string/isString.js';
 import { toBool } from '@/utils/helpers/string/toBool.js';
+import MessengerQuizFormTemplateAccordion from '@/components/Messenger/Quiz/Form/Template/MessengerQuizFormTemplateAccordion.vue';
+import FormCompanyRequest from '@/components/Forms/Company/FormCompanyRequest.vue';
+import api from '@/api/api.js';
+import { useConfirm } from '@/composables/useConfirm.js';
 
 const props = defineProps({
     requests: {
         type: Array,
         required: true
     },
-    disabled: Boolean
+    disabled: Boolean,
+    number: Number
 });
 
 // questions
@@ -115,5 +115,41 @@ defineExpose({ getForm, validate, setForm });
 
 function setAllAnswers(value) {
     requestEls.value.map(element => element.setAnswer(value));
+}
+
+const { confirm } = useConfirm();
+
+async function resetAllAnswers() {
+    const confirmed = await confirm('Вы уверены, что хотите сбросить все ответы по запросам?');
+    if (confirmed) setAllAnswers(undefined);
+}
+
+// edit
+
+const editedRequest = shallowRef(null);
+const editFormIsVisible = ref(false);
+
+function editRequest(request) {
+    editedRequest.value = request;
+    editFormIsVisible.value = true;
+}
+
+function closeEditForm() {
+    editFormIsVisible.value = false;
+    editedRequest.value = null;
+}
+
+async function updateRequest() {
+    const updatedRequest = await api.request.get(editedRequest.value.id);
+
+    if (updatedRequest?.length) {
+        const index = props.requests.findIndex(element => element.id === updatedRequest[0].id);
+
+        if (index !== -1) {
+            Object.assign(props.requests[index], updatedRequest[0]);
+        }
+    }
+
+    closeEditForm();
 }
 </script>

@@ -49,7 +49,7 @@
                 :title="currentQuizPreviewTitle"
                 width="800"
             >
-                <MessengerQuizPreview :quiz-id="currentQuizPreview?.id" />
+                <SurveyCard :quiz-id="currentQuizPreview?.id" />
             </Modal>
         </teleport>
     </div>
@@ -58,7 +58,7 @@
 import EmptyData from '@/components/common/EmptyData.vue';
 import MessengerQuizElement from '@/components/Messenger/Quiz/MessengerQuizElement.vue';
 import Modal from '@/components/common/Modal.vue';
-import MessengerQuizPreview from '@/components/Messenger/Quiz/Preview/MessengerQuizPreview.vue';
+import SurveyCard from '@/components/SurveyCard/SurveyCard.vue';
 import Input from '@/components/common/Forms/Input.vue';
 import MessengerQuizElementSkeleton from '@/components/Messenger/Quiz/MessengerQuizElementSkeleton.vue';
 import { useDelayedLoader } from '@/composables/useDelayedLoader.js';

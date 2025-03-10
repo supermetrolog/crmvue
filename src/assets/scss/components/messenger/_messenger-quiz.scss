@@ -311,18 +311,22 @@
         border-radius: 0!important;
     }
 
-    &__list {
-        overflow-y: auto;
-        @include mixins.flex-box($d: column, $gap: 5px);
-    }
-
     &__offers {
-        max-height: 390px;
+        max-height: 500px;
     }
 
     &__requests {
         padding-right: 5px;
         max-height: 180px;
+    }
+
+    &__list {
+        overflow-y: auto;
+        @include mixins.flex-box($d: column, $gap: 5px);
+
+        &.expanded {
+            max-height: none;
+        }
     }
 }
 
@@ -877,6 +881,14 @@
     &__header {
         @include mixins.flex-box($a: center, $gap: 5px);
         font-weight: 600;
+        position: relative;
+        padding-right: 35px;
+    }
+
+    &__edit {
+        position: absolute;
+        right: 0;
+        top: 0;
     }
 
     &__express {
@@ -964,6 +976,7 @@
     }
 
     &__body {
+        position: relative;
         @include mixins.flex-box($gap: 5px);
     }
 
@@ -1056,6 +1069,17 @@
             color: #fff;
         }
     }
+
+    &__content {
+        padding-right: 40px;
+    }
+
+    &__actions {
+        position: absolute;
+        top: 5px;
+        right: 5px;
+        @include mixins.flex-box($d: column, $gap: 4px);
+    }
 }
 
 .messenger-quiz-form-offer-picker {
@@ -1098,5 +1122,27 @@
         background-color: variables.$color_light;
         padding: 3px;
         border: 1px solid rgba(0, 0, 0, 0.1);
+    }
+}
+
+.survey-card {
+    &__new-offer, &__new-request {
+        flex-basis: calc(50% - 5px);
+    }
+}
+
+.survey-card-custom-element {
+    position: relative;
+    font-size: 13px;
+    background-color: #fff;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+    padding: 4px;
+
+    &__actions {
+        position: absolute;
+        top: 4px;
+        right: 4px;
+        @include mixins.flex-box($gap: 2px);
     }
 }

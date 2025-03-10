@@ -26,6 +26,8 @@
             </template>
             <MessengerQuizFormTemplate
                 ref="quizFormEl"
+                @object-sold="$emit('object-sold', $event)"
+                @object-destroyed="$emit('object-destroyed', $event)"
                 :questions="questions"
                 :disabled="formIsDisabled"
                 :has-available-contact="hasAvailableContact"
@@ -68,7 +70,9 @@ const emit = defineEmits([
     'suggest-create-contact',
     'toggle-call-schedule',
     'select-next-contact',
-    'change-last-contact'
+    'change-last-contact',
+    'object-sold',
+    'object-destroyed'
 ]);
 
 const props = defineProps({

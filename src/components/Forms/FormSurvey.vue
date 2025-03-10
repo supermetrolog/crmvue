@@ -1,9 +1,9 @@
 <template>
-    <Form>
+    <Spinner v-if="isLoading" small label="Загрузка вопросов.." center class="absolute-center" />
+    <Form v-else>
         <Loader v-if="isUpdating" small class="center" />
-        <Spinner v-if="isLoading" small label="Загрузка вопросов.." class="absolute-center" />
         <template v-else>
-            <MessengerQuizPreviewInfo :quiz="formData" :editable="false" />
+            <SurveyCardInfo :quiz="formData" :editable="false" />
             <hr />
             <MessengerQuizFormTemplate
                 ref="quizForm"
@@ -12,7 +12,7 @@
                 has-available-contact
             />
         </template>
-        <FormGroup class="justify-content-center mt-2 gap-2">
+        <FormGroup v-if="!isLoading" class="justify-content-center mt-2 gap-2">
             <Button @click="submit" success>Сохранить</Button>
             <Button @click="$emit('close')" danger>Отмена</Button>
         </FormGroup>
@@ -28,7 +28,7 @@ import Button from '@/components/common/Button.vue';
 import api from '@/api/api.js';
 import Loader from '@/components/common/Loader.vue';
 import { useNotify } from '@/utils/use/useNotify.js';
-import MessengerQuizPreviewInfo from '@/components/Messenger/Quiz/Preview/MessengerQuizPreviewInfo.vue';
+import SurveyCardInfo from '@/components/SurveyCard/SurveyCardInfo.vue';
 import { messenger } from '@/const/messenger.js';
 
 const emit = defineEmits(['close', 'updated']);

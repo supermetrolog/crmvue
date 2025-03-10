@@ -11,11 +11,12 @@
 </template>
 <script setup>
 import { computed, useTemplateRef } from 'vue';
-import MessengerQuizQuestionTemplateHasFreeArea from '@/components/Messenger/Quiz/Question/Template/HasFreeArea/MessengerQuizQuestionTemplateHasFreeArea.vue';
+import MessengerQuizQuestionTemplateHasFreeArea from '@/components/Messenger/Quiz/Question/Template/MessengerQuizQuestionTemplateHasFreeArea.vue';
 import MessengerQuizQuestionTemplateDefault from '@/components/Messenger/Quiz/Question/Template/MessengerQuizQuestionTemplateDefault.vue';
-import MessengerQuizQuestionTemplateCompaniesIdentified from '@/components/Messenger/Quiz/Question/Template/CompaniesIdentified/MessengerQuizQuestionTemplateCompaniesIdentified.vue';
-import MessengerQuizQuestionTemplateRequestsNoRelevant from '@/components/Messenger/Quiz/Question/Template/RequestsNoRelevant/MessengerQuizQuestionTemplateRequestsNoRelevant.vue';
-import MessengerQuizQuestionTemplateWantsToSell from '@/components/Messenger/Quiz/Question/Template/WantsToSell/MessengerQuizQuestionTemplateWantsToSell.vue';
+import MessengerQuizQuestionTemplateCompaniesIdentified from '@/components/Messenger/Quiz/Question/Template/MessengerQuizQuestionTemplateCompaniesIdentified.vue';
+import MessengerQuizQuestionTemplateWantsToSell from '@/components/Messenger/Quiz/Question/Template/MessengerQuizQuestionTemplateWantsToSell.vue';
+import MessengerQuizQuestionTemplateNewRequestsOrOffers from '@/components/Messenger/Quiz/Question/Template/MessengerQuizQuestionTemplateNewRequestsOrOffers.vue';
+import MessengerQuizQuestionTemplateEquipments from '@/components/Messenger/Quiz/Question/Template/MessengerQuizQuestionTemplateEquipments.vue';
 
 const props = defineProps({
     question: {
@@ -32,9 +33,10 @@ const props = defineProps({
 
 const TEMPLATES = {
     'free-area': MessengerQuizQuestionTemplateHasFreeArea,
+    'wants-to-sell': MessengerQuizQuestionTemplateWantsToSell,
     'companies-identified': MessengerQuizQuestionTemplateCompaniesIdentified,
-    'requests-no-relevant': MessengerQuizQuestionTemplateRequestsNoRelevant,
-    'wants-to-sell': MessengerQuizQuestionTemplateWantsToSell
+    'new-requests-or-offers': MessengerQuizQuestionTemplateNewRequestsOrOffers,
+    equipments: MessengerQuizQuestionTemplateEquipments
 };
 
 const currentComponent = computed(() => {

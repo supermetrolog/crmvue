@@ -32,6 +32,8 @@
                     @toggle-call-schedule="toggleCallSchedule"
                     @select-next-contact="selectNextContact"
                     @change-last-contact="changeLastContact"
+                    @object-sold="onObjectSold"
+                    @object-destroyed="onObjectDestroyed"
                     :contacts="availableContacts"
                     :available-contacts="notSelectedContacts"
                     :disabled="disabled"
@@ -41,8 +43,6 @@
                 <MessengerQuizFooter
                     v-if="contacts.length && !disabled && canBeCreated"
                     @complete="send"
-                    @object-destroyed="onObjectDestroyed"
-                    @object-sold="onObjectSold"
                     :disabled="isCompleted"
                 />
                 <MessengerQuizComplete v-if="isCompleted" @close="close" />
@@ -422,22 +422,14 @@ async function toggleCallSchedule(contact) {
 
 // object destroyed
 
-async function onObjectDestroyed() {
-    const object = store.state.Messenger.currentDialog.model.object;
-
-    const taskPayload = await createTaskWithTemplate({
-        message: `Объект #${object.id} снесен, отправить в пассив`,
-        step: TASK_FORM_STEPS.MESSAGE
+async function createObjectMessageWithTask(object, messagePayload, taskPayload) {
+    const targetChatMemberId = await api.messenger.getChatMemberIdByQuery({
+        model_type: messenger.dialogTypes.OBJECT,
+        model_id: object.id
     });
 
-    if (!taskPayload) return;
-
-    const messagePayload = {
-        message: `<b>Объект снесен!</b>`
-    };
-
     const createdMessage = await api.messenger.sendMessageWithTask(
-        store.state.Messenger.currentDialog.id,
+        targetChatMemberId,
         messagePayload,
         taskPayload
     );
@@ -449,31 +441,34 @@ async function onObjectDestroyed() {
     }
 }
 
-async function onObjectSold() {
-    const object = store.state.Messenger.currentDialog.model.object;
-
+async function onObjectDestroyed(object) {
     const taskPayload = await createTaskWithTemplate({
-        message: `Объект #${object.id} продан `,
+        message: `Объект #${object.id} (${object.company_name}) снесен, отправить в пассив`,
         step: TASK_FORM_STEPS.MESSAGE
     });
 
     if (!taskPayload) return;
 
     const messagePayload = {
-        message: `<b>Объект продан!</b> Компания ${getCompanyShortName(store.state.Messenger.currentPanel)} больше не владелец`
+        message: `<b>Объект снесен!</b>`
     };
 
-    const createdMessage = await api.messenger.sendMessageWithTask(
-        store.state.Messenger.currentDialog.id,
-        messagePayload,
-        taskPayload
-    );
+    await createObjectMessageWithTask(object, messagePayload, taskPayload);
+}
 
-    if (createdMessage) {
-        notify.success('Сообщение и задача успешно созданы');
-    } else {
-        notify.error('Произошла ошибка. Попробуйте еще раз..');
-    }
+async function onObjectSold(object) {
+    const taskPayload = await createTaskWithTemplate({
+        message: `Объект #${object.id} (${object.company_name}) продан`,
+        step: TASK_FORM_STEPS.MESSAGE
+    });
+
+    if (!taskPayload) return;
+
+    const messagePayload = {
+        message: `<b>Объект продан!</b> Компания ${object.company_name} больше не владелец`
+    };
+
+    await createObjectMessageWithTask(object, messagePayload, taskPayload);
 }
 
 async function createContactTask() {

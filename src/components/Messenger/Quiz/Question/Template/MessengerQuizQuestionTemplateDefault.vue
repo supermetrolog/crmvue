@@ -233,11 +233,13 @@ function getTabAnswers() {
 const hasTextQuestions = computed(() => Boolean(props.question.answers?.['text-answer']));
 
 const texts = computed(() =>
-    props.question.answers['text-answer'].filter(element => element.deleted_at === null)
+    props.question.answers['text-answer'].filter(
+        element => element.deleted_at === null && checkAnswerIsNotIgnored(element)
+    )
 );
 
 function getTextAnswers() {
-    return answersToPayload(texts.value, answer => {
+    return answersToPayload(props.question.answers['text-answer'], answer => {
         if (form.description[answer.id]?.length && !hasNullMainAnswer.value) {
             return { value: form.description[answer.id] };
         }

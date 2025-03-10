@@ -3,7 +3,6 @@
         <MessengerChatNotificationSurveyTemplatePreviewQuestionSkeleton />
         <MessengerChatNotificationSurveyTemplatePreviewQuestionSkeleton />
         <MessengerChatNotificationSurveyTemplatePreviewQuestionSkeleton />
-        <MessengerChatNotificationSurveyTemplatePreviewQuestionSkeleton />
     </div>
 </template>
 <script setup>

@@ -1,19 +1,30 @@
 <template>
     <div class="messenger-quiz-template position-relative">
-        <Spinner v-if="isLoading" small label="Загрузка предложений и запросов.." />
+        <Spinner
+            v-if="isLoading"
+            small
+            label="Загрузка предложений и запросов.."
+            class="messenger-quiz__question py-1"
+        />
         <template v-else-if="companyId">
             <MessengerQuizFormTemplateOffers
+                v-if="offers.length"
                 ref="offersEl"
+                @object-sold="$emit('object-sold', $event)"
+                @object-destroyed="$emit('object-destroyed', $event)"
                 class="messenger-quiz__question"
                 :questions="objectGroupQuestions"
                 :offers
                 :disabled
+                :first-offer-opened="isObjectChatMember"
             />
             <MessengerQuizFormTemplateRequests
+                v-if="requests.length"
                 ref="requestsEl"
                 class="messenger-quiz__question"
                 :requests
                 :disabled
+                :number="offers.length ? 3 : 2"
             />
         </template>
         <MessengerQuizQuestion
@@ -23,7 +34,7 @@
             :question="question"
             :disabled
             class="messenger-quiz__question"
-            :number="4 + key"
+            :number="questionsOffset + key"
         />
         <MessengerQuizFormUnavailableWindow v-if="!isLoading && !hasAvailableContact" />
     </div>
@@ -38,7 +49,10 @@ import MessengerQuizFormTemplateRequests from '@/components/Messenger/Quiz/Form/
 import api from '@/api/api.js';
 import Spinner from '@/components/common/Spinner.vue';
 import MessengerQuizFormUnavailableWindow from '@/components/Messenger/Quiz/Form/MessengerQuizFormUnavailableWindow.vue';
+import { useStore } from 'vuex';
+import { messenger } from '@/const/messenger.js';
 
+defineEmits(['object-sold', 'object-destroyed']);
 const props = defineProps({
     questions: {
         type: Array,
@@ -62,6 +76,12 @@ const objectGroupQuestions = computed(() =>
 const companyGroupQuestions = computed(() =>
     props.questions.filter(question => question.group === quizQuestionsGroups.COMPANY)
 );
+
+const questionsOffset = computed(() => {
+    return [offers.value.length ? 1 : 0, requests.value.length ? 1 : 0, 2].reduce(
+        (acc, n) => acc + n
+    );
+});
 
 // form
 
@@ -147,23 +167,31 @@ defineExpose({ getForm, validate, setForm });
 
 // offers
 
+const store = useStore();
+
+const isObjectChatMember = computed(() => {
+    if (isNotNullish(store.state.Messenger.currentDialogType)) {
+        return store.state.Messenger.currentDialogType === messenger.dialogTypes.OBJECT;
+    }
+
+    return false;
+});
+
 const offers = ref([]);
 const requests = ref([]);
-const objects = ref([]);
 
 const isLoading = ref(false);
 
-async function fetchOffersAndObjects() {
+async function fetchOffersAndRequests() {
     isLoading.value = true;
 
-    const [offersResponse, objectsResponse, requestsResponse] = await Promise.allSettled([
+    const [offersResponse, requestsResponse] = await Promise.allSettled([
         fetchOffers(),
-        fetchObjects(),
         fetchRequests()
     ]);
 
     if (offersResponse?.value?.data?.length) {
-        offers.value = Object.values(
+        const formattedOffers = Object.values(
             offersResponse.value.data.reduce((acc, offer) => {
                 if (acc[offer.object_id]) acc[offer.object_id].offers.push(offer);
                 else {
@@ -176,10 +204,16 @@ async function fetchOffersAndObjects() {
                 return acc;
             }, {})
         );
-    }
 
-    if (objectsResponse?.value?.data?.length) {
-        objects.value = objectsResponse.value.data;
+        if (isObjectChatMember.value) {
+            const currentObjectId = store.state.Messenger.currentDialog.model.object_id;
+
+            offers.value = formattedOffers
+                .filter(offer => offer.object_id === currentObjectId)
+                .concat(formattedOffers.filter(offer => offer.object_id !== currentObjectId));
+        } else {
+            offers.value = formattedOffers;
+        }
     }
 
     if (requestsResponse.value?.length) {
@@ -187,10 +221,6 @@ async function fetchOffersAndObjects() {
     }
 
     isLoading.value = false;
-}
-
-async function fetchObjects() {
-    return api.object.list({ company_id: props.companyId });
 }
 
 async function fetchOffers() {
@@ -202,8 +232,7 @@ async function fetchOffers() {
             'contact.emails,contact.phones,' +
             'object,' +
             'company.mainContact.phones,company.mainContact.emails,company.objects_count,company.requests_count,company.active_contacts_count,' +
-            'offer,' +
-            'consultant.userProfile',
+            'offer,',
         'per-page': 0
     });
 }
@@ -213,7 +242,7 @@ async function fetchRequests() {
 }
 
 onMounted(async () => {
-    await fetchOffersAndObjects();
+    await fetchOffersAndRequests();
 
     processQueueJobs();
 });

@@ -22,6 +22,13 @@
                     :label="editButtonLabel"
                     icon="fa-solid fa-pen"
                 />
+                <UiButtonIcon
+                    v-if="currentUserIsAdmin"
+                    @click="defaultTextIsVisible = true"
+                    small
+                    label="Сырой вид"
+                    icon="fa-solid fa-file"
+                />
             </span>
             <span class="messenger-chat-template-survey__title">Опросник заполнен!</span>
             <span class="messenger-chat-template-survey__info">
@@ -35,6 +42,15 @@
         </p>
         <MessengerChatNotificationSurveyTemplateSkeleton v-if="surveyIsLoading" />
         <MessengerChatNotificationSurveyTemplatePreview v-else-if="survey" :survey :short />
+        <Teleport v-if="currentUserIsAdmin" to="body">
+            <UiModal
+                v-model:visible="defaultTextIsVisible"
+                :width="800"
+                title="Сырой вид сообщения"
+            >
+                <p v-html="message.message"></p>
+            </UiModal>
+        </Teleport>
     </div>
 </template>
 <script setup>
@@ -48,6 +64,8 @@ import MessengerChatMessageAdditions from '@/components/Messenger/Chat/Message/A
 import UiButtonIcon from '@/components/common/UI/UiButtonIcon.vue';
 import { useAsyncPopup } from '@/composables/useAsyncPopup.js';
 import { useSurveyEditing } from '@/components/Survey/useSurveyEditing.js';
+import { useAuth } from '@/composables/useAuth.js';
+import UiModal from '@/components/common/UI/UiModal.vue';
 
 const props = defineProps({
     message: {
@@ -56,6 +74,10 @@ const props = defineProps({
     },
     short: Boolean
 });
+
+const { currentUserIsAdmin } = useAuth();
+
+const defaultTextIsVisible = ref(false);
 
 // recipient
 

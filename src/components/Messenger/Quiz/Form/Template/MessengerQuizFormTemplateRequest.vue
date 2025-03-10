@@ -1,10 +1,12 @@
 <template>
     <div class="messenger-quiz-form-template-request">
         <div class="messenger-quiz-form-template-request__row">
-            <MessengerQuizFormTemplateRequestPreview
+            <SurveyQuestionRequest
+                @edit="$emit('edit')"
                 :request
                 :class="{ disabled: isDisabled }"
                 class="messenger-quiz-form-template-request__preview"
+                :editable
             />
             <div class="messenger-quiz-form-template-request__aside">
                 <div class="d-flex gap-1">
@@ -31,78 +33,41 @@
                         label="Не ответил"
                     />
                 </div>
-                <AnimationTransition :speed="0.3">
-                    <div v-if="hasAnswer" class="d-flex gap-1">
-                        <MessengerQuizFormRadioChip
-                            v-model="actionAnswer"
-                            :value="1"
-                            unselect
-                            label="Редактировать"
-                        />
-                        <MessengerQuizFormRadioChip
-                            v-model="actionAnswer"
-                            :value="2"
-                            unselect
-                            :disabled="mainAnswer"
-                            label="В пассив"
-                        />
-                    </div>
-                </AnimationTransition>
             </div>
         </div>
-        <AnimationTransition :speed="0.3">
-            <Textarea
-                v-if="actionAnswer"
-                v-model="description"
-                auto-height
-                :min-height="50"
-                :max-height="100"
-                placeholder="Комментарии.."
-            />
-        </AnimationTransition>
     </div>
 </template>
 <script setup>
 import { computed, ref, watch } from 'vue';
 import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
-import MessengerQuizFormTemplateRequestPreview from '@/components/Messenger/Quiz/Form/Template/MessengerQuizFormTemplateRequestPreview.vue';
 import MessengerQuizFormRadioChip from '@/components/Messenger/Quiz/Form/MessengerQuizFormRadioChip.vue';
-import AnimationTransition from '@/components/common/AnimationTransition.vue';
-import Textarea from '@/components/common/Forms/Textarea.vue';
 import { locationOptions } from '@/const/options/location.options.js';
 import { toNumberOrRangeFormat } from '@/utils/formatters/number.js';
 import { isNullish } from '@/utils/helpers/common/isNullish.js';
+import SurveyQuestionRequest from '@/components/Survey/QuestionRequest/SurveyQuestionRequest.vue';
 
+defineEmits(['edit']);
 const props = defineProps({
     request: {
         type: Object,
         required: true
     },
-    disabled: Boolean
+    disabled: Boolean,
+    editable: Boolean
 });
 
 // form
 
 const mainAnswer = ref(undefined);
 const hasNullMainAnswer = ref(false);
-const description = ref(null);
-
-const hasAnswer = computed(() => isNotNullish(mainAnswer.value));
 
 watch(hasNullMainAnswer, value => {
     if (value) mainAnswer.value = null;
 });
 
-watch(mainAnswer, (value, oldValue) => {
+watch(mainAnswer, value => {
     if (isNotNullish(value)) hasNullMainAnswer.value = false;
-
-    if (isNotNullish(oldValue)) {
-        description.value = null;
-        actionAnswer.value = null;
-    }
 });
-
-const actionAnswer = ref(null);
 
 const isDisabled = computed(() => hasNullMainAnswer.value || mainAnswer.value === false);
 
@@ -140,8 +105,6 @@ function getForm() {
     return {
         id: props.request.id,
         answer: mainAnswer.value,
-        action: hasAnswer.value ? actionAnswer.value : null,
-        description: hasAnswer.value ? description.value : null,
         location: generateLocation(),
         deal_type: props.request.dealType,
         calc_area: generateCalcArea()
@@ -150,13 +113,7 @@ function getForm() {
 
 function validate() {
     if (props.disabled) return true;
-
-    if (isNotNullish(mainAnswer.value)) {
-        if (!mainAnswer.value) return isNotNullish(actionAnswer.value);
-
-        return true;
-    }
-
+    if (isNotNullish(mainAnswer.value)) return true;
     return hasNullMainAnswer.value;
 }
 
@@ -168,9 +125,6 @@ function setAnswer(value) {
 function setForm(form) {
     hasNullMainAnswer.value = isNullish(form.answer);
     mainAnswer.value = form.answer;
-
-    actionAnswer.value = form.action;
-    description.value = form.description;
 }
 
 defineExpose({ getForm, validate, setAnswer, setForm });
