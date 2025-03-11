@@ -25,10 +25,13 @@
                 />
             </template>
             <MessengerQuizFormTemplate
-                ref="objectQuizForm"
-                v-model:related="withRelated"
+                ref="quizFormEl"
+                @object-sold="$emit('object-sold', $event)"
+                @object-destroyed="$emit('object-destroyed', $event)"
                 :questions="questions"
                 :disabled="formIsDisabled"
+                :has-available-contact="hasAvailableContact"
+                :company-id="companyId"
             />
         </template>
         <MessengerQuizFormContactSuggestModal
@@ -48,17 +51,17 @@
 <script setup>
 import { useStore } from 'vuex';
 import { computed, onMounted, ref, useTemplateRef, watch } from 'vue';
-import { quizEffectKinds } from '@/const/quiz.js';
 import MessengerQuizQuestionCall from '@/components/Messenger/Quiz/Question/Call/MessengerQuizQuestionCall.vue';
 import MessengerQuizFormContactSuggestModal from '@/components/Messenger/Quiz/Form/MessengerQuizFormContactSuggestModal.vue';
 import MessengerQuizFormDisabledWindow from '@/components/Messenger/Quiz/Form/MessengerQuizFormDisabledWindow.vue';
 import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
 import { isNullish } from '@/utils/helpers/common/isNullish.js';
 import MessengerQuizFormContactUnavailableModal from '@/components/Messenger/Quiz/Form/MessengerQuizFormContactUnavailableModal.vue';
-import MessengerQuizFormTemplate from '@/components/Messenger/Quiz/Form/MessengerQuizFormTemplate.vue';
+import MessengerQuizFormTemplate from '@/components/Messenger/Quiz/Form/Template/MessengerQuizFormTemplate.vue';
 import MessengerQuizFormRemainingWindow from '@/components/Messenger/Quiz/Form/MessengerQuizFormRemainingWindow.vue';
 import { useAsyncPopup } from '@/composables/useAsyncPopup.js';
 import Spinner from '@/components/common/Spinner.vue';
+import { messenger } from '@/const/messenger.js';
 
 const contactModel = defineModel('contact');
 const selectedContacts = defineModel('selected-contacts');
@@ -67,7 +70,9 @@ const emit = defineEmits([
     'suggest-create-contact',
     'toggle-call-schedule',
     'select-next-contact',
-    'change-last-contact'
+    'change-last-contact',
+    'object-sold',
+    'object-destroyed'
 ]);
 
 const props = defineProps({
@@ -89,7 +94,15 @@ const props = defineProps({
 });
 
 const store = useStore();
-const objectQuizForm = useTemplateRef('objectQuizForm');
+
+const companyId = computed(() => {
+    if (store.state.Messenger.currentDialogType === messenger.dialogTypes.COMPANY)
+        return store.state.Messenger.currentDialog.model_id;
+
+    return store.state.Messenger.currentDialog.model.object.company_id;
+});
+
+const quizFormEl = useTemplateRef('quizFormEl');
 
 const isLoading = ref(false);
 
@@ -109,83 +122,22 @@ onMounted(() => {
 
 // form
 
-const withRelated = ref(false);
-
-function answerFormMustBeProcessed(answer) {
-    return answer && answer.value && answer.form;
-}
-
-const getForm = () => {
-    const form = objectQuizForm.value.getForm();
-
-    // objects group
-
-    const relatedAnswers = {
-        objects: {}
-    };
-
-    if (withRelated.value) {
-        const freeAreaMustBeEditAnswer = form.find(answer =>
-            answer.effects.has(quizEffectKinds.OBJECT_FREE_AREA_MUST_BE_EDIT)
-        );
-
-        if (answerFormMustBeProcessed(freeAreaMustBeEditAnswer)) {
-            freeAreaMustBeEditAnswer.form.objects.forEach(object => {
-                relatedAnswers.objects[object.id] = {
-                    answer: object.answer
-                };
-            });
-
-            freeAreaMustBeEditAnswer.value = freeAreaMustBeEditAnswer.filled;
-        }
-
-        const wantsToSellMustBeEditAnswer = form.find(answer =>
-            answer.effects.has(quizEffectKinds.COMPANY_WANTS_TO_SELL_MUST_BE_EDITED)
-        );
-
-        if (answerFormMustBeProcessed(wantsToSellMustBeEditAnswer)) {
-            wantsToSellMustBeEditAnswer.form.objects.forEach(object => {
-                if (relatedAnswers.objects[object.id]) {
-                    Object.assign(relatedAnswers.objects[object.id].answer, object.answer);
-                } else {
-                    relatedAnswers.objects[object.id] = {
-                        answer: object.answer
-                    };
-                }
-            });
-        }
-
-        const companiesIdentifiedAnswer = form.find(answer =>
-            answer.effects.has(quizEffectKinds.COMPANIES_ON_OBJECT_IDENTIFIED)
-        );
-
-        if (companiesIdentifiedAnswer && companiesIdentifiedAnswer.form?.objects?.length) {
-            companiesIdentifiedAnswer.form.objects.forEach(object => {
-                if (relatedAnswers.objects[object.id]) {
-                    Object.assign(relatedAnswers.objects[object.id].answer, object.answer);
-                } else {
-                    relatedAnswers.objects[object.id] = {
-                        answer: object.answer
-                    };
-                }
-            });
-        }
-    }
+function getForm() {
+    const { answers, offersAnswers } = quizFormEl.value.getForm();
 
     return {
-        answers: form,
-        isCanceled: formIsDisabled.value,
-        relatedAnswers,
-        withRelated: withRelated.value
+        answers,
+        offersAnswers,
+        isCanceled: formIsDisabled.value
     };
-};
+}
 
 defineExpose({
     getForm,
     validate() {
         return (
             selectedContactsEls.value.every(element => element.validate()) &&
-            (formIsDisabled.value || objectQuizForm.value.validate())
+            (formIsDisabled.value || quizFormEl.value.validate())
         );
     }
 });
@@ -258,6 +210,10 @@ const allSelectedContactsIsNegativeOrSkipped = computed(() =>
     selectedContacts.value.every(
         element => element.form.available === false || element.form.skipped
     )
+);
+
+const hasAvailableContact = computed(() =>
+    selectedContacts.value.every(element => element.form.available === true)
 );
 
 const formIsDisabled = computed(() => {

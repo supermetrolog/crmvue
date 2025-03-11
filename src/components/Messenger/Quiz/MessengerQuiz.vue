@@ -1,5 +1,6 @@
 <template>
     <div class="messenger-quiz messenger-chat__content">
+        <Loader v-if="isLoading" global :label="currentLoadingLabel" />
         <MessengerChatHeader />
         <MessengerQuizPreviews
             v-show="!isGeneralLoading"
@@ -13,7 +14,6 @@
         />
         <template v-else>
             <div class="messenger-quiz__wrapper">
-                <Loader v-if="isLoading" :label="currentLoadingLabel" class="my-4" />
                 <MessengerQuizContacts
                     v-model:contact="currentRecipient"
                     @suggest-create="suggestCreateContact"
@@ -32,6 +32,8 @@
                     @toggle-call-schedule="toggleCallSchedule"
                     @select-next-contact="selectNextContact"
                     @change-last-contact="changeLastContact"
+                    @object-sold="onObjectSold"
+                    @object-destroyed="onObjectDestroyed"
                     :contacts="availableContacts"
                     :available-contacts="notSelectedContacts"
                     :disabled="disabled"
@@ -41,8 +43,6 @@
                 <MessengerQuizFooter
                     v-if="contacts.length && !disabled && canBeCreated"
                     @complete="send"
-                    @object-destroyed="onObjectDestroyed"
-                    @object-sold="onObjectSold"
                     :disabled="isCompleted"
                 />
                 <MessengerQuizComplete v-if="isCompleted" @close="close" />
@@ -242,9 +242,9 @@ async function send() {
     );
     if (!confirmed) return;
 
-    const chatMemberId = store.state.Messenger.currentDialog.id;
+    let targetChatMemberId = store.state.Messenger.currentDialog.id;
 
-    const { answers, isCanceled, relatedAnswers, withRelated } = quizForm.value.getForm();
+    const { isCanceled, answers, offersAnswers } = quizForm.value.getForm();
 
     finalSelectedContacts.value = selectedContacts.value.map(element => element.entity);
 
@@ -255,112 +255,121 @@ async function send() {
 
         isLoading.value = true;
 
-        const answersByGroup = answers.reduce(
-            (acc, answer) => {
-                acc[answer.question_group].push(answer);
-                return acc;
-            },
-            { common: [], object: [], company: [] }
-        );
-
         loaders.surveyCreating = true;
-        const createdSurvey = await createSurvey(
-            finalContact.value,
-            prepareAnswers(
-                ...answersByGroup.common,
-                ...(isObjectChatMember.value ? answersByGroup.object : answersByGroup.company)
-            )
-        );
-        loaders.surveyCreating = false;
-
-        if (!createdSurvey) {
-            notify.info('Произошла ошибка при сохранении опросника, попробуйте позже');
-            isLoading.value = false;
-            return;
-        }
 
         if (isObjectChatMember.value) {
-            loaders.companySurveyCreating = true;
-
-            const companyChatMemberId = await api.messenger.getChatMemberIdByQuery({
+            targetChatMemberId = await api.messenger.getChatMemberIdByQuery({
                 model_type: messenger.dialogTypes.COMPANY,
-                model_id: store.state.Messenger.currentDialog.model.company_id
+                model_id: store.state.Messenger.currentDialog.model.object.company_id
             });
-
-            if (companyChatMemberId) {
-                await createSurvey(
-                    finalContact.value,
-                    prepareAnswers(...answersByGroup.common, ...answersByGroup.company),
-                    companyChatMemberId,
-                    createdSurvey.id
-                );
-            }
-
-            loaders.companySurveyCreating = false;
         }
 
-        loaders.callsCreating = true;
-        await createCallsWithContacts(
-            selectedContacts.value.filter(element => element.entity.id !== finalContact.value.id),
-            chatMemberId
-        );
-        loaders.callsCreating = false;
+        let createdSurvey;
 
-        loaders.messageSearching = true;
-        const surveyMessage = await findSurveyMessage(createdSurvey.id, chatMemberId);
-        loaders.messageSearching = false;
+        try {
+            createdSurvey = await createSurvey(
+                finalContact.value,
+                prepareAnswers(...answers),
+                targetChatMemberId
+            );
+        } catch (error) {
+            notify.info('Произошла ошибка при сохранении опросника, попробуйте позже');
+            isLoading.value = false;
 
-        if (!surveyMessage) {
+            return;
+        } finally {
+            loaders.surveyCreating = false;
+        }
+
+        try {
+            loaders.callsCreating = true;
+
+            await createCallsWithContacts(
+                selectedContacts.value.filter(
+                    element => element.entity.id !== finalContact.value.id
+                ),
+                targetChatMemberId
+            );
+        } finally {
+            loaders.callsCreating = false;
+        }
+
+        let surveyMessage;
+
+        try {
+            loaders.messageSearching = true;
+
+            surveyMessage = await findSurveyMessage(createdSurvey.id, targetChatMemberId);
+        } catch (error) {
             notify.info(
                 'Не удалось установить связь с чатом, создайте задачи по контактам вручную..'
             );
             isLoading.value = false;
             return;
+        } finally {
+            loaders.messageSearching = false;
         }
 
-        if (withRelated) {
-            loaders.relationCreating = true;
-            await createRelatedSurveys(finalContact.value, relatedAnswers.objects, createdSurvey);
-            loaders.relationCreating = false;
+        if (offersAnswers.length) {
+            try {
+                loaders.relationCreating = true;
+                await createRelatedSurveys(finalContact.value, offersAnswers, createdSurvey);
+            } finally {
+                loaders.relationCreating = false;
+            }
         }
 
-        loaders.tasksCreating = true;
-        await createPotentialTasks(selectedContacts.value, surveyMessage.id, createdSurvey.id);
-        loaders.tasksCreating = false;
+        try {
+            loaders.tasksCreating = true;
+            await createPotentialTasks(selectedContacts.value, surveyMessage.id, createdSurvey.id);
+            loaders.tasksCreating = false;
 
-        loaders.scheduledCallsCreating = true;
-        await createScheduledCallTasks(scheduledCalls.value, surveyMessage.id, createdSurvey.id);
-        loaders.scheduledCallsCreating = false;
+            loaders.scheduledCallsCreating = true;
+            await createScheduledCallTasks(
+                scheduledCalls.value,
+                surveyMessage.id,
+                createdSurvey.id
+            );
+            loaders.scheduledCallsCreating = false;
+        } finally {
+            loaders.tasksCreating = false;
+            loaders.scheduledCallsCreating = false;
+        }
 
         isLoading.value = false;
     } else {
         isLoading.value = true;
 
-        loaders.callsCreating = true;
-        await createCallsWithContacts(selectedContacts.value, chatMemberId);
-        loaders.callsCreating = false;
+        try {
+            loaders.callsCreating = true;
+            await createCallsWithContacts(selectedContacts.value, targetChatMemberId);
+            loaders.callsCreating = false;
 
-        loaders.messageCreating = true;
-        const createdMessage = await sendMessageAboutSurveyIsUnavailable(
-            chatMemberId,
-            selectedContacts.value
-        );
-        loaders.messageCreating = false;
+            loaders.messageCreating = true;
+            const createdMessage = await sendMessageAboutSurveyIsUnavailable(
+                targetChatMemberId,
+                selectedContacts.value
+            );
+            loaders.messageCreating = false;
 
-        if (createdMessage) {
             loaders.tasksCreating = true;
             await createPotentialTasks(selectedContacts.value, createdMessage.id);
             loaders.tasksCreating = false;
-        }
 
-        loaders.scheduledCallsCreating = true;
-        await createScheduledCallTasks(scheduledCalls.value, createdMessage.id);
-        loaders.scheduledCallsCreating = false;
+            loaders.scheduledCallsCreating = true;
+            await createScheduledCallTasks(scheduledCalls.value, createdMessage.id);
+            loaders.scheduledCallsCreating = false;
+        } catch (error) {
+            loaders.messageCreating = false;
+            loaders.tasksCreating = false;
+            loaders.scheduledCallsCreating = false;
+            loaders.callsCreating = false;
+        }
 
         isLoading.value = false;
     }
 
-    store.dispatch('Messenger/onSurveyCompleted', chatMemberId);
+    store.dispatch('Messenger/onSurveyCompleted', targetChatMemberId);
     isCompleted.value = true;
 
     notify.success('Задачи и звонки успешно созданы..');
@@ -413,22 +422,14 @@ async function toggleCallSchedule(contact) {
 
 // object destroyed
 
-async function onObjectDestroyed() {
-    const object = store.state.Messenger.currentDialog.model.object;
-
-    const taskPayload = await createTaskWithTemplate({
-        message: `Объект #${object.id} снесен, отправить в пассив`,
-        step: TASK_FORM_STEPS.MESSAGE
+async function createObjectMessageWithTask(object, messagePayload, taskPayload) {
+    const targetChatMemberId = await api.messenger.getChatMemberIdByQuery({
+        model_type: messenger.dialogTypes.OBJECT,
+        model_id: object.id
     });
 
-    if (!taskPayload) return;
-
-    const messagePayload = {
-        message: `<b>Объект снесен!</b>`
-    };
-
     const createdMessage = await api.messenger.sendMessageWithTask(
-        store.state.Messenger.currentDialog.id,
+        targetChatMemberId,
         messagePayload,
         taskPayload
     );
@@ -440,31 +441,34 @@ async function onObjectDestroyed() {
     }
 }
 
-async function onObjectSold() {
-    const object = store.state.Messenger.currentDialog.model.object;
-
+async function onObjectDestroyed(object) {
     const taskPayload = await createTaskWithTemplate({
-        message: `Объект #${object.id} продан `,
+        message: `Объект #${object.id} (${object.company_name}) снесен, отправить в пассив`,
         step: TASK_FORM_STEPS.MESSAGE
     });
 
     if (!taskPayload) return;
 
     const messagePayload = {
-        message: `<b>Объект продан!</b> Компания ${getCompanyShortName(store.state.Messenger.currentPanel)} больше не владелец`
+        message: `<b>Объект снесен!</b>`
     };
 
-    const createdMessage = await api.messenger.sendMessageWithTask(
-        store.state.Messenger.currentDialog.id,
-        messagePayload,
-        taskPayload
-    );
+    await createObjectMessageWithTask(object, messagePayload, taskPayload);
+}
 
-    if (createdMessage) {
-        notify.success('Сообщение и задача успешно созданы');
-    } else {
-        notify.error('Произошла ошибка. Попробуйте еще раз..');
-    }
+async function onObjectSold(object) {
+    const taskPayload = await createTaskWithTemplate({
+        message: `Объект #${object.id} (${object.company_name}) продан`,
+        step: TASK_FORM_STEPS.MESSAGE
+    });
+
+    if (!taskPayload) return;
+
+    const messagePayload = {
+        message: `<b>Объект продан!</b> Компания ${object.company_name} больше не владелец`
+    };
+
+    await createObjectMessageWithTask(object, messagePayload, taskPayload);
 }
 
 async function createContactTask() {
@@ -536,27 +540,39 @@ function setInitialCurrentContact() {
 async function fetchContacts() {
     contactsIsLoading.value = true;
 
-    const response = await api.contacts.getByCompany(company.value.id);
+    try {
+        const response = await api.contacts.getByCompany(company.value.id);
 
-    if (response?.length) {
         contacts.value = response
             .filter(contact => contact.status === contactOptions.statusStatement.ACTIVE)
             .sort((first, second) => second.isMain - first.isMain);
+
+        setInitialCurrentContact();
+    } finally {
+        contactsIsLoading.value = false;
     }
-
-    setInitialCurrentContact();
-
-    contactsIsLoading.value = false;
 }
 
 async function fetchArchivedContactsCount() {
-    const response = await api.contacts.list({ company_id: company.value.id, status: 0, type: 0 });
-    if (response) archivedContactsCount.value = response.data.length;
+    try {
+        const response = await api.contacts.list({
+            company_id: company.value.id,
+            status: 0,
+            type: 0
+        });
+
+        archivedContactsCount.value = response.data?.length;
+    } catch (error) {
+        archivedContactsCount.value = 0;
+    }
+}
+
+async function fetchConsultantsIfNeeded() {
+    if (!store.state.User.consultantList.length) await store.dispatch('FETCH_CONSULTANT_LIST');
 }
 
 onMounted(() => {
-    if (!store.state.User.consultantList.length) store.dispatch('FETCH_CONSULTANT_LIST');
-
+    fetchConsultantsIfNeeded();
     fetchContacts();
     fetchArchivedContactsCount();
 });
@@ -568,6 +584,7 @@ function onContactCreated(contact) {
 
 async function onContactUpdated(_, contact) {
     const contactIndex = contacts.value.findIndex(element => element.id === contact.id);
+
     if (contactIndex !== -1) {
         if (contact.status === contactOptions.statusStatement.PASSIVE)
             contacts.value.splice(contactIndex, 1);

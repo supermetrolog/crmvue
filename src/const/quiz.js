@@ -33,5 +33,13 @@ export const quizEffectKinds = {
 
     COMPANY_WANTS_TO_BUY_OR_BUILD: 'company-wants-to-buy-or-build',
     COMPANY_HAS_NEW_REQUEST: 'company-has-new-request',
-    COMPANY_PLANNED_DEVELOP: 'company-planned-develop'
+    COMPANY_PLANNED_DEVELOP: 'company-planned-develop',
+
+    HAS_NEW_REQUESTS: 'has-new-requests',
+    HAS_NEW_OFFERS: 'has-new-offers',
+
+    HAS_EQUIPMENTS_OFFERS: 'has-equipments-offers',
+    HAS_EQUIPMENTS_OFFERS_DESCRIPTION: 'has-equipments-offers-description',
+    HAS_EQUIPMENTS_REQUESTS: 'has-equipments-requests',
+    HAS_EQUIPMENTS_REQUESTS_DESCRIPTION: 'has-equipments-requests-description'
 };

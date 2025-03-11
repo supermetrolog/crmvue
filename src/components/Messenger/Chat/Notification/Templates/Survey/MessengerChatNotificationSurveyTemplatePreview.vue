@@ -23,7 +23,7 @@
                 <span>Создан от основного опроса</span>
             </MessengerButton>
         </div>
-        <div class="messenger-quiz-preview__list">
+        <div v-if="survey.questions.length" class="messenger-quiz-preview__list">
             <MessengerChatNotificationSurveyTemplatePreviewQuestion
                 v-for="question in survey.questions"
                 :key="question.id"
@@ -35,7 +35,7 @@
                     v-if="questionWithCompaniesInfo && question.id === questionWithCompaniesInfo.id"
                     #textarea="{ answers }"
                 >
-                    <MessengerQuizPreviewCompanyTemplate :answers="answers" />
+                    <SurveyCardQuestionTemplateCompany :answers="answers" />
                 </template>
                 <template
                     v-else-if="
@@ -44,9 +44,12 @@
                     "
                     #textarea="{ answers }"
                 >
-                    <MessengerQuizPreviewRequestsTemplate :answers="answers" />
+                    <SurveyCardQuestionTemplateRequestsList :answers="answers" />
                 </template>
             </MessengerChatNotificationSurveyTemplatePreviewQuestion>
+        </div>
+        <div v-else class="px-2">
+            <DashboardChip class="dashboard-bg-light w-100">Без изменений</DashboardChip>
         </div>
         <Teleport to="body">
             <UiModal
@@ -55,7 +58,7 @@
                 :title="`Связанные опросы (${survey.dependentSurveys.length})`"
             >
                 <div class="d-flex flex-column gap-2">
-                    <MessengerChatNotificationSurveyTemplatePreviewDependent
+                    <SurveyCardDependent
                         v-for="dependent in survey.dependentSurveys"
                         :key="dependent.id"
                         @show="openSurvey(dependent.id)"
@@ -72,14 +75,15 @@
 import { computed, ref } from 'vue';
 import MessengerChatNotificationSurveyTemplatePreviewQuestion from '@/components/Messenger/Chat/Notification/Templates/Survey/MessengerChatNotificationSurveyTemplatePreviewQuestion.vue';
 import { quizEffectKinds } from '@/const/quiz.js';
-import MessengerQuizPreviewCompanyTemplate from '@/components/Messenger/Quiz/Preview/Template/MessengerQuizPreviewCompanyTemplate.vue';
-import MessengerQuizPreviewRequestsTemplate from '@/components/Messenger/Quiz/Preview/Template/MessengerQuizPreviewRequestsTemplate.vue';
-import MessengerChatNotificationSurveyTemplatePreviewDependent from '@/components/Messenger/Chat/Notification/Templates/Survey/MessengerChatNotificationSurveyTemplatePreviewDependent.vue';
+import SurveyCardQuestionTemplateCompany from '@/components/SurveyCard/QuestionTemplate/SurveyCardQuestionTemplateCompany.vue';
+import SurveyCardQuestionTemplateRequestsList from '@/components/SurveyCard/QuestionTemplate/SurveyCardQuestionTemplateRequestsList.vue';
 import { useAsyncPopup } from '@/composables/useAsyncPopup.js';
 import UiModal from '@/components/common/UI/UiModal.vue';
 import MessengerButton from '@/components/Messenger/MessengerButton.vue';
 import { useMessenger } from '@/components/Messenger/useMessenger.js';
 import { messenger } from '@/const/messenger.js';
+import SurveyCardDependent from '@/components/SurveyCard/SurveyCardDependent.vue';
+import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
 
 const props = defineProps({
     survey: {

@@ -7,7 +7,10 @@
             <div
                 v-if="element.question"
                 v-tippy="'Вопрос'"
-                class="dashboard-bg-light br-1 p-1 fs-2"
+                class="br-1 p-1 fs-2"
+                :class="[
+                    element.question.deleted_at ? 'dashboard-bg-danger-l' : 'dashboard-bg-light '
+                ]"
             >
                 <i class="fa-regular fa-question-circle" />
                 #{{ element.question.id }}
@@ -29,9 +32,10 @@
                 <div
                     v-for="effect in element.effects"
                     :key="effect.id"
-                    class="dashboard-bg-light br-1 p-1 fs-2"
+                    class="br-1 p-1 fs-2"
+                    :class="[effect.active ? 'dashboard-bg-light' : 'dashboard-bg-danger-l ']"
                 >
-                    <i class="fa-regular fa-question-circle" />
+                    <i class="fa-solid fa-wand-magic-sparkles" />
                     #{{ effect.id }}
                     {{ effect.title }}
                 </div>

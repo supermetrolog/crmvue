@@ -11,6 +11,8 @@ export function useValidationNotify(v$) {
 
             notify.info(firstError.$message, 'Ошибка валидации');
         }
+
+        return !v$.value.$error;
     }
 
     return { validateWithNotify };
