@@ -186,13 +186,6 @@ export function useMessengerQuiz() {
         return [];
     }
 
-    async function createScheduledCallTasks(contacts, messageId, surveyId = null) {
-        return await api.messenger.createTasks(
-            messageId,
-            contacts.map(element => ({ ...element.payload, survey_id: surveyId }))
-        );
-    }
-
     async function sendMessageWithRetrying(chatMemberId, messagePayload, retry = 3) {
         try {
             return await api.messenger.sendMessage(chatMemberId, messagePayload);
@@ -277,7 +270,6 @@ export function useMessengerQuiz() {
         findSurveyMessage,
         createPotentialTasks,
         createCallsWithContacts,
-        createScheduledCallTasks,
         sendMessageAboutSurveyIsUnavailable,
         createRelatedSurveys
     };

@@ -46,7 +46,7 @@
                         :options="REASON_OPTIONS"
                     />
                     <MessengerQuizQuestionCallSchedule
-                        @click="$emit('toggle-call-schedule')"
+                        @schedule="$emit('schedule-call')"
                         :scheduled-date="form.scheduled"
                         class="ml-2"
                     />
@@ -57,7 +57,7 @@
                     <RadioChip v-model="form.action" :value="1" label="Удалить контакт" unselect />
                     <RadioChip v-model="form.action" :value="2" label="Перенести" unselect />
                     <MessengerQuizQuestionCallSchedule
-                        @click="$emit('toggle-call-schedule')"
+                        @schedule="$emit('schedule-call')"
                         :scheduled-date="form.scheduled"
                         class="ml-2"
                     />
@@ -96,7 +96,7 @@ const form = defineModel('form');
 
 const emit = defineEmits([
     'set-as-unavailable',
-    'toggle-call-schedule',
+    'schedule-call',
     'move-contact',
     'delete-contact',
     'skip'

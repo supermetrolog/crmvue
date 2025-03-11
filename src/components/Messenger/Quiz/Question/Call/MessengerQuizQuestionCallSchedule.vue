@@ -1,9 +1,5 @@
 <template>
-    <MessengerButton
-        v-if="scheduledDate"
-        v-tippy="'Нажмите, чтобы отменить запланированный звонок'"
-        color="success"
-    >
+    <MessengerButton v-if="scheduledDate" color="success">
         <i class="fa-solid fa-phone"></i>
         <span>Звонок запланирован на {{ scheduledCallDate }}</span>
         <i class="fa-solid fa-check"></i>
@@ -11,6 +7,7 @@
     <MessengerButton
         v-else
         v-tippy="'Нажмите, чтобы создать задачу на запланированный звонок'"
+        @click="$emit('schedule')"
         class="messenger-quiz-question__call"
     >
         <i class="fa-solid fa-phone"></i>
@@ -22,6 +19,7 @@ import { computed } from 'vue';
 import MessengerButton from '@/components/Messenger/MessengerButton.vue';
 import { toDateFormat } from '@/utils/formatters/date.js';
 
+defineEmits(['schedule']);
 const props = defineProps({
     scheduledDate: {
         type: String,
