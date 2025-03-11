@@ -8,8 +8,8 @@
     >
         <template #before-additions="{ mainAnswer, hidden, toggleHidden }">
             <MessengerQuizFormCustomFreeArea
+                v-if="mainAnswer"
                 v-model:condition="conditionModelValue"
-                v-model:delete="deleteCurrentArea"
                 @change-hidden="toggleHidden"
                 :disabled="mainAnswer !== true"
                 :hidden="hidden"
@@ -45,7 +45,6 @@ const ignoredEffects = new Set([
 ]);
 
 const conditionModelValue = ref(null);
-const deleteCurrentArea = ref(false);
 
 // form
 
@@ -57,10 +56,6 @@ function getForm() {
     const mainAnswer = form.find(answer => answer.type === 'main');
 
     if (mainAnswer) {
-        const actionAnswerMustBeEnabled = mainAnswer.value === false && deleteCurrentArea.value;
-
-        injectActionAnswerToForm(form, actionAnswerMustBeEnabled, mainAnswer.value);
-
         if (mainAnswer.value === true) {
             injectConditionAnswerToForm(form);
         } else {
@@ -138,14 +133,6 @@ function cancelConditionAnswerInForm(form) {
         answer.effects.has(quizEffectKinds.COMPANY_WANTS_TO_SELL_ALREADY_DESCRIBED)
     );
     if (answer) answer.value = false;
-}
-
-function injectActionAnswerToForm(form, value) {
-    const answer = form.find(answer =>
-        answer.effects.has(quizEffectKinds.OBJECT_FREE_AREA_MUST_BE_DELETED)
-    );
-
-    if (answer) answer.value = value;
 }
 
 watch(conditionModelValue, value => {

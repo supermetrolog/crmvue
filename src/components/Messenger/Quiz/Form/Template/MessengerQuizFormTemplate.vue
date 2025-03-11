@@ -86,44 +86,51 @@ const questionsOffset = computed(() => {
 // form
 
 function getForm() {
-    const offersForm = offersEl.value.getForm();
-    const requestsForm = requestsEl.value.getForm();
-
     const answers = questionEls.value
         .map(element => element.getForm())
         .filter(isNotNullish)
         .flat();
 
-    const offersActualQuestion = props.questions.find(question => question.template === 'offers');
-    const requestsActualQuestion = props.questions.find(
-        question => question.template === 'requests'
-    );
+    const offersForm = offers.value.length ? offersEl.value.getForm() : [];
 
-    if (offersActualQuestion && offersActualQuestion.answers.custom) {
-        const offersActualQuestionAnswer = offersActualQuestion.answers.custom[0];
+    if (offers.value.length) {
+        const offersActualQuestion = props.questions.find(
+            question => question.template === 'offers'
+        );
 
-        answers.push({
-            question_answer_id: offersActualQuestionAnswer.id,
-            value: offersForm.map(offerMix => ({
-                object_id: offerMix.object_id,
-                offers: offerMix.offers.map(offer => ({
-                    visual_id: offer.visual_id,
-                    id: offer.id,
-                    deal_type: offer.deal_type,
-                    calc_area: offer.calc_area
-                })),
-                answer: offerMix.answer
-            }))
-        });
+        if (offersActualQuestion && offersActualQuestion.answers.custom) {
+            const offersActualQuestionAnswer = offersActualQuestion.answers.custom[0];
+
+            answers.push({
+                question_answer_id: offersActualQuestionAnswer.id,
+                value: offersForm.map(offerMix => ({
+                    object_id: offerMix.object_id,
+                    offers: offerMix.offers.map(offer => ({
+                        visual_id: offer.visual_id,
+                        id: offer.id,
+                        deal_type: offer.deal_type,
+                        calc_area: offer.calc_area
+                    })),
+                    answer: offerMix.answer
+                }))
+            });
+        }
     }
 
-    if (requestsActualQuestion && requestsActualQuestion.answers.custom) {
-        const requestsActualQuestionAnswer = requestsActualQuestion.answers.custom[0];
+    if (requests.value.length) {
+        const requestsForm = requests.value.length ? requestsEl.value.getForm() : [];
+        const requestsActualQuestion = props.questions.find(
+            question => question.template === 'requests'
+        );
 
-        answers.push({
-            question_answer_id: requestsActualQuestionAnswer.id,
-            value: requestsForm
-        });
+        if (requestsActualQuestion && requestsActualQuestion.answers.custom) {
+            const requestsActualQuestionAnswer = requestsActualQuestion.answers.custom[0];
+
+            answers.push({
+                question_answer_id: requestsActualQuestionAnswer.id,
+                value: requestsForm
+            });
+        }
     }
 
     return { answers, offersAnswers: offersForm };

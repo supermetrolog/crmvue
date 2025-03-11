@@ -8,7 +8,7 @@
     >
         <template #before-additions="{ mainAnswer, hidden, toggleHidden }">
             <MessengerQuizFormCustomFreeArea
-                v-model:delete="deleteCurrentFreeAreaModelValue"
+                v-if="mainAnswer"
                 v-model:condition="conditionModelValue"
                 @change-hidden="toggleHidden"
                 :disabled="mainAnswer !== true"
@@ -45,7 +45,6 @@ const ignoredEffects = new Set([
     quizEffectKinds.OBJECT_FREE_AREA_MUST_BE_DELETED
 ]);
 
-const deleteCurrentFreeAreaModelValue = ref(false);
 const conditionModelValue = ref(null);
 
 // form
@@ -58,11 +57,6 @@ function getForm() {
     const mainAnswer = form.find(answer => answer.type === 'main');
 
     if (mainAnswer) {
-        const actionAnswerMustBeEnabled =
-            mainAnswer.value === false && deleteCurrentFreeAreaModelValue.value;
-
-        injectActionAnswerToForm(form, actionAnswerMustBeEnabled);
-
         if (mainAnswer.value === true) {
             injectConditionAnswerToForm(form);
         } else {
@@ -91,12 +85,6 @@ function validate() {
 
 function setForm(form) {
     if (isNotNullish(form.main?.value) && form.tab?.length) {
-        const mustBeDeletedAnswer = form.tab.find(answer =>
-            answer.effects.has(quizEffectKinds.OBJECT_FREE_AREA_MUST_BE_DELETED)
-        );
-
-        if (mustBeDeletedAnswer) deleteCurrentFreeAreaModelValue.value = mustBeDeletedAnswer.value;
-
         const mustBeEditedAnswer = form.tab.find(answer =>
             answer.effects.has(quizEffectKinds.OBJECT_FREE_AREA_MUST_BE_EDIT)
         );
@@ -144,14 +132,6 @@ function cancelConditionAnswerInForm(form) {
         answer.effects.has(quizEffectKinds.OBJECT_FREE_AREA_ALREADY_DESCRIBED)
     );
     if (answer) answer.value = false;
-}
-
-function injectActionAnswerToForm(form, value) {
-    const answer = form.find(answer =>
-        answer.effects.has(quizEffectKinds.OBJECT_FREE_AREA_MUST_BE_DELETED)
-    );
-
-    if (answer) answer.value = value;
 }
 
 watch(conditionModelValue, value => {
