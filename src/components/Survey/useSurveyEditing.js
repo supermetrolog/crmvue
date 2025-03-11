@@ -26,6 +26,7 @@ export function useSurveyEditing(survey) {
 
         return (
             _survey &&
+            !_survey.related_survey_id &&
             ((_survey.user_id === currentUserId.value && remainingTimeInMinutes.value > 0) ||
                 currentUserIsAdmin.value)
         );

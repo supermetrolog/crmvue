@@ -1,12 +1,7 @@
 <template>
     <Modal @close="closeView" :show="viewIsVisible" title="Просмотр опросника" width="970">
         <div class="survey-preview">
-            <MessengerQuizPreview
-                @edit="editSurvey"
-                @hide="cancel"
-                :quiz-id="surveyId"
-                :quiz="survey"
-            />
+            <SurveyCard @edit="editSurvey" @hide="cancel" :quiz-id="surveyId" :quiz="survey" />
         </div>
     </Modal>
     <UiModal
@@ -31,7 +26,7 @@
 import { computed, onUnmounted, ref, toRaw } from 'vue';
 import { useAsyncPopup } from '@/composables/useAsyncPopup.js';
 import Modal from '@/components/common/Modal.vue';
-import MessengerQuizPreview from '@/components/Messenger/Quiz/Preview/MessengerQuizPreview.vue';
+import SurveyCard from '@/components/SurveyCard/SurveyCard.vue';
 import UiModal from '@/components/common/UI/UiModal.vue';
 import FormSurvey from '@/components/Forms/FormSurvey.vue';
 import api from '@/api/api.js';

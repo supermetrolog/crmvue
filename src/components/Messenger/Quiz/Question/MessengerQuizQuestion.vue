@@ -3,59 +3,56 @@
         :is="currentComponent"
         v-bind="$attrs"
         ref="questionElement"
-        v-model:selected="isSelected"
         :question="question"
         :can-be-disabled="canBeDisabled"
-        :with-related="withRelated"
-        :selectable
-        :disabled="disabled || (selectable && !isSelected)"
+        :disabled
+        :number
     />
 </template>
 <script setup>
-import { computed, ref, useTemplateRef } from 'vue';
-import MessengerQuizQuestionTemplateHasFreeArea from '@/components/Messenger/Quiz/Question/Template/HasFreeArea/MessengerQuizQuestionTemplateHasFreeArea.vue';
+import { computed, useTemplateRef } from 'vue';
+import MessengerQuizQuestionTemplateHasFreeArea from '@/components/Messenger/Quiz/Question/Template/MessengerQuizQuestionTemplateHasFreeArea.vue';
 import MessengerQuizQuestionTemplateDefault from '@/components/Messenger/Quiz/Question/Template/MessengerQuizQuestionTemplateDefault.vue';
-import MessengerQuizQuestionTemplateCompaniesIdentified from '@/components/Messenger/Quiz/Question/Template/CompaniesIdentified/MessengerQuizQuestionTemplateCompaniesIdentified.vue';
-import MessengerQuizQuestionTemplateRequestsNoRelevant from '@/components/Messenger/Quiz/Question/Template/RequestsNoRelevant/MessengerQuizQuestionTemplateRequestsNoRelevant.vue';
-import MessengerQuizQuestionTemplateWantsToSell from '@/components/Messenger/Quiz/Question/Template/WantsToSell/MessengerQuizQuestionTemplateWantsToSell.vue';
+import MessengerQuizQuestionTemplateCompaniesIdentified from '@/components/Messenger/Quiz/Question/Template/MessengerQuizQuestionTemplateCompaniesIdentified.vue';
+import MessengerQuizQuestionTemplateWantsToSell from '@/components/Messenger/Quiz/Question/Template/MessengerQuizQuestionTemplateWantsToSell.vue';
+import MessengerQuizQuestionTemplateNewRequestsOrOffers from '@/components/Messenger/Quiz/Question/Template/MessengerQuizQuestionTemplateNewRequestsOrOffers.vue';
+import MessengerQuizQuestionTemplateEquipments from '@/components/Messenger/Quiz/Question/Template/MessengerQuizQuestionTemplateEquipments.vue';
 
 const props = defineProps({
     question: {
         type: Object,
         required: true
     },
-    canBeDisabled: Boolean,
-    withRelated: Boolean,
-    selectable: Boolean,
+    number: Number,
+    canBeDisabled: {
+        type: Boolean,
+        default: true
+    },
     disabled: Boolean
 });
 
 const TEMPLATES = {
     'free-area': MessengerQuizQuestionTemplateHasFreeArea,
+    'wants-to-sell': MessengerQuizQuestionTemplateWantsToSell,
     'companies-identified': MessengerQuizQuestionTemplateCompaniesIdentified,
-    'requests-no-relevant': MessengerQuizQuestionTemplateRequestsNoRelevant,
-    'wants-to-sell': MessengerQuizQuestionTemplateWantsToSell
+    'new-requests-or-offers': MessengerQuizQuestionTemplateNewRequestsOrOffers,
+    equipments: MessengerQuizQuestionTemplateEquipments
 };
 
 const currentComponent = computed(() => {
     return TEMPLATES[props.question.template] ?? MessengerQuizQuestionTemplateDefault;
 });
 
-const isSelected = ref(false);
-
 // form
 
 const templateRef = useTemplateRef('questionElement');
 
 function getForm() {
-    if (!props.selectable || isSelected.value) return templateRef.value.getForm();
-    return null;
+    return templateRef.value.getForm();
 }
 
 function validate() {
-    if (!props.selectable || isSelected.value) return templateRef.value.validate();
-
-    return true;
+    return templateRef.value.validate();
 }
 
 function setForm(form) {
