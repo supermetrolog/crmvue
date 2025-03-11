@@ -157,7 +157,7 @@ export function useMessengerQuiz() {
                 acc.push({
                     contactId: element.entity.id,
                     payload: generateTaskPayload(
-                        `Удалить контакт ${getContactFullName(element.entity)} (#${element.entity.id})`,
+                        `Удалить контакт ${getContactFullName(element.entity)} (компания #${element.entity.company_id})`,
                         element.form.description,
                         surveyId
                     )
@@ -166,7 +166,7 @@ export function useMessengerQuiz() {
                 acc.push({
                     contactId: element.entity.id,
                     payload: generateTaskPayload(
-                        `Перенести контакт ${getContactFullName(element.entity)} (#${element.entity.id})`,
+                        `Перенести контакт ${getContactFullName(element.entity)} (компания #${element.entity.company_id})`,
                         element.form.description,
                         surveyId
                     )
