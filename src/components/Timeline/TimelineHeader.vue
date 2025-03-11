@@ -95,10 +95,13 @@ const consultants = computed(() => {
 });
 
 const messagesCount = computed(() => {
-    return timeline.value.timelineSteps.reduce(
-        (total, current) => total + current.timelineActionComments?.length,
-        0
-    );
+    if (timeline.value)
+        return timeline.value.timelineSteps.reduce(
+            (total, current) => total + current.timelineActionComments?.length,
+            0
+        );
+
+    return 0;
 });
 
 watch(messagesCount, (newValue, oldValue) => {
@@ -106,6 +109,8 @@ watch(messagesCount, (newValue, oldValue) => {
 });
 
 const messagesTippy = computed(() => {
+    if (!timeline.value) return null;
+
     const totalText = 'Всего сообщений по таймлайну: ' + messagesCount.value + '<br>';
 
     const currentStep = timeline.value.timelineSteps[Number(route.query.step) || 0];

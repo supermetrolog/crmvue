@@ -39,6 +39,7 @@ import WithUnitType from '@/components/common/WithUnitType.vue';
 import { dealOptions } from '@/const/options/deal.options.js';
 import Chip from '@/components/common/Chip.vue';
 import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
+import { toBool } from '@/utils/helpers/string/toBool.js';
 
 const props = defineProps({
     request: {
@@ -51,15 +52,20 @@ const dealType = computed(() => {
     return dealOptions.type[Number(props.request.deal_type) + 1];
 });
 
+const formattedAnswer = computed(() => {
+    if (props.request.answer) return toBool(props.request.answer);
+    return null;
+});
+
 const answerText = computed(() => {
-    if (props.request.answer) return 'Да';
-    if (props.request.answer === false) return 'Нет';
+    if (formattedAnswer.value) return 'Да';
+    if (formattedAnswer.value === false) return 'Нет';
     return 'Не ответил';
 });
 
 const answerClass = computed(() => {
-    if (props.request.answer) return 'dashboard-bg-success text-white';
-    if (props.request.answer === false) return 'dashboard-bg-danger text-white';
+    if (formattedAnswer.value) return 'dashboard-bg-success text-white';
+    if (formattedAnswer.value === false) return 'dashboard-bg-danger text-white';
     return 'dashboard-bg-light';
 });
 </script>
