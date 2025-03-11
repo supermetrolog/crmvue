@@ -114,6 +114,7 @@ import { useAuth } from '@/composables/useAuth.js';
 import { useLinkify } from '@/composables/useLinkify.js';
 import TaskCardFiles from '@/components/TaskCard/TaskCardFiles.vue';
 import TaskCardContacts from '@/components/TaskCard/TaskCardContactsList.vue';
+import dayjs from 'dayjs';
 
 const DAYS_TO_IMPOSSIBLE = 14;
 
@@ -221,12 +222,14 @@ async function toImpossible() {
         .add(DAYS_TO_IMPOSSIBLE, 'day')
         .toDate();
 
-    await changeStatus({
-        status: taskOptions.statusTypes.CANCELED,
-        impossible_to: impossibleDate
-    });
-
-    isLoading.value = false;
+    try {
+        await changeStatus({
+            status: taskOptions.statusTypes.CANCELED,
+            impossible_to: impossibleDate
+        });
+    } finally {
+        isLoading.value = false;
+    }
 }
 
 // STATE CHANGING
