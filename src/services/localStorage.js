@@ -1,3 +1,5 @@
+import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
+
 export const LOCALSTORAGE_PREFIX = 'plr:';
 export const LS_USER_KEY = 'user';
 export const LS_ACCESS_TOKEN_KEY = 'astn';
@@ -53,7 +55,7 @@ export function getUserFromLocalStorage() {
 }
 
 export function hasAccessTokenInLocalStorage() {
-    return getAccessToken() && getAccessTokenId();
+    return isNotNullish(getAccessToken()) && isNotNullish(getAccessTokenId());
 }
 
 export function getAccessTokenFromLocalStorage() {
