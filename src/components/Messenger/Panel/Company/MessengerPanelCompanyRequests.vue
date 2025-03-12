@@ -84,7 +84,8 @@ export default {
             store.dispatch('Messenger/getCompanyChats', {
                 companyID: props.companyID,
                 modelType: 'request',
-                page
+                page,
+                status: 1
             });
 
         const {
