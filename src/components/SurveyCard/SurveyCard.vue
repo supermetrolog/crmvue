@@ -43,6 +43,9 @@
                         class="messenger-quiz-preview__element"
                     />
                 </div>
+                <DashboardChip v-else class="dashboard-bg-light w-100 text-center fs-4 py-3">
+                    Без изменений
+                </DashboardChip>
                 <Teleport to="body">
                     <UiModal
                         v-model:visible="dependentIsVisible"
@@ -81,6 +84,7 @@ import UiButton from '@/components/common/UI/UiButton.vue';
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
 import UiModal from '@/components/common/UI/UiModal.vue';
 import SurveyCardDependent from '@/components/SurveyCard/SurveyCardDependent.vue';
+import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
 
 defineEmits(['hide', 'edit']);
 const props = defineProps({

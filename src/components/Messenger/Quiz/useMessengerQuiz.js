@@ -157,7 +157,7 @@ export function useMessengerQuiz() {
                 acc.push({
                     contactId: element.entity.id,
                     payload: generateTaskPayload(
-                        `Удалить контакт ${getContactFullName(element.entity)} (#${element.entity.id})`,
+                        `Удалить контакт ${getContactFullName(element.entity)} (компания #${element.entity.company_id})`,
                         element.form.description,
                         surveyId
                     )
@@ -166,7 +166,7 @@ export function useMessengerQuiz() {
                 acc.push({
                     contactId: element.entity.id,
                     payload: generateTaskPayload(
-                        `Перенести контакт ${getContactFullName(element.entity)} (#${element.entity.id})`,
+                        `Перенести контакт ${getContactFullName(element.entity)} (компания #${element.entity.company_id})`,
                         element.form.description,
                         surveyId
                     )
@@ -184,13 +184,6 @@ export function useMessengerQuiz() {
         }
 
         return [];
-    }
-
-    async function createScheduledCallTasks(contacts, messageId, surveyId = null) {
-        return await api.messenger.createTasks(
-            messageId,
-            contacts.map(element => ({ ...element.payload, survey_id: surveyId }))
-        );
     }
 
     async function sendMessageWithRetrying(chatMemberId, messagePayload, retry = 3) {
@@ -277,7 +270,6 @@ export function useMessengerQuiz() {
         findSurveyMessage,
         createPotentialTasks,
         createCallsWithContacts,
-        createScheduledCallTasks,
         sendMessageAboutSurveyIsUnavailable,
         createRelatedSurveys
     };

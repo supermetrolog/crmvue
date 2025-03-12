@@ -10,6 +10,7 @@ import CompaniesView from '@/views/Companies/Company.vue';
 import CompaniesList from '@/views/Companies/Main.vue';
 import { AUTH_ROLE } from '@/const/role.js';
 import { isNullish } from '@/utils/helpers/common/isNullish.js';
+import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
 
 const routes = [
     {
@@ -337,8 +338,9 @@ const notify = useNotify();
 
 router.beforeEach((to, from) => {
     const { isAuth, setRedirect, login, currentUser } = useAuth();
+    const { accessToken } = getAccessTokenFromLocalStorage();
 
-    if (!isAuth.value && getAccessTokenFromLocalStorage()) login();
+    if (!isAuth.value && isNotNullish(accessToken)) login();
 
     if (to.meta.auth.isAuth) {
         if (!isAuth.value) {

@@ -29,7 +29,7 @@
                     v-model:contact="currentRecipient"
                     v-model:selected-contacts="selectedContacts"
                     @suggest-create-contact="suggestCreateContact"
-                    @toggle-call-schedule="toggleCallSchedule"
+                    @schedule-call="scheduleCall"
                     @select-next-contact="selectNextContact"
                     @change-last-contact="changeLastContact"
                     @object-sold="onObjectSold"
@@ -179,7 +179,6 @@ const loaders = reactive({
     messageCreating: false,
     tasksCreating: false,
     callsCreating: false,
-    scheduledCallsCreating: false,
     relationCreating: false,
     companySurveyCreating: false
 });
@@ -190,7 +189,6 @@ const loadingLabels = {
     messageCreating: 'Отправка сообщений в чат..',
     tasksCreating: 'Создание задач..',
     callsCreating: 'Фиксация звонков..',
-    scheduledCallsCreating: 'Сохранение запланированных звонков..',
     relationCreating: 'Сохранение связанных опросов..',
     companySurveyCreating: 'Сохранение опроса компании..'
 };
@@ -211,7 +209,6 @@ const {
     findSurveyMessage,
     createPotentialTasks,
     createCallsWithContacts,
-    createScheduledCallTasks,
     sendMessageAboutSurveyIsUnavailable,
     createRelatedSurveys
 } = useMessengerQuiz();
@@ -323,17 +320,8 @@ async function send() {
             loaders.tasksCreating = true;
             await createPotentialTasks(selectedContacts.value, surveyMessage.id, createdSurvey.id);
             loaders.tasksCreating = false;
-
-            loaders.scheduledCallsCreating = true;
-            await createScheduledCallTasks(
-                scheduledCalls.value,
-                surveyMessage.id,
-                createdSurvey.id
-            );
-            loaders.scheduledCallsCreating = false;
         } finally {
             loaders.tasksCreating = false;
-            loaders.scheduledCallsCreating = false;
         }
 
         isLoading.value = false;
@@ -355,14 +343,9 @@ async function send() {
             loaders.tasksCreating = true;
             await createPotentialTasks(selectedContacts.value, createdMessage.id);
             loaders.tasksCreating = false;
-
-            loaders.scheduledCallsCreating = true;
-            await createScheduledCallTasks(scheduledCalls.value, createdMessage.id);
-            loaders.scheduledCallsCreating = false;
         } catch (error) {
             loaders.messageCreating = false;
             loaders.tasksCreating = false;
-            loaders.scheduledCallsCreating = false;
             loaders.callsCreating = false;
         }
 
@@ -385,39 +368,59 @@ const { createTaskWithTemplate } = useTaskManager();
 
 const scheduledCalls = ref([]);
 
-async function scheduleCall(contact) {
+async function createScheduleCallTask(contact) {
+    const contactFullName = getContactFullName(contact);
+
     const taskPayload = await createTaskWithTemplate({
-        message: `Прозвонить контакта (${getContactFullName(contact)})`,
+        message: `Прозвонить ${contactFullName} (компания #${contact.company_id})`,
         step: TASK_FORM_STEPS.DATE,
         end: dayjs().add(SCHEDULING_CALL_DURATION, 'day').toDate(),
         user_id: currentUser.value.id,
         callPresets: true
     });
 
-    if (taskPayload) {
-        scheduledCalls.value.push({ payload: taskPayload, contactId: contact.id });
+    if (!taskPayload) return;
 
-        const contactIndex = selectedContacts.value.findIndex(
-            element => element.entity.id === contact.id
+    scheduledCalls.value.push({ payload: taskPayload, contactId: contact.id });
+
+    const contactIndex = selectedContacts.value.findIndex(
+        element => element.entity.id === contact.id
+    );
+    if (contactIndex !== -1) selectedContacts.value[contactIndex].form.scheduled = taskPayload.end;
+
+    let targetChatMemberId = store.state.Messenger.currentDialog.id;
+
+    if (isObjectChatMember.value) {
+        targetChatMemberId = await api.messenger.getChatMemberIdByQuery({
+            model_type: messenger.dialogTypes.COMPANY,
+            model_id: store.state.Messenger.currentDialog.model.object.company_id
+        });
+    }
+
+    // TODO: Поменять end на start, когда поменяем форму
+    // TODO: Добавить шаблон сообщения для schedule-call
+
+    const messagePayload = {
+        message: `Запланировал звонок с ${contactFullName} на ${dayjs(taskPayload.end).format('D.MM.YYYY, HH:mm')}!`,
+        contact_ids: [contact.id],
+        template: 'schedule-call'
+    };
+
+    try {
+        const createdMessage = await api.messenger.sendMessageWithTask(
+            targetChatMemberId,
+            messagePayload,
+            taskPayload
         );
-        if (contactIndex !== -1)
-            selectedContacts.value[contactIndex].form.scheduled = taskPayload.end;
+
+        if (createdMessage) notify.success('Звонок контакту успешно запланирован');
+    } catch (error) {
+        notify.error('Не удалось запланировать звонок. Попробуйте еще раз');
     }
 }
 
-async function toggleCallSchedule(contact) {
-    const contactIndex = scheduledCalls.value.findIndex(
-        element => element.contactId === contact.id
-    );
-    if (contactIndex === -1) scheduleCall(contact);
-    else {
-        const confirmed = await confirm('Вы действительно хотите отменить звонок?');
-        if (!confirmed) return;
-
-        scheduledCalls.value.splice(contactIndex, 1);
-        selectedContacts.value.find(element => element.entity.id === contact.id).form.scheduled =
-            false;
-    }
+async function scheduleCall(contact) {
+    await createScheduleCallTask(contact);
 }
 
 // object destroyed
@@ -450,7 +453,8 @@ async function onObjectDestroyed(object) {
     if (!taskPayload) return;
 
     const messagePayload = {
-        message: `<b>Объект снесен!</b>`
+        message: `<b>Объект снесен!</b>`,
+        template: 'object-destroyed'
     };
 
     await createObjectMessageWithTask(object, messagePayload, taskPayload);
@@ -465,7 +469,8 @@ async function onObjectSold(object) {
     if (!taskPayload) return;
 
     const messagePayload = {
-        message: `<b>Объект продан!</b> Компания ${object.company_name} больше не владелец`
+        message: `<b>Объект продан!</b> Компания ${object.company_name} больше не владелец`,
+        template: 'object-sold'
     };
 
     await createObjectMessageWithTask(object, messagePayload, taskPayload);

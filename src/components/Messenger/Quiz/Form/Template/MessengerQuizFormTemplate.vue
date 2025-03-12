@@ -223,8 +223,8 @@ async function fetchOffersAndRequests() {
         }
     }
 
-    if (requestsResponse.value?.length) {
-        requests.value = requestsResponse.value;
+    if (requestsResponse.value?.data?.length) {
+        requests.value = requestsResponse.value.data;
     }
 
     isLoading.value = false;
@@ -245,7 +245,7 @@ async function fetchOffers() {
 }
 
 async function fetchRequests() {
-    return await api.request.byCompanyId(props.companyId);
+    return await api.request.search({ company_id: props.companyId, status: 1 });
 }
 
 onMounted(async () => {

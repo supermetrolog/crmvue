@@ -19,7 +19,7 @@
                     v-model:form="contact.form"
                     @set-as-unavailable="setContactAsUnavailable(contact)"
                     @skip="suggestNextContact"
-                    @toggle-call-schedule="$emit('toggle-call-schedule', contact.entity)"
+                    @schedule-call="$emit('schedule-call', contact.entity)"
                     :contact="contact.entity"
                     class="messenger-quiz__question"
                 />
@@ -68,7 +68,7 @@ const selectedContacts = defineModel('selected-contacts');
 
 const emit = defineEmits([
     'suggest-create-contact',
-    'toggle-call-schedule',
+    'schedule-call',
     'select-next-contact',
     'change-last-contact',
     'object-sold',

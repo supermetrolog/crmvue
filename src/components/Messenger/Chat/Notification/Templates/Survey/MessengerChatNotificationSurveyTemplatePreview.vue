@@ -35,7 +35,7 @@
                     v-if="questionWithCompaniesInfo && question.id === questionWithCompaniesInfo.id"
                     #textarea="{ answers }"
                 >
-                    <SurveyCardQuestionTemplateCompany :answers="answers" />
+                    <SurveyCardQuestionTemplateCustomCompany :answers="answers" />
                 </template>
                 <template
                     v-else-if="
@@ -44,7 +44,7 @@
                     "
                     #textarea="{ answers }"
                 >
-                    <SurveyCardQuestionTemplateRequestsList :answers="answers" />
+                    <SurveyCardQuestionTemplateCustomRequestsList :answers="answers" />
                 </template>
             </MessengerChatNotificationSurveyTemplatePreviewQuestion>
         </div>
@@ -75,8 +75,8 @@
 import { computed, ref } from 'vue';
 import MessengerChatNotificationSurveyTemplatePreviewQuestion from '@/components/Messenger/Chat/Notification/Templates/Survey/MessengerChatNotificationSurveyTemplatePreviewQuestion.vue';
 import { quizEffectKinds } from '@/const/quiz.js';
-import SurveyCardQuestionTemplateCompany from '@/components/SurveyCard/QuestionTemplate/SurveyCardQuestionTemplateCompany.vue';
-import SurveyCardQuestionTemplateRequestsList from '@/components/SurveyCard/QuestionTemplate/SurveyCardQuestionTemplateRequestsList.vue';
+import SurveyCardQuestionTemplateCustomCompany from '@/components/SurveyCard/QuestionTemplate/Custom/SurveyCardQuestionTemplateCustomCompany.vue';
+import SurveyCardQuestionTemplateCustomRequestsList from '@/components/SurveyCard/QuestionTemplate/Custom/SurveyCardQuestionTemplateCustomRequestsList.vue';
 import { useAsyncPopup } from '@/composables/useAsyncPopup.js';
 import UiModal from '@/components/common/UI/UiModal.vue';
 import MessengerButton from '@/components/Messenger/MessengerButton.vue';

@@ -1,5 +1,10 @@
 <template>
-    <Modal @close="closeView" :show="viewIsVisible" title="Просмотр опросника" width="970">
+    <Modal
+        @close="closeView"
+        :show="viewIsVisible"
+        :title="`Просмотр опросника #${surveyId ?? survey?.id}`"
+        width="970"
+    >
         <div class="survey-preview">
             <SurveyCard @edit="editSurvey" @hide="cancel" :quiz-id="surveyId" :quiz="survey" />
         </div>

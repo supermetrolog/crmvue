@@ -24,7 +24,7 @@ export function useTaskManager() {
             end = dayjs().add(DEFAULT_TASK_DURATION, 'day').toDate(),
             step = TASK_FORM_STEPS.USER,
             focusMessage = false,
-            customDescription = true,
+            customDescription = false,
             additionalContent = {},
             callPresets = false
         } = template;
