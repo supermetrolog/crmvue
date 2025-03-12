@@ -109,10 +109,11 @@
                 nav-item-class="messenger-dialog-preview__tab"
                 nav-item-link-class="messenger-dialog-preview__tab-link"
                 with-transition
+                :transition-speed="0.8"
                 :closed="!object.offerMix?.length"
             >
                 <Tab
-                    v-if="objectChatMemberType === objectChatMemberTypes.RENT_OR_SALE"
+                    v-if="anyTabShouldBeVisible || rentTabShouldBeVisible"
                     id="rent"
                     name="Аренда"
                     :is-disabled="!rentOfferMix"
@@ -123,7 +124,7 @@
                     />
                 </Tab>
                 <Tab
-                    v-if="objectChatMemberType === objectChatMemberTypes.RENT_OR_SALE"
+                    v-if="anyTabShouldBeVisible || saleTabShouldBeVisible"
                     id="sale"
                     name="Продажа"
                     :is-disabled="!saleOfferMix"
@@ -134,7 +135,7 @@
                     />
                 </Tab>
                 <Tab
-                    v-if="objectChatMemberType === objectChatMemberTypes.STORAGE"
+                    v-if="anyTabShouldBeVisible || storageTabShouldBeVisible"
                     name="Отв.хран"
                     :is-disabled="!storageOfferMix"
                 >
@@ -144,7 +145,7 @@
                     />
                 </Tab>
                 <Tab
-                    v-if="objectChatMemberType === objectChatMemberTypes.SUBLEASE"
+                    v-if="anyTabShouldBeVisible || subleaseTabShouldBeVisible"
                     name="Субаренда"
                     :is-disabled="!subleaseOfferMix"
                 >
@@ -173,11 +174,14 @@ import MessengerDialogObjectPreviewRent from '@/components/Messenger/Dialog/Obje
 import { dealOptions } from '@/const/options/deal.options.js';
 import EditableObjectPurposes from '@/components/Object/EditableObjectPurposes.vue';
 import Tab from '@/components/common/Tabs/Tab.vue';
+import Tabs from '@/components/common/Tabs/Tabs.vue';
 import MessengerDialogObjectPreviewSale from '@/components/Messenger/Dialog/Object/MessengerDialogObjectPreviewSale.vue';
 import MessengerDialogObjectPreviewStorage from '@/components/Messenger/Dialog/Object/MessengerDialogObjectPreviewStorage.vue';
 import MessengerDialogPreviewTippy from '@/components/Messenger/Dialog/Preview/MessengerDialogPreviewTippy.vue';
 import MessengerDialogObjectPreviewSublease from '@/components/Messenger/Dialog/Object/MessengerDialogObjectPreviewSublease.vue';
 import { objectChatMemberTypes } from '@/const/messenger.js';
+import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
+import { isNullish } from '@/utils/helpers/common/isNullish.js';
 
 defineEmits(['update-call']);
 const props = defineProps({
@@ -185,10 +189,7 @@ const props = defineProps({
         type: Number,
         required: true
     },
-    objectChatMemberType: {
-        type: String,
-        required: true
-    },
+    objectChatMemberType: String,
     opened: {
         type: Boolean,
         default: false
@@ -259,6 +260,7 @@ const subleaseOfferMix = computed(() =>
 
 const selectActiveTab = () => {
     if (
+        isNotNullish(props.objectChatMemberType) &&
         props.objectChatMemberType === objectChatMemberTypes.RENT_OR_SALE &&
         !rentOfferMix.value &&
         saleOfferMix.value
@@ -282,5 +284,25 @@ const updatePurposes = async purposes => {
 onMounted(async () => {
     await fetchObject();
     selectActiveTab();
+});
+
+// tabs
+
+const anyTabShouldBeVisible = computed(() => isNullish(props.objectChatMemberType));
+
+const rentTabShouldBeVisible = computed(() => {
+    return props.objectChatMemberType === objectChatMemberTypes.RENT_OR_SALE;
+});
+
+const saleTabShouldBeVisible = computed(() => {
+    return props.objectChatMemberType === objectChatMemberTypes.RENT_OR_SALE;
+});
+
+const storageTabShouldBeVisible = computed(() => {
+    return props.objectChatMemberType === objectChatMemberTypes.STORAGE;
+});
+
+const subleaseTabShouldBeVisible = computed(() => {
+    return props.objectChatMemberType === objectChatMemberTypes.SUBLEASE;
 });
 </script>

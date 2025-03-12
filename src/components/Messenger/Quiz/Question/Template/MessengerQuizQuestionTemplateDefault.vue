@@ -109,6 +109,7 @@
             v-if="hasFilesQuestions"
             v-show="hasMainAnswer && !hiddenByTemplate && !isDisabled"
             class="mt-2"
+            :class="{ 'mb-2': $slots['after-content'] }"
         >
             <template #title>
                 <AccordionSimpleTriggerButton

@@ -97,7 +97,7 @@ const store = useStore();
 
 const companyId = computed(() => {
     if (store.state.Messenger.currentDialogType === messenger.dialogTypes.COMPANY)
-        return store.state.Messenger.currentDialog.model_id;
+        return Number(store.state.Messenger.currentDialog.model_id);
 
     return store.state.Messenger.currentDialog.model.object.company_id;
 });

@@ -8,6 +8,13 @@
             <SurveyQuestionOfferMixContent :offer="offerMix.offers[0]" />
             <div class="messenger-quiz-question-template-offer__actions">
                 <UiButtonIcon
+                    @click="$emit('open')"
+                    icon="fa-solid fa-eye"
+                    class="dashboard-bg-gray-l"
+                    label="Подробнее"
+                    small
+                />
+                <UiButtonIcon
                     @click="$emit('object-sold')"
                     icon="fa-solid fa-dollar-sign"
                     class="dashboard-bg-danger-l"
@@ -43,7 +50,7 @@ import SurveyQuestionOfferMixContent from '@/components/Survey/QuestionOfferMix/
 import SurveyQuestionOfferMixOffer from '@/components/Survey/QuestionOfferMix/SurveyQuestionOfferMixOffer.vue';
 import UiButtonIcon from '@/components/common/UI/UiButtonIcon.vue';
 
-defineEmits(['show-preview', 'object-sold', 'object-destroyed']);
+defineEmits(['show-preview', 'object-sold', 'object-destroyed', 'open']);
 defineProps({
     offerMix: {
         type: Object,
