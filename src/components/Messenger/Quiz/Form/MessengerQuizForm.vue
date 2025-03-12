@@ -213,7 +213,7 @@ const allSelectedContactsIsNegativeOrSkipped = computed(() =>
 );
 
 const hasAvailableContact = computed(() =>
-    selectedContacts.value.every(element => element.form.available === true)
+    selectedContacts.value.some(element => element.form.available === true)
 );
 
 const formIsDisabled = computed(() => {
