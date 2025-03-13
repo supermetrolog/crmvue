@@ -5,6 +5,7 @@
                 @show-preview="$emit('show-preview')"
                 @object-sold="$emit('object-sold')"
                 @object-destroyed="$emit('object-destroyed')"
+                @open="$emit('open')"
                 :offer-mix="offerMix"
                 class="messenger-quiz-form-template-offer__preview"
                 :disabled="isDisabled"
@@ -68,7 +69,7 @@ import MessengerQuizFormRadioChip from '@/components/Messenger/Quiz/Form/Messeng
 import { useNotify } from '@/utils/use/useNotify.js';
 import SurveyQuestionOfferMix from '@/components/Survey/QuestionOfferMix/SurveyQuestionOfferMix.vue';
 
-defineEmits(['show-preview', 'object-sold', 'object-destroyed']);
+defineEmits(['show-preview', 'object-sold', 'object-destroyed', 'open']);
 const props = defineProps({
     questions: {
         type: Array,

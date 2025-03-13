@@ -3,11 +3,11 @@
 </template>
 <script setup>
 import { computed } from 'vue';
-import SurveyCardQuestionTemplateOffers from '@/components/SurveyCard/QuestionTemplate/SurveyCardQuestionTemplateOffers.vue';
-import SurveyCardQuestionTemplateRequests from '@/components/SurveyCard/QuestionTemplate/SurveyCardQuestionTemplateRequests.vue';
-import SurveyCardQuestionTemplateFreeArea from '@/components/SurveyCard/QuestionTemplate/SurveyCardQuestionTemplateFreeArea.vue';
-import SurveyCardQuestionTemplateWantsToSell from '@/components/SurveyCard/QuestionTemplate/SurveyCardQuestionTemplateWantsToSell.vue';
-import SurveyCardQuestionTemplateNewRequestsOrOffers from '@/components/SurveyCard/QuestionTemplate/SurveyCardQuestionTemplateNewRequestsOrOffers.vue';
+import SurveyCardQuestionTemplateCustomOffers from '@/components/SurveyCard/QuestionTemplate/Custom/SurveyCardQuestionTemplateCustomOffers.vue';
+import SurveyCardQuestionTemplateCustomRequests from '@/components/SurveyCard/QuestionTemplate/Custom/SurveyCardQuestionTemplateCustomRequests.vue';
+import SurveyCardQuestionTemplateCustomFreeArea from '@/components/SurveyCard/QuestionTemplate/Custom/SurveyCardQuestionTemplateCustomFreeArea.vue';
+import SurveyCardQuestionTemplateCustomWantsToSell from '@/components/SurveyCard/QuestionTemplate/Custom/SurveyCardQuestionTemplateCustomWantsToSell.vue';
+import SurveyCardQuestionTemplateCustomNewRequestsOrOffers from '@/components/SurveyCard/QuestionTemplate/Custom/SurveyCardQuestionTemplateCustomNewRequestsOrOffers.vue';
 
 const props = defineProps({
     question: {
@@ -17,11 +17,11 @@ const props = defineProps({
 });
 
 const TEMPLATES = {
-    'free-area': SurveyCardQuestionTemplateFreeArea,
-    'wants-to-sell': SurveyCardQuestionTemplateWantsToSell,
-    requests: SurveyCardQuestionTemplateRequests,
-    offers: SurveyCardQuestionTemplateOffers,
-    'new-requests-or-offers': SurveyCardQuestionTemplateNewRequestsOrOffers
+    'free-area': SurveyCardQuestionTemplateCustomFreeArea,
+    'wants-to-sell': SurveyCardQuestionTemplateCustomWantsToSell,
+    requests: SurveyCardQuestionTemplateCustomRequests,
+    offers: SurveyCardQuestionTemplateCustomOffers,
+    'new-requests-or-offers': SurveyCardQuestionTemplateCustomNewRequestsOrOffers
 };
 
 const currentComponent = computed(() => {

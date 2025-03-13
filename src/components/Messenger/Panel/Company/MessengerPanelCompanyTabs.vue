@@ -9,7 +9,7 @@
         </MessengerPanelCompanyTab>
         <MessengerPanelCompanyTab
             title="Запросы"
-            :count="company.requests_count"
+            :count="company.active_requests_count ?? company.requests_count"
             :opened="isOpened.request"
         >
             <MessengerPanelCompanyRequests :companyID="company.id" />

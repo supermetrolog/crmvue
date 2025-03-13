@@ -19,7 +19,7 @@
                     v-model:form="contact.form"
                     @set-as-unavailable="setContactAsUnavailable(contact)"
                     @skip="suggestNextContact"
-                    @toggle-call-schedule="$emit('toggle-call-schedule', contact.entity)"
+                    @schedule-call="$emit('schedule-call', contact.entity)"
                     :contact="contact.entity"
                     class="messenger-quiz__question"
                 />
@@ -68,7 +68,7 @@ const selectedContacts = defineModel('selected-contacts');
 
 const emit = defineEmits([
     'suggest-create-contact',
-    'toggle-call-schedule',
+    'schedule-call',
     'select-next-contact',
     'change-last-contact',
     'object-sold',
@@ -97,7 +97,7 @@ const store = useStore();
 
 const companyId = computed(() => {
     if (store.state.Messenger.currentDialogType === messenger.dialogTypes.COMPANY)
-        return store.state.Messenger.currentDialog.model_id;
+        return Number(store.state.Messenger.currentDialog.model_id);
 
     return store.state.Messenger.currentDialog.model.object.company_id;
 });
@@ -213,7 +213,7 @@ const allSelectedContactsIsNegativeOrSkipped = computed(() =>
 );
 
 const hasAvailableContact = computed(() =>
-    selectedContacts.value.every(element => element.form.available === true)
+    selectedContacts.value.some(element => element.form.available === true)
 );
 
 const formIsDisabled = computed(() => {

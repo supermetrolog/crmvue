@@ -7,7 +7,7 @@
         <template v-if="!withTransition">
             <slot v-if="alwaysRender || isActive" />
         </template>
-        <AnimationTransition v-else :speed="2">
+        <AnimationTransition v-else :speed="transitionSpeed">
             <slot v-if="alwaysRender || isActive" />
         </AnimationTransition>
     </VTab>
@@ -21,6 +21,8 @@ defineProps({ required: Boolean });
 
 const alwaysRender = inject('always-render', false);
 const withTransition = inject('with-transition', false);
+const transitionSpeed = inject('transition-speed', 2);
+
 const tab = ref(null);
 const isActive = computed(() => tab.value?.isActive ?? false);
 </script>

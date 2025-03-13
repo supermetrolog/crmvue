@@ -13,14 +13,14 @@ export default defineConfig({
                     name: 'Splash Screen',
                     path: './src/injections/splash-screen.html',
                     injectTo: 'body'
-                },
-                {
-                    name: 'Google Analytics',
-                    path: './src/injections/google-analytics.html',
-                    type: 'raw',
-                    injectTo: 'body',
-                    buildModes: 'prod'
                 }
+                // {
+                //     name: 'Google Analytics',
+                //     path: './src/injections/google-analytics.html',
+                //     type: 'raw',
+                //     injectTo: 'body',
+                //     buildModes: 'prod'
+                // }
             ]
         })
     ],

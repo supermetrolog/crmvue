@@ -35,6 +35,7 @@
                     v-for="offerMix in offers"
                     :key="offerMix.object_id"
                     ref="offerEls"
+                    @open="openOfferCard(offerMix)"
                     @show-preview="openPreview(offerMix.offers[0].object.photo ?? [])"
                     @object-sold="onObjectSold(offerMix)"
                     @object-destroyed="onObjectDestroyed(offerMix)"
@@ -43,10 +44,23 @@
                 />
             </template>
         </MessengerQuizFormTemplateAccordion>
+        <UiModal
+            v-model:visible="offerCardIsVisible"
+            :width="1000"
+            :title="`Просмотр объекта #${viewedObject?.id}`"
+        >
+            <p class="mb-2 fs-2"><i class="fa-solid fa-earth mr-1" />{{ viewedObject.address }}</p>
+            <Carousel
+                :title="`Объект #${viewedObject.id}`"
+                :slides="viewedObjectSlides"
+                class="mb-2"
+            />
+            <MessengerDialogObjectPreview :object-id="viewedObject.id" />
+        </UiModal>
     </div>
 </template>
 <script setup>
-import { onMounted, useTemplateRef } from 'vue';
+import { onMounted, ref, shallowRef, useTemplateRef } from 'vue';
 import MessengerQuizFormTemplateOfferMix from '@/components/Messenger/Quiz/Form/Template/MessengerQuizFormTemplateOfferMix.vue';
 import { usePreviewer } from '@/composables/usePreviewer.js';
 import { getLinkFile } from '@/utils/url.js';
@@ -54,6 +68,10 @@ import UiButton from '@/components/common/UI/UiButton.vue';
 import MessengerQuizFormTemplateAccordion from '@/components/Messenger/Quiz/Form/Template/MessengerQuizFormTemplateAccordion.vue';
 import { getCompanyShortName } from '@/utils/formatters/models/company.js';
 import { useConfirm } from '@/composables/useConfirm.js';
+import UiModal from '@/components/common/UI/UiModal.vue';
+import MessengerDialogObjectPreview from '@/components/Messenger/Dialog/Object/MessengerDialogObjectPreview.vue';
+import Carousel from '@/components/common/Carousel.vue';
+import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
 
 const emit = defineEmits(['object-sold', 'object-destroyed']);
 const props = defineProps({
@@ -151,5 +169,43 @@ function onObjectSold(offerMix) {
 
 function onObjectDestroyed(offerMix) {
     emit('object-destroyed', generateObjectEmittedPayload(offerMix));
+}
+
+// card
+
+const offerCardIsVisible = ref(false);
+const viewedObject = shallowRef(null);
+const viewedObjectSlides = shallowRef([]);
+
+function clearCurrentViewedObject() {
+    viewedObject.value = null;
+    viewedObjectSlides.value = [];
+}
+
+function openOfferCard(offerMix) {
+    if (isNotNullish(viewedObject.value) && viewedObject.value.id !== offerMix.object_id) {
+        clearCurrentViewedObject();
+    }
+
+    viewedObject.value = offerMix.offers[0].object;
+
+    if (offerMix.offers[0]?.object?.photo?.length) {
+        if (offerMix.offers[0].object.thumb) {
+            viewedObjectSlides.value = [{ id: 0, src: offerMix.offers[0].object.thumb }];
+        }
+
+        viewedObjectSlides.value = [
+            ...viewedObjectSlides.value,
+            ...offerMix.offers[0].object.photo
+                .filter(element =>
+                    offerMix.offers[0].object.thumb
+                        ? !offerMix.offers[0].object.thumb.includes(element)
+                        : true
+                )
+                .map((element, key) => ({ id: key + 1, src: getLinkFile(element) }))
+        ];
+    }
+
+    offerCardIsVisible.value = true;
 }
 </script>

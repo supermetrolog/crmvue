@@ -1,9 +1,14 @@
 <template>
     <div class="additional-details">
         <p v-if="isSaleCompany" class="additional-details__chip">Готов продать компанию</p>
-        <h2 v-tippy="'Система налогооблажения'" class="additional-details__title">
+        <h2
+            v-if="deal.tax_form"
+            v-tippy="'Система налогообложения'"
+            class="additional-details__title"
+        >
             {{ taxForm }}
         </h2>
+        <p v-else class="text-grey fs-2">Система налогообложения не указана</p>
         <div class="additional-details__specials">
             <p class="additional-details__category">Дополнительные расходы</p>
             <ul class="additional-details__list">
@@ -38,18 +43,20 @@ const props = defineProps({
 });
 
 const taxForm = computed(() => {
-    if (props.deal.tax_form) return entityOptions.deal.tax[props.deal.tax_form];
-    return null;
+    return entityOptions.deal.tax[props.deal.tax_form];
 });
+
 const hasBusiness = computed(
     () => props.deal.rent_business === entityOptions.defaults.booleanStatement.TRUE
 );
+
 const businessProperties = computed(() => {
     return Object.keys(entityProperties.deal.rentBusiness).map(property => ({
         ...entityProperties.deal.rentBusiness[property],
         value: props.deal[property]
     }));
 });
+
 const hasSpecialTerms = computed(() => {
     return (
         props.deal.deal_type !== entityOptions.deal.typeStatement.SALE &&
