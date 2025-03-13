@@ -2,24 +2,24 @@
     <div ref="carousel" class="carousel">
         <div :class="{ carousel__scroll: !grid, carousel__grid: grid }">
             <VLazyImage
-                v-for="(item, idx) in photos"
+                v-for="item in photos"
                 :key="item.src"
-                @click="openModal(idx)"
+                @click="openPreview(item.id)"
                 class="carousel__item"
                 :style="{ 'flex-basis': flexBasis + '%' }"
                 :src="item.src"
             />
             <div v-if="slides.length > count" class="carousel__item carousel__gallery">
                 <VLazyImage
-                    v-for="(item, key) in gallery"
-                    :key="key"
-                    @click="openModal(count + key)"
+                    v-for="item in gallery"
+                    :key="item.src"
+                    @click="openPreview(item.id)"
                     class="carousel__cell"
                     :src="item.src ?? $url.api.fileNotFound()"
                 />
                 <div
                     v-if="slides.length > count + 4"
-                    @click.prevent="openModal(count + 4)"
+                    @click.prevent="openPreview(slides[count + 4])"
                     class="carousel__helper"
                 >
                     <p>Ещё</p>
@@ -35,62 +35,14 @@
                 />
             </template>
         </div>
-        <teleport to="body">
-            <Modal
-                @close="closeModal"
-                :show="modalIsOpen"
-                class="carousel__modal"
-                :title="modalTitle"
-            >
-                <VueAgile
-                    ref="main"
-                    class="carousel__slides"
-                    :options="mainOptions"
-                    :initialSlide="currentSlideIndex"
-                >
-                    <div
-                        v-for="(slide, slideKey) in slides"
-                        :key="slideKey"
-                        class="carousel__slide"
-                        :class="`slide--${slideKey}`"
-                    >
-                        <VLazyImage class="carousel__image" :src="slide.src" alt="img" />
-                    </div>
-                </VueAgile>
-                <VueAgile
-                    ref="thumbnails"
-                    @after-change="$refs.main.goTo($event.currentSlide)"
-                    :options="listOptions"
-                    class="carousel__thumbnails"
-                    :initialSlide="currentSlideIndex"
-                >
-                    <div
-                        v-for="(slide, idx) in slides"
-                        :key="idx"
-                        @click="$refs.thumbnails.goTo(idx)"
-                        class="carousel__thumbnail"
-                        :class="`slide--${idx}`"
-                    >
-                        <VLazyImage class="carousel__image" :src="slide.src" alt="" />
-                    </div>
-                    <template #prevButton>
-                        <i class="fas fa-chevron-left"></i>
-                    </template>
-                    <template #nextButton>
-                        <i class="fas fa-chevron-right"></i>
-                    </template>
-                </VueAgile>
-            </Modal>
-        </teleport>
     </div>
 </template>
 
 <script setup>
-import Modal from '@/components/common/Modal.vue';
-import { VueAgile } from 'vue-agile';
 import VLazyImage from 'v-lazy-image';
 import NoImage from '@/components/common/NoImage.vue';
-import { computed, onMounted, ref, shallowRef } from 'vue';
+import { computed, onMounted, ref } from 'vue';
+import { usePreviewer } from '@/composables/usePreviewer.js';
 
 const IMAGE_SIZE = 325;
 
@@ -109,30 +61,15 @@ const props = defineProps({
     }
 });
 
-const mainOptions = {
-    dots: false,
-    fade: true,
-    navButtons: false
-};
-
-const listOptions = {
-    centerMode: true,
-    dots: false,
-    navButtons: true,
-    slidesToShow: 3
-};
-
-const modalIsOpen = shallowRef(false);
-const currentSlideIndex = shallowRef(0);
 const carousel = ref(null);
-const count = shallowRef(0);
-const flexBasis = shallowRef(null);
+const count = ref(0);
+const flexBasis = ref(null);
 
-const modalTitle = computed(() => 'Просмотр изображений. ' + (props.title ?? ''));
 const photos = computed(() => {
     if (props.slides.length <= count.value) return props.slides;
     return props.slides.slice(0, count.value);
 });
+
 const gallery = computed(() => {
     const _gallery = props.slides.slice(count.value, count.value + 4);
 
@@ -142,16 +79,6 @@ const gallery = computed(() => {
 
     return _gallery;
 });
-
-const openModal = id => {
-    modalIsOpen.value = true;
-    currentSlideIndex.value = id;
-};
-
-const closeModal = () => {
-    currentSlideIndex.value = 0;
-    modalIsOpen.value = false;
-};
 
 const createGallery = () => {
     const width = carousel.value.clientWidth;
@@ -165,4 +92,12 @@ const createGallery = () => {
 onMounted(() => {
     createGallery();
 });
+
+// preview
+
+const { preview } = usePreviewer();
+
+const openPreview = id => {
+    preview(props.slides, id);
+};
 </script>

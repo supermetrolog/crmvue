@@ -3,7 +3,7 @@
         <Modal
             show
             :blackout-opacity="0.1"
-            :width="400"
+            :width="520"
             hide-header
             body-class="messenger-quiz__disabled-body"
         >
@@ -16,20 +16,37 @@
                 </p>
             </div>
             <template #footer>
-                <Button @click="$emit('show')" small icon>
-                    <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                <UiButton
+                    @click="$emit('show')"
+                    rect
+                    shadow
+                    class="fs-2 font-weight-bold"
+                    uppercase
+                >
+                    <i class="fa-solid fa-arrow-up-right-from-square mr-1"></i>
                     <span>Просмотреть опрос</span>
-                </Button>
+                </UiButton>
+                <UiButton
+                    @click="$emit('schedule-call')"
+                    rect
+                    shadow
+                    class="fs-2 font-weight-bold"
+                    uppercase
+                >
+                    <i class="fa-solid fa-phone mr-1"></i>
+                    <span>Запланировать звонок</span>
+                </UiButton>
             </template>
         </Modal>
     </div>
 </template>
 <script setup>
-import Button from '@/components/common/Button.vue';
 import { toRef } from 'vue';
 import { useSurveyEditing } from '@/components/Survey/useSurveyEditing.js';
 import Modal from '@/components/common/Modal.vue';
-defineEmits(['show']);
+import UiButton from '@/components/common/UI/UiButton.vue';
+
+defineEmits(['show', 'schedule-call']);
 const props = defineProps({ lastSurvey: Object });
 
 const { remainingTimeLabel } = useSurveyEditing(toRef(props, 'lastSurvey'));

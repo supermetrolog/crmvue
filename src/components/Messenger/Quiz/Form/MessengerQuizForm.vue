@@ -9,21 +9,20 @@
             <MessengerQuizFormRemainingWindow
                 v-else-if="!canBeCreated"
                 @show="showSurvey"
+                @schedule-call="scheduleContactsCall"
                 :last-survey="lastSurvey"
             />
-            <template v-else>
-                <MessengerQuizQuestionCall
-                    v-for="contact in selectedContacts"
-                    :key="contact.entity.id"
-                    ref="selectedContactsEls"
-                    v-model:form="contact.form"
-                    @set-as-unavailable="setContactAsUnavailable(contact)"
-                    @skip="suggestNextContact"
-                    @schedule-call="$emit('schedule-call', contact.entity)"
-                    :contact="contact.entity"
-                    class="messenger-quiz__question"
-                />
-            </template>
+            <MessengerQuizQuestionCall
+                v-for="contact in selectedContacts"
+                :key="contact.entity.id"
+                ref="selectedContactsEls"
+                v-model:form="contact.form"
+                @set-as-unavailable="setContactAsUnavailable(contact)"
+                @skip="suggestNextContact"
+                @schedule-call="$emit('schedule-call', contact.entity)"
+                :contact="contact.entity"
+                class="messenger-quiz__question"
+            />
             <MessengerQuizFormTemplate
                 ref="quizFormEl"
                 @object-sold="$emit('object-sold', $event)"
@@ -32,6 +31,7 @@
                 :disabled="formIsDisabled"
                 :has-available-contact="hasAvailableContact"
                 :company-id="companyId"
+                :can-be-created="canBeCreated"
             />
         </template>
         <MessengerQuizFormContactSuggestModal
@@ -46,11 +46,41 @@
             @confirm="confirmUnavailableContact"
             @cancel="cancelUnavailableContact"
         />
+        <UiModal
+            v-model:visible="contactPickerIsVisible"
+            title="Выбор контакта для звонка"
+            :width="1200"
+        >
+            <DashboardChip class="dashboard-bg-warning-l mb-2 mx-auto w-auto text-center">
+                Выберите контакта для запланированного звонка.
+            </DashboardChip>
+            <MessengerQuizContacts
+                @selected="selectedContact = $event"
+                label="Список прозвоненных контактов"
+                :contacts="contacts"
+            />
+            <template #footer="{ close }">
+                <UiButton
+                    @click="scheduleCall"
+                    rect
+                    shadow
+                    uppercase
+                    bolder
+                    :disabled="!selectedContact"
+                    color="success"
+                >
+                    Сохранить
+                </UiButton>
+                <UiButton @click="close" rect shadow uppercase bolder color="danger">
+                    Отмена
+                </UiButton>
+            </template>
+        </UiModal>
     </div>
 </template>
 <script setup>
 import { useStore } from 'vuex';
-import { computed, onMounted, ref, useTemplateRef, watch } from 'vue';
+import { computed, onMounted, ref, shallowRef, useTemplateRef, watch } from 'vue';
 import MessengerQuizQuestionCall from '@/components/Messenger/Quiz/Question/Call/MessengerQuizQuestionCall.vue';
 import MessengerQuizFormContactSuggestModal from '@/components/Messenger/Quiz/Form/MessengerQuizFormContactSuggestModal.vue';
 import MessengerQuizFormDisabledWindow from '@/components/Messenger/Quiz/Form/MessengerQuizFormDisabledWindow.vue';
@@ -62,6 +92,10 @@ import MessengerQuizFormRemainingWindow from '@/components/Messenger/Quiz/Form/M
 import { useAsyncPopup } from '@/composables/useAsyncPopup.js';
 import Spinner from '@/components/common/Spinner.vue';
 import { messenger } from '@/const/messenger.js';
+import MessengerQuizContacts from '@/components/Messenger/Quiz/MessengerQuizContacts.vue';
+import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
+import UiModal from '@/components/common/UI/UiModal.vue';
+import UiButton from '@/components/common/UI/UiButton.vue';
 
 const contactModel = defineModel('contact');
 const selectedContacts = defineModel('selected-contacts');
@@ -97,7 +131,7 @@ const store = useStore();
 
 const companyId = computed(() => {
     if (store.state.Messenger.currentDialogType === messenger.dialogTypes.COMPANY)
-        return store.state.Messenger.currentDialog.model_id;
+        return Number(store.state.Messenger.currentDialog.model_id);
 
     return store.state.Messenger.currentDialog.model.object.company_id;
 });
@@ -213,7 +247,7 @@ const allSelectedContactsIsNegativeOrSkipped = computed(() =>
 );
 
 const hasAvailableContact = computed(() =>
-    selectedContacts.value.every(element => element.form.available === true)
+    selectedContacts.value.some(element => element.form.available === true)
 );
 
 const formIsDisabled = computed(() => {
@@ -232,5 +266,19 @@ const { show: _showSurvey } = useAsyncPopup('surveyPreview');
 
 function showSurvey() {
     _showSurvey({ surveyId: props.lastSurvey.id });
+}
+
+// schedule call
+
+const contactPickerIsVisible = ref(false);
+const selectedContact = shallowRef(null);
+
+function scheduleContactsCall() {
+    contactPickerIsVisible.value = true;
+}
+
+function scheduleCall() {
+    contactPickerIsVisible.value = false;
+    emit('schedule-call', selectedContact.value);
 }
 </script>
