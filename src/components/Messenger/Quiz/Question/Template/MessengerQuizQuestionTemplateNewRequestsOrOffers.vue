@@ -53,7 +53,7 @@ function getForm() {
 
             if (offersAnswer) {
                 offersAnswer.value = offers.value.map(offer => ({
-                    deal_type: offer.dealType,
+                    deal_type: offer.deal_type,
                     description: offer.description
                 }));
             }
@@ -66,7 +66,7 @@ function getForm() {
 
             if (requestsAnswer) {
                 requestsAnswer.value = requests.value.map(request => ({
-                    deal_type: request.dealType,
+                    deal_type: request.deal_type,
                     description: request.description
                 }));
             }
