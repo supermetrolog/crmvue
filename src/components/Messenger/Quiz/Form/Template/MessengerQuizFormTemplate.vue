@@ -6,7 +6,7 @@
             label="Загрузка предложений и запросов.."
             class="messenger-quiz__question py-1"
         />
-        <template v-else-if="companyId">
+        <template v-else-if="companyId && canBeCreated">
             <MessengerQuizFormTemplateOffers
                 v-if="offers.length"
                 ref="offersEl"
@@ -36,7 +36,9 @@
             class="messenger-quiz__question"
             :number="questionsOffset + key"
         />
-        <MessengerQuizFormUnavailableWindow v-if="!isLoading && !hasAvailableContact" />
+        <MessengerQuizFormUnavailableWindow
+            v-if="canBeCreated && !isLoading && !hasAvailableContact"
+        />
     </div>
 </template>
 <script setup>
@@ -60,6 +62,7 @@ const props = defineProps({
     },
     disabled: Boolean,
     hasAvailableContact: Boolean,
+    canBeCreated: Boolean,
     companyId: Number
 });
 
@@ -249,8 +252,9 @@ async function fetchRequests() {
 }
 
 onMounted(async () => {
-    await fetchOffersAndRequests();
-
-    processQueueJobs();
+    if (props.companyId && props.canBeCreated) {
+        await fetchOffersAndRequests();
+        processQueueJobs();
+    }
 });
 </script>

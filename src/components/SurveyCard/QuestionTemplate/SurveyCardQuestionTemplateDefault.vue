@@ -1,7 +1,6 @@
 <template>
     <div class="messenger-quiz-question messenger-quiz-preview-question">
         <div class="messenger-quiz-question__header">
-            <i v-if="mainQuestionIcon" :class="mainQuestionIcon" />
             <p
                 class="messenger-quiz-question__title"
                 :class="{ 'text-through': hasMainQuestion && hasUnknownAnswer }"
@@ -110,14 +109,6 @@ const mainQuestionClass = computed(() => {
     if (!mainQuestionAnswer.value && isNotNullish(mainQuestionAnswer.value))
         return 'dashboard-bg-danger text-white';
     return 'dashboard-bg-light';
-});
-
-const mainQuestionIcon = computed(() => {
-    if (Boolean(mainQuestionAnswer.value) && isNotNullish(mainQuestionAnswer.value))
-        return 'fa-solid fa-circle-check color-success';
-    if (!mainQuestionAnswer.value && isNotNullish(mainQuestionAnswer.value))
-        return 'fa-solid fa-circle-exclamation color-danger';
-    return null;
 });
 
 const hasUnknownAnswer = computed(() => isNullish(mainQuestionAnswer.value));
