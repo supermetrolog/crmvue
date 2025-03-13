@@ -11,19 +11,17 @@
                 @show="showSurvey"
                 :last-survey="lastSurvey"
             />
-            <template v-else>
-                <MessengerQuizQuestionCall
-                    v-for="contact in selectedContacts"
-                    :key="contact.entity.id"
-                    ref="selectedContactsEls"
-                    v-model:form="contact.form"
-                    @set-as-unavailable="setContactAsUnavailable(contact)"
-                    @skip="suggestNextContact"
-                    @schedule-call="$emit('schedule-call', contact.entity)"
-                    :contact="contact.entity"
-                    class="messenger-quiz__question"
-                />
-            </template>
+            <MessengerQuizQuestionCall
+                v-for="contact in selectedContacts"
+                :key="contact.entity.id"
+                ref="selectedContactsEls"
+                v-model:form="contact.form"
+                @set-as-unavailable="setContactAsUnavailable(contact)"
+                @skip="suggestNextContact"
+                @schedule-call="$emit('schedule-call', contact.entity)"
+                :contact="contact.entity"
+                class="messenger-quiz__question"
+            />
             <MessengerQuizFormTemplate
                 ref="quizFormEl"
                 @object-sold="$emit('object-sold', $event)"
@@ -32,6 +30,7 @@
                 :disabled="formIsDisabled"
                 :has-available-contact="hasAvailableContact"
                 :company-id="companyId"
+                :can-be-created="canBeCreated"
             />
         </template>
         <MessengerQuizFormContactSuggestModal
