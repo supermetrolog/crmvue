@@ -18,7 +18,7 @@
                 @click="$emit('editSection', section)"
                 class="fas fa-pen deal-section__button"
             />
-            <Form v-if="section.is_active" class="deal-section__form">
+            <UiForm v-if="section.is_active" class="deal-section__form">
                 <input
                     :id="checkboxName"
                     v-model="isChecked"
@@ -27,14 +27,14 @@
                     :checked="isChecked"
                 />
                 <label class="deal-section__checkbox-label" :for="checkboxName" />
-            </Form>
+            </UiForm>
         </div>
     </div>
 </template>
 <script setup>
 import { unitTypes } from '@/const/unitTypes';
 import WithUnitType from '@/components/common/WithUnitType.vue';
-import Form from '@/components/common/Forms/Form.vue';
+import UiForm from '@/components/common/Forms/UiForm.vue';
 import { entityOptions } from '@/const/options/options';
 import { computed, shallowRef } from 'vue';
 import { toNumberOrRangeFormat } from '@/utils/formatters/number.js';

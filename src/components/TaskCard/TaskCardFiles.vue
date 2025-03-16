@@ -128,7 +128,10 @@ function canBeEdit(file) {
 const isDeleting = ref(false);
 
 async function deleteFile(fileId) {
-    const confirmed = await confirm('Вы уверены, что хотите безвозвратно удалить файл?');
+    const confirmed = await confirm(
+        'Удалить файл',
+        'Вы уверены, что хотите безвозвратно удалить файл?'
+    );
     if (!confirmed) return;
 
     isDeleting.value = true;

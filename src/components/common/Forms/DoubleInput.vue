@@ -11,51 +11,55 @@
         <div class="double-input">
             <label>
                 <span v-if="!withoutCaption" class="form__caption">{{ firstLabel }}</span>
-                <input
-                    ref="input"
-                    @input="onFirstInput($event.target.value.trim())"
-                    @keypress.enter.prevent
-                    class="form__input"
-                    :class="[
-                        firstInputValidationClass,
-                        paddingLeftStyleFirst,
-                        {
-                            'form__input--unit': unit,
-                            'form__input--title': !withoutCaption,
-                            active: firstHasValue,
-                            filled: firstHasValue
-                        }
-                    ]"
-                    :style="[paddingRightStyle.first, paddingLeftStyleFirst]"
-                    :type="type"
-                    :disabled="disabled"
-                    :value="first"
-                />
+                <slot name="first">
+                    <input
+                        ref="input"
+                        @input="onFirstInput($event.target.value.trim())"
+                        @keypress.enter.prevent
+                        class="form__input"
+                        :class="[
+                            firstInputValidationClass,
+                            paddingLeftStyleFirst,
+                            {
+                                'form__input--unit': unit,
+                                'form__input--title': !withoutCaption,
+                                active: firstHasValue,
+                                filled: firstHasValue
+                            }
+                        ]"
+                        :style="[paddingRightStyle.first, paddingLeftStyleFirst]"
+                        :type="type"
+                        :disabled="disabled"
+                        :value="first"
+                    />
+                </slot>
                 <span v-if="unit" ref="unit" class="form__unit" v-html="unit"></span>
                 <ValidationInfo v-if="firstHasValidationInfo" :errors="firstInputErrors" />
             </label>
             <i v-if="withoutCaption" class="form__separator fa-solid fa-x" />
             <label>
                 <span v-if="!withoutCaption" class="form__caption">{{ secondLabel }}</span>
-                <input
-                    ref="input"
-                    @input="onSecondInput($event.target.value.trim())"
-                    @keypress.enter.prevent
-                    class="form__input"
-                    :class="[
-                        secondInputValidationClass,
-                        {
-                            'form__input--unit': unit,
-                            'form__input--title': !withoutCaption,
-                            active: secondHasValue,
-                            filled: secondHasValue
-                        }
-                    ]"
-                    :style="[paddingRightStyle.second, paddingLeftStyleSecond]"
-                    :type="type"
-                    :disabled="disabled"
-                    :value="second"
-                />
+                <slot name="second">
+                    <input
+                        ref="input"
+                        @input="onSecondInput($event.target.value.trim())"
+                        @keypress.enter.prevent
+                        class="form__input"
+                        :class="[
+                            secondInputValidationClass,
+                            {
+                                'form__input--unit': unit,
+                                'form__input--title': !withoutCaption,
+                                active: secondHasValue,
+                                filled: secondHasValue
+                            }
+                        ]"
+                        :style="[paddingRightStyle.second, paddingLeftStyleSecond]"
+                        :type="type"
+                        :disabled="disabled"
+                        :value="second"
+                    />
+                </slot>
                 <span v-if="unit" ref="unit" class="form__unit" v-html="unit"></span>
                 <ValidationInfo v-if="secondHasValidationInfo" :errors="secondInputErrors" />
             </label>

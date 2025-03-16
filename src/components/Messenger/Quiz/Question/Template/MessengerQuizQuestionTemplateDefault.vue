@@ -78,7 +78,7 @@
             >
                 <template v-if="question.answers?.['text-answer'] && !isDisabled">
                     <div v-for="answer in texts" :key="answer.id" class="position-relative">
-                        <Textarea
+                        <UiTextarea
                             v-model="form.description[answer.id]"
                             :placeholder="answer.value"
                             class="messenger-quiz-question__field"
@@ -132,7 +132,7 @@
 </template>
 <script setup>
 import CheckboxChip from '@/components/common/Forms/CheckboxChip.vue';
-import Textarea from '@/components/common/Forms/Textarea.vue';
+import UiTextarea from '@/components/common/Forms/UiTextarea.vue';
 import { computed, reactive, ref, watch } from 'vue';
 import RadioChip from '@/components/common/Forms/RadioChip.vue';
 import { isNullish } from '@/utils/helpers/common/isNullish.js';

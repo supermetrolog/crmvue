@@ -403,7 +403,7 @@
         }
 
         &.filled {
-            background-color: #f0f0f0;
+            background-color: #f8f8f8;;
         }
     }
 
@@ -438,6 +438,10 @@
 
         &:not(:disabled):focus, &:not(:disabled):active {
             border-color: #186a8d!important;
+        }
+
+        &.filled {
+            background-color: #f8f8f8;;
         }
     }
 
@@ -537,8 +541,8 @@
         font-size: 20px;
         color: variables.$color_danger;
         position: absolute;
-        right: 25px;
-        top: 37px;
+        right: 10px;
+        top: 10px;
         display: flex;
         cursor: pointer;
 
@@ -546,6 +550,10 @@
             color: variables.$color_success;
             cursor: default;
         }
+    }
+
+    &__control:has(.form__label) &__tooltip {
+        top: 37px;
     }
 
     &__error {
@@ -901,10 +909,10 @@
     }
 
     &.filled {
-        background-color: #f0f0f0;
+        background-color: #f8f8f8;;
 
         .multiselect-search {
-            background-color: #f0f0f0;
+            background-color: #f8f8f8;;
         }
     }
 
@@ -931,7 +939,7 @@
     }
 
     .form__tooltip {
-        top: 10px;
+        top: 10px!important;
         right: 10px;
     }
 }

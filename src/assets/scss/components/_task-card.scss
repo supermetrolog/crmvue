@@ -361,13 +361,14 @@
 }
 
 .task-card-form {
-    @include mixins.flex-box($gap: 10px);
+    @include mixins.flex-box($gap: 10px, $a: flex-end);
 
     &__button {
         height: 50px;
         width: 50px!important;
         font-size: 25px;
         border-radius: 50%;
+        @include mixins.flex-box($a: center, $j: center);
     }
 
     &__editor {
@@ -407,12 +408,6 @@
         border-bottom: 1px solid #afaeae;
     }
 
-    &__form {
-        border-top: 1px solid #afaeae;
-        margin-top: 7px;
-        padding-top: 7px;
-    }
-
     &__element {
         width: 60px;
         height: 60px;
@@ -429,9 +424,16 @@
 
     .form__label {
         color: #ada8a8;
+        font-size: 15px;
     }
 
-    .form__textarea, .form__input {
+    &__status-icon {
+        width: 18px;
+        font-size: 16px;
+        text-align: center;
+    }
+
+    .form__textarea, .form__input, .dp__input {
         border-color: #b9b0b0;
     }
 }

@@ -28,7 +28,7 @@
             </div>
         </template>
         <UiModal v-model:visible="formIsVisible" @closed="clearForm" title="Новый запрос">
-            <Form>
+            <UiForm>
                 <RadioOptions
                     v-model="form.dealType"
                     label="Тип запроса"
@@ -38,7 +38,7 @@
                     show-radio
                     :v="v$.form.dealType"
                 />
-                <Textarea
+                <UiTextarea
                     v-model="form.description"
                     class="mt-2"
                     auto-height
@@ -46,7 +46,7 @@
                     :max-height="250"
                     label="Описание запроса"
                 />
-            </Form>
+            </UiForm>
             <template #footer="{ close }">
                 <UiButton @click="createOrUpdateRequest" color="success">Сохранить</UiButton>
                 <UiButton @click="close" color="danger">Отмена</UiButton>
@@ -58,9 +58,9 @@
 import { reactive, ref, watch } from 'vue';
 import UiButton from '@/components/common/UI/UiButton.vue';
 import UiModal from '@/components/common/UI/UiModal.vue';
-import Form from '@/components/common/Forms/Form.vue';
+import UiForm from '@/components/common/Forms/UiForm.vue';
 import RadioOptions from '@/components/common/Forms/RadioOptions.vue';
-import Textarea from '@/components/common/Forms/Textarea.vue';
+import UiTextarea from '@/components/common/Forms/UiTextarea.vue';
 import useVuelidate from '@vuelidate/core';
 import { helpers, required } from '@vuelidate/validators';
 import { useValidationNotify } from '@/composables/useValidationNotify.js';

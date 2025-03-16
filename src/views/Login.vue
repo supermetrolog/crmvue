@@ -15,10 +15,10 @@
         <div class="login__body">
             <div class="row no-gutters">
                 <div class="col-12">
-                    <Form @submit="submit" class="login__form">
+                    <UiForm @submit="submit" class="login__form">
                         <Loader v-if="isLoading" />
-                        <FormGroup class="mb-3">
-                            <Input
+                        <UiFormGroup class="mb-3">
+                            <UiInput
                                 v-model="form.username"
                                 :v="v$.form.username"
                                 required
@@ -26,7 +26,7 @@
                                 class="col-12 mb-2"
                                 with-enter-submit
                             />
-                            <Input
+                            <UiInput
                                 v-model="form.password"
                                 :v="v$.form.password"
                                 required
@@ -35,8 +35,8 @@
                                 type="password"
                                 with-enter-submit
                             />
-                        </FormGroup>
-                        <FormGroup>
+                        </UiFormGroup>
+                        <UiFormGroup>
                             <div class="col-12">
                                 <FormSubmit
                                     class="w-100 btn-dark"
@@ -45,8 +45,8 @@
                                     Войти
                                 </FormSubmit>
                             </div>
-                        </FormGroup>
-                    </Form>
+                        </UiFormGroup>
+                    </UiForm>
                 </div>
             </div>
         </div>
@@ -60,9 +60,9 @@ import { useStore } from 'vuex';
 import { computed, shallowReactive, shallowRef } from 'vue';
 import { useAuth } from '@/composables/useAuth.js';
 import { useRouter } from 'vue-router';
-import Input from '@/components/common/Forms/Input.vue';
-import Form from '@/components/common/Forms/Form.vue';
-import FormGroup from '@/components/common/Forms/FormGroup.vue';
+import UiInput from '@/components/common/Forms/UiInput.vue';
+import UiForm from '@/components/common/Forms/UiForm.vue';
+import UiFormGroup from '@/components/common/Forms/UiFormGroup.vue';
 import FormSubmit from '@/components/common/Forms/FormSubmit.vue';
 import useVuelidate from '@vuelidate/core';
 

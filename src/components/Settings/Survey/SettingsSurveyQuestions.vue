@@ -11,7 +11,7 @@
             />
         </template>
         <div class="row align-items-end mb-3">
-            <Input
+            <UiInput
                 v-model="filters.search"
                 class="col-6"
                 label="Поиск"
@@ -73,7 +73,7 @@ import { useConfirm } from '@/composables/useConfirm.js';
 import SettingsFormElement from '@/components/Settings/SettingsFormElement.vue';
 import SettingsSurveyQuestionsElement from '@/components/Settings/Survey/SettingsSurveyQuestionsElement.vue';
 import Button from '@/components/common/Button.vue';
-import Input from '@/components/common/Forms/Input.vue';
+import UiInput from '@/components/common/Forms/UiInput.vue';
 import UiCol from '@/components/common/UI/UiCol.vue';
 import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
 import { isNotEmptyString } from '@/utils/helpers/string/isNotEmptyString.js';
@@ -100,6 +100,7 @@ const { confirm } = useConfirm();
 
 const deleteQuestion = async question => {
     const confirmed = await confirm(
+        'Удалить вопрос',
         `Вы действительно хотите удалить Вопрос "#${question.id} ${question.text}"?`
     );
     if (!confirmed) return;

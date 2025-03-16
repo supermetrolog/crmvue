@@ -106,7 +106,7 @@ main {
     display: block;
 }
 
-.dp__main {
+.dp__outer_menu_wrap {
     .dp {
         &--arrow-btn-nav {
             width: max-content;
@@ -121,7 +121,7 @@ main {
         }
 
         &__calendar {
-            --dp-highlight-color: rgba(16, 185, 129, 0.3);
+            --dp-highlight-color: rgba(16, 185, 129, 0.2);
 
             &_row {
                 gap: 5px;
@@ -144,6 +144,25 @@ main {
             @include mixins.flex-box($j: center);
             @include mixins.hover {
                 background: var(--dp-hover-color)
+            }
+        }
+
+        &--preset-dates {
+            @include mixins.flex-box($d: column, $gap: 5px);
+            overflow-y: auto;
+            max-height: 330px;
+            min-width: max-content;
+            max-width: 200px;
+        }
+
+        &--preset-range {
+            background-color: #e8e8e8;
+            font-weight: 500;
+            font-size: 14px;
+            @include mixins.transition(background-color);
+
+            &:hover {
+                background-color: #c8c8c8;
             }
         }
     }
@@ -190,4 +209,34 @@ main {
 
 .no-rounded {
     border-radius: 0!important;
+}
+
+.ui-date-input {
+    .form__tooltip {
+        right: 10px;
+    }
+
+    &[class*="col-"] {
+        .form__tooltip {
+            right: 25px;
+        }
+    }
+
+    &:has(.form__tooltip) {
+        .dp__clear_icon {
+            right: 25px;
+        }
+    }
+
+    &__picker.filled {
+        .dp__input {
+            background-color: #f8f8f8;;
+        }
+    }
+
+    &__presets-label {
+        font-weight: 500;
+        color: variables.$color_grey;
+        width: max-content;
+    }
 }

@@ -1,7 +1,7 @@
 <template>
     <div class="row">
         <div class="col-12">
-            <Form @submit="onSubmit">
+            <UiForm @submit="onSubmit">
                 <Loader v-if="isLoading" />
                 <FormGroup class="mb-1">
                     <MultiSelect
@@ -78,7 +78,7 @@
                         <VueEditor v-model="form.message" class="col-12" />
                     </FormGroup>
                 </template>
-            </Form>
+            </UiForm>
         </div>
         <div class="col-12">
             <slot></slot>
@@ -87,11 +87,11 @@
 </template>
 
 <script>
-import Form from '@/components/common/Forms/Form.vue';
-import FormGroup from '@/components/common/Forms/FormGroup.vue';
+import UiForm from '@/components/common/Forms/UiForm.vue';
+import UiFormGroup from '@/components/common/Forms/UiFormGroup.vue';
 import MultiSelect from '@/components/common/Forms/MultiSelect.vue';
 import CheckboxIcons from '@/components/common/Forms/CheckboxIcons.vue';
-import Input from '@/components/common/Forms/Input.vue';
+import UiInput from '@/components/common/Forms/UiInput.vue';
 import { mapGetters } from 'vuex';
 import { WayOfSendingList } from '@/const/const.js';
 import Utils from '@/utils';
@@ -109,6 +109,7 @@ import VueEditor from '@/components/common/Forms/VueEditor.vue';
 export default {
     name: 'FormLetter',
     components: {
+        UiForm,
         VueEditor,
         CheckboxChip,
         AnimationTransition,
@@ -116,9 +117,8 @@ export default {
         Submit,
         Loader,
         MultiSelect,
-        Form,
-        FormGroup,
-        Input,
+        FormGroup: UiFormGroup,
+        Input: UiInput,
         CheckboxIcons
     },
     props: {

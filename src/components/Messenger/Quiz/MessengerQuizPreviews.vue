@@ -4,7 +4,7 @@
         <template v-else>
             <Button v-tippy="'В разработке..'" @click="showAllSurveys" class="ml-auto" small icon>
                 <i class="fa-solid fa-eye"></i>
-                <span>Посмотреть полный список завершенных опросов ({{ surveysCount }})</span>
+                <span>({{ surveysCount }})</span>
             </Button>
             <MessengerQuizInlineElement
                 v-for="survey in surveys"

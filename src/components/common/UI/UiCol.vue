@@ -8,30 +8,12 @@ import { computed } from 'vue';
 import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
 
 const props = defineProps({
-    cols: {
-        type: [String, Number],
-        default: null
-    },
-    xxl: {
-        type: [String, Number],
-        default: null
-    },
-    xl: {
-        type: [String, Number],
-        default: null
-    },
-    lg: {
-        type: [String, Number],
-        default: null
-    },
-    md: {
-        type: [String, Number],
-        default: null
-    },
-    sm: {
-        type: [String, Number],
-        default: null
-    },
+    cols: [String, Number],
+    xxl: [String, Number],
+    xl: [String, Number],
+    lg: [String, Number],
+    md: [String, Number],
+    sm: [String, Number],
     as: {
         type: String,
         default: 'div'

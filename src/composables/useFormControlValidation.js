@@ -43,5 +43,13 @@ export function useFormControlValidation(v, modelValue, options) {
         if (v.value) v.value.$touch();
     }
 
-    return { validate, hasValidation, hasValidationError, validationClass };
+    const errors = computed(() => {
+        return v.value.$errors;
+    });
+
+    const error = computed(() => {
+        return v.value.$errors?.[0]?.$message;
+    });
+
+    return { validate, hasValidation, hasValidationError, validationClass, errors, error };
 }

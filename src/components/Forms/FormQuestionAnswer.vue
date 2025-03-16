@@ -1,13 +1,17 @@
 <template>
-    <Modal
-        @close="emit('close')"
+    <UiModal
+        @closed="emit('close')"
+        :title="
+            isEditMode
+                ? `Редактирование варианта ответа #${formData.id}`
+                : 'Создание варианта ответа'
+        "
+        :width="1000"
         show
-        :title="formData?.id ? 'Редактирование варианта ответа' : 'Создание варианта ответа'"
-        width="1000"
     >
-        <Form @submit="onSubmit">
-            <Loader v-if="isLoading || optionsLoading" />
-            <FormGroup>
+        <Loader v-if="isLoading || optionsLoading" :label="loadingLabel" />
+        <UiForm>
+            <UiFormGroup>
                 <MultiSelect
                     v-model="form.category"
                     :v="v$.form.category"
@@ -24,7 +28,7 @@
                     class="col-6"
                     :options="fields"
                 />
-                <Input
+                <UiInput
                     v-else
                     v-model="form.field_id"
                     :v="v$.form.field_id"
@@ -42,7 +46,7 @@
                     class="col-6"
                     :options="questions"
                 />
-                <Input
+                <UiInput
                     v-else
                     v-model="form.question_id"
                     :v="v$.form.question_id"
@@ -59,45 +63,57 @@
                     searchable
                     :options="effects"
                 />
-                <Textarea
+                <UiTextarea
                     v-model="form.value"
                     :v="v$.form.value"
                     :required="valueIsRequired"
                     class="col-12"
                     label="Заголовок ответа"
                 />
-                <Textarea v-model="form.message" class="col-12" label="Сообщение в случае ответа" />
-                <div class="mx-auto d-flex gap-2">
-                    <FormSubmit success>Сохранить</FormSubmit>
-                    <Button
-                        v-if="formData"
-                        @click="deleteAnswer"
-                        :disabled="formData.deleted_at !== null"
-                        danger
-                    >
-                        Удалить
-                    </Button>
-                </div>
-            </FormGroup>
-        </Form>
-    </Modal>
+                <UiTextarea
+                    v-model="form.message"
+                    class="col-12"
+                    label="Сообщение в случае ответа"
+                />
+            </UiFormGroup>
+        </UiForm>
+        <template #actions="{ close }">
+            <UiButton @click="submit" color="success-light" icon="fa-solid fa-check" bolder small>
+                Сохранить
+            </UiButton>
+            <UiButton @click="close" color="light" icon="fa-solid fa-ban" bolder small>
+                Отмена
+            </UiButton>
+            <UiButton
+                v-if="isEditMode"
+                @click="deleteQuestionAnswer(formData.id)"
+                :disabled="isDeletedEntity"
+                color="light"
+                icon="fa-solid fa-trash"
+                bolder
+                small
+            >
+                Удалить
+            </UiButton>
+        </template>
+    </UiModal>
 </template>
 <script setup>
-import Form from '@/components/common/Forms/Form.vue';
-import FormGroup from '@/components/common/Forms/FormGroup.vue';
-import { computed, reactive, shallowRef } from 'vue';
+import UiForm from '@/components/common/Forms/UiForm.vue';
+import UiFormGroup from '@/components/common/Forms/UiFormGroup.vue';
+import { computed, reactive } from 'vue';
 import MultiSelect from '@/components/common/Forms/MultiSelect.vue';
-import FormSubmit from '@/components/common/Forms/FormSubmit.vue';
-import useVuelidate from '@vuelidate/core';
 import api from '@/api/api.js';
 import { useNotify } from '@/utils/use/useNotify.js';
 import { helpers, required, requiredIf } from '@vuelidate/validators';
 import Loader from '@/components/common/Loader.vue';
-import Input from '@/components/common/Forms/Input.vue';
-import Textarea from '@/components/common/Forms/Textarea.vue';
-import Modal from '@/components/common/Modal.vue';
-import { useConfirm } from '@/composables/useConfirm.js';
-import Button from '@/components/common/Button.vue';
+import UiInput from '@/components/common/Forms/UiInput.vue';
+import UiTextarea from '@/components/common/Forms/UiTextarea.vue';
+import { useFormData } from '@/utils/use/useFormData.js';
+import { useValidation } from '@/composables/useValidation.js';
+import { useAsync } from '@/composables/useAsync.js';
+import UiButton from '@/components/common/UI/UiButton.vue';
+import UiModal from '@/components/common/UI/UiModal.vue';
 
 const emit = defineEmits(['created', 'updated', 'close', 'deleted']);
 const props = defineProps({
@@ -113,10 +129,7 @@ const props = defineProps({
         type: Array,
         default: () => []
     },
-    formData: {
-        type: Object,
-        default: null
-    },
+    formData: Object,
     optionsLoading: Boolean
 });
 
@@ -130,23 +143,27 @@ const categoryOptions = {
 };
 
 const notify = useNotify();
-const { confirm } = useConfirm();
 
-const isLoading = shallowRef(false);
-const form = reactive({
-    category: null,
-    field_id: null,
-    question_id: null,
-    value: null,
-    message: null,
-    effect_ids: []
-});
+const valueIsRequired = computed(() => form.category !== 'yes-no');
 
-const valueIsRequired = computed(() => {
-    return form.category !== 'yes-no';
-});
+const { form, isDeletedEntity, isEditMode } = useFormData(
+    reactive({
+        category: null,
+        field_id: null,
+        question_id: null,
+        value: null,
+        message: null,
+        effect_ids: []
+    }),
+    props.formData,
+    {
+        transforms: {
+            effect_ids: data => data.effects?.map(effect => effect.id) ?? []
+        }
+    }
+);
 
-const v$ = useVuelidate(
+const { v$, validate } = useValidation(
     {
         form: {
             category: {
@@ -169,62 +186,56 @@ const v$ = useVuelidate(
     { form }
 );
 
-const createAnswer = async () => {
-    const created = await api.question.createAnswerOption(form);
-    if (created) {
-        notify.success('AnswerOption успешно создан.');
-        emit('created', created);
+const { isLoading: isCreating, execute: createQuestionAnswer } = useAsync(
+    api.question.createAnswerOption,
+    {
+        onFetchResponse: ({ response }) => {
+            notify.success('Вопрос успешно создан.');
+            emit('created', response);
+        }
     }
-};
+);
 
-const updateAnswer = async () => {
-    const updated = await api.question.updateAnswerOption(props.formData.id, form);
-    if (updated) {
-        notify.success('AnswerOption успешно обновлен.');
-        emit('updated', updated);
+const { isLoading: isUpdating, execute: updateQuestionAnswer } = useAsync(
+    api.question.updateAnswerOption,
+    {
+        onFetchResponse: ({ response }) => {
+            notify.success('Вопрос успешно обновлен.');
+            emit('updated', response);
+        }
     }
-};
+);
 
-const deleteAnswer = async () => {
-    const confirmed = await confirm(
-        'Вы уверены, что хотите удалить вариант ответа? Действие нельзя отменить'
-    );
-    if (!confirmed) return;
-
-    isLoading.value = true;
-
-    const deleted = await api.question.deleteAnswer(props.formData.id);
-    if (deleted) {
-        notify.success('Вариант ответа успешно удален.');
-        emit('deleted');
-        emit('close');
+const { isLoading: isDeleting, execute: deleteQuestionAnswer } = useAsync(
+    api.question.deleteAnswer,
+    {
+        onFetchResponse: () => {
+            notify.success('Вопрос успешно удален.');
+            emit('deleted');
+            emit('close');
+        },
+        confirmation: true,
+        confirmationContent: {
+            title: 'Удалить вопрос',
+            message: 'Вы уверены, что хотите удалить вопрос? Удаленный вопрос нельзя восстановить.',
+            okButton: 'Удалить',
+            okIcon: 'fa-solid fa-trash'
+        }
     }
+);
 
-    isLoading.value = false;
-};
+const isLoading = computed(() => isCreating.value || isUpdating.value || isDeleting.value);
+const loadingLabel = computed(() => {
+    if (props.optionsLoading) return 'Загрузка данных';
+    if (isDeletedEntity.value) return 'Удаление варианта';
+    return 'Обновление вариантов';
+});
 
-const onSubmit = async () => {
-    v$.value.$validate();
-    if (v$.value.form.$error) return;
+async function submit() {
+    const isValid = await validate();
+    if (!isValid) return;
 
-    isLoading.value = true;
-
-    if (props.formData && props.formData.id) await updateAnswer();
-    else await createAnswer();
-
-    isLoading.value = false;
-};
-
-function assignFormDataToForm() {
-    form.category = props.formData.category;
-    form.field_id = props.formData.field_id;
-    form.question_id = props.formData.question_id;
-    form.value = props.formData.value;
-    form.message = props.formData.message;
-    form.effect_ids = props.formData.effects?.map(effect => effect.id) ?? [];
-}
-
-if (props.formData) {
-    assignFormDataToForm();
+    if (isEditMode.value) await updateQuestionAnswer(props.formData.id, form);
+    else await createQuestionAnswer(form);
 }
 </script>

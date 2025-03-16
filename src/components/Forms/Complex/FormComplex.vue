@@ -7,11 +7,11 @@
         width="1200"
     >
         <Loader v-if="isLoading" />
-        <Form @submit="onSubmit">
+        <UiForm @submit="onSubmit">
             <Tabs :options="{ useUrlFragment: false, defaultTabHash: 'main' }">
                 <Tab id="main" name="Основное">
                     <div class="row mb-2">
-                        <Input
+                        <UiInput
                             v-model.trim="form.title"
                             :v="v$.form.title"
                             :placeholder="complex && !form.title ? 'Без названия' : ''"
@@ -52,7 +52,7 @@
                         </div>
                     </div>
                     <div class="row mb-2">
-                        <Input
+                        <UiInput
                             v-model="form.from_mkad"
                             :v="v$.form.from_mkad"
                             label="Удаленность от МКАД"
@@ -75,7 +75,7 @@
                 </Tab>
                 <Tab name="Характеристики">
                     <div class="row mb-2">
-                        <Input
+                        <UiInput
                             v-model="form.area_field_full"
                             :v="v$.form.area_field_full"
                             label="S - участка"
@@ -84,7 +84,7 @@
                             unit="м<sup>2</sup>"
                             required
                         />
-                        <Input
+                        <UiInput
                             v-model="form.area_buildings_full"
                             :v="v$.form.area_buildings_full"
                             label="S - строений комплекса"
@@ -92,14 +92,14 @@
                             type="number"
                             unit="м<sup>2</sup>"
                         />
-                        <Input
+                        <UiInput
                             v-model="form.buildings_admin_num"
                             :v="v$.form.buildings_admin_num"
                             label="Количество адм. строений"
                             class="col-4"
                             type="number"
                         />
-                        <Input
+                        <UiInput
                             v-model="form.buildings_industry_num"
                             :v="v$.form.buildings_industry_num"
                             label="Количество склад. строений"
@@ -130,7 +130,7 @@
                     </div>
                 </Tab>
                 <Tab name="Коммуникации">
-                    <FormGroup>
+                    <UiFormGroup>
                         <RadioOptions
                             v-model="form.power"
                             :v="v$.form.power"
@@ -139,7 +139,7 @@
                             required
                             :options="entityOptions.defaults.booleanSimple"
                         />
-                        <Input
+                        <UiInput
                             v-model="form.power_value"
                             :v="v$.form.power_value"
                             :disabled="!form.power"
@@ -148,8 +148,8 @@
                             unit="кВт"
                             type="number"
                         />
-                    </FormGroup>
-                    <FormGroup>
+                    </UiFormGroup>
+                    <UiFormGroup>
                         <RadioOptions
                             v-model="form.heating_autonomous"
                             :v="v$.form.heating_autonomous"
@@ -176,8 +176,8 @@
                             required
                             :options="entityOptions.defaults.booleanSimple"
                         />
-                    </FormGroup>
-                    <FormGroup>
+                    </UiFormGroup>
+                    <UiFormGroup>
                         <RadioOptions
                             v-model="form.water"
                             :v="v$.form.water"
@@ -196,7 +196,7 @@
                             class="col-4"
                             label="Вид водоснабжения"
                         />
-                        <Input
+                        <UiInput
                             v-model="form.water_value"
                             :v="v$.form.water_value"
                             class="col-4"
@@ -204,8 +204,8 @@
                             label="Измерение водоснабжения"
                             unit="м<sup>3</sup>/сут"
                         />
-                    </FormGroup>
-                    <FormGroup>
+                    </UiFormGroup>
+                    <UiFormGroup>
                         <RadioOptions
                             v-model="form.sewage"
                             :v="v$.form.sewage"
@@ -214,7 +214,7 @@
                             required
                             :options="entityOptions.defaults.booleanSimple"
                         />
-                        <Input
+                        <UiInput
                             v-model="form.sewage_value"
                             :v="v$.form.sewage_value"
                             class="col-4"
@@ -230,8 +230,8 @@
                             unselect
                             :options="entityOptions.defaults.booleanSimple"
                         />
-                    </FormGroup>
-                    <FormGroup>
+                    </UiFormGroup>
+                    <UiFormGroup>
                         <RadioOptions
                             v-model="form.gas"
                             class="col-3"
@@ -246,7 +246,7 @@
                             class="col-4"
                             label="Тип газа"
                         />
-                        <Input
+                        <UiInput
                             v-model="form.gas_value"
                             :v="v$.form.gas_value"
                             :disabled="!form.gas"
@@ -255,8 +255,8 @@
                             unit="м<sup>3</sup>час"
                             type="number"
                         />
-                    </FormGroup>
-                    <FormGroup>
+                    </UiFormGroup>
+                    <UiFormGroup>
                         <RadioOptions
                             v-model="form.steam"
                             class="col-3"
@@ -264,7 +264,7 @@
                             unselect
                             :options="entityOptions.defaults.booleanSimple"
                         />
-                        <Input
+                        <UiInput
                             v-model="form.steam_value"
                             :v="v$.form.steam_value"
                             :disabled="!form.steam"
@@ -273,8 +273,8 @@
                             unit="бар"
                             type="number"
                         />
-                    </FormGroup>
-                    <FormGroup>
+                    </UiFormGroup>
+                    <UiFormGroup>
                         <RadioOptions
                             v-model="form.internet"
                             class="col-3"
@@ -299,11 +299,11 @@
                             unselect
                             :options="entityOptions.defaults.booleanSimple"
                         />
-                    </FormGroup>
+                    </UiFormGroup>
                 </Tab>
                 <Tab name="Безопасность/Инфраструктура">
                     <p class="form__block">Безопасность</p>
-                    <FormGroup>
+                    <UiFormGroup>
                         <RadioOptions
                             v-model="form.video_control"
                             class="col-3"
@@ -329,8 +329,8 @@
                             :close-on-select="false"
                             :options="guardTypes"
                         />
-                    </FormGroup>
-                    <FormGroup>
+                    </UiFormGroup>
+                    <UiFormGroup>
                         <RadioOptions
                             v-model="form.access_control"
                             class="col-3"
@@ -359,9 +359,9 @@
                             unselect
                             :options="entityOptions.defaults.booleanSimple"
                         />
-                    </FormGroup>
+                    </UiFormGroup>
                     <p class="form__block">Железнодорожное сообщение</p>
-                    <FormGroup>
+                    <UiFormGroup>
                         <RadioOptions
                             v-model="form.railway"
                             class="col-3"
@@ -369,7 +369,7 @@
                             unselect
                             :options="entityOptions.defaults.booleanSimple"
                         />
-                        <Input
+                        <UiInput
                             v-model="form.railway_value"
                             :v="v$.form.railway_value"
                             :disabled="!form.railway"
@@ -378,9 +378,9 @@
                             type="number"
                             unit="м"
                         />
-                    </FormGroup>
+                    </UiFormGroup>
                     <p class="form__block">Инфраструктура</p>
-                    <FormGroup>
+                    <UiFormGroup>
                         <MultiSelect
                             v-model="form.entry_territory_type"
                             :options="entryTerritoryTypes"
@@ -394,8 +394,8 @@
                             class="col-4"
                             :options="feeTypes"
                         />
-                    </FormGroup>
-                    <FormGroup>
+                    </UiFormGroup>
+                    <UiFormGroup>
                         <RadioOptions
                             v-model="form.parking_car"
                             class="col-3"
@@ -411,8 +411,8 @@
                             class="col-4"
                             :options="feeTypes"
                         />
-                    </FormGroup>
-                    <FormGroup>
+                    </UiFormGroup>
+                    <UiFormGroup>
                         <RadioOptions
                             v-model="form.parking_lorry"
                             class="col-3"
@@ -428,8 +428,8 @@
                             class="col-4"
                             :options="feeTypes"
                         />
-                    </FormGroup>
-                    <FormGroup>
+                    </UiFormGroup>
+                    <UiFormGroup>
                         <RadioOptions
                             v-model="form.parking_truck"
                             class="col-3"
@@ -445,8 +445,8 @@
                             class="col-4"
                             :options="feeTypes"
                         />
-                    </FormGroup>
-                    <FormGroup>
+                    </UiFormGroup>
+                    <UiFormGroup>
                         <RadioOptions
                             v-model="form.canteen"
                             class="col-3"
@@ -461,7 +461,7 @@
                             unselect
                             :options="entityOptions.defaults.booleanSimple"
                         />
-                    </FormGroup>
+                    </UiFormGroup>
                 </Tab>
                 <Tab name="Описание">
                     <DescriptionEditor
@@ -511,7 +511,7 @@
             <div class="row mb-2">
                 <Submit class="col-3 mx-auto" small success>Сохранить</Submit>
             </div>
-        </Form>
+        </UiForm>
     </Modal>
 </template>
 
@@ -519,12 +519,12 @@
 import { yandexmap } from '@/utils/yandexMap.js';
 import Loader from '@/components/common/Loader.vue';
 import Modal from '@/components/common/Modal.vue';
-import Input from '@/components/common/Forms/Input.vue';
+import UiInput from '@/components/common/Forms/UiInput.vue';
 import FileInput from '@/components/common/Forms/FileInput.vue';
 import MultiSelect from '@/components/common/Forms/MultiSelect.vue';
 import Submit from '@/components/common/Forms/FormSubmit.vue';
-import Form from '@/components/common/Forms/Form.vue';
-import FormGroup from '@/components/common/Forms/FormGroup.vue';
+import UiForm from '@/components/common/Forms/UiForm.vue';
+import UiFormGroup from '@/components/common/Forms/UiFormGroup.vue';
 import useVuelidate from '@vuelidate/core';
 import {
     countTypes,

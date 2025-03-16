@@ -1,7 +1,7 @@
 <template>
     <div class="messenger-aside-header">
-        <Form class="messenger-aside-header__form">
-            <Input v-model="querySearch" class="w-100" rounded placeholder="Поиск.." />
+        <UiForm class="messenger-aside-header__form">
+            <UiInput v-model="querySearch" class="w-100" rounded placeholder="Поиск.." />
             <button
                 v-tippy="'Очистить'"
                 @click.prevent="clearQuery"
@@ -17,12 +17,12 @@
             >
                 <i class="fa-solid fa-rotate"></i>
             </button>
-        </Form>
+        </UiForm>
     </div>
 </template>
 <script setup>
-import Form from '@/components/common/Forms/Form.vue';
-import Input from '@/components/common/Forms/Input.vue';
+import UiForm from '@/components/common/Forms/UiForm.vue';
+import UiInput from '@/components/common/Forms/UiInput.vue';
 import { useStore } from 'vuex';
 import { computed } from 'vue';
 import { debounce } from '@/utils/common/debounce.js';

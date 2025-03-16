@@ -4,7 +4,7 @@
             <Switch v-model="form.test_only" false-title="Обычный лот" true-title="Тестовый лот" />
         </template>
         <Loader v-if="isLoading" />
-        <Form @submit="onSubmit">
+        <UiForm @submit="onSubmit">
             <Tabs :options="{ useUrlFragment: false, defaultTabHash: 'main' }">
                 <Tab id="main" name="Основное">
                     <div class="row">
@@ -77,7 +77,7 @@
                     <div class="row">
                         <div class="col-9">
                             <div class="row">
-                                <Input
+                                <UiInput
                                     v-model="form.area_building"
                                     :v="v$.form.area_building"
                                     label="S - здания"
@@ -86,7 +86,7 @@
                                     unit="м<sup>2</sup>"
                                     required
                                 />
-                                <Input
+                                <UiInput
                                     v-model="form.area_floor_full"
                                     :v="v$.form.area_floor_full"
                                     label="S - пола общая"
@@ -94,7 +94,7 @@
                                     type="number"
                                     unit="м<sup>2</sup>"
                                 />
-                                <Input
+                                <UiInput
                                     v-model="form.area_mezzanine_full"
                                     :v="v$.form.area_mezzanine_full"
                                     label="S - мезанина общая"
@@ -104,7 +104,7 @@
                                 />
                             </div>
                             <div class="row mt-2">
-                                <Input
+                                <UiInput
                                     v-model="form.area_office_full"
                                     :v="v$.form.area_office_full"
                                     label="S - офисов общая"
@@ -112,7 +112,7 @@
                                     type="number"
                                     unit="м<sup>2</sup>"
                                 />
-                                <Input
+                                <UiInput
                                     v-model="form.area_tech_full"
                                     :v="v$.form.area_tech_full"
                                     label="S - техническая"
@@ -154,7 +154,7 @@
                                 />
                             </div>
                             <div class="row mt-2">
-                                <Input
+                                <UiInput
                                     v-model="form.year_build"
                                     :v="v$.form.year_build"
                                     label="Год постройки"
@@ -162,7 +162,7 @@
                                     type="number"
                                     maska="####"
                                 />
-                                <Input
+                                <UiInput
                                     v-model="form.year_repair"
                                     :v="v$.form.year_repair"
                                     label="Год последнего ремонта"
@@ -170,7 +170,7 @@
                                     type="number"
                                     maska="####"
                                 />
-                                <Input
+                                <UiInput
                                     v-model="form.cadastral_number"
                                     :v="v$.form.cadastral_number"
                                     label="Кадастровый № строения"
@@ -242,7 +242,7 @@
             <div class="row">
                 <FormSubmit class="col-3 mx-auto" small success>Сохранить</FormSubmit>
             </div>
-        </Form>
+        </UiForm>
     </Modal>
 </template>
 
@@ -252,10 +252,10 @@ import Modal from '@/components/common/Modal.vue';
 import { entityOptions } from '@/const/options/options';
 import { onBeforeMount, reactive, shallowRef, toRef } from 'vue';
 import { cloneObject } from '@/utils/helpers/object/cloneObject.js';
-import Input from '@/components/common/Forms/Input.vue';
+import UiInput from '@/components/common/Forms/UiInput.vue';
 import FileInput from '@/components/common/Forms/FileInput.vue';
 import MultiSelect from '@/components/common/Forms/MultiSelect.vue';
-import Form from '@/components/common/Forms/Form.vue';
+import UiForm from '@/components/common/Forms/UiForm.vue';
 import useVuelidate from '@vuelidate/core';
 import { validationRulesForComplexHolding } from '@/validators/rules/complex-holding.js';
 import Switch from '@/components/common/Forms/Switch.vue';

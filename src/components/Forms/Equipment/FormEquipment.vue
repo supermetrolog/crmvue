@@ -9,12 +9,12 @@
                 :disabled="isLoading"
             />
         </template>
-        <Form @submit="onSubmit">
+        <UiForm @submit="onSubmit">
             <Loader v-if="isLoading" />
             <Tabs :options="{ useUrlFragment: false }" always-render>
                 <Tab name="Основное">
-                    <FormGroup>
-                        <Input
+                    <UiFormGroup>
+                        <UiInput
                             v-model="form.name"
                             :v="v$.form.name"
                             class="col-sm-6 col-12"
@@ -55,8 +55,8 @@
                             class="col-sm-6 col-12"
                             :options="consultantList"
                         />
-                    </FormGroup>
-                    <FormGroup>
+                    </UiFormGroup>
+                    <UiFormGroup>
                         <MultiSelect
                             v-model="form.company_id"
                             @change="onChangeCompany"
@@ -87,8 +87,8 @@
                             :v="v$.form.contact_id"
                             :options="contacts"
                         />
-                    </FormGroup>
-                    <FormGroup>
+                    </UiFormGroup>
+                    <UiFormGroup>
                         <RadioOptions
                             v-model="form.state"
                             :v="v$.form.state"
@@ -98,8 +98,8 @@
                             unselect
                             :options="equipmentOptions.usedStatus"
                         />
-                    </FormGroup>
-                    <FormGroup>
+                    </UiFormGroup>
+                    <UiFormGroup>
                         <RadioOptions
                             v-model="form.status"
                             label="Статус"
@@ -115,17 +115,17 @@
                             :disabled="form.status !== equipmentOptions.statusStatement.PASSIVE"
                             :options="equipmentOptions.passiveType"
                         />
-                        <Textarea
+                        <UiTextarea
                             v-model="form.passive_comment"
                             label="Ручная причина пассива"
                             :disabled="form.status !== equipmentOptions.statusStatement.PASSIVE"
                             required
                             class="col-12"
                         />
-                    </FormGroup>
+                    </UiFormGroup>
                     <p class="form__block">Цена и наличие</p>
-                    <FormGroup class="align-items-end">
-                        <Input
+                    <UiFormGroup class="align-items-end">
+                        <UiInput
                             v-model="form.count"
                             :v="v$.form.count"
                             class="col-md-4 col-sm-6 col-12"
@@ -140,9 +140,9 @@
                             :options="equipmentOptions.availability"
                             unselect
                         />
-                    </FormGroup>
-                    <FormGroup class="align-items-end">
-                        <Input
+                    </UiFormGroup>
+                    <UiFormGroup class="align-items-end">
+                        <UiInput
                             v-model="form.price"
                             :v="v$.form.price"
                             class="col-md-4 col-sm-6 col-12"
@@ -157,9 +157,9 @@
                             :options="equipmentOptions.tax"
                             unselect
                         />
-                    </FormGroup>
+                    </UiFormGroup>
                     <p class="form__block">Доставка</p>
-                    <FormGroup>
+                    <UiFormGroup>
                         <RadioOptions
                             v-model="form.delivery"
                             label="Способы получения"
@@ -167,7 +167,7 @@
                             :options="equipmentOptions.delivery"
                             unselect
                         />
-                        <Input
+                        <UiInput
                             v-model="form.deliveryPrice"
                             :v="v$.form.deliveryPrice"
                             :disabled="!hasDelivery"
@@ -176,16 +176,16 @@
                             type="number"
                             unit="₽"
                         />
-                    </FormGroup>
+                    </UiFormGroup>
                 </Tab>
                 <Tab name="Описание">
-                    <FormGroup>
+                    <UiFormGroup>
                         <VueEditor
                             v-model="form.description"
                             label="Описание оборудования"
                             class="col-12"
                         />
-                    </FormGroup>
+                    </UiFormGroup>
                 </Tab>
                 <Tab name="Фотографии">
                     <div class="row">
@@ -220,13 +220,13 @@
                     </Submit>
                 </div>
             </Tabs>
-        </Form>
+        </UiForm>
     </Modal>
 </template>
 
 <script setup>
-import Form from '@/components/common/Forms/Form.vue';
-import Input from '@/components/common/Forms/Input.vue';
+import UiForm from '@/components/common/Forms/UiForm.vue';
+import UiInput from '@/components/common/Forms/UiInput.vue';
 import FileInput from '@/components/common/Forms/FileInput.vue';
 import MultiSelect from '@/components/common/Forms/MultiSelect.vue';
 import useVuelidate from '@vuelidate/core';
@@ -234,7 +234,7 @@ import { useStore } from 'vuex';
 import api from '@//api/api.js';
 import Modal from '@/components/common/Modal.vue';
 import Submit from '@/components/common/Forms/FormSubmit.vue';
-import FormGroup from '@/components/common/Forms/FormGroup.vue';
+import UiFormGroup from '@/components/common/Forms/UiFormGroup.vue';
 import RadioOptions from '@/components/common/Forms/RadioOptions.vue';
 import { validationRulesForEquipment } from '@/validators/rules/equipment.js';
 import { computed, reactive, shallowRef, toRef } from 'vue';
@@ -246,7 +246,7 @@ import VueEditor from '@/components/common/Forms/VueEditor.vue';
 import { useNotification } from '@kyvg/vue3-notification';
 import Loader from '@/components/common/Loader.vue';
 import { equipmentOptions } from '@/const/options/equipment.options.js';
-import Textarea from '@/components/common/Forms/Textarea.vue';
+import UiTextarea from '@/components/common/Forms/UiTextarea.vue';
 import { useFormData } from '@/utils/use/useFormData.js';
 import InProgress from '@/components/common/InProgress.vue';
 

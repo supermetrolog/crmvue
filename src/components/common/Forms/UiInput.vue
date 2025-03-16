@@ -1,5 +1,5 @@
 <template>
-    <div ref="currentEl" class="form__control" :class="{ 'form__control--disabled': disabled }">
+    <div class="form__control" :class="{ 'form__control--disabled': disabled }">
         <label>
             <span v-if="label" class="form__label">{{ label }}</span>
             <input
@@ -121,7 +121,6 @@ const props = defineProps({
 
 const searchableIsVisible = shallowRef(false);
 const localeOptions = ref(props.options);
-const currentEl = ref(null);
 const searchableEl = ref(null);
 
 const paddingRightStyle = computed(() => {

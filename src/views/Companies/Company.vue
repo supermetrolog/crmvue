@@ -273,7 +273,10 @@ async function createContactComment(data) {
 }
 
 const deleteContact = async () => {
-    const confirmed = await confirm('Вы уверены, что хотите бевзозвратно удалить контакт?');
+    const confirmed = await confirm(
+        'Удалить контакт',
+        'Вы уверены, что хотите безвозвратно удалить контакт?'
+    );
     if (confirmed) await store.dispatch('DELETE_CONTACT', contact.value);
 };
 

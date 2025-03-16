@@ -1,5 +1,5 @@
 <template>
-    <Form @submit="onSubmit" class="account-edit">
+    <UiForm @submit="onSubmit" class="account-edit">
         <div class="row">
             <div class="col-lg-8">
                 <div class="account-section">
@@ -81,13 +81,13 @@
                 </div>
             </div>
         </div>
-    </Form>
+    </UiForm>
 </template>
 
 <script>
-import Form from '@/components/common/Forms/Form.vue';
-import FormGroup from '@/components/common/Forms/FormGroup.vue';
-import Input from '@/components/common/Forms/Input.vue';
+import UiForm from '@/components/common/Forms/UiForm.vue';
+import UiFormGroup from '@/components/common/Forms/UiFormGroup.vue';
+import UiInput from '@/components/common/Forms/UiInput.vue';
 import PropogationInput from '@/components/common/Forms/PropogationInput.vue';
 import FileInput from '@/components/common/Forms/FileInput.vue';
 import { emptyWithProperty, everyProperty, validateEmail, validatePhone } from '@//validators';
@@ -101,7 +101,15 @@ import { cloneObject } from '@/utils/helpers/object/cloneObject.js';
 
 export default {
     name: 'AccountEdit',
-    components: { Loader, Submit, FileInput, PropogationInput, Input, FormGroup, Form },
+    components: {
+        UiForm,
+        Loader,
+        Submit,
+        FileInput,
+        PropogationInput,
+        Input: UiInput,
+        FormGroup: UiFormGroup
+    },
     data() {
         return {
             isLoading: false,

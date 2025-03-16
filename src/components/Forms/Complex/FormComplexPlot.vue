@@ -4,7 +4,7 @@
             <Switch v-model="form.test_only" false-title="Обычный лот" true-title="Тестовый лот" />
         </template>
         <Loader v-if="isLoading" />
-        <Form @submit="onSubmit">
+        <UiForm @submit="onSubmit">
             <Tabs always-render :options="{ useUrlFragment: false, defaultTabHash: 'main' }">
                 <Tab id="main" name="Основное">
                     <div class="row">
@@ -67,7 +67,7 @@
                 </Tab>
                 <Tab name="Характериcтики">
                     <div class="row">
-                        <Input
+                        <UiInput
                             v-model="form.area_field_full"
                             :v="v$.form.area_field_full"
                             label="S - участка общая"
@@ -118,7 +118,7 @@
                         />
                     </div>
                     <div class="row mt-2">
-                        <Input
+                        <UiInput
                             v-model="form.cadastral_number_land"
                             :v="v$.form.cadastral_number_land"
                             label="Кадастровый № строения"
@@ -142,7 +142,7 @@
                         />
                     </div>
                     <div class="row mt-2">
-                        <Textarea v-model="form.field_allow_usage" label="В.Р.И" class="col-12" />
+                        <UiTextarea v-model="form.field_allow_usage" label="В.Р.И" class="col-12" />
                     </div>
                     <DescriptionEditor
                         v-model:description="form.description"
@@ -169,7 +169,7 @@
                             required
                             :options="entityOptions.defaults.booleanSimple"
                         />
-                        <Input
+                        <UiInput
                             v-model="form.power_value"
                             :disabled="!form.power"
                             :v="v$.form.power_value"
@@ -189,7 +189,7 @@
                             required
                             :options="entityOptions.defaults.booleanSimple"
                         />
-                        <Input
+                        <UiInput
                             v-model="form.water_value"
                             label="Значение"
                             :v="v$.form.water_value"
@@ -228,7 +228,7 @@
                             required
                             :options="entityOptions.defaults.booleanSimple"
                         />
-                        <Input
+                        <UiInput
                             v-model="form.sewage_central_value"
                             :disabled="!form.sewage_central"
                             label="Значение"
@@ -247,7 +247,7 @@
                             unselect
                             :options="entityOptions.defaults.booleanSimple"
                         />
-                        <Input
+                        <UiInput
                             v-model="form.gas_value"
                             label="Значение"
                             :v="v$.form.water_value"
@@ -283,7 +283,7 @@
                             unselect
                             :options="entityOptions.defaults.booleanSimple"
                         />
-                        <Input
+                        <UiInput
                             v-model="form.steam_value"
                             :disabled="!form.steam"
                             label="Значение"
@@ -384,7 +384,7 @@
                             label="Ж/Д ветка"
                             :options="entityOptions.defaults.booleanSimple"
                         />
-                        <Input
+                        <UiInput
                             v-model="form.railway_value"
                             :disabled="!form.railway"
                             label="Значение"
@@ -539,7 +539,7 @@
                                     :disabled="!form.buildings_on_territory"
                                 />
                             </div>
-                            <Textarea
+                            <UiTextarea
                                 v-model="form.buildings_on_territory_description"
                                 :v="v$.form.buildings_on_territory_description"
                                 label="Описание строений"
@@ -557,7 +557,7 @@
             <div class="row">
                 <Submit class="col-3 mx-auto" success>Сохранить</Submit>
             </div>
-        </Form>
+        </UiForm>
     </Modal>
 </template>
 
@@ -574,10 +574,10 @@ import DescriptionEditor from '@/components/common/Forms/DescriptionEditor.vue';
 import FileInput from '@/components/common/Forms/FileInput.vue';
 import DoubleInput from '@/components/common/Forms/DoubleInput.vue';
 import BuildingPicker from '@/components/common/Forms/BuildingPicker/BuildingPicker.vue';
-import Textarea from '@/components/common/Forms/Textarea.vue';
-import Input from '@/components/common/Forms/Input.vue';
+import UiTextarea from '@/components/common/Forms/UiTextarea.vue';
+import UiInput from '@/components/common/Forms/UiInput.vue';
 import Submit from '@/components/common/Forms/FormSubmit.vue';
-import Form from '@/components/common/Forms/Form.vue';
+import UiForm from '@/components/common/Forms/UiForm.vue';
 import { computed, onBeforeMount, reactive, shallowRef, toRef } from 'vue';
 import { cloneObject } from '@/utils/helpers/object/cloneObject.js';
 import useVuelidate from '@vuelidate/core';

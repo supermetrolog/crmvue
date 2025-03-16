@@ -206,7 +206,10 @@ const equipmentToPassive = equipment => {
 };
 
 const equipmentToActive = async equipment => {
-    const confirmed = await confirm('Вы уверены, что хотите снять оборудование с пассива?');
+    const confirmed = await confirm(
+        'Снять с пассива',
+        'Вы уверены, что хотите снять оборудование с пассива?'
+    );
     if (!confirmed) return;
 
     const updatedEquipment = await api.equipment.update(equipment.id, {
@@ -222,6 +225,7 @@ const equipmentToActive = async equipment => {
 
 const updateLastCallEquipment = async () => {
     const confirmed = await confirm(
+        'Обновление звонка',
         'Подтвердите обновление даты последнего звонка по оборудованию. Будет установлено: ' +
             dayjs().format('D.MM.YY')
     );
@@ -233,13 +237,16 @@ const updateLastCallEquipment = async () => {
     });
 
     if (lastCall) {
-        notify.success('Дата последнего звонка по объекту обновлена');
+        notify.success('Дата последнего звонка по оборудованию обновлена');
         viewingEquipment.value.last_call = lastCall;
     } else notify.info('Попробуйте позже..', 'Обновление последнего звонка');
 };
 
 const removeEquipment = async equipment => {
-    const confirmed = await confirm('Вы уверены, что хотите безвозвратно удалить объект?');
+    const confirmed = await confirm(
+        'Удалить оборудование',
+        'Вы уверены, что хотите безвозвратно удалить оборудование?'
+    );
     if (!confirmed) return;
 
     const deleted = await api.equipment.delete(equipment.id);

@@ -1,9 +1,9 @@
 <template>
-    <Form>
-        <FormGroup>
+    <UiForm>
+        <UiFormGroup>
             <div class="col-12">
                 <div class="d-flex align-items-end">
-                    <Input
+                    <UiInput
                         v-model="form.all"
                         label="Поиск"
                         class="w-100"
@@ -22,7 +22,7 @@
                     </div>
                 </div>
             </div>
-        </FormGroup>
+        </UiFormGroup>
         <teleport to="body">
             <Modal @close="extraIsVisible = false" :show="extraIsVisible" width="1400">
                 <template #header>
@@ -34,9 +34,9 @@
                         only-true
                     />
                 </template>
-                <Form>
+                <UiForm>
                     <div class="form-search__extra col-12">
-                        <FormGroup>
+                        <UiFormGroup>
                             <MultiSelect
                                 v-model="form.consultant_id"
                                 :disabled="withoutConsultant"
@@ -54,7 +54,7 @@
                                 class="col-md-4 col-6"
                                 :options="DealTypeList"
                             />
-                            <Input
+                            <UiInput
                                 v-model="form.maxElectricity"
                                 placeholder="не более"
                                 :v="v$.form.maxElectricity"
@@ -64,8 +64,8 @@
                                 type="number"
                                 class="col-md-4 col-6 mb-2"
                             />
-                        </FormGroup>
-                        <FormGroup>
+                        </UiFormGroup>
+                        <UiFormGroup>
                             <DoubleInput
                                 v-model:first="form.rangeMinArea"
                                 v-model:second="form.rangeMaxArea"
@@ -105,8 +105,8 @@
                                 reactive
                                 :validators="formDateValidators"
                             />
-                        </FormGroup>
-                        <FormGroup>
+                        </UiFormGroup>
+                        <UiFormGroup>
                             <div class="col-8">
                                 <div class="row">
                                     <MultiSelect
@@ -127,7 +127,7 @@
                                             }
                                         "
                                     />
-                                    <Input
+                                    <UiInput
                                         v-model="form.maxDistanceFromMKAD"
                                         maska="###"
                                         :v="v$.form.maxDistanceFromMKAD"
@@ -230,8 +230,8 @@
                                     </AnimationTransition>
                                 </div>
                             </div>
-                        </FormGroup>
-                        <FormGroup class="mt-2">
+                        </UiFormGroup>
+                        <UiFormGroup class="mt-2">
                             <SwitchSlider v-model="form.heated" class="col-6" label="Отопление" />
                             <SwitchSlider v-model="form.water" class="col-6" label="Вода" />
                             <SwitchSlider v-model="form.gaz" class="col-6" label="Газ" />
@@ -248,8 +248,8 @@
                                 label="Ж/Д ветка"
                             />
                             <SwitchSlider v-model="form.haveCranes" class="col-6" label="Краны" />
-                        </FormGroup>
-                        <FormGroup class="mt-3">
+                        </UiFormGroup>
+                        <UiFormGroup class="mt-3">
                             <Switch
                                 v-model="form.firstFloorOnly"
                                 :transform="Number"
@@ -266,8 +266,8 @@
                                 true-title="Только антипыль"
                                 only-true
                             />
-                        </FormGroup>
-                        <FormGroup class="mt-3">
+                        </UiFormGroup>
+                        <UiFormGroup class="mt-3">
                             <ObjectTypePicker
                                 v-model:value="form.objectTypes"
                                 v-model:extra="form.objectTypesGeneral"
@@ -292,18 +292,18 @@
                                 :options="objectPurposesWithSectionsOptions.plot"
                                 class="col-md-4"
                             />
-                        </FormGroup>
+                        </UiFormGroup>
                     </div>
-                </Form>
+                </UiForm>
             </Modal>
         </teleport>
-    </Form>
+    </UiForm>
 </template>
 
 <script setup>
-import Form from '@/components/common/Forms/Form.vue';
-import FormGroup from '@/components/common/Forms/FormGroup.vue';
-import Input from '@/components/common/Forms/Input.vue';
+import UiForm from '@/components/common/Forms/UiForm.vue';
+import UiFormGroup from '@/components/common/Forms/UiFormGroup.vue';
+import UiInput from '@/components/common/Forms/UiInput.vue';
 import MultiSelect from '@/components/common/Forms/MultiSelect.vue';
 import { useStore } from 'vuex';
 import Button from '@/components/common/Button.vue';

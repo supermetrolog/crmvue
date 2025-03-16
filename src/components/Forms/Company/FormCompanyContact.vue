@@ -1,10 +1,11 @@
 <template>
-    <Modal
+    <UiModal
         @close="$emit('close')"
-        width="1300"
+        :width="1300"
+        custom-close
         show
         :min-height="500"
-        :title="formdata ? 'Редактирование контакта' : 'Создание нового контакта'"
+        :title="isEditMode ? `Редактирование контакта ${formdata.id}` : 'Создание нового контакта'"
     >
         <template #header>
             <span>|</span>
@@ -16,19 +17,19 @@
             />
         </template>
         <Loader v-if="isLoading" />
-        <Form v-else @submit="onSubmit">
-            <div class="row">
-                <Input v-model="form.middle_name" label="Фамилия" class="col-4" />
-                <Input
+        <UiForm v-else>
+            <UiFormGroup>
+                <UiInput v-model="form.middle_name" label="Фамилия" class="col-4" />
+                <UiInput
                     v-model="form.first_name"
                     label="Имя"
                     :v="v$.form.first_name"
                     required
                     class="col-4"
                 />
-                <Input v-model="form.last_name" label="Отчество" class="col-4" />
-            </div>
-            <div class="row mt-2">
+                <UiInput v-model="form.last_name" label="Отчество" class="col-4" />
+            </UiFormGroup>
+            <UiFormGroup>
                 <PropogationDoubleInput
                     v-model="form.phones"
                     :v="v$.form.phones"
@@ -41,7 +42,7 @@
                     label="Телефон"
                     class="col-3"
                 />
-                <div class="col-1">
+                <UiCol :cols="1">
                     <template v-if="form.phones.length">
                         <span class="form__subtitle">Осн.</span>
                         <CheckboxChip
@@ -55,7 +56,7 @@
                             icon="fa-solid fa-user-check"
                         />
                     </template>
-                </div>
+                </UiCol>
                 <PropogationInput
                     v-model="form.emails"
                     :v="v$.form.emails"
@@ -65,7 +66,7 @@
                     label="Email"
                     class="col-3"
                 />
-                <div class="col-1">
+                <UiCol :cols="1">
                     <template v-if="form.emails.length">
                         <span class="form__subtitle">Осн.</span>
                         <CheckboxChip
@@ -79,7 +80,7 @@
                             icon="fa-solid fa-user-check"
                         />
                     </template>
-                </div>
+                </UiCol>
                 <PropogationDoubleInput
                     v-model="form.invalidPhones"
                     maska="#################################"
@@ -89,9 +90,10 @@
                     label="Невалидный телефон"
                     class="col-4"
                 />
-            </div>
-            <div class="row mt-2">
-                <div class="col-12">
+            </UiFormGroup>
+            <UiFormDivider />
+            <UiFormGroup>
+                <UiCol :cols="12">
                     <span class="form__subtitle">Способ информирования</span>
                     <div class="form__row mt-1">
                         <CheckboxChip
@@ -102,10 +104,11 @@
                             :value="index"
                             :text="element.name"
                             :icon="element.icon"
+                            show-checkbox
                         />
                     </div>
-                </div>
-                <div class="col-12">
+                </UiCol>
+                <UiCol :cols="12">
                     <span class="form__subtitle">Должность</span>
                     <div class="form__row row">
                         <MultiSelect
@@ -126,9 +129,9 @@
                             Должность неизвестна
                         </Checkbox>
                     </div>
-                </div>
-            </div>
-            <div class="row mt-2">
+                </UiCol>
+            </UiFormGroup>
+            <UiFormGroup>
                 <ConsultantPicker
                     v-model="form.consultant_id"
                     class="col-6"
@@ -154,9 +157,9 @@
                         }
                     "
                 />
-            </div>
-            <div class="row mt-2">
-                <div class="col-6">
+            </UiFormGroup>
+            <UiFormGroup>
+                <UiCol :cols="6">
                     <span class="form__subtitle">Прочее</span>
                     <div class="form__row mt-1">
                         <CheckboxChip v-model="form.good" text="Хорошие взаимоотношения" />
@@ -168,7 +171,7 @@
                         />
                     </div>
                     <AnimationTransition>
-                        <Textarea
+                        <UiTextarea
                             v-if="form.warning"
                             v-model="form.warning_why_comment"
                             class="mt-2"
@@ -178,8 +181,8 @@
                             placeholder="Опишите причину"
                         />
                     </AnimationTransition>
-                </div>
-                <div class="col-6">
+                </UiCol>
+                <UiCol :cols="6">
                     <span class="form__subtitle">Статус</span>
                     <div class="form__row mt-1">
                         <RadioChip
@@ -200,35 +203,36 @@
                             class="mt-2"
                             :options="PassiveWhyContact"
                         >
-                            <Textarea
+                            <UiTextarea
                                 v-model="form.passive_why_comment"
                                 placeholder="Опишите причину"
                             />
                         </MultiSelect>
                     </AnimationTransition>
-                </div>
-            </div>
-            <div class="row mt-3">
-                <Submit class="col-3 mx-auto" small success>
-                    {{ formdata ? 'Сохранить' : 'Создать' }}
-                </Submit>
-            </div>
-        </Form>
-    </Modal>
+                </UiCol>
+            </UiFormGroup>
+        </UiForm>
+        <template #actions="{ close }">
+            <UiButton @click="submit" color="success-light" icon="fa-solid fa-check" bolder small>
+                Сохранить
+            </UiButton>
+            <UiButton @click="close" color="light" icon="fa-solid fa-ban" bolder small>
+                Отмена
+            </UiButton>
+        </template>
+    </UiModal>
 </template>
 
 <script setup>
-import useVuelidate from '@vuelidate/core';
 import { helpers, or, required } from '@vuelidate/validators';
 import { ActivePassive, FeedbackIcons, PassiveWhyContact, PositionList } from '@/const/const.js';
-import Input from '@/components/common/Forms/Input.vue';
+import UiInput from '@/components/common/Forms/UiInput.vue';
 import PropogationInput from '@/components/common/Forms/PropogationInput.vue';
 import PropogationDoubleInput from '@/components/common/Forms/PropogationDoubleInput.vue';
-import Textarea from '@/components/common/Forms/Textarea.vue';
+import UiTextarea from '@/components/common/Forms/UiTextarea.vue';
 import MultiSelect from '@/components/common/Forms/MultiSelect.vue';
 import Loader from '@/components/common/Loader.vue';
-import Modal from '@/components/common/Modal.vue';
-import Form from '@/components/common/Forms/Form.vue';
+import UiForm from '@/components/common/Forms/UiForm.vue';
 import {
     anyHasProperty,
     emptyWithProperty,
@@ -239,7 +243,6 @@ import {
 import CheckboxChip from '@/components/common/Forms/CheckboxChip.vue';
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
 import RadioChip from '@/components/common/Forms/RadioChip.vue';
-import Submit from '@/components/common/Forms/FormSubmit.vue';
 import { reactive, ref, toRef } from 'vue';
 import { useFormData } from '@/utils/use/useFormData.js';
 import Switch from '@/components/common/Forms/Switch.vue';
@@ -248,7 +251,12 @@ import api from '@/api/api.js';
 import Checkbox from '@/components/common/Forms/Checkbox.vue';
 import ConsultantPicker from '@/components/common/Forms/ConsultantPicker/ConsultantPicker.vue';
 import { useConsultantsOptions } from '@/composables/options/useConsultantsOptions.js';
-import { useValidationNotify } from '@/composables/useValidationNotify.js';
+import { useValidation } from '@/composables/useValidation.js';
+import UiButton from '@/components/common/UI/UiButton.vue';
+import UiModal from '@/components/common/UI/UiModal.vue';
+import UiFormGroup from '@/components/common/Forms/UiFormGroup.vue';
+import UiFormDivider from '@/components/common/Forms/UiFormDivider.vue';
+import UiCol from '@/components/common/UI/UiCol.vue';
 
 const emit = defineEmits(['close', 'updated', 'created']);
 const props = defineProps({
@@ -263,7 +271,7 @@ const props = defineProps({
 });
 
 const { getConsultantsOptions } = useConsultantsOptions();
-const { form } = useFormData(
+const { form, isEditMode } = useFormData(
     reactive({
         company_id: null,
         first_name: null,
@@ -318,7 +326,7 @@ const customRequiredWarningWhyComment = () => {
     return Boolean(required.$validator(form.warning_why_comment));
 };
 
-const v$ = useVuelidate(
+const { v$, validate } = useValidation(
     {
         form: {
             position: {
@@ -397,11 +405,9 @@ const createContact = async () => {
     }
 };
 
-const { validateWithNotify } = useValidationNotify(v$);
-
-const onSubmit = async () => {
-    validateWithNotify();
-    if (v$.value.form.$error) return;
+async function submit() {
+    const isValid = await validate();
+    if (!isValid) return;
 
     isLoading.value = true;
 
@@ -410,7 +416,7 @@ const onSubmit = async () => {
     else await createContact();
 
     isLoading.value = false;
-};
+}
 
 const onChangeWarning = () => {
     if (form.warning) form.good = 0;

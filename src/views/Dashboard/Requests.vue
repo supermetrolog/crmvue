@@ -7,7 +7,7 @@
                     <DashboardTargetUser v-model="targetUser" class="ml-2" />
                 </div>
             </div>
-            <Form class="dashboard-requests-page__form mb-4">
+            <UiForm class="dashboard-requests-page__form mb-4">
                 <FormGroup class="justify-content-between">
                     <FormCompanyRequestSearch class="col-12 col-lg-6 col-xl-8" without-consultant />
                     <div class="col-12 col-lg-6 col-xl-4 col-xxl-3">
@@ -23,7 +23,7 @@
                         </div>
                     </div>
                 </FormGroup>
-            </Form>
+            </UiForm>
             <div v-show="!isLoading" v-if="requests.data?.length" class="row mb-2">
                 <div class="col-12">
                     <PaginationClassic
@@ -101,8 +101,8 @@ import { mapGetters } from 'vuex';
 import PaginationClassic from '@/components/common/Pagination/PaginationClassic.vue';
 import Button from '@/components/common/Button.vue';
 import MultiSelect from '@/components/common/Forms/MultiSelect.vue';
-import Form from '@/components/common/Forms/Form.vue';
-import FormGroup from '@/components/common/Forms/FormGroup.vue';
+import UiForm from '@/components/common/Forms/UiForm.vue';
+import UiFormGroup from '@/components/common/Forms/UiFormGroup.vue';
 import api from '@/api/api.js';
 import { LoaderMixin } from '@/components/Messenger/loader.mixin.js';
 import DashboardCardRequest from '@/components/Dashboard/Card/Request/DashboardCardRequest.vue';
@@ -117,6 +117,7 @@ import { waitHash } from '@/utils/helpers/common/waitHash.js';
 export default {
     name: 'DashboardRequests',
     components: {
+        UiForm,
         FormCompanyRequestSearch,
         DashboardCardRequestView,
         FormCompanyRequest,
@@ -124,8 +125,7 @@ export default {
         EmptyData,
         DashboardCardRequestSkeleton,
         DashboardCardRequest,
-        FormGroup,
-        Form,
+        FormGroup: UiFormGroup,
         MultiSelect,
         Button,
         PaginationClassic,

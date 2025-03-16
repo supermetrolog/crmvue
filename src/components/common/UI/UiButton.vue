@@ -2,7 +2,7 @@
     <button class="ui-button" :class="classes" :disabled="disabled || loading">
         <slot name="before"></slot>
         <slot name="icon">
-            <i v-if="icon" :class="icon" />
+            <i v-if="icon" :class="[icon, iconClass]" />
         </slot>
         <span>
             <slot></slot>
@@ -19,6 +19,9 @@ import Spinner from '@/components/common/Spinner.vue';
 const props = defineProps({
     label: String,
     icon: String,
+    iconClass: {
+        type: [Array, String, Object]
+    },
     color: String,
     loading: Boolean,
     active: Boolean,

@@ -1,5 +1,14 @@
 <template>
-    <Modal @close="$emit('close')" show width="1500" has-tabs>
+    <UiModal
+        @close="$emit('close')"
+        custom-close
+        show
+        :width="1500"
+        :close-on-outside-click="false"
+        :close-on-press-esc="false"
+        has-tabs
+        title="Создание запроса"
+    >
         <template #header>
             <Switch
                 v-model="form.expressRequest"
@@ -10,12 +19,12 @@
                 only-true
             />
         </template>
-        <Form @submit="onSubmit">
-            <Loader v-if="isLoading" />
+        <Loader v-if="isLoading" />
+        <UiForm>
             <Tabs always-render>
                 <Tab name="Основное">
-                    <FormGroup>
-                        <Input v-model="form.name" label="Название" class="col-4" />
+                    <UiFormGroup>
+                        <UiInput v-model="form.name" label="Название" class="col-4" />
                         <CompanyPicker
                             v-model="form.company_id"
                             @change="onChangeCompany"
@@ -109,7 +118,7 @@
                             </div>
                         </AnimationTransition>
                         <div class="col-4">
-                            <Input
+                            <UiInput
                                 v-model="form.distanceFromMKAD"
                                 :disabled="!!form.distanceFromMKADnotApplicable"
                                 :v="v$.form.distanceFromMKAD"
@@ -128,14 +137,15 @@
                             />
                         </div>
                         <div class="col-4">
-                            <Input
+                            <UiDateInput
                                 v-model="form.movingDate"
                                 @change="form.unknownMovingDate = null"
                                 :v="v$.form.movingDate"
                                 :disabled="form.unknownMovingDate"
                                 label="Дата переезда"
-                                type="date"
+                                placeholder="Укажите дату переезда.."
                                 :required="isNullish(form.unknownMovingDate)"
+                                :min-date="new Date()"
                             />
                             <div class="form__row mt-1">
                                 <RadioOptions
@@ -146,7 +156,7 @@
                                 />
                             </div>
                         </div>
-                        <Input
+                        <UiInput
                             v-model="form.pricePerFloor"
                             maska="##########"
                             label="Цена"
@@ -175,7 +185,7 @@
                             :v-first="v$.form.minArea"
                             :v-second="v$.form.maxArea"
                         />
-                        <Input
+                        <UiInput
                             v-model="form.electricity"
                             maska="##########"
                             label="Электричество"
@@ -183,8 +193,8 @@
                             unit="кВт"
                             type="number"
                         />
-                    </FormGroup>
-                    <FormGroup>
+                    </UiFormGroup>
+                    <UiFormGroup>
                         <AnimationTransition :speed="0.4">
                             <div v-if="v$.form.objectTypesGeneral.$error" class="col-12">
                                 <DashboardChip class="dashboard-bg-danger-l w-100 text-center">
@@ -219,8 +229,8 @@
                             :options="objectPurposesWithSectionsOptions.plot"
                             class="col-md-4"
                         />
-                    </FormGroup>
-                    <FormGroup v-if="formData">
+                    </UiFormGroup>
+                    <UiFormGroup v-if="isEditMode">
                         <MultiSelect
                             v-model="form.status"
                             :v="v$.form.status"
@@ -239,16 +249,16 @@
                             class="col-6"
                             :options="PassiveWhyRequest"
                         />
-                        <Textarea
+                        <UiTextarea
                             v-model="form.passive_why_comment"
                             :disabled="!isPassive"
                             class="col-12"
                             label="Описание причины пассива"
                         />
-                    </FormGroup>
+                    </UiFormGroup>
                 </Tab>
                 <Tab name="Коммуникации/инфраструктура">
-                    <FormGroup class="mb-4">
+                    <UiFormGroup class="mb-4">
                         <CheckboxOptions
                             v-model="form.gateTypes"
                             class="col-6"
@@ -263,8 +273,8 @@
                             property="object_class"
                             :options="ObjectClassList"
                         />
-                    </FormGroup>
-                    <FormGroup class="mb-4">
+                    </UiFormGroup>
+                    <UiFormGroup class="mb-4">
                         <SwitchSlider v-model="form.heated" class="col-6" label="Отопление" />
                         <SwitchSlider v-model="form.water" class="col-6" label="Вода" />
                         <SwitchSlider v-model="form.gaz" class="col-6" label="Газ" />
@@ -277,7 +287,7 @@
                             class="col-6"
                             label="Ж/Д ветка"
                         >
-                            <Input
+                            <UiInput
                                 v-model="form.trainLineLength"
                                 :disabled="!form.trainLine"
                                 unit="м"
@@ -285,8 +295,8 @@
                             />
                         </SwitchSlider>
                         <SwitchSlider v-model="form.haveCranes" class="col-6" label="Краны" />
-                    </FormGroup>
-                    <FormGroup>
+                    </UiFormGroup>
+                    <UiFormGroup>
                         <Switch
                             v-model="form.firstFloorOnly"
                             :transform="Number"
@@ -303,26 +313,23 @@
                             true-title="Только антипыль"
                             only-true
                         />
-                    </FormGroup>
+                    </UiFormGroup>
                 </Tab>
                 <Tab name="Описание">
                     <VueEditor v-model="form.description" class="col-12" />
                 </Tab>
             </Tabs>
-            <FormGroup class="mt-3">
-                <div class="d-flex gap-2 mx-auto">
-                    <Submit success>
-                        {{ formData ? 'Сохранить' : 'Создать' }}
-                    </Submit>
-                    <Button danger>Отмена</Button>
-                </div>
-            </FormGroup>
-        </Form>
-    </Modal>
+        </UiForm>
+        <template #actions="{ close }">
+            <UiButton @click="submit" color="success-light" small icon="fa-solid fa-check">
+                Сохранить
+            </UiButton>
+            <UiButton @click="close" color="light" small icon="fa-solid fa-ban">Отмена</UiButton>
+        </template>
+    </UiModal>
 </template>
 
 <script setup>
-import useVuelidate from '@vuelidate/core';
 import {
     DealTypeList,
     DirectionList,
@@ -333,19 +340,16 @@ import {
     PassiveWhyRequest,
     unknownMovingDate
 } from '@/const/const.js';
-import Form from '@/components/common/Forms/Form.vue';
-import FormGroup from '@/components/common/Forms/FormGroup.vue';
-import Input from '@/components/common/Forms/Input.vue';
+import UiForm from '@/components/common/Forms/UiForm.vue';
+import UiFormGroup from '@/components/common/Forms/UiFormGroup.vue';
+import UiInput from '@/components/common/Forms/UiInput.vue';
 import MultiSelect from '@/components/common/Forms/MultiSelect.vue';
-import Textarea from '@/components/common/Forms/Textarea.vue';
-import Submit from '@/components/common/Forms/FormSubmit.vue';
-import Modal from '@/components/common/Modal.vue';
+import UiTextarea from '@/components/common/Forms/UiTextarea.vue';
 import Loader from '@/components/common/Loader.vue';
 import CheckboxChip from '@/components/common/Forms/CheckboxChip.vue';
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
 import DoubleInput from '@/components/common/Forms/DoubleInput.vue';
 import { areaRangeValidators, ceilingHeightValidators } from '@//validators/fields';
-import { cloneObject } from '@/utils/helpers/object/cloneObject.js';
 import ObjectTypePicker from '@/components/common/Forms/ObjectTypePicker.vue';
 import { objectPurposesWithSectionsOptions } from '@/const/options/object.options.js';
 import { validationRulesForRequest } from '@/validators/rules/request.js';
@@ -364,11 +368,14 @@ import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
 import api from '@/api/api.js';
 import { isNullish } from '@/utils/helpers/common/isNullish.js';
 import CompanyPicker from '@/components/common/Forms/CompanyPicker/CompanyPicker.vue';
-import Button from '@/components/common/Button.vue';
 import ConsultantPicker from '@/components/common/Forms/ConsultantPicker/ConsultantPicker.vue';
 import { useConsultantsOptions } from '@/composables/options/useConsultantsOptions.js';
 import { useRegionsOptions } from '@/composables/options/useRegionsOptions.js';
-import { useValidationNotify } from '@/composables/useValidationNotify.js';
+import UiModal from '@/components/common/UI/UiModal.vue';
+import UiButton from '@/components/common/UI/UiButton.vue';
+import { useFormData } from '@/utils/use/useFormData.js';
+import { useValidation } from '@/composables/useValidation.js';
+import UiDateInput from '@/components/common/Forms/UiDateInput.vue';
 
 const emit = defineEmits(['close', 'created', 'updated']);
 const props = defineProps({
@@ -385,53 +392,56 @@ const props = defineProps({
 const { getConsultantsOptions } = useConsultantsOptions();
 const { getClearedRegionsOptions } = useRegionsOptions();
 
-const form = reactive({
-    company_id: null,
-    name: null,
-    id: null,
-    dealType: null,
-    regions: [],
-    expressRequest: null,
-    distanceFromMKAD: null,
-    distanceFromMKADnotApplicable: null,
-    minArea: null,
-    maxArea: null,
-    minCeilingHeight: null,
-    maxCeilingHeight: null,
-    firstFloorOnly: null,
-    objectClasses: [],
-    heated: null,
-    gateTypes: [],
-    antiDustOnly: null,
-    electricity: '',
-    haveCranes: null,
-    trainLine: null,
-    trainLineLength: null,
-    status: 1,
-    consultant_id: null,
-    description: null,
-    pricePerFloor: null,
-    objectTypes: [],
-    objectTypesGeneral: [],
-    directions: [],
-    districts: [],
-    movingDate: null,
-    unknownMovingDate: null,
-    passive_why: null,
-    passive_why_comment: null,
-    water: null,
-    gaz: null,
-    steam: null,
-    sewerage: null,
-    shelving: null,
-    outside_mkad: null,
-    region_neardy: null,
-    contact_id: null
-});
+const { form, isEditMode } = useFormData(
+    reactive({
+        company_id: null,
+        name: null,
+        id: null,
+        dealType: null,
+        regions: [],
+        expressRequest: null,
+        distanceFromMKAD: null,
+        distanceFromMKADnotApplicable: null,
+        minArea: null,
+        maxArea: null,
+        minCeilingHeight: null,
+        maxCeilingHeight: null,
+        firstFloorOnly: null,
+        objectClasses: [],
+        heated: null,
+        gateTypes: [],
+        antiDustOnly: null,
+        electricity: '',
+        haveCranes: null,
+        trainLine: null,
+        trainLineLength: null,
+        status: 1,
+        consultant_id: null,
+        description: null,
+        pricePerFloor: null,
+        objectTypes: [],
+        objectTypesGeneral: [],
+        directions: [],
+        districts: [],
+        movingDate: null,
+        unknownMovingDate: null,
+        passive_why: null,
+        passive_why_comment: null,
+        water: null,
+        gaz: null,
+        steam: null,
+        sewerage: null,
+        shelving: null,
+        outside_mkad: null,
+        region_neardy: null,
+        contact_id: null
+    }),
+    props.formData
+);
 
 const isLoading = ref(false);
 
-const v$ = useVuelidate({ form: validationRulesForRequest }, { form });
+const { v$, validate } = useValidation({ form: validationRulesForRequest }, { form });
 
 const formCeilingHeightValidators = computed(() => ceilingHeightValidators(form.maxCeilingHeight));
 const formAreaValidators = computed(() => areaRangeValidators(form.maxArea));
@@ -482,21 +492,20 @@ const createRequest = async () => {
     }
 };
 
-const { validateWithNotify } = useValidationNotify(v$);
+async function submit() {
+    const isValid = await validate();
+    if (!isValid) return;
 
-const onSubmit = async () => {
-    validateWithNotify();
+    normalizeForm();
+    isLoading.value = true;
 
-    if (!v$.value.form.$error) {
-        normalizeForm();
-        isLoading.value = true;
-
-        if (props.formData) await updateRequest();
+    try {
+        if (isEditMode.value) await updateRequest();
         else await createRequest();
-
+    } finally {
         isLoading.value = false;
     }
-};
+}
 
 const onChangeDistanceFromMKADnotApplicable = () => {
     if (form.distanceFromMKADnotApplicable) form.distanceFromMKAD = null;
@@ -538,7 +547,6 @@ onBeforeMount(() => {
     }
 
     if (props.formData) {
-        Object.assign(form, cloneObject(props.formData));
         normalizeFormData();
         searchContacts();
     }

@@ -5,7 +5,7 @@
                 <a v-show="handOverBtnVisisble" @click.prevent="clickHandOver" class="bg-primary text-light px-2 py-1">
                     Передать
                 </a>
-                <form v-show="!handOverBtnVisisble" @submit.prevent="submitForm">
+                <UiForm v-show="!handOverBtnVisisble" @submit.prevent="submitForm">
                     <div class="input-group m-0">
                         <p>Выберите нового брокера</p>
                         <div class="row no-gutters">
@@ -52,7 +52,7 @@
                             </div>
                         </div>
                     </div>
-                </form>
+                </UiForm>
             </div>
             <div v-else>
                 <p class="text-success_alt">[ Обработано ]</p>
@@ -66,10 +66,12 @@ import Multiselect from '@vueform/multiselect';
 import { mapActions, mapGetters } from 'vuex';
 import useValidate from '@vuelidate/core';
 import { helpers, required } from '@vuelidate/validators';
+import UiForm from '@/components/common/Forms/UiForm.vue';
 
 export default {
     name: 'HeaderNotificationsActions',
     components: {
+        UiForm,
         Multiselect
     },
     props: {

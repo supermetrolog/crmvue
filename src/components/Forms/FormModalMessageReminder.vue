@@ -14,7 +14,7 @@
                 <DatePicker v-model="form.notify_at" size="70px" class="mx-auto" />
             </template>
             <template #3>
-                <Textarea v-model="form.message" label="Описание" />
+                <UiTextarea v-model="form.message" label="Описание" />
             </template>
         </Stepper>
     </Modal>
@@ -27,7 +27,7 @@ import Modal from '@/components/common/Modal.vue';
 import UserPicker from '@/components/common/Forms/UserPicker/UserPicker.vue';
 import { helpers, required } from '@vuelidate/validators';
 import useVuelidate from '@vuelidate/core';
-import Textarea from '@/components/common/Forms/Textarea.vue';
+import UiTextarea from '@/components/common/Forms/UiTextarea.vue';
 import { useStore } from 'vuex';
 import { onUnmounted, ref, shallowRef } from 'vue';
 import { useAsyncPopup } from '@/composables/useAsyncPopup.js';

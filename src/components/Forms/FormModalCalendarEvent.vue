@@ -2,7 +2,7 @@
     <Modal @close="cancel" :show="isVisible" title="Новое событие" width="1200">
         <Stepper @complete="submit" :steps="steps" :v="v$.form" keep-alive>
             <template #1>
-                <Form>
+                <UiForm>
                     <FormGroup>
                         <Input
                             v-model="form.description.title"
@@ -44,7 +44,7 @@
                             </div>
                         </div>
                     </FormGroup>
-                </Form>
+                </UiForm>
             </template>
             <template #2>
                 <UserPicker v-model="form.user_id" single :users="consultants" />
@@ -93,11 +93,11 @@
 import Modal from '@/components/common/Modal.vue';
 import useValidate from '@vuelidate/core';
 import { helpers, required } from '@vuelidate/validators';
-import Form from '@/components/common/Forms/Form.vue';
+import UiForm from '@/components/common/Forms/UiForm.vue';
 import { useAsyncPopup } from '@/composables/useAsyncPopup.js';
-import Input from '@/components/common/Forms/Input.vue';
-import FormGroup from '@/components/common/Forms/FormGroup.vue';
-import Textarea from '@/components/common/Forms/Textarea.vue';
+import UiInput from '@/components/common/Forms/UiInput.vue';
+import UiFormGroup from '@/components/common/Forms/UiFormGroup.vue';
+import UiTextarea from '@/components/common/Forms/UiTextarea.vue';
 import MultiSelect from '@/components/common/Forms/MultiSelect.vue';
 import UserPicker from '@/components/common/Forms/UserPicker/UserPicker.vue';
 import Stepper from '@/components/common/Stepper.vue';
@@ -112,16 +112,16 @@ import ColorPicker from '@/components/common/Forms/ColorPicker.vue';
 export default {
     name: 'FormModalCalendarEvent',
     components: {
+        UiForm,
         ColorPicker,
         Switch,
         DashboardChip,
         Stepper,
         UserPicker,
         MultiSelect,
-        Textarea,
-        FormGroup,
-        Input,
-        Form,
+        Textarea: UiTextarea,
+        FormGroup: UiFormGroup,
+        Input: UiInput,
         Modal,
         VueDatePicker
     },

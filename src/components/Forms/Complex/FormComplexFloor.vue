@@ -7,13 +7,13 @@
         has-tabs
     >
         <Loader v-if="isLoading" />
-        <Form @submit="onSubmit">
+        <UiForm @submit="onSubmit">
             <Tabs :options="{ useUrlFragment: false, defaultTabHash: 'main' }">
                 <Tab id="main" name="Основное">
                     <template v-if="isRealFloor">
                         <div class="row mb-2">
                             <template v-if="isMezzanine">
-                                <Input
+                                <UiInput
                                     v-model="form.area_mezzanine_full"
                                     :v="v$.form.area_mezzanine_full"
                                     label="S - мезанина"
@@ -33,7 +33,7 @@
                                 </InputRelation>
                             </template>
                             <template v-else>
-                                <Input
+                                <UiInput
                                     v-model="form.area_floor_full"
                                     :v="v$.form.area_floor_full"
                                     label="S - пола"
@@ -66,7 +66,7 @@
                             />
                         </div>
                         <div class="row mb-2">
-                            <Input
+                            <UiInput
                                 v-model="form.area_office_full"
                                 :v="v$.form.area_office_full"
                                 label="S - офисов"
@@ -96,7 +96,7 @@
                             />
                         </div>
                         <div class="row">
-                            <Input
+                            <UiInput
                                 v-model="form.area_tech_full"
                                 :v="v$.form.area_tech_full"
                                 label="S - техническая"
@@ -154,7 +154,7 @@
                     </template>
                     <template v-else>
                         <div class="row">
-                            <Input
+                            <UiInput
                                 v-model="form.area_field_full"
                                 :v="v$.form.area_field_full"
                                 label="S - участка"
@@ -334,7 +334,7 @@
             <div class="row">
                 <Submit class="col-3 mx-auto" small success>Сохранить</Submit>
             </div>
-        </Form>
+        </UiForm>
     </Modal>
 </template>
 
@@ -350,10 +350,10 @@ import {
     waterTypes
 } from '@/const/types';
 import DoubleInput from '@/components/common/Forms/DoubleInput.vue';
-import Input from '@/components/common/Forms/Input.vue';
+import UiInput from '@/components/common/Forms/UiInput.vue';
 import MultiSelect from '@/components/common/Forms/MultiSelect.vue';
 import Submit from '@/components/common/Forms/FormSubmit.vue';
-import Form from '@/components/common/Forms/Form.vue';
+import UiForm from '@/components/common/Forms/UiForm.vue';
 import { computed, onBeforeMount, reactive, shallowRef } from 'vue';
 import useVuelidate from '@vuelidate/core';
 import { validationRulesForFloor } from '@/validators/rules/floor.js';

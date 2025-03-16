@@ -75,10 +75,10 @@
                     <DashboardCard class="dashboard-task-table">
                         <template #header>
                             <div class="dashboard-task-table__header">
-                                <Form>
-                                    <FormGroup class="align-items-end">
+                                <UiForm>
+                                    <UiFormGroup class="align-items-end">
                                         <div class="col-8 d-flex align-items-end">
-                                            <Input
+                                            <UiInput
                                                 v-model="querySearch"
                                                 label="Поиск"
                                                 class="w-100"
@@ -122,8 +122,8 @@
                                                 </Button>
                                             </div>
                                         </div>
-                                    </FormGroup>
-                                </Form>
+                                    </UiFormGroup>
+                                </UiForm>
                             </div>
                         </template>
                         <AnimationTransition :speed="0.2">
@@ -162,13 +162,13 @@ import DashboardTableTasksFilters from '@/components/Dashboard/Table/DashboardTa
 import TaskTagOption from '@/components/common/Forms/TaskTagOption.vue';
 import DashboardTableTasks from '@/components/Dashboard/Table/DashboardTableTasks.vue';
 import DashboardCard from '@/components/Dashboard/Card/DashboardCard.vue';
-import Form from '@/components/common/Forms/Form.vue';
-import FormGroup from '@/components/common/Forms/FormGroup.vue';
+import UiForm from '@/components/common/Forms/UiForm.vue';
+import UiFormGroup from '@/components/common/Forms/UiFormGroup.vue';
 import MultiSelect from '@/components/common/Forms/MultiSelect.vue';
 import PaginationClassic from '@/components/common/Pagination/PaginationClassic.vue';
 import ConsultantPicker from '@/components/common/Forms/ConsultantPicker/ConsultantPicker.vue';
 import Button from '@/components/common/Button.vue';
-import Input from '@/components/common/Forms/Input.vue';
+import UiInput from '@/components/common/Forms/UiInput.vue';
 import { useTagsOptions } from '@/composables/options/useTagsOptions.js';
 import { useConsultantsOptions } from '@/composables/options/useConsultantsOptions.js';
 import { useDelayedLoader } from '@/composables/useDelayedLoader.js';
