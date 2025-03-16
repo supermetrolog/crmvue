@@ -17,7 +17,7 @@
                 :key="contact.entity.id"
                 ref="selectedContactsEls"
                 v-model:form="contact.form"
-                @set-as-unavailable="setContactAsUnavailable(contact)"
+                @open-modal="openCallModal(contact)"
                 @skip="suggestNextContact"
                 @schedule-call="$emit('schedule-call', contact.entity)"
                 :contact="contact.entity"
@@ -41,15 +41,11 @@
             :contacts="availableContacts"
         />
         <MessengerQuizFormContactUnavailableModal
-            v-model:visible="unavailableModalIsVisible"
-            v-model:form="currentUnavailableForm"
+            v-model:visible="callModalIsVisible"
+            v-model:form="currentCallContactForm"
             @confirm="confirmUnavailableContact"
-            @cancel="cancelUnavailableContact"
-        />
-        <MessengerQuizFormRemainingWindow
-            @show="showSurvey"
-            @schedule-call="scheduleContactsCall"
-            :last-survey="lastSurvey"
+            @cancel="cancelCall"
+            @schedule-call="$emit('schedule-call', currentCallContactForm.entity)"
         />
         <UiModal
             v-model:visible="contactPickerIsVisible"
@@ -63,20 +59,20 @@
                 @selected="selectedContact = $event"
                 label="Список контактов"
                 :contacts="contacts"
+                grid
             />
-            <template #footer="{ close }">
+            <template #actions="{ close }">
                 <UiButton
                     @click="scheduleCall"
-                    rect
-                    shadow
                     uppercase
                     bolder
                     :disabled="!selectedContact"
                     color="success"
+                    icon="fa-solid fa-check"
                 >
                     Сохранить
                 </UiButton>
-                <UiButton @click="close" rect shadow uppercase bolder color="danger">
+                <UiButton @click="close" uppercase bolder color="light" icon="fa-solid fa-ban">
                     Отмена
                 </UiButton>
             </template>
@@ -252,7 +248,9 @@ const allSelectedContactsIsNegativeOrSkipped = computed(() =>
 );
 
 const hasAvailableContact = computed(() =>
-    selectedContacts.value.some(element => element.form.available === true)
+    selectedContacts.value.some(
+        element => element.form.available === true && !element.form.reason === 1
+    )
 );
 
 const formIsDisabled = computed(() => {
@@ -285,5 +283,23 @@ function scheduleContactsCall() {
 function scheduleCall() {
     contactPickerIsVisible.value = false;
     emit('schedule-call', selectedContact.value);
+}
+
+// call modal
+
+const callModalIsVisible = ref(false);
+const currentCallContactForm = shallowRef(null);
+
+function openCallModal(contact) {
+    currentCallContactForm.value = contact;
+
+    callModalIsVisible.value = true;
+
+    // setContactAsUnavailable(contact)
+}
+
+function cancelCall() {
+    callModalIsVisible.value = false;
+    currentCallContactForm.value = null;
 }
 </script>

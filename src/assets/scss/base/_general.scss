@@ -156,7 +156,7 @@ main {
         }
 
         &--preset-range {
-            background-color: #e8e8e8;
+            background-color: variables.$color_grey_light;
             font-weight: 500;
             font-size: 14px;
             @include mixins.transition(background-color);

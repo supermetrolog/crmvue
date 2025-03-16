@@ -47,7 +47,7 @@
                     label="Описание запроса"
                 />
             </UiForm>
-            <template #footer="{ close }">
+            <template #actions="{ close }">
                 <UiButton @click="createOrUpdateRequest" color="success">Сохранить</UiButton>
                 <UiButton @click="close" color="danger">Отмена</UiButton>
             </template>

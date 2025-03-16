@@ -2,10 +2,18 @@
     <div class="messenger-quiz__surveys">
         <Spinner v-if="surveysIsLoading" small label="Загрузка завершенных опросов.." class="" />
         <template v-else>
-            <Button v-tippy="'В разработке..'" @click="showAllSurveys" class="ml-auto" small icon>
-                <i class="fa-solid fa-eye"></i>
+            <UiButton
+                v-if="surveysCount > 3"
+                v-tippy="'В разработке..'"
+                @click="showAllSurveys"
+                class="ml-auto"
+                small
+                color="light"
+                icon="fa-solid fa-eye"
+                shadow
+            >
                 <span>({{ surveysCount }})</span>
-            </Button>
+            </UiButton>
             <MessengerQuizInlineElement
                 v-for="survey in surveys"
                 :key="survey.id"
@@ -19,7 +27,7 @@
 import { onMounted, ref } from 'vue';
 import { useNotify } from '@/utils/use/useNotify.js';
 import MessengerQuizInlineElement from '@/components/Messenger/Quiz/MessengerQuizInlineElement.vue';
-import Button from '@/components/common/Button.vue';
+import UiButton from '@/components/common/UI/UiButton.vue';
 import { useStore } from 'vuex';
 import { useDelayedLoader } from '@/composables/useDelayedLoader.js';
 import Spinner from '@/components/common/Spinner.vue';

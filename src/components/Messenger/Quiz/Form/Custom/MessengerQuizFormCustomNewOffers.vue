@@ -47,7 +47,7 @@
                     label="Описание предложения"
                 />
             </UiForm>
-            <template #footer="{ close }">
+            <template #actions="{ close }">
                 <UiButton @click="createOrUpdateOffer" color="success">Сохранить</UiButton>
                 <UiButton @click="close" color="danger">Отмена</UiButton>
             </template>

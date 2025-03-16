@@ -38,6 +38,7 @@
         />
         <MessengerQuizFormUnavailableWindow
             v-if="canBeCreated && !isLoading && !hasAvailableContact"
+            @show-call-question="$emit('show-call-question')"
         />
     </div>
 </template>
@@ -54,7 +55,7 @@ import MessengerQuizFormUnavailableWindow from '@/components/Messenger/Quiz/Form
 import { useStore } from 'vuex';
 import { messenger } from '@/const/messenger.js';
 
-defineEmits(['object-sold', 'object-destroyed']);
+defineEmits(['object-sold', 'object-destroyed', 'show-call-question']);
 const props = defineProps({
     questions: {
         type: Array,

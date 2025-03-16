@@ -15,7 +15,7 @@
     }
 
     &.current {
-        background-color: rgba(16, 185, 129, 0.6)!important;
+        background-color: variables.$bg-success-m!important;
     }
 
     &.archived {

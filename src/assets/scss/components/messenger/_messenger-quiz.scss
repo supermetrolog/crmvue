@@ -5,18 +5,17 @@
     font-size: 14px;
     height: 100vh;
     overflow-y: auto;
+    background-color: #F3F3F3;
     @include mixins.flex-box($d: column);
 
     &__wrapper {
         padding: 10px;
         position: relative;
-        background-color: #F3F3F3;
         border-bottom: 1px solid rgba(0, 0, 0, .1);
     }
 
     &__header {
         padding: 5px 10px;
-        background-color: #566B6E;
         color: #fff;
         @include mixins.flex-box($a: center, $gap: 5px);
     }
@@ -106,8 +105,9 @@
     }
 
     &__surveys {
+        background-color: #F3F3F3;
+        border-bottom: 1px solid rgba(0, 0, 0, .1);
         @include mixins.flex-box($d: column, $gap: 5px);
-        margin: 0 10px;
     }
 
     &__disabled {
@@ -528,7 +528,7 @@
                 border-color: rgba(255, 255, 255, .5);
 
                 &.danger {
-                    background-color: rgba(254, 106, 73, 0.6);
+                    background-color: variables.$bg-danger-m;
                 }
             }
         }
@@ -669,7 +669,7 @@
 }
 
 .messenger-quiz-inline-element {
-    background-color: rgba(204, 165, 29, 0.8);
+    background-color: variables.$color_grey_light;
     padding: 5px 10px;
     @include mixins.flex-box($a: center, $gap: 5px);
 
@@ -678,8 +678,9 @@
     }
 
     &__button {
-        color: #fff;
-        background-color: #11698d;
+        color: #000;
+        background-color: #fff;
+        border: 1px solid rgba(0, 0, 0, .1);
 
         &:hover {
             background-color: variables.$bg-success!important;

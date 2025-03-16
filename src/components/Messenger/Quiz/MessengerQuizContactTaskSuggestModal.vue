@@ -3,7 +3,7 @@
         <h3 class="text-center">
             Заполнить данные контакта или создать задачу для офис-менеджера?
         </h3>
-        <template #footer>
+        <template #actions>
             <Button @click="$emit('create-contact')" small>Заполнить контакта</Button>
             <Button @click="$emit('create-task')" small>Создать задачу</Button>
         </template>

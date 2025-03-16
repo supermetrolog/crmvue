@@ -5,7 +5,7 @@
         <MessengerQuizPreviews
             v-show="!isGeneralLoading"
             @last-survey-loaded="lastSurveyOnLoad"
-            class="my-2"
+            class="p-2"
         />
         <Spinner
             v-if="isGeneralLoading || lastSurveyIsLoading"

@@ -53,7 +53,7 @@
                         </div>
                     </template>
                 </MultiSelect>
-                <template #footer="{ close }">
+                <template #actions="{ close }">
                     <UiButton
                         @click="runPurposesFix"
                         :disabled="!purposesFixForm.object_id"

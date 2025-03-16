@@ -1,49 +1,53 @@
 <template>
     <div class="messenger-quiz__disabled">
-        <Modal
+        <UiModal
             show
+            custom-close
             :blackout-opacity="0.1"
             :width="520"
             hide-header
             body-class="messenger-quiz__disabled-body"
+            title="Опрос заблокирован"
         >
-            <div class="text-center">
-                <i class="fa-solid fa-hand icon mb-2" />
-                <p class="fs-3 mb-3">Сегодня опрос уже пройден!</p>
-                <p>
-                    <i class="fa-regular fa-clock mr-1" />
-                    Заполнить новый можно через {{ remainingTimeLabel }}
-                </p>
+            <div class="d-flex align-items-center justify-content-center gap-3">
+                <i class="fa-solid fa-hand icon" />
+                <div>
+                    <p class="fs-3 mb-2 font-weight-semi">Сегодня опрос уже пройден!</p>
+                    <p>
+                        <i class="fa-regular fa-clock mr-1" />
+                        Заполнить новый можно через {{ remainingTimeLabel }}
+                    </p>
+                </div>
             </div>
-            <template #footer>
+            <template #actions>
                 <UiButton
                     @click="$emit('show')"
-                    rect
-                    shadow
-                    class="fs-2 font-weight-bold"
+                    class="font-weight-bold flex-grow-1"
+                    icon="fa-solid fa-arrow-up-right-from-square"
+                    color="light"
                     uppercase
+                    center
                 >
-                    <i class="fa-solid fa-arrow-up-right-from-square mr-1"></i>
-                    <span>Просмотреть опрос</span>
+                    Просмотреть опрос
                 </UiButton>
                 <UiButton
                     @click="$emit('schedule-call')"
-                    rect
-                    shadow
-                    class="fs-2 font-weight-bold"
+                    class="font-weight-bold flex-grow-1"
+                    icon="fa-solid fa-phone"
+                    color="light"
                     uppercase
+                    center
                 >
-                    <i class="fa-solid fa-phone mr-1"></i>
-                    <span>Запланировать звонок</span>
+                    Запланировать звонок
                 </UiButton>
             </template>
-        </Modal>
+        </UiModal>
     </div>
 </template>
 <script setup>
 import { toRef } from 'vue';
 import { useSurveyEditing } from '@/components/Survey/useSurveyEditing.js';
-import Modal from '@/components/common/Modal.vue';
+import UiModal from '@/components/common/UI/UiModal.vue';
 import UiButton from '@/components/common/UI/UiButton.vue';
 
 defineEmits(['show', 'schedule-call']);
