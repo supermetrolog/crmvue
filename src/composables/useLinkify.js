@@ -3,6 +3,7 @@ import { tryOnScopeDispose, unrefElement, useClipboard, useEventListener } from 
 import { useNotify } from '@/utils/use/useNotify.js';
 import linkifyHtml from 'linkify-html';
 import { find as linkifyFind } from 'linkifyjs';
+import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
 
 let lastCopiedNode = null;
 
@@ -32,7 +33,15 @@ export function useLinkify(text, target, options = {}) {
 
     const _target = computed(() => unrefElement(target));
 
-    const textWithLinks = computed(() => linkifyHtml(toValue(text), localeOptions));
+    const textWithLinks = computed(() => {
+        const textValue = toValue(text);
+
+        if (isNotNullish(textValue)) {
+            return linkifyHtml(textValue, localeOptions);
+        }
+
+        return null;
+    });
 
     const links = ref([]);
 
