@@ -1,31 +1,27 @@
 <template>
     <div class="task-card-history-event__content">
-        <TaskCardHistoryEventRow label="Описание">
+        <TaskCardHistoryEventRow label="Заголовок">
             <div class="d-flex align-items-center">
                 <DashboardChip
-                    v-if="prevSnapshot?.message"
-                    v-tippy="{ content: prevSnapshot?.message, maxWidth: 600 }"
+                    v-if="prevSnapshot?.title"
+                    v-tippy="{ content: prevSnapshot?.title, maxWidth: 600 }"
                     class="task-card-history-event__help danger"
                     with-icon
                 >
-                    <span>Старое</span>
+                    <span>Старый</span>
                     <i v-if="prevSnapshot" class="fa-regular fa-circle-question"></i>
                 </DashboardChip>
                 <DashboardChip v-else class="task-card-history-event__help">
-                    <span>Без описания</span>
+                    <span>Без заголовка</span>
                 </DashboardChip>
                 <i class="fa-solid fa-arrow-right-long mx-2"></i>
                 <DashboardChip
-                    v-if="snapshot.message"
-                    v-tippy="{ content: snapshot.message, maxWidth: 600 }"
+                    v-tippy="{ content: snapshot.title, maxWidth: 600 }"
                     class="task-card-history-event__help success"
                     with-icon
                 >
-                    <span>Новое</span>
+                    <span>Новый</span>
                     <i class="fa-regular fa-circle-question"></i>
-                </DashboardChip>
-                <DashboardChip v-else class="task-card-history-event__help">
-                    <span>Без описания</span>
                 </DashboardChip>
             </div>
         </TaskCardHistoryEventRow>

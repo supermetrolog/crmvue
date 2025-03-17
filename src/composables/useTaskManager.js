@@ -20,6 +20,7 @@ export function useTaskManager() {
             user_id = store.getters?.moderator?.id,
             observers = [],
             message = null,
+            title = null,
             start = dayjs().toDate(),
             end = dayjs().add(DEFAULT_TASK_DURATION, 'day').toDate(),
             step = TASK_FORM_STEPS.USER,
@@ -31,6 +32,7 @@ export function useTaskManager() {
 
         return show({
             message,
+            title,
             end,
             start,
             user_id,

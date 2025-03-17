@@ -250,7 +250,7 @@ async function onCompanyDestroyed() {
     const company = store.state.Messenger.currentPanel;
 
     const taskPayload = await createTaskWithTemplate({
-        message: `Компания ${getCompanyShortName(company)} ликвидирована, отправить в пассив`,
+        title: `Компания ${getCompanyShortName(company)} ликвидирована, отправить в пассив`,
         step: TASK_FORM_STEPS.MESSAGE
     });
 

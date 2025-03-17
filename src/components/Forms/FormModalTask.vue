@@ -39,7 +39,7 @@
                     <UiDateInput
                         v-model="form.date.start"
                         :presets="startPresets"
-                        :min-date="new Date()"
+                        :min-date="!isEditing ? new Date() : undefined"
                         :v="v$.form.date.start"
                         presets-label="Начать через"
                         placeholder="Дата старта"
@@ -71,18 +71,26 @@
             <UiFormDivider />
             <UiFormGroup>
                 <UiTextarea
+                    v-model="form.title"
+                    :v="v$.form.title"
+                    :min-height="50"
+                    :max-height="70"
+                    auto-height
+                    class="col-12"
+                    label="3. Заголовок задачи"
+                    placeholder="Заполните заголовок.."
+                    required
+                />
+                <UiTextarea
                     v-model="form.message"
                     :autofocus="autofocusMessage"
-                    :v="v$.form.message"
-                    minlength="16"
                     :min-height="70"
                     :max-height="200"
                     auto-height
                     :class="{ 'col-7': hasCustomDescription, 'col-12': !hasCustomDescription }"
-                    label="3. Описание задачи"
+                    label="Описание задачи"
                     placeholder="Заполните описание.."
                     helper="Опишите задачу. Что нужно сделать, почему и с каким объектом/компанией это связано!"
-                    required
                 />
                 <FormModalTaskDescription
                     v-if="hasCustomDescription"
@@ -145,7 +153,14 @@
 </template>
 <script setup>
 import Spinner from '@/components/common/Spinner.vue';
-import { helpers, minLength, minValue, required } from '@vuelidate/validators';
+import {
+    helpers,
+    maxLength,
+    minLength,
+    minValue,
+    required,
+    requiredIf
+} from '@vuelidate/validators';
 import UiTextarea from '@/components/common/Forms/UiTextarea.vue';
 import MultiSelect from '@/components/common/Forms/MultiSelect.vue';
 import TaskTagOption from '@/components/common/Forms/TaskTagOption.vue';
@@ -186,6 +201,7 @@ const additionalContent = shallowRef({});
 
 const form = ref({
     message: null,
+    title: null,
     date: {
         end: null,
         start: new Date()
@@ -215,6 +231,7 @@ async function getObserversConsultantsOptions() {
 function clearForm() {
     form.value = {
         message: null,
+        title: null,
         date: {
             end: null,
             start: null
@@ -246,6 +263,7 @@ onPopupShowed(() => {
     if (props.value) {
         form.value = {
             message: props.value.message,
+            title: props.value.title,
             date: {
                 end: props.value.end ? dayjs(props.value.end).toDate() : null,
                 start: props.value.start ? dayjs(props.value.start).toDate() : new Date()
@@ -273,7 +291,11 @@ const { v$, validate } = useValidation(
         form: {
             date: {
                 start: {
-                    required: helpers.withMessage('Выберите дату старта задачи!', required)
+                    required: helpers.withMessage('Выберите дату старта задачи!', required),
+                    minValue: helpers.withMessage(
+                        'Дата начала задачи должна быть больше текущей даты',
+                        requiredIf(() => !isEditing.value, minValue(new Date()))
+                    )
                 },
                 end: {
                     required: helpers.withMessage('Выберите дату истечения задачи!', required),
@@ -286,11 +308,15 @@ const { v$, validate } = useValidation(
             user_id: {
                 minLength: helpers.withMessage('Выберите сотрудника!', required)
             },
-            message: {
-                required: helpers.withMessage('Описание задачи является обязательным!', required),
+            title: {
+                required: helpers.withMessage('Заголовок задачи является обязательным!', required),
                 minLength: helpers.withMessage(
-                    'Описание задачи не может быть меньше 16 символов!',
+                    'Заголовок задачи не может быть меньше 16 символов!',
                     minLength(16)
+                ),
+                maxLength: helpers.withMessage(
+                    'Заголовок задачи не может быть больше 255 символов!',
+                    maxLength(255)
                 )
             }
         }
@@ -304,6 +330,7 @@ function formToPayload() {
         end: form.value.date.end,
         user_id: Number(form.value.user_id),
         message: form.value.message,
+        title: form.value.title,
         status: form.value.status,
         tag_ids: form.value.tags,
         observer_ids: form.value.observers,
@@ -313,8 +340,6 @@ function formToPayload() {
 }
 
 async function submit() {
-    console.log(form.value);
-
     const isValid = await validate();
     if (!isValid) return;
 

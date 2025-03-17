@@ -372,10 +372,12 @@ const scheduledCalls = ref([]);
 async function createScheduleCallTask(contact) {
     const contactFullName = getContactFullName(contact);
 
+    const message = `Прозвонить ${contactFullName} (компания  (#${contact.company_id}))`;
+
     const taskPayload = await createTaskWithTemplate({
-        message: `Прозвонить ${contactFullName} (компания #${contact.company_id})`,
+        title: message.slice(0, 255),
+        message: message.length > 255 ? message : null,
         step: TASK_FORM_STEPS.DATE,
-        end: dayjs().add(SCHEDULING_CALL_DURATION, 'day').toDate(),
         user_id: currentUser.value.id,
         callPresets: true
     });
@@ -398,7 +400,6 @@ async function createScheduleCallTask(contact) {
         });
     }
 
-    // TODO: Поменять end на start, когда поменяем форму
     // TODO: Добавить шаблон сообщения для schedule-call
 
     const messagePayload = {
@@ -447,7 +448,7 @@ async function createObjectMessageWithTask(object, messagePayload, taskPayload) 
 
 async function onObjectDestroyed(object) {
     const taskPayload = await createTaskWithTemplate({
-        message: `Объект #${object.id} (${object.company_name}) снесен, отправить в пассив`,
+        title: `Объект #${object.id} (${object.company_name}) снесен, отправить в пассив`,
         step: TASK_FORM_STEPS.MESSAGE
     });
 
@@ -463,7 +464,7 @@ async function onObjectDestroyed(object) {
 
 async function onObjectSold(object) {
     const taskPayload = await createTaskWithTemplate({
-        message: `Объект #${object.id} (${object.company_name}) продан`,
+        title: `Объект #${object.id} (${object.company_name}) продан`,
         step: TASK_FORM_STEPS.MESSAGE
     });
 
@@ -479,7 +480,7 @@ async function onObjectSold(object) {
 
 async function createContactTask() {
     const taskPayload = await createTaskWithTemplate({
-        message: `Добавить новый контакт в компании ${getCompanyShortName(store.state.Messenger.currentPanel)}`,
+        title: `Добавить новый контакт в компании ${getCompanyShortName(store.state.Messenger.currentPanel)}`,
         step: TASK_FORM_STEPS.MESSAGE
     });
 

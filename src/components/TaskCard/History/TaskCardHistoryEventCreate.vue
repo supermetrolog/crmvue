@@ -37,8 +37,21 @@
                 </div>
                 <i v-else class="mt-1 fa-solid fa-minus"></i>
             </TaskCardHistoryEventRow>
+            <TaskCardHistoryEventRow label="Заголовок">
+                <DashboardChip
+                    v-if="snapshot.title"
+                    v-tippy="snapshot.title"
+                    class="task-card-history-event__help"
+                    with-icon
+                >
+                    <span>Показать</span>
+                    <i class="fa-regular fa-circle-question"></i>
+                </DashboardChip>
+                <i v-else class="mt-1 fa-solid fa-minus"></i>
+            </TaskCardHistoryEventRow>
             <TaskCardHistoryEventRow label="Описание">
                 <DashboardChip
+                    v-if="snapshot.message"
                     v-tippy="snapshot.message"
                     class="task-card-history-event__help"
                     with-icon
@@ -46,6 +59,7 @@
                     <span>Показать</span>
                     <i class="fa-regular fa-circle-question"></i>
                 </DashboardChip>
+                <i v-else class="mt-1 fa-solid fa-minus"></i>
             </TaskCardHistoryEventRow>
         </div>
     </div>

@@ -787,6 +787,7 @@
 }
 
 .messenger-quiz-template {
+    min-height: 200px;
     counter-reset: quiz-template 0;
 
     &.disabled {

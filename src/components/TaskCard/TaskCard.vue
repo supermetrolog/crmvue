@@ -18,8 +18,12 @@
         />
         <div class="task-card__content">
             <div class="task-card__column">
-                <div class="task-card__description mb-3">
-                    <p class="task-card__label">Задание</p>
+                <div class="task-card__description mb-1">
+                    <p class="task-card__label">Заголовок</p>
+                    <div ref="titleElement" class="task-card__title"></div>
+                </div>
+                <div v-if="task.message" class="task-card__description mb-3">
+                    <p class="task-card__label">Описание</p>
                     <div ref="messageElement" class="task-card__message"></div>
                 </div>
                 <TaskCardChatInfo
@@ -369,6 +373,10 @@ async function assign(payload) {
 const messageElement = useTemplateRef('messageElement');
 
 useLinkify(toRef(props.task, 'message'), messageElement);
+
+const titleElement = useTemplateRef('titleElement');
+
+useLinkify(toRef(props.task, 'title'), titleElement);
 
 // contacts
 

@@ -82,6 +82,14 @@
     &__message {
         word-break: break-word;
         max-height: 300px;
+        font-size: 15px;
+        overflow-y: auto;
+        overscroll-behavior-y: contain;
+    }
+
+    &__title {
+        word-break: break-word;
+        max-height: 300px;
         overflow-y: auto;
         overscroll-behavior-y: contain;
         font-weight: 500;

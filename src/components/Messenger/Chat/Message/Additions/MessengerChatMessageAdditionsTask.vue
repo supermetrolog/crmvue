@@ -32,7 +32,7 @@
         </template>
         <template #icon>
             <span
-                v-tippy="addition.message"
+                v-tippy="addition.title"
                 @click="showPreview"
                 class="messenger-chat-message-addition__icon rounded-icon bg-black"
                 :class="{ completed: isCompleted }"

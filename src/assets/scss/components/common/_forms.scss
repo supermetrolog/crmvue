@@ -556,6 +556,12 @@
         top: 37px;
     }
 
+    &__control[class*="col-"] {
+        .form__tooltip {
+            right: 25px;
+        }
+    }
+
     &__error {
         margin-top: 4px;
         font-size: 14px;

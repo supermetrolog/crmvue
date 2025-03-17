@@ -1,5 +1,4 @@
 import axios from 'axios';
-import dayjs from 'dayjs';
 import { responseToData } from '@/api/helpers/responseToData.js';
 import {
     responseToPaginatedData,
@@ -16,14 +15,10 @@ export default {
         const response = await axios.postForm(url, options);
         return responseToData(response);
     },
-    async create(options, config = { many: false }) {
+    async create(payload, config = { many: false }) {
         const url = config.many ? '/tasks/for-users' : URL;
 
-        const response = await axios.postForm(url, {
-            ...options,
-            end: dayjs(options.end).format('YYYY-MM-DD HH:mm:ss'),
-            start: dayjs().format('YYYY-MM-DD HH:mm:ss')
-        });
+        const response = await axios.postForm(url, payload);
 
         return responseToData(response);
     },
@@ -40,10 +35,7 @@ export default {
         return responseHasStatus(response, STATUS_SUCCESS);
     },
     async update(taskId, payload) {
-        const response = await axios.putForm(`${URL}/${taskId}`, {
-            ...payload,
-            end: dayjs(payload.end).format('YYYY-MM-DD HH:mm:ss')
-        });
+        const response = await axios.putForm(`${URL}/${taskId}`, payload);
         return responseToData(response);
     },
     async changeStatus(taskId, status, payload = {}) {
