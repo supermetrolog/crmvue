@@ -51,17 +51,33 @@
         font-weight: 500;
         border-radius: 5px;
         padding: 5px 10px;
+        animation: opacity 1.2s ease-in-out infinite alternate;
+    }
+}
+
+@keyframes opacity {
+    0% {
+        opacity: 1;
+    }
+    50% {
+        opacity: .8;
+    }
+    100% {
+        opacity: 1;
     }
 }
 
 @keyframes v-clipDelay {
     0% {
-        transform: rotate(0deg) scale(1);
+        transform: rotate(0deg);
+        opacity: 1;
     }
     50% {
-        transform: rotate(180deg) scale(0.98);
+        transform: rotate(180deg);
+        opacity: .7;
     }
     100% {
-        transform: rotate(360deg) scale(1);
+        transform: rotate(360deg);
+        opacity: 1;
     }
 }

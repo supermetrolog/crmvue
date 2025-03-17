@@ -9,7 +9,7 @@
                 :logs="COMPANY_LOGS"
                 :logs-count="COMPANY_LOGS_COUNT"
             />
-            <Form @submit="onSubmit(company.id)" class="CompanyBoxLogs-form">
+            <UiForm @submit="onSubmit(company.id)" class="CompanyBoxLogs-form">
                 <FormGroup>
                     <Textarea
                         v-model="form.comment"
@@ -22,16 +22,16 @@
                         <Loader class="small py-2 no-absolute" />
                     </div>
                 </FormGroup>
-            </Form>
+            </UiForm>
         </template>
     </CompanyBoxLayout>
 </template>
 
 <script>
 import { mapActions, mapGetters } from 'vuex';
-import Textarea from '@/components/common/Forms/Textarea.vue';
-import Form from '@/components/common/Forms/Form.vue';
-import FormGroup from '@/components/common/Forms/FormGroup.vue';
+import UiTextarea from '@/components/common/Forms/UiTextarea.vue';
+import UiForm from '@/components/common/Forms/UiForm.vue';
+import UiFormGroup from '@/components/common/Forms/UiFormGroup.vue';
 import Submit from '@/components/common/Forms/FormSubmit.vue';
 import useValidate from '@vuelidate/core';
 import { helpers, required } from '@vuelidate/validators';
@@ -42,13 +42,13 @@ import CompanyBoxLayout from '@/components/Company/Box/CompanyBoxLayout.vue';
 export default {
     name: 'CompanyBoxLogs',
     components: {
+        UiForm,
         CompanyBoxLayout,
         CompanyLogsList,
         Loader,
         Submit,
-        FormGroup,
-        Form,
-        Textarea
+        FormGroup: UiFormGroup,
+        Textarea: UiTextarea
     },
     props: {
         logs: {

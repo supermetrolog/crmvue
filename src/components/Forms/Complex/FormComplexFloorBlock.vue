@@ -7,7 +7,7 @@
         show
     >
         <Loader v-if="loader" />
-        <Form @submit="onSubmit">
+        <UiForm @submit="onSubmit">
             <Tabs :options="{ useUrlFragment: false, defaultTabHash: 'main' }">
                 <Tab id="main" name="Характеристики">
                     <FormGroup>
@@ -364,12 +364,11 @@
             <FormGroup>
                 <Submit class="col-4 mx-auto">Сохранить</Submit>
             </FormGroup>
-        </Form>
+        </UiForm>
     </Modal>
 </template>
 
 <script>
-import { ComplexFormMixin } from '@/components/Forms/Complex/mixin';
 import {
     entranceBlockTypes,
     firefightingTypes,
@@ -398,7 +397,6 @@ import { cloneObject } from '@/utils/helpers/object/cloneObject.js';
 export default {
     name: 'FormComplexFloorBlock',
     components: { RadioGroup, AnimationTransition, DoubleInput, Modal, Loader },
-    mixins: [ComplexFormMixin],
     emits: ['close'],
     props: {
         object: {

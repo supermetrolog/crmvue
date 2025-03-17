@@ -1,6 +1,6 @@
 <template>
     <Modal @close="$emit('close')" show title="Фильтры" width="1400">
-        <Form>
+        <UiForm>
             <FormGroup class="mb-4">
                 <MultiSelect
                     v-model="form.category"
@@ -119,16 +119,16 @@
                     :options="contactOptions"
                 />
             </FormGroup>
-        </Form>
+        </UiForm>
     </Modal>
 </template>
 
 <script>
-import Form from '@/components/common/Forms/Form.vue';
+import UiForm from '@/components/common/Forms/UiForm.vue';
 import DoubleInput from '@/components/common/Forms/DoubleInput.vue';
 import MultiSelect from '@/components/common/Forms/MultiSelect.vue';
 import Modal from '@/components/common/Modal.vue';
-import FormGroup from '@/components/common/Forms/FormGroup.vue';
+import UiFormGroup from '@/components/common/Forms/UiFormGroup.vue';
 import { optionsToList } from '@/utils/helpers/forms/optionsToList.js';
 import { multiselectAdapter, multiselectAdapterToObject } from '@/utils/adapters.js';
 import { entityOptions } from '@/const/options/options.js';
@@ -147,7 +147,7 @@ export default {
         CheckboxOptions,
         RadioOptions,
         Switch,
-        FormGroup,
+        FormGroup: UiFormGroup,
         Modal,
         MultiSelect,
         DoubleInput,

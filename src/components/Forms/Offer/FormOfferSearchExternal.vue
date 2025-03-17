@@ -1,7 +1,7 @@
 <template>
-    <Form class="row">
+    <UiForm class="row">
         <div class="col-12 col-md-6">
-            <Input
+            <UiInput
                 v-model="form.all"
                 label="Поиск"
                 placeholder="ID, адрес, собственник, телефон, ФИО"
@@ -51,7 +51,7 @@
                 </Button>
             </div>
         </div>
-    </Form>
+    </UiForm>
 </template>
 
 <script setup>
@@ -59,8 +59,8 @@ import Button from '@/components/common/Button.vue';
 import ButtonLink from '@/components/common/ButtonLink.vue';
 import { computed, onBeforeMount, reactive, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-import Form from '@/components/common/Forms/Form.vue';
-import Input from '@/components/common/Forms/Input.vue';
+import UiForm from '@/components/common/Forms/UiForm.vue';
+import UiInput from '@/components/common/Forms/UiInput.vue';
 import { waitHash } from '@/utils/helpers/common/waitHash.js';
 import { useDebounceFn } from '@vueuse/core';
 import { deleteEmptyFields } from '@/utils/helpers/object/deleteEmptyFields.js';

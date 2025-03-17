@@ -1,6 +1,6 @@
 <template>
-    <Form>
-        <FormGroup>
+    <UiForm>
+        <UiFormGroup>
             <ConsultantPicker
                 v-model="consultantIds"
                 class="col-12"
@@ -10,12 +10,12 @@
                 multiple
                 multiple-property="label"
             />
-        </FormGroup>
-    </Form>
+        </UiFormGroup>
+    </UiForm>
 </template>
 <script setup>
-import Form from '@/components/common/Forms/Form.vue';
-import FormGroup from '@/components/common/Forms/FormGroup.vue';
+import UiForm from '@/components/common/Forms/UiForm.vue';
+import UiFormGroup from '@/components/common/Forms/UiFormGroup.vue';
 import ConsultantPicker from '@/components/common/Forms/ConsultantPicker/ConsultantPicker.vue';
 import { useConsultantsOptions } from '@/composables/options/useConsultantsOptions.js';
 import { computed } from 'vue';

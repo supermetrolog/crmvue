@@ -116,5 +116,9 @@ export default {
     async restore(id) {
         const response = await axios.patch(`${URL}/${id}/restore`);
         return responseToData(response);
+    },
+    async postpone(id, payload) {
+        const response = await axios.post(`${URL}/${id}/postpone`, payload);
+        return responseToData(response);
     }
 };

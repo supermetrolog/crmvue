@@ -4,7 +4,7 @@
             <div class="d-flex flex-column gap-1 align-items-start">
                 <CheckboxChip v-model="hasOffers" show-checkbox text="Продать оборудование" />
                 <AnimationTransition :speed="0.3">
-                    <Textarea
+                    <UiTextarea
                         v-if="hasOffers"
                         v-model="offersDescription"
                         auto-height
@@ -21,7 +21,7 @@
             <div class="d-flex flex-column gap-1 align-items-start">
                 <CheckboxChip v-model="hasRequests" show-checkbox text="Купить оборудование" />
                 <AnimationTransition :speed="0.3">
-                    <Textarea
+                    <UiTextarea
                         v-if="hasRequests"
                         v-model="requestsDescription"
                         auto-height
@@ -43,7 +43,7 @@ import { ref } from 'vue';
 import useVuelidate from '@vuelidate/core';
 import { helpers, required } from '@vuelidate/validators';
 import CheckboxChip from '@/components/common/Forms/CheckboxChip.vue';
-import Textarea from '@/components/common/Forms/Textarea.vue';
+import UiTextarea from '@/components/common/Forms/UiTextarea.vue';
 import { useNotify } from '@/utils/use/useNotify.js';
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
 

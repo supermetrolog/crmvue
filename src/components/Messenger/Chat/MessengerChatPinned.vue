@@ -49,7 +49,10 @@ const fileNames = computed(() => {
 const createdAt = computed(() => toDateFormat(props.message.created_at));
 
 const unpin = async () => {
-    const confirmed = await confirm('Вы уверены, что хотите открепить сообщение?');
+    const confirmed = await confirm(
+        'Открепить сообщение',
+        'Вы уверены, что хотите открепить сообщение?'
+    );
     if (!confirmed) return;
 
     const unpinned = await store.dispatch('Messenger/unpinMessage');

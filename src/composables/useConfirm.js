@@ -1,63 +1,75 @@
-import { ref, shallowRef } from 'vue';
+import { ref, shallowReactive } from 'vue';
+import { createSharedComposable } from '@vueuse/core';
+import { isObject } from '@/utils/helpers/object/isObject.js';
 
-/**
- * @description Флаг видимости Popup
- * @type {shallowRef<boolean>}
- */
-const isVisible = shallowRef(false);
+export const useConfirm = createSharedComposable(() => {
+    let _resolve = null;
 
-/**
- * @description Текущее сообщение в Popup
- * @type {Ref<string>}
- */
-const message = ref('');
+    const isVisible = ref(false);
 
-let _resolve = null;
+    const defaultOptions = {
+        title: null,
+        message: null,
+        okButton: 'Подтвердить',
+        okIcon: 'fa-solid fa-check',
+        cancelButton: 'Отмена',
+        icon: 'fa-solid fa-hand'
+    };
 
-/**
- * @function confirm
- * @async
- * @description Вызов функции откроет Popup с переданным сообщением и будет ожидать ответ пользователя.
- *
- * @param {string} text - Текст для подтверждения пользователя
- * @returns {Promise<boolean>} - ``true``, если действие подтверждено; иначе ``false``
- */
-const confirm = async text => {
-    message.value = text;
-    isVisible.value = true;
-
-    return new Promise(res => {
-        _resolve = res;
+    const content = shallowReactive({
+        title: null,
+        message: null,
+        okButton: defaultOptions.okButton,
+        okIcon: defaultOptions.okIcon,
+        cancelButton: defaultOptions.cancelButton,
+        icon: defaultOptions.icon
     });
-};
 
-const close = (state = false) => {
-    isVisible.value = false;
+    function close(state = false) {
+        isVisible.value = false;
 
-    if (_resolve) {
-        _resolve(state);
-        _resolve = null;
+        if (_resolve) {
+            _resolve(state);
+            _resolve = null;
+        }
+
+        content.title = null;
+        content.message = null;
     }
 
-    message.value = null;
-};
+    function submit() {
+        close(true);
+    }
 
-/**
- * @function cancel
- * @description Отменить запрашиваемое подтверждение (не подтверждать и закрыть Popup)
- */
-const cancel = () => close();
+    function cancel() {
+        close();
+    }
 
-/**
- * @function submit
- * @description Подтвердить запрашиваемое действие
- */
-const submit = () => close(true);
+    async function confirm(titleOrConfig, message = null) {
+        if (isObject(titleOrConfig)) {
+            content.title = titleOrConfig.title;
+            content.message = titleOrConfig.message;
 
-/**
- * @function useConfirm
- * @description ``Composable`` для функционала подтверждения действий.
- */
-export function useConfirm() {
-    return { confirm, cancel, submit, isVisible, message };
-}
+            content.okButton = titleOrConfig.okButton ?? defaultOptions.okButton;
+            content.cancelButton = titleOrConfig.cancelButton ?? defaultOptions.cancelButton;
+            content.okIcon = titleOrConfig.okIcon ?? defaultOptions.okIcon;
+            content.icon = titleOrConfig.icon ?? defaultOptions.icon;
+        } else {
+            content.title = titleOrConfig;
+            content.message = message;
+
+            content.okButton = defaultOptions.okButton;
+            content.cancelButton = defaultOptions.cancelButton;
+            content.okIcon = defaultOptions.okIcon;
+            content.icon = defaultOptions.icon;
+        }
+
+        isVisible.value = true;
+
+        return new Promise(res => {
+            _resolve = res;
+        });
+    }
+
+    return { confirm, cancel, submit, isVisible, content };
+});

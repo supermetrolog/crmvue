@@ -1,15 +1,16 @@
 <template>
-    <Modal @close="$emit('close')" width="550" :title="title">
+    <UiModal v-model:visible="isVisible" @close="$emit('close')" custom-close :width="550" :title>
         <FormCompanyRequestDisable @disabled="$emit('disabled')" :request_id="request_id" />
-    </Modal>
+    </UiModal>
 </template>
 
 <script setup>
-import Modal from '@/components/common/Modal.vue';
 import FormCompanyRequestDisable from '@/components/Forms/Company/FormCompanyRequestDisable.vue';
+import UiModal from '@/components/common/UI/UiModal.vue';
+import { computed } from 'vue';
 
 defineEmits(['close', 'disabled']);
-defineProps({
+const props = defineProps({
     title: {
         type: String,
         default: 'Завершение запроса'
@@ -17,6 +18,14 @@ defineProps({
     request_id: {
         type: Number,
         required: true
-    }
+    },
+    show: Boolean
+});
+
+const isVisible = computed({
+    get() {
+        return props.show;
+    },
+    set() {}
 });
 </script>

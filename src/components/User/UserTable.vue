@@ -71,6 +71,7 @@ watch(
 
 const deleteUser = async user => {
     const confirmed = await confirm(
+        'Удалить пользователя',
         `Вы уверены, что хотите удалить пользователя "${user.userProfile.full_name}" (Username: ${user.username})?`
     );
     if (!confirmed) return;
@@ -83,6 +84,7 @@ const deleteUser = async user => {
 
 const restore = async user => {
     const confirmed = await confirm(
+        'Восстановить пользователя',
         `Вы уверены, что хотите восстановить пользователя "${user.userProfile.full_name}" (Username: ${user.username})?`
     );
 
@@ -101,6 +103,7 @@ const restore = async user => {
 
 const archive = async user => {
     const confirmed = await confirm(
+        'Архивировать пользователя',
         `Вы уверены, что хотите архивировать пользователя "${user.userProfile.full_name}" (Username: ${user.username})?`
     );
 

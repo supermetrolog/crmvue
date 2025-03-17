@@ -46,6 +46,11 @@
             @confirm="confirmUnavailableContact"
             @cancel="cancelUnavailableContact"
         />
+        <MessengerQuizFormRemainingWindow
+            @show="showSurvey"
+            @schedule-call="scheduleContactsCall"
+            :last-survey="lastSurvey"
+        />
         <UiModal
             v-model:visible="contactPickerIsVisible"
             title="Выбор контакта для звонка"
@@ -56,7 +61,7 @@
             </DashboardChip>
             <MessengerQuizContacts
                 @selected="selectedContact = $event"
-                label="Список прозвоненных контактов"
+                label="Список контактов"
                 :contacts="contacts"
             />
             <template #footer="{ close }">

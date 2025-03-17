@@ -11,14 +11,14 @@
                 <UserPicker v-else v-model="form.user_id" single :users="consultants" />
             </template>
             <template #2>
-                <Input
+                <UiInput
                     v-model="form.description.subject"
                     class="mb-2"
                     type="text"
                     label="Заголовок"
                     required
                 />
-                <Textarea v-model="form.description.message" label="Описание" required />
+                <UiTextarea v-model="form.description.message" label="Описание" required />
             </template>
         </Stepper>
     </Modal>
@@ -28,10 +28,10 @@ import Spinner from '@/components/common/Spinner.vue';
 import Modal from '@/components/common/Modal.vue';
 import UserPicker from '@/components/common/Forms/UserPicker/UserPicker.vue';
 import Stepper from '@/components/common/Stepper.vue';
-import Textarea from '@/components/common/Forms/Textarea.vue';
+import UiTextarea from '@/components/common/Forms/UiTextarea.vue';
 import useVuelidate from '@vuelidate/core';
 import { helpers, required } from '@vuelidate/validators';
-import Input from '@/components/common/Forms/Input.vue';
+import UiInput from '@/components/common/Forms/UiInput.vue';
 import { useStore } from 'vuex';
 import { onUnmounted, ref, shallowRef } from 'vue';
 import { useAsyncPopup } from '@/composables/useAsyncPopup.js';

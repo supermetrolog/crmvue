@@ -1,13 +1,17 @@
 <template>
-    <Modal
-        @close="emit('close')"
+    <UiModal
+        @closed="emit('close')"
+        :width="700"
+        :title="
+            isEditMode
+                ? `Редактирование поля для ответа #${formData.id}`
+                : 'Создание поля для ответа'
+        "
         show
-        :title="formData ? 'Редактирование поля для ответа' : 'Создание поля для ответа'"
-        width="800"
     >
-        <Form @submit="onSubmit">
-            <Loader v-if="isLoading" />
-            <FormGroup>
+        <Loader v-if="isLoading" :label="isDeleting ? 'Удаление поля' : 'Сохранение поля'" />
+        <UiForm>
+            <UiFormGroup>
                 <MultiSelect
                     v-model="form.field_type"
                     :v="v$.form.field_type"
@@ -24,38 +28,46 @@
                     :options="fieldTypeOptions"
                     required
                 />
-                <div class="mx-auto d-flex gap-2">
-                    <FormSubmit success>Сохранить</FormSubmit>
-                    <Button
-                        v-if="formData"
-                        @click="deleteField"
-                        :disabled="formData.deleted_at !== null"
-                        danger
-                    >
-                        Удалить
-                    </Button>
-                </div>
-            </FormGroup>
-        </Form>
-    </Modal>
+            </UiFormGroup>
+        </UiForm>
+        <template #actions="{ close }">
+            <UiButton @click="submit" color="success-light" icon="fa-solid fa-check" bolder small>
+                Сохранить
+            </UiButton>
+            <UiButton @click="close" color="light" icon="fa-solid fa-ban" bolder small>
+                Отмена
+            </UiButton>
+            <UiButton
+                v-if="isEditMode"
+                @click="deleteField(formData.id)"
+                :disabled="isDeletedEntity"
+                color="light"
+                icon="fa-solid fa-trash"
+                bolder
+                small
+            >
+                Удалить
+            </UiButton>
+        </template>
+    </UiModal>
 </template>
 <script setup>
-import Form from '@/components/common/Forms/Form.vue';
-import FormGroup from '@/components/common/Forms/FormGroup.vue';
-import { reactive, shallowRef } from 'vue';
+import UiForm from '@/components/common/Forms/UiForm.vue';
+import UiFormGroup from '@/components/common/Forms/UiFormGroup.vue';
+import { computed, reactive } from 'vue';
 import MultiSelect from '@/components/common/Forms/MultiSelect.vue';
-import FormSubmit from '@/components/common/Forms/FormSubmit.vue';
-import useVuelidate from '@vuelidate/core';
 import api from '@/api/api.js';
 import { useNotify } from '@/utils/use/useNotify.js';
 import { helpers, required } from '@vuelidate/validators';
 import Loader from '@/components/common/Loader.vue';
-import Modal from '@/components/common/Modal.vue';
-import Button from '@/components/common/Button.vue';
-import { useConfirm } from '@/composables/useConfirm.js';
+import { useFormData } from '@/utils/use/useFormData.js';
+import { useValidation } from '@/composables/useValidation.js';
+import { useAsync } from '@/composables/useAsync.js';
+import UiButton from '@/components/common/UI/UiButton.vue';
+import UiModal from '@/components/common/UI/UiModal.vue';
 
 const emit = defineEmits(['created', 'updated', 'close', 'deleted']);
-const props = defineProps({ formData: { type: Object, default: null } });
+const props = defineProps({ formData: Object });
 
 const fieldOptions = {
     radio: 'Радио-кнопки',
@@ -74,15 +86,16 @@ const fieldTypeOptions = {
 };
 
 const notify = useNotify();
-const { confirm } = useConfirm();
 
-const isLoading = shallowRef(false);
-const form = reactive({
-    field_type: null,
-    type: null
-});
+const { form, isDeletedEntity, isEditMode } = useFormData(
+    reactive({
+        field_type: null,
+        type: null
+    }),
+    props.formData
+);
 
-const v$ = useVuelidate(
+const { v$, validate } = useValidation(
     {
         form: {
             field_type: {
@@ -96,53 +109,42 @@ const v$ = useVuelidate(
     { form }
 );
 
-const createField = async () => {
-    const created = await api.field.create(form);
-    if (created) {
-        notify.success('Field успешно создано.');
-        emit('created', created);
+const { isLoading: isCreating, execute: createField } = useAsync(api.field.create, {
+    onFetchResponse: ({ response }) => {
+        notify.success('Поле успешно создан.');
+        emit('created', response);
     }
-};
+});
 
-const updateField = async () => {
-    const updated = await api.field.update(props.formData.id, form);
-    if (updated) {
-        notify.success('Field успешно обновлено.');
-        emit('updated', updated);
+const { isLoading: isUpdating, execute: updateField } = useAsync(api.field.update, {
+    onFetchResponse: ({ response }) => {
+        notify.success('Поле успешно обновлено.');
+        emit('updated', response);
     }
-};
+});
 
-const deleteField = async () => {
-    const confirmed = await confirm(
-        'Вы уверены, что хотите удалить поле? Действие нельзя отменить'
-    );
-    if (!confirmed) return;
-
-    isLoading.value = true;
-
-    const deleted = await api.field.delete(props.formData.id);
-    if (deleted) {
+const { isLoading: isDeleting, execute: deleteField } = useAsync(api.field.delete, {
+    onFetchResponse: () => {
         notify.success('Поле успешно удалено.');
         emit('deleted');
         emit('close');
+    },
+    confirmation: true,
+    confirmationContent: {
+        title: 'Удалить поле',
+        message: 'Вы уверены, что хотите удалить поле? Удаленное поле нельзя восстановить.',
+        okButton: 'Удалить',
+        okIcon: 'fa-solid fa-trash'
     }
+});
 
-    isLoading.value = false;
-};
+const isLoading = computed(() => isCreating.value || isUpdating.value || isDeleting.value);
 
-const onSubmit = async () => {
-    v$.value.$validate();
-    if (v$.value.form.$error) return;
+async function submit() {
+    const isValid = await validate();
+    if (!isValid) return;
 
-    isLoading.value = true;
-
-    if (props.formData) await updateField();
-    else await createField();
-
-    isLoading.value = false;
-};
-
-if (props.formData) {
-    Object.assign(form, { ...props.formData });
+    if (isEditMode.value) await updateField(props.formData.id, form);
+    else await createField(form);
 }
 </script>

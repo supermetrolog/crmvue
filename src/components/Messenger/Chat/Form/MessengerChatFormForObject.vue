@@ -25,11 +25,11 @@
             />
             <MessengerChatFormCategories v-model="currentCategory" :v="v$.currentCategory" />
         </div>
-        <Form @submit.prevent class="messenger-chat-form__field" method="post">
+        <UiForm @submit.prevent class="messenger-chat-form__field" method="post">
             <Button @click="attachFile" class="messenger-chat-form__button" warning icon>
                 <i class="fa-solid fa-paperclip"></i>
             </Button>
-            <Textarea
+            <UiTextarea
                 v-model.trim="message"
                 @keydown.enter.prevent="keyHandler"
                 @paste="pasteHandler"
@@ -46,14 +46,14 @@
             >
                 <i class="fa-solid fa-paper-plane"></i>
             </Button>
-        </Form>
+        </UiForm>
     </div>
 </template>
 <script setup>
-import Form from '@/components/common/Forms/Form.vue';
+import UiForm from '@/components/common/Forms/UiForm.vue';
 import { useStore } from 'vuex';
 import Button from '@/components/common/Button.vue';
-import Textarea from '@/components/common/Forms/Textarea.vue';
+import UiTextarea from '@/components/common/Forms/UiTextarea.vue';
 import MessengerChatFormRecipient from '@/components/Messenger/Chat/Form/MessengerChatFormRecipient.vue';
 import MessengerChatFormCategories from '@/components/Messenger/Chat/Form/MessengerChatFormCategories.vue';
 import MessengerChatFormAttachments from '@/components/Messenger/Chat/Form/MessengerChatFormAttachments.vue';

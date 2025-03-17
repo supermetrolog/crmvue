@@ -1,5 +1,5 @@
 <template>
-    <Form>
+    <UiForm>
         <FormGroup>
             <div class="col-12">
                 <div class="d-flex align-items-end flex-column flex-md-row">
@@ -33,22 +33,22 @@
         <teleport to="body">
             <FormEquipmentFilters v-if="filtersIsVisible" @close="filtersIsVisible = false" />
         </teleport>
-    </Form>
+    </UiForm>
 </template>
 
 <script>
-import Form from '@/components/common/Forms/Form.vue';
+import UiForm from '@/components/common/Forms/UiForm.vue';
 import Button from '@/components/common/Button.vue';
-import Input from '@/components/common/Forms/Input.vue';
-import FormGroup from '@/components/common/Forms/FormGroup.vue';
+import UiInput from '@/components/common/Forms/UiInput.vue';
+import UiFormGroup from '@/components/common/Forms/UiFormGroup.vue';
 import FormEquipmentFilters from '@/components/Forms/Equipment/FormEquipmentFilters.vue';
 
 export default {
     name: 'FormEquipmentSearch',
     components: {
         FormEquipmentFilters,
-        FormGroup,
-        Input,
+        FormGroup: UiFormGroup,
+        Input: UiInput,
         Button,
         Form
     },

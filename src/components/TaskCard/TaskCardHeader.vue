@@ -11,8 +11,16 @@
         <div class="task-card__left">
             <div class="task-card__chips mb-2">
                 <DashboardChip class="task-card__chip"> Задача #{{ task.id }} </DashboardChip>
-                <DashboardChip class="task-card__chip" with-icon>
-                    <i class="fa-regular fa-clock"></i>
+                <DashboardChip v-tippy="'Дата начала выполнения'" class="task-card__chip" with-icon>
+                    <i class="fa-solid fa-play"></i>
+                    <span>с {{ startDate }}</span>
+                </DashboardChip>
+                <DashboardChip
+                    v-tippy="'Дата окончания выполнения'"
+                    class="task-card__chip"
+                    with-icon
+                >
+                    <i class="fa-solid fa-calendar-xmark"></i>
                     <span>до {{ endDate }}</span>
                 </DashboardChip>
                 <DashboardChip class="task-card__chip task-card__status">
@@ -63,8 +71,8 @@
                             />
                             <template v-if="!isDeleted">
                                 <UiDropdownActionsButton
-                                    v-if="canBeSuspend"
-                                    @handle="$emit('to-impossible')"
+                                    v-if="canBePostponed"
+                                    @handle="$emit('postpone')"
                                     icon="fa-solid fa-eye-slash"
                                     label="Отложить"
                                     :disabled
@@ -134,7 +142,7 @@ defineEmits([
     'to-chat',
     'read',
     'change-status',
-    'to-impossible',
+    'postpone',
     'assign',
     'delete',
     'restore',
@@ -196,9 +204,8 @@ const canBeEdit = computed(
 
 const canBeDragged = computed(() => canBeEdit.value || props.task.user_id === currentUserId.value);
 
-const canBeSuspend = computed(() => {
+const canBePostponed = computed(() => {
     return (
-        !isCanceled.value &&
         !isCompleted.value &&
         (props.task.created_by_id === currentUserId.value ||
             props.task.user_id === currentUserId.value ||
@@ -226,4 +233,5 @@ const status = computed(() => taskOptions.status[props.task.status]);
 const statusIcon = computed(() => taskOptions.statusIcon[props.task.status]);
 
 const endDate = computed(() => toDateFormat(props.task.end, 'D.MM.YY'));
+const startDate = computed(() => toDateFormat(props.task.start, 'D.MM.YY'));
 </script>

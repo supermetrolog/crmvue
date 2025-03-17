@@ -141,7 +141,10 @@ function clearPurposesFixForm() {
 }
 
 async function runPurposesFix() {
-    const confirmed = await confirm('Вы действительно хотите исправить назначения?');
+    const confirmed = await confirm(
+        'Исправить назначения',
+        'Вы действительно хотите исправить назначения?'
+    );
     if (!confirmed) return;
 
     purposesFixIsRunning.value = true;

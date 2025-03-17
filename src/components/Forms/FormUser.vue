@@ -1,55 +1,56 @@
 <template>
-    <Modal
+    <UiModal
         @close="$emit('close')"
-        show
-        :title="formData ? 'Изменение пользователя' : 'Создание пользователя'"
+        :width="1300"
+        :title="isEditMode ? `Изменение пользователя ${formData.id}` : 'Создание пользователя'"
         class="modal-form-user"
+        show
+        custom-close
         has-tabs
-        width="1300"
     >
-        <Form @submit="onSubmit">
-            <Loader v-if="isLoading" />
+        <Loader v-if="isLoading" />
+        <UiForm>
             <Tabs>
                 <Tab name="Основные данные">
-                    <FormGroup>
-                        <Input
+                    <UiFormGroup>
+                        <UiInput
                             v-model="form.username"
-                            :disabled="!!formData"
+                            :disabled="isEditMode"
                             :v="v$.form.username"
                             label="Username"
-                            :required="!formData"
+                            :required="!isEditMode"
                             class="col-4"
                         />
-                        <Input
+                        <UiInput
                             v-model="form.password"
                             :v="v$.form.password"
                             label="Пароль"
-                            :required="!formData"
+                            :required="!isEditMode"
                             class="col-4"
                         />
-                    </FormGroup>
+                    </UiFormGroup>
                     <p class="form__block">Данные профиля</p>
-                    <FormGroup>
-                        <Input
+                    <UiFormGroup>
+                        <UiInput
                             v-model="form.userProfile.middle_name"
                             label="Фамилия"
                             :v="v$.form.userProfile.middle_name"
                             required
                             class="col-4"
                         />
-                        <Input
+                        <UiInput
                             v-model="form.userProfile.first_name"
                             label="Имя"
                             :v="v$.form.userProfile.first_name"
                             required
                             class="col-4"
                         />
-                        <Input
+                        <UiInput
                             v-model="form.userProfile.last_name"
                             label="Отчество"
                             class="col-4"
                         />
-                        <Input
+                        <UiInput
                             v-model="form.userProfile.caller_id"
                             label="Добавочный номер"
                             maska="##########"
@@ -77,41 +78,43 @@
                             class="col-4"
                             property-name="email"
                         />
-                    </FormGroup>
+                    </UiFormGroup>
                     <p class="form__block">Данные почты</p>
-                    <FormGroup>
-                        <Input
+                    <UiFormGroup>
+                        <UiInput
                             v-model="form.email"
                             :v="v$.form.email"
                             label="Email для почты"
                             class="col-4"
                             title="Необходим для отправки предложений с аккаунта пользователя"
                         />
-                        <Input
+                        <UiInput
                             v-model="form.email_username"
                             label="Email логин"
                             class="col-4"
                             title="Необходим для отправки предложений с аккаунта пользователя"
                         />
-                        <Input
+                        <UiInput
                             v-model="form.email_password"
                             label="Email пароль"
                             class="col-4"
                             title="Необходим для отправки предложений с аккаунта пользователя"
                         />
-                    </FormGroup>
+                    </UiFormGroup>
                     <p class="form__block">Статус</p>
-                    <FormGroup>
+                    <UiFormGroup>
                         <RadioOptions
                             v-model="form.role"
                             class="col-12"
                             label="Роль"
                             :options="RoleList"
+                            show-radio
+                            :rounded="false"
                         />
-                    </FormGroup>
+                    </UiFormGroup>
                 </Tab>
                 <Tab name="Аватар">
-                    <FormGroup>
+                    <UiFormGroup>
                         <FileInput
                             v-model:native="form.files"
                             v-model:data="form.userProfile.avatar"
@@ -123,78 +126,83 @@
                         >
                             Выбрать аватар
                         </FileInput>
-                    </FormGroup>
+                    </UiFormGroup>
                 </Tab>
             </Tabs>
-            <FormGroup>
-                <div class="d-flex mx-auto gap-2">
-                    <Submit small success>
-                        {{ formData ? 'Сохранить' : 'Создать' }}
-                    </Submit>
-                    <Button v-if="!!formData" @click="archiveUser" info>Отправить в архив</Button>
-                </div>
-            </FormGroup>
-        </Form>
-    </Modal>
+        </UiForm>
+        <template #actions="{ close }">
+            <UiButton @click="submit" color="success-light" icon="fa-solid fa-check" bolder small>
+                Сохранить
+            </UiButton>
+            <UiButton @click="close" color="light" icon="fa-solid fa-ban" bolder small>
+                Отмена
+            </UiButton>
+            <UiButton
+                v-if="isEditMode"
+                @click="archiveUser"
+                :loading="isLoadingArchive"
+                color="light"
+                icon="fa-solid fa-archive"
+                bolder
+                small
+            >
+                Отправить в архив
+            </UiButton>
+        </template>
+    </UiModal>
 </template>
 
 <script setup>
 import { useStore } from 'vuex';
-import useVuelidate from '@vuelidate/core';
-import Form from '@/components/common/Forms/Form.vue';
-import Input from '@/components/common/Forms/Input.vue';
+import UiForm from '@/components/common/Forms/UiForm.vue';
+import UiInput from '@/components/common/Forms/UiInput.vue';
 import PropogationInput from '@/components/common/Forms/PropogationInput.vue';
 import FileInput from '@/components/common/Forms/FileInput.vue';
-import Utils from '@/utils';
-import { cloneObject } from '@/utils/helpers/object/cloneObject.js';
 import { RoleList } from '@/const/const.js';
-import Modal from '@/components/common/Modal.vue';
 import Loader from '@/components/common/Loader.vue';
 import { emptyWithProperty, everyProperty, validateEmail, validatePhone } from '@//validators';
-import Submit from '@/components/common/Forms/FormSubmit.vue';
-import { reactive, shallowRef } from 'vue';
+import { computed, onMounted, reactive } from 'vue';
 import { validationRulesForUser, validationRulesForUserProfile } from '@/validators/rules/user.js';
 import Tabs from '@/components/common/Tabs/Tabs.vue';
 import Tab from '@/components/common/Tabs/Tab.vue';
-import FormGroup from '@/components/common/Forms/FormGroup.vue';
+import UiFormGroup from '@/components/common/Forms/UiFormGroup.vue';
 import RadioOptions from '@/components/common/Forms/RadioOptions.vue';
-import Button from '@/components/common/Button.vue';
-import { useConfirm } from '@/composables/useConfirm.js';
-import { userOptions } from '@/const/options/user.options.js';
 import { helpers, or, requiredIf } from '@vuelidate/validators';
 import api from '@/api/api.js';
+import UiModal from '@/components/common/UI/UiModal.vue';
+import UiButton from '@/components/common/UI/UiButton.vue';
+import { useFormData } from '@/utils/use/useFormData.js';
+import { useValidation } from '@/composables/useValidation.js';
+import { useAsync } from '@/composables/useAsync.js';
 
 const emit = defineEmits(['close', 'updated', 'created']);
 const props = defineProps({
-    formData: {
-        type: Object,
-        default: null
-    }
+    formData: Object
 });
 
 const store = useStore();
-const { confirm } = useConfirm();
 
-const isLoading = shallowRef(false);
-
-const form = reactive({
-    username: null,
-    password: null,
-    email: null,
-    email_username: null,
-    email_password: null,
-    role: 2,
-    userProfile: {
-        first_name: null,
-        middle_name: null,
-        last_name: null,
-        phones: [],
-        emails: [],
-        caller_id: null,
-        avatar: null
-    },
-    files: []
-});
+const { form, isEditMode } = useFormData(
+    reactive({
+        username: null,
+        password: null,
+        email: null,
+        email_username: null,
+        email_password: null,
+        role: 2,
+        userProfile: {
+            first_name: null,
+            middle_name: null,
+            last_name: null,
+            phones: [],
+            emails: [],
+            caller_id: null,
+            avatar: null
+        },
+        files: []
+    }),
+    props.formData
+);
 
 const formEmailsValidators = [{ func: validateEmail, message: 'Укажите корректный Email' }];
 const formPhonesValidators = [{ func: validatePhone, message: 'Укажите корректный телефон' }];
@@ -219,7 +227,7 @@ const phonesValidator = everyProperty(
     'phone'
 );
 
-const v$ = useVuelidate(
+const { v$, validate } = useValidation(
     {
         form: {
             ...validationRulesForUser,
@@ -245,49 +253,46 @@ const v$ = useVuelidate(
     { form }
 );
 
-const updateUser = async () => {
-    const updated = await api.user.update(props.formData.id, form);
-
-    if (updated) {
-        emit('updated');
+const { execute: updateUser, isLoading: isLoadingUpdate } = useAsync(api.user.update, {
+    onFetchResponse({ response }) {
+        emit('updated', response);
         emit('close');
         store.dispatch('refreshUser');
-    }
-};
+    },
+    payload: () => [props.formData.id, form]
+});
 
-const createUser = async () => {
-    const created = await api.user.create(form);
-
-    if (created) {
-        emit('created');
+const { execute: createUser, isLoading: isLoadingCreate } = useAsync(api.user.create, {
+    onFetchResponse({ response }) {
+        emit('created', response);
         emit('close');
     }
-};
+});
 
-const onSubmit = async () => {
-    v$.value.$validate();
-    if (v$.value.form.$error) return;
+const { execute: archiveUser, isLoadingArchive } = useAsync(api.user.archive, {
+    confirmation: true,
+    confirmationContent: {
+        title: 'Отправить в архив',
+        message:
+            'Вы уверены, что хотите отправить пользователя в архив? Пользователь не сможет входить в CRM.'
+    },
+    payload: () => props.formData.id
+});
 
-    isLoading.value = true;
-    if (props.formData) await updateUser();
-    else await createUser();
-    isLoading.value = false;
-};
+const isLoading = computed(
+    () => isLoadingUpdate.value || isLoadingCreate.value || isLoadingArchive.value
+);
 
-const archiveUser = async () => {
-    const confirmed = await confirm(
-        'Вы уверены, что хотите отправить пользователя в архив? Это действие нельзя отменить'
-    );
-    if (!confirmed) return;
+async function submit() {
+    const isValid = await validate();
+    if (!isValid) return;
 
-    isLoading.value = true;
-    form.status = userOptions.statusStatement.INACTIVE;
-    await updateUser();
-    isLoading.value = false;
-};
-
-if (props.formData) {
-    Object.assign(form, cloneObject(props.formData));
-    Utils.normalizeDataForUserForm(form);
+    if (isEditMode.value) await updateUser();
+    else await createUser(form);
 }
+
+onMounted(() => {
+    delete form.password;
+    delete form.created_at;
+});
 </script>

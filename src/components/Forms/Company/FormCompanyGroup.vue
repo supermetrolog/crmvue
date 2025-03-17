@@ -5,10 +5,10 @@
         :title="formData ? 'Изменение группы компаний' : 'Создание группы компаний'"
         width="600"
     >
-        <Form @submit="onSubmit">
+        <UiForm @submit="onSubmit">
             <Loader v-if="isLoading" />
-            <FormGroup>
-                <Input
+            <UiFormGroup>
+                <UiInput
                     v-model="form.nameRu"
                     :v="v$.nameRu"
                     label="Название Ru"
@@ -19,7 +19,7 @@
                         tokens: { Z: { pattern: /[а-яА-Я0-9 ]/ } }
                     }"
                 />
-                <Input
+                <UiInput
                     v-model="form.nameEng"
                     :v="v$.nameEng"
                     label="Название Eng"
@@ -36,14 +36,14 @@
                     class="col-4"
                     :options="CompanyFormOrganization"
                 />
-            </FormGroup>
-            <FormGroup>
-                <Textarea v-model="form.description" label="Описание" class="col-12" />
-            </FormGroup>
+            </UiFormGroup>
+            <UiFormGroup>
+                <UiTextarea v-model="form.description" label="Описание" class="col-12" />
+            </UiFormGroup>
             <Submit success center class="mt-3 mx-auto">
                 {{ formData ? 'Сохранить' : 'Создать' }}
             </Submit>
-        </Form>
+        </UiForm>
     </Modal>
 </template>
 
@@ -51,10 +51,10 @@
 import { useStore } from 'vuex';
 import useValidate from '@vuelidate/core';
 import { helpers, required } from '@vuelidate/validators';
-import Form from '@/components/common/Forms/Form.vue';
-import FormGroup from '@/components/common/Forms/FormGroup.vue';
-import Input from '@/components/common/Forms/Input.vue';
-import Textarea from '@/components/common/Forms/Textarea.vue';
+import UiForm from '@/components/common/Forms/UiForm.vue';
+import UiFormGroup from '@/components/common/Forms/UiFormGroup.vue';
+import UiInput from '@/components/common/Forms/UiInput.vue';
+import UiTextarea from '@/components/common/Forms/UiTextarea.vue';
 import MultiSelect from '@/components/common/Forms/MultiSelect.vue';
 import { CompanyFormOrganization } from '@/const/const.js';
 import Loader from '@/components/common/Loader.vue';

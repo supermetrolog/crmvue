@@ -1,8 +1,8 @@
 <template>
-    <Form @submit="onSubmit">
-        <FormGroup>
+    <UiForm @submit="onSubmit">
+        <UiFormGroup>
             <div class="col-12 col-md-6">
-                <Input
+                <UiInput
                     v-model="form.all"
                     @keydown.enter="onSubmit"
                     label="Поиск"
@@ -27,7 +27,7 @@
                     <span>Сбросить фильтры</span>
                 </Button>
             </div>
-        </FormGroup>
+        </UiFormGroup>
         <teleport to="body">
             <Modal
                 @close="extraIsVisible = false"
@@ -35,8 +35,8 @@
                 title="Фильтры"
                 :width="1000"
             >
-                <Form>
-                    <FormGroup>
+                <UiForm>
+                    <UiFormGroup>
                         <ConsultantPicker
                             v-model="form.consultant_id"
                             :options="getConsultantsOptions"
@@ -53,17 +53,17 @@
                                 </Checkbox>
                             </template>
                         </ConsultantPicker>
-                    </FormGroup>
-                    <FormDivider />
-                    <FormGroup>
+                    </UiFormGroup>
+                    <UiFormDivider />
+                    <UiFormGroup>
                         <CheckboxOptions
                             v-model="form.categories"
                             class="col-12"
                             label="Категория"
                             :options="CompanyCategories"
                         />
-                    </FormGroup>
-                    <FormGroup>
+                    </UiFormGroup>
+                    <UiFormGroup>
                         <SearchableOptionsPicker
                             v-model="form.activity_group_ids"
                             :options="ActivityGroupList"
@@ -118,9 +118,9 @@
                                 />
                             </template>
                         </MultiSelect>
-                    </FormGroup>
-                    <FormDivider />
-                    <FormGroup>
+                    </UiFormGroup>
+                    <UiFormDivider />
+                    <UiFormGroup>
                         <SwitchSlider
                             v-model="form.status"
                             class="col-5"
@@ -138,17 +138,17 @@
                             type="date"
                             :validators="formDateValidators"
                         />
-                    </FormGroup>
-                </Form>
+                    </UiFormGroup>
+                </UiForm>
             </Modal>
         </teleport>
-    </Form>
+    </UiForm>
 </template>
 
 <script setup>
-import Form from '@/components/common/Forms/Form.vue';
-import FormGroup from '@/components/common/Forms/FormGroup.vue';
-import Input from '@/components/common/Forms/Input.vue';
+import UiForm from '@/components/common/Forms/UiForm.vue';
+import UiFormGroup from '@/components/common/Forms/UiFormGroup.vue';
+import UiInput from '@/components/common/Forms/UiInput.vue';
 import MultiSelect from '@/components/common/Forms/MultiSelect.vue';
 import { ActivityGroupList, ActivityProfileList, CompanyCategories } from '@/const/const.js';
 import Button from '@/components/common/Button.vue';
@@ -168,7 +168,7 @@ import { useProductRangesOptions } from '@/composables/options/useProductRangesO
 import Chip from '@/components/common/Chip.vue';
 import Checkbox from '@/components/common/Forms/Checkbox.vue';
 import plural from 'plural-ru';
-import FormDivider from '@/components/common/Forms/FormDivider.vue';
+import UiFormDivider from '@/components/common/Forms/UiFormDivider.vue';
 import SwitchSlider from '@/components/common/Forms/SwitchSlider.vue';
 
 const route = useRoute();

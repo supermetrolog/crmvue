@@ -1,289 +1,194 @@
 <template>
-    <Modal
+    <UiModal
+        v-model:visible="isVisible"
         @close="close"
-        :show="isVisible"
-        width="1200"
+        :title="isEditing ? `Редактирование задачи #${props.id}` : 'Создание задачи'"
+        :width="800"
         :close-on-outside-click="false"
-        :title="isEditing ? 'Редактирование задачи' : 'Создание задачи'"
+        custom-close
     >
-        <div>
-            <DashboardTableTasksItem :task="taskPreview" />
-        </div>
-        <Stepper v-model:step="step" @complete="submit" :steps="steps" :v="v$.form" keep-alive>
-            <template #1>
-                <Spinner v-if="consultantsIsLoading" center />
-                <UserPicker
-                    v-else
+        <UiForm>
+            <UiFormGroup>
+                <ConsultantPicker
                     v-model="form.user_id"
+                    :v="v$.form.user_id"
                     :disabled="isEditing"
-                    single
-                    :users="consultants"
+                    :options="getConsultantsOptions"
+                    label="1. Исполнитель"
+                    class="col-6"
+                    required
                 />
-            </template>
-            <template #2>
-                <div class="d-flex justify-content-center gap-3">
-                    <div class="date-range-presets">
-                        <p class="date-range-presets__title">
-                            Шаблоны продолжительности выполнения
-                        </p>
-                        <div class="date-range-presets__list">
-                            <template v-if="externalPresets.call">
-                                <DashboardChip
-                                    v-for="preset in callPresets"
-                                    :key="preset.id"
-                                    @click="selectRange(preset.value, preset.unit)"
-                                    class="date-range-presets__item dashboard-bg-success-l"
-                                    :class="{
-                                        active: currentRange === preset.value && !preset.hidden
-                                    }"
-                                >
-                                    {{ preset.label }}
-                                </DashboardChip>
-                            </template>
-                            <DashboardChip
-                                v-for="preset in presets"
-                                :key="preset.id"
-                                @click="selectRange(preset.value, preset.unit)"
-                                class="date-range-presets__item dashboard-bg-success-l"
-                                :class="{ active: currentRange === preset.value && !preset.hidden }"
-                            >
-                                {{ preset.label }}
-                            </DashboardChip>
-                        </div>
-                    </div>
-                    <DatePicker v-model="form.date.end" size="50px" />
-                </div>
-            </template>
-            <template #3>
-                <div class="row">
-                    <MultiSelect
-                        v-model="form.tags"
-                        label="Тэги"
-                        mode="tags"
-                        searchable
-                        class="col-12 mb-2"
-                        :options="getTagsOptions"
-                        :resolve-on-load="true"
-                        :close-on-select="false"
-                        placeholder="&nbsp;&nbsp;Выберите тэг.."
-                    >
-                        <template #option="{ option }">
-                            <TaskTagOption :tag="option" />
-                        </template>
-                        <template #tag="{ option, disabled, handleTagRemove }">
-                            <div
-                                class="multiselect-tag"
-                                :style="{ backgroundColor: '#' + option.color, color: '#fff' }"
-                            >
-                                <span>{{ option.label }}</span>
-                                <i
-                                    v-if="!disabled"
-                                    v-tippy="'Удалить'"
-                                    @click="handleTagRemove(option, $event)"
-                                    class="ml-1 fa-solid fa-close"
-                                />
-                            </div>
-                        </template>
-                    </MultiSelect>
-                </div>
-                <div class="row">
-                    <Textarea
-                        ref="messageEl"
-                        v-model="form.message"
-                        :autofocus="autofocusMessage"
-                        :v="v$.form.message"
-                        minlength="16"
-                        :class="{ 'col-7': hasCustomDescription, 'col-12': !hasCustomDescription }"
-                        label="Описание задачи"
-                        placeholder="Заполните описание.."
-                        helper="Опишите задачу, что нужно сделать, почему и с каким объектом/компанией это связано!"
+                <ConsultantPicker
+                    v-model="form.observers"
+                    :options="getObserversConsultantsOptions"
+                    :close-on-select="false"
+                    :v="v$.form.observers"
+                    mode="multiple"
+                    label="Наблюдатели"
+                    class="col-12"
+                    multiple-property="label"
+                    multiple
+                />
+            </UiFormGroup>
+            <UiFormDivider />
+            <UiFormGroup>
+                <UiCol :cols="12">
+                    <p class="form__label mb-0">2. Сроки исполнения</p>
+                </UiCol>
+                <UiCol :cols="6">
+                    <UiDateInput
+                        v-model="form.date.start"
+                        :presets="startPresets"
+                        :min-date="new Date()"
+                        :v="v$.form.date.start"
+                        presets-label="Начать через"
+                        placeholder="Дата старта"
+                        label="Дата старта"
                         required
                     />
-                    <FormModalTaskDescription
-                        v-if="hasCustomDescription"
-                        :template="additionalContent.modelType"
-                        :info="additionalContent"
-                        class="col-5"
+                </UiCol>
+                <UiCol :cols="6">
+                    <UiDateInput
+                        v-model="form.date.end"
+                        :presets="endPresets"
+                        :min-date="form.date.start"
+                        :v="v$.form.date.end"
+                        presets-label="Выполнить за"
+                        placeholder="Дата окончания"
+                        label="Дата окончания"
+                        required
                     />
-                </div>
-            </template>
-            <template #4>
-                <Spinner v-if="consultantsIsLoading" center />
-                <UserPicker v-else v-model="form.observers" :users="consultantsForObservers" />
-            </template>
-            <template #5>
+                </UiCol>
+                <AnimationTransition :speed="0.5">
+                    <UiCol v-if="form.date.end && form.date.start" :cols="12">
+                        <UiChip coolor="success">
+                            <i class="fa-regular fa-clock" />
+                            <span>На выполнение: {{ duration }}</span>
+                        </UiChip>
+                    </UiCol>
+                </AnimationTransition>
+            </UiFormGroup>
+            <UiFormDivider />
+            <UiFormGroup>
+                <UiTextarea
+                    v-model="form.message"
+                    :autofocus="autofocusMessage"
+                    :v="v$.form.message"
+                    minlength="16"
+                    :min-height="70"
+                    :max-height="200"
+                    auto-height
+                    :class="{ 'col-7': hasCustomDescription, 'col-12': !hasCustomDescription }"
+                    label="3. Описание задачи"
+                    placeholder="Заполните описание.."
+                    helper="Опишите задачу. Что нужно сделать, почему и с каким объектом/компанией это связано!"
+                    required
+                />
+                <FormModalTaskDescription
+                    v-if="hasCustomDescription"
+                    :template="additionalContent.modelType"
+                    :info="additionalContent"
+                    class="col-5"
+                />
+                <MultiSelect
+                    v-model="form.tags"
+                    label="Тэги"
+                    mode="tags"
+                    searchable
+                    class="col-12"
+                    :options="getTagsOptions"
+                    :resolve-on-load="true"
+                    :close-on-select="false"
+                    placeholder="&nbsp;&nbsp;Выберите тэг.."
+                >
+                    <template #option="{ option }">
+                        <TaskTagOption :tag="option" />
+                    </template>
+                    <template #tag="{ option, disabled, handleTagRemove }">
+                        <div
+                            class="multiselect-tag"
+                            :style="{ backgroundColor: '#' + option.color, color: '#fff' }"
+                        >
+                            <span>{{ option.label }}</span>
+                            <i
+                                v-if="!disabled"
+                                v-tippy="'Удалить'"
+                                @click="handleTagRemove(option, $event)"
+                                class="ml-1 fa-solid fa-close"
+                            />
+                        </div>
+                    </template>
+                </MultiSelect>
+            </UiFormGroup>
+            <UiFormDivider />
+            <UiFormGroup>
                 <Spinner v-if="filesIsLoading" label="Загрузка файлов.." center />
                 <FileInput
                     v-else
                     v-model:native="form.files"
                     v-model:data="form.current_files"
-                    label="Файлы или фотографии к задаче"
+                    label="4. Файлы или фотографии"
+                    short
+                    class="col-12"
                 />
-            </template>
-        </Stepper>
-    </Modal>
+            </UiFormGroup>
+        </UiForm>
+        <template #actions>
+            <UiButton @click="submit" color="success-light" icon="fa-solid fa-check" bolder small>
+                Сохранить
+            </UiButton>
+            <UiButton @click="close" color="light" icon="fa-solid fa-ban" bolder small>
+                Отмена
+            </UiButton>
+        </template>
+    </UiModal>
 </template>
 <script setup>
-import Stepper from '@/components/common/Stepper.vue';
-import DatePicker from '@/components/common/Forms/DatePicker/DatePicker.vue';
 import Spinner from '@/components/common/Spinner.vue';
-import Modal from '@/components/common/Modal.vue';
-import UserPicker from '@/components/common/Forms/UserPicker/UserPicker.vue';
-import { helpers, minLength, required } from '@vuelidate/validators';
-import useVuelidate from '@vuelidate/core';
-import Textarea from '@/components/common/Forms/Textarea.vue';
-import { useStore } from 'vuex';
+import { helpers, minLength, minValue, required } from '@vuelidate/validators';
+import UiTextarea from '@/components/common/Forms/UiTextarea.vue';
 import MultiSelect from '@/components/common/Forms/MultiSelect.vue';
 import TaskTagOption from '@/components/common/Forms/TaskTagOption.vue';
 import { useAsyncPopup } from '@/composables/useAsyncPopup.js';
-import {
-    computed,
-    nextTick,
-    onUnmounted,
-    ref,
-    shallowRef,
-    useTemplateRef,
-    watch,
-    reactive
-} from 'vue';
-import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
+import { computed, onUnmounted, ref, shallowRef, reactive, toRef, watch } from 'vue';
 import dayjs from 'dayjs';
 import { useTagsOptions } from '@/composables/options/useTagsOptions.js';
 import { taskOptions } from '@/const/options/task.options.js';
 import FormModalTaskDescription from '@/components/Forms/FormModalTaskDescription.vue';
 import { useAuth } from '@/composables/useAuth.js';
-import DashboardTableTasksItem from '@/components/Dashboard/Table/TasksItem/DashboardTableTasksItem.vue';
-import { useTimeoutFn } from '@vueuse/core';
 import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
 import FileInput from '@/components/common/Forms/FileInput.vue';
 import api from '@/api/api.js';
+import UiForm from '@/components/common/Forms/UiForm.vue';
+import UiFormGroup from '@/components/common/Forms/UiFormGroup.vue';
+import ConsultantPicker from '@/components/common/Forms/ConsultantPicker/ConsultantPicker.vue';
+import { useConsultantsOptions } from '@/composables/options/useConsultantsOptions.js';
+import UiFormDivider from '@/components/common/Forms/UiFormDivider.vue';
+import UiModal from '@/components/common/UI/UiModal.vue';
+import { useValidation } from '@/composables/useValidation.js';
+import UiButton from '@/components/common/UI/UiButton.vue';
+import UiCol from '@/components/common/UI/UiCol.vue';
+import UiDateInput from '@/components/common/Forms/UiDateInput.vue';
+import { useDebounceFn } from '@vueuse/core';
+import UiChip from '@/components/common/UI/UiChip.vue';
+import AnimationTransition from '@/components/common/AnimationTransition.vue';
 
-const store = useStore();
 const { getTagsOptions } = useTagsOptions();
-const { currentUser } = useAuth();
+const { getConsultantsOptions } = useConsultantsOptions();
 
-const steps = [
-    {
-        name: 'user_id',
-        title: 'Выбор сотрудников',
-        icon: 'fa-solid fa-user'
-    },
-    {
-        name: 'date',
-        title: 'Выбор даты',
-        icon: 'fa-solid fa-clock'
-    },
-    {
-        name: 'message',
-        title: 'Описание задачи',
-        icon: 'fa-solid fa-pen'
-    },
-    {
-        name: 'observers',
-        title: 'Наблюдатели',
-        icon: 'fa-solid fa-eye'
-    },
-    {
-        name: 'files',
-        title: 'Файлы',
-        icon: 'fa-solid fa-file-circle-plus'
-    }
-];
+const { currentUserIsAdmin, currentUser } = useAuth();
 
-const presets = [
-    {
-        id: 1,
-        value: 1,
-        label: '1 день'
-    },
-    {
-        id: 3,
-        value: 3,
-        label: '3 дня'
-    },
-    {
-        id: 4,
-        value: 5,
-        label: '5 дней'
-    },
-    {
-        id: 5,
-        value: 7,
-        label: 'Неделя'
-    },
-    {
-        id: 6,
-        value: 14,
-        label: '2 недели'
-    },
-    {
-        id: 7,
-        value: 30,
-        label: 'Месяц'
-    },
-    {
-        id: 8,
-        value: 91,
-        label: '3 месяца'
-    },
-    {
-        id: 9,
-        value: 183,
-        label: 'Пол года'
-    },
-    {
-        id: 10,
-        value: 273,
-        label: '9 месяцев'
-    }
-];
-
-const callPresets = [
-    {
-        id: 11,
-        value: 30,
-        hidden: true,
-        unit: 'minute',
-        label: '30 минут'
-    },
-    {
-        id: 12,
-        value: 1,
-        hidden: true,
-        unit: 'hour',
-        label: '1 час'
-    },
-    {
-        id: 13,
-        value: 2,
-        hidden: true,
-        unit: 'hour',
-        label: '2 часа'
-    },
-    {
-        id: 14,
-        value: 3,
-        hidden: true,
-        unit: 'hour',
-        label: '3 часа'
-    }
-];
+// form
 
 const autofocusMessage = ref(false);
-
-const step = ref(0);
-const consultants = ref([]);
-const consultantsIsLoading = ref(false);
 const hasCustomDescription = ref(false);
 const additionalContent = shallowRef({});
-
-const messageEl = useTemplateRef('messageEl');
 
 const form = ref({
     message: null,
     date: {
         end: null,
-        start: null
+        start: new Date()
     },
     tags: [],
     user_id: null,
@@ -293,61 +198,21 @@ const form = ref({
     current_files: []
 });
 
-const externalPresets = reactive({
-    call: false
+const duration = computed(() => {
+    return dayjs.duration(dayjs(form.value.date.end).diff(dayjs(form.value.date.start))).humanize();
 });
 
-const taskPreview = computed(() => {
-    return {
-        tags: [],
-        id: 1,
-        created_by_type: 'user',
-        created_by_id: currentUser.value.id,
-        created_by: currentUser.value,
-        message: form.value.message || 'Заполните описание..',
-        status: 1,
-        observers: selectedObservers.value,
-        user_id: form.value.user_id,
-        user: selectedUser.value,
-        end: form.value.date.end
-    };
-});
+async function getObserversConsultantsOptions() {
+    const consultantsOptions = await getConsultantsOptions();
 
-const selectedUser = computed(() => {
-    return consultants.value.find(element => element.id === form.value.user_id);
-});
+    if (currentUserIsAdmin.value) return consultantsOptions;
 
-const selectedObservers = computed(() => {
-    return form.value.observers.reduce((acc, element) => {
-        const user = consultants.value.find(el => el.id === element);
-
-        if (user)
-            acc.push({
-                user_id: element,
-                user
-            });
-
-        return acc;
-    }, []);
-});
-
-const consultantsForObservers = computed(() => {
-    if (store.getters.isAdmin) return consultants.value;
-    return consultants.value.filter(
-        element => element.id !== form.value.user_id && element.id !== store.getters.THIS_USER.id
+    return consultantsOptions.filter(
+        element => element.id !== form.value.user_id && element.id !== currentUser.value.id
     );
-});
+}
 
-const currentRange = computed(() => {
-    if (form.value.date.end === null) return 0;
-    return Math.round(dayjs(form.value.date.end).diff(dayjs(), 'day', true));
-});
-
-watch(step, value => {
-    if (value === 2) nextTick(() => useTimeoutFn(messageEl.value.focus, 1000, { immediate: true }));
-});
-
-const clearForm = () => {
+function clearForm() {
     form.value = {
         message: null,
         date: {
@@ -361,15 +226,7 @@ const clearForm = () => {
         files: [],
         current_files: []
     };
-};
-
-const fetchConsultants = async () => {
-    consultantsIsLoading.value = true;
-
-    consultants.value = await store.dispatch('getConsultants');
-
-    consultantsIsLoading.value = false;
-};
+}
 
 const {
     isVisible,
@@ -381,20 +238,17 @@ const {
 } = useAsyncPopup('taskCreator');
 
 onPopupShowed(() => {
-    step.value = props.value?.step ?? 0;
     hasCustomDescription.value = props.value?.customDescription ?? false;
     additionalContent.value = props.value?.additionalContent ?? {};
 
     externalPresets.call = props.value?.callPresets ?? false;
 
-    if (!consultants.value.length) fetchConsultants();
-
     if (props.value) {
         form.value = {
             message: props.value.message,
             date: {
-                end: props.value.end,
-                start: props.value.start
+                end: props.value.end ? dayjs(props.value.end).toDate() : null,
+                start: props.value.start ? dayjs(props.value.start).toDate() : new Date()
             },
             user_id: props.value.user_id,
             status: props.value.status ?? taskOptions.statusTypes.NEW,
@@ -410,14 +264,23 @@ onPopupShowed(() => {
     }
 
     if (props.value?.focusMessage) autofocusMessage.value = true;
+
+    generateStartPresets();
 });
 
-const v$ = useVuelidate(
+const { v$, validate } = useValidation(
     {
         form: {
             date: {
+                start: {
+                    required: helpers.withMessage('Выберите дату старта задачи!', required)
+                },
                 end: {
-                    required: helpers.withMessage('Выберите дату истечения задачи!', required)
+                    required: helpers.withMessage('Выберите дату истечения задачи!', required),
+                    minValue: helpers.withMessage(
+                        'Дата начала задачи должна быть раньше даты истечения',
+                        minValue(toRef(() => form.value.date.start))
+                    )
                 }
             },
             user_id: {
@@ -435,7 +298,7 @@ const v$ = useVuelidate(
     { form }
 );
 
-const formToPayload = () => {
+function formToPayload() {
     return {
         start: form.value.date.start,
         end: form.value.date.end,
@@ -447,20 +310,21 @@ const formToPayload = () => {
         files: form.value.files,
         current_files: form.value.current_files.map(element => element.id)
     };
-};
+}
 
-const submit = () => {
+async function submit() {
+    console.log(form.value);
+
+    const isValid = await validate();
+    if (!isValid) return;
+
     _submit(formToPayload());
     clearForm();
-};
+}
 
 const close = () => {
     cancel();
     clearForm();
-};
-
-const selectRange = (range, unit = 'day') => {
-    form.value.date.end = dayjs().add(range, unit).toDate();
 };
 
 const isEditing = computed(() => isNotNullish(props.value?.id));
@@ -476,9 +340,156 @@ const filesIsLoading = ref(false);
 async function fetchFiles() {
     filesIsLoading.value = true;
 
-    const response = await api.task.getFiles(props.value.id);
-    if (response) form.value.current_files = response;
-
-    filesIsLoading.value = false;
+    try {
+        const response = await api.task.getFiles(props.value.id);
+        if (response) form.value.current_files = response;
+    } finally {
+        filesIsLoading.value = false;
+    }
 }
+
+// presets
+
+// presets
+
+const externalPresets = reactive({
+    call: false
+});
+
+function generateStartPresets() {
+    startPresets.value = [
+        ...(externalPresets.call ? generateCallStartPresets() : []),
+        {
+            value: dayjs().add(1, 'day').toDate(),
+            label: '1 день'
+        },
+        {
+            value: dayjs().add(3, 'day').toDate(),
+            label: '3 дня'
+        },
+        {
+            value: dayjs().add(5, 'day').toDate(),
+            label: '5 дней'
+        },
+        {
+            value: dayjs().add(7, 'day').toDate(),
+            label: 'Неделя'
+        },
+        {
+            value: dayjs().add(14, 'day').toDate(),
+            label: '2 недели'
+        },
+        {
+            value: dayjs().add(1, 'month').toDate(),
+            label: 'Месяц'
+        },
+        {
+            value: dayjs().add(3, 'month').toDate(),
+            label: '3 месяца'
+        },
+        {
+            value: dayjs().add(6, 'month').toDate(),
+            label: 'Пол года'
+        },
+        {
+            value: dayjs().add(9, 'month').toDate(),
+            label: '9 месяцев'
+        }
+    ];
+}
+
+function generateCallStartPresets() {
+    return [
+        {
+            value: dayjs().add(30, 'minute').toDate(),
+            label: '30 минут'
+        },
+        {
+            value: dayjs().add(1, 'hour').toDate(),
+            label: '1 час'
+        },
+        {
+            value: dayjs().add(2, 'hour').toDate(),
+            label: '2 часа'
+        },
+        {
+            value: dayjs().add(3, 'hour').toDate(),
+            label: '3 часа'
+        }
+    ];
+}
+
+const startPresets = shallowRef([]);
+
+generateStartPresets();
+
+function generateEndPresets() {
+    endPresets.value = [
+        ...(externalPresets.call ? generateCallEndPresets() : []),
+        {
+            value: dayjs(form.value.date.start).add(1, 'day').toDate(),
+            label: '1 день'
+        },
+        {
+            value: dayjs(form.value.date.start).add(3, 'day').toDate(),
+            label: '3 дня'
+        },
+        {
+            value: dayjs(form.value.date.start).add(5, 'day').toDate(),
+            label: '5 дней'
+        },
+        {
+            value: dayjs(form.value.date.start).add(7, 'day').toDate(),
+            label: 'Неделя'
+        },
+        {
+            value: dayjs(form.value.date.start).add(14, 'day').toDate(),
+            label: '2 недели'
+        },
+        {
+            value: dayjs(form.value.date.start).add(1, 'month').toDate(),
+            label: 'Месяц'
+        },
+        {
+            value: dayjs(form.value.date.start).add(3, 'month').toDate(),
+            label: '3 месяца'
+        },
+        {
+            value: dayjs(form.value.date.start).add(6, 'month').toDate(),
+            label: 'Пол года'
+        },
+        {
+            value: dayjs(form.value.date.start).add(9, 'month').toDate(),
+            label: '9 месяцев'
+        }
+    ];
+}
+
+function generateCallEndPresets() {
+    return [
+        {
+            value: dayjs(form.value.date.start).add(30, 'minute').toDate(),
+            label: '30 минут'
+        },
+        {
+            value: dayjs(form.value.date.start).add(1, 'hour').toDate(),
+            label: '1 час'
+        },
+        {
+            value: dayjs(form.value.date.start).add(2, 'hour').toDate(),
+            label: '2 часа'
+        },
+        {
+            value: dayjs(form.value.date.start).add(3, 'hour').toDate(),
+            label: '3 часа'
+        }
+    ];
+}
+
+const endPresets = shallowRef([]);
+generateEndPresets();
+
+const debouncedGenerateEndPresets = useDebounceFn(generateEndPresets, 500);
+
+watch(() => form.value.date.start, debouncedGenerateEndPresets);
 </script>

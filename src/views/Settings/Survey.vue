@@ -134,8 +134,8 @@ const effectsPagination = ref(null);
 const fieldFormIsVisible = shallowRef(false);
 const effectsFormIsVisible = shallowRef(false);
 
-const editingField = shallowRef(false);
-const editingEffect = shallowRef(false);
+const editingField = shallowRef(null);
+const editingEffect = shallowRef(null);
 
 const closeFieldForm = () => {
     fieldFormIsVisible.value = false;
@@ -198,6 +198,7 @@ const onEffectDeleted = () => {
 
 const deleteEffect = async effect => {
     const confirmed = await confirm(
+        'Удалить эффект',
         `Вы действительно хотите удалить эффект "#${effect.id} ${effect.title} (${effect.kind})"?`
     );
     if (!confirmed) return;
@@ -225,6 +226,7 @@ const loadFields = async () => {
 
 const deleteField = async field => {
     const confirmed = await confirm(
+        'Удалить поле',
         `Вы действительно хотите удалить Поле "#${field.id} ${field.field_type}(${field.type})"?`
     );
     if (!confirmed) return;

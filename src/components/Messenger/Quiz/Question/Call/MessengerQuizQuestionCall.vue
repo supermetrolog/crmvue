@@ -63,7 +63,7 @@
                     />
                 </div>
                 <AnimationTransition :speed="0.25">
-                    <Textarea
+                    <UiTextarea
                         v-if="form.action"
                         v-model="form.description"
                         placeholder="Подробности о контакте. Почему удалить/перенести?"
@@ -82,7 +82,7 @@ import RadioChip from '@/components/common/Forms/RadioChip.vue';
 import { Tippy } from 'vue-tippy';
 import ContactCard from '@/components/Contact/Card/ContactCard.vue';
 import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
-import Textarea from '@/components/common/Forms/Textarea.vue';
+import UiTextarea from '@/components/common/Forms/UiTextarea.vue';
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
 import RadioOptions from '@/components/common/Forms/RadioOptions.vue';
 import MessengerQuizQuestionCallSchedule from '@/components/Messenger/Quiz/Question/Call/MessengerQuizQuestionCallSchedule.vue';

@@ -61,7 +61,10 @@ const props = defineProps({
 const isCompleted = computed(() => props.addition.viewed_at !== null);
 
 const remove = async () => {
-    const confirmed = await confirm('Вы уверены, что хотите безвозвратно удалить уведомление?');
+    const confirmed = await confirm(
+        'Удалить уведомление',
+        'Вы уверены, что хотите безвозвратно удалить уведомление?'
+    );
 
     if (confirmed) {
         const deleted = await store.dispatch('Messenger/deleteAddition', {

@@ -248,6 +248,7 @@
         width: 50px!important;
         font-size: 25px;
         border-radius: 50%;
+        @include mixins.flex-box($a: center, $j: center);
     }
 
     &__editor {

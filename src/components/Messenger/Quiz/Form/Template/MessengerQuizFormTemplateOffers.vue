@@ -142,7 +142,10 @@ function markAllAsNotProcessed() {
 const { confirm } = useConfirm();
 
 async function clearAll() {
-    const confirmed = await confirm('Вы уверены, что хотите сбросить все ответы по предложениям?');
+    const confirmed = await confirm(
+        'Сбросить ответы',
+        'Вы уверены, что хотите сбросить все ответы по предложениям?'
+    );
     if (confirmed) setAllAnswers(null);
 }
 

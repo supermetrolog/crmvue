@@ -11,7 +11,7 @@
             />
         </template>
         <div class="row align-items-end mb-3">
-            <Input
+            <UiInput
                 v-model="filters.search"
                 class="col-6"
                 label="Поиск"
@@ -36,8 +36,8 @@
                 :options="sortingOptions"
                 class="col-4"
             />
-            <Input v-model="filters.question_id" class="col-2" label="ID вопроса" type="number" />
-            <Input v-model="filters.field_id" class="col-2" label="ID Field" type="number" />
+            <UiInput v-model="filters.question_id" class="col-2" label="ID вопроса" type="number" />
+            <UiInput v-model="filters.field_id" class="col-2" label="ID Field" type="number" />
             <UiCol cols="8">
                 <div class="d-flex gap-2">
                     <Checkbox v-model="filters.has_effects" :true-value="1" :false-value="null">
@@ -91,7 +91,7 @@
 </template>
 <script setup>
 import SettingsFormHeader from '@/components/Settings/SettingsFormHeader.vue';
-import Input from '@/components/common/Forms/Input.vue';
+import UiInput from '@/components/common/Forms/UiInput.vue';
 import UiCol from '@/components/common/UI/UiCol.vue';
 import SettingsFormElement from '@/components/Settings/SettingsFormElement.vue';
 import DashboardCard from '@/components/Dashboard/Card/DashboardCard.vue';
@@ -316,6 +316,7 @@ const notify = useNotify();
 
 async function deleteQuestionAnswer(answer) {
     const confirmed = await confirm(
+        'Удалить вариант ответа',
         `Вы действительно хотите удалить Вариант ответа #${answer.id}?`
     );
 

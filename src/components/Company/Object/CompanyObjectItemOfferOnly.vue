@@ -85,7 +85,7 @@
                     </template>
                 </div>
             </div>
-            <Form v-if="isSelected" class="object-offer__form mb-2">
+            <UiForm v-if="isSelected" class="object-offer__form mb-2">
                 <textarea
                     v-if="isSelected"
                     ref="commentEl"
@@ -96,7 +96,7 @@
                     rows="3"
                     placeholder="Комментарий клиенту"
                 />
-            </Form>
+            </UiForm>
             <div class="object-offer__location my-1">
                 {{ location }}
             </div>
@@ -293,7 +293,7 @@ import { useAuth } from '@/composables/useAuth.js';
 import { useRoute } from 'vue-router';
 import { getLinkOfferByObject, getLinkPDF } from '@/utils/url.js';
 import CompanyObjectItemProperty from '@/components/Company/Object/CompanyObjectItemProperty.vue';
-import Form from '@/components/common/Forms/Form.vue';
+import UiForm from '@/components/common/Forms/UiForm.vue';
 
 const emit = defineEmits(['select', 'unselect', 'addComment', 'deleteFavoriteOffer']);
 const props = defineProps({

@@ -28,6 +28,7 @@ import isToday from 'dayjs/plugin/isToday';
 import isYesterday from 'dayjs/plugin/isYesterday';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import minMax from 'dayjs/plugin/minMax';
+import duration from 'dayjs/plugin/duration';
 import { axiosRequestInterceptor, axiosResponseErrorInterceptor } from '@/services/axios.js';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
 
@@ -36,6 +37,7 @@ dayjs.extend(isYesterday);
 dayjs.extend(relativeTime);
 dayjs.extend(customParseFormat);
 dayjs.extend(minMax);
+dayjs.extend(duration);
 dayjs.locale('ru');
 
 axios.defaults.baseURL = $generatorURL.api.url();

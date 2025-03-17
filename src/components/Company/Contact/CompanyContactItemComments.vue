@@ -13,7 +13,7 @@
             <EmptyLabel v-else>Комментарии отсутствуют</EmptyLabel>
         </div>
         <div class="col-12 mt-2">
-            <Textarea v-model="comment" class="company-contact-item__textarea"></Textarea>
+            <UiTextarea v-model="comment" class="company-contact-item__textarea"></UiTextarea>
             <Button @click="createComment" success small class="w-100 mt-1">Отправить</Button>
         </div>
     </div>
@@ -21,7 +21,7 @@
 
 <script setup>
 import Loader from '@/components/common/Loader.vue';
-import Textarea from '@/components/common/Forms/Textarea.vue';
+import UiTextarea from '@/components/common/Forms/UiTextarea.vue';
 import Button from '@/components/common/Button.vue';
 import EmptyLabel from '@/components/common/EmptyLabel.vue';
 import { shallowRef } from 'vue';

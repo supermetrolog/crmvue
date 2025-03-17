@@ -60,7 +60,10 @@ const { confirm } = useConfirm();
 const isLoading = shallowRef(false);
 
 const deleteGroup = async groupID => {
-    const confirmed = await confirm('Вы действительно хотите безвозвратно удалить группу?');
+    const confirmed = await confirm(
+        'Удалить группу компаний',
+        'Вы действительно хотите безвозвратно удалить группу?'
+    );
     if (!confirmed) return;
 
     isLoading.value = true;

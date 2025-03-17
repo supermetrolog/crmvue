@@ -120,7 +120,10 @@ function setAllAnswers(value) {
 const { confirm } = useConfirm();
 
 async function resetAllAnswers() {
-    const confirmed = await confirm('Вы уверены, что хотите сбросить все ответы по запросам?');
+    const confirmed = await confirm(
+        'Сбросить ответы',
+        'Вы уверены, что хотите сбросить все ответы по запросам?'
+    );
     if (confirmed) setAllAnswers(undefined);
 }
 
