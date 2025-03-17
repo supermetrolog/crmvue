@@ -19,7 +19,7 @@
                 v-model:form="contact.form"
                 @open-modal="openCallModal(contact)"
                 @skip="suggestNextContact"
-                @schedule-call="$emit('schedule-call', contact.entity)"
+                @schedule-call="$emit('schedule-call', contact.entity, companyName)"
                 :contact="contact.entity"
                 class="messenger-quiz__question"
             />
@@ -45,7 +45,7 @@
             v-model:form="currentCallContactForm"
             @confirm="confirmUnavailableContact"
             @cancel="cancelCall"
-            @schedule-call="$emit('schedule-call', currentCallContactForm.entity)"
+            @schedule-call="$emit('schedule-call', currentCallContactForm.entity, companyName)"
         />
         <UiModal
             v-model:visible="contactPickerIsVisible"
@@ -97,6 +97,7 @@ import MessengerQuizContacts from '@/components/Messenger/Quiz/MessengerQuizCont
 import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
 import UiModal from '@/components/common/UI/UiModal.vue';
 import UiButton from '@/components/common/UI/UiButton.vue';
+import { getCompanyShortName } from '@/utils/formatters/models/company.js';
 
 const contactModel = defineModel('contact');
 const selectedContacts = defineModel('selected-contacts');
@@ -129,6 +130,14 @@ const props = defineProps({
 });
 
 const store = useStore();
+
+const companyName = computed(() => {
+    if (store.state.Messenger.currentDialogType === messenger.dialogTypes.COMPANY) {
+        return getCompanyShortName(store.state.Messenger.currentDialog.model);
+    }
+
+    return getCompanyShortName(store.state.Messenger.currentPanel);
+});
 
 const companyId = computed(() => {
     if (store.state.Messenger.currentDialogType === messenger.dialogTypes.COMPANY)
@@ -282,7 +291,7 @@ function scheduleContactsCall() {
 
 function scheduleCall() {
     contactPickerIsVisible.value = false;
-    emit('schedule-call', selectedContact.value);
+    emit('schedule-call', selectedContact.value, companyName.value);
 }
 
 // call modal

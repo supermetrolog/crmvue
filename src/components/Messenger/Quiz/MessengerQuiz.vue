@@ -369,10 +369,10 @@ const { createTaskWithTemplate } = useTaskManager();
 
 const scheduledCalls = ref([]);
 
-async function createScheduleCallTask(contact) {
+async function createScheduleCallTask(contact, companyName) {
     const contactFullName = getContactFullName(contact);
 
-    const message = `Прозвонить ${contactFullName} (компания  (#${contact.company_id}))`;
+    const message = `Прозвонить ${contactFullName} (${companyName} (#${contact.company_id}))`;
 
     const taskPayload = await createTaskWithTemplate({
         title: message.slice(0, 255),
@@ -421,8 +421,8 @@ async function createScheduleCallTask(contact) {
     }
 }
 
-async function scheduleCall(contact) {
-    await createScheduleCallTask(contact);
+async function scheduleCall(contact, companyName) {
+    await createScheduleCallTask(contact, companyName);
 }
 
 // object destroyed
