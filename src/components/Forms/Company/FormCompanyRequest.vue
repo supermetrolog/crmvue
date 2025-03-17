@@ -145,7 +145,7 @@
                                 label="Дата переезда"
                                 placeholder="Укажите дату переезда.."
                                 :required="isNullish(form.unknownMovingDate)"
-                                :min-date="new Date()"
+                                :min-date="!isEditMode ? new Date() : undefined"
                             />
                             <div class="form__row mt-1">
                                 <RadioOptions

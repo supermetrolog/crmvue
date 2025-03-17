@@ -44,13 +44,13 @@
                             :disabled="form.with_passive_consultant"
                         >
                             <template #after>
-                                <Checkbox
+                                <UiCheckbox
                                     v-model="form.with_passive_consultant"
                                     :true-value="1"
                                     :false-value="null"
                                 >
                                     С неактивными консультантами
-                                </Checkbox>
+                                </UiCheckbox>
                             </template>
                         </ConsultantPicker>
                     </UiFormGroup>
@@ -102,13 +102,21 @@
                             :disabled="form.without_product_ranges"
                         >
                             <template #after>
-                                <Checkbox
-                                    v-model="form.without_product_ranges"
-                                    :true-value="1"
-                                    :false-value="null"
-                                >
-                                    Без номенклатуры
-                                </Checkbox>
+                                <div class="d-flex gap-2">
+                                    <UiCheckbox
+                                        v-model="form.without_product_ranges"
+                                        :true-value="1"
+                                        :false-value="null"
+                                        label="Без номенклатуры"
+                                    />
+                                    <UiCheckbox
+                                        v-model="form.show_product_ranges"
+                                        :true-value="0"
+                                        :false-value="null"
+                                    >
+                                        С отключенной номенклатурой
+                                    </UiCheckbox>
+                                </div>
                             </template>
                             <template #chip="{ option, removeByIndex, index }">
                                 <Chip
@@ -166,7 +174,7 @@ import { useConsultantsOptions } from '@/composables/options/useConsultantsOptio
 import SearchableOptionsPicker from '@/components/common/Forms/SearchableOptionsPicker.vue';
 import { useProductRangesOptions } from '@/composables/options/useProductRangesOptions.js';
 import Chip from '@/components/common/Chip.vue';
-import Checkbox from '@/components/common/Forms/Checkbox.vue';
+import UiCheckbox from '@/components/common/Forms/UiCheckbox.vue';
 import plural from 'plural-ru';
 import UiFormDivider from '@/components/common/Forms/UiFormDivider.vue';
 import SwitchSlider from '@/components/common/Forms/SwitchSlider.vue';
@@ -187,6 +195,7 @@ const formTemplate = {
     status: null,
     product_ranges: [],
     without_product_ranges: null,
+    show_product_ranges: null,
 
     activity_profile_ids: [],
     activity_group_ids: []

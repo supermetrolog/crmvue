@@ -60,7 +60,10 @@
                                 {{ activityProfiles }}
                             </span>
                         </CompanyBoxRow>
-                        <CompanyBoxRow label="Номенклатура товара">
+                        <CompanyBoxRow
+                            v-if="company.show_product_ranges"
+                            label="Номенклатура товара"
+                        >
                             <span v-if="company.productRanges?.length">
                                 {{ productRanges }}
                             </span>

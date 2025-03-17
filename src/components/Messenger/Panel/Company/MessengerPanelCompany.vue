@@ -114,14 +114,16 @@
                         >- Профиль деятельности не заполнен</span
                     >
                 </li>
-                <li v-if="productRanges" class="messenger-panel-company__option">
-                    <span>- {{ productRanges }}</span>
-                </li>
-                <li v-else class="messenger-panel-company__option">
-                    <span class="messenger-warning messenger-warning--animated"
-                        >- Номенклатура товара не заполнена</span
-                    >
-                </li>
+                <template v-if="company.show_product_ranges">
+                    <li v-if="productRanges" class="messenger-panel-company__option">
+                        <span>- {{ productRanges }}</span>
+                    </li>
+                    <li v-else class="messenger-panel-company__option">
+                        <span class="messenger-warning messenger-warning--animated">
+                            - Номенклатура товара не заполнена
+                        </span>
+                    </li>
+                </template>
             </ul>
         </div>
         <MessengerPanelCompanyTabs :key="company.id" :company="company" />

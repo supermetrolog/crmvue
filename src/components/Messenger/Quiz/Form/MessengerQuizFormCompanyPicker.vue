@@ -29,7 +29,9 @@
                             :disabled="form.custom"
                             object
                         />
-                        <Checkbox v-model="form.custom" class="mt-2">Компании нет в базе</Checkbox>
+                        <UiCheckbox v-model="form.custom" class="mt-2"
+                            >Компании нет в базе</UiCheckbox
+                        >
                     </div>
                     <UiInput
                         v-model="form.area"
@@ -80,7 +82,7 @@ import UiInput from '@/components/common/Forms/UiInput.vue';
 import MessengerButton from '@/components/Messenger/MessengerButton.vue';
 import Button from '@/components/common/Button.vue';
 import { spliceById } from '@/utils/helpers/array/spliceById.js';
-import Checkbox from '@/components/common/Forms/Checkbox.vue';
+import UiCheckbox from '@/components/common/Forms/UiCheckbox.vue';
 import UiTextarea from '@/components/common/Forms/UiTextarea.vue';
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
 import useVuelidate from '@vuelidate/core';
