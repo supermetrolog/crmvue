@@ -48,8 +48,18 @@
                 />
             </UiForm>
             <template #actions="{ close }">
-                <UiButton @click="createOrUpdateRequest" color="success">Сохранить</UiButton>
-                <UiButton @click="close" color="danger">Отмена</UiButton>
+                <UiButton
+                    @click="createOrUpdateRequest"
+                    color="success-light"
+                    icon="fa-solid fa-check"
+                    small
+                    bolder
+                >
+                    Сохранить
+                </UiButton>
+                <UiButton @click="close" color="light" small bolder icon="fa-solid fa-ban">
+                    Отмена
+                </UiButton>
             </template>
         </UiModal>
     </div>

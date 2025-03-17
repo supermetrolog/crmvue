@@ -8,7 +8,6 @@ import { isNotEmptyString } from '@/utils/helpers/string/isNotEmptyString.js';
 import { capitalizeString } from '@/utils/helpers/string/capitalizeString.js';
 import { messenger, messengerTemplates } from '@/const/messenger.js';
 import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
-import { isValidationError } from '@/api/helpers/error.js';
 
 export const CONTACT_CALL_ACTIONS = {
     DELETE: 1,
@@ -16,9 +15,10 @@ export const CONTACT_CALL_ACTIONS = {
 };
 
 export const CONTACT_CALL_REASONS = {
-    NO_ANSWER: 1,
-    NOT_AVAILABLE: 2,
-    BLOCKED: 3
+    AVAILABLE: 1,
+    DELETE: 2,
+    MOVE: 3,
+    BUSY: 4
 };
 
 export const CALL_TYPES = {
@@ -52,13 +52,7 @@ export function useMessengerQuiz() {
     const store = useStore();
     const { currentUserId } = useAuth();
 
-    async function createSurvey(
-        contact,
-        answers,
-        chatMemberId = null,
-        relatedSurveyId = null,
-        retry = 3
-    ) {
+    async function createSurvey(contact, answers, chatMemberId = null, relatedSurveyId = null) {
         try {
             return await api.survey.create({
                 contact_id: contact.id,
@@ -68,17 +62,6 @@ export function useMessengerQuiz() {
                 related_survey_id: relatedSurveyId
             });
         } catch (error) {
-            if (isValidationError(error)) return null;
-
-            if (retry > 0)
-                return await createSurvey(
-                    contact,
-                    answers,
-                    chatMemberId,
-                    relatedSurveyId,
-                    retry - 1
-                );
-
             return null;
         }
     }
@@ -98,11 +81,11 @@ export function useMessengerQuiz() {
             start: dayjs().toDate(),
             end: dayjs().add(DELETE_CONTACT_TASK_DURATION, 'day').toDate(),
             user_id: userId ?? store.getters.moderator?.id,
+            title: message,
             message:
-                message +
-                (isNotNullish(description) && isNotEmptyString(description)
-                    ? `. ${capitalizeString(description)}`
-                    : ''),
+                isNotNullish(description) && isNotEmptyString(description)
+                    ? capitalizeString(description)
+                    : null,
             status: taskOptions.statusTypes.NEW,
             observer_ids: [],
             tag_ids: [],
@@ -110,16 +93,11 @@ export function useMessengerQuiz() {
         };
     }
 
-    function getCallStatusForUnavailableReason(reason) {
-        switch (reason) {
-            case CONTACT_CALL_REASONS.NO_ANSWER:
-                return CALL_STATUSES.MISSED;
-            case CONTACT_CALL_REASONS.NOT_AVAILABLE:
-                return CALL_STATUSES.NOT_AVAILABLE;
-            case CONTACT_CALL_REASONS.BLOCKED:
-                return CALL_STATUSES.BLOCKED;
-            default:
-                return CALL_STATUSES.COMPLETED;
+    function getCallStatusByForm(form) {
+        if (form.available) {
+            return CALL_STATUSES.COMPLETED;
+        } else {
+            return CALL_STATUSES.NOT_AVAILABLE;
         }
     }
 
@@ -128,9 +106,7 @@ export function useMessengerQuiz() {
             return {
                 contact_id: element.entity.id,
                 user_id: currentUserId.value,
-                status: element.form.available
-                    ? CALL_STATUSES.COMPLETED
-                    : getCallStatusForUnavailableReason(element.form.reason),
+                status: getCallStatusByForm(element.form),
                 type: CALL_TYPES.OUTGOING
             };
         });
@@ -141,14 +117,11 @@ export function useMessengerQuiz() {
     }
 
     function contactMustBeDeleted(contact) {
-        return (
-            (contact.form.available && contact.form.action === CONTACT_CALL_ACTIONS.DELETE) ||
-            (!contact.form.available && contact.form.reason === CONTACT_CALL_REASONS.BLOCKED)
-        );
+        return contact.form.reason === CONTACT_CALL_REASONS.DELETE;
     }
 
     function contactMustBeMoved(contact) {
-        return contact.form.available && contact.form.action === CONTACT_CALL_ACTIONS.MOVE;
+        return contact.form.reason === CONTACT_CALL_REASONS.MOVE;
     }
 
     async function createPotentialTasks(contacts, messageId, surveyId = null) {
@@ -186,19 +159,6 @@ export function useMessengerQuiz() {
         return [];
     }
 
-    async function sendMessageWithRetrying(chatMemberId, messagePayload, retry = 3) {
-        try {
-            return await api.messenger.sendMessage(chatMemberId, messagePayload);
-        } catch (error) {
-            if (isValidationError(error)) return null;
-
-            if (retry > 0)
-                return await sendMessageWithRetrying(chatMemberId, messagePayload, retry - 1);
-
-            return null;
-        }
-    }
-
     async function sendMessageAboutSurveyIsUnavailable(chatMemberId, contacts) {
         const messagePayload = {
             message: 'Не удалось дозвониться до контактов опросника',
@@ -206,7 +166,7 @@ export function useMessengerQuiz() {
             contact_ids: contacts.map(element => element.entity.id)
         };
 
-        return await sendMessageWithRetrying(chatMemberId, messagePayload);
+        return await api.messenger.sendMessage(chatMemberId, messagePayload);
     }
 
     async function createRelatedSurveys(contact, payload, relatedSurvey) {

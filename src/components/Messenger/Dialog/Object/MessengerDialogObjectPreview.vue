@@ -22,6 +22,11 @@
                     </template>
                     <template #warning>менее 5 фото (загружено {{ object.photo.length }})</template>
                 </MessengerDialogPreviewRow>
+                <MessengerDialogPreviewRow label="полная площадь" editable>
+                    <WithUnitType v-if="object.area_building" :unit-type="unitTypes.SQUARE_METERS">
+                        {{ toNumberFormat(Number(object.area_building)) }}
+                    </WithUnitType>
+                </MessengerDialogPreviewRow>
                 <MessengerDialogPreviewRow label="эл-во общее" editable>
                     <WithUnitType v-if="object.power" :unit-type="unitTypes.KILOWATT">
                         {{ toNumberFormat(Number(object.power)) }}

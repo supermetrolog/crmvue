@@ -3,7 +3,7 @@
         v-model:visible="isVisible"
         @close="close"
         :title="isEditing ? `Редактирование задачи #${props.id}` : 'Создание задачи'"
-        :width="800"
+        :width="850"
         :close-on-outside-click="false"
         custom-close
     >
@@ -15,9 +15,39 @@
                     :disabled="isEditing"
                     :options="getConsultantsOptions"
                     label="1. Исполнитель"
-                    class="col-6"
+                    class="col-12"
                     required
-                />
+                >
+                    <template #after>
+                        <UiField v-if="isEditing" color="light">
+                            <i class="fa-solid fa-warning" />
+                            <span>
+                                Для изменения исполнителя воспользуйтесь отдельной функций
+                                "Переназначить" в карточке задачи.
+                            </span>
+                        </UiField>
+                        <div v-else class="d-flex gap-2">
+                            <UiButton
+                                @click.prevent="assignToSelf"
+                                small
+                                color="light"
+                                icon="fa-solid fa-user-astronaut"
+                                :disabled="assignedToSelf"
+                            >
+                                Назначить себе
+                            </UiButton>
+                            <UiButton
+                                @click.prevent="assignToModerator"
+                                small
+                                color="light"
+                                icon="fa-solid fa-user-tie"
+                                :disabled="!canBeAssignedToModerator || assignedToModerator"
+                            >
+                                Назначить офис-менеджеру
+                            </UiButton>
+                        </div>
+                    </template>
+                </ConsultantPicker>
                 <ConsultantPicker
                     v-model="form.observers"
                     :options="getObserversConsultantsOptions"
@@ -45,7 +75,18 @@
                         placeholder="Дата старта"
                         label="Дата старта"
                         required
-                    />
+                    >
+                        <template #after>
+                            <UiButton
+                                @click.prevent="setStartToday"
+                                small
+                                color="light"
+                                icon="fa-regular fa-clock"
+                            >
+                                Сегодня
+                            </UiButton>
+                        </template>
+                    </UiDateInput>
                 </UiCol>
                 <UiCol :cols="6">
                     <UiDateInput
@@ -187,6 +228,11 @@ import UiDateInput from '@/components/common/Forms/UiDateInput.vue';
 import { useDebounceFn } from '@vueuse/core';
 import UiChip from '@/components/common/UI/UiChip.vue';
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
+import { useStore } from 'vuex';
+import UiField from '@/components/common/UI/UiField.vue';
+import { isString } from '@/utils/helpers/string/isString.js';
+import { dayjsFromMoscow } from '@/utils/formatters/date.js';
+import { isNullish } from '@/utils/helpers/common/isNullish.js';
 
 const { getTagsOptions } = useTagsOptions();
 const { getConsultantsOptions } = useConsultantsOptions();
@@ -254,6 +300,12 @@ const {
     props
 } = useAsyncPopup('taskCreator');
 
+function parseDate(date, defaultValue = null) {
+    if (isNullish(date)) return defaultValue;
+    if (isString(date) && isEditing.value) return dayjsFromMoscow(date).toDate();
+    return dayjs(date).toDate();
+}
+
 onPopupShowed(() => {
     hasCustomDescription.value = props.value?.customDescription ?? false;
     additionalContent.value = props.value?.additionalContent ?? {};
@@ -265,8 +317,8 @@ onPopupShowed(() => {
             message: props.value.message,
             title: props.value.title,
             date: {
-                end: props.value.end ? dayjs(props.value.end).toDate() : null,
-                start: props.value.start ? dayjs(props.value.start).toDate() : new Date()
+                end: parseDate(props.value.end),
+                start: parseDate(props.value.start)
             },
             user_id: props.value.user_id,
             status: props.value.status ?? taskOptions.statusTypes.NEW,
@@ -517,4 +569,25 @@ generateEndPresets();
 const debouncedGenerateEndPresets = useDebounceFn(generateEndPresets, 500);
 
 watch(() => form.value.date.start, debouncedGenerateEndPresets);
+
+// functions
+
+const assignedToSelf = computed(() => form.value.user_id === currentUser.value.id);
+
+function assignToSelf() {
+    form.value.user_id = currentUser.value.id;
+}
+
+const store = useStore();
+
+const canBeAssignedToModerator = computed(() => isNotNullish(store.getters?.moderator));
+const assignedToModerator = computed(() => form.value.user_id === store.getters?.moderator?.id);
+
+function assignToModerator() {
+    form.value.user_id = store.getters.moderator.id;
+}
+
+function setStartToday() {
+    form.value.date.start = new Date();
+}
 </script>

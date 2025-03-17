@@ -1,5 +1,5 @@
 <template>
-    <div class="messenger-quiz-question">
+    <div class="messenger-quiz-question" :class="{ active: isCompleted }">
         <div class="messenger-quiz-question__header">
             <p
                 v-if="requests.length"
@@ -40,6 +40,7 @@
                     :key="request.id"
                     ref="requestEls"
                     @edit="editRequest(request)"
+                    @change="onChangeRequestAnswer"
                     :request="request"
                     editable
                 />
@@ -56,7 +57,7 @@
     </div>
 </template>
 <script setup>
-import { ref, shallowRef, useTemplateRef } from 'vue';
+import { nextTick, ref, shallowRef, useTemplateRef } from 'vue';
 import MessengerQuizFormTemplateRequest from '@/components/Messenger/Quiz/Form/Template/MessengerQuizFormTemplateRequest.vue';
 import UiButton from '@/components/common/UI/UiButton.vue';
 import { isString } from '@/utils/helpers/string/isString.js';
@@ -65,6 +66,7 @@ import MessengerQuizFormTemplateAccordion from '@/components/Messenger/Quiz/Form
 import FormCompanyRequest from '@/components/Forms/Company/FormCompanyRequest.vue';
 import api from '@/api/api.js';
 import { useConfirm } from '@/composables/useConfirm.js';
+import { useDebounceFn } from '@vueuse/core';
 
 const props = defineProps({
     requests: {
@@ -155,4 +157,16 @@ async function updateRequest() {
 
     closeEditForm();
 }
+
+// completed
+
+const isCompleted = ref(false);
+
+function formIsCompleted() {
+    return requestEls.value.every(element => element.isCompleted());
+}
+
+const onChangeRequestAnswer = useDebounceFn(() => {
+    isCompleted.value = formIsCompleted();
+}, 50);
 </script>

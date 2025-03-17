@@ -1,5 +1,8 @@
 <template>
-    <div class="messenger-quiz-question">
+    <div
+        class="messenger-quiz-question"
+        :class="{ active: hasMainAnswer, passive: hasNullMainAnswer }"
+    >
         <div class="messenger-quiz-question__header">
             <p class="messenger-quiz-question__title" :class="{ disabled: isDisabled }">
                 <span v-if="number">{{ number }}. </span>

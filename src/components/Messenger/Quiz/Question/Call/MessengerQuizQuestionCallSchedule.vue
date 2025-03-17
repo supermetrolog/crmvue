@@ -8,6 +8,7 @@
         v-tippy="'Нажмите, чтобы создать задачу на запланированный звонок'"
         @click="$emit('schedule')"
         color="light"
+        small
         icon="fa-solid fa-phone"
     >
         <span>Запланировать звонок</span>

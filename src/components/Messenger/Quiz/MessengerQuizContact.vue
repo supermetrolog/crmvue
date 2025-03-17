@@ -19,12 +19,6 @@
                 />
                 <span v-tippy="contact.full_name">{{ contact.full_name }}</span>
             </p>
-            <p
-                v-if="hasFullnameWarning && !isCompanyContact"
-                class="messenger-quiz-contact__error color-error"
-            >
-                [ФИО заполнено не полностью]
-            </p>
             <p v-if="!isCompanyContact" class="messenger-quiz-contact__staff">
                 <span v-if="contact.position_unknown">Должность неизвестна..</span>
                 <span v-else-if="contact.position">
@@ -99,11 +93,12 @@
             </div>
         </div>
         <div v-if="!isCompanyContact" class="messenger-quiz-contact__actions">
-            <HoverActionsButton
+            <UiButtonIcon
                 @click="$emit('show-comments')"
                 small
                 label="Посмотреть комментарии"
                 class="messenger-quiz-contact__button position-relative"
+                color="light"
             >
                 <span
                     class="messenger-quiz-contact__comments"
@@ -115,23 +110,24 @@
                     {{ contact.comments?.length }}
                 </span>
                 <i class="fa-solid fa-comments"></i>
-            </HoverActionsButton>
-            <HoverActionsButton
+            </UiButtonIcon>
+            <UiButtonIcon
                 @click="$emit('edit')"
                 small
                 label="Редактировать контакт"
                 class="messenger-quiz-contact__button"
+                color="light"
             >
                 <i class="fa-solid fa-pen" />
-            </HoverActionsButton>
+            </UiButtonIcon>
         </div>
     </div>
 </template>
 <script setup>
 import { computed } from 'vue';
-import HoverActionsButton from '@/components/common/HoverActions/HoverActionsButton.vue';
 import { contactOptions } from '@/const/options/contact.options.js';
 import { Tippy } from 'vue-tippy';
+import UiButtonIcon from '@/components/common/UI/UiButtonIcon.vue';
 
 defineEmits(['edit', 'delete', 'move', 'show-comments', 'schedule-call']);
 const props = defineProps({
@@ -149,8 +145,4 @@ const mainEmail = computed(() => props.contact.emails.find(email => email.isMain
 const isCompanyContact = computed(
     () => props.contact.type === contactOptions.typeStatement.GENERAL
 );
-
-const hasFullnameWarning = computed(() => {
-    return !props.contact.last_name || !props.contact.first_name || !props.contact.middle_name;
-});
 </script>

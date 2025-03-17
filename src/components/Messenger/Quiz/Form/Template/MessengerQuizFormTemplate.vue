@@ -12,19 +12,20 @@
                 ref="offersEl"
                 @object-sold="$emit('object-sold', $event)"
                 @object-destroyed="$emit('object-destroyed', $event)"
-                class="messenger-quiz__question"
+                class="messenger-quiz-question-card mb-2"
                 :questions="objectGroupQuestions"
                 :offers
                 :disabled
                 :first-offer-opened="isObjectChatMember"
+                :number="startQuestionNumber"
             />
             <MessengerQuizFormTemplateRequests
                 v-if="requests.length"
                 ref="requestsEl"
-                class="messenger-quiz__question"
+                class="messenger-quiz-question-card mb-2"
                 :requests
                 :disabled
-                :number="offers.length ? 3 : 2"
+                :number="offers.length ? startQuestionNumber + 1 : startQuestionNumber"
             />
         </template>
         <MessengerQuizQuestion
@@ -33,11 +34,11 @@
             ref="questionEls"
             :question="question"
             :disabled
-            class="messenger-quiz__question"
+            class="messenger-quiz-question-card mb-2"
             :number="questionsOffset + key"
         />
-        <MessengerQuizFormUnavailableWindow
-            v-if="canBeCreated && !isLoading && !hasAvailableContact"
+        <MessengerQuizFormWarningNeedCompletedCall
+            v-if="(!canBeCreated && isLoading) || (canBeCreated && !hasAvailableContact)"
             @show-call-question="$emit('show-call-question')"
         />
     </div>
@@ -51,9 +52,9 @@ import MessengerQuizFormTemplateOffers from '@/components/Messenger/Quiz/Form/Te
 import MessengerQuizFormTemplateRequests from '@/components/Messenger/Quiz/Form/Template/MessengerQuizFormTemplateRequests.vue';
 import api from '@/api/api.js';
 import Spinner from '@/components/common/Spinner.vue';
-import MessengerQuizFormUnavailableWindow from '@/components/Messenger/Quiz/Form/MessengerQuizFormUnavailableWindow.vue';
 import { useStore } from 'vuex';
 import { messenger } from '@/const/messenger.js';
+import MessengerQuizFormWarningNeedCompletedCall from '@/components/Messenger/Quiz/Form/Warning/MessengerQuizFormWarningNeedCompletedCall.vue';
 
 defineEmits(['object-sold', 'object-destroyed', 'show-call-question']);
 const props = defineProps({
@@ -64,7 +65,11 @@ const props = defineProps({
     disabled: Boolean,
     hasAvailableContact: Boolean,
     canBeCreated: Boolean,
-    companyId: Number
+    companyId: Number,
+    startQuestionNumber: {
+        type: Number,
+        default: 1
+    }
 });
 
 // questions
@@ -82,8 +87,10 @@ const companyGroupQuestions = computed(() =>
 );
 
 const questionsOffset = computed(() => {
-    return [offers.value.length ? 1 : 0, requests.value.length ? 1 : 0, 2].reduce(
-        (acc, n) => acc + n
+    return (
+        props.startQuestionNumber +
+        Number(offers.value.length > 0) +
+        Number(requests.value.length > 0)
     );
 });
 

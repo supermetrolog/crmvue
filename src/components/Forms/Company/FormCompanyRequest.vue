@@ -321,10 +321,12 @@
             </Tabs>
         </UiForm>
         <template #actions="{ close }">
-            <UiButton @click="submit" color="success-light" small icon="fa-solid fa-check">
+            <UiButton @click="submit" color="success-light" small icon="fa-solid fa-check" bolder>
                 Сохранить
             </UiButton>
-            <UiButton @click="close" color="light" small icon="fa-solid fa-ban">Отмена</UiButton>
+            <UiButton @click="close" color="light" small icon="fa-solid fa-ban" bolder>
+                Отмена
+            </UiButton>
         </template>
     </UiModal>
 </template>

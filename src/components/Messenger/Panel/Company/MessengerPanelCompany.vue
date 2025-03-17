@@ -5,21 +5,21 @@
                 <UiButtonIcon
                     @click="$emit('edit')"
                     label="Редактировать компанию"
-                    class="messenger-panel-company__action"
+                    color="light"
                     icon="fa-solid fa-pen"
                     small
                 />
                 <UiButtonIcon
                     @click="toChat"
                     label="Перейти в чат компании"
-                    class="messenger-panel-company__action"
+                    color="light"
                     icon="fa-solid fa-comment"
                     small
                 />
                 <UiButtonIcon
                     @click="onCompanyDestroyed"
                     label="Компания ликвидирована"
-                    class="messenger-panel-company__action dashboard-bg-danger-l"
+                    color="danger-l"
                     icon="fa-solid fa-ban"
                     small
                 />

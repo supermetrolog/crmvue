@@ -1,6 +1,5 @@
 <template>
     <UiModal
-        v-slot="{ close }"
         :width="800"
         :close-on-press-esc="false"
         :close-on-outside-click="false"
@@ -13,17 +12,25 @@
             grid
             label="Список доступных контактов"
         />
-        <div class="d-flex gap-2 mt-2 justify-content-center">
-            <Button @click="submit" :disabled="!currentContact" success>Подтвердить</Button>
-            <Button @click="close" danger>Отмена</Button>
-        </div>
+        <template #actions="{ close }">
+            <UiButton
+                @click="submit"
+                :disabled="!currentContact"
+                color="success-light"
+                icon="fa-solid fa-check"
+                bolder
+            >
+                Подтвердить
+            </UiButton>
+            <UiButton @click="close" color="light" icon="fa-solid fa-ban" bolder> Отмена </UiButton>
+        </template>
     </UiModal>
 </template>
 <script setup>
-import Button from '@/components/common/Button.vue';
 import MessengerQuizContacts from '@/components/Messenger/Quiz/MessengerQuizContacts.vue';
 import UiModal from '@/components/common/UI/UiModal.vue';
 import { shallowRef } from 'vue';
+import UiButton from '@/components/common/UI/UiButton.vue';
 
 const emit = defineEmits(['suggest-create-contact', 'selected']);
 defineProps({

@@ -1,7 +1,6 @@
 <template>
     <div class="messenger-quiz messenger-chat__content">
         <Loader v-if="isLoading" global :label="currentLoadingLabel" />
-        <MessengerChatHeader />
         <MessengerQuizPreviews
             v-show="!isGeneralLoading"
             @last-survey-loaded="lastSurveyOnLoad"
@@ -103,7 +102,6 @@ import { useConfirm } from '@/composables/useConfirm.js';
 import api from '@/api/api.js';
 import MessengerQuizComplete from '@/components/Messenger/Quiz/MessengerQuizComplete.vue';
 import Loader from '@/components/common/Loader.vue';
-import MessengerChatHeader from '@/components/Messenger/Chat/Header/MessengerChatHeader.vue';
 import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
 import Modal from '@/components/common/Modal.vue';
 import MessengerQuizContacts from '@/components/Messenger/Quiz/MessengerQuizContacts.vue';
@@ -129,8 +127,6 @@ import MessengerQuizArchivedContacts from '@/components/Messenger/Quiz/Messenger
 import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
 import { isNullish } from '@/utils/helpers/common/isNullish.js';
 import { useSurveyEditing } from '@/components/Survey/useSurveyEditing.js';
-
-const SCHEDULING_CALL_DURATION = 1; // days
 
 const emit = defineEmits(['complete']);
 defineProps({ disabled: Boolean });
@@ -236,7 +232,7 @@ async function send() {
 
     const confirmed = await confirm(
         'Сохранение опроса',
-        'Вы закончили заполнение информации? Будут созданы задачи, звонки и опросы для заполненых предложений и запросов.'
+        'Вы закончили заполнение информации? Будут созданы задачи, звонки и опросы для заполненных предложений и запросов.'
     );
     if (!confirmed) return;
 
@@ -249,7 +245,7 @@ async function send() {
     if (!isCanceled) {
         finalContact.value = currentRecipient.value;
 
-        await showFinalContactPicker();
+        if (selectedContacts.value.length > 1) await showFinalContactPicker();
 
         isLoading.value = true;
 
@@ -372,7 +368,7 @@ const scheduledCalls = ref([]);
 async function createScheduleCallTask(contact, companyName) {
     const contactFullName = getContactFullName(contact);
 
-    const message = `Прозвонить ${contactFullName} (${companyName} (#${contact.company_id}))`;
+    const message = `Прозвонить ${contactFullName} (${companyName}, #${contact.company_id})`;
 
     const taskPayload = await createTaskWithTemplate({
         title: message.slice(0, 255),

@@ -96,7 +96,7 @@
     }
 
     &__chip {
-        background-color: #d6d6d6;
+        background-color: variables.$color_light_grey;
     }
 
     &__tag {
@@ -227,7 +227,7 @@
         }
 
         .messenger-chat-message__content {
-            background-color: #d6d6d6;
+            background-color: variables.$color_light_grey;
             box-shadow: unset;
         }
     }

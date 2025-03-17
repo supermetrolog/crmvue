@@ -1,8 +1,6 @@
 import { useAsyncPopup } from '@/composables/useAsyncPopup.js';
 import { useStore } from 'vuex';
-import dayjs from 'dayjs';
 
-const DEFAULT_TASK_DURATION = 5; // days
 export const TASK_FORM_STEPS = {
     USER: 0,
     DATE: 1,
@@ -21,8 +19,8 @@ export function useTaskManager() {
             observers = [],
             message = null,
             title = null,
-            start = dayjs().toDate(),
-            end = dayjs().add(DEFAULT_TASK_DURATION, 'day').toDate(),
+            start = null,
+            end = null,
             step = TASK_FORM_STEPS.USER,
             focusMessage = false,
             customDescription = false,

@@ -35,6 +35,9 @@
         </label>
         <ValidationInfo v-if="hasValidation && !disabled && !reactive" :validator="v" />
         <ValidationMessage v-if="hasValidationError && !disabled" :message="error" />
+        <div v-if="$slots.after" class="mt-2">
+            <slot name="after"></slot>
+        </div>
     </div>
 </template>
 
