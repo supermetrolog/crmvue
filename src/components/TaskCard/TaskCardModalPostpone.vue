@@ -4,11 +4,11 @@
         custom-close
         show
         relative
-        :loading
         :width="550"
         small
         title="Отложить задачу"
     >
+        <Loader v-if="loading" small />
         <UiForm>
             <UiFormGroup>
                 <UiDateInput
@@ -50,6 +50,7 @@ import UiModal from '@/components/common/UI/UiModal.vue';
 import UiFormGroup from '@/components/common/Forms/UiFormGroup.vue';
 import { useValidation } from '@/composables/useValidation.js';
 import dayjs from 'dayjs';
+import Loader from '@/components/common/Loader.vue';
 
 const emit = defineEmits(['confirm', 'close']);
 defineProps({
