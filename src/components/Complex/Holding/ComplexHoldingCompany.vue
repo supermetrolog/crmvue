@@ -29,7 +29,7 @@
 </template>
 
 <script setup>
-import plural from 'plural-ru';
+import { plural } from '@/utils/plural.js';
 import { useStore } from 'vuex';
 import Rating from '@/components/common/Rating.vue';
 import { computed, onMounted, ref } from 'vue';
@@ -43,6 +43,8 @@ const props = defineProps({
         required: true
     }
 });
+
+// TODO: Убрать plural из template
 
 const contacts = ref([]);
 

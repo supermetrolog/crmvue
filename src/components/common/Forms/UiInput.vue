@@ -63,60 +63,26 @@ const modelValue = defineModel({
 });
 
 const props = defineProps({
-    v: {
-        type: Object,
-        default: null
-    },
+    v: Object,
     type: {
         type: String,
         default: 'text'
     },
-    label: {
-        type: String,
-        default: null
-    },
-    placeholder: {
-        type: String,
-        default: ''
-    },
-    searchable: {
-        type: Boolean,
-        default: false
-    },
+    label: String,
+    placeholder: String,
+    searchable: Boolean,
     options: {
         type: [Array, Object],
         default: () => []
     },
-    min: {
-        type: [String, Number]
-    },
-    max: {
-        type: [String, Number]
-    },
-    unit: {
-        type: String,
-        default: null
-    },
-    rounded: {
-        type: Boolean,
-        default: false
-    },
-    disabled: {
-        type: [Boolean, Number],
-        default: false
-    },
-    reactive: {
-        type: [Boolean, Number],
-        default: false
-    },
-    required: {
-        type: Boolean,
-        default: false
-    },
-    withEnterSubmit: {
-        type: Boolean,
-        default: false
-    }
+    min: [String, Number],
+    max: [String, Number],
+    unit: String,
+    rounded: Boolean,
+    disabled: Boolean,
+    reactive: Boolean,
+    required: Boolean,
+    withEnterSubmit: Boolean
 });
 
 const searchableIsVisible = shallowRef(false);

@@ -122,7 +122,6 @@
                                 v-model="form.distanceFromMKAD"
                                 :disabled="!!form.distanceFromMKADnotApplicable"
                                 :v="v$.form.distanceFromMKAD"
-                                maska="###"
                                 label="Удаленность от МКАД"
                                 type="number"
                                 unit="км"

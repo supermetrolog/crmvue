@@ -21,17 +21,7 @@ const routes = [
             auth: { isAuth: true },
             title: 'Статистика'
         },
-        component: () => import('../views/Statistic.vue'),
-        children: [
-            {
-                path: ':mod',
-                name: 'statistic',
-                meta: {
-                    auth: { isAuth: true, roles: ['moderator', 'administrator'] }
-                },
-                component: () => import('@/views/Settings/Survey.vue')
-            }
-        ]
+        component: () => import('../views/Statistic.vue')
     },
     {
         path: '/settings',

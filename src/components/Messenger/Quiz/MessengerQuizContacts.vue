@@ -30,15 +30,26 @@
                 class="messenger-quiz-header__contact"
             />
         </div>
-        <UiButton
-            v-if="!contacts.length"
-            @click="$emit('show-archived')"
-            icon="fa-solid fa-archive"
-            color="light"
-            small
-        >
-            Показать архивные ({{ archivedContactsCount ?? 0 }})
-        </UiButton>
+        <div v-if="!contacts.length" class="d-flex gap-2">
+            <UiButton
+                @click="$emit('show-archived')"
+                icon="fa-solid fa-archive"
+                color="light"
+                small
+                bolder
+            >
+                Показать архивные ({{ archivedContactsCount ?? 0 }})
+            </UiButton>
+            <UiButton
+                @click="$emit('suggest-create')"
+                icon="fa-solid fa-user-plus"
+                color="light"
+                small
+                bolder
+            >
+                Добавить контакт
+            </UiButton>
+        </div>
         <UiModal
             v-model:visible="commentsModalIsOpen"
             :title="`Просмотр комментариев (${comments.length})`"

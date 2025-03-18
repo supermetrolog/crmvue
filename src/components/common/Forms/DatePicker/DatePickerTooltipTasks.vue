@@ -7,7 +7,7 @@
     </div>
 </template>
 <script>
-import plural from 'plural-ru';
+import { plural } from '@/utils/plural.js';
 
 export default {
     name: 'DatePickerTooltipTasks',

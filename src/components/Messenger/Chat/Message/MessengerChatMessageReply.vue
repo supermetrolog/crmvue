@@ -59,13 +59,13 @@ import { computed, toRef, useTemplateRef } from 'vue';
 import { toDateFormat } from '@/utils/formatters/date.js';
 import { ucFirst } from '@/utils/formatters/string.js';
 import Avatar from '@/components/common/Avatar.vue';
-import plural from 'plural-ru';
 import AccordionSimple from '@/components/common/Accordion/AccordionSimple.vue';
 import MessengerChatMessageAttachments from '@/components/Messenger/Chat/Message/MessengerChatMessageAttachments.vue';
 import AccordionSimpleTriggerButton from '@/components/common/Accordion/AccordionSimpleTriggerButton.vue';
 import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
 import { useStore } from 'vuex';
 import { useLinkify } from '@/composables/useLinkify.js';
+import { usePlural } from '@/composables/usePlural.js';
 
 const props = defineProps({
     message: {
@@ -105,8 +105,11 @@ const recipientUsername = computed(() => {
     return contact.first_name + (contact.last_name ? ` ${contact.last_name}` : '');
 });
 
-const filesCountText = computed(() =>
-    plural(props.message.files.length, '+ %d файл', '+ %d файла', '+ %d файлов')
+const filesCountText = usePlural(
+    props.message.files.length,
+    '+ %d файл',
+    '+ %d файла',
+    '+ %d файлов'
 );
 
 // linkify

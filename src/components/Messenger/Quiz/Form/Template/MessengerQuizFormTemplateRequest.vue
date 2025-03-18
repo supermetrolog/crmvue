@@ -4,7 +4,7 @@
             <SurveyQuestionRequest
                 @edit="$emit('edit')"
                 :request
-                :class="{ disabled: isDisabled }"
+                :class="{ active: isActive, passive: isPassive, skip: isSkipped }"
                 class="messenger-quiz-form-template-request__preview"
                 :editable
             />
@@ -71,7 +71,9 @@ watch(mainAnswer, value => {
     emit('change');
 });
 
-const isDisabled = computed(() => hasNullMainAnswer.value || mainAnswer.value === false);
+const isActive = computed(() => mainAnswer.value === true);
+const isPassive = computed(() => mainAnswer.value === false);
+const isSkipped = computed(() => hasNullMainAnswer.value);
 
 function generateLocation() {
     const locations = [];
@@ -129,9 +131,9 @@ function setForm(form) {
     mainAnswer.value = form.answer;
 }
 
-function isCompleted() {
+function checkHasAnswer() {
     return isNotNullish(mainAnswer.value) || hasNullMainAnswer.value;
 }
 
-defineExpose({ getForm, validate, setAnswer, setForm, isCompleted });
+defineExpose({ getForm, validate, setAnswer, setForm, hasAnswer: checkHasAnswer });
 </script>

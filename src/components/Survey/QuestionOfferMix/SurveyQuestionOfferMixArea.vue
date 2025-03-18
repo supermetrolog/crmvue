@@ -1,5 +1,6 @@
 <template>
     <div class="messenger-quiz-question-template-offer__column">
+        <p class="fs-2 text-grey font-weight-semi">Площади:</p>
         <with-unit-type :unit-type="unitTypes.SQUARE_METERS" class="offer-table-item-area__title">
             {{ offer.calc_area_general }}
         </with-unit-type>

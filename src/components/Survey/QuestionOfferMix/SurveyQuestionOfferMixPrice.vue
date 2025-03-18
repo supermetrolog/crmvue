@@ -1,5 +1,6 @@
 <template>
     <div class="messenger-quiz-question-template-offer__column">
+        <p class="fs-2 text-grey font-weight-semi">Цены:</p>
         <div class="d-flex">
             <div class="font-weight-bold">
                 <with-unit-type

@@ -466,7 +466,7 @@ import CheckboxOptions from '@/components/common/Forms/CheckboxOptions.vue';
 import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
 import UiFormDivider from '@/components/common/Forms/UiFormDivider.vue';
 import SearchableOptionsPicker from '@/components/common/Forms/SearchableOptionsPicker.vue';
-import plural from 'plural-ru';
+import { plural } from '@/utils/plural.js';
 import UiModal from '@/components/common/UI/UiModal.vue';
 import UiButton from '@/components/common/UI/UiButton.vue';
 import { useValidation } from '@/composables/useValidation.js';

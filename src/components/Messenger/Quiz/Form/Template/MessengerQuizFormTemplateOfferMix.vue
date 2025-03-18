@@ -8,7 +8,7 @@
                 @open="$emit('open')"
                 :offer-mix="offerMix"
                 class="messenger-quiz-form-template-offer__preview"
-                :disabled="isDisabled"
+                :class="{ passive: isPassive, active: isActive }"
             />
             <div class="messenger-quiz-form-template-offer__aside">
                 <MessengerQuizFormRadioChip
@@ -36,6 +36,7 @@
                     unselect
                     :value="2"
                     label="Не опросил"
+                    class="messenger-quiz-question__no-answer"
                 />
                 <MessengerQuizFormRadioChip
                     v-model="hasAnswers"
@@ -61,7 +62,27 @@
                     :object-id="viewedObject.id"
                 />
                 <div class="messenger-quiz-form-template-offer__questions">
+                    <SurveyQuestionOfferMixOffers
+                        class="messenger-quiz-form-template-offer__offers"
+                        :offers="offerMix.offers"
+                    />
                     <p class="font-weight-semi fs-4">Вопросы по объекту:</p>
+                    <div class="d-flex gap-2">
+                        <UiButton @click="setAllAnswers(false, 'Нет')" small color="white">
+                            Отметить все "Нет"
+                        </UiButton>
+                        <UiButton @click="setAllAnswers(null, 'Не ответил')" small color="white">
+                            Отметить все "Не ответил"
+                        </UiButton>
+                        <UiButton
+                            @click="resetAllAnswers"
+                            small
+                            color="white"
+                            icon="fa-solid fa-sync"
+                        >
+                            Сбросить ответы
+                        </UiButton>
+                    </div>
                     <MessengerQuizQuestion
                         v-for="(question, key) in questions"
                         :key="question.id"
@@ -128,6 +149,7 @@ import { getLinkFile } from '@/utils/url.js';
 import UiButton from '@/components/common/UI/UiButton.vue';
 import { useConfirm } from '@/composables/useConfirm.js';
 import { isNullish } from '@/utils/helpers/common/isNullish.js';
+import SurveyQuestionOfferMixOffers from '@/components/Survey/QuestionOfferMix/SurveyQuestionOfferMixOffers.vue';
 
 const emit = defineEmits(['show-preview', 'object-sold', 'object-destroyed', 'open', 'changed']);
 const props = defineProps({
@@ -150,7 +172,8 @@ const questionEls = useTemplateRef('questionEls');
 
 const hasAnswers = ref(null);
 
-const isDisabled = computed(() => hasAnswers.value === 2 || hasAnswers.value === 3);
+const isActive = computed(() => hasAnswers.value === 1 || hasAnswers.value === 3);
+const isPassive = computed(() => hasAnswers.value === 2);
 
 function getForm() {
     const payload = {
@@ -207,11 +230,15 @@ function setAnswer(answer) {
     hasAnswers.value = answer;
 }
 
-function isCompleted() {
+function checkHasAnswer() {
     return isNotNullish(hasAnswers.value);
 }
 
-defineExpose({ getForm, validate, setForm, setAnswer, isCompleted });
+function getAnswer() {
+    return hasAnswers.value;
+}
+
+defineExpose({ getForm, validate, setForm, setAnswer, hasAnswer: checkHasAnswer, getAnswer });
 
 // modal
 
@@ -284,5 +311,31 @@ function cancel() {
 
     modalIsVisible.value = false;
     currentAnswers.value = null;
+}
+
+// actions
+
+async function setAllAnswers(value, label = null) {
+    const confirmed = await confirm(
+        `Отметить все "${label}"`,
+        'Ответы на все вопросы по предложению будут перезаписаны'
+    );
+
+    if (!confirmed) return;
+
+    questionEls.value.map(element => element.setAnswer(value));
+}
+
+async function resetAllAnswers() {
+    const confirmed = await confirm({
+        title: 'Очистить ответы',
+        message: 'Ответы на вопросы будут очищены',
+        okButton: 'Да, очистить',
+        okIcon: 'fa-solid fa-trash'
+    });
+
+    if (!confirmed) return;
+
+    questionEls.value.map(element => element.resetAnswer());
 }
 </script>

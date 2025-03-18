@@ -2,9 +2,6 @@
     <div class="v-main-layout">
         <TheSideBar />
         <TheHeader />
-        <div v-if="confettiIsVisible" class="v-main-layout__confetti">
-            <ConfettiExplosion :duration="duration" />
-        </div>
         <!-- <CallerManager /> -->
         <main>
             <router-view v-slot="{ Component }">
@@ -29,9 +26,7 @@ import AnimationTransition from '@/components/common/AnimationTransition.vue';
 import Messenger from '@/components/Messenger/Messenger.vue';
 import Previewer from '@/components/common/Previewer.vue';
 import { useStore } from 'vuex';
-import ConfettiExplosion from 'vue-confetti-explosion';
 import { computed, useTemplateRef } from 'vue';
-import { useConfetti } from '@/composables/useConfetti.js';
 import PopupsWrapper from '@/components/common/PopupsWrapper.vue';
 import { createMessengerContext } from '@/components/Messenger/useMessenger.js';
 import MessengerOpeningLoader from '@/components/Messenger/MessengerOpeningLoader.vue';
@@ -39,7 +34,6 @@ import { createPreviewer } from '@/composables/usePreviewer.js';
 import { useActivityTracking } from '@/composables/useActivityTracking/useActivityTracking.js';
 
 const store = useStore();
-const { isVisible: confettiIsVisible, duration } = useConfetti();
 useActivityTracking();
 
 const messenger = useTemplateRef('messenger');

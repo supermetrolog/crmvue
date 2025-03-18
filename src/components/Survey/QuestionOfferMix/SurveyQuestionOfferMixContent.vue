@@ -10,7 +10,7 @@
                 <span v-if="offer.from_mkad">; {{ offer.from_mkad }} км от мкад </span>
             </p>
         </div>
-        <div class="d-flex gap-1 flex-wrap">
+        <div class="d-flex gap-1 flex-wrap mt-1">
             <UiField v-tippy="'Класс объекта'" small color="light">
                 {{ offer.class_name }}
             </UiField>

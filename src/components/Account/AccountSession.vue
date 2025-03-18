@@ -64,7 +64,7 @@ import { UAParser } from 'ua-parser-js';
 import { dayjsFromMoscow, toDateFormat } from '@/utils/formatters/date.js';
 import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
 import dayjs from 'dayjs';
-import plural from 'plural-ru';
+import { plural } from '@/utils/plural.js';
 import HoverActionsButton from '@/components/common/HoverActions/HoverActionsButton.vue';
 
 defineEmits(['logout']);

@@ -1,5 +1,5 @@
 <template>
-    <div class="messenger-quiz-question" :class="{ active: isCompleted }">
+    <div class="messenger-quiz-question" :class="{ active: everyRequestHasAnswer }">
         <div class="messenger-quiz-question__header">
             <p
                 v-if="requests.length"
@@ -13,8 +13,13 @@
                 3. У клиента нет запросов..
             </p>
         </div>
+        <UiField v-if="everyRequestHasAnswer" color="success-light" class="mt-1">
+            <i class="fa-solid fa-check" />
+            <span>Все запросы обработаны</span>
+        </UiField>
         <MessengerQuizFormTemplateAccordion
             v-if="requests.length"
+            ref="accordion"
             class="mt-1"
             :label="`Запросы клиента (${requests.length})`"
             :footer-label="`Скрыть запросы (${requests.length})`"
@@ -57,7 +62,7 @@
     </div>
 </template>
 <script setup>
-import { nextTick, ref, shallowRef, useTemplateRef } from 'vue';
+import { ref, shallowRef, useTemplateRef, watch } from 'vue';
 import MessengerQuizFormTemplateRequest from '@/components/Messenger/Quiz/Form/Template/MessengerQuizFormTemplateRequest.vue';
 import UiButton from '@/components/common/UI/UiButton.vue';
 import { isString } from '@/utils/helpers/string/isString.js';
@@ -67,6 +72,7 @@ import FormCompanyRequest from '@/components/Forms/Company/FormCompanyRequest.vu
 import api from '@/api/api.js';
 import { useConfirm } from '@/composables/useConfirm.js';
 import { useDebounceFn } from '@vueuse/core';
+import UiField from '@/components/common/UI/UiField.vue';
 
 const props = defineProps({
     requests: {
@@ -160,13 +166,21 @@ async function updateRequest() {
 
 // completed
 
-const isCompleted = ref(false);
+const everyRequestHasAnswer = ref(false);
 
-function formIsCompleted() {
-    return requestEls.value.every(element => element.isCompleted());
+function checkEveryRequestHasAnswer() {
+    return requestEls.value.every(element => element.hasAnswer());
 }
 
 const onChangeRequestAnswer = useDebounceFn(() => {
-    isCompleted.value = formIsCompleted();
+    everyRequestHasAnswer.value = checkEveryRequestHasAnswer();
 }, 50);
+
+// close accordion
+
+const accordionEl = useTemplateRef('accordion');
+
+watch(everyRequestHasAnswer, value => {
+    if (value) accordionEl.value.close();
+});
 </script>

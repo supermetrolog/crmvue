@@ -114,5 +114,13 @@ function setForm(form) {
     templateRef.value.setForm(form);
 }
 
-defineExpose({ getForm, validate, setForm });
+function setAnswer(value) {
+    templateRef.value.setAnswer(value);
+}
+
+function resetAnswer() {
+    templateRef.value.resetAnswer();
+}
+
+defineExpose({ getForm, validate, setForm, setAnswer, resetAnswer });
 </script>

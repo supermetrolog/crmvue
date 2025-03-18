@@ -168,7 +168,7 @@ import MessengerDialogPreviewTab from '@/components/Messenger/Dialog/Preview/Mes
 import { computed, onMounted, shallowRef, useTemplateRef } from 'vue';
 import MessengerDialogPreviewRow from '@/components/Messenger/Dialog/Preview/MessengerDialogPreviewRow.vue';
 import api from '@/api/api.js';
-import plural from 'plural-ru';
+import { plural } from '@/utils/plural.js';
 import MessengerDialogObjectPreviewSkeleton from '@/components/Messenger/Dialog/Object/MessengerDialogObjectPreviewSkeleton.vue';
 import WithUnitType from '@/components/common/WithUnitType.vue';
 import { unitTypes } from '@/const/unitTypes.js';
@@ -187,6 +187,7 @@ import MessengerDialogObjectPreviewSublease from '@/components/Messenger/Dialog/
 import { objectChatMemberTypes } from '@/const/messenger.js';
 import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
 import { isNullish } from '@/utils/helpers/common/isNullish.js';
+import { usePlural } from '@/composables/usePlural.js';
 
 defineEmits(['update-call']);
 const props = defineProps({
@@ -224,8 +225,11 @@ const objectHasWarnings = computed(() => {
     );
 });
 
-const pluralPhotoLength = computed(() =>
-    plural(object.value.photo.length, '%d фотография', '%d фотографии', '%d фотографий')
+const pluralPhotoLength = usePlural(
+    object.value.photo.length,
+    '%d фотография',
+    '%d фотографии',
+    '%d фотографий'
 );
 
 const buildingLayoutsCount = computed(() => {

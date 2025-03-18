@@ -99,7 +99,7 @@ import useValidate from '@vuelidate/core';
 import { helpers, required } from '@vuelidate/validators';
 import Loader from '@/components/common/Loader.vue';
 import Submit from '@/components/common/Forms/FormSubmit.vue';
-import plural from 'plural-ru';
+import { plural } from '@/utils/plural.js';
 import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
 import CheckboxChip from '@/components/common/Forms/CheckboxChip.vue';

@@ -36,7 +36,7 @@
                 :disabled="formIsDisabled"
                 :has-available-contact="hasAvailableContact"
                 :company-id="companyId"
-                :can-be-created="canBeCreated"
+                :can-be-created="canBeCreated && !disabled"
                 :start-question-number="selectedContacts.length + 1"
             />
         </template>

@@ -1,7 +1,7 @@
 <template>
     <div
         class="messenger-quiz-question messenger-quiz-question-template-offers"
-        :class="{ active: isFilled }"
+        :class="{ active: everyOfferHasAnswer }"
     >
         <div class="messenger-quiz-question__header">
             <p
@@ -15,8 +15,13 @@
                 {{ number }}. У клиента нет предложений..
             </p>
         </div>
+        <UiField v-if="everyOfferHasAnswer" color="success-light" class="mt-1">
+            <i class="fa-solid fa-check" />
+            <span>Все предложения обработаны</span>
+        </UiField>
         <MessengerQuizFormTemplateAccordion
             v-if="offers.length"
+            ref="accordion"
             class="mt-1"
             :footer-label="`Скрыть предложения (${offers.length})`"
             :label="`Предложения клиента (${offers.length})`"
@@ -50,7 +55,7 @@
     </div>
 </template>
 <script setup>
-import { onMounted, ref, useTemplateRef } from 'vue';
+import { ref, useTemplateRef, watch } from 'vue';
 import MessengerQuizFormTemplateOfferMix from '@/components/Messenger/Quiz/Form/Template/MessengerQuizFormTemplateOfferMix.vue';
 import { usePreviewer } from '@/composables/usePreviewer.js';
 import { getLinkFile } from '@/utils/url.js';
@@ -59,6 +64,7 @@ import MessengerQuizFormTemplateAccordion from '@/components/Messenger/Quiz/Form
 import { getCompanyShortName } from '@/utils/formatters/models/company.js';
 import { useConfirm } from '@/composables/useConfirm.js';
 import { useDebounceFn } from '@vueuse/core';
+import UiField from '@/components/common/UI/UiField.vue';
 
 const emit = defineEmits(['object-sold', 'object-destroyed']);
 const props = defineProps({
@@ -71,7 +77,6 @@ const props = defineProps({
         type: Array,
         required: true
     },
-    firstOfferOpened: Boolean,
     number: Number
 });
 
@@ -107,27 +112,39 @@ function setForm(form) {
     }
 }
 
-function formIsCompleted() {
-    return offerEls.value.every(element => element.isCompleted());
-}
-
 defineExpose({ getForm, validate, setForm });
-
-onMounted(() => {
-    if (props.offers.length && props.firstOfferOpened) {
-        offerEls.value[0].setAnswer(1);
-    }
-});
 
 function setAllAnswers(value) {
     offerEls.value.map(element => element.setAnswer(value));
 }
 
-function markAllAsWithoutChanges() {
+function checkHasCompletedAnswer() {
+    return offerEls.value.some(element => element.getAnswer() === 1);
+}
+
+async function markAllAsWithoutChanges() {
+    if (checkHasCompletedAnswer()) {
+        const confirmed = await confirm(
+            'Отметить все "Без изменений"',
+            'Вы уверены, что хотите пометить все предложения "Без изменений"? Заполненные вопросы по объектам будут очищены.'
+        );
+
+        if (!confirmed) return;
+    }
+
     setAllAnswers(3);
 }
 
-function markAllAsNotProcessed() {
+async function markAllAsNotProcessed() {
+    if (checkHasCompletedAnswer()) {
+        const confirmed = await confirm(
+            'Отметить все "Не опросил"',
+            'Вы уверены, что хотите пометить все предложения "Не опросил"? Заполненные вопросы по объектам будут очищены.'
+        );
+
+        if (!confirmed) return;
+    }
+
     setAllAnswers(2);
 }
 
@@ -138,6 +155,7 @@ async function clearAll() {
         'Сбросить ответы',
         'Вы уверены, что хотите сбросить все ответы по предложениям?'
     );
+
     if (confirmed) setAllAnswers(null);
 }
 
@@ -166,9 +184,21 @@ function onObjectDestroyed(offerMix) {
     emit('object-destroyed', generateObjectEmittedPayload(offerMix));
 }
 
-const isFilled = ref(false);
+const everyOfferHasAnswer = ref(false);
+
+function checkEveryOfferHasAnswer() {
+    return offerEls.value.every(element => element.hasAnswer());
+}
 
 const onChangeOfferMixAnswer = useDebounceFn(() => {
-    isFilled.value = formIsCompleted();
+    everyOfferHasAnswer.value = checkEveryOfferHasAnswer();
 }, 50);
+
+// close accordion
+
+const accordionEl = useTemplateRef('accordion');
+
+watch(everyOfferHasAnswer, value => {
+    if (value) accordionEl.value.close();
+});
 </script>

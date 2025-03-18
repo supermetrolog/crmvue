@@ -16,7 +16,6 @@
                 :questions="objectGroupQuestions"
                 :offers
                 :disabled
-                :first-offer-opened="isObjectChatMember"
                 :number="startQuestionNumber"
             />
             <MessengerQuizFormTemplateRequests

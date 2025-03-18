@@ -63,7 +63,7 @@
 </template>
 <script setup>
 import MessengerBarElement from '@/components/Messenger/MessengerBarElement.vue';
-import plural from 'plural-ru';
+import { plural } from '@/utils/plural.js';
 import { messenger } from '@/const/messenger';
 import { computed } from 'vue';
 import Spinner from '@/components/common/Spinner.vue';

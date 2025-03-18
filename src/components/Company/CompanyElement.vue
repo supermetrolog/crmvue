@@ -39,7 +39,7 @@
 </template>
 <script setup>
 import Rating from '@/components/common/Rating.vue';
-import plural from 'plural-ru';
+import { plural } from '@/utils/plural.js';
 import { computed } from 'vue';
 import CompanyLogo from '@/components/Company/CompanyLogo.vue';
 import { getCompanyName } from '@/utils/formatters/models/company.js';

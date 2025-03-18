@@ -72,7 +72,7 @@ import { useStore } from 'vuex';
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
 import { computed, onMounted, ref, shallowRef, useTemplateRef, watch } from 'vue';
 import HoverActionsButton from '@/components/common/HoverActions/HoverActionsButton.vue';
-import plural from 'plural-ru';
+import { plural } from '@/utils/plural.js';
 import api from '@/api/api.js';
 import Spinner from '@/components/common/Spinner.vue';
 import { useDocumentVisibility, useIntervalFn } from '@vueuse/core';

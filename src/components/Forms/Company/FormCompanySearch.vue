@@ -175,7 +175,7 @@ import SearchableOptionsPicker from '@/components/common/Forms/SearchableOptions
 import { useProductRangesOptions } from '@/composables/options/useProductRangesOptions.js';
 import Chip from '@/components/common/Chip.vue';
 import UiCheckbox from '@/components/common/Forms/UiCheckbox.vue';
-import plural from 'plural-ru';
+import { plural } from '@/utils/plural.js';
 import UiFormDivider from '@/components/common/Forms/UiFormDivider.vue';
 import SwitchSlider from '@/components/common/Forms/SwitchSlider.vue';
 
