@@ -1,6 +1,5 @@
 <template>
     <div class="messenger-chat__content">
-        <MessengerChatHeader />
         <AnimationTransition>
             <MessengerChatPinned v-if="pinnedMessage" :message="pinnedMessage" />
         </AnimationTransition>

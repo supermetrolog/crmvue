@@ -11,6 +11,7 @@
         </MessengerTabs>
         <MessengerChatLoader v-if="isLoading" />
         <div v-else-if="currentPanel && currentChat" class="messenger-chat__wrapper">
+            <MessengerChatHeader />
             <AnimationTransition :speed="0.4">
                 <MessengerChatContent
                     v-if="currentTab === messenger.chatTabs.CHAT"
@@ -53,6 +54,7 @@ import { messenger } from '@/const/messenger.js';
 import { isActiveContact, isPersonalContact } from '@/utils/helpers/models/contact.js';
 import MessengerChatForObjectCallTab from '@/components/Messenger/Chat/MessengerChatForObjectCallTab.vue';
 import { CALL_STATUSES } from '@/components/Messenger/Quiz/useMessengerQuiz.js';
+import MessengerChatHeader from '@/components/Messenger/Chat/Header/MessengerChatHeader.vue';
 
 const store = useStore();
 const notify = useNotify();

@@ -4,7 +4,7 @@
             <SurveyQuestionRequest
                 @edit="$emit('edit')"
                 :request
-                :class="{ disabled: isDisabled }"
+                :class="{ active: isActive, passive: isPassive, skip: isSkipped }"
                 class="messenger-quiz-form-template-request__preview"
                 :editable
             />
@@ -46,7 +46,7 @@ import { toNumberOrRangeFormat } from '@/utils/formatters/number.js';
 import { isNullish } from '@/utils/helpers/common/isNullish.js';
 import SurveyQuestionRequest from '@/components/Survey/QuestionRequest/SurveyQuestionRequest.vue';
 
-defineEmits(['edit']);
+const emit = defineEmits(['edit', 'change']);
 const props = defineProps({
     request: {
         type: Object,
@@ -63,13 +63,17 @@ const hasNullMainAnswer = ref(false);
 
 watch(hasNullMainAnswer, value => {
     if (value) mainAnswer.value = null;
+    emit('change');
 });
 
 watch(mainAnswer, value => {
     if (isNotNullish(value)) hasNullMainAnswer.value = false;
+    emit('change');
 });
 
-const isDisabled = computed(() => hasNullMainAnswer.value || mainAnswer.value === false);
+const isActive = computed(() => mainAnswer.value === true);
+const isPassive = computed(() => mainAnswer.value === false);
+const isSkipped = computed(() => hasNullMainAnswer.value);
 
 function generateLocation() {
     const locations = [];
@@ -127,5 +131,9 @@ function setForm(form) {
     mainAnswer.value = form.answer;
 }
 
-defineExpose({ getForm, validate, setAnswer, setForm });
+function checkHasAnswer() {
+    return isNotNullish(mainAnswer.value) || hasNullMainAnswer.value;
+}
+
+defineExpose({ getForm, validate, setAnswer, setForm, hasAnswer: checkHasAnswer });
 </script>

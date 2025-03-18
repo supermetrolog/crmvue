@@ -12,18 +12,13 @@
             />
         </div>
         <EmptyData v-else>Список комментариев пуст..</EmptyData>
-        <div class="messenger-quiz-header-comments__footer mt-3">
-            <Button @click="$emit('close')" small>Закрыть</Button>
-        </div>
     </div>
 </template>
 <script setup>
 import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
-import Button from '@/components/common/Button.vue';
 import EmptyData from '@/components/common/EmptyData.vue';
 import MessengerQuizContactsCommentsItem from '@/components/Messenger/Quiz/MessengerQuizContactsCommentsItem.vue';
 
-defineEmits(['close']);
 defineProps({
     comments: {
         type: Array,

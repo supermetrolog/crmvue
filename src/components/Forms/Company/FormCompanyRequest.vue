@@ -122,7 +122,6 @@
                                 v-model="form.distanceFromMKAD"
                                 :disabled="!!form.distanceFromMKADnotApplicable"
                                 :v="v$.form.distanceFromMKAD"
-                                maska="###"
                                 label="Удаленность от МКАД"
                                 type="number"
                                 unit="км"
@@ -145,7 +144,7 @@
                                 label="Дата переезда"
                                 placeholder="Укажите дату переезда.."
                                 :required="isNullish(form.unknownMovingDate)"
-                                :min-date="new Date()"
+                                :min-date="!isEditMode ? new Date() : undefined"
                             />
                             <div class="form__row mt-1">
                                 <RadioOptions
@@ -321,10 +320,12 @@
             </Tabs>
         </UiForm>
         <template #actions="{ close }">
-            <UiButton @click="submit" color="success-light" small icon="fa-solid fa-check">
+            <UiButton @click="submit" color="success-light" small icon="fa-solid fa-check" bolder>
                 Сохранить
             </UiButton>
-            <UiButton @click="close" color="light" small icon="fa-solid fa-ban">Отмена</UiButton>
+            <UiButton @click="close" color="light" small icon="fa-solid fa-ban" bolder>
+                Отмена
+            </UiButton>
         </template>
     </UiModal>
 </template>

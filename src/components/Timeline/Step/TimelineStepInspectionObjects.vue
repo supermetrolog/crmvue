@@ -105,7 +105,7 @@ import {
     TimelineStepWithObjectsMixin
 } from '@/components/Timeline/mixins.js';
 import TimelineInfo from '@/components/Timeline/TimelineInfo.vue';
-import plural from 'plural-ru';
+import { plural } from '@/utils/plural.js';
 import CompanyObjectsList from '@/components/Company/CompanyObjectsList.vue';
 import FormLetter from '@/components/Forms/FormLetter.vue';
 import Modal from '@/components/common/Modal.vue';

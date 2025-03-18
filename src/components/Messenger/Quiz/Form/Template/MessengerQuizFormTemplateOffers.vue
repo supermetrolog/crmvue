@@ -1,19 +1,27 @@
 <template>
-    <div class="messenger-quiz-question">
+    <div
+        class="messenger-quiz-question messenger-quiz-question-template-offers"
+        :class="{ active: everyOfferHasAnswer }"
+    >
         <div class="messenger-quiz-question__header">
             <p
                 v-if="offers.length"
                 class="messenger-quiz-question__title"
                 :class="{ disabled: disabled }"
             >
-                2. Актуальны ли эти ({{ offers.length }}) текущие предложения?
+                {{ number }}. Актуальны ли эти ({{ offers.length }}) текущие предложения?
             </p>
             <p v-else class="messenger-quiz-question__title disabled">
-                2. У клиента нет предложений..
+                {{ number }}. У клиента нет предложений..
             </p>
         </div>
+        <UiField v-if="everyOfferHasAnswer" color="success-light" class="mt-1">
+            <i class="fa-solid fa-check" />
+            <span>Все предложения обработаны</span>
+        </UiField>
         <MessengerQuizFormTemplateAccordion
             v-if="offers.length"
+            ref="accordion"
             class="mt-1"
             :footer-label="`Скрыть предложения (${offers.length})`"
             :label="`Предложения клиента (${offers.length})`"
@@ -35,32 +43,19 @@
                     v-for="offerMix in offers"
                     :key="offerMix.object_id"
                     ref="offerEls"
-                    @open="openOfferCard(offerMix)"
                     @show-preview="openPreview(offerMix.offers[0].object.photo ?? [])"
                     @object-sold="onObjectSold(offerMix)"
                     @object-destroyed="onObjectDestroyed(offerMix)"
+                    @changed="onChangeOfferMixAnswer"
                     :offer-mix="offerMix"
                     :questions
                 />
             </template>
         </MessengerQuizFormTemplateAccordion>
-        <UiModal
-            v-model:visible="offerCardIsVisible"
-            :width="1000"
-            :title="`Просмотр объекта #${viewedObject?.id}`"
-        >
-            <p class="mb-2 fs-2"><i class="fa-solid fa-earth mr-1" />{{ viewedObject.address }}</p>
-            <Carousel
-                :title="`Объект #${viewedObject.id}`"
-                :slides="viewedObjectSlides"
-                class="mb-2"
-            />
-            <MessengerDialogObjectPreview :object-id="viewedObject.id" />
-        </UiModal>
     </div>
 </template>
 <script setup>
-import { onMounted, ref, shallowRef, useTemplateRef } from 'vue';
+import { ref, useTemplateRef, watch } from 'vue';
 import MessengerQuizFormTemplateOfferMix from '@/components/Messenger/Quiz/Form/Template/MessengerQuizFormTemplateOfferMix.vue';
 import { usePreviewer } from '@/composables/usePreviewer.js';
 import { getLinkFile } from '@/utils/url.js';
@@ -68,10 +63,8 @@ import UiButton from '@/components/common/UI/UiButton.vue';
 import MessengerQuizFormTemplateAccordion from '@/components/Messenger/Quiz/Form/Template/MessengerQuizFormTemplateAccordion.vue';
 import { getCompanyShortName } from '@/utils/formatters/models/company.js';
 import { useConfirm } from '@/composables/useConfirm.js';
-import UiModal from '@/components/common/UI/UiModal.vue';
-import MessengerDialogObjectPreview from '@/components/Messenger/Dialog/Object/MessengerDialogObjectPreview.vue';
-import Carousel from '@/components/common/Carousel.vue';
-import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
+import { useDebounceFn } from '@vueuse/core';
+import UiField from '@/components/common/UI/UiField.vue';
 
 const emit = defineEmits(['object-sold', 'object-destroyed']);
 const props = defineProps({
@@ -84,7 +77,7 @@ const props = defineProps({
         type: Array,
         required: true
     },
-    firstOfferOpened: Boolean
+    number: Number
 });
 
 // questions
@@ -121,21 +114,37 @@ function setForm(form) {
 
 defineExpose({ getForm, validate, setForm });
 
-onMounted(() => {
-    if (props.offers.length && props.firstOfferOpened) {
-        offerEls.value[0].setAnswer(1);
-    }
-});
-
 function setAllAnswers(value) {
     offerEls.value.map(element => element.setAnswer(value));
 }
 
-function markAllAsWithoutChanges() {
+function checkHasCompletedAnswer() {
+    return offerEls.value.some(element => element.getAnswer() === 1);
+}
+
+async function markAllAsWithoutChanges() {
+    if (checkHasCompletedAnswer()) {
+        const confirmed = await confirm(
+            'Отметить все "Без изменений"',
+            'Вы уверены, что хотите пометить все предложения "Без изменений"? Заполненные вопросы по объектам будут очищены.'
+        );
+
+        if (!confirmed) return;
+    }
+
     setAllAnswers(3);
 }
 
-function markAllAsNotProcessed() {
+async function markAllAsNotProcessed() {
+    if (checkHasCompletedAnswer()) {
+        const confirmed = await confirm(
+            'Отметить все "Не опросил"',
+            'Вы уверены, что хотите пометить все предложения "Не опросил"? Заполненные вопросы по объектам будут очищены.'
+        );
+
+        if (!confirmed) return;
+    }
+
     setAllAnswers(2);
 }
 
@@ -146,6 +155,7 @@ async function clearAll() {
         'Сбросить ответы',
         'Вы уверены, что хотите сбросить все ответы по предложениям?'
     );
+
     if (confirmed) setAllAnswers(null);
 }
 
@@ -174,41 +184,21 @@ function onObjectDestroyed(offerMix) {
     emit('object-destroyed', generateObjectEmittedPayload(offerMix));
 }
 
-// card
+const everyOfferHasAnswer = ref(false);
 
-const offerCardIsVisible = ref(false);
-const viewedObject = shallowRef(null);
-const viewedObjectSlides = shallowRef([]);
-
-function clearCurrentViewedObject() {
-    viewedObject.value = null;
-    viewedObjectSlides.value = [];
+function checkEveryOfferHasAnswer() {
+    return offerEls.value.every(element => element.hasAnswer());
 }
 
-function openOfferCard(offerMix) {
-    if (isNotNullish(viewedObject.value) && viewedObject.value.id !== offerMix.object_id) {
-        clearCurrentViewedObject();
-    }
+const onChangeOfferMixAnswer = useDebounceFn(() => {
+    everyOfferHasAnswer.value = checkEveryOfferHasAnswer();
+}, 50);
 
-    viewedObject.value = offerMix.offers[0].object;
+// close accordion
 
-    if (offerMix.offers[0]?.object?.photo?.length) {
-        if (offerMix.offers[0].object.thumb) {
-            viewedObjectSlides.value = [{ id: 0, src: offerMix.offers[0].object.thumb }];
-        }
+const accordionEl = useTemplateRef('accordion');
 
-        viewedObjectSlides.value = [
-            ...viewedObjectSlides.value,
-            ...offerMix.offers[0].object.photo
-                .filter(element =>
-                    offerMix.offers[0].object.thumb
-                        ? !offerMix.offers[0].object.thumb.includes(element)
-                        : true
-                )
-                .map((element, key) => ({ id: key + 1, src: getLinkFile(element) }))
-        ];
-    }
-
-    offerCardIsVisible.value = true;
-}
+watch(everyOfferHasAnswer, value => {
+    if (value) accordionEl.value.close();
+});
 </script>

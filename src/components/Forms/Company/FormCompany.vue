@@ -69,12 +69,12 @@
                                 />
                                 <div class="col-12">
                                     <div class="d-flex gap-3">
-                                        <Checkbox v-model="form.noName" numeric>
+                                        <UiCheckbox v-model="form.noName" numeric>
                                             Без названия
-                                        </Checkbox>
-                                        <Checkbox v-model="form.is_individual" numeric>
+                                        </UiCheckbox>
+                                        <UiCheckbox v-model="form.is_individual" numeric>
                                             Физическое лицо
-                                        </Checkbox>
+                                        </UiCheckbox>
                                     </div>
                                 </div>
                             </div>
@@ -263,7 +263,21 @@
                             class="col-12"
                             :options="getProductRangeOptions"
                             object
+                            :disabled="!form.show_product_ranges"
                         />
+                        <UiCol :cols="12">
+                            <UiCheckbox v-model="form.show_product_ranges" numeric>
+                                <div class="d-flex align-items-center gap-1">
+                                    <span>Показывать номенклатуру</span>
+                                    <i
+                                        v-tippy="
+                                            'Если отключить этот параметр, то номенклатура товара компании будет скрыта и не будет являться обязательным для заполнения параметром'
+                                        "
+                                        class="fa-regular fa-question-circle fs-3"
+                                    />
+                                </div>
+                            </UiCheckbox>
+                        </UiCol>
                     </UiFormGroup>
                     <UiFormDivider />
                     <div class="row mt-2">
@@ -446,16 +460,17 @@ import { useCompanyGroupsOptions } from '@/composables/options/useCompanyGroupsO
 import { useBanksOptions } from '@/composables/options/useBanksOptions.js';
 import { useProductRangesOptions } from '@/composables/options/useProductRangesOptions.js';
 import { useFormData } from '@/utils/use/useFormData.js';
-import Checkbox from '@/components/common/Forms/Checkbox.vue';
+import UiCheckbox from '@/components/common/Forms/UiCheckbox.vue';
 import UiFormGroup from '@/components/common/Forms/UiFormGroup.vue';
 import CheckboxOptions from '@/components/common/Forms/CheckboxOptions.vue';
 import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
 import UiFormDivider from '@/components/common/Forms/UiFormDivider.vue';
 import SearchableOptionsPicker from '@/components/common/Forms/SearchableOptionsPicker.vue';
-import plural from 'plural-ru';
+import { plural } from '@/utils/plural.js';
 import UiModal from '@/components/common/UI/UiModal.vue';
 import UiButton from '@/components/common/UI/UiButton.vue';
 import { useValidation } from '@/composables/useValidation.js';
+import UiCol from '@/components/common/UI/UiCol.vue';
 
 const emit = defineEmits(['updated', 'created', 'close']);
 const props = defineProps({
@@ -510,6 +525,7 @@ const { form, isEditMode } = useFormData(
         passive_why_comment: null,
         files: [],
         new_files: [],
+        show_product_ranges: 1,
 
         activity_group_ids: [],
         activity_profile_ids: []

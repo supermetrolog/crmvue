@@ -208,8 +208,6 @@ function setProperties(files) {
     files.forEach(file => {
         file.fileType = getFileTypeByName(file.name);
 
-        console.log(file);
-
         if (file.type.match('image')) {
             if (file.size >= SIZE_TO_COMPRESSION) {
                 imageCompression(file, compressionOptions).then(async compressed => {

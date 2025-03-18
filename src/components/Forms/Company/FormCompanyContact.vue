@@ -120,14 +120,14 @@
                             :options="PositionList"
                             :disabled="form.position_unknown"
                         />
-                        <Checkbox
+                        <UiCheckbox
                             v-model="form.position_unknown"
                             @change="onChangePositionUnknown"
                             numeric
                             class="col-4"
                         >
                             Должность неизвестна
-                        </Checkbox>
+                        </UiCheckbox>
                     </div>
                 </UiCol>
             </UiFormGroup>
@@ -248,7 +248,7 @@ import { useFormData } from '@/utils/use/useFormData.js';
 import Switch from '@/components/common/Forms/Switch.vue';
 import { useSearchCompany } from '@/composables/useSearchCompany.js';
 import api from '@/api/api.js';
-import Checkbox from '@/components/common/Forms/Checkbox.vue';
+import UiCheckbox from '@/components/common/Forms/UiCheckbox.vue';
 import ConsultantPicker from '@/components/common/Forms/ConsultantPicker/ConsultantPicker.vue';
 import { useConsultantsOptions } from '@/composables/options/useConsultantsOptions.js';
 import { useValidation } from '@/composables/useValidation.js';

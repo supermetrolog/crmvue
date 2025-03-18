@@ -22,16 +22,14 @@
 <script setup>
 import { computed } from 'vue';
 import DashboardTableTasks from '@/components/Dashboard/Table/DashboardTableTasks.vue';
-import plural from 'plural-ru';
 import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
 import { isCompletedTask } from '@/utils/helpers/models/task.js';
+import { usePlural } from '@/composables/usePlural.js';
 
 const tasks = defineModel('tasks');
 defineEmits(['hide']);
 
-const pluralTasksCount = computed(() =>
-    plural(tasks.value.length, '+%d задача', '+%d задачи', '+%d задач')
-);
+const pluralTasksCount = usePlural(tasks.value.length, '+%d задача', '+%d задачи', '+%d задач');
 
 const completedTasksCount = computed(() =>
     tasks.value.reduce((acc, task) => acc + (isCompletedTask(task) ? 1 : 0), 0)

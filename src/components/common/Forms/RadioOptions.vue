@@ -15,6 +15,7 @@
                 :show-radio
                 :rounded
             />
+            <slot name="after-options" />
         </div>
         <ValidationMessage v-if="hasValidationError" :message="v.$errors[0].$message" />
     </div>

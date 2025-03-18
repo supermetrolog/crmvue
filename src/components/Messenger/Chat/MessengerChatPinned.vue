@@ -16,7 +16,7 @@
     </div>
 </template>
 <script setup>
-import plural from 'plural-ru';
+import { plural } from '@/utils/plural.js';
 import MessengerChatPinnedView from '@/components/Messenger/Chat/MessengerChatPinnedView.vue';
 import { useConfirm } from '@/composables/useConfirm.js';
 import { computed, ref } from 'vue';

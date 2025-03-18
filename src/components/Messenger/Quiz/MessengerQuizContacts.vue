@@ -1,17 +1,14 @@
 <template>
     <div class="messenger-quiz-header">
         <div class="messenger-quiz-header__heading mb-1">
-            <DashboardChip class="dashboard-bg-gray-l">
-                {{ label }} ({{ contacts.length }}):
-            </DashboardChip>
-            <HoverActionsButton
+            <UiField color="light" bordered>{{ label }} ({{ contacts.length }}):</UiField>
+            <UiButtonIcon
                 @click="$emit('suggest-create')"
                 label="Добавить контакт"
-                class="dashboard-bg-gray-l"
+                color="light"
                 small
-            >
-                <i class="fa-solid fa-user-plus"></i>
-            </HoverActionsButton>
+                icon="fa-solid fa-user-plus"
+            />
         </div>
         <div
             ref="contactsListEl"
@@ -33,29 +30,49 @@
                 class="messenger-quiz-header__contact"
             />
         </div>
-        <Button v-if="!contacts.length" @click="$emit('show-archived')" icon small>
-            <i class="fa-solid fa-archive" />
-            <span>Показать архивные ({{ archivedContactsCount ?? 0 }})</span>
-        </Button>
-        <Modal
-            @close="closeCommentsModal"
+        <div v-if="!contacts.length" class="d-flex gap-2">
+            <UiButton
+                @click="$emit('show-archived')"
+                icon="fa-solid fa-archive"
+                color="light"
+                small
+                bolder
+            >
+                Показать архивные ({{ archivedContactsCount ?? 0 }})
+            </UiButton>
+            <UiButton
+                @click="$emit('suggest-create')"
+                icon="fa-solid fa-user-plus"
+                color="light"
+                small
+                bolder
+            >
+                Добавить контакт
+            </UiButton>
+        </div>
+        <UiModal
+            v-model:visible="commentsModalIsOpen"
             :title="`Просмотр комментариев (${comments.length})`"
             :width="600"
-            :show="commentsModalIsOpen"
         >
-            <MessengerQuizContactsComments @close="closeCommentsModal" :comments />
-        </Modal>
+            <MessengerQuizContactsComments :comments />
+            <template #actions="{ close }">
+                <UiButton @click="close" small color="light" icon="fa-solid fa-ban">
+                    Закрыть
+                </UiButton>
+            </template>
+        </UiModal>
     </div>
 </template>
 <script setup>
 import { computed, ref, shallowRef, useTemplateRef } from 'vue';
-import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
-import Modal from '@/components/common/Modal.vue';
 import MessengerQuizContact from '@/components/Messenger/Quiz/MessengerQuizContact.vue';
 import { useHorizontalScroll } from '@/composables/useHorizontalScroll.js';
-import HoverActionsButton from '@/components/common/HoverActions/HoverActionsButton.vue';
 import MessengerQuizContactsComments from '@/components/Messenger/Quiz/MessengerQuizContactsComments.vue';
-import Button from '@/components/common/Button.vue';
+import UiButtonIcon from '@/components/common/UI/UiButtonIcon.vue';
+import UiField from '@/components/common/UI/UiField.vue';
+import UiModal from '@/components/common/UI/UiModal.vue';
+import UiButton from '@/components/common/UI/UiButton.vue';
 
 const currentContact = defineModel('contact');
 const emit = defineEmits(['suggest-create', 'edit', 'selected', 'show-archived']);
@@ -95,10 +112,6 @@ const comments = shallowRef([]);
 function showComments(contact) {
     comments.value = contact.comments;
     commentsModalIsOpen.value = true;
-}
-
-function closeCommentsModal() {
-    commentsModalIsOpen.value = false;
 }
 
 const selectedContactsSet = computed(

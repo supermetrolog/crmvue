@@ -53,7 +53,6 @@ import { useStore } from 'vuex';
 import { useTimelineStep } from '@/composables/useTimelineStep.js';
 import { shallowRef, toRef } from 'vue';
 import { useRoute } from 'vue-router';
-import { useConfetti } from '@/composables/useConfetti.js';
 import TimelineDeal from '@/components/Timeline/TimelineDeal.vue';
 import TimelineButton from '@/components/Timeline/TimelineButton.vue';
 
@@ -72,8 +71,6 @@ const props = defineProps({
     }
 });
 
-const { confetti } = useConfetti();
-
 const dealFormIsVisible = shallowRef(false);
 const { currentRequest, data } = useTimelineStep(toRef(props, 'step'));
 
@@ -83,7 +80,6 @@ const updateStep = form => {
 
     emit('update-step', data.value, false, () => {
         store.dispatch('FETCH_COMPANY_REQUESTS', route.params.id);
-        confetti();
     });
 };
 </script>

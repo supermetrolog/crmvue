@@ -82,13 +82,21 @@
     &__message {
         word-break: break-word;
         max-height: 300px;
+        font-size: 15px;
+        overflow-y: auto;
+        overscroll-behavior-y: contain;
+    }
+
+    &__title {
+        word-break: break-word;
+        max-height: 300px;
         overflow-y: auto;
         overscroll-behavior-y: contain;
         font-weight: 500;
     }
 
     &__chip {
-        background-color: #d6d6d6;
+        background-color: variables.$color_light_grey;
     }
 
     &__tag {
@@ -219,7 +227,7 @@
         }
 
         .messenger-chat-message__content {
-            background-color: #d6d6d6;
+            background-color: variables.$color_light_grey;
             box-shadow: unset;
         }
     }

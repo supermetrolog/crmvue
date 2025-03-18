@@ -556,6 +556,12 @@
         top: 37px;
     }
 
+    &__control[class*="col-"] {
+        .form__tooltip {
+            right: 25px;
+        }
+    }
+
     &__error {
         margin-top: 4px;
         font-size: 14px;
@@ -1680,7 +1686,7 @@
 .consultant-picker-option-chip {
     padding: 5px 10px;
     border-radius: 5px;
-    background-color: variables.$bg-gray-l;
+    background-color: variables.$color_grey_light;
     font-size: 14px;
 
     &__avatar {

@@ -39,13 +39,14 @@
                     <span>{{ companyName }}</span>
                 </p>
                 <div class="messenger-dialog-company__categories mt-1">
-                    <DashboardChip
+                    <UiField
                         v-for="category in categories"
                         :key="category.id"
-                        class="dashboard-bg-gray-l messenger-dialog-company__category"
+                        class="messenger-dialog-company__category"
+                        color="light"
                     >
                         {{ category.label }}
-                    </DashboardChip>
+                    </UiField>
                 </div>
                 <p class="messenger-dialog-company__address mt-1">
                     <Tooltip
@@ -81,6 +82,7 @@ import { CompanyCategories } from '@/const/const.js';
 import Avatar from '@/components/common/Avatar.vue';
 import { getCompanyName } from '@/utils/formatters/models/company.js';
 import { useAuth } from '@/composables/useAuth.js';
+import UiField from '@/components/common/UI/UiField.vue';
 
 defineEmits(['update-call']);
 const props = defineProps({

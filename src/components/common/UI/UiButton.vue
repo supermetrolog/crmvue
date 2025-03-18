@@ -1,5 +1,5 @@
 <template>
-    <button class="ui-button" :class="classes" :disabled="disabled || loading">
+    <button ref="button" class="ui-button" :class="classes" :disabled="disabled || loading">
         <slot name="before"></slot>
         <slot name="icon">
             <i v-if="icon" :class="[icon, iconClass]" />
@@ -32,7 +32,10 @@ const props = defineProps({
     shadow: Boolean,
     uppercase: Boolean,
     rect: Boolean,
-    disabled: Boolean
+    disabled: Boolean,
+    big: Boolean,
+    center: Boolean,
+    tooltip: String
 });
 
 const classes = computed(() => {
@@ -46,7 +49,11 @@ const classes = computed(() => {
         'ui-button--bolder': props.bolder,
         'ui-button--shadow': props.shadow,
         'ui-button--uppercase': props.uppercase,
+        'ui-button--center': props.center,
+        'ui-button--big': props.big,
         [`ui-button--cl-${props.color}`]: isNotNullish(props.color)
     };
 });
+
+// TODO: Сделать tooltip на vue-tippy composable
 </script>

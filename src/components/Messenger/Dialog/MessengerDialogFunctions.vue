@@ -28,7 +28,7 @@
     </div>
 </template>
 <script setup>
-import plural from 'plural-ru';
+import { plural } from '@/utils/plural.js';
 import { messenger } from '@/const/messenger.js';
 import { computed } from 'vue';
 

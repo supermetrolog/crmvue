@@ -1,29 +1,29 @@
 <template>
     <div class="messenger-quiz-inline-element">
-        <i class="fa-solid fa-phone-volume messenger-quiz-inline-element__icon"></i>
+        <UiButtonIcon
+            @click="$emit('show')"
+            label="Посмотреть сводку"
+            small
+            icon="fa-solid fa-eye"
+            class="messenger-quiz-inline-element__button"
+        />
         <Avatar :size="30" :src="quiz.user?.userProfile?.avatar" />
         <div class="messenger-quiz-inline-element__description">
-            <span>{{ createdAt }}, </span>
+            <span class="font-weight-semi">{{ createdAt }}, </span>
             <span>{{ quiz.user.userProfile.medium_name }}</span>
             <i class="fa-solid fa-arrow-right-long mx-2"></i>
             <span>{{ contactName }}</span>
         </div>
-        <HoverActionsButton
-            @click="$emit('show')"
-            label="Посмотреть сводку"
-            class="messenger-quiz-inline-element__button ml-auto"
-            small
-        >
-            <i class="fa-solid fa-eye"></i>
-        </HoverActionsButton>
+        <UiChip class="ml-auto">{{ fromNow }}</UiChip>
     </div>
 </template>
 <script setup>
 import Avatar from '@/components/common/Avatar.vue';
 import { computed } from 'vue';
 import { getContactFullName } from '@/utils/formatters/models/contact.js';
-import { toDateFormat } from '@/utils/formatters/date.js';
-import HoverActionsButton from '@/components/common/HoverActions/HoverActionsButton.vue';
+import { dayjsFromMoscow, toDateFormat } from '@/utils/formatters/date.js';
+import UiButtonIcon from '@/components/common/UI/UiButtonIcon.vue';
+import UiChip from '@/components/common/UI/UiChip.vue';
 
 defineEmits(['show']);
 const props = defineProps({
@@ -35,4 +35,8 @@ const props = defineProps({
 
 const createdAt = computed(() => toDateFormat(props.quiz.created_at, 'DD.MM.YY'));
 const contactName = computed(() => getContactFullName(props.quiz.contact));
+
+const fromNow = computed(() => {
+    return dayjsFromMoscow(props.quiz.created_at).fromNow();
+});
 </script>

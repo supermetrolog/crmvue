@@ -24,14 +24,34 @@
         color: #fff;
     }
 
-    @include mixins.hover {
-        background-color: rgba(15, 102, 116, 0.9);
-        color: #fff;
-    }
-
     &.small {
         height: 28px;
         width: 28px;
         font-size: 14px;
+
+        .spinner__clip {
+            height: 18px;
+            width: 18px;
+            border-width: 3px;
+        }
     }
+
+    @include mixins.bg-color-scheme(
+                    cl-warning #f88f01 #a46104 #fff,
+                    cl-success #10b981 #009665 #fff,
+                    cl-success-light rgba(16, 185, 129, 0.3) rgba(16, 185, 129, 0.6) #000,
+                    cl-danger #f93154 #cb1132 #fff,
+                    cl-danger-l variables.$bg-danger-l variables.$bg-danger-l #000,
+                    cl-info #e7e7e7 #d3d3d3 #000,
+                    cl-dark #505050 #2a454c #fff,
+                    cl-light variables.$color_grey_light variables.$color_grey_light #000,
+                    cl-white #fff #ddd #000,
+                    cl-gray-l rgba(138, 138, 138, 0.3) rgba(138, 138, 138, 0.3) #000
+    );
+
+    @include mixins.hover {
+        background-color: rgba(15, 102, 116, 0.9)!important;
+        color: #fff!important;
+    }
+
 }

@@ -71,7 +71,7 @@
                     class="dashboard-card-task__text"
                     :class="{ deleted: isDeleted, completed: isCompleted }"
                 >
-                    {{ task.message }}
+                    {{ task.title }}
                 </p>
                 <div class="dashboard-card-task__meta">
                     <div

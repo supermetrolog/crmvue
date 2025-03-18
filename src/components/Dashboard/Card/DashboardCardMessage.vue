@@ -23,7 +23,7 @@
 
 <script>
 import Avatar from '@/components/common/Avatar.vue';
-import plural from 'plural-ru';
+import { plural } from '@/utils/plural.js';
 import dayjs from 'dayjs';
 
 export default {

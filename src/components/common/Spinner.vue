@@ -10,4 +10,6 @@ defineProps({
     label: { type: String, default: null },
     small: Boolean
 });
+
+// TODO: Сделать размер не через css, а через size + пресеты small/mini
 </script>

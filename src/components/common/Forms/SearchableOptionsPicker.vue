@@ -13,7 +13,7 @@
 </template>
 <script setup>
 import MultiSelect from '@/components/common/Forms/MultiSelect.vue';
-import plural from 'plural-ru';
+import { plural } from '@/utils/plural.js';
 import { computed } from 'vue';
 import { isObject } from '@/utils/helpers/object/isObject.js';
 import { isArray } from '@/utils/helpers/array/isArray.js';

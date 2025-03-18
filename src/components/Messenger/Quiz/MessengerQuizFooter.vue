@@ -1,12 +1,18 @@
 <template>
     <div class="messenger-quiz__footer">
-        <MessengerButton @click="$emit('complete')" color="success" :disabled>
-            Готово
-        </MessengerButton>
+        <UiButton
+            @click="$emit('complete')"
+            color="success"
+            :disabled
+            icon="fa-solid fa-check"
+            bolder
+        >
+            Сохранить опрос
+        </UiButton>
     </div>
 </template>
 <script setup>
-import MessengerButton from '@/components/Messenger/MessengerButton.vue';
+import UiButton from '@/components/common/UI/UiButton.vue';
 
 defineEmits(['complete']);
 defineProps({

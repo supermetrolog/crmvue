@@ -1,5 +1,8 @@
 <template>
-    <div class="messenger-quiz-question">
+    <div
+        class="messenger-quiz-question"
+        :class="{ active: hasMainAnswer, passive: hasNullMainAnswer }"
+    >
         <div class="messenger-quiz-question__header">
             <p class="messenger-quiz-question__title" :class="{ disabled: isDisabled }">
                 <span v-if="number">{{ number }}. </span>
@@ -53,6 +56,7 @@
                         :value="answer.id"
                         :text="answer.value"
                         class="mr-1"
+                        show-checkbox
                         :disabled="isDisabled"
                     />
                     <RadioChip
@@ -100,6 +104,7 @@
                 :key="answer.id"
                 v-model="form.checkbox"
                 handled-icon
+                show-checkbox
                 :value="answer.id"
                 :text="answer.value"
                 :disabled="isDisabled"
@@ -453,6 +458,21 @@ function getMainAnswer() {
     return form.main;
 }
 
+function setAnswer(value) {
+    if (value === null) {
+        form.main = undefined;
+        hasNullMainAnswer.value = true;
+    } else {
+        form.main = value;
+        hasNullMainAnswer.value = false;
+    }
+}
+
+function resetAnswer() {
+    hasNullMainAnswer.value = false;
+    form.main = undefined;
+}
+
 defineExpose({
     validate,
     getForm,
@@ -463,6 +483,8 @@ defineExpose({
     getFilesAnswers,
     getTabAnswers,
     getCheckboxAnswers,
-    getTextAnswers
+    getTextAnswers,
+    setAnswer,
+    resetAnswer
 });
 </script>

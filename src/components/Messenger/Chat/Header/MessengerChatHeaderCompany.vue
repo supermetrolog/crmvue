@@ -15,13 +15,14 @@
                 {{ dialog.model.office_address ?? dialog.model.officeAdress }}
             </p>
             <div class="messenger-chat-header-company__categories mt-1">
-                <DashboardChip
+                <UiField
                     v-for="category in categories"
                     :key="category.id"
-                    class="dashboard-bg-gray-l messenger-chat-header-company__category"
+                    color="light"
+                    class="messenger-chat-header-company__category"
                 >
                     {{ category.label }}
-                </DashboardChip>
+                </UiField>
             </div>
         </div>
     </div>
@@ -30,9 +31,9 @@
 import { computed } from 'vue';
 import CompanyLogo from '@/components/Company/CompanyLogo.vue';
 import { alg } from '@/utils/alg.js';
-import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
 import { CompanyCategories } from '@/const/const.js';
 import { getCompanyName } from '@/utils/formatters/models/company.js';
+import UiField from '@/components/common/UI/UiField.vue';
 
 const props = defineProps({
     dialog: {

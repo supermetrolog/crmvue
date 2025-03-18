@@ -62,7 +62,7 @@ import { TimelineStepWithObjectsMixin } from '@/components/Timeline/mixins.js';
 import CompanyObjectsList from '@/components/Company/CompanyObjectsList.vue';
 import TimelineStepDefaultButtons from '@/components/Timeline/TimelineStepDefaultButtons.vue';
 import TimelineInfo from '@/components/Timeline/TimelineInfo.vue';
-import plural from 'plural-ru';
+import { plural } from '@/utils/plural.js';
 import { TalkDoneComment, TalkOffersNotFound } from '@/components/Timeline/comments.js';
 
 export default {
