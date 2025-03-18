@@ -1,7 +1,12 @@
 <template>
-    <TaskCardModal
+    <UiModal
         v-if="visible"
         @close="$emit('close')"
+        custom-close
+        show
+        relative
+        :width="550"
+        small
         :title="`Список контактов (${contacts.length})`"
     >
         <div class="task-card-contacts">
@@ -17,7 +22,10 @@
                 />
             </div>
         </div>
-    </TaskCardModal>
+        <template #actions="{ close }">
+            <UiButton @click="close" color="light" icon="fa-solid fa-ban" small> Закрыть </UiButton>
+        </template>
+    </UiModal>
 </template>
 
 <script setup>
@@ -26,7 +34,8 @@ import { ref, shallowRef, watch } from 'vue';
 import api from '@/api/api.js';
 import EmptyLabel from '@/components/common/EmptyLabel.vue';
 import ContactCard from '@/components/Contact/Card/ContactCard.vue';
-import TaskCardModal from '@/components/TaskCard/TaskCardModal.vue';
+import UiModal from '@/components/common/UI/UiModal.vue';
+import UiButton from '@/components/common/UI/UiButton.vue';
 
 const props = defineProps({
     companyId: {
@@ -46,11 +55,14 @@ const contacts = shallowRef([]);
 const fetchContacts = async () => {
     isLoading.value = true;
 
-    const response = await api.contacts.getByCompany(props.companyId);
-    if (response) contacts.value = response;
-    else isError.value = true;
-
-    isLoading.value = false;
+    try {
+        const response = await api.contacts.getByCompany(props.companyId);
+        if (response) contacts.value = response;
+    } catch (error) {
+        isError.value = true;
+    } finally {
+        isLoading.value = false;
+    }
 };
 
 watch(
