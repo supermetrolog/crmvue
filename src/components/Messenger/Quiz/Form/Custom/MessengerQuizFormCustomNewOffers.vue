@@ -28,7 +28,7 @@
             </div>
         </template>
         <UiModal v-model:visible="formIsVisible" @closed="clearForm" title="Новое предложение">
-            <Form>
+            <UiForm>
                 <RadioOptions
                     v-model="form.dealType"
                     label="Тип предложения"
@@ -38,7 +38,7 @@
                     show-radio
                     :v="v$.form.dealType"
                 />
-                <Textarea
+                <UiTextarea
                     v-model="form.description"
                     class="mt-2"
                     auto-height
@@ -46,10 +46,20 @@
                     :max-height="250"
                     label="Описание предложения"
                 />
-            </Form>
-            <template #footer="{ close }">
-                <UiButton @click="createOrUpdateOffer" color="success">Сохранить</UiButton>
-                <UiButton @click="close" color="danger">Отмена</UiButton>
+            </UiForm>
+            <template #actions="{ close }">
+                <UiButton
+                    @click="createOrUpdateOffer"
+                    color="success-light"
+                    bolder
+                    small
+                    icon="fa-solid fa-check"
+                >
+                    Сохранить
+                </UiButton>
+                <UiButton @click="close" color="light" bolder small icon="fa-solid fa-ban">
+                    Отмена
+                </UiButton>
             </template>
         </UiModal>
     </div>
@@ -58,9 +68,9 @@
 import { reactive, ref, watch } from 'vue';
 import UiButton from '@/components/common/UI/UiButton.vue';
 import UiModal from '@/components/common/UI/UiModal.vue';
-import Form from '@/components/common/Forms/Form.vue';
+import UiForm from '@/components/common/Forms/UiForm.vue';
 import RadioOptions from '@/components/common/Forms/RadioOptions.vue';
-import Textarea from '@/components/common/Forms/Textarea.vue';
+import UiTextarea from '@/components/common/Forms/UiTextarea.vue';
 import useVuelidate from '@vuelidate/core';
 import { helpers, required } from '@vuelidate/validators';
 import { useValidationNotify } from '@/composables/useValidationNotify.js';

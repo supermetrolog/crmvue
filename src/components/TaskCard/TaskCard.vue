@@ -1,15 +1,15 @@
 <template>
     <div class="task-card">
-        <Loader v-if="isLoading" />
+        <Loader v-if="isLoading || isDeleting || isUpdating || isRestoring" />
         <TaskCardHeader
             @delete="deleteTask"
-            @restore="restore"
+            @restore="restoreTask"
             @edit="editTask"
             @read="readTask"
             @to-chat="toChat"
             @assign="assignerFormIsVisible = !assignerFormIsVisible"
             @change-status="moveSettingsIsVisible = !moveSettingsIsVisible"
-            @to-impossible="toImpossible"
+            @postpone="postponeFormIsVisible = !postponeFormIsVisible"
             :disabled="moveSettingsIsVisible || assignerFormIsVisible"
             :viewable="canBeViewed"
             :task
@@ -18,8 +18,12 @@
         />
         <div class="task-card__content">
             <div class="task-card__column">
-                <div class="task-card__description mb-3">
-                    <p class="task-card__label">Задание</p>
+                <div class="task-card__description mb-1">
+                    <p class="task-card__label">Заголовок</p>
+                    <div ref="titleElement" class="task-card__title"></div>
+                </div>
+                <div v-if="task.message" class="task-card__description mb-3">
+                    <p class="task-card__label">Описание</p>
                     <div ref="messageElement" class="task-card__message"></div>
                 </div>
                 <TaskCardChatInfo
@@ -62,6 +66,15 @@
                     />
                 </AnimationTransition>
                 <AnimationTransition :speed="0.3">
+                    <TaskCardModalPostpone
+                        v-if="postponeFormIsVisible"
+                        @confirm="postponeTask"
+                        @close="postponeFormIsVisible = false"
+                        :loading="isLoadingPostpone"
+                        :start-date="task.start"
+                    />
+                </AnimationTransition>
+                <AnimationTransition :speed="0.3">
                     <TaskCardAssigner
                         v-if="assignerFormIsVisible"
                         @assign="assign"
@@ -88,13 +101,11 @@ import TaskCardStatus from '@/components/TaskCard/TaskCardModalStatus.vue';
 import { computed, onMounted, ref, toRef, useTemplateRef } from 'vue';
 import api from '@/api/api.js';
 import { useNotify } from '@/utils/use/useNotify.js';
-import { useConfirm } from '@/composables/useConfirm.js';
 import { taskOptions } from '@/const/options/task.options.js';
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
 import { useStore } from 'vuex';
 import { useAsyncPopup } from '@/composables/useAsyncPopup.js';
 import { debounce } from '@/utils/common/debounce.js';
-import { dayjsFromMoscow } from '@/utils/formatters/date.js';
 import Loader from '@/components/common/Loader.vue';
 import { messenger } from '@/const/messenger.js';
 import { getLinkCompany } from '@/utils/url.js';
@@ -114,9 +125,10 @@ import { useAuth } from '@/composables/useAuth.js';
 import { useLinkify } from '@/composables/useLinkify.js';
 import TaskCardFiles from '@/components/TaskCard/TaskCardFiles.vue';
 import TaskCardContacts from '@/components/TaskCard/TaskCardContactsList.vue';
+import TaskCardModalPostpone from '@/components/TaskCard/TaskCardModalPostpone.vue';
+import { useAsync } from '@/composables/useAsync.js';
+import { dayjsFromMoscow } from '@/utils/formatters/date.js';
 import dayjs from 'dayjs';
-
-const DAYS_TO_IMPOSSIBLE = 14;
 
 const emit = defineEmits([
     'updated',
@@ -134,7 +146,6 @@ const props = defineProps({
 });
 
 const notify = useNotify();
-const { confirm } = useConfirm();
 const store = useStore();
 const { currentUserId } = useAuth();
 
@@ -158,27 +169,27 @@ onMounted(() => {
 
 const taskReadEvent = useEventBus(TASK_EVENTS.READ);
 
-async function readTask() {
-    const response = await api.task.read(props.task.id);
-
-    if (response) {
+const { execute: readTask } = useAsync(api.task.read, {
+    onFetchResponse() {
         taskReadEvent.emit();
         emit('read');
         notify.success('Задача помечена прочитанной');
-    }
-}
+    },
+    payload: () => props.task.id
+});
 
 const debouncedReadTask = debounce(readTask, 500);
 
 // EDIT
 
 const { show: showTaskCreator } = useAsyncPopup('taskCreator');
+const { isLoading: isUpdating, execute: updateTask } = useAsync(api.task.update);
 
 async function editTask() {
     const taskPayload = await showTaskCreator(props.task);
     if (!taskPayload) return;
 
-    const task = await api.task.update(props.task.id, taskPayload);
+    const task = await updateTask(props.task.id, taskPayload);
     if (task) {
         emit('updated', task);
         notify.success('Задача успешно обновлена');
@@ -194,67 +205,82 @@ const taskCompleteEvent = useEventBus(TASK_EVENTS.COMPLETE);
 
 async function changeStatus(payload) {
     statusIsChanging.value = true;
-    const updated = await api.task.changeStatus(props.task.id, payload.status, payload);
-
-    if (updated) {
-        notify.success('Статус задачи успешно изменен');
-
-        if (
-            (payload.status === taskOptions.statusTypes.COMPLETED ||
-                payload.status === taskOptions.statusTypes.CANCELED) &&
-            props.task.user_id === currentUserId.value
-        ) {
-            taskCompleteEvent.emit();
-        }
-
-        const task = await api.task.getOne(props.task.id);
-        if (task) emit('updated', task);
-    }
-
-    statusIsChanging.value = false;
-}
-
-async function toImpossible() {
-    isLoading.value = true;
-
-    const impossibleDate = dayjs
-        .max(dayjsFromMoscow(props.task.end), dayjs())
-        .add(DAYS_TO_IMPOSSIBLE, 'day')
-        .toDate();
 
     try {
-        await changeStatus({
-            status: taskOptions.statusTypes.CANCELED,
-            impossible_to: impossibleDate
-        });
+        const updated = await api.task.changeStatus(props.task.id, payload.status, payload);
+
+        if (updated) {
+            notify.success('Статус задачи успешно изменен');
+
+            if (
+                (payload.status === taskOptions.statusTypes.COMPLETED ||
+                    payload.status === taskOptions.statusTypes.CANCELED) &&
+                props.task.user_id === currentUserId.value
+            ) {
+                taskCompleteEvent.emit();
+            }
+
+            const task = await api.task.getOne(props.task.id);
+            if (task) emit('updated', task);
+        }
     } finally {
-        isLoading.value = false;
+        statusIsChanging.value = false;
+    }
+}
+
+// postpone
+
+const { execute: executePostponeTask, isLoading: isLoadingPostpone } = useAsync(api.task.postpone);
+
+const postponeFormIsVisible = ref(false);
+
+async function postponeTask(date) {
+    const dateDiff = dayjsFromMoscow(props.task.end).diff(
+        dayjsFromMoscow(props.task.start),
+        'second'
+    );
+    const endDate = dayjs(date).add(dateDiff, 'second').toDate();
+
+    const updatedTask = await executePostponeTask(props.task.id, { start: date, end: endDate });
+
+    if (updatedTask) {
+        postponeFormIsVisible.value = false;
+        emit('updated', updatedTask);
     }
 }
 
 // STATE CHANGING
 
-async function restore() {
-    const confirmed = await confirm('Вы уверены, что хотите восстановить задачу?');
-    if (!confirmed) return;
+const { execute: restoreTask, isLoading: isRestoring } = useAsync(api.task.restore, {
+    onFetchResponse({ response }) {
+        if (response) {
+            emit('updated', { ...props.task, deleted_at: null });
+            notify.info('Задача успешно восстановлена', 'Восстановление задачи');
+        }
+    },
+    confirmation: true,
+    confirmationContent: {
+        title: 'Восстановить задачу',
+        message: 'Вы уверены, что хотите восстановить задачу?',
+        okButton: 'Восстановить'
+    },
+    payload: () => props.task.id
+});
 
-    const restored = await api.task.restore(props.task.id);
-    if (restored) {
-        emit('updated', { ...props.task, deleted_at: null });
-        notify.info('Задача успешно восстановлена', 'Восстановление задачи');
-    }
-}
-
-async function deleteTask() {
-    const confirmed = await confirm('Вы уверены, что хотите безвозвратно удалить задачу?');
-    if (!confirmed) return;
-
-    const deleted = await api.task.delete(props.task.id);
-    if (deleted) {
+const { execute: deleteTask, isLoading: isDeleting } = useAsync(api.task.delete, {
+    onFetchResponse() {
         emit('updated', { ...props.task, deleted_at: new Date() });
         notify.info('Задача успешно удалена');
-    }
-}
+    },
+    confirmation: true,
+    confirmationContent: {
+        title: 'Удалить задачу',
+        message: 'Вы уверены, что хотите удалить задачу? Удаленную задачу нельзя восстановить',
+        okButton: 'Удалить',
+        okIcon: 'fa-solid fa-trash'
+    },
+    payload: () => props.task.id
+});
 
 // CHAT
 
@@ -324,20 +350,22 @@ async function assign(payload) {
 
     const oldUserId = props.task.user_id;
 
-    const response = await api.task.assign(props.task.id, {
-        user_id: payload.assigner,
-        comment: payload.comment
-    });
+    try {
+        const response = await api.task.assign(props.task.id, {
+            user_id: payload.assigner,
+            comment: payload.comment
+        });
 
-    if (response) {
-        notify.success(`Задача успешно назначена на ${response.user.userProfile.medium_name}`);
+        if (response) {
+            notify.success(`Задача успешно назначена на ${response.user.userProfile.medium_name}`);
 
-        reassignEventBus.emit({ task: response, oldUserId });
+            reassignEventBus.emit({ task: response, oldUserId });
 
-        emit('updated', response);
+            emit('updated', response);
+        }
+    } finally {
+        assignerIsChanging.value = false;
     }
-
-    assignerIsChanging.value = false;
 }
 
 // linkify
@@ -345,6 +373,10 @@ async function assign(payload) {
 const messageElement = useTemplateRef('messageElement');
 
 useLinkify(toRef(props.task, 'message'), messageElement);
+
+const titleElement = useTemplateRef('titleElement');
+
+useLinkify(toRef(props.task, 'title'), titleElement);
 
 // contacts
 

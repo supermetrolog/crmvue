@@ -11,8 +11,8 @@
             />
         </template>
         <Loader v-if="isLoading" />
-        <Form @submit="onSubmit">
-            <FormGroup>
+        <UiForm @submit="onSubmit">
+            <UiFormGroup>
                 <MultiSelect
                     v-model="form.competitor_company_id"
                     :disabled="!!form.is_our"
@@ -73,10 +73,10 @@
                         </div>
                     </template>
                 </MultiSelect>
-            </FormGroup>
-            <FormGroup>
-                <Input v-model="form.name" label="Название" class="col-6 pr-1" />
-                <Input
+            </UiFormGroup>
+            <UiFormGroup>
+                <UiInput v-model="form.name" label="Название" class="col-6 pr-1" />
+                <UiInput
                     v-model="form.area"
                     label="Площадь сделки"
                     class="col-6"
@@ -116,9 +116,9 @@
                     class="col-6"
                     :options="requestOptions"
                 />
-            </FormGroup>
-            <FormGroup>
-                <Input
+            </UiFormGroup>
+            <UiFormGroup>
+                <UiInput
                     v-model="form.clientLegalEntity"
                     label="Юр. лицо клиента в сделке"
                     class="col-6"
@@ -130,14 +130,14 @@
                     class="col-3"
                     :options="CompanyFormOrganization"
                 />
-                <Input
+                <UiInput
                     v-model="form.floorPrice"
                     label="Цена пола"
                     class="col-3"
                     maska="##########"
                 />
-            </FormGroup>
-            <FormGroup>
+            </UiFormGroup>
+            <UiFormGroup>
                 <MultiSelect
                     v-model="form.consultant_id"
                     :v="v$.form.consultant_id"
@@ -146,8 +146,8 @@
                     class="col-6"
                     :options="CONSULTANT_LIST"
                 />
-                <Input v-model="form.dealDate" label="Дата сделки" type="date" class="col-3" />
-                <Input
+                <UiInput v-model="form.dealDate" label="Дата сделки" type="date" class="col-3" />
+                <UiInput
                     v-model="form.contractTerm"
                     label="Срок контракта"
                     :disabled="!contractTermVisible"
@@ -155,22 +155,22 @@
                     maska="####"
                     unit="мес."
                 />
-            </FormGroup>
-            <FormGroup>
-                <Textarea v-model="form.description" label="Описание" class="col-12" />
-            </FormGroup>
+            </UiFormGroup>
+            <UiFormGroup>
+                <UiTextarea v-model="form.description" label="Описание" class="col-12" />
+            </UiFormGroup>
             <Submit success class="col-4 mx-auto">{{ formData ? 'Сохранить' : 'Создать' }}</Submit>
-        </Form>
+        </UiForm>
     </Modal>
 </template>
 
 <script setup>
 import { useStore } from 'vuex';
 import useVuelidate from '@vuelidate/core';
-import Form from '@/components/common/Forms/Form.vue';
-import FormGroup from '@/components/common/Forms/FormGroup.vue';
-import Input from '@/components/common/Forms/Input.vue';
-import Textarea from '@/components/common/Forms/Textarea.vue';
+import UiForm from '@/components/common/Forms/UiForm.vue';
+import UiFormGroup from '@/components/common/Forms/UiFormGroup.vue';
+import UiInput from '@/components/common/Forms/UiInput.vue';
+import UiTextarea from '@/components/common/Forms/UiTextarea.vue';
 import MultiSelect from '@/components/common/Forms/MultiSelect.vue';
 import api from '@//api/api.js';
 import { CompanyFormOrganization } from '@/const/const.js';

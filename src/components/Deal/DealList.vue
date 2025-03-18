@@ -34,7 +34,7 @@ defineProps({
 const { confirm } = useConfirm();
 const isLoading = shallowRef(false);
 const deleteDeal = async deal => {
-    const confirmed = await confirm('Вы уверены, что хотите удалить сделку?');
+    const confirmed = await confirm('Удалить сделку', 'Вы уверены, что хотите удалить сделку?');
     if (!confirmed) return;
 
     isLoading.value = true;

@@ -15,7 +15,7 @@
 
     &:disabled, &[disabled] {
         pointer-events: none;
-        opacity: .7;
+        opacity: .5;
     }
 
     &:not(:disabled) {
@@ -32,6 +32,10 @@
 
     &--small {
         padding: 4px 10px;
+    }
+
+    &--big {
+        padding: 10px 15px;
     }
 
     &--shadow {
@@ -54,13 +58,19 @@
         border-radius: 2px;
     }
 
+    &--center {
+        justify-content: center;
+        text-align: center;
+    }
+
     @include mixins.bg-color-scheme(
                     cl-warning #f88f01 #a46104,
                     cl-success #10b981 #009665,
+                    cl-success-light rgba(16, 185, 129, 0.3) rgba(16, 185, 129, 0.6) #000,
                     cl-danger #f93154 #cb1132,
                     cl-info #e7e7e7 #d3d3d3 #000,
                     cl-dark #505050 #2a454c,
-                    cl-light #e8e8e8 #c8c8c8 #000000,
+                    cl-light variables.$color_grey_light #c8c8c8 #000,
                     cl-white #fff #ddd #000
     );
 

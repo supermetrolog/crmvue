@@ -43,7 +43,7 @@ import Avatar from '@/components/common/Avatar.vue';
 import { computed, toRef, useTemplateRef } from 'vue';
 import { ucFirst } from '@/utils/formatters/string.js';
 import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
-import plural from 'plural-ru';
+import { usePlural } from '@/composables/usePlural.js';
 import { useLinkify } from '@/composables/useLinkify.js';
 
 const props = defineProps({
@@ -81,9 +81,12 @@ const recipientUsername = computed(() => {
     return contact.first_name + (contact.last_name ? ` ${contact.last_name}` : '');
 });
 
-const pluralFilesLength = computed(() => {
-    return plural(props.message.files.length, '+%d файл', '+%d файла', '+%d файлов');
-});
+const pluralFilesLength = usePlural(
+    props.message.files.length,
+    '+%d файл',
+    '+%d файла',
+    '+%d файлов'
+);
 
 // linkify
 

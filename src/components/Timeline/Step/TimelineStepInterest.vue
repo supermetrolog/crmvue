@@ -61,7 +61,7 @@
 import { TimelineStepWithObjectsMixin } from '@/components/Timeline/mixins.js';
 import TimelineInfo from '@/components/Timeline/TimelineInfo.vue';
 import TimelineStepDefaultButtons from '@/components/Timeline/TimelineStepDefaultButtons.vue';
-import plural from 'plural-ru';
+import { plural } from '@/utils/plural.js';
 import CompanyObjectsList from '@/components/Company/CompanyObjectsList.vue';
 import { InterestDoneComment, InterestOffersNotFound } from '@/components/Timeline/comments.js';
 

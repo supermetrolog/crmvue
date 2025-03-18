@@ -106,7 +106,7 @@ main {
     display: block;
 }
 
-.dp__main {
+.dp__outer_menu_wrap {
     .dp {
         &--arrow-btn-nav {
             width: max-content;
@@ -121,7 +121,7 @@ main {
         }
 
         &__calendar {
-            --dp-highlight-color: rgba(16, 185, 129, 0.3);
+            --dp-highlight-color: rgba(16, 185, 129, 0.2);
 
             &_row {
                 gap: 5px;
@@ -144,6 +144,25 @@ main {
             @include mixins.flex-box($j: center);
             @include mixins.hover {
                 background: var(--dp-hover-color)
+            }
+        }
+
+        &--preset-dates {
+            @include mixins.flex-box($d: column, $gap: 5px);
+            overflow-y: auto;
+            max-height: 330px;
+            min-width: max-content;
+            max-width: 200px;
+        }
+
+        &--preset-range {
+            background-color: variables.$color_grey_light;
+            font-weight: 500;
+            font-size: 14px;
+            @include mixins.transition(background-color);
+
+            &:hover {
+                background-color: #c8c8c8;
             }
         }
     }
@@ -190,4 +209,75 @@ main {
 
 .no-rounded {
     border-radius: 0!important;
+}
+
+.ui-date-input {
+    .form__tooltip {
+        right: 10px;
+    }
+
+    &[class*="col-"] {
+        .form__tooltip {
+            right: 25px;
+        }
+    }
+
+    &:has(.form__tooltip) {
+        .dp__clear_icon {
+            right: 25px;
+        }
+    }
+
+    &__picker.filled {
+        .dp__input {
+            background-color: #f8f8f8;;
+        }
+    }
+
+    &__presets-label {
+        font-weight: 500;
+        color: variables.$color_grey;
+        width: max-content;
+    }
+}
+
+.ui-field {
+    font-size: 14px;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-weight: 500;
+    width: max-content;
+    max-width: 100%;
+
+    &:has(i) {
+        @include mixins.flex-box($a: center, $gap: 5px);
+
+        i {
+            font-size: 15px;
+        }
+    }
+
+    &--small {
+        padding: 3px 7px;
+    }
+
+    &--bordered {
+        border: 1px solid rgba(205, 201, 201, 0.1);
+    }
+
+    @include mixins.bg-color-scheme(
+                    cl-warning #f88f01 #f88f01 #fff,
+                    cl-success #10b981 #10b981 #fff,
+                    cl-success-light rgba(16, 185, 129, 0.3) rgba(16, 185, 129, 0.3) #000,
+                    cl-danger #f93154 #cb1132 #fff,
+                    cl-info #e7e7e7 #e7e7e7 #000,
+                    cl-dark #505050 #505050 #fff,
+                    cl-light variables.$color_grey_light  variables.$color_grey_light #000,
+                    cl-white #fff #fff #000,
+                    cl-gray-l rgba(138, 138, 138, 0.3) rgba(138, 138, 138, 0.3) #000
+    );
+}
+
+.ui-accordion {
+
 }

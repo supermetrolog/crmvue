@@ -16,6 +16,8 @@ import TaskCardHistoryEventObservers from '@/components/TaskCard/History/TaskCar
 import TaskCardHistoryEventFileCreated from '@/components/TaskCard/History/TaskCardHistoryEventFileCreated.vue';
 import TaskCardHistoryEventFileDeleted from '@/components/TaskCard/History/TaskCardHistoryEventFileDeleted.vue';
 import TaskCardHistoryEventFiles from '@/components/TaskCard/History/TaskCardHistoryEventFiles.vue';
+import TaskCardHistoryEventTitle from '@/components/TaskCard/History/TaskCardHistoryEventTitle.vue';
+import TaskCardHistoryEventPostponed from '@/components/TaskCard/History/TaskCardHistoryEventPostponed.vue';
 
 const props = defineProps({
     history: {
@@ -37,12 +39,14 @@ const componentsByEvents = {
     status_changed: TaskCardHistoryEventStatus,
     created: TaskCardHistoryEventCreate,
     description_changed: TaskCardHistoryEventDescription,
+    title_changed: TaskCardHistoryEventTitle,
     ending_date_changed: TaskCardHistoryEventEnding,
     tags_changed: TaskCardHistoryEventTags,
     observers_changed: TaskCardHistoryEventObservers,
     file_created: TaskCardHistoryEventFileCreated,
     file_deleted: TaskCardHistoryEventFileDeleted,
-    files_changed: TaskCardHistoryEventFiles
+    files_changed: TaskCardHistoryEventFiles,
+    postponed: TaskCardHistoryEventPostponed
 };
 
 const eventComponent = computed(() => componentsByEvents[props.event.event_type]);

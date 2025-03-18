@@ -57,12 +57,11 @@
     &__header,
     &__footer {
         width: 100%;
-        padding: 15px;
     }
 
     &__body {
         width: 100%;
-        padding: 15px 20px;
+        padding: 15px 0;
         font-weight: normal;
         overflow: hidden auto;
         scrollbar-gutter: stable;
@@ -107,7 +106,7 @@
         font-size: 20px;
         font-weight: 500;
         position: relative;
-        padding-right: 45px;
+        padding: 10px 45px 10px 15px;
 
         .times-container {
             @include mixins.flex-box($a: center, $j: center);
@@ -137,7 +136,12 @@
 
         .modal {
             &__body {
-                padding: 0 0 15px;
+                padding: 0 0 15px 0;
+
+                .container-fluid {
+                    padding: 0;
+                    margin: 0;
+                }
             }
 
             &__container {
@@ -145,15 +149,10 @@
             }
         }
 
-        .container-fluid {
-            padding: 0;
-            margin: 0;
-        }
-
 
         .tabs-component {
             &-tabs {
-                padding: 0 30px;
+                padding: 0 20px;
                 background-color: rgba(211, 211, 211, .3);
                 border-bottom: 1px solid rgba(0, 0, 0, .1);
 
@@ -191,7 +190,7 @@
             }
 
             &-panel {
-                padding: 0 30px;
+                padding: 0 20px;
             }
         }
     }
@@ -200,13 +199,34 @@
         position: absolute;
     }
 
+    &--small {
+        .modal {
+            &__container {
+                border-radius: 5px;
+            }
+
+            &__header {
+                padding: 5px 15px;
+                font-size: 18px;
+            }
+
+            &__body {
+                padding: 10px 0;
+            }
+
+            &__footer {
+                padding: 10px 0;
+            }
+        }
+    }
+
     &__footer {
-        padding: 15px 20px;
+        padding: 15px 0;
         border-top: 1px solid #d9d9dc;
     }
 
     &__buttons {
-        @include mixins.flex-box($a: center, $gap: 5px, $j: center);
+        @include mixins.flex-box($a: center, $gap: 8px, $wrap: true);
     }
 }
 

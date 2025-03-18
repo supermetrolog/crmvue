@@ -48,12 +48,14 @@
 </template>
 
 <script>
-import plural from 'plural-ru';
+import { plural } from '@/utils/plural.js';
 import DropdownContainer from '@/components/common/Dropdown/DropdownContainer.vue';
 import ComplexDealOwnerContact from '@/components/Complex/Deal/ComplexDealOwnerContact.vue';
 import { mapActions } from 'vuex';
 import Rating from '@/components/common/Rating.vue';
 import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
+
+// TODO: Убрать plural из template
 
 export default {
     name: 'ComplexDealOwner',

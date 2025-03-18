@@ -15,7 +15,7 @@
     }
 
     &.current {
-        background-color: rgba(16, 185, 129, 0.6)!important;
+        background-color: variables.$bg-success-m!important;
     }
 
     &.archived {
@@ -475,7 +475,7 @@
 
     &__grid {
         display: grid;
-        row-gap: 5px;
+        row-gap: 3px;
         column-gap: 10px;
         grid-template-columns: 3fr 2fr;
     }

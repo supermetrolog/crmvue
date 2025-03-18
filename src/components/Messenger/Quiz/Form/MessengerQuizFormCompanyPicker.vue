@@ -17,8 +17,8 @@
             </MessengerButton>
         </div>
         <Modal @close="closeForm" width="800" title="Выбор компании" :show="formIsVisible">
-            <Form>
-                <FormGroup>
+            <UiForm>
+                <UiFormGroup>
                     <div class="col-8">
                         <CompanyPicker
                             v-model="form.company"
@@ -29,9 +29,11 @@
                             :disabled="form.custom"
                             object
                         />
-                        <Checkbox v-model="form.custom" class="mt-2">Компании нет в базе</Checkbox>
+                        <UiCheckbox v-model="form.custom" class="mt-2"
+                            >Компании нет в базе</UiCheckbox
+                        >
                     </div>
-                    <Input
+                    <UiInput
                         v-model="form.area"
                         :min="0"
                         type="number"
@@ -40,14 +42,14 @@
                         class="col-4"
                     />
                     <AnimationTransition :speed="0.5">
-                        <Input
+                        <UiInput
                             v-if="form.custom"
                             v-model="form.name"
                             label="Название компании"
                             class="col-12"
                         />
                     </AnimationTransition>
-                    <Textarea
+                    <UiTextarea
                         v-model="form.description"
                         :v="v$.description"
                         :min-height="80"
@@ -57,8 +59,8 @@
                         label="Комментарий"
                         reactive
                     />
-                </FormGroup>
-            </Form>
+                </UiFormGroup>
+            </UiForm>
             <template #footer>
                 <Button @click="addCompany" :disabled="!form.company && !form.name" small success>
                     Добавить
@@ -70,18 +72,18 @@
 </template>
 <script setup>
 import { reactive, ref, toRef, watch } from 'vue';
-import Form from '@/components/common/Forms/Form.vue';
-import FormGroup from '@/components/common/Forms/FormGroup.vue';
+import UiForm from '@/components/common/Forms/UiForm.vue';
+import UiFormGroup from '@/components/common/Forms/UiFormGroup.vue';
 import { useSearchCompany } from '@/composables/useSearchCompany.js';
 import CompanyPicker from '@/components/common/Forms/CompanyPicker/CompanyPicker.vue';
 import Modal from '@/components/common/Modal.vue';
 import MessengerQuizFormCompanyPickerElement from '@/components/Messenger/Quiz/Form/MessengerQuizFormCompanyPickerElement.vue';
-import Input from '@/components/common/Forms/Input.vue';
+import UiInput from '@/components/common/Forms/UiInput.vue';
 import MessengerButton from '@/components/Messenger/MessengerButton.vue';
 import Button from '@/components/common/Button.vue';
 import { spliceById } from '@/utils/helpers/array/spliceById.js';
-import Checkbox from '@/components/common/Forms/Checkbox.vue';
-import Textarea from '@/components/common/Forms/Textarea.vue';
+import UiCheckbox from '@/components/common/Forms/UiCheckbox.vue';
+import UiTextarea from '@/components/common/Forms/UiTextarea.vue';
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
 import useVuelidate from '@vuelidate/core';
 import { helpers, maxLength } from '@vuelidate/validators';

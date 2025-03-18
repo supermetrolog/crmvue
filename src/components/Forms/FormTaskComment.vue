@@ -1,7 +1,7 @@
 <template>
     <div>
         <Loader v-if="isUpdating" small />
-        <Form>
+        <UiForm>
             <div v-if="form.files?.length" class="d-flex flex-wrap gap-1">
                 <File
                     v-for="(file, key) in form.files"
@@ -21,42 +21,57 @@
                     class="task-card-comment__file"
                 />
             </div>
-            <Textarea
+            <UiTextarea
                 v-model="form.message"
                 class="mb-1 task-card__textarea"
                 label="Комментарий"
                 :disabled="isUpdating"
                 auto-height
             />
-        </Form>
-        <div class="d-flex gap-2">
-            <TaskCardButton
-                @click.prevent="updateComment"
+        </UiForm>
+        <div class="d-flex gap-2 mt-2">
+            <UiButton
+                @click="updateComment"
                 :disabled="(!form.message.length && !form.files.length) || isUpdating"
+                color="success-light"
+                icon="fa-solid fa-check"
+                small
             >
                 Сохранить
-            </TaskCardButton>
-            <TaskCardButton @click.prevent="openFileDialog" :disabled="isUpdating">
-                <i class="fa-solid fa-file-circle-plus mr-1" />
-                <span>Прикрепить файл</span>
-            </TaskCardButton>
-            <TaskCardButton @click.prevent="$emit('cancel')" :disabled="isUpdating">
+            </UiButton>
+            <UiButton
+                @click="openFileDialog"
+                :disabled="isUpdating"
+                color="light"
+                icon="fa-solid fa-file-circle-plus"
+                small
+            >
+                Добавить файл
+            </UiButton>
+            <UiButton
+                @click="$emit('close')"
+                color="light"
+                icon="fa-solid fa-ban"
+                :disabled="isUpdating"
+                small
+            >
                 Отмена
-            </TaskCardButton>
+            </UiButton>
         </div>
     </div>
 </template>
 <script setup>
-import Textarea from '@/components/common/Forms/Textarea.vue';
-import TaskCardButton from '@/components/TaskCard/TaskCardButton.vue';
-import Form from '@/components/common/Forms/Form.vue';
+import UiTextarea from '@/components/common/Forms/UiTextarea.vue';
+import UiForm from '@/components/common/Forms/UiForm.vue';
 import api from '@/api/api.js';
-import { reactive, ref, useTemplateRef } from 'vue';
+import { reactive, useTemplateRef } from 'vue';
 import FileInput from '@/components/common/Forms/FileInput.vue';
 import File from '@/components/common/Forms/File.vue';
 import Loader from '@/components/common/Loader.vue';
+import UiButton from '@/components/common/UI/UiButton.vue';
+import { useAsync } from '@/composables/useAsync.js';
 
-const emit = defineEmits(['updated', 'cancel']);
+const emit = defineEmits(['updated', 'close']);
 const props = defineProps({
     formData: {
         type: Object,
@@ -70,7 +85,12 @@ const form = reactive({
     current_files: [...props.formData.files]
 });
 
-const isUpdating = ref(false);
+const { isLoading: isUpdating, execute: updateComment } = useAsync(api.taskComment.update, {
+    onFetchResponse({ response }) {
+        emit('updated', response);
+    },
+    payload: () => [props.formData.id, createPayload()]
+});
 
 function createPayload() {
     return {
@@ -78,18 +98,6 @@ function createPayload() {
         files: form.files,
         current_files: form.current_files.map(element => element.id)
     };
-}
-
-async function updateComment() {
-    isUpdating.value = true;
-
-    const response = await api.taskComment.update(props.formData.id, createPayload());
-
-    if (response) {
-        emit('updated', response);
-    }
-
-    isUpdating.value = false;
 }
 
 // files

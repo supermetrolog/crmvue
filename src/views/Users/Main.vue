@@ -12,8 +12,8 @@
         <div class="row">
             <div class="col-12 col-lg-10 mx-auto mb-2">
                 <div class="d-flex align-items-end">
-                    <Form class="w-50 d-flex align-items-end gap-2">
-                        <Input
+                    <UiForm class="w-50 d-flex align-items-end gap-2">
+                        <UiInput
                             v-model="querySearch"
                             placeholder="ФИО, номер, email"
                             label="Поиск"
@@ -25,7 +25,7 @@
                         >
                             Очистить
                         </Button>
-                    </Form>
+                    </UiForm>
                     <Button @click="formIsVisible = true" success class="ml-2 flex-shrink-0">
                         Создать пользователя
                     </Button>
@@ -99,8 +99,8 @@ import UserTable from '@/components/User/UserTable.vue';
 import FormUser from '@/components/Forms/FormUser.vue';
 import { computed, onMounted, ref, shallowRef, watch } from 'vue';
 import Button from '@/components/common/Button.vue';
-import Form from '@/components/common/Forms/Form.vue';
-import Input from '@/components/common/Forms/Input.vue';
+import UiForm from '@/components/common/Forms/UiForm.vue';
+import UiInput from '@/components/common/Forms/UiInput.vue';
 import EmptyData from '@/components/common/EmptyData.vue';
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
 import Modal from '@/components/common/Modal.vue';
@@ -194,7 +194,7 @@ const showSessions = userId => {
 };
 
 const logoutSession = async session => {
-    const confirmed = await confirm('Вы действительно хотите отозвать сессию?');
+    const confirmed = await confirm('Отозвать сессию', 'Вы действительно хотите отозвать сессию?');
     if (!confirmed) return;
 
     sessionsIsUpdating.value = true;
@@ -210,7 +210,10 @@ const logoutSession = async session => {
 };
 
 const dropSessions = async () => {
-    const confirmed = await confirm('Вы действительно хотите отозвать все сессии сотрудника?');
+    const confirmed = await confirm(
+        'Отозвать сессии сотрудника',
+        'Вы действительно хотите отозвать все сессии сотрудника?'
+    );
     if (!confirmed) return;
 
     sessionsIsUpdating.value = true;

@@ -1,11 +1,11 @@
 <template>
-    <Form @submit="submit">
-        <FormGroup>
+    <UiForm @submit="submit">
+        <UiFormGroup>
             <DashboardChip class="dashboard-bg-gray-l">
                 Ответьте на несколько вопросов и выберите дальнейшие действия над контактом.
             </DashboardChip>
-        </FormGroup>
-        <FormGroup subtitle="Результат звонка" required>
+        </UiFormGroup>
+        <UiFormGroup subtitle="Результат звонка" required>
             <div class="d-flex gap-1">
                 <RadioOptions
                     v-model="result"
@@ -15,17 +15,17 @@
                     unselect
                 />
             </div>
-        </FormGroup>
-        <FormGroup subtitle="Комментарий" required>
-            <Textarea
+        </UiFormGroup>
+        <UiFormGroup subtitle="Комментарий" required>
+            <UiTextarea
                 v-model="description"
                 :v="v$.description"
                 placeholder="Укажите важные моменты касаемые контакта. Почему не дозвонился, куда ушел работать, когда перезвонить.."
                 class="w-100"
                 required
             />
-        </FormGroup>
-        <FormGroup subtitle="Действия">
+        </UiFormGroup>
+        <UiFormGroup subtitle="Действия">
             <div class="d-flex gap-2">
                 <Button @click="$emit('delete-contact')" small info icon>
                     <i class="fa-solid fa-trash" />
@@ -40,20 +40,20 @@
                     <span>Запланировать звонок</span>
                 </Button>
             </div>
-        </FormGroup>
-        <FormGroup class="mt-4">
+        </UiFormGroup>
+        <UiFormGroup class="mt-4">
             <div class="d-flex gap-2 mx-auto">
                 <Button @click="submit" success>Подтвердить</Button>
                 <Button @click="$emit('close')" danger>Отмена</Button>
             </div>
-        </FormGroup>
-    </Form>
+        </UiFormGroup>
+    </UiForm>
 </template>
 <script setup>
-import Textarea from '@/components/common/Forms/Textarea.vue';
+import UiTextarea from '@/components/common/Forms/UiTextarea.vue';
 import { ref } from 'vue';
-import Form from '@/components/common/Forms/Form.vue';
-import FormGroup from '@/components/common/Forms/FormGroup.vue';
+import UiForm from '@/components/common/Forms/UiForm.vue';
+import UiFormGroup from '@/components/common/Forms/UiFormGroup.vue';
 import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
 import Button from '@/components/common/Button.vue';
 import { helpers, required } from '@vuelidate/validators';

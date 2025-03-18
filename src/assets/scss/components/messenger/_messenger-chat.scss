@@ -29,7 +29,7 @@
     &__content {
         width: 100%;
         position: relative;
-        height: 100vh;
+        height: calc(100vh - 80px);
         z-index: 11;
         @include mixins.flex-box($d: column);
     }
@@ -113,9 +113,11 @@
 
 .messenger-chat-header {
     padding: 10px;
-    min-height: 70px;
+    height: 80px;
     background-color: #F3F3F3;
     border-bottom: 1px solid rgba(0, 0, 0, .1);
+    z-index: 11;
+    position: relative;
     @include mixins.flex-box($a: center, $j: space-between);
 
     &__functions {
@@ -206,7 +208,7 @@
 
 .messenger-chat-label {
     padding: 7px 12px;
-    background-color: rgba(211, 211, 211, .8);
+    background-color: variables.$color_grey_light;
     font-size: 14px;
     font-weight: 600;
     border-radius: 15px;
@@ -248,6 +250,7 @@
         width: 50px!important;
         font-size: 25px;
         border-radius: 50%;
+        @include mixins.flex-box($a: center, $j: center);
     }
 
     &__editor {

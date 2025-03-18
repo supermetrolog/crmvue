@@ -45,6 +45,7 @@ async function createComment(payload) {
 
 async function deleteContact(contact) {
     const confirmed = await confirm(
+        'Удалить контакт',
         'Вы уверены, что хотите удалить контакт "' + contact.full_name + '"?'
     );
 

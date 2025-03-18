@@ -199,7 +199,7 @@ import Button from '@/components/common/Button.vue';
 import Modal from '@/components/common/Modal.vue';
 import CompanyObjectsList from '@/components/Company/CompanyObjectsList.vue';
 import FormLetter from '@/components/Forms/FormLetter.vue';
-import plural from 'plural-ru';
+import { plural } from '@/utils/plural.js';
 import RefreshButton from '@/components/common/RefreshButton.vue';
 import Tooltip from '@/components/common/Tooltip.vue';
 import FormOfferSearch from '@/components/Forms/Offer/FormOfferSearch.vue';

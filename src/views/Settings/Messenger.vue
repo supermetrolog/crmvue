@@ -109,6 +109,7 @@ const loadTags = async () => {
 
 const deleteTag = async tag => {
     const confirmed = await confirm(
+        'Удалить тэг',
         `Вы действительно хотите удалить Тэг "#${tag.id} ${tag.name}"?`
     );
     if (!confirmed) return;

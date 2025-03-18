@@ -1,115 +1,107 @@
 <template>
-    <Modal @close="$emit('close')" show title="Создание события" width="600">
-        <Form @submit="onSubmit">
-            <Loader v-if="isLoading" />
-            <FormGroup class="mb-2">
-                <Input v-model="form.title" class="col-12" label="Название" :v="v$.form.title" />
-                <Input
+    <UiModal
+        @close="$emit('close')"
+        custom-close
+        show
+        :title="isEditMode ? `Редактирование события ${formdata.id}` : 'Создание события'"
+        :width="600"
+    >
+        <Loader v-if="isLoading" />
+        <UiForm>
+            <UiFormGroup>
+                <UiInput v-model="form.title" class="col-12" label="Название" :v="v$.form.title" />
+                <UiInput
                     v-model="form.startDate"
                     class="col-12"
                     :v="v$.form.startDate"
                     type="datetime-local"
                     label="Начало события"
                 />
-                <Input
+                <UiInput
                     v-model="form.endDate"
                     class="col-12"
                     type="datetime-local"
                     label="Конец события"
                 />
-            </FormGroup>
-            <FormGroup>
-                <div class="col-12">
-                    <Submit class="w-100" success>Создать</Submit>
-                </div>
-            </FormGroup>
-        </Form>
-    </Modal>
+            </UiFormGroup>
+        </UiForm>
+        <template #actions="{ close }">
+            <UiButton @click="submit" color="success-light" small icon="fa-solid fa-check">
+                Сохранить
+            </UiButton>
+            <UiButton @click="close" color="light" small icon="fa-solid fa-ban">Отмена</UiButton>
+        </template>
+    </UiModal>
 </template>
 
-<script>
-import Modal from '@/components/common/Modal.vue';
-import Form from '@/components/common/Forms/Form.vue';
+<script setup>
+import UiForm from '@/components/common/Forms/UiForm.vue';
 import Loader from '@/components/common/Loader.vue';
-import FormGroup from '@/components/common/Forms/FormGroup.vue';
-import Input from '@/components/common/Forms/Input.vue';
+import UiFormGroup from '@/components/common/Forms/UiFormGroup.vue';
+import UiInput from '@/components/common/Forms/UiInput.vue';
 import { helpers, required } from '@vuelidate/validators';
-import useValidate from '@vuelidate/core';
-import Submit from '@/components/common/Forms/FormSubmit.vue';
 import api from '@/api/api.js';
+import { useValidation } from '@/composables/useValidation.js';
+import { useFormData } from '@/utils/use/useFormData.js';
+import { reactive, ref } from 'vue';
+import UiModal from '@/components/common/UI/UiModal.vue';
+import UiButton from '@/components/common/UI/UiButton.vue';
 
-export default {
-    name: 'FormModalEvent',
-    components: {
-        Submit,
-        Input,
-        FormGroup,
-        Loader,
-        Form,
-        Modal
+const emit = defineEmits(['close', 'updated', 'created']);
+const props = defineProps({
+    formdata: {
+        type: Object
     },
-    emits: ['close', 'updated', 'created'],
-    props: {
-        formdata: {
-            type: Object
-        },
-        forUpdate: {
-            type: Boolean,
-            default: false
+    forUpdate: Boolean
+});
+
+const { form, isEditMode } = useFormData(
+    reactive({
+        title: null,
+        startDate: null,
+        endDate: null,
+        consultant_id: null
+    }),
+    props.formdata
+);
+
+const { v$, validate } = useValidation(
+    {
+        form: {
+            title: {
+                required: helpers.withMessage('Заполните название', required)
+            },
+            startDate: {
+                required: helpers.withMessage('Выберите дату начала события', required)
+            }
         }
     },
-    data() {
-        return {
-            v$: useValidate(),
-            isLoading: false,
-            form: {
-                title: null,
-                startDate: null,
-                endDate: null,
-                consultant_id: null
-            }
-        };
-    },
-    validations() {
-        return {
-            form: {
-                title: {
-                    required: helpers.withMessage('Заполните название', required)
-                },
-                startDate: {
-                    required: helpers.withMessage('Выберите дату начала события', required)
-                }
-            }
-        };
-    },
-    methods: {
-        async onSubmit() {
-            this.v$.$validate();
+    { form }
+);
 
-            if (!this.v$.form.$error) {
-                this.isLoading = true;
+const isLoading = ref(false);
 
-                if (this.forUpdate) await this.update();
-                else await this.create();
+async function submit() {
+    const isValid = await validate();
+    if (!isValid) return;
 
-                this.isLoading = false;
-            }
-        },
-        async create() {
-            const createdEvent = await api.calendar.createEvent(this.form);
-            if (createdEvent) this.$emit('created', this.form);
-        },
-        async update() {
-            const updatedEvent = await api.calendar.updateEvent(this.form);
-            if (updatedEvent) this.$emit('updated', this.form);
-        }
-    },
-    mounted() {
-        if (this.formdata) {
-            this.form = { ...this.form, ...this.formdata };
-        }
+    isLoading.value = true;
+
+    try {
+        if (props.forUpdate) await update();
+        else await create();
+    } finally {
+        isLoading.value = false;
     }
-};
-</script>
+}
 
-<style></style>
+async function create() {
+    const createdEvent = await api.calendar.createEvent(form);
+    if (createdEvent) emit('created', form);
+}
+
+async function update() {
+    const updatedEvent = await api.calendar.updateEvent(form);
+    if (updatedEvent) emit('updated', form);
+}
+</script>

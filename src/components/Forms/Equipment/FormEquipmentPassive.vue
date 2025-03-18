@@ -1,8 +1,8 @@
 <template>
     <Modal @close="$emit('close')" show title="Редактирование оборудования" width="700">
         <Loader v-if="isLoading" />
-        <Form @submit="onSubmit">
-            <FormGroup>
+        <UiForm @submit="onSubmit">
+            <UiFormGroup>
                 <MultiSelect
                     v-model="form.passive_type"
                     :v="v$.form.passive_type"
@@ -11,25 +11,29 @@
                     class="col-12"
                     required
                 />
-                <Textarea v-model="form.passive_comment" class="col-12" label="Описание причины" />
-            </FormGroup>
-            <FormGroup>
+                <UiTextarea
+                    v-model="form.passive_comment"
+                    class="col-12"
+                    label="Описание причины"
+                />
+            </UiFormGroup>
+            <UiFormGroup>
                 <FormSubmit class="mx-auto" small success>Сохранить</FormSubmit>
-            </FormGroup>
-        </Form>
+            </UiFormGroup>
+        </UiForm>
     </Modal>
 </template>
 
 <script setup>
-import Form from '@/components/common/Forms/Form.vue';
+import UiForm from '@/components/common/Forms/UiForm.vue';
 import MultiSelect from '@/components/common/Forms/MultiSelect.vue';
 import useVuelidate from '@vuelidate/core';
 import api from '@//api/api.js';
 import Modal from '@/components/common/Modal.vue';
-import FormGroup from '@/components/common/Forms/FormGroup.vue';
+import UiFormGroup from '@/components/common/Forms/UiFormGroup.vue';
 import { reactive, shallowRef } from 'vue';
 import { equipmentOptions } from '@/const/options/equipment.options.js';
-import Textarea from '@/components/common/Forms/Textarea.vue';
+import UiTextarea from '@/components/common/Forms/UiTextarea.vue';
 import { useFormData } from '@/utils/use/useFormData.js';
 import { helpers, required } from '@vuelidate/validators';
 import FormSubmit from '@/components/common/Forms/FormSubmit.vue';

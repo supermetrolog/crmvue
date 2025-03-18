@@ -1,7 +1,13 @@
 <template>
-    <Modal @close="cancel" :show="isVisible" width="600" title="Обновление даты последнего звонка">
-        <Spinner v-if="isLoading" />
-        <template v-else>
+    <UiModal
+        v-model:visible="isVisible"
+        @close="cancel"
+        custom-close
+        :width="600"
+        title="Обновление даты последнего звонка"
+    >
+        <Spinner v-if="isLoading" small />
+        <UiForm v-else>
             <div class="row mb-1">
                 <p class="mx-auto">Выберите контакт</p>
             </div>
@@ -42,27 +48,24 @@
                     </VDropdown>
                 </div>
             </div>
-            <div class="row justify-content-center">
-                <MessengerButton
-                    @click="updateLastCall"
-                    :disabled="!current"
-                    class="mx-1"
-                    color="success"
-                >
-                    Сохранить
-                </MessengerButton>
-                <MessengerButton @click="cancel" class="mx-1" color="danger">
-                    Отменить
-                </MessengerButton>
-            </div>
+        </UiForm>
+        <template #actions="{ close }">
+            <UiButton
+                @click="updateLastCall"
+                :disabled="!current"
+                color="success-light"
+                small
+                icon="fa-solid fa-check"
+            >
+                Сохранить
+            </UiButton>
+            <UiButton @click="close" color="light" small icon="fa-solid fa-ban"> Отмена </UiButton>
         </template>
-    </Modal>
+    </UiModal>
 </template>
 <script setup>
-import Modal from '@/components/common/Modal.vue';
-import MessengerButton from '@/components/Messenger/MessengerButton.vue';
 import { useAsyncPopup } from '@/composables/useAsyncPopup.js';
-import { computed, onUnmounted, ref } from 'vue';
+import { computed, onUnmounted, ref, shallowRef } from 'vue';
 import { useDelayedLoader } from '@/composables/useDelayedLoader.js';
 import Spinner from '@/components/common/Spinner.vue';
 import api from '@/api/api.js';
@@ -72,8 +75,11 @@ import MessengerChatFormRecipientCard from '@/components/Messenger/Chat/Form/Mes
 import { entityOptions } from '@/const/options/options.js';
 import { useStore } from 'vuex';
 import { notify } from '@kyvg/vue3-notification';
+import UiModal from '@/components/common/UI/UiModal.vue';
+import UiButton from '@/components/common/UI/UiButton.vue';
+import UiForm from '@/components/common/Forms/UiForm.vue';
 
-const contacts = ref([]);
+const contacts = shallowRef([]);
 const current = ref(null);
 const { isLoading } = useDelayedLoader();
 const store = useStore();
@@ -98,8 +104,11 @@ async function fetchContacts() {
 
 onPopupShowed(async () => {
     current.value = null;
+
     await fetchContacts();
+
     const mainContact = contacts.value.find(contact => contact.isMain);
+
     if (mainContact) current.value = mainContact;
     else current.value = contacts.value[0];
 });
@@ -126,15 +135,17 @@ const preparedContacts = computed(() => {
 });
 
 async function updateLastCall() {
-    const callObject = await api.call.createForChatMember(props.value.chatMemberID, {
-        user_id: store.getters.THIS_USER.id,
-        contact_id: current.value.id
-    });
+    try {
+        const callObject = await api.call.createForChatMember(props.value.chatMemberID, {
+            user_id: store.getters.THIS_USER.id,
+            contact_id: current.value.id
+        });
 
-    if (callObject) {
-        notify('Дата последнего звонка успешно обновлена');
-        submit({ lastCall: callObject });
-    } else {
+        if (callObject) {
+            notify('Дата последнего звонка успешно обновлена');
+            submit({ lastCall: callObject });
+        }
+    } catch (error) {
         notify('Произошла ошибка. Попробуйте еще раз.');
     }
 }

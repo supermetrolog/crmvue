@@ -814,7 +814,7 @@
         padding: 5px 10px;
 
         &:nth-child(odd) {
-            background-color: #d6d6d6;
+            background-color: variables.$color_light_grey;
         }
     }
 

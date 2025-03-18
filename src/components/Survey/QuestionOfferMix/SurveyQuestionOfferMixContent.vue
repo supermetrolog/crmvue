@@ -10,27 +10,25 @@
                 <span v-if="offer.from_mkad">; {{ offer.from_mkad }} км от мкад </span>
             </p>
         </div>
-        <div class="d-flex gap-1 flex-wrap">
-            <DashboardChip v-tippy="'Класс объекта'" class="dashboard-bg-gray-l">
+        <div class="d-flex gap-1 flex-wrap mt-1">
+            <UiField v-tippy="'Класс объекта'" small color="light">
                 {{ offer.class_name }}
-            </DashboardChip>
-            <DashboardChip
-                v-if="offer.object"
-                v-tippy="'Общая площадь объекта'"
-                class="dashboard-bg-gray-l"
-                with-icon
-            >
+            </UiField>
+            <UiField v-if="offer.object" v-tippy="'Общая площадь объекта'" small color="light">
                 <i class="fa-solid fa-expand"></i>
                 <WithUnitType :unit-type="unitTypes.SQUARE_METERS">
                     {{ fullArea }}
                 </WithUnitType>
-            </DashboardChip>
-            <DashboardChip v-if="offer.offer?.is_exclusive" class="dashboard-bg-gray-l">
-                Эксклюзив
-            </DashboardChip>
-            <DashboardChip v-if="offer.offer?.built_to_suit === 1" class="dashboard-bg-gray-l">
+            </UiField>
+            <UiField v-if="offer.offer?.is_exclusive" small color="light">Эксклюзив</UiField>
+            <UiField v-if="offer.offer?.built_to_suit === 1" small color="light">
                 Инвестпроект
-            </DashboardChip>
+            </UiField>
+            <SurveyQuestionOfferMixOffer
+                v-for="_offer in offers"
+                :key="_offer.id"
+                :offer="_offer"
+            />
         </div>
     </div>
 </template>
@@ -39,13 +37,18 @@ import WithUnitType from '@/components/common/WithUnitType.vue';
 import { unitTypes } from '@/const/unitTypes.js';
 import { computed } from 'vue';
 import { toNumberFormat } from '@/utils/formatters/number.js';
-import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
 import { getCompanyName } from '@/utils/formatters/models/company.js';
+import SurveyQuestionOfferMixOffer from '@/components/Survey/QuestionOfferMix/SurveyQuestionOfferMixOffer.vue';
+import UiField from '@/components/common/UI/UiField.vue';
 
 const props = defineProps({
     offer: {
         type: Object,
         required: true
+    },
+    offers: {
+        type: Array,
+        default: () => []
     }
 });
 

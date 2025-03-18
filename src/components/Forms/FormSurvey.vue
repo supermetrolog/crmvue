@@ -1,6 +1,6 @@
 <template>
     <Spinner v-if="isLoading" small label="Загрузка вопросов.." center class="absolute-center" />
-    <Form v-else>
+    <UiForm v-else>
         <Loader v-if="isUpdating" small class="center" />
         <template v-else>
             <SurveyCardInfo :quiz="formData" :editable="false" />
@@ -12,24 +12,26 @@
                 has-available-contact
             />
         </template>
-        <FormGroup v-if="!isLoading" class="justify-content-center mt-2 gap-2">
-            <Button @click="submit" success>Сохранить</Button>
-            <Button @click="$emit('close')" danger>Отмена</Button>
-        </FormGroup>
-    </Form>
+        <UiFormGroup v-if="!isLoading" class="justify-content-center mt-3 gap-2">
+            <UiButton @click="submit" color="success-light" icon="fa-solid fa-check">
+                Сохранить
+            </UiButton>
+            <UiButton @click="$emit('close')" color="light" icon="fa-solid fa-ban">Отмена</UiButton>
+        </UiFormGroup>
+    </UiForm>
 </template>
 <script setup>
 import { nextTick, onMounted, ref, useTemplateRef } from 'vue';
 import MessengerQuizFormTemplate from '@/components/Messenger/Quiz/Form/Template/MessengerQuizFormTemplate.vue';
 import Spinner from '@/components/common/Spinner.vue';
-import Form from '@/components/common/Forms/Form.vue';
-import FormGroup from '@/components/common/Forms/FormGroup.vue';
-import Button from '@/components/common/Button.vue';
+import UiForm from '@/components/common/Forms/UiForm.vue';
+import UiFormGroup from '@/components/common/Forms/UiFormGroup.vue';
 import api from '@/api/api.js';
 import Loader from '@/components/common/Loader.vue';
 import { useNotify } from '@/utils/use/useNotify.js';
 import SurveyCardInfo from '@/components/SurveyCard/SurveyCardInfo.vue';
 import { messenger } from '@/const/messenger.js';
+import UiButton from '@/components/common/UI/UiButton.vue';
 
 const emit = defineEmits(['close', 'updated']);
 const props = defineProps({
@@ -146,18 +148,20 @@ async function submit() {
 
     isUpdating.value = true;
 
-    const response = await api.survey.updateWithAnswers(props.formData.id, {
-        question_answers: form.map(element => ({
-            question_answer_id: element.question_answer_id,
-            value: element.value
-        }))
-    });
+    try {
+        const response = await api.survey.updateWithAnswers(props.formData.id, {
+            question_answers: form.map(element => ({
+                question_answer_id: element.question_answer_id,
+                value: element.value
+            }))
+        });
 
-    if (response) {
-        notify.success('Ответы успешно обновлены', 'Редактирование опросника');
-        emit('updated', response);
+        if (response) {
+            notify.success('Ответы успешно обновлены', 'Редактирование опросника');
+            emit('updated', response);
+        }
+    } finally {
+        isUpdating.value = false;
     }
-
-    isUpdating.value = false;
 }
 </script>

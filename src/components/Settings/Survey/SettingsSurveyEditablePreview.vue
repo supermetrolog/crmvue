@@ -234,8 +234,8 @@ async function refreshQuestions() {
 
 // edit
 
-const editingQuestionAnswer = ref(false);
-const editingQuestion = ref(false);
+const editingQuestionAnswer = ref(null);
+const editingQuestion = ref(null);
 
 function editQuestion(question) {
     editingQuestion.value = question;
@@ -268,13 +268,14 @@ const { confirm } = useConfirm();
 
 async function deleteQuestion(question) {
     const confirmed = await confirm(
+        'Удалить вопрос',
         `Вы действительно хотите удалить Вопрос "#${question.id} ${question.text}"?`
     );
     if (!confirmed) return;
 
     const deleted = await api.question.delete(question.id);
     if (deleted) {
-        notify.success('Воопрос успешно удален.');
+        notify.success('Вопрос успешно удален.');
         fetchQuestions();
     }
 }

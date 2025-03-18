@@ -1,11 +1,10 @@
 <template>
     <div class="messenger-quiz messenger-chat__content">
         <Loader v-if="isLoading" global :label="currentLoadingLabel" />
-        <MessengerChatHeader />
         <MessengerQuizPreviews
             v-show="!isGeneralLoading"
             @last-survey-loaded="lastSurveyOnLoad"
-            class="my-2"
+            class="p-2"
         />
         <Spinner
             v-if="isGeneralLoading || lastSurveyIsLoading"
@@ -103,7 +102,6 @@ import { useConfirm } from '@/composables/useConfirm.js';
 import api from '@/api/api.js';
 import MessengerQuizComplete from '@/components/Messenger/Quiz/MessengerQuizComplete.vue';
 import Loader from '@/components/common/Loader.vue';
-import MessengerChatHeader from '@/components/Messenger/Chat/Header/MessengerChatHeader.vue';
 import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
 import Modal from '@/components/common/Modal.vue';
 import MessengerQuizContacts from '@/components/Messenger/Quiz/MessengerQuizContacts.vue';
@@ -129,8 +127,6 @@ import MessengerQuizArchivedContacts from '@/components/Messenger/Quiz/Messenger
 import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
 import { isNullish } from '@/utils/helpers/common/isNullish.js';
 import { useSurveyEditing } from '@/components/Survey/useSurveyEditing.js';
-
-const SCHEDULING_CALL_DURATION = 1; // days
 
 const emit = defineEmits(['complete']);
 defineProps({ disabled: Boolean });
@@ -235,7 +231,8 @@ async function send() {
     if (!valid) return;
 
     const confirmed = await confirm(
-        'Подтвердите заполнение опросника. Вы закончили заполнение информации?'
+        'Сохранение опроса',
+        'Вы закончили заполнение информации? Будут созданы задачи, звонки и опросы для заполненных предложений и запросов.'
     );
     if (!confirmed) return;
 
@@ -248,7 +245,7 @@ async function send() {
     if (!isCanceled) {
         finalContact.value = currentRecipient.value;
 
-        await showFinalContactPicker();
+        if (selectedContacts.value.length > 1) await showFinalContactPicker();
 
         isLoading.value = true;
 
@@ -368,13 +365,15 @@ const { createTaskWithTemplate } = useTaskManager();
 
 const scheduledCalls = ref([]);
 
-async function createScheduleCallTask(contact) {
+async function createScheduleCallTask(contact, companyName) {
     const contactFullName = getContactFullName(contact);
 
+    const message = `Прозвонить ${contactFullName} (${companyName}, #${contact.company_id})`;
+
     const taskPayload = await createTaskWithTemplate({
-        message: `Прозвонить ${contactFullName} (компания #${contact.company_id})`,
+        title: message.slice(0, 255),
+        message: message.length > 255 ? message : null,
         step: TASK_FORM_STEPS.DATE,
-        end: dayjs().add(SCHEDULING_CALL_DURATION, 'day').toDate(),
         user_id: currentUser.value.id,
         callPresets: true
     });
@@ -397,7 +396,6 @@ async function createScheduleCallTask(contact) {
         });
     }
 
-    // TODO: Поменять end на start, когда поменяем форму
     // TODO: Добавить шаблон сообщения для schedule-call
 
     const messagePayload = {
@@ -419,8 +417,8 @@ async function createScheduleCallTask(contact) {
     }
 }
 
-async function scheduleCall(contact) {
-    await createScheduleCallTask(contact);
+async function scheduleCall(contact, companyName) {
+    await createScheduleCallTask(contact, companyName);
 }
 
 // object destroyed
@@ -446,7 +444,7 @@ async function createObjectMessageWithTask(object, messagePayload, taskPayload) 
 
 async function onObjectDestroyed(object) {
     const taskPayload = await createTaskWithTemplate({
-        message: `Объект #${object.id} (${object.company_name}) снесен, отправить в пассив`,
+        title: `Объект #${object.id} (${object.company_name}) снесен, отправить в пассив`,
         step: TASK_FORM_STEPS.MESSAGE
     });
 
@@ -462,7 +460,7 @@ async function onObjectDestroyed(object) {
 
 async function onObjectSold(object) {
     const taskPayload = await createTaskWithTemplate({
-        message: `Объект #${object.id} (${object.company_name}) продан`,
+        title: `Объект #${object.id} (${object.company_name}) продан`,
         step: TASK_FORM_STEPS.MESSAGE
     });
 
@@ -478,7 +476,7 @@ async function onObjectSold(object) {
 
 async function createContactTask() {
     const taskPayload = await createTaskWithTemplate({
-        message: `Добавить новый контакт в компании ${getCompanyShortName(store.state.Messenger.currentPanel)}`,
+        title: `Добавить новый контакт в компании ${getCompanyShortName(store.state.Messenger.currentPanel)}`,
         step: TASK_FORM_STEPS.MESSAGE
     });
 

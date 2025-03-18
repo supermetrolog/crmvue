@@ -7,13 +7,13 @@
         width="1200"
     >
         <div class="messenger-attachment">
-            <Form>
+            <UiForm>
                 <FileInput
                     v-model:native="form.fileList"
                     v-model:data="form.files"
                     label="Файлы или фотографии"
                 />
-            </Form>
+            </UiForm>
             <div class="messenger-attachment__footer">
                 <MessengerButton @click="submit" color="success">Сохранить</MessengerButton>
                 <MessengerButton @click="close" color="danger">Отмена</MessengerButton>
@@ -23,14 +23,14 @@
 </template>
 <script>
 import Modal from '@/components/common/Modal.vue';
-import Form from '@/components/common/Forms/Form.vue';
+import UiForm from '@/components/common/Forms/UiForm.vue';
 import FileInput from '@/components/common/Forms/FileInput.vue';
 import { AsyncModalMixin } from '@/components/common/mixins';
 import MessengerButton from '@/components/Messenger/MessengerButton.vue';
 
 export default {
     name: 'MessengerAttachment',
-    components: { MessengerButton, FileInput, Form, Modal },
+    components: { UiForm, MessengerButton, FileInput, Modal },
     mixins: [AsyncModalMixin],
     emits: ['close'],
     data() {

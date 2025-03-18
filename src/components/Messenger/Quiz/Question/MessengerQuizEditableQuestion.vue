@@ -66,7 +66,7 @@
                     </DashboardChip>
                     <template v-if="hasTextQuestions">
                         <div v-for="answer in texts" :key="answer.id" class="position-relative">
-                            <Textarea
+                            <UiTextarea
                                 :placeholder="answer.value"
                                 class="messenger-quiz-question__field"
                                 auto-height
@@ -123,7 +123,7 @@
 </template>
 <script setup>
 import CheckboxChip from '@/components/common/Forms/CheckboxChip.vue';
-import Textarea from '@/components/common/Forms/Textarea.vue';
+import UiTextarea from '@/components/common/Forms/UiTextarea.vue';
 import AccordionSimple from '@/components/common/Accordion/AccordionSimple.vue';
 import { computed } from 'vue';
 import Button from '@/components/common/Button.vue';

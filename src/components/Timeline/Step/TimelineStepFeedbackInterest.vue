@@ -60,7 +60,7 @@
 <script>
 import { TimelineStepWithObjectsMixin } from '@/components/Timeline/mixins.js';
 import TimelineInfo from '@/components/Timeline/TimelineInfo.vue';
-import plural from 'plural-ru';
+import { plural } from '@/utils/plural.js';
 import TimelineStepDefaultButtons from '@/components/Timeline/TimelineStepDefaultButtons.vue';
 import CompanyObjectsList from '@/components/Company/CompanyObjectsList.vue';
 import {

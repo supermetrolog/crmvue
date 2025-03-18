@@ -19,7 +19,7 @@
 </template>
 <script setup>
 import dayjs from 'dayjs';
-import plural from 'plural-ru';
+import { plural } from '@/utils/plural.js';
 import Tooltip from '@/components/common/Tooltip.vue';
 import { computed } from 'vue';
 import { toDateFormat } from '@/utils/formatters/date.js';

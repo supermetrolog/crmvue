@@ -7,13 +7,13 @@
         <span v-if="badge !== null" class="dashboard-card-link__badge">
             {{ badge }}
         </span>
-        <Checkbox :disabled="disabled" :checked="active" />
+        <UiCheckbox :disabled="disabled" :checked="active" />
     </div>
 </template>
 
 <script setup>
 import DashboardRoundedIcon from '@/components/Dashboard/DashboardRoundedIcon.vue';
-import Checkbox from '@/components/common/Forms/Checkbox.vue';
+import UiCheckbox from '@/components/common/Forms/UiCheckbox.vue';
 
 defineEmits(['select']);
 defineProps({

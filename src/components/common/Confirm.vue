@@ -1,22 +1,38 @@
 <template>
-    <Modal
+    <UiModal
+        v-model:visible="isVisible"
         @close="cancel"
-        :show="isVisible"
-        width="450"
+        :width="550"
+        custom-close
         class="confirm"
         title="Подтверждение действия"
+        hide-header
     >
-        <p class="confirm__text">{{ message }}</p>
-        <div class="confirm__actions">
-            <Button @click="submit" success>Подтвердить</Button>
-            <Button @click="cancel" danger>Отмена</Button>
+        <div class="confirm__content">
+            <!--            <div class="confirm__icon">-->
+            <!--                <i :class="content.icon" />-->
+            <!--            </div>-->
+            <div class="confirm__description">
+                <p class="confirm__title">
+                    {{ content.title }}
+                </p>
+                <p v-if="content.message" class="confirm__message">{{ content.message }}</p>
+            </div>
         </div>
-    </Modal>
+        <template #actions>
+            <UiButton @click="submit" color="danger" :icon="content.okIcon" bolder>
+                {{ content.okButton }}
+            </UiButton>
+            <UiButton @click="cancel" color="light" icon="fa-solid fa-ban" bolder>
+                {{ content.cancelButton }}
+            </UiButton>
+        </template>
+    </UiModal>
 </template>
 <script setup>
-import Modal from '@/components/common/Modal.vue';
 import { useConfirm } from '@/composables/useConfirm.js';
-import Button from '@/components/common/Button.vue';
+import UiButton from '@/components/common/UI/UiButton.vue';
+import UiModal from '@/components/common/UI/UiModal.vue';
 
-const { isVisible, message, cancel, submit } = useConfirm();
+const { isVisible, content, cancel, submit } = useConfirm();
 </script>

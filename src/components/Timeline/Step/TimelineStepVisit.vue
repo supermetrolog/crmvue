@@ -60,7 +60,7 @@
 <script>
 import { TimelineStepWithObjectsMixin } from '@/components/Timeline/mixins.js';
 import TimelineInfo from '@/components/Timeline/TimelineInfo.vue';
-import plural from 'plural-ru';
+import { plural } from '@/utils/plural.js';
 import TimelineStepDefaultButtons from '@/components/Timeline/TimelineStepDefaultButtons.vue';
 import CompanyObjectsList from '@/components/Company/CompanyObjectsList.vue';
 import { VisitDoneComment, VisitOffersNotFound } from '@/components/Timeline/comments.js';
@@ -74,7 +74,7 @@ export default {
             return plural(
                 this.data.timelineStepObjects.length,
                 'осмотрен %d объект',
-                'осметрено %d объекта',
+                'осмотрено %d объекта',
                 'осмотрено %d объектов'
             );
         }

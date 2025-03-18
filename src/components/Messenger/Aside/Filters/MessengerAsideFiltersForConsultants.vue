@@ -1,6 +1,6 @@
 <template>
-    <FormWrapper>
-        <FormGroup>
+    <UiForm>
+        <UiFormGroup>
             <p class="form__block col-12">Показывать сотрудников</p>
             <SwitchSlider
                 v-model="userStatus"
@@ -10,15 +10,15 @@
                 true-title="Только активные"
                 false-title="Только архивные"
             />
-        </FormGroup>
-    </FormWrapper>
+        </UiFormGroup>
+    </UiForm>
 </template>
 <script setup>
-import FormGroup from '@/components/common/Forms/FormGroup.vue';
+import UiFormGroup from '@/components/common/Forms/UiFormGroup.vue';
 import { computed } from 'vue';
-import FormWrapper from '@/components/common/Forms/Form.vue';
 import SwitchSlider from '@/components/common/Forms/SwitchSlider.vue';
 import { userOptions } from '@/const/options/user.options.js';
+import UiForm from '@/components/common/Forms/UiForm.vue';
 
 const modelValue = defineModel();
 

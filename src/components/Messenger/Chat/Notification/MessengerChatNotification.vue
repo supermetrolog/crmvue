@@ -163,7 +163,10 @@ const pinMessage = async () => {
 };
 
 const deleteMessage = async () => {
-    const confirmed = await confirm('Вы действительно хотите удалить сообщение?');
+    const confirmed = await confirm(
+        'Удалить сообщение',
+        'Вы действительно хотите удалить сообщение?'
+    );
     if (!confirmed) return;
 
     isDeleteLoading.value = true;

@@ -59,16 +59,15 @@ import ComplexPhotoDownloader from '@/components/Complex/ComplexPhotoDownloader.
 import { computed, onBeforeMount, provide, shallowRef, useTemplateRef, watch } from 'vue';
 import { getLinkComplexOld } from '@/utils/url.js';
 import { useRoute, useRouter } from 'vue-router';
-import { useConfirm } from '@/composables/useConfirm.js';
 import EmptyData from '@/components/common/EmptyData.vue';
 import Loader from '@/components/common/Loader.vue';
 import { useDocumentTitle } from '@/composables/useDocumentTitle.js';
 import { toDateFormat } from '@/utils/formatters/date.js';
+import { useAsync } from '@/composables/useAsync.js';
 
 const store = useStore();
 const route = useRoute();
 const router = useRouter();
-const { confirm } = useConfirm();
 const { setTitle } = useDocumentTitle();
 
 const isLoading = shallowRef(false);
@@ -125,15 +124,22 @@ watch(
     { immediate: true }
 );
 
-const deleteComplex = async () => {
-    const confirmed = await confirm('Вы действительно хотите безвозвратно удалить комплекс?');
-    if (!confirmed) return;
-
-    const deleted = await store.dispatch('Complex/DELETE_COMPLEX', complex.value.id);
-    if (deleted) {
-        await router.push({ name: 'OffersMain' });
+const { execute: deleteComplex } = useAsync(
+    () => store.dispatch('Complex/DELETE_COMPLEX', complex.value.id),
+    {
+        onFetchResponse() {
+            router.push({ name: 'OffersMain' });
+        },
+        confirmation: true,
+        confirmationContent: {
+            title: 'Удалить комплекс',
+            message:
+                'Вы уверены, что хотите удалить комплекс? Удаленный комплекс нельзя восстановить.',
+            okButton: 'Удалить',
+            okIcon: 'fa-solid fa-trash'
+        }
     }
-};
+);
 
 onBeforeMount(async () => {
     isLoading.value = true;

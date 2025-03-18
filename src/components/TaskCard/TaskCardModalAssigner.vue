@@ -6,8 +6,8 @@
             :append-to-body="false"
             :options="getConsultantsOptions"
         />
-        <Form class="task-card-modal__form">
-            <Textarea
+        <UiForm class="task-card-modal__form">
+            <UiTextarea
                 v-model="comment"
                 auto-height
                 :disabled="!canBeSaved"
@@ -22,14 +22,14 @@
                 </TaskCardButton>
                 <TaskCardButton @click.prevent="$emit('close')">Отмена</TaskCardButton>
             </div>
-        </Form>
+        </UiForm>
     </TaskCardModal>
 </template>
 
 <script setup>
 import { computed, ref, watch } from 'vue';
-import Textarea from '@/components/common/Forms/Textarea.vue';
-import Form from '@/components/common/Forms/Form.vue';
+import UiTextarea from '@/components/common/Forms/UiTextarea.vue';
+import UiForm from '@/components/common/Forms/UiForm.vue';
 import ConsultantPicker from '@/components/common/Forms/ConsultantPicker/ConsultantPicker.vue';
 import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
 import { useConsultantsOptions } from '@/composables/options/useConsultantsOptions.js';

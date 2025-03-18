@@ -1,6 +1,6 @@
 <template>
     <div class="user-picker">
-        <Input v-model="debouncedUserQuerySearch" rounded placeholder="Введите сотрудника.." />
+        <UiInput v-model="debouncedUserQuerySearch" rounded placeholder="Введите сотрудника.." />
         <div ref="list" class="user-picker__list">
             <UserPickerElement
                 v-for="(user, index) in users"
@@ -27,7 +27,7 @@
     </div>
 </template>
 <script setup>
-import Input from '@/components/common/Forms/Input.vue';
+import UiInput from '@/components/common/Forms/UiInput.vue';
 import UserPickerElement from '@/components/common/Forms/UserPicker/UserPickerElement.vue';
 import { debounce } from '@/utils/common/debounce.js';
 import MessengerButton from '@/components/Messenger/MessengerButton.vue';

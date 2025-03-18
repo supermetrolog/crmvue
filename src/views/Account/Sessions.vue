@@ -69,7 +69,10 @@ const fetchSessions = async () => {
 };
 
 const logoutSession = async session => {
-    const confirmed = await confirm('Вы действительно хотите отозвать сессию?');
+    const confirmed = await confirm(
+        'Отзыв сессии',
+        'Вы действительно хотите отозвать сессию? Пользователь будет разлогинен с этого устройства.'
+    );
     if (!confirmed) return;
 
     isUpdating.value = true;
@@ -87,6 +90,7 @@ const logoutSession = async session => {
 
 const dropSessions = async () => {
     const confirmed = await confirm(
+        'Отзыв всех сессий',
         'Вы действительно хотите отозвать все ваши сессии (кроме текущей)?'
     );
     if (!confirmed) return;

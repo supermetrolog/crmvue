@@ -69,7 +69,8 @@ const historyTextByType = {
     assigned: 'Изменен исполнитель',
     observed: 'Просмотрел задачу',
     file_created: 'Добавил новый файл',
-    file_deleted: 'Удалил файл'
+    file_deleted: 'Удалил файл',
+    postponed: 'Отложил задачу'
 };
 
 export const taskOptions = {

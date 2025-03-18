@@ -143,7 +143,10 @@ const viewRequest = request => {
 
 const toggleDisableRequest = async request => {
     if (request.status === 0) {
-        const confirmed = await confirm('Вы уверены, что хотите восстановить запрос?');
+        const confirmed = await confirm(
+            'Восстановить запрос',
+            'Вы уверены, что хотите восстановить запрос?'
+        );
         if (!confirmed) return;
 
         await api.request.undisable(request.id);

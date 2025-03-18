@@ -22,7 +22,7 @@
                     placeholder="Выберите тип ворот.."
                     :options="gateTypes"
                 />
-                <Input
+                <UiInput
                     v-model="field[index].count"
                     class="gate-types-picker__input"
                     type="number"
@@ -49,7 +49,7 @@ import AnimationTransition from '@/components/common/AnimationTransition.vue';
 import { computed, onBeforeMount, ref, watch } from 'vue';
 import { gateTypes } from '@/const/types.js';
 import MultiSelect from '@/components/common/Forms/MultiSelect.vue';
-import Input from '@/components/common/Forms/Input.vue';
+import UiInput from '@/components/common/Forms/UiInput.vue';
 
 const modelValue = defineModel({ type: Array, default: () => [] });
 defineProps({

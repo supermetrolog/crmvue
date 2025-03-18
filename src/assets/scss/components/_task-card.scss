@@ -82,13 +82,21 @@
     &__message {
         word-break: break-word;
         max-height: 300px;
+        font-size: 15px;
+        overflow-y: auto;
+        overscroll-behavior-y: contain;
+    }
+
+    &__title {
+        word-break: break-word;
+        max-height: 300px;
         overflow-y: auto;
         overscroll-behavior-y: contain;
         font-weight: 500;
     }
 
     &__chip {
-        background-color: #d6d6d6;
+        background-color: variables.$color_light_grey;
     }
 
     &__tag {
@@ -219,7 +227,7 @@
         }
 
         .messenger-chat-message__content {
-            background-color: #d6d6d6;
+            background-color: variables.$color_light_grey;
             box-shadow: unset;
         }
     }
@@ -361,13 +369,14 @@
 }
 
 .task-card-form {
-    @include mixins.flex-box($gap: 10px);
+    @include mixins.flex-box($gap: 10px, $a: flex-end);
 
     &__button {
         height: 50px;
         width: 50px!important;
         font-size: 25px;
         border-radius: 50%;
+        @include mixins.flex-box($a: center, $j: center);
     }
 
     &__editor {
@@ -407,12 +416,6 @@
         border-bottom: 1px solid #afaeae;
     }
 
-    &__form {
-        border-top: 1px solid #afaeae;
-        margin-top: 7px;
-        padding-top: 7px;
-    }
-
     &__element {
         width: 60px;
         height: 60px;
@@ -429,9 +432,16 @@
 
     .form__label {
         color: #ada8a8;
+        font-size: 15px;
     }
 
-    .form__textarea, .form__input {
+    &__status-icon {
+        width: 18px;
+        font-size: 16px;
+        text-align: center;
+    }
+
+    .form__textarea, .form__input, .dp__input {
         border-color: #b9b0b0;
     }
 }

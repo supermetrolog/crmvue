@@ -6,44 +6,53 @@
                 <div class="d-flex align-items-center mb-2">
                     <p class="form__subtitle">Текущий логотип</p>
                     <AnimationTransition :speed="0.4">
-                        <Button
+                        <UiButton
                             v-if="logoShouldBeDeleted"
                             @click="unmarkCurrentLogoAsDeleted"
-                            icon
+                            icon="fa-solid fa-rotate-left"
                             small
-                            class="ml-1"
+                            class="ml-2"
+                            color="light"
+                            bolder
                         >
-                            <span>Отменить удаление</span>
-                            <i class="fa-solid fa-rotate-left" />
-                        </Button>
-                        <Button
+                            Отменить удаление
+                        </UiButton>
+                        <UiButton
                             v-else
                             @click="markCurrentLogoAsDeleted"
                             class="ml-2"
                             small
-                            icon
-                            danger
                             :disabled="logoShouldBeDeleted || !currentLogo"
+                            color="danger"
+                            icon="fa-solid fa-trash"
+                            bolder
                         >
-                            <span>Удалить логотип</span>
-                            <i class="fa-solid fa-trash" />
-                        </Button>
+                            Удалить логотип
+                        </UiButton>
                     </AnimationTransition>
-                    <Button
+                    <UiButton
                         @click="cropperIsVisible = true"
                         :disabled="!canBeEdit"
-                        class="ml-2"
+                        icon="fa-solid fa-crop-simple"
                         small
-                        icon
+                        class="ml-2"
+                        color="light"
+                        bolder
                     >
-                        <span>Редактировать</span>
-                        <i class="fa-solid fa-crop-simple"></i>
-                    </Button>
+                        Редактировать
+                    </UiButton>
                     <AnimationTransition>
-                        <Button @click="toInitial" class="ml-2" small icon :disabled="!newLogo">
-                            <span>Вернуть исходный</span>
-                            <i class="fa-solid fa-angles-left"></i>
-                        </Button>
+                        <UiButton
+                            @click="toInitial"
+                            icon="fa-solid fa-solid fa-angles-left"
+                            :disabled="!newLogo"
+                            small
+                            class="ml-2"
+                            color="light"
+                            bolder
+                        >
+                            Вернуть исходный
+                        </UiButton>
                     </AnimationTransition>
                 </div>
                 <div class="form-company-logo__preview">
@@ -102,14 +111,23 @@
             Выбрать файлы
         </FileInput>
         <div class="d-flex gap-2 justify-content-center w-100 mt-3">
-            <Button @click="editLogo" success :disabled="!canBeSaved">Сохранить</Button>
-            <Button @click="emit('canceled')">Закрыть</Button>
+            <UiButton
+                @click="editLogo"
+                :disabled="!canBeSaved"
+                color="success-light"
+                icon="fa-solid fa-check"
+            >
+                Сохранить
+            </UiButton>
+            <UiButton @click="emit('canceled')" color="light" icon="fa-solid fa-ban">
+                Отмена
+            </UiButton>
         </div>
         <teleport to="body">
-            <Modal
-                @close="closeCropper"
+            <UiModal
+                v-model:visible="cropperIsVisible"
+                @closed="closeCropper"
                 title="Редактирование размера"
-                :show="cropperIsVisible"
                 :close-on-press-esc="false"
                 :close-on-outside-click="false"
             >
@@ -119,30 +137,21 @@
                     :need-transform="!newLogo"
                     :height="400"
                     :width="400"
-                >
-                    <template #footer>
-                        <div class="d-flex gap-2">
-                            <Button
-                                @click="saveCropped"
-                                class="form-company-logo__button"
-                                success
-                                small
-                                icon
-                            >
-                                Сохранить
-                            </Button>
-                            <Button
-                                @click="closeCropper"
-                                class="form-company-logo__button"
-                                small
-                                icon
-                            >
-                                Отменить
-                            </Button>
-                        </div>
-                    </template>
-                </ImageCropper>
-            </Modal>
+                />
+                <template #actions>
+                    <UiButton
+                        @click="saveCropped"
+                        color="success-light"
+                        small
+                        icon="fa-solid fa-check"
+                    >
+                        Сохранить
+                    </UiButton>
+                    <UiButton @click="closeCropper" color="light" small icon="fa-solid fa-ban">
+                        Отменить
+                    </UiButton>
+                </template>
+            </UiModal>
         </teleport>
     </div>
 </template>
@@ -151,7 +160,6 @@
 import FileInput from '@/components/common/Forms/FileInput.vue';
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
 import CompanyLogo from '@/components/Company/CompanyLogo.vue';
-import Button from '@/components/common/Button.vue';
 import api from '@/api/api.js';
 import { computed, ref, shallowRef, useTemplateRef } from 'vue';
 import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
@@ -163,9 +171,10 @@ import { blobToFile } from '@/utils/helpers/forms/blobToFile.js';
 import { useNotify } from '@/utils/use/useNotify.js';
 import Progress from '@/components/common/Progress.vue';
 import ImageCropper from '@/components/common/ImageCropper.vue';
-import Modal from '@/components/common/Modal.vue';
 import Loader from '@/components/common/Loader.vue';
 import { getCompanyName } from '@/utils/formatters/models/company.js';
+import UiButton from '@/components/common/UI/UiButton.vue';
+import UiModal from '@/components/common/UI/UiModal.vue';
 
 const emit = defineEmits(['updated', 'deleted', 'canceled', 'edited']);
 const props = defineProps({

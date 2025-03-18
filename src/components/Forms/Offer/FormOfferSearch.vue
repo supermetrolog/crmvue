@@ -1,7 +1,7 @@
 <template>
-    <Form @submit="onSubmit" class="form-offer-search">
-        <FormGroup>
-            <Input
+    <UiForm @submit="onSubmit" class="form-offer-search">
+        <UiFormGroup>
+            <UiInput
                 v-model="form.all"
                 @keydown.enter="onSubmit"
                 placeholder="Поиск по: id, адрес, собственник, телефон, ФИО"
@@ -37,7 +37,7 @@
                     />
                 </div>
             </div>
-        </FormGroup>
+        </UiFormGroup>
         <teleport to="body">
             <Modal
                 @close="extraVisible = false"
@@ -46,8 +46,8 @@
                 width="1200"
                 style="z-index: 5000"
             >
-                <Form>
-                    <FormGroup class="mb-2">
+                <UiForm>
+                    <UiFormGroup class="mb-2">
                         <ConsultantPicker
                             v-model="form.agent_id"
                             :options="getConsultantsOptions"
@@ -60,7 +60,7 @@
                             :options="DealTypeList"
                             placeholder="Выберите тип.."
                         />
-                        <Input
+                        <UiInput
                             v-model="form.rangeMinElectricity"
                             placeholder="не менее"
                             maska="##########"
@@ -117,7 +117,7 @@
                             multiple
                             required
                         />
-                        <Input
+                        <UiInput
                             v-if="hasApproximateDistance"
                             v-model="form.approximateDistanceFromMKAD"
                             maska="###"
@@ -127,7 +127,7 @@
                             unit="км"
                             type="number"
                         />
-                        <Input
+                        <UiInput
                             v-else
                             v-model="form.rangeMaxDistanceFromMKAD"
                             :v="v$.form.rangeMaxDistanceFromMKAD"
@@ -198,9 +198,9 @@
                             :options="realFloorTypeOptions"
                         />
                         <hr class="col-12" />
-                    </FormGroup>
+                    </UiFormGroup>
                     <p class="form__block">Коммуникации</p>
-                    <FormGroup>
+                    <UiFormGroup>
                         <SwitchSlider
                             v-model="form.heated"
                             class="col-12 col-lg-6 col-xxl-4"
@@ -255,7 +255,7 @@
                             label="Только 1 этаж"
                             :false-value="2"
                         />
-                    </FormGroup>
+                    </UiFormGroup>
                     <p class="form__block">Статус</p>
                     <div class="row mt-2">
                         <SwitchSlider
@@ -330,10 +330,10 @@
                             />
                         </div>
                     </div>
-                </Form>
+                </UiForm>
             </Modal>
         </teleport>
-    </Form>
+    </UiForm>
 </template>
 
 <script setup>
@@ -358,9 +358,9 @@ import { useRegionsOptions } from '@/composables/options/useRegionsOptions.js';
 import { useConsultantsOptions } from '@/composables/options/useConsultantsOptions.js';
 import { computed, onMounted, reactive, ref, watch } from 'vue';
 import { helpers, minValue } from '@vuelidate/validators';
-import FormGroup from '@/components/common/Forms/FormGroup.vue';
-import Form from '@/components/common/Forms/Form.vue';
-import Input from '@/components/common/Forms/Input.vue';
+import UiFormGroup from '@/components/common/Forms/UiFormGroup.vue';
+import UiForm from '@/components/common/Forms/UiForm.vue';
+import UiInput from '@/components/common/Forms/UiInput.vue';
 import MultiSelect from '@/components/common/Forms/MultiSelect.vue';
 import {
     ActivePassiveFUCK,

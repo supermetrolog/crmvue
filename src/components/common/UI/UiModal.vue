@@ -5,7 +5,11 @@
             class="modal active"
             role="dialog"
             :style="{ '--modal-width': width ? width + 'px' : 'auto' }"
-            :class="{ 'modal--with-tabs': hasTabs, 'modal--relative': relative }"
+            :class="{
+                'modal--with-tabs': hasTabs,
+                'modal--relative': relative,
+                'modal--small': small
+            }"
         >
             <div @click="onBlackoutClick" class="modal__blackout"></div>
             <slot name="container" :close="close">
@@ -33,11 +37,17 @@
                             <slot :close="close"></slot>
                         </div>
                     </div>
-                    <div v-if="$slots.footer" class="modal__footer">
+                    <div
+                        v-if="$slots.footer || $slots.actions"
+                        class="modal__footer"
+                        :class="footerClass"
+                    >
                         <div class="container-fluid">
-                            <div class="modal__buttons">
-                                <slot name="footer" :close="close"></slot>
-                            </div>
+                            <slot name="footer" :close="close">
+                                <div class="modal__buttons" :class="actionsClass">
+                                    <slot name="actions" :close="close" />
+                                </div>
+                            </slot>
                         </div>
                     </div>
                 </div>
@@ -82,8 +92,15 @@ const props = defineProps({
     },
     customClose: Boolean,
     hideHeader: Boolean,
-    bodyClass: [String, Object, Array]
+    small: Boolean,
+    bodyClass: [String, Object, Array],
+    footerClass: [String, Object, Array],
+    actionsClass: [String, Object, Array]
 });
+
+if (props.show) {
+    visibleModel.value = true;
+}
 
 const minHeightSize = computed(() => props.minHeight + 'px');
 

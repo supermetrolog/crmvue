@@ -5,21 +5,21 @@
                 <UiButtonIcon
                     @click="$emit('edit')"
                     label="Редактировать компанию"
-                    class="messenger-panel-company__action"
+                    color="light"
                     icon="fa-solid fa-pen"
                     small
                 />
                 <UiButtonIcon
                     @click="toChat"
                     label="Перейти в чат компании"
-                    class="messenger-panel-company__action"
+                    color="light"
                     icon="fa-solid fa-comment"
                     small
                 />
                 <UiButtonIcon
                     @click="onCompanyDestroyed"
                     label="Компания ликвидирована"
-                    class="messenger-panel-company__action dashboard-bg-danger-l"
+                    color="danger-l"
                     icon="fa-solid fa-ban"
                     small
                 />
@@ -114,14 +114,16 @@
                         >- Профиль деятельности не заполнен</span
                     >
                 </li>
-                <li v-if="productRanges" class="messenger-panel-company__option">
-                    <span>- {{ productRanges }}</span>
-                </li>
-                <li v-else class="messenger-panel-company__option">
-                    <span class="messenger-warning messenger-warning--animated"
-                        >- Номенклатура товара не заполнена</span
-                    >
-                </li>
+                <template v-if="company.show_product_ranges">
+                    <li v-if="productRanges" class="messenger-panel-company__option">
+                        <span>- {{ productRanges }}</span>
+                    </li>
+                    <li v-else class="messenger-panel-company__option">
+                        <span class="messenger-warning messenger-warning--animated">
+                            - Номенклатура товара не заполнена
+                        </span>
+                    </li>
+                </template>
             </ul>
         </div>
         <MessengerPanelCompanyTabs :key="company.id" :company="company" />
@@ -250,7 +252,7 @@ async function onCompanyDestroyed() {
     const company = store.state.Messenger.currentPanel;
 
     const taskPayload = await createTaskWithTemplate({
-        message: `Компания ${getCompanyShortName(company)} ликвидирована, отправить в пассив`,
+        title: `Компания ${getCompanyShortName(company)} ликвидирована, отправить в пассив`,
         step: TASK_FORM_STEPS.MESSAGE
     });
 

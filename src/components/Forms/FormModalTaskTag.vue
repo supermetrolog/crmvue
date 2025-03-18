@@ -1,14 +1,21 @@
 <template>
-    <Modal
+    <UiModal
         @close="emit('close')"
         show
-        :title="formData ? 'Редактирование тэга' : 'Создание тэга'"
-        width="600"
+        custom-close
+        :title="isEditMode ? `Редактирование тэга ${formData.id}` : 'Создание тэга'"
+        :width="600"
     >
-        <Form @submit="onSubmit">
-            <Loader v-if="isLoading" />
-            <FormGroup>
-                <Input v-model="form.name" :v="v$.form.name" label="Тэг" class="col-12" required />
+        <Loader v-if="isLoading || isDeleting" />
+        <UiForm>
+            <UiFormGroup>
+                <UiInput
+                    v-model="form.name"
+                    :v="v$.form.name"
+                    label="Тэг"
+                    class="col-12"
+                    required
+                />
                 <ColorPicker
                     v-model="form.color"
                     class="col-12"
@@ -17,55 +24,64 @@
                     circle
                     without-hashtag
                 />
-                <Textarea v-model="form.description" label="Описание" class="col-12" />
-                <div class="mx-auto d-flex gap-2">
-                    <FormSubmit success>Сохранить</FormSubmit>
-                    <Button
-                        v-if="formData"
-                        @click="deleteTag"
-                        :disabled="formData.deleted_at !== null"
-                        danger
-                    >
-                        Удалить
-                    </Button>
-                </div>
-            </FormGroup>
-        </Form>
-    </Modal>
+                <UiTextarea v-model="form.description" label="Описание" class="col-12" />
+            </UiFormGroup>
+        </UiForm>
+        <template #actions="{ close }">
+            <UiButton @click="submit" color="success-light" icon="fa-solid fa-check" bolder small>
+                Сохранить
+            </UiButton>
+            <UiButton @click="close" color="light" icon="fa-solid fa-ban" bolder small>
+                Отмена
+            </UiButton>
+            <UiButton
+                v-if="isEditMode"
+                @click="deleteTag(formData.id)"
+                :disabled="isDeletedEntity"
+                color="light"
+                icon="fa-solid fa-trash"
+                bolder
+                small
+            >
+                Удалить
+            </UiButton>
+        </template>
+    </UiModal>
 </template>
 <script setup>
-import Form from '@/components/common/Forms/Form.vue';
-import FormGroup from '@/components/common/Forms/FormGroup.vue';
-import { reactive, shallowRef } from 'vue';
-import FormSubmit from '@/components/common/Forms/FormSubmit.vue';
-import useVuelidate from '@vuelidate/core';
+import UiForm from '@/components/common/Forms/UiForm.vue';
+import UiFormGroup from '@/components/common/Forms/UiFormGroup.vue';
+import { reactive, ref } from 'vue';
 import api from '@/api/api.js';
 import { useNotify } from '@/utils/use/useNotify.js';
 import { helpers, required } from '@vuelidate/validators';
-import Input from '@/components/common/Forms/Input.vue';
+import UiInput from '@/components/common/Forms/UiInput.vue';
 import Loader from '@/components/common/Loader.vue';
-import Modal from '@/components/common/Modal.vue';
-import Button from '@/components/common/Button.vue';
-import { useConfirm } from '@/composables/useConfirm.js';
-import Textarea from '@/components/common/Forms/Textarea.vue';
+import UiTextarea from '@/components/common/Forms/UiTextarea.vue';
 import ColorPicker from '@/components/common/Forms/ColorPicker.vue';
+import UiModal from '@/components/common/UI/UiModal.vue';
+import UiButton from '@/components/common/UI/UiButton.vue';
+import { useValidation } from '@/composables/useValidation.js';
+import { useFormData } from '@/utils/use/useFormData.js';
+import { useAsync } from '@/composables/useAsync.js';
 
 const emit = defineEmits(['created', 'updated', 'close', 'deleted']);
-const props = defineProps({ formData: { type: Object, default: null } });
+const props = defineProps({ formData: Object });
 
 const notify = useNotify();
-const { confirm } = useConfirm();
 
 const COLORS = ['#c78a1b', '#fe6a49', '#423f3f', '#457dfa'];
 
-const isLoading = shallowRef(false);
-const form = reactive({
-    name: null,
-    description: null,
-    color: '#f65f5f'
-});
+const { isEditMode, form, isDeletedEntity } = useFormData(
+    reactive({
+        name: null,
+        description: null,
+        color: '#f65f5f'
+    }),
+    props.formData
+);
 
-const v$ = useVuelidate(
+const { v$, validate } = useValidation(
     {
         form: {
             name: {
@@ -81,6 +97,7 @@ const v$ = useVuelidate(
 
 const createTag = async () => {
     const created = await api.taskTag.create(form);
+
     if (created) {
         notify.success('Тэг успешно создан.');
         emit('created', created);
@@ -89,41 +106,41 @@ const createTag = async () => {
 
 const updateTag = async () => {
     const updated = await api.taskTag.update(props.formData.id, form);
+
     if (updated) {
         notify.success('Тэг успешно обновлен.');
         emit('updated', updated);
     }
 };
 
-const deleteTag = async () => {
-    const confirmed = await confirm('Вы уверены, что хотите удалить тэг? Действие нельзя отменить');
-    if (!confirmed) return;
-
-    isLoading.value = true;
-
-    const deleted = await api.taskTag.delete(props.formData.id);
-    if (deleted) {
+const { execute: deleteTag, isLoading: isDeleting } = useAsync(api.taskTag.delete, {
+    onFetchResponse() {
         notify.success('Тэг успешно удален.');
         emit('deleted');
         emit('close');
+    },
+    confirmation: true,
+    confirmationContent: {
+        title: 'Удалить тэг',
+        message: 'Вы уверены, что хотите удалить тэг? Действие нельзя отменить',
+        okButton: 'Удалить',
+        okIcon: 'fa-solid fa-trash'
     }
+});
 
-    isLoading.value = false;
-};
+const isLoading = ref(false);
 
-const onSubmit = async () => {
-    v$.value.$validate();
-    if (v$.value.form.$error) return;
+async function submit() {
+    const isValid = await validate();
+    if (!isValid) return;
 
-    isLoading.value = true;
+    try {
+        isLoading.value = true;
 
-    if (props.formData) await updateTag();
-    else await createTag();
-
-    isLoading.value = false;
-};
-
-if (props.formData) {
-    Object.assign(form, { ...props.formData });
+        if (isEditMode.value) await updateTag();
+        else await createTag();
+    } finally {
+        isLoading.value = false;
+    }
 }
 </script>

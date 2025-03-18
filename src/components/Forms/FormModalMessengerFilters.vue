@@ -1,16 +1,24 @@
 <template>
-    <Modal @close="$emit('close')" show width="600" title="Настройка фильтров">
+    <UiModal @close="$emit('close')" custom-close show :width="600" title="Настройка фильтров">
         <slot />
-        <template #footer>
-            <Button @click="$emit('close')" small>Закрыть</Button>
-            <Button @click="clear" :disabled="!hasFilters" danger small>Очистить фильтры</Button>
+        <template #actions="{ close }">
+            <UiButton
+                @click="clear"
+                :disabled="!hasFilters"
+                color="danger"
+                small
+                icon="fa-solid fa-trash"
+            >
+                Очистить фильтры
+            </UiButton>
+            <UiButton @click="close" color="light" small icon="fa-solid fa-ban">Закрыть</UiButton>
         </template>
-    </Modal>
+    </UiModal>
 </template>
 <script setup>
-import Modal from '@/components/common/Modal.vue';
 import { computed } from 'vue';
-import Button from '@/components/common/Button.vue';
+import UiButton from '@/components/common/UI/UiButton.vue';
+import UiModal from '@/components/common/UI/UiModal.vue';
 
 const modelValue = defineModel();
 defineEmits(['close']);
@@ -19,7 +27,7 @@ const hasFilters = computed(() => {
     return Object.values(modelValue.value).filter(Boolean).length;
 });
 
-const clear = () => {
+function clear() {
     modelValue.value = {};
-};
+}
 </script>

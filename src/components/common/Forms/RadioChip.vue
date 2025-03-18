@@ -15,7 +15,7 @@
             class="radio-chip__input"
             :value="value"
         />
-        {{ label }}
+        <slot>{{ label }}</slot>
     </label>
 </template>
 

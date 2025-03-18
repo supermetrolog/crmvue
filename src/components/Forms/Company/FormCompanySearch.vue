@@ -1,8 +1,8 @@
 <template>
-    <Form @submit="onSubmit">
-        <FormGroup>
+    <UiForm @submit="onSubmit">
+        <UiFormGroup>
             <div class="col-12 col-md-6">
-                <Input
+                <UiInput
                     v-model="form.all"
                     @keydown.enter="onSubmit"
                     label="Поиск"
@@ -27,7 +27,7 @@
                     <span>Сбросить фильтры</span>
                 </Button>
             </div>
-        </FormGroup>
+        </UiFormGroup>
         <teleport to="body">
             <Modal
                 @close="extraIsVisible = false"
@@ -35,8 +35,8 @@
                 title="Фильтры"
                 :width="1000"
             >
-                <Form>
-                    <FormGroup>
+                <UiForm>
+                    <UiFormGroup>
                         <ConsultantPicker
                             v-model="form.consultant_id"
                             :options="getConsultantsOptions"
@@ -44,26 +44,26 @@
                             :disabled="form.with_passive_consultant"
                         >
                             <template #after>
-                                <Checkbox
+                                <UiCheckbox
                                     v-model="form.with_passive_consultant"
                                     :true-value="1"
                                     :false-value="null"
                                 >
                                     С неактивными консультантами
-                                </Checkbox>
+                                </UiCheckbox>
                             </template>
                         </ConsultantPicker>
-                    </FormGroup>
-                    <FormDivider />
-                    <FormGroup>
+                    </UiFormGroup>
+                    <UiFormDivider />
+                    <UiFormGroup>
                         <CheckboxOptions
                             v-model="form.categories"
                             class="col-12"
                             label="Категория"
                             :options="CompanyCategories"
                         />
-                    </FormGroup>
-                    <FormGroup>
+                    </UiFormGroup>
+                    <UiFormGroup>
                         <SearchableOptionsPicker
                             v-model="form.activity_group_ids"
                             :options="ActivityGroupList"
@@ -102,13 +102,21 @@
                             :disabled="form.without_product_ranges"
                         >
                             <template #after>
-                                <Checkbox
-                                    v-model="form.without_product_ranges"
-                                    :true-value="1"
-                                    :false-value="null"
-                                >
-                                    Без номенклатуры
-                                </Checkbox>
+                                <div class="d-flex gap-2">
+                                    <UiCheckbox
+                                        v-model="form.without_product_ranges"
+                                        :true-value="1"
+                                        :false-value="null"
+                                        label="Без номенклатуры"
+                                    />
+                                    <UiCheckbox
+                                        v-model="form.show_product_ranges"
+                                        :true-value="0"
+                                        :false-value="null"
+                                    >
+                                        С отключенной номенклатурой
+                                    </UiCheckbox>
+                                </div>
                             </template>
                             <template #chip="{ option, removeByIndex, index }">
                                 <Chip
@@ -118,9 +126,9 @@
                                 />
                             </template>
                         </MultiSelect>
-                    </FormGroup>
-                    <FormDivider />
-                    <FormGroup>
+                    </UiFormGroup>
+                    <UiFormDivider />
+                    <UiFormGroup>
                         <SwitchSlider
                             v-model="form.status"
                             class="col-5"
@@ -138,17 +146,17 @@
                             type="date"
                             :validators="formDateValidators"
                         />
-                    </FormGroup>
-                </Form>
+                    </UiFormGroup>
+                </UiForm>
             </Modal>
         </teleport>
-    </Form>
+    </UiForm>
 </template>
 
 <script setup>
-import Form from '@/components/common/Forms/Form.vue';
-import FormGroup from '@/components/common/Forms/FormGroup.vue';
-import Input from '@/components/common/Forms/Input.vue';
+import UiForm from '@/components/common/Forms/UiForm.vue';
+import UiFormGroup from '@/components/common/Forms/UiFormGroup.vue';
+import UiInput from '@/components/common/Forms/UiInput.vue';
 import MultiSelect from '@/components/common/Forms/MultiSelect.vue';
 import { ActivityGroupList, ActivityProfileList, CompanyCategories } from '@/const/const.js';
 import Button from '@/components/common/Button.vue';
@@ -166,9 +174,9 @@ import { useConsultantsOptions } from '@/composables/options/useConsultantsOptio
 import SearchableOptionsPicker from '@/components/common/Forms/SearchableOptionsPicker.vue';
 import { useProductRangesOptions } from '@/composables/options/useProductRangesOptions.js';
 import Chip from '@/components/common/Chip.vue';
-import Checkbox from '@/components/common/Forms/Checkbox.vue';
-import plural from 'plural-ru';
-import FormDivider from '@/components/common/Forms/FormDivider.vue';
+import UiCheckbox from '@/components/common/Forms/UiCheckbox.vue';
+import { plural } from '@/utils/plural.js';
+import UiFormDivider from '@/components/common/Forms/UiFormDivider.vue';
 import SwitchSlider from '@/components/common/Forms/SwitchSlider.vue';
 
 const route = useRoute();
@@ -187,6 +195,7 @@ const formTemplate = {
     status: null,
     product_ranges: [],
     without_product_ranges: null,
+    show_product_ranges: null,
 
     activity_profile_ids: [],
     activity_group_ids: []

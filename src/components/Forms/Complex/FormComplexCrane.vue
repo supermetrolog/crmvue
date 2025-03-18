@@ -7,11 +7,11 @@
         show
     >
         <Loader v-if="isLoading" />
-        <Form @submit="onSubmit" class="equipment-form">
+        <UiForm @submit="onSubmit" class="equipment-form">
             <Tabs :options="{ useUrlFragment: false, defaultTabHash: 'main' }">
                 <Tab id="craneCharacteristics" name="Характеристики">
                     <div class="row">
-                        <Input
+                        <UiInput
                             v-model="form.crane_capacity"
                             :v="v$.form.crane_capacity"
                             label="Грузоподъемность"
@@ -21,7 +21,7 @@
                             unit="т"
                             required
                         />
-                        <Input
+                        <UiInput
                             v-model="form.crane_span"
                             :v="v$.form.crane_span"
                             class="col-3"
@@ -29,7 +29,7 @@
                             type="number"
                             unit="м"
                         />
-                        <Input
+                        <UiInput
                             v-model="form.crane_hooks"
                             :v="v$.form.crane_hooks"
                             class="col-3"
@@ -37,7 +37,7 @@
                             type="number"
                             unit="шт"
                         />
-                        <Input
+                        <UiInput
                             v-model="form.crane_hook_height"
                             :v="v$.form.crane_hook_height"
                             class="col-3"
@@ -117,7 +117,7 @@
                     </div>
                 </Tab>
                 <Tab id="cranePhoto" name="Фотографии">
-                    <FormGroup class="mb-1">
+                    <UiFormGroup class="mb-1">
                         <FileInput
                             v-model:native="form.photosList"
                             v-model:data="form.photos"
@@ -126,14 +126,14 @@
                         >
                             Выбрать файлы
                         </FileInput>
-                    </FormGroup>
+                    </UiFormGroup>
                 </Tab>
             </Tabs>
             <div class="row justify-content-center">
                 <FormSubmit success class="col-3">Сохранить</FormSubmit>
                 <Button v-if="crane" class="col-3 ml-2" danger>Удалить</Button>
             </div>
-        </Form>
+        </UiForm>
     </Modal>
 </template>
 
@@ -142,12 +142,12 @@ import Loader from '@/components/common/Loader.vue';
 import Modal from '@/components/common/Modal.vue';
 import Button from '@/components/common/Button.vue';
 import { entityOptions } from '@/const/options/options';
-import Input from '@/components/common/Forms/Input.vue';
+import UiInput from '@/components/common/Forms/UiInput.vue';
 import FileInput from '@/components/common/Forms/FileInput.vue';
 import MultiSelect from '@/components/common/Forms/MultiSelect.vue';
 import FormSubmit from '@/components/common/Forms/FormSubmit.vue';
-import Form from '@/components/common/Forms/Form.vue';
-import FormGroup from '@/components/common/Forms/FormGroup.vue';
+import UiForm from '@/components/common/Forms/UiForm.vue';
+import UiFormGroup from '@/components/common/Forms/UiFormGroup.vue';
 import useVuelidate from '@vuelidate/core';
 import { onBeforeMount, reactive, shallowRef } from 'vue';
 import { validationRulesForCrane } from '@/validators/rules/crane.js';

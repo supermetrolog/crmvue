@@ -5,8 +5,13 @@
             class="task-card__comments-list"
             :class="{ 'task-card__comments-list--shorted': files.length }"
         >
+            <Loader
+                v-if="isCreating || isDeleting"
+                small
+                class="center"
+                :label="isDeleting ? 'Удаление комментария' : 'Сохранение комментария'"
+            />
             <div class="task-card__list position-relative">
-                <Loader v-if="isCreating" small class="center" />
                 <TaskCardComment
                     v-for="comment in comments"
                     :key="comment.id"
@@ -40,34 +45,32 @@
             </div>
             <FileInput ref="fileInputElement" v-model:native="files" hidden custom />
             <div class="task-card-form">
-                <Button
+                <UiButton
                     @click="openFileDialog"
                     class="task-card-form__button"
                     :disabled="isCreating"
-                    warning
-                    icon
+                    color="warning"
                 >
                     <i class="fa-solid fa-paperclip"></i>
-                </Button>
-                <Textarea
+                </UiButton>
+                <UiTextarea
                     ref="textareaEl"
                     v-model="newComment"
                     :disabled="isCreating"
-                    placeholder="Напишите сообщение..."
-                    class="task-card-form__editor"
                     auto-height
                     :max-height="110"
                     :min-height="50"
+                    placeholder="Напишите сообщение..."
+                    class="task-card-form__editor"
                 />
-                <Button
+                <UiButton
                     @click="addComment"
-                    class="task-card-form__button"
                     :disabled="(!newComment?.length && !files.length) || isCreating"
-                    success
-                    icon
+                    color="success"
+                    class="task-card-form__button"
                 >
                     <i class="fa-solid fa-paper-plane"></i>
-                </Button>
+                </UiButton>
             </div>
         </div>
         <UiModal
@@ -90,10 +93,9 @@
 import api from '@/api/api.js';
 import TaskCardComment from '@/components/TaskCard/TaskCardComment.vue';
 import { ref, shallowRef, useTemplateRef, watch } from 'vue';
-import Textarea from '@/components/common/Forms/Textarea.vue';
+import UiTextarea from '@/components/common/Forms/UiTextarea.vue';
 import { useNotify } from '@/utils/use/useNotify.js';
 import Loader from '@/components/common/Loader.vue';
-import { useConfirm } from '@/composables/useConfirm.js';
 import Spinner from '@/components/common/Spinner.vue';
 import InfiniteLoading from 'v3-infinite-loading';
 import { isNullish } from '@/utils/helpers/common/isNullish.js';
@@ -104,8 +106,9 @@ import FormTaskComment from '@/components/Forms/FormTaskComment.vue';
 import UiModal from '@/components/common/UI/UiModal.vue';
 import { usePreviewer } from '@/composables/usePreviewer.js';
 import { isImageMedia } from '@/utils/helpers/models/media.js';
-import Button from '@/components/common/Button.vue';
 import { usePasteFiles } from '@/composables/usePasteFiles.js';
+import { useAsync } from '@/composables/useAsync.js';
+import UiButton from '@/components/common/UI/UiButton.vue';
 
 const emit = defineEmits(['created', 'deleted']);
 const props = defineProps({
@@ -136,17 +139,22 @@ const notify = useNotify();
 const infiniteIsActive = ref(true);
 
 async function loadComments($state) {
-    const response = await api.task.loadComments(
-        props.task.id,
-        comments.value[comments.value.length - 1].id
-    );
+    try {
+        const response = await api.task.loadComments(
+            props.task.id,
+            comments.value[comments.value.length - 1].id
+        );
 
-    if (response) {
-        if (response.length) comments.value.push(...response);
-        if (response.length < 10) $state.complete();
-        else $state.loaded();
+        if (response) {
+            if (response.length) comments.value.push(...response);
+            if (response.length < 10) $state.complete();
+            else $state.loaded();
 
+            infiniteIsActive.value = false;
+        }
+    } catch (error) {
         infiniteIsActive.value = false;
+        $state.complete();
     }
 }
 
@@ -174,19 +182,19 @@ function closeEditForm() {
 
 // DELETE
 
-const { confirm } = useConfirm();
-
-async function deleteComment(commentId) {
-    const confirmed = await confirm('Вы уверены, что хотите безвозвратно удалить комментарий?');
-    if (!confirmed) return;
-
-    const deleted = await api.taskComment.delete(commentId);
-
-    if (deleted) {
-        spliceById(comments.value, commentId);
-        emit('deleted', commentId);
+const { execute: deleteComment, isLoading: isDeleting } = useAsync(api.taskComment.delete, {
+    onFetchResponse({ args }) {
+        spliceById(comments.value, args[0]);
+        emit('deleted', args[0]);
+    },
+    confirmation: true,
+    confirmationContent: {
+        title: 'Удалить комментарий',
+        message: 'Вы уверены, что хотите безвозвратно удалить комментарий?',
+        okButton: 'Удалить',
+        okIcon: 'fa-solid fa-trash'
     }
-}
+});
 
 // CREATE
 
@@ -198,20 +206,22 @@ async function addComment() {
 
     isCreating.value = true;
 
-    const response = await api.task.createComment(props.task.id, {
-        message: newComment.value,
-        files: files.value
-    });
+    try {
+        const response = await api.task.createComment(props.task.id, {
+            message: newComment.value,
+            files: files.value
+        });
 
-    if (response) {
-        newComment.value = '';
-        files.value = [];
+        if (response) {
+            newComment.value = '';
+            files.value = [];
 
-        notify.success('Комментарий успешно добавлен.');
-        emit('created', response);
+            notify.success('Комментарий успешно добавлен.');
+            emit('created', response);
+        }
+    } finally {
+        isCreating.value = false;
     }
-
-    isCreating.value = false;
 }
 
 // files

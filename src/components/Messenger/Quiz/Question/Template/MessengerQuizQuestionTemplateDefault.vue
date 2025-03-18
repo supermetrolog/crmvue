@@ -1,5 +1,8 @@
 <template>
-    <div class="messenger-quiz-question">
+    <div
+        class="messenger-quiz-question"
+        :class="{ active: hasMainAnswer, passive: hasNullMainAnswer }"
+    >
         <div class="messenger-quiz-question__header">
             <p class="messenger-quiz-question__title" :class="{ disabled: isDisabled }">
                 <span v-if="number">{{ number }}. </span>
@@ -53,6 +56,7 @@
                         :value="answer.id"
                         :text="answer.value"
                         class="mr-1"
+                        show-checkbox
                         :disabled="isDisabled"
                     />
                     <RadioChip
@@ -78,7 +82,7 @@
             >
                 <template v-if="question.answers?.['text-answer'] && !isDisabled">
                     <div v-for="answer in texts" :key="answer.id" class="position-relative">
-                        <Textarea
+                        <UiTextarea
                             v-model="form.description[answer.id]"
                             :placeholder="answer.value"
                             class="messenger-quiz-question__field"
@@ -100,6 +104,7 @@
                 :key="answer.id"
                 v-model="form.checkbox"
                 handled-icon
+                show-checkbox
                 :value="answer.id"
                 :text="answer.value"
                 :disabled="isDisabled"
@@ -132,7 +137,7 @@
 </template>
 <script setup>
 import CheckboxChip from '@/components/common/Forms/CheckboxChip.vue';
-import Textarea from '@/components/common/Forms/Textarea.vue';
+import UiTextarea from '@/components/common/Forms/UiTextarea.vue';
 import { computed, reactive, ref, watch } from 'vue';
 import RadioChip from '@/components/common/Forms/RadioChip.vue';
 import { isNullish } from '@/utils/helpers/common/isNullish.js';
@@ -453,6 +458,21 @@ function getMainAnswer() {
     return form.main;
 }
 
+function setAnswer(value) {
+    if (value === null) {
+        form.main = undefined;
+        hasNullMainAnswer.value = true;
+    } else {
+        form.main = value;
+        hasNullMainAnswer.value = false;
+    }
+}
+
+function resetAnswer() {
+    hasNullMainAnswer.value = false;
+    form.main = undefined;
+}
+
 defineExpose({
     validate,
     getForm,
@@ -463,6 +483,8 @@ defineExpose({
     getFilesAnswers,
     getTabAnswers,
     getCheckboxAnswers,
-    getTextAnswers
+    getTextAnswers,
+    setAnswer,
+    resetAnswer
 });
 </script>

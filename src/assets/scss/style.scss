@@ -801,18 +801,33 @@ tr.TableRequestRow {
 .confirm {
     z-index: 4100;
 
-    &__text {
-        text-align: center;
-        margin-bottom: 20px;
-        font-weight: 500;
+    &__icon {
+        flex-shrink: 0;
+        font-size: 18px;
+        background-color: rgba(249, 49, 84, 0.2);
+        height: 40px;
+        width: 40px;
+        border-radius: 50%;
+        @include mixins.flex-box($a: center, $j: center);
     }
 
-    &__actions {
-        @include mixins.flex-box($gap: 10px, $j: center);
+    &__header {
+        @include mixins.flex-box($gap: 5px);
+    }
 
-        .messenger-button {
-            flex-grow: 1;
-        }
+    &__content {
+        @include mixins.flex-box($gap: 10px);
+    }
+
+    &__title {
+        font-size: 18px;
+        font-weight: 600;
+        margin-bottom: 5px;
+    }
+
+    &__message {
+        font-weight: 500;
+        color: variables.$color_grey;
     }
 }
 

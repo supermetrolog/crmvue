@@ -5,10 +5,10 @@
                 {{ filterCount }}
             </span>
         </template>
-        <Form @submit="onSubmit">
+        <UiForm @submit="onSubmit">
             <div class="row mb-2">
                 <div class="col-12 col-md-8">
-                    <Input
+                    <UiInput
                         v-model="querySearch"
                         @keydown.enter="onSubmit"
                         label="Поиск"
@@ -31,8 +31,8 @@
                     </div>
                 </div>
             </div>
-            <FormDivider />
-            <FormGroup>
+            <UiFormDivider />
+            <UiFormGroup>
                 <ConsultantPicker
                     v-model="form.agent_id"
                     :options="getConsultantsOptions"
@@ -45,7 +45,7 @@
                     :options="DealTypeList"
                     placeholder="Выберите тип.."
                 />
-                <Input
+                <UiInput
                     v-model="form.rangeMinElectricity"
                     placeholder="не менее"
                     maska="##########"
@@ -86,9 +86,9 @@
                     reactive
                     :validators="formCeilingHeightValidators"
                 />
-            </FormGroup>
-            <FormDivider />
-            <FormGroup>
+            </UiFormGroup>
+            <UiFormDivider />
+            <UiFormGroup>
                 <MultiSelect
                     v-model="form.fakeRegion"
                     @change="changeRegion"
@@ -99,7 +99,7 @@
                     searchable
                     :options="getRegionsOptions"
                 />
-                <Input
+                <UiInput
                     v-if="hasApproximateDistance"
                     v-model="form.approximateDistanceFromMKAD"
                     maska="###"
@@ -109,7 +109,7 @@
                     unit="км"
                     type="number"
                 />
-                <Input
+                <UiInput
                     v-else
                     v-model="form.rangeMaxDistanceFromMKAD"
                     :v="v$.form.rangeMaxDistanceFromMKAD"
@@ -163,9 +163,9 @@
                         />
                     </div>
                 </AnimationTransition>
-            </FormGroup>
-            <FormDivider />
-            <FormGroup>
+            </UiFormGroup>
+            <UiFormDivider />
+            <UiFormGroup>
                 <CheckboxOptions
                     v-model="form.class"
                     class="col-md-3 col-12"
@@ -184,8 +184,8 @@
                     label="Тип пола"
                     :options="realFloorTypeOptions"
                 />
-            </FormGroup>
-            <FormDivider />
+            </UiFormGroup>
+            <UiFormDivider />
             <p class="form__block">Коммуникации</p>
             <div class="row">
                 <SwitchSlider
@@ -255,9 +255,9 @@
                     :false-value="2"
                 />
             </div>
-            <FormDivider />
+            <UiFormDivider />
             <p class="form__block">Тип объекта</p>
-            <FormGroup>
+            <UiFormGroup>
                 <div class="col-12">
                     <div class="row mt-2">
                         <ObjectTypePicker
@@ -286,10 +286,10 @@
                         />
                     </div>
                 </div>
-            </FormGroup>
-            <FormDivider />
+            </UiFormGroup>
+            <UiFormDivider />
             <p class="form__block">Реклама</p>
-            <FormGroup>
+            <UiFormGroup>
                 <SwitchSlider
                     v-model="form.ad_avito"
                     class="col-12 col-lg-6 col-xl-4"
@@ -315,14 +315,14 @@
                     class="col-12 col-lg-6 col-xl-4"
                     label="Бесплатные"
                 />
-            </FormGroup>
-        </Form>
+            </UiFormGroup>
+        </UiForm>
     </Modal>
 </template>
 
 <script setup>
-import Form from '@/components/common/Forms/Form.vue';
-import Input from '@/components/common/Forms/Input.vue';
+import UiForm from '@/components/common/Forms/UiForm.vue';
+import UiInput from '@/components/common/Forms/UiInput.vue';
 import MultiSelect from '@/components/common/Forms/MultiSelect.vue';
 import Modal from '@/components/common/Modal.vue';
 import Button from '@/components/common/Button.vue';
@@ -358,8 +358,8 @@ import { useRegionsOptions } from '@/composables/options/useRegionsOptions.js';
 import ConsultantPicker from '@/components/common/Forms/ConsultantPicker/ConsultantPicker.vue';
 import { useConsultantsOptions } from '@/composables/options/useConsultantsOptions.js';
 import { objectPurposesWithSectionsOptions } from '@/const/options/object.options.js';
-import FormDivider from '@/components/common/Forms/FormDivider.vue';
-import FormGroup from '@/components/common/Forms/FormGroup.vue';
+import UiFormDivider from '@/components/common/Forms/UiFormDivider.vue';
+import UiFormGroup from '@/components/common/Forms/UiFormGroup.vue';
 import RadioOptions from '@/components/common/Forms/RadioOptions.vue';
 import Switch from '@/components/common/Forms/Switch.vue';
 

@@ -3,20 +3,21 @@
 
 .messenger-quiz {
     font-size: 14px;
-    height: 100vh;
     overflow-y: auto;
+    background-color: #F3F3F3;
     @include mixins.flex-box($d: column);
 
     &__wrapper {
         padding: 10px;
         position: relative;
-        background-color: #F3F3F3;
         border-bottom: 1px solid rgba(0, 0, 0, .1);
+
+        overflow-y: auto;
+        max-height: 100%;
     }
 
     &__header {
         padding: 5px 10px;
-        background-color: #566B6E;
         color: #fff;
         @include mixins.flex-box($a: center, $gap: 5px);
     }
@@ -25,13 +26,9 @@
         position: relative;
     }
 
-    &__question {
-        border-bottom: 1px solid rgba(0, 0, 0, .1);
-    }
-
     &__footer {
         @include mixins.flex-box($gap: 5px);
-        padding: 15px 10px;
+        margin-top: 10px;
     }
 
     &__action {
@@ -106,8 +103,9 @@
     }
 
     &__surveys {
+        background-color: #F3F3F3;
+        border-bottom: 1px solid rgba(0, 0, 0, .1);
         @include mixins.flex-box($d: column, $gap: 5px);
-        margin: 0 10px;
     }
 
     &__disabled {
@@ -189,7 +187,7 @@
                 background-color: transparent;
             }
 
-            border-color: #7e7e7e;
+            border-color: #a8a8a8;
         }
 
         .radio-chip {
@@ -198,7 +196,7 @@
             }
 
             border-radius: 0;
-            border-color: #7e7e7e;
+            border-color: #a8a8a8;
 
             &:first-of-type {
                 border-top-left-radius: 10px;
@@ -220,18 +218,13 @@
     &__interests {
         position: relative;
         z-index: 2;
-        margin-top: -3px;
-        padding: 5px 10px;
-        border-left: 1px solid #7e7e7e;
-        border-right: 1px solid #7e7e7e;
-        border-bottom: 1px solid #7e7e7e;
-        background-color: #fff;
+        margin-top: 4px;
         @include mixins.flex-box($gap: 5px, $wrap: true);
 
         .checkbox-chip__label {
             min-height: 25px;
             padding: 2px 10px;
-            border-color: #7e7e7e;
+            border-color: #a8a8a8;
         }
     }
 
@@ -245,7 +238,7 @@
             outline: none;
             min-height: 50px;
             max-height: 146px;
-            border-color: #7e7e7e;
+            border-color: #a8a8a8;
         }
 
         &.disabled {
@@ -312,7 +305,7 @@
     }
 
     &__offers {
-        max-height: 500px;
+        max-height: 365px;
     }
 
     &__requests {
@@ -453,7 +446,6 @@
 }
 
 .messenger-quiz-header {
-    padding: 10px;
     border-bottom: 1px solid rgba(0, 0, 0, .1);
     min-height: 100px;
     position: relative;
@@ -485,6 +477,7 @@
 
     &__grid {
         @include mixins.flex-box($gap: 5px, $wrap: true);
+        padding-bottom: 5px;
     }
 
     &__contact {
@@ -501,7 +494,7 @@
 }
 
 .messenger-quiz-contact {
-    background-color: variables.$bg-gray-l;
+    background-color: variables.$color_grey_light;
     padding: 10px;
     border-radius: 5px;
     flex-shrink: 0;
@@ -516,8 +509,7 @@
     }
 
     &:hover, &.active {
-        background-color: variables.$bg-success;
-        color: #fff;
+        background-color: variables.$bg-success-m;
 
         .messenger-quiz-contact {
             &__error {
@@ -528,7 +520,7 @@
                 border-color: rgba(255, 255, 255, .5);
 
                 &.danger {
-                    background-color: rgba(254, 106, 73, 0.6);
+                    background-color: variables.$bg-danger-m;
                 }
             }
         }
@@ -669,7 +661,7 @@
 }
 
 .messenger-quiz-inline-element {
-    background-color: rgba(204, 165, 29, 0.8);
+    background-color: variables.$color_grey_light;
     padding: 5px 10px;
     @include mixins.flex-box($a: center, $gap: 5px);
 
@@ -678,8 +670,9 @@
     }
 
     &__button {
-        color: #fff;
-        background-color: #11698d;
+        color: #000;
+        background-color: #fff;
+        border: 1px solid rgba(0, 0, 0, .1);
 
         &:hover {
             background-color: variables.$bg-success!important;
@@ -785,9 +778,11 @@
     }
 }
 
-.messenger-quiz-template {
-    counter-reset: quiz-template 0;
+.messenger-quiz:has(.messenger-quiz__disabled) .messenger-quiz-template {
+    min-height: 200px;
+}
 
+.messenger-quiz-template {
     &.disabled {
         pointer-events: none;
     }
@@ -834,7 +829,16 @@
     }
 
     &__preview {
+        min-height: 115px;
         flex-grow: 1;
+
+        &.passive {
+            background-color: rgba($color: variables.$color_warning, $alpha: .6);
+        }
+
+        &.active {
+            background-color: rgba($color: variables.$bg-success, $alpha: .6);
+        }
     }
 
     &__aside {
@@ -842,6 +846,50 @@
         text-align: center;
         padding-right: 5px;
         @include mixins.flex-box($d: column, $gap: 5px);
+    }
+
+    &__panel {
+        width: 400px;
+        border-left: 1px solid rgba(0, 0, 0, .1);
+        border-right: 1px solid rgba(0, 0, 0, .1);
+        border-bottom: 1px solid rgba(0, 0, 0, .1);
+    }
+
+    &__questions {
+        flex-grow: 1;
+        padding-left: 10px;
+        @include mixins.flex-box($d: column, $gap: 8px);
+    }
+
+    &__tabs {
+        @include mixins.flex-box($gap: 5px);
+    }
+
+    &__offers {
+        .tabs-component-panels {
+            padding: 10px 0 0 0!important;
+        }
+    }
+
+    &__tab {
+        display: block;
+        font-size: 14px;
+        padding: 5px 10px;
+        border-radius: 5px;
+        background-color: variables.$bg-gray-l;
+        color: inherit;
+        font-weight: 500;
+
+        @include mixins.transition(opacity, background-color, color);
+
+        &:hover {
+            background-color: variables.$bg-success-l;
+        }
+
+        &.is-active {
+            background-color: variables.$bg-success;
+            color: #fff;
+        }
     }
 }
 
@@ -853,6 +901,31 @@
     &__preview {
         flex-grow: 1;
         height: 100%;
+        @include mixins.transition(background-color, color);
+
+        &.skip {
+            background-color: rgba($color: variables.$color_warning, $alpha: .6);
+
+            .messenger-quiz-form-request-picker-element {
+                &__description, &__regions, &__category {
+                    color: #000
+                }
+            }
+        }
+
+        &.passive {
+            opacity: .5;
+        }
+
+        &.active {
+            background-color: rgba($color: variables.$bg-success, $alpha: .6);
+
+            .messenger-quiz-form-request-picker-element {
+                &__description, &__regions, &__category {
+                    color: #000
+                }
+            }
+        }
     }
 
     &__aside {
@@ -964,6 +1037,8 @@
     }
 }
 
+.messenger-quiz-question-template-offers {}
+
 .messenger-quiz-question-template-offer {
     font-size: 13px;
     background-color: #fff;
@@ -1042,34 +1117,6 @@
         box-shadow: 0 0 1px 1px rgba(0, 0, 0, .1);
     }
 
-    &__tabs {
-        @include mixins.flex-box($gap: 5px);
-    }
-
-    .tabs-component-panels {
-        padding: 5px 0!important;
-    }
-
-    &__tab {
-        font-size: 14px;
-        padding: 5px 10px;
-        border-radius: 5px;
-        background-color: variables.$bg-gray-l;
-        color: inherit;
-        font-weight: 500;
-
-        @include mixins.transition(opacity, background-color, color);
-
-        &:hover {
-            background-color: variables.$bg-success-l;
-        }
-
-        &.is-active {
-            background-color: variables.$bg-success;
-            color: #fff;
-        }
-    }
-
     &__content {
         padding-right: 40px;
     }
@@ -1144,5 +1191,21 @@
         top: 4px;
         right: 4px;
         @include mixins.flex-box($gap: 2px);
+    }
+}
+
+.messenger-quiz-question-call, .messenger-quiz-question-card {
+    background-color: #f8f8f8;
+    border: 1px solid rgba(0, 0, 0, .1);
+    border-left: 6px solid variables.$color_danger;
+    padding: 10px;
+    border-radius: 4px;
+
+    &.active {
+        border-left-color: variables.$cl-success;
+    }
+
+    &.passive {
+        border-left-color: variables.$color_warning;
     }
 }

@@ -7,11 +7,11 @@
         has-tabs
     >
         <Loader v-if="isLoading" />
-        <Form @submit="onSubmit" class="equipment-form">
+        <UiForm @submit="onSubmit" class="equipment-form">
             <Tabs :options="{ useUrlFragment: false, defaultTabHash: 'main' }">
                 <Tab id="elevatorCharacteristics" name="Характеpистики">
                     <div class="row">
-                        <Input
+                        <UiInput
                             v-model="form.elevator_capacity"
                             :v="v$.form.elevator_capacity"
                             label="Грузоподъемность"
@@ -20,7 +20,7 @@
                             unit="т"
                             required
                         />
-                        <Input
+                        <UiInput
                             v-model="form.elevator_volume"
                             :v="v$.form.elevator_volume"
                             class="col-3"
@@ -94,7 +94,7 @@
                     </div>
                 </Tab>
                 <Tab id="elevatorPhoto" name="Фотографии">
-                    <FormGroup class="mb-1">
+                    <UiFormGroup class="mb-1">
                         <FileInput
                             v-model:native="form.photosList"
                             v-model:data="form.photos"
@@ -103,14 +103,14 @@
                         >
                             Выбрать файлы
                         </FileInput>
-                    </FormGroup>
+                    </UiFormGroup>
                 </Tab>
             </Tabs>
             <div class="row justify-content-center">
                 <FormSubmit success class="col-3">Сохранить</FormSubmit>
                 <Button v-if="elevator" class="col-3 ml-2" danger>Удалить</Button>
             </div>
-        </Form>
+        </UiForm>
     </Modal>
 </template>
 
@@ -120,16 +120,16 @@ import { onBeforeMount, reactive, shallowRef } from 'vue';
 import { validationRulesForElevator } from '@/validators/rules/elevator.js';
 import FormSubmit from '@/components/common/Forms/FormSubmit.vue';
 import FileInput from '@/components/common/Forms/FileInput.vue';
-import FormGroup from '@/components/common/Forms/FormGroup.vue';
+import UiFormGroup from '@/components/common/Forms/UiFormGroup.vue';
 import MultiSelect from '@/components/common/Forms/MultiSelect.vue';
-import Input from '@/components/common/Forms/Input.vue';
+import UiInput from '@/components/common/Forms/UiInput.vue';
 import RadioOptions from '@/components/common/Forms/RadioOptions.vue';
 import { entityOptions } from '@/const/options/options.js';
 import DoubleInput from '@/components/common/Forms/DoubleInput.vue';
 import Loader from '@/components/common/Loader.vue';
 import Modal from '@/components/common/Modal.vue';
 import Button from '@/components/common/Button.vue';
-import Form from '@/components/common/Forms/Form.vue';
+import UiForm from '@/components/common/Forms/UiForm.vue';
 import { cloneObject } from '@/utils/helpers/object/cloneObject.js';
 import VueEditor from '@/components/common/Forms/VueEditor.vue';
 

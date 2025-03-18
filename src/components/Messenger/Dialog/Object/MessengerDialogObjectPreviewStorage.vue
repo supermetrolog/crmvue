@@ -119,12 +119,12 @@ import { computed } from 'vue';
 import MessengerDialogObjectPreviewCommission from '@/components/Messenger/Dialog/Object/MessengerDialogObjectPreviewCommission.vue';
 import { dealOptions } from '@/const/options/deal.options.js';
 import { dealProperties } from '@/const/properties/deal.properties.js';
-import plural from 'plural-ru';
 import MessengerDialogObjectPreviewStorageServices from '@/components/Messenger/Dialog/Object/MessengerDialogObjectPreviewStorageServices.vue';
 import MessengerDialogPreviewTippy from '@/components/Messenger/Dialog/Preview/MessengerDialogPreviewTippy.vue';
 import WithUnitType from '@/components/common/WithUnitType.vue';
 import { unitTypes } from '@/const/unitTypes.js';
 import { toNumberOrRangeFormat } from '@/utils/formatters/number.js';
+import { usePlural } from '@/composables/usePlural.js';
 
 const props = defineProps({
     offerMix: {
@@ -152,7 +152,5 @@ const servicesCount = computed(() => {
     return count;
 });
 
-const pluralServicesCount = computed(() =>
-    plural(servicesCount.value, '%d услуга', '%d услуги', '%d услуг')
-);
+const pluralServicesCount = usePlural(servicesCount.value, '%d услуга', '%d услуги', '%d услуг');
 </script>

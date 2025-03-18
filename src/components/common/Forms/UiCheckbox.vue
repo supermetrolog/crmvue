@@ -11,7 +11,9 @@
                 :false-value="numeric ? 0 : falseValue"
                 :disabled="disabled"
             />
-            <slot />
+            <slot>
+                {{ label }}
+            </slot>
         </label>
         <ValidationMessage v-if="hasValidationError" :message="v.$errors[0].$message" />
     </div>
@@ -25,26 +27,9 @@ import ValidationMessage from '@/components/common/Forms/VaildationMessage.vue';
 const emit = defineEmits(['change']);
 const modelValue = defineModel({ type: [Boolean, Number], default: false });
 const props = defineProps({
-    required: {
-        type: Boolean,
-        default: false
-    },
-    v: {
-        type: Object,
-        default: null
-    },
-    label: {
-        type: String,
-        default: null
-    },
-    name: {
-        type: String,
-        default: null
-    },
-    disabled: {
-        type: Boolean,
-        default: false
-    },
+    v: Object,
+    label: String,
+    name: String,
     trueValue: {
         type: [Number, String, Object, Boolean],
         default: true
@@ -53,14 +38,10 @@ const props = defineProps({
         type: [Number, String, Object, Boolean],
         default: false
     },
-    checked: {
-        type: Boolean,
-        default: false
-    },
-    numeric: {
-        type: Boolean,
-        default: false
-    }
+    checked: Boolean,
+    numeric: Boolean,
+    disabled: Boolean,
+    required: Boolean
 });
 
 const { hasValidationError, validate, validationClass } = useFormControlValidation(

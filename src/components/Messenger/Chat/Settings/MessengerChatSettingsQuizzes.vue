@@ -14,7 +14,7 @@
             <div class="modal__body">
                 <div class="messenger-chat-settings-window__content">
                     <div class="messenger-chat-settings-window__settings">
-                        <Input
+                        <UiInput
                             v-model="debouncedQuerySearch"
                             placeholder="ФИО брокера или контакта"
                         />
@@ -59,7 +59,7 @@ import EmptyData from '@/components/common/EmptyData.vue';
 import MessengerQuizElement from '@/components/Messenger/Quiz/MessengerQuizElement.vue';
 import Modal from '@/components/common/Modal.vue';
 import SurveyCard from '@/components/SurveyCard/SurveyCard.vue';
-import Input from '@/components/common/Forms/Input.vue';
+import UiInput from '@/components/common/Forms/UiInput.vue';
 import MessengerQuizElementSkeleton from '@/components/Messenger/Quiz/MessengerQuizElementSkeleton.vue';
 import { useDelayedLoader } from '@/composables/useDelayedLoader.js';
 import { useInfiniteLoading } from '@/composables/useInfiniteLoading.js';

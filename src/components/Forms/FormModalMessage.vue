@@ -1,7 +1,9 @@
 <template>
-    <Modal
+    {{ isVisible }}
+    <UiModal
+        v-model:visible="isVisible"
         @close="close"
-        :show="isVisible"
+        custom-close
         class="modal-form-message"
         title="Редактирование сообщения"
         width="800"
@@ -32,40 +34,37 @@
                 />
                 <MessengerChatFormCategories v-model="currentTag" />
             </div>
-            <Form @submit.prevent class="messenger-chat-form__field" method="post">
-                <Button @click="attachFile" class="messenger-chat-form__button" warning icon>
+            <UiForm @submit.prevent class="messenger-chat-form__field" method="post">
+                <UiButton @click="attachFile" class="messenger-chat-form__button" color="warning">
                     <i class="fa-solid fa-paperclip"></i>
-                </Button>
-                <Textarea
+                </UiButton>
+                <UiTextarea
                     v-model.trim="form.message"
                     @keydown.enter.prevent="keyHandler"
                     placeholder="Напишите сообщение..."
                     class="messenger-chat-form__editor"
                     auto-height
                 />
-                <Button
+                <UiButton
                     @click="sendMessage"
                     class="messenger-chat-form__button"
                     :disabled="!canBeSend"
-                    success
-                    icon
+                    color="success"
                 >
                     <i class="fa-solid fa-floppy-disk"></i>
-                </Button>
-                <Button @click="close" class="messenger-chat-form__button" danger icon>
+                </UiButton>
+                <UiButton @click="close" class="messenger-chat-form__button" color="danger">
                     <i class="fa-solid fa-xmark"></i>
-                </Button>
-            </Form>
+                </UiButton>
+            </UiForm>
         </div>
-    </Modal>
+    </UiModal>
 </template>
 <script setup>
-import Modal from '@/components/common/Modal.vue';
 import MessengerChatFormCategories from '@/components/Messenger/Chat/Form/MessengerChatFormCategories.vue';
-import Button from '@/components/common/Button.vue';
-import Textarea from '@/components/common/Forms/Textarea.vue';
+import UiTextarea from '@/components/common/Forms/UiTextarea.vue';
 import MessengerChatFormRecipient from '@/components/Messenger/Chat/Form/MessengerChatFormRecipient.vue';
-import Form from '@/components/common/Forms/Form.vue';
+import UiForm from '@/components/common/Forms/UiForm.vue';
 import { cloneObject } from '@/utils/helpers/object/cloneObject.js';
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
 import MessengerChatFormAttachments from '@/components/Messenger/Chat/Form/MessengerChatFormAttachments.vue';
@@ -74,6 +73,8 @@ import { computed, inject, onUnmounted, ref, shallowRef } from 'vue';
 import { useStore } from 'vuex';
 import { MAX_FILES_COUNT } from '@/const/messenger.js';
 import Loader from '@/components/common/Loader.vue';
+import UiModal from '@/components/common/UI/UiModal.vue';
+import UiButton from '@/components/common/UI/UiButton.vue';
 
 const $openAttachments = inject('$openAttachments');
 const store = useStore();

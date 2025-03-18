@@ -29,7 +29,7 @@
 import ConsultantPickerOption from '@/components/common/Forms/ConsultantPicker/ConsultantPickerOption.vue';
 import MultiSelect from '@/components/common/Forms/MultiSelect.vue';
 import ConsultantPickerOptionChip from '@/components/common/Forms/ConsultantPicker/ConsultantPickerOptionChip.vue';
-import plural from 'plural-ru';
+import { plural } from '@/utils/plural.js';
 
 const modelValue = defineModel();
 

@@ -1,18 +1,19 @@
 <template>
-    <Modal
+    <UiModal
         @close="$emit('close')"
-        :title="formData ? 'Редактирование компании' : 'Создание компании'"
+        custom-close
+        :title="isEditMode ? `Редактирование компании ${formData.id}` : 'Создание компании'"
         :close-on-outside-click="false"
         class="modal-form-company"
         :width="1200"
         has-tabs
         show
     >
-        <Form @submit="onSubmit">
+        <Loader v-if="isLoading" />
+        <UiForm>
             <Tabs sticky>
-                <Loader v-if="isLoading" />
                 <Tab required name="Основное">
-                    <FormGroup>
+                    <UiFormGroup>
                         <div class="col-12">
                             <div class="row align-items-end">
                                 <RadioStars
@@ -53,12 +54,12 @@
                                 </div>
                             </div>
                         </div>
-                    </FormGroup>
-                    <FormDivider />
-                    <FormGroup>
+                    </UiFormGroup>
+                    <UiFormDivider />
+                    <UiFormGroup>
                         <div class="col-6">
                             <div class="row">
-                                <Input
+                                <UiInput
                                     v-model.trim="form.nameRu"
                                     :disabled="form.noName"
                                     :v="v$.form.nameRu"
@@ -68,17 +69,17 @@
                                 />
                                 <div class="col-12">
                                     <div class="d-flex gap-3">
-                                        <Checkbox v-model="form.noName" numeric>
+                                        <UiCheckbox v-model="form.noName" numeric>
                                             Без названия
-                                        </Checkbox>
-                                        <Checkbox v-model="form.is_individual" numeric>
+                                        </UiCheckbox>
+                                        <UiCheckbox v-model="form.is_individual" numeric>
                                             Физическое лицо
-                                        </Checkbox>
+                                        </UiCheckbox>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <Input
+                        <UiInput
                             v-model.trim="form.nameEng"
                             :disabled="form.noName"
                             :v="v$.form.nameEng"
@@ -86,20 +87,20 @@
                             label="Название Eng"
                             class="col-6"
                         />
-                    </FormGroup>
+                    </UiFormGroup>
                     <AnimationTransition :speed="0.6">
-                        <FormGroup v-if="form.is_individual">
-                            <Input
+                        <UiFormGroup v-if="form.is_individual">
+                            <UiInput
                                 v-model.trim="form.individual_full_name"
                                 :v="v$.form.individual_full_name"
                                 required
                                 label="ФИО физ.лица"
                                 class="col-12"
                             />
-                        </FormGroup>
+                        </UiFormGroup>
                     </AnimationTransition>
-                    <FormGroup>
-                        <Input
+                    <UiFormGroup>
+                        <UiInput
                             v-model.trim="form.nameBrand"
                             :v="v$.form.nameBrand"
                             label="Название Brand"
@@ -120,8 +121,8 @@
                             class="col-4"
                             :options="CompanyFormOrganization"
                         />
-                    </FormGroup>
-                    <FormGroup>
+                    </UiFormGroup>
+                    <UiFormGroup>
                         <MultiSelect
                             v-model="form.officeAdress"
                             :title="form.officeAdress"
@@ -130,7 +131,7 @@
                             class="col-12"
                             :filterResults="false"
                             :min-chars="1"
-                            :resolve-on-load="Boolean(formData)"
+                            :resolve-on-load="isEditMode"
                             :delay="600"
                             :searchable="true"
                             :options="
@@ -139,8 +140,8 @@
                                 }
                             "
                         />
-                    </FormGroup>
-                    <FormGroup>
+                    </UiFormGroup>
+                    <UiFormGroup>
                         <ConsultantPicker
                             v-model="form.consultant_id"
                             :v="v$.form.consultant_id"
@@ -157,8 +158,8 @@
                             property-name="website"
                             class="col-6"
                         />
-                    </FormGroup>
-                    <FormGroup>
+                    </UiFormGroup>
+                    <UiFormGroup>
                         <PropogationDoubleInput
                             v-model="form.contacts.phones"
                             :v="v$.form.contacts.phones"
@@ -183,8 +184,8 @@
                             label="Email"
                             class="col-6"
                         />
-                    </FormGroup>
-                    <FormGroup>
+                    </UiFormGroup>
+                    <UiFormGroup>
                         <div class="col-3">
                             <span class="form__subtitle">Статус</span>
                             <div class="form__row mt-1">
@@ -209,17 +210,17 @@
                                     label="Причина пассива"
                                     :options="PassiveWhy"
                                 />
-                                <Textarea
+                                <UiTextarea
                                     v-model="form.passive_why_comment"
                                     class="col-12 p-0 pt-1"
                                     placeholder="Комментарий"
                                 />
                             </div>
                         </AnimationTransition>
-                    </FormGroup>
+                    </UiFormGroup>
                 </Tab>
                 <Tab required name="Деятельность">
-                    <FormGroup>
+                    <UiFormGroup>
                         <SearchableOptionsPicker
                             v-model="form.activity_group_ids"
                             :options="ActivityGroupList"
@@ -262,11 +263,25 @@
                             class="col-12"
                             :options="getProductRangeOptions"
                             object
+                            :disabled="!form.show_product_ranges"
                         />
-                    </FormGroup>
-                    <FormDivider />
+                        <UiCol :cols="12">
+                            <UiCheckbox v-model="form.show_product_ranges" numeric>
+                                <div class="d-flex align-items-center gap-1">
+                                    <span>Показывать номенклатуру</span>
+                                    <i
+                                        v-tippy="
+                                            'Если отключить этот параметр, то номенклатура товара компании будет скрыта и не будет являться обязательным для заполнения параметром'
+                                        "
+                                        class="fa-regular fa-question-circle fs-3"
+                                    />
+                                </div>
+                            </UiCheckbox>
+                        </UiCol>
+                    </UiFormGroup>
+                    <UiFormDivider />
                     <div class="row mt-2">
-                        <Textarea v-model="form.description" label="Описание" class="col-12" />
+                        <UiTextarea v-model="form.description" label="Описание" class="col-12" />
                     </div>
                 </Tab>
                 <Tab name="Реквизиты">
@@ -278,7 +293,7 @@
                             class="col-12"
                             :filterResults="false"
                             :min-chars="1"
-                            :resolve-on-load="Boolean(formData)"
+                            :resolve-on-load="isEditMode"
                             :delay="600"
                             :searchable="true"
                             :options="
@@ -289,21 +304,21 @@
                         />
                     </div>
                     <div class="row mt-2">
-                        <Input
+                        <UiInput
                             v-model="form.ogrn"
                             :v="v$.form.ogrn"
                             label="ОГРН"
                             class="col-4"
                             maska="#############"
                         />
-                        <Input
+                        <UiInput
                             v-model="form.inn"
                             :v="v$.form.inn"
                             label="ИНН"
                             class="col-4"
                             maska="############"
                         />
-                        <Input
+                        <UiInput
                             v-model="form.kpp"
                             :v="v$.form.kpp"
                             label="КПП"
@@ -312,14 +327,14 @@
                         />
                     </div>
                     <div class="row mt-2">
-                        <Input
+                        <UiInput
                             v-model="form.checkingAccount"
                             :v="v$.form.checkingAccount"
                             label="Расчетный счет"
                             class="col-4"
                             maska="####################"
                         />
-                        <Input
+                        <UiInput
                             v-model="form.correspondentAccount"
                             :v="v$.form.correspondentAccount"
                             label="Корреспондентский счет"
@@ -335,21 +350,21 @@
                         />
                     </div>
                     <div class="row mt-2">
-                        <Input
+                        <UiInput
                             v-model="form.bik"
                             :v="v$.form.bik"
                             label="БИК"
                             class="col-4"
                             maska="#########"
                         />
-                        <Input
+                        <UiInput
                             v-model="form.okpo"
                             :v="v$.form.okpo"
                             label="ОКПО"
                             class="col-4"
                             maska="##########"
                         />
-                        <Input
+                        <UiInput
                             v-model="form.okved"
                             :v="v$.form.okved"
                             label="ОКВЭД"
@@ -358,26 +373,30 @@
                         />
                     </div>
                     <div class="row mt-2">
-                        <Input v-model="form.signatoryName" label="Имя подписанта" class="col-4" />
-                        <Input
+                        <UiInput
+                            v-model="form.signatoryName"
+                            label="Имя подписанта"
+                            class="col-4"
+                        />
+                        <UiInput
                             v-model="form.signatoryMiddleName"
                             label="Фамилия подписанта"
                             class="col-4"
                         />
-                        <Input
+                        <UiInput
                             v-model="form.signatoryLastName"
                             label="Отчество подписанта"
                             class="col-4"
                         />
                     </div>
                     <div class="row mt-2">
-                        <Input
+                        <UiInput
                             v-model="form.documentNumber"
                             label="№ документа"
                             maska="#####################"
                             class="col-6 pr-1"
                         />
-                        <Input
+                        <UiInput
                             v-model="form.basis"
                             label="Действует на основе"
                             class="col-6 pl-1"
@@ -398,25 +417,27 @@
                     </div>
                 </Tab>
             </Tabs>
-            <div class="row mt-3 align-self-end">
-                <Submit success class="col-3 mx-auto">
-                    {{ formData ? 'Сохранить' : 'Создать' }}
-                </Submit>
-            </div>
-        </Form>
-    </Modal>
+        </UiForm>
+        <template #actions="{ close }">
+            <UiButton @click="submit" color="success-light" icon="fa-solid fa-check" bolder small>
+                Сохранить
+            </UiButton>
+            <UiButton @click="close" color="light" icon="fa-solid fa-ban" bolder small>
+                Отмена
+            </UiButton>
+        </template>
+    </UiModal>
 </template>
 
 <script setup>
-import Form from '@/components/common/Forms/Form.vue';
-import Input from '@/components/common/Forms/Input.vue';
-import Textarea from '@/components/common/Forms/Textarea.vue';
+import UiForm from '@/components/common/Forms/UiForm.vue';
+import UiInput from '@/components/common/Forms/UiInput.vue';
+import UiTextarea from '@/components/common/Forms/UiTextarea.vue';
 import FileInput from '@/components/common/Forms/FileInput.vue';
 import PropogationInput from '@/components/common/Forms/PropogationInput.vue';
 import PropogationDoubleInput from '@/components/common/Forms/PropogationDoubleInput.vue';
 import RadioStars from '@/components/common/Forms/RadioStars.vue';
 import MultiSelect from '@/components/common/Forms/MultiSelect.vue';
-import useVuelidate from '@vuelidate/core';
 import {
     ActivityGroupList,
     ActivityProfileList,
@@ -425,12 +446,10 @@ import {
     PassiveWhy
 } from '@/const/const.js';
 import { yandexmap } from '@/utils/yandexMap.js';
-import Modal from '@/components/common/Modal.vue';
 import Loader from '@/components/common/Loader.vue';
 import RadioChip from '@/components/common/Forms/RadioChip.vue';
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
 import { validateEmail, validateUrl } from '@//validators';
-import Submit from '@/components/common/Forms/FormSubmit.vue';
 import { computed, reactive, shallowRef } from 'vue';
 import { normalizeDataForCompanyForm } from '@/utils/normalizeForm.js';
 import { validationRulesForCompany } from '@/validators/rules.js';
@@ -441,14 +460,17 @@ import { useCompanyGroupsOptions } from '@/composables/options/useCompanyGroupsO
 import { useBanksOptions } from '@/composables/options/useBanksOptions.js';
 import { useProductRangesOptions } from '@/composables/options/useProductRangesOptions.js';
 import { useFormData } from '@/utils/use/useFormData.js';
-import Checkbox from '@/components/common/Forms/Checkbox.vue';
-import FormGroup from '@/components/common/Forms/FormGroup.vue';
+import UiCheckbox from '@/components/common/Forms/UiCheckbox.vue';
+import UiFormGroup from '@/components/common/Forms/UiFormGroup.vue';
 import CheckboxOptions from '@/components/common/Forms/CheckboxOptions.vue';
-import { useValidationNotify } from '@/composables/useValidationNotify.js';
 import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
-import FormDivider from '@/components/common/Forms/FormDivider.vue';
+import UiFormDivider from '@/components/common/Forms/UiFormDivider.vue';
 import SearchableOptionsPicker from '@/components/common/Forms/SearchableOptionsPicker.vue';
-import plural from 'plural-ru';
+import { plural } from '@/utils/plural.js';
+import UiModal from '@/components/common/UI/UiModal.vue';
+import UiButton from '@/components/common/UI/UiButton.vue';
+import { useValidation } from '@/composables/useValidation.js';
+import UiCol from '@/components/common/UI/UiCol.vue';
 
 const emit = defineEmits(['updated', 'created', 'close']);
 const props = defineProps({
@@ -464,7 +486,8 @@ const { getBanksOptions } = useBanksOptions();
 const { getProductRangeOptions } = useProductRangesOptions();
 
 const isLoading = shallowRef(false);
-const { form } = useFormData(
+
+const { form, isEditMode } = useFormData(
     reactive({
         basis: null,
         bik: null,
@@ -502,6 +525,7 @@ const { form } = useFormData(
         passive_why_comment: null,
         files: [],
         new_files: [],
+        show_product_ranges: 1,
 
         activity_group_ids: [],
         activity_profile_ids: []
@@ -509,7 +533,7 @@ const { form } = useFormData(
     props.formData
 );
 
-const v$ = useVuelidate({ form: validationRulesForCompany }, { form });
+const { v$, validate } = useValidation({ form: validationRulesForCompany }, { form });
 
 const formContactsWebsitesValidators = computed(() => [
     { func: validateUrl, message: 'Укажите корректную ссылку на сайт' }
@@ -562,20 +586,19 @@ const createCompany = async () => {
     }
 };
 
-const { validateWithNotify } = useValidationNotify(v$);
+async function submit() {
+    const isValid = await validate();
+    if (!isValid) return;
 
-const onSubmit = async () => {
-    validateWithNotify();
-
-    if (!v$.value.form.$error) {
+    try {
         isLoading.value = true;
 
         if (props.formData) await updateCompany();
         else await createCompany();
-
+    } finally {
         isLoading.value = false;
     }
-};
+}
 
 const getAddress = async query => {
     if (props.formData) return await yandexmap.getAddress(query, props.formData.officeAdress);

@@ -8,12 +8,9 @@ import { isNotEmptyString } from '@/utils/helpers/string/isNotEmptyString.js';
 import { getObjectMbUniqueAddress } from '@/utils/formatters/models/object.js';
 import { isEmpty } from '@/utils/helpers/common/isEmpty.js';
 import { getCompanyName, getCompanyShortName } from '@/utils/formatters/models/company.js';
-import dayjs from 'dayjs';
 import api from '@/api/api.js';
 
 const CREATE_TASK_INJECTION_KEY = Symbol('$createTask');
-
-const SCHEDULING_CALL_DURATION = 7; // days
 
 export function createMessengerChatContext() {
     const store = useStore();
@@ -26,6 +23,7 @@ export function createMessengerChatContext() {
 
         let customDescription = false;
         let message = '';
+        let title = '';
         let userId = store.getters.moderator?.id;
 
         const additionalContent = {
@@ -83,9 +81,16 @@ export function createMessengerChatContext() {
                 break;
         }
 
+        if (message.length > 255) {
+            title = message.slice(0, 253) + '...';
+        } else {
+            title = message;
+            message = null;
+        }
+
         return {
+            title,
             message,
-            end: dayjs().add(SCHEDULING_CALL_DURATION, 'day').toDate(),
             customDescription,
             additionalContent,
             user_id: userId

@@ -22,6 +22,11 @@
                     </template>
                     <template #warning>менее 5 фото (загружено {{ object.photo.length }})</template>
                 </MessengerDialogPreviewRow>
+                <MessengerDialogPreviewRow label="полная площадь" editable>
+                    <WithUnitType v-if="object.area_building" :unit-type="unitTypes.SQUARE_METERS">
+                        {{ toNumberFormat(Number(object.area_building)) }}
+                    </WithUnitType>
+                </MessengerDialogPreviewRow>
                 <MessengerDialogPreviewRow label="эл-во общее" editable>
                     <WithUnitType v-if="object.power" :unit-type="unitTypes.KILOWATT">
                         {{ toNumberFormat(Number(object.power)) }}
@@ -163,7 +168,7 @@ import MessengerDialogPreviewTab from '@/components/Messenger/Dialog/Preview/Mes
 import { computed, onMounted, shallowRef, useTemplateRef } from 'vue';
 import MessengerDialogPreviewRow from '@/components/Messenger/Dialog/Preview/MessengerDialogPreviewRow.vue';
 import api from '@/api/api.js';
-import plural from 'plural-ru';
+import { plural } from '@/utils/plural.js';
 import MessengerDialogObjectPreviewSkeleton from '@/components/Messenger/Dialog/Object/MessengerDialogObjectPreviewSkeleton.vue';
 import WithUnitType from '@/components/common/WithUnitType.vue';
 import { unitTypes } from '@/const/unitTypes.js';
@@ -182,6 +187,7 @@ import MessengerDialogObjectPreviewSublease from '@/components/Messenger/Dialog/
 import { objectChatMemberTypes } from '@/const/messenger.js';
 import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
 import { isNullish } from '@/utils/helpers/common/isNullish.js';
+import { usePlural } from '@/composables/usePlural.js';
 
 defineEmits(['update-call']);
 const props = defineProps({
@@ -219,8 +225,11 @@ const objectHasWarnings = computed(() => {
     );
 });
 
-const pluralPhotoLength = computed(() =>
-    plural(object.value.photo.length, '%d фотография', '%d фотографии', '%d фотографий')
+const pluralPhotoLength = usePlural(
+    object.value.photo.length,
+    '%d фотография',
+    '%d фотографии',
+    '%d фотографий'
 );
 
 const buildingLayoutsCount = computed(() => {

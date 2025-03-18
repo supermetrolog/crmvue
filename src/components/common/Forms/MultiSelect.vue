@@ -122,7 +122,7 @@ import { isArray } from '@/utils/helpers/array/isArray.js';
 import { isString } from '@/utils/helpers/string/isString.js';
 import { isNotEmptyString } from '@/utils/helpers/string/isNotEmptyString.js';
 import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
-import plural from 'plural-ru';
+import { plural } from '@/utils/plural.js';
 
 const emit = defineEmits(['change']);
 const props = defineProps({
