@@ -37,28 +37,11 @@
                 </div>
                 <i v-else class="mt-1 fa-solid fa-minus"></i>
             </TaskCardHistoryEventRow>
-            <TaskCardHistoryEventRow label="Заголовок">
-                <DashboardChip
-                    v-if="snapshot.title"
-                    v-tippy="snapshot.title"
-                    class="task-card-history-event__help"
-                    with-icon
-                >
-                    <span>Показать</span>
-                    <i class="fa-regular fa-circle-question"></i>
-                </DashboardChip>
-                <i v-else class="mt-1 fa-solid fa-minus"></i>
+            <TaskCardHistoryEventRow v-if="snapshot.title" ref="titleEl" label="Заголовок">
+                {{ title }}
             </TaskCardHistoryEventRow>
-            <TaskCardHistoryEventRow label="Описание">
-                <DashboardChip
-                    v-if="snapshot.message"
-                    v-tippy="snapshot.message"
-                    class="task-card-history-event__help"
-                    with-icon
-                >
-                    <span>Показать</span>
-                    <i class="fa-regular fa-circle-question"></i>
-                </DashboardChip>
+            <TaskCardHistoryEventRow ref="messageEl" label="Описание">
+                <span v-if="snapshot.message">{{ message }}</span>
                 <i v-else class="mt-1 fa-solid fa-minus"></i>
             </TaskCardHistoryEventRow>
         </div>
@@ -66,11 +49,12 @@
 </template>
 
 <script setup>
-import { computed } from 'vue';
+import { computed, useTemplateRef } from 'vue';
 import Avatar from '@/components/common/Avatar.vue';
 import TaskCardHistoryEventRow from '@/components/TaskCard/History/TaskCardHistoryEventRow.vue';
 import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
 import { toDateFormat } from '@/utils/formatters/date.js';
+import { useTippy } from 'vue-tippy';
 
 const props = defineProps({
     snapshot: {
@@ -84,4 +68,22 @@ const observers = computed(() =>
 );
 
 const endDate = computed(() => toDateFormat(props.snapshot.end, 'D MMM YY'));
+
+const title = computed(() => {
+    return props.snapshot.title.slice(0, 30) + (props.snapshot.title.length > 30 ? '...' : '');
+});
+
+const titleEl = useTemplateRef('titleEl');
+useTippy(titleEl, {
+    content: props.snapshot.title
+});
+
+const message = computed(() => {
+    return props.snapshot.message.slice(0, 30) + (props.snapshot.message.length > 30 ? '...' : '');
+});
+
+const messageEl = useTemplateRef('messageEl');
+useTippy(titleEl, {
+    content: props.snapshot.message
+});
 </script>

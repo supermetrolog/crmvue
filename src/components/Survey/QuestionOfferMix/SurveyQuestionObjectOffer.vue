@@ -1,5 +1,5 @@
 <template>
-    <UiField v-tippy="description" :color small>
+    <UiField ref="fieldEl" :color small>
         <i v-if="offer.is_deleted" class="fa-solid fa-ban"></i>
         <i v-else-if="offer.status === 1" class="fa-solid fa-up-long"></i>
         <i v-else class="fa-solid fa-down-long"></i>
@@ -7,9 +7,10 @@
     </UiField>
 </template>
 <script setup>
-import { computed } from 'vue';
+import { computed, useTemplateRef } from 'vue';
 import { dealOptions } from '@/const/options/deal.options.js';
 import UiField from '@/components/common/UI/UiField.vue';
+import { useTippy } from 'vue-tippy';
 
 defineEmits(['show-preview']);
 const props = defineProps({
@@ -33,9 +34,7 @@ const description = computed(() => {
     return 'Предложения в пассиве';
 });
 
-// TODO: Подождать PR в vue-tippy
+const fieldEl = useTemplateRef('fieldEl');
 
-// const fieldEl = useTemplateRef('fieldEl');
-//
-// useTippy(fieldEl, { content: description });
+useTippy(fieldEl, { content: description });
 </script>
