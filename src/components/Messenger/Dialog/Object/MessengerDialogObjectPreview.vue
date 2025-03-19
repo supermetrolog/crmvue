@@ -165,7 +165,7 @@
 </template>
 <script setup>
 import MessengerDialogPreviewTab from '@/components/Messenger/Dialog/Preview/MessengerDialogPreviewTab.vue';
-import { computed, onMounted, shallowRef, useTemplateRef } from 'vue';
+import { computed, onMounted, shallowRef, toRef, useTemplateRef } from 'vue';
 import MessengerDialogPreviewRow from '@/components/Messenger/Dialog/Preview/MessengerDialogPreviewRow.vue';
 import api from '@/api/api.js';
 import { plural } from '@/utils/plural.js';
@@ -226,7 +226,7 @@ const objectHasWarnings = computed(() => {
 });
 
 const pluralPhotoLength = usePlural(
-    object.value.photo.length,
+    toRef(() => object.value?.photo?.length),
     '%d фотография',
     '%d фотографии',
     '%d фотографий'

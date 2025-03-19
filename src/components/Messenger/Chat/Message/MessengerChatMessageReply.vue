@@ -106,7 +106,7 @@ const recipientUsername = computed(() => {
 });
 
 const filesCountText = usePlural(
-    props.message.files.length,
+    toRef(() => props.message?.files?.length),
     '+ %d файл',
     '+ %d файла',
     '+ %d файлов'
