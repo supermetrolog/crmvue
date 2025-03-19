@@ -4,8 +4,8 @@
         <MessengerDialogPreviewTab title="Проверьте выбранный тип и назначение!">
             <EditableObjectPurposes
                 @update="updatePurposes"
-                :purposes="object.purposes"
-                :object-types="object.object_type"
+                :purposes="targetObject.purposes"
+                :object-types="targetObject.object_type"
                 :size="30"
                 buttons-class="small"
             />
@@ -17,19 +17,24 @@
         >
             <div class="messenger-dialog-preview__grid">
                 <MessengerDialogPreviewRow label="фото" editable>
-                    <template v-if="object.photo?.length >= 5" #default>
+                    <template v-if="targetObject.photo?.length >= 5" #default>
                         {{ pluralPhotoLength }}
                     </template>
-                    <template #warning>менее 5 фото (загружено {{ object.photo.length }})</template>
+                    <template #warning
+                        >менее 5 фото (загружено {{ targetObject.photo.length }})</template
+                    >
                 </MessengerDialogPreviewRow>
                 <MessengerDialogPreviewRow label="полная площадь" editable>
-                    <WithUnitType v-if="object.area_building" :unit-type="unitTypes.SQUARE_METERS">
-                        {{ toNumberFormat(Number(object.area_building)) }}
+                    <WithUnitType
+                        v-if="targetObject.area_building"
+                        :unit-type="unitTypes.SQUARE_METERS"
+                    >
+                        {{ toNumberFormat(Number(targetObject.area_building)) }}
                     </WithUnitType>
                 </MessengerDialogPreviewRow>
                 <MessengerDialogPreviewRow label="эл-во общее" editable>
-                    <WithUnitType v-if="object.power" :unit-type="unitTypes.KILOWATT">
-                        {{ toNumberFormat(Number(object.power)) }}
+                    <WithUnitType v-if="targetObject.power" :unit-type="unitTypes.KILOWATT">
+                        {{ toNumberFormat(Number(targetObject.power)) }}
                     </WithUnitType>
                 </MessengerDialogPreviewRow>
                 <MessengerDialogPreviewRow label="эл-во выделенное">
@@ -40,8 +45,8 @@
                         <span>м<sup>3</sup> водоснабжение</span>
                     </template>
                     <template #default>
-                        <WithUnitType v-if="object.water" :unit-type="unitTypes.CUBIC_METERS">
-                            {{ toNumberFormat(Number(object.water)) }}
+                        <WithUnitType v-if="targetObject.water" :unit-type="unitTypes.CUBIC_METERS">
+                            {{ toNumberFormat(Number(targetObject.water)) }}
                         </WithUnitType>
                     </template>
                 </MessengerDialogPreviewRow>
@@ -49,58 +54,63 @@
                     <template #label>
                         <span>м<sup>3</sup> канализация</span>
                     </template>
-                    <template v-if="object.sewage || object.sewage_rain" #default>
-                        <p v-if="object.sewage === 1">
-                            <WithUnitType v-if="object.sewage_central_value">
-                                {{ toNumberFormat(object.sewage_central_value) }}
+                    <template v-if="targetObject.sewage || targetObject.sewage_rain" #default>
+                        <p v-if="targetObject.sewage === 1">
+                            <WithUnitType v-if="targetObject.sewage_central_value">
+                                {{ toNumberFormat(targetObject.sewage_central_value) }}
                             </WithUnitType>
                             <span v-else class="messenger-warning">объем не заполнен</span>
                             <span>,</span>
                         </p>
-                        <p v-else-if="object.sewage === 2">центральной нет,</p>
+                        <p v-else-if="targetObject.sewage === 2">центральной нет,</p>
                         <p v-else class="messenger-warning">центральная не заполнена,</p>
-                        <p v-if="object.sewage_rain === 1">+ есть ливневка</p>
-                        <p v-else-if="object.sewage_rain === 2">ливневки нет</p>
+                        <p v-if="targetObject.sewage_rain === 1">+ есть ливневка</p>
+                        <p v-else-if="targetObject.sewage_rain === 2">ливневки нет</p>
                         <p v-else class="messenger-warning">ливневка не заполнена</p>
                     </template>
                 </MessengerDialogPreviewRow>
                 <MessengerDialogPreviewRow label="Ж/Д" editable>
-                    <template v-if="object.railway === 1">
-                        <WithUnitType v-if="object.railway_value" :unit-type="unitTypes.METERS">
-                            Да, {{ toNumberFormat(object.railway_value) }}
+                    <template v-if="targetObject.railway === 1">
+                        <WithUnitType
+                            v-if="targetObject.railway_value"
+                            :unit-type="unitTypes.METERS"
+                        >
+                            Да, {{ toNumberFormat(targetObject.railway_value) }}
                         </WithUnitType>
                         <p v-else>
                             <span>Да, </span>
                             <span class="messenger-warning">длина не указана</span>
                         </p>
                     </template>
-                    <span v-else-if="object.railway === 2">нет</span>
+                    <span v-else-if="targetObject.railway === 2">нет</span>
                 </MessengerDialogPreviewRow>
                 <MessengerDialogPreviewRow label="въезд на территорию" editable>
                     <MessengerDialogPreviewTippy
-                        v-if="object.entry_territory_type || object.entry_territory"
+                        v-if="targetObject.entry_territory_type || targetObject.entry_territory"
                     >
                         <template #trigger>
-                            <p v-if="object.entry_territory_type">
+                            <p v-if="targetObject.entry_territory_type">
                                 {{ entryTerritoryType }}
                             </p>
-                            <p v-if="object.entry_territory">
+                            <p v-if="targetObject.entry_territory">
                                 {{ entryTerritoryPrice }}
                             </p>
                         </template>
                         <template #content>
-                            <MessengerDialogObjectPreviewParking :object="object" />
+                            <MessengerDialogObjectPreviewParking :object="targetObject" />
                         </template>
                     </MessengerDialogPreviewTippy>
                 </MessengerDialogPreviewRow>
                 <MessengerDialogPreviewRow label="планировки" editable>
-                    <template v-if="object.building_layouts && buildingLayoutsCount" #default>
+                    <template v-if="targetObject.building_layouts && buildingLayoutsCount" #default>
                         {{ pluralBuildingLayoutsCount }}
                     </template>
                     <template #warning>не загружены</template>
                 </MessengerDialogPreviewRow>
                 <MessengerDialogPreviewRow label="кадастровый номер" editable>
-                    <span v-if="object.cadastral_number">{{ object.cadastral_number }}</span>
+                    <span v-if="targetObject.cadastral_number">{{
+                        targetObject.cadastral_number
+                    }}</span>
                 </MessengerDialogPreviewRow>
                 <MessengerDialogPreviewRow label="земельный участок" editable>
                     <span class="color-light">[в разработке]</span>
@@ -115,7 +125,7 @@
                 nav-item-link-class="messenger-dialog-preview__tab-link"
                 with-transition
                 :transition-speed="0.8"
-                :closed="!object.offerMix?.length"
+                :closed="!targetObject.offerMix?.length"
             >
                 <Tab
                     v-if="anyTabShouldBeVisible || rentTabShouldBeVisible"
@@ -165,7 +175,7 @@
 </template>
 <script setup>
 import MessengerDialogPreviewTab from '@/components/Messenger/Dialog/Preview/MessengerDialogPreviewTab.vue';
-import { computed, onMounted, shallowRef, useTemplateRef } from 'vue';
+import { computed, onMounted, ref, shallowRef, toRef, useTemplateRef } from 'vue';
 import MessengerDialogPreviewRow from '@/components/Messenger/Dialog/Preview/MessengerDialogPreviewRow.vue';
 import api from '@/api/api.js';
 import { plural } from '@/utils/plural.js';
@@ -191,10 +201,8 @@ import { usePlural } from '@/composables/usePlural.js';
 
 defineEmits(['update-call']);
 const props = defineProps({
-    objectId: {
-        type: Number,
-        required: true
-    },
+    objectId: Number,
+    object: Object,
     objectChatMemberType: String,
     opened: {
         type: Boolean,
@@ -204,8 +212,10 @@ const props = defineProps({
 
 const tabs = useTemplateRef('tabs');
 
-const isLoading = shallowRef(true);
-const object = shallowRef(null);
+const isLoading = ref(isNullish(props.object));
+const localeObject = shallowRef(null);
+
+const targetObject = computed(() => props.object ?? localeObject.value);
 
 const objectDescriptionTabLabel = computed(() => {
     if (objectHasWarnings.value) return 'Объект имеет недочеты!';
@@ -214,28 +224,29 @@ const objectDescriptionTabLabel = computed(() => {
 
 const objectHasWarnings = computed(() => {
     return (
-        object.value.photo?.length < 5 ||
-        !object.value.power ||
-        !object.value.water ||
-        (!object.value.sewage && !object.value.sewage_rain) ||
-        !object.value.railway ||
-        (!object.value.entry_territory_type && !object.value.entry_territory) ||
-        !object.value.building_layouts?.length ||
-        !object.value.cadastral_number
+        targetObject.value.photo?.length < 5 ||
+        !targetObject.value.power ||
+        !targetObject.value.water ||
+        (!targetObject.value.sewage && !targetObject.value.sewage_rain) ||
+        !targetObject.value.railway ||
+        (!targetObject.value.entry_territory_type && !targetObject.value.entry_territory) ||
+        !targetObject.value.building_layouts?.length ||
+        !targetObject.value.cadastral_number
     );
 });
 
 const pluralPhotoLength = usePlural(
-    object.value.photo.length,
+    toRef(() => targetObject.value.photo.length),
     '%d фотография',
     '%d фотографии',
     '%d фотографий'
 );
 
 const buildingLayoutsCount = computed(() => {
-    if (Array.isArray(object.value.building_layouts)) return object.value.building_layouts.length;
-    else if (typeof object.value.building_layouts === 'string')
-        return JSON.parse(object.value.building_layouts)?.length;
+    if (Array.isArray(targetObject.value.building_layouts))
+        return targetObject.value.building_layouts.length;
+    else if (typeof targetObject.value.building_layouts === 'string')
+        return JSON.parse(targetObject.value.building_layouts)?.length;
 
     return 0;
 });
@@ -245,26 +256,34 @@ const pluralBuildingLayoutsCount = computed(() =>
 );
 
 const entryTerritoryType = computed(
-    () => complexOptions.entryTerritory[object.value.entry_territory_type]
+    () => complexOptions.entryTerritory[targetObject.value.entry_territory_type]
 );
 const entryTerritoryPrice = computed(
-    () => complexOptions.entryTerritoryPrice[object.value.entry_territory]
+    () => complexOptions.entryTerritoryPrice[targetObject.value.entry_territory]
 );
 
 const rentOfferMix = computed(() =>
-    object.value.offerMix.find(element => element.deal_type === dealOptions.typeStatement.RENT)
+    targetObject.value.offerMix.find(
+        element => element.deal_type === dealOptions.typeStatement.RENT
+    )
 );
 
 const saleOfferMix = computed(() =>
-    object.value.offerMix.find(element => element.deal_type === dealOptions.typeStatement.SALE)
+    targetObject.value.offerMix.find(
+        element => element.deal_type === dealOptions.typeStatement.SALE
+    )
 );
 
 const storageOfferMix = computed(() =>
-    object.value.offerMix.find(element => element.deal_type === dealOptions.typeStatement.STORAGE)
+    targetObject.value.offerMix.find(
+        element => element.deal_type === dealOptions.typeStatement.STORAGE
+    )
 );
 
 const subleaseOfferMix = computed(() =>
-    object.value.offerMix.find(element => element.deal_type === dealOptions.typeStatement.SUBLEASE)
+    targetObject.value.offerMix.find(
+        element => element.deal_type === dealOptions.typeStatement.SUBLEASE
+    )
 );
 
 const selectActiveTab = () => {
@@ -281,7 +300,7 @@ const fetchObject = async () => {
     isLoading.value = true;
 
     const response = await api.object.list({ id: props.objectId });
-    if (response.data?.length) object.value = response.data[0];
+    if (response.data?.length) localeObject.value = response.data[0];
 
     isLoading.value = false;
 };
@@ -291,7 +310,10 @@ const updatePurposes = async purposes => {
 };
 
 onMounted(async () => {
-    await fetchObject();
+    if (isNullish(props.object)) {
+        await fetchObject();
+    }
+
     selectActiveTab();
 });
 

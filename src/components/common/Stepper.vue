@@ -86,18 +86,12 @@ import { computed, ref } from 'vue';
 const currentStep = defineModel('step', { type: Number, default: 0 });
 const emit = defineEmits(['complete']);
 const props = defineProps({
-    keepAlive: {
-        type: Boolean,
-        default: false
-    },
+    keepAlive: Boolean,
     steps: {
         type: Array,
         required: true
     },
-    v: {
-        type: Object,
-        default: null
-    }
+    v: Object
 });
 
 const viewed = ref({});
