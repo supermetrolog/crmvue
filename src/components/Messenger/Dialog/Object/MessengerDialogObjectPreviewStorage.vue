@@ -152,5 +152,5 @@ const servicesCount = computed(() => {
     return count;
 });
 
-const pluralServicesCount = usePlural(servicesCount.value, '%d услуга', '%d услуги', '%d услуг');
+const pluralServicesCount = usePlural(servicesCount, '%d услуга', '%d услуги', '%d услуг');
 </script>
