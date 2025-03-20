@@ -82,7 +82,7 @@ const recipientUsername = computed(() => {
 });
 
 const pluralFilesLength = usePlural(
-    props.message.files.length,
+    toRef(() => props.message?.files?.length),
     '+%d файл',
     '+%d файла',
     '+%d файлов'

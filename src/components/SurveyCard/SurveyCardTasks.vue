@@ -20,7 +20,7 @@
     </div>
 </template>
 <script setup>
-import { computed } from 'vue';
+import { computed, toRef } from 'vue';
 import DashboardTableTasks from '@/components/Dashboard/Table/DashboardTableTasks.vue';
 import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
 import { isCompletedTask } from '@/utils/helpers/models/task.js';
@@ -29,7 +29,12 @@ import { usePlural } from '@/composables/usePlural.js';
 const tasks = defineModel('tasks');
 defineEmits(['hide']);
 
-const pluralTasksCount = usePlural(tasks.value.length, '+%d задача', '+%d задачи', '+%d задач');
+const pluralTasksCount = usePlural(
+    toRef(() => tasks.value?.length),
+    '+%d задача',
+    '+%d задачи',
+    '+%d задач'
+);
 
 const completedTasksCount = computed(() =>
     tasks.value.reduce((acc, task) => acc + (isCompletedTask(task) ? 1 : 0), 0)
