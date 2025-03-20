@@ -7,21 +7,24 @@
         }"
     >
         <div class="company-contact-item__header">
-            <i
+            <UiTooltipIcon
                 v-if="contact.warning"
-                v-tippy="'Внимание'"
-                class="fas fa-exclamation-circle icon text-danger"
-            ></i>
-            <i
+                tooltip="Внимание"
+                icon="fa-solid fa-exclamation-circle"
+                class="icon text-danger"
+            />
+            <UiTooltipIcon
                 v-if="contact.good"
-                v-tippy="'Хорошие взаимоотношения'"
-                class="fa-solid fa-smile text-success icon"
-            ></i>
-            <i
+                tooltip="Хорошие взаимоотношения"
+                icon="fa-solid fa-smile"
+                class="icon text-success"
+            />
+            <UiTooltipIcon
                 v-if="contact.faceToFaceMeeting"
-                v-tippy="'Очная встреча'"
-                class="fas fa-street-view icon"
-            ></i>
+                tooltip="Очная встреча"
+                icon="fa-solid fa-street-view"
+                class="icon"
+            />
             <HoverActionsButton
                 v-if="!contact.type && !readOnly"
                 @click="editContact"
@@ -29,7 +32,7 @@
                 class="ml-auto"
                 label="Редактировать"
             >
-                <i class="fa-solid fa-pen"></i>
+                <i class="fa-solid fa-pen" />
             </HoverActionsButton>
             <HoverActionsButton
                 v-if="!contact.type && !readOnly"
@@ -37,7 +40,7 @@
                 small
                 label="Удалить"
             >
-                <i class="fa-solid fa-trash"></i>
+                <i class="fa-solid fa-trash" />
             </HoverActionsButton>
         </div>
         <div v-if="!contact.status" class="company-contact-item__section">
@@ -74,7 +77,7 @@
                         :label="way.label"
                         small
                     >
-                        <i :class="way.icon"></i>
+                        <i :class="way.icon" />
                     </HoverActionsButton>
                 </div>
                 <span v-else class="company-contact-item__error">Способы связи не указаны</span>
@@ -133,6 +136,7 @@ import Button from '@/components/common/Button.vue';
 import CompanyContactItemComments from '@/components/Company/Contact/CompanyContactItemComments.vue';
 import { computed, ref } from 'vue';
 import { contactOptions } from '@/const/options/contact.options.js';
+import UiTooltipIcon from '@/components/common/UI/UiTooltipIcon.vue';
 
 const emit = defineEmits(['start-editing', 'delete-contact', 'create-comment']);
 const props = defineProps({

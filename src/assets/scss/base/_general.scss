@@ -248,6 +248,7 @@ main {
     font-weight: 500;
     width: max-content;
     max-width: 100%;
+    @include mixins.transition(opacity, background-color, color);
 
     &:has(i) {
         @include mixins.flex-box($a: center, $gap: 5px);

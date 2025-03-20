@@ -4,7 +4,7 @@
             {{ notifyAt.day }}
         </span>
         <Avatar
-            v-tippy="event.user.userProfile.medium_name"
+            :label="event.user.userProfile.medium_name"
             :src="event.user.userProfile.avatar"
             :size="50"
         />

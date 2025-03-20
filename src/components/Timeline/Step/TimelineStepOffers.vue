@@ -41,8 +41,8 @@
                     <template #footer>
                         <div class="d-flex gap-2">
                             <TimelineButton
-                                v-tippy="'Отправить презентации с объектами клиенту'"
                                 @click="sendModalIsVisible = true"
+                                tooltip="Отправить презентации с объектами клиенту"
                                 success
                                 :disabled="!selectedObjects.length || disabled"
                             >
@@ -55,8 +55,8 @@
                                 <i class="fa-solid fa-paper-plane icon"></i>
                             </TimelineButton>
                             <TimelineButton
-                                v-tippy="'Уже отправил предложения другим способом'"
                                 @click="selectAlreadySent"
+                                tooltip="Уже отправил предложения другим способом"
                                 :active="data.negative"
                                 :disabled="!selectedObjects.length || disabled"
                             >

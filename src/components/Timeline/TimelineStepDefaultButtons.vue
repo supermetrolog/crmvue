@@ -1,8 +1,8 @@
 <template>
     <div class="d-flex gap-2 flex-wrap">
         <TimelineButton
-            v-tippy="'Нажмите, чтобы сохранить ваш результат'"
             @click="$emit('done')"
+            tooltip="Нажмите, чтобы сохранить ваш результат"
             :disabled="disabled || !objectsLength"
             success
         >
@@ -10,8 +10,8 @@
             <i class="fa-solid fa-thumbs-up icon"></i>
         </TimelineButton>
         <TimelineButton
-            v-tippy="'В случае нахождения более подходящих предложений вам придет уведомление!'"
             @click="$emit('negative')"
+            tooltip="В случае нахождения более подходящих предложений вам придет уведомление!"
             :active="isNegative"
             :disabled="disabled"
             danger

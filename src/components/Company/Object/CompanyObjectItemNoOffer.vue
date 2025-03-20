@@ -16,22 +16,20 @@
                     Старая версия
                 </a>
                 <div class="offer-table-item-preview__header mb-1">
-                    <DashboardChip v-if="isPassive" class="dashboard-bg-danger-l"
-                        >Пассив</DashboardChip
-                    >
-                    <DashboardChip v-else class="dashboard-bg-success-l">
+                    <UiField v-if="isPassive" class="dashboard-bg-danger-l"> Пассив </UiField>
+                    <UiField v-else class="dashboard-bg-success-l">
                         {{ dealType }}
-                    </DashboardChip>
-                    <DashboardChip
+                    </UiField>
+                    <UiField
                         v-if="offer.hide_from_market"
-                        v-tippy="'Не выгружается'"
+                        tooltip="Не выгружается"
                         class="dashboard-bg-warning-l"
                     >
                         <i class="fa-solid fa-eye-slash"></i>
-                    </DashboardChip>
-                    <DashboardChip v-tippy="'Класс объекта'" class="dashboard-bg-danger-l">
+                    </UiField>
+                    <UiField tooltip="Класс объекта" class="dashboard-bg-danger-l">
                         {{ offer.class_name }}
-                    </DashboardChip>
+                    </UiField>
                 </div>
                 <div class="offer-table-item-preview__container">
                     <LazyImage v-if="offer.image" :src="offer.image" />
@@ -39,49 +37,47 @@
                 </div>
             </div>
             <div class="d-flex gap-1 my-1 position-relative">
-                <DashboardChip v-if="isPassive" class="dashboard-bg-warning text-white">
+                <UiField v-if="isPassive" class="dashboard-bg-warning text-white">
                     В архиве
-                </DashboardChip>
-                <DashboardChip
+                </UiField>
+                <UiField
                     v-if="offer.duplicate_count > 1"
-                    v-tippy="'Количество отправлений'"
+                    tooltip="Количество отправлений"
                     class="dashboard-bg-warning"
-                    with-icon
                 >
                     <i class="fa-regular fa-paper-plane"></i>
                     <span>{{ offer.duplicate_count }}</span>
-                </DashboardChip>
-                <DashboardChip
+                </UiField>
+                <UiField
                     v-if="offer.type_id === 2"
                     class="offer-table-item-mobile__block dashboard-bg-primary text-white"
                 >
                     Общий
-                </DashboardChip>
-                <DashboardChip
+                </UiField>
+                <UiField
                     v-else-if="offer.type_id === 1"
                     class="offer-table-item-mobile__block dashboard-bg-primary-l"
                 >
                     Блок
-                </DashboardChip>
-                <DashboardChip
+                </UiField>
+                <UiField
                     v-else
                     class="offer-table-item-mobile__block dashboard-bg-warning text-white"
                 >
                     Неизвестно
-                </DashboardChip>
+                </UiField>
             </div>
             <div class="offer-table-item-mobile__header">
-                <DashboardChip class="dashboard-bg-light">
+                <UiField color="light">
                     {{ offer.visual_id }}
-                </DashboardChip>
+                </UiField>
                 <div class="offer-table-item-mobile__actions">
                     <a :href="offerUrl" target="_blank">
-                        <HoverActionsButton
-                            v-tippy="'Открыть страницу предложения'"
+                        <UiButtonIcon
+                            label="Открыть страницу предложения"
+                            icon="fa-solid fa-eye"
                             class="offer-table-item-mobile__button"
-                        >
-                            <i class="fa-solid fa-eye" />
-                        </HoverActionsButton>
+                        />
                     </a>
                 </div>
             </div>
@@ -114,9 +110,7 @@
                 <div class="col-12">
                     <hr />
                     <div class="object-offer__comments">
-                        <DashboardChip class="dashboard-bg-light mx-auto mb-1">
-                            Комментарии:
-                        </DashboardChip>
+                        <UiField class="dashboard-bg-light mx-auto mb-1"> Комментарии: </UiField>
                         <p
                             v-for="comment in offer.comments"
                             :key="comment.id"
@@ -133,8 +127,6 @@
 </template>
 
 <script setup>
-import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
-import HoverActionsButton from '@/components/common/HoverActions/HoverActionsButton.vue';
 import WithUnitType from '@/components/common/WithUnitType.vue';
 import { unitTypes } from '@/const/unitTypes.js';
 import { computed } from 'vue';
@@ -143,6 +135,8 @@ import { getLinkOfferByObject, getLinkOfferOldByObject } from '@/utils/url.js';
 import NoImage from '@/components/common/NoImage.vue';
 import LazyImage from '@/components/common/LazyImage.vue';
 import { dealOptions } from '@/const/options/deal.options.js';
+import UiField from '@/components/common/UI/UiField.vue';
+import UiButtonIcon from '@/components/common/UI/UiButtonIcon.vue';
 
 const props = defineProps({
     offer: {

@@ -15,13 +15,13 @@
                 >
                     Онлайн
                 </span>
-                <span
+                <UiTooltip
                     v-else
-                    v-tippy="lastSeenTippy"
+                    :tooltip="lastSeenTippy"
                     class="user-preview__status dashboard-bg-gray-l"
                 >
                     {{ lastSeen }}
-                </span>
+                </UiTooltip>
             </div>
         </div>
     </div>
@@ -33,6 +33,7 @@ import { userOptions } from '@/const/options/user.options.js';
 import { dayjsFromMoscow, toDateFormat } from '@/utils/formatters/date.js';
 import { useStore } from 'vuex';
 import dayjs from 'dayjs';
+import UiTooltip from '@/components/common/UI/UiTooltip.vue';
 
 const props = defineProps({
     user: {

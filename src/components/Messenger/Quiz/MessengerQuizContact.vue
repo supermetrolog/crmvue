@@ -2,22 +2,25 @@
     <div class="messenger-quiz-contact" :class="{ active: active, disabled: disabled }">
         <div class="messenger-quiz-contact__info">
             <p class="messenger-quiz-contact__username">
-                <i
+                <UiTooltipIcon
                     v-if="contact.faceToFaceMeeting"
-                    v-tippy="'Была личная (очная) встреча'"
-                    class="fa-solid fa-street-view mr-1"
+                    tooltip="Была личная (очная) встреча"
+                    icon="fa-solid fa-street-view"
+                    class="mr-1"
                 />
-                <i
+                <UiTooltipIcon
                     v-if="contact.good"
-                    v-tippy="'Хорошие взаимоотношения'"
-                    class="fa-regular fa-face-smile-beam mr-1"
+                    tooltip="Хорошие взаимоотношения"
+                    icon="fa-regular fa-face-smile-beam"
+                    class="mr-1"
                 />
-                <i
+                <UiTooltipIcon
                     v-if="contact.isMain"
-                    v-tippy="'Основной контакт'"
-                    class="fa-solid fa-crown mr-1"
+                    tooltip="Основной контакт"
+                    icon="fa-solid fa-crown"
+                    class="mr-1"
                 />
-                <span v-tippy="contact.full_name">{{ contact.full_name }}</span>
+                <UiTooltip :tooltip="contact.full_name">{{ contact.full_name }}</UiTooltip>
             </p>
             <p v-if="!isCompanyContact" class="messenger-quiz-contact__staff">
                 <span v-if="contact.position_unknown">Должность неизвестна..</span>
@@ -28,7 +31,7 @@
             </p>
             <p class="messenger-quiz-contact__email">
                 <template v-if="mainEmail">
-                    <i v-tippy="'Основной Email'" class="fa-solid fa-crown mr-1"></i>
+                    <UiTooltipIcon tooltip="Основной Email" icon="fa-solid fa-crown" class="mr-1" />
                     <span>{{ mainEmail.email }}</span>
                 </template>
                 <span v-else-if="contact.emails?.length">
@@ -40,7 +43,7 @@
             </p>
             <div class="messenger-quiz-contact__contacts">
                 <span v-if="mainPhone">
-                    <i v-tippy="'Основной телефон'" class="fa-solid fa-crown mr-1"></i>
+                    <UiTooltipIcon tooltip="Основной Email" icon="fa-solid fa-crown" class="mr-1" />
                     <PhoneNumber
                         :phone="mainPhone"
                         :contact="contact"
@@ -72,11 +75,12 @@
                             <div class="messenger-quiz-contact__column">
                                 <p class="mb-1">Все телефоны контакта:</p>
                                 <p v-for="phone in contact.phones" :key="phone.id">
-                                    <i
+                                    <UiTooltipIcon
                                         v-if="phone.isMain"
-                                        v-tippy="'Основной телефон'"
-                                        class="fa-solid fa-crown mr-1"
-                                    ></i>
+                                        tooltip="Основной телефон"
+                                        icon="fa-solid fa-crown"
+                                        class="mr-1"
+                                    />
                                     <PhoneNumber :phone="phone" clickable :hidden="!active" />
                                 </p>
                             </div>
@@ -84,13 +88,14 @@
                     </Tippy>
                 </template>
             </div>
-            <div
+            <UiTooltip
                 v-if="contact.warning"
-                v-tippy="contact.warning_why_comment"
+                :tooltip="contact.warning_why_comment"
+                as="div"
                 class="messenger-quiz-contact__warning"
             >
                 <span>Внимание! {{ contact.warning_why_comment }}</span>
-            </div>
+            </UiTooltip>
         </div>
         <div v-if="!isCompanyContact" class="messenger-quiz-contact__actions">
             <UiButtonIcon
@@ -128,6 +133,8 @@ import { computed } from 'vue';
 import { contactOptions } from '@/const/options/contact.options.js';
 import { Tippy } from 'vue-tippy';
 import UiButtonIcon from '@/components/common/UI/UiButtonIcon.vue';
+import UiTooltipIcon from '@/components/common/UI/UiTooltipIcon.vue';
+import UiTooltip from '@/components/common/UI/UiTooltip.vue';
 
 defineEmits(['edit', 'delete', 'move', 'show-comments', 'schedule-call']);
 const props = defineProps({

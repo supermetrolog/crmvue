@@ -62,7 +62,7 @@
                 <span class="dashboard-card-task__id">#{{ task.id }}</span>
                 <Avatar
                     v-if="task.created_by_type === 'user'"
-                    v-tippy="`Создана сотрудником ${task.created_by.userProfile.medium_name}`"
+                    :label="`Создана сотрудником ${task.created_by.userProfile.medium_name}`"
                     :src="task.created_by.userProfile.avatar"
                     :size="55"
                 />

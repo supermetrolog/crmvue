@@ -100,14 +100,14 @@
                         <CompanyBoxRequestsListItemParameter label="Тип объекта">
                             <template v-if="request.objectTypes?.length" #extended>
                                 <div class="d-flex gap-1 flex-wrap">
-                                    <DashboardChip
+                                    <UiField
                                         v-for="(element, key) in objectTypes"
                                         :key="key"
-                                        v-tippy="element.name"
+                                        :tooltip="element.name"
                                         class="dashboard-bg-success-l"
                                     >
                                         <i :class="element.icon" />
-                                    </DashboardChip>
+                                    </UiField>
                                 </div>
                             </template>
                         </CompanyBoxRequestsListItemParameter>
@@ -201,17 +201,17 @@ import HoverActionsButton from '@/components/common/HoverActions/HoverActionsBut
 import WithUnitType from '@/components/common/WithUnitType.vue';
 import { unitTypes } from '@/const/unitTypes.js';
 import CompanyBoxRequestsListItemParameter from '@/components/Company/Box/CompanyBoxRequestsListItemParameter.vue';
-import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
 import AccordionSimple from '@/components/common/Accordion/AccordionSimple.vue';
 import AccordionSimpleTriggerButton from '@/components/common/Accordion/AccordionSimpleTriggerButton.vue';
 import { objectPurposesOptions } from '@/const/options/object.options.js';
+import UiField from '@/components/common/UI/UiField.vue';
 
 export default {
     name: 'CompanyBoxRequestsListItem',
     components: {
+        UiField,
         AccordionSimpleTriggerButton,
         AccordionSimple,
-        DashboardChip,
         CompanyBoxRequestsListItemParameter,
         WithUnitType,
         HoverActionsButton,

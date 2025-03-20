@@ -1,11 +1,7 @@
 <template>
     <div class="company-contact" :class="{ inactive: inactive }">
         <p class="company-contact__name">
-            <i
-                v-if="isPassive"
-                v-tippy="'Контакт в пассиве'"
-                class="fa-solid fa-phone-slash mr-1"
-            ></i>
+            <i v-if="isPassive" ref="passiveIconEl" class="fa-solid fa-phone-slash mr-1"></i>
             <span :class="{ 'text-through': isPassive }">{{ fullName }}</span>
         </p>
         <p v-if="contact.position" class="company-contact__position">{{ position }}</p>
@@ -38,10 +34,11 @@
     </div>
 </template>
 <script setup>
-import { computed } from 'vue';
+import { computed, useTemplateRef } from 'vue';
 import PhoneNumber from '@/components/common/PhoneNumber.vue';
 import { contactOptions } from '@/const/options/contact.options.js';
 import { getContactFullName } from '@/utils/formatters/models/contact.js';
+import { useTippyText } from '@/composables/useTippyText.js';
 
 defineEmits(['open-phone']);
 const props = defineProps({
@@ -62,4 +59,6 @@ const props = defineProps({
 const position = computed(() => contactOptions.position[props.contact.position]);
 const fullName = computed(() => getContactFullName(props.contact));
 const isPassive = computed(() => props.contact.status === 0);
+
+useTippyText(useTemplateRef('passiveIconEl'), 'Контакт в пассиве');
 </script>

@@ -1,6 +1,6 @@
 <template>
     <div
-        v-tippy="label"
+        ref="avatarEl"
         class="avatar"
         :class="{ rectangle: rectangle }"
         :style="{ '--size': size + 'px' }"
@@ -9,9 +9,10 @@
     </div>
 </template>
 <script setup>
-import { computed } from 'vue';
+import { computed, toRef, useTemplateRef } from 'vue';
 import { getLinkUserAvatar } from '@/utils/url.js';
 import LazyImage from '@/components/common/LazyImage.vue';
+import { useTippyText } from '@/composables/useTippyText.js';
 
 const props = defineProps({
     src: {
@@ -33,4 +34,6 @@ const props = defineProps({
 });
 
 const url = computed(() => getLinkUserAvatar(props.src));
+
+useTippyText(useTemplateRef('avatarEl'), toRef(props, 'label'));
 </script>

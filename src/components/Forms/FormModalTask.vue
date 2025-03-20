@@ -159,11 +159,12 @@
                             :style="{ backgroundColor: '#' + option.color, color: '#fff' }"
                         >
                             <span>{{ option.label }}</span>
-                            <i
+                            <UiTooltipIcon
                                 v-if="!disabled"
-                                v-tippy="'Удалить'"
                                 @click="handleTagRemove(option, $event)"
-                                class="ml-1 fa-solid fa-close"
+                                tooltip="Удалить"
+                                icon="fa-solid fa-close"
+                                class="ml-1"
                             />
                         </div>
                     </template>
@@ -233,6 +234,7 @@ import UiField from '@/components/common/UI/UiField.vue';
 import { isString } from '@/utils/helpers/string/isString.js';
 import { dayjsFromMoscow } from '@/utils/formatters/date.js';
 import { isNullish } from '@/utils/helpers/common/isNullish.js';
+import UiTooltipIcon from '@/components/common/UI/UiTooltipIcon.vue';
 
 const { getTagsOptions } = useTagsOptions();
 const { getConsultantsOptions } = useConsultantsOptions();

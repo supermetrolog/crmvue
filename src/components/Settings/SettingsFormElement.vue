@@ -3,22 +3,22 @@
         <div class="settings-form-element__header px-2 py-1">
             <span class="text-grey font-weight-bold">
                 <span>#{{ element.id }}, </span>
-                <span v-tippy="'Дата создания'">{{ createdAt }}</span>
-                <span
+                <UiTooltip tooltip="Дата создания">{{ createdAt }}</UiTooltip>
+                <UiTooltip
                     v-if="
                         element.created_at !== element.updated_at &&
                         element.updated_at !== element.created_at
                     "
-                    v-tippy="'Дата обновления'"
+                    tooltip="Дата обновления"
                     class="ml-2 text-primary"
                 >
                     <i class="fa-solid fa-sync" />
                     {{ updatedAt }}
-                </span>
-                <span v-if="isDeleted" v-tippy="'Дата удаления'" class="ml-2 text-danger">
+                </UiTooltip>
+                <UiTooltip v-if="isDeleted" tooltip="Дата удаления" class="ml-2 text-danger">
                     <i class="fa-solid fa-ban" />
                     {{ deletedAt }}
-                </span>
+                </UiTooltip>
             </span>
             <div v-if="canEdit" class="settings-form-element__actions ml-auto">
                 <UiButtonIcon
@@ -47,6 +47,7 @@
 import UiButtonIcon from '@/components/common/UI/UiButtonIcon.vue';
 import { computed } from 'vue';
 import { toDateFormat } from '@/utils/formatters/date.js';
+import UiTooltip from '@/components/common/UI/UiTooltip.vue';
 
 defineEmits(['edit', 'delete']);
 const props = defineProps({

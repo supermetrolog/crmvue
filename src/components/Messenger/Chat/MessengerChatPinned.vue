@@ -1,17 +1,23 @@
 <template>
     <div class="messenger-chat-pinned">
         <i class="fa-solid fa-lock"></i>
-        <i
-            v-tippy="'Перейти к сообщению'"
+        <UiTooltipIcon
             @click="viewIsOpened = true"
-            class="fa-solid fa-up-right-from-square c-pointer"
-        ></i>
+            tooltip="Перейти к сообщению"
+            icon="fa-solid fa-up-right-from-square"
+            class="c-pointer"
+        />
         <div
             class="messenger-chat-pinned__text"
             v-html="message.message?.length ? message.message : fileNames"
         ></div>
         <span class="messenger-chat-pinned__date">{{ createdAt }}</span>
-        <i v-tippy="'Открепить сообщение'" @click="unpin" class="fa-solid fa-xmark c-pointer"></i>
+        <UiTooltipIcon
+            @click="unpin"
+            tooltip="Открепить сообщение"
+            icon="fa-solid fa-xmark"
+            class="c-pointer"
+        />
         <MessengerChatPinnedView v-if="viewIsOpened" @close="viewIsOpened = false" />
     </div>
 </template>
@@ -23,6 +29,7 @@ import { computed, ref } from 'vue';
 import { toDateFormat } from '@/utils/formatters/date.js';
 import { useNotify } from '@/utils/use/useNotify.js';
 import { useStore } from 'vuex';
+import UiTooltipIcon from '@/components/common/UI/UiTooltipIcon.vue';
 
 const props = defineProps({
     message: {

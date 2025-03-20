@@ -2,8 +2,8 @@
     <AnimationTransition :speed="0.5">
         <HoverActionsButton
             v-show="visible"
-            v-tippy="'Пролистать до конца'"
             @click="emit('scroll')"
+            label="Пролистать до конца"
             class="messenger-chat__scroll-button"
         >
             <i class="fa-solid fa-chevron-down" />
