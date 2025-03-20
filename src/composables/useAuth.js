@@ -37,15 +37,19 @@ export const useAuth = createSharedComposable(() => {
     const store = useStore();
 
     const currentUser = computed(() => store.state.User.user);
-    const currentUserId = computed(() => Number(currentUser.value.id));
+
+    const currentUserId = computed(() => Number(currentUser.value?.id));
+
     const currentUserIsModerator = computed(
-        () => currentUser.value.role >= userOptions.roleStatement.MODERATOR
+        () => currentUser.value?.role >= userOptions.roleStatement.MODERATOR
     );
+
     const currentUserIsAdmin = computed(
-        () => currentUser.value.role === userOptions.roleStatement.ADMIN
+        () => currentUser.value?.role === userOptions.roleStatement.ADMIN
     );
+
     const currentUserIsDirector = computed(
-        () => currentUser.value.role === userOptions.roleStatement.DIRECTOR
+        () => currentUser.value?.role === userOptions.roleStatement.DIRECTOR
     );
 
     return {
