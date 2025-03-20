@@ -226,7 +226,7 @@ async function fetchObjectsAndRequests() {
 }
 
 async function fetchObjects() {
-    return await api.object.list({ company_id: props.companyId, limit: 0 });
+    return await api.object.list({ company_id: props.companyId, 'per-page': 0 });
 }
 
 async function fetchRequests() {
