@@ -4,11 +4,12 @@
             <div class="modal__header">
                 <p>Список завершенных опросов</p>
                 <div class="modal__close">
-                    <i
-                        v-tippy="'Закрыть окно'"
+                    <UiTooltipIcon
                         @click.prevent="$emit('close')"
-                        class="icon fa-solid fa-xmark"
-                    ></i>
+                        tooltip="Закрыть окно"
+                        icon="fa-solid fa-xmark"
+                        class="icon"
+                    />
                 </div>
             </div>
             <div class="modal__body">
@@ -70,6 +71,7 @@ import InfiniteLoading from 'v3-infinite-loading';
 import EmptyLabel from '@/components/common/EmptyLabel.vue';
 import { useStore } from 'vuex';
 import { toDateFormat } from '@/utils/formatters/date.js';
+import UiTooltipIcon from '@/components/common/UI/UiTooltipIcon.vue';
 
 defineEmits(['close']);
 

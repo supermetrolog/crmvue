@@ -2,7 +2,7 @@
     <div class="task-card__users">
         <Avatar
             v-if="task.created_by"
-            v-tippy="`Создана сотрудником ${task.created_by.userProfile.medium_name}`"
+            :label="`Создана сотрудником ${task.created_by.userProfile.medium_name}`"
             :src="task.created_by.userProfile.avatar"
             :size="50"
         />

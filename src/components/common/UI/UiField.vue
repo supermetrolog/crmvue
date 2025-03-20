@@ -1,16 +1,18 @@
 <template>
-    <div class="ui-field" :class="classes">
+    <div ref="field" class="ui-field" :class="classes">
         <slot />
     </div>
 </template>
 <script setup>
-import { computed } from 'vue';
+import { computed, toRef, useTemplateRef } from 'vue';
 import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
+import { useTippyText } from '@/composables/useTippyText.js';
 
 const props = defineProps({
     color: String,
     bordered: Boolean,
-    small: Boolean
+    small: Boolean,
+    tooltip: String
 });
 
 const classes = computed(() => {
@@ -20,4 +22,8 @@ const classes = computed(() => {
         [`ui-field--cl-${props.color}`]: isNotNullish(props.color)
     };
 });
+
+if (props.tooltip) {
+    useTippyText(useTemplateRef('field'), toRef(props, 'tooltip'));
+}
 </script>

@@ -42,17 +42,15 @@
                 <DashboardCard class="mb-2">
                     <p class="dashboard-card-view__subtitle">О событии</p>
                     <div class="calendar-modal-event__params">
-                        <DashboardChip v-tippy="'Уникальный ID'" class="dashboard-bg-light">
+                        <UiField tooltip="Уникальный ID" class="dashboard-bg-light">
                             EID: {{ event._eid }}
-                        </DashboardChip>
-                        <DashboardChip v-tippy="'Категория'" class="dashboard-bg-light">
+                        </UiField>
+                        <UiField tooltip="Категория" class="dashboard-bg-light">
                             {{ event.category }}
-                        </DashboardChip>
-                        <DashboardChip
-                            :style="{ backgroundColor: event.background, color: event.color }"
-                        >
+                        </UiField>
+                        <UiField :style="{ backgroundColor: event.background, color: event.color }">
                             Цвет
-                        </DashboardChip>
+                        </UiField>
                     </div>
                 </DashboardCard>
                 <DashboardCard>
@@ -68,16 +66,16 @@
 </template>
 <script>
 import Modal from '@/components/common/Modal.vue';
-import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
 import DashboardCard from '@/components/Dashboard/Card/DashboardCard.vue';
 import Avatar from '@/components/common/Avatar.vue';
 import dayjs from 'dayjs';
 import objectSupport from 'dayjs/plugin/objectSupport';
+import UiField from '@/components/common/UI/UiField.vue';
 dayjs.extend(objectSupport);
 
 export default {
     name: 'CalendarModalEvent',
-    components: { Avatar, DashboardCard, DashboardChip, Modal },
+    components: { UiField, Avatar, DashboardCard, Modal },
     emits: ['close'],
     props: {
         event: {

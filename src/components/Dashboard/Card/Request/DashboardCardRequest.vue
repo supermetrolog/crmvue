@@ -28,15 +28,15 @@
                         <i class="fa-solid fa-pen"></i>
                     </HoverActionsButton>
                     <template v-if="editable && !isCompleted">
-                        <HoverActionsButton
+                        <UiButtonIcon
                             @click="$emit('toggle-disable')"
                             :label="isDisabled ? 'Восстановить' : 'Завершить'"
                         >
                             <i
                                 class="fa-solid"
                                 :class="isDisabled ? 'fa-rotate-right' : 'fa-ban'"
-                            ></i>
-                        </HoverActionsButton>
+                            />
+                        </UiButtonIcon>
                     </template>
                     <router-link
                         v-if="request.consultant_id === currentUser.id"
@@ -47,12 +47,12 @@
                             <i class="fa-solid fa-timeline"></i>
                         </HoverActionsButton>
                     </router-link>
-                    <HoverActionsButton @click="$emit('view')" label="Подробнее">
-                        <i class="fa-solid fa-eye"></i>
-                    </HoverActionsButton>
-                    <HoverActionsButton @click="$emit('to-chat')" label="Открыть в чате">
-                        <i class="fa-solid fa-comment" />
-                    </HoverActionsButton>
+                    <UiButtonIcon @click="$emit('view')" label="Подробнее" icon="fa-solid fa-eye" />
+                    <UiButtonIcon
+                        @click="$emit('to-chat')"
+                        label="Открыть в чате"
+                        icon="fa-solid fa-comment"
+                    />
                 </div>
             </div>
             <div class="dashboard-card-request__body">
@@ -66,10 +66,11 @@
                         <DashboardChip :class="statusClass">
                             <div class="d-flex align-items-center">
                                 <p>{{ status }}</p>
-                                <i
+                                <UiTooltipIcon
                                     v-if="isDisabled"
-                                    v-tippy="statusTippy"
-                                    class="fa-regular fa-question-circle ml-2 icon"
+                                    :tooltip="statusTippy"
+                                    icon="fa-regular fa-question-circle"
+                                    class="ml-2 icon"
                                 />
                             </div>
                         </DashboardChip>
@@ -86,7 +87,7 @@
             </div>
             <div class="dashboard-card-request__footer">
                 <Avatar
-                    v-tippy="'Консультант: ' + request.consultant.userProfile.medium_name"
+                    :label="'Консультант: ' + request.consultant.userProfile.medium_name"
                     :src="request.consultant.userProfile.avatar"
                     size="35"
                 />
@@ -109,12 +110,21 @@ import dayjs from 'dayjs';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
 import { mapGetters } from 'vuex';
 import { getCompanyName } from '@/utils/formatters/models/company.js';
+import UiTooltipIcon from '@/components/common/UI/UiTooltipIcon.vue';
+import UiButtonIcon from '@/components/common/UI/UiButtonIcon.vue';
 
 dayjs.extend(customParseFormat);
 
 export default {
     name: 'DashboardCardRequest',
-    components: { DashboardChip, Progress, Avatar, HoverActionsButton },
+    components: {
+        UiButtonIcon,
+        UiTooltipIcon,
+        DashboardChip,
+        Progress,
+        Avatar,
+        HoverActionsButton
+    },
     emits: ['edit', 'toggle-disable', 'view', 'to-chat'],
     props: {
         request: {

@@ -9,32 +9,32 @@
         <div class="settings-form__actions">
             <slot name="extra" />
             <AnimationTransition :speed="0.3">
-                <DashboardChip
+                <UiField
                     v-if="pagination?.currentPage < pagination?.pageCount"
                     @click="$emit('load')"
                     class="settings-form__button"
                 >
                     <i class="fa-solid fa-rotate" />
                     <span class="ml-1">Загрузить ещё</span>
-                </DashboardChip>
+                </UiField>
             </AnimationTransition>
-            <DashboardChip @click="$emit('add')" class="settings-form__button">
+            <UiField @click="$emit('add')" class="settings-form__button">
                 <i class="fa-solid fa-plus" />
                 <span class="ml-1">Добавить</span>
-            </DashboardChip>
-            <DashboardChip
-                v-tippy="'Обновить выдачу'"
+            </UiField>
+            <UiField
                 @click="$emit('refresh')"
+                tooltip="Обновить выдачу"
                 class="settings-form__button settings-form__button--info"
             >
                 <i class="fa-solid fa-rotate" />
-            </DashboardChip>
+            </UiField>
         </div>
     </div>
 </template>
 <script setup>
-import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
+import UiField from '@/components/common/UI/UiField.vue';
 
 defineEmits(['load', 'add', 'refresh']);
 defineProps({

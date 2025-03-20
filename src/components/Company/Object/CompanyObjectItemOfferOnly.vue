@@ -24,63 +24,59 @@
                 <i class="fas fa-check" />
             </div>
             <div class="d-flex gap-1 mb-1 position-relative">
-                <DashboardChip
+                <UiField
                     v-if="offer.duplicate_count > 1"
-                    v-tippy="'Количество отправлений'"
+                    tooltip="Количество отправлений"
                     class="dashboard-bg-warning"
-                    with-icon
                 >
                     <i class="fa-regular fa-paper-plane"></i>
                     <span>{{ offer.duplicate_count }}</span>
-                </DashboardChip>
-                <DashboardChip
+                </UiField>
+                <UiField
                     v-if="offer.type_id === 2"
                     class="offer-table-item-mobile__block dashboard-bg-primary text-white"
                 >
                     Общий
-                </DashboardChip>
-                <DashboardChip
+                </UiField>
+                <UiField
                     v-else-if="offer.type_id === 1"
                     class="offer-table-item-mobile__block dashboard-bg-primary-l"
                 >
                     Блок
-                </DashboardChip>
-                <DashboardChip
+                </UiField>
+                <UiField
                     v-else
                     class="offer-table-item-mobile__block dashboard-bg-warning text-white"
                 >
                     Неизвестно
-                </DashboardChip>
+                </UiField>
             </div>
             <div class="offer-table-item-mobile__header">
-                <DashboardChip class="dashboard-bg-light">
+                <UiField class="dashboard-bg-light">
                     {{ offer.visual_id }}
-                </DashboardChip>
+                </UiField>
                 <div class="offer-table-item-mobile__actions">
                     <a :href="offerUrl" target="_blank">
-                        <HoverActionsButton
-                            v-tippy="'Открыть страницу предложения'"
+                        <UiButtonIcon
+                            label="Открыть страницу предложения"
                             class="offer-table-item-mobile__button"
-                        >
-                            <i class="fa-solid fa-eye" />
-                        </HoverActionsButton>
+                            icon="fa-solid fa-eye"
+                        />
                     </a>
                     <template v-if="offer.type_id !== 3">
-                        <HoverActionsButton
+                        <UiButtonIcon
                             @click="toggleFavorite"
                             class="offer-table-item-mobile__button"
                             :label="isFavorite ? 'Удалить из избранного' : 'Добавить в избранное'"
                             :active="isFavorite"
-                        >
-                            <i class="fa-solid fa-star" />
-                        </HoverActionsButton>
+                            icon="fa-solid fa-star"
+                        />
                         <a :href="pdfUrl" target="_blank">
-                            <HoverActionsButton
+                            <UiButtonIcon
                                 class="offer-table-item-mobile__button"
                                 label="Открыть PDF"
-                            >
-                                <i class="fa-solid fa-file-pdf" />
-                            </HoverActionsButton>
+                                icon="fa-solid fa-file-pdf"
+                            />
                         </a>
                     </template>
                 </div>
@@ -159,23 +155,20 @@
             <AccordionSimple without-render class="mt-1">
                 <template #title>
                     <AccordionSimpleTrigger>
-                        <DashboardChip class="offer-table-item-mobile__dropdown dashboard-bg-light">
+                        <UiField class="offer-table-item-mobile__dropdown" color="light">
                             <div class="d-flex justify-content-center gap-2">
                                 <span>Подробнее</span>
                                 <AccordionSimpleTriggerIcon />
                             </div>
-                        </DashboardChip>
+                        </UiField>
                     </AccordionSimpleTrigger>
                 </template>
                 <template #body>
                     <div class="py-1 offer-table-item-mobile__extra">
                         <OfferTableItemMobileAddress :offer="offer" class="mb-1" />
-                        <DashboardChip
-                            v-if="offer.from_mkad"
-                            class="dashboard-bg-light w-100 text-center"
-                        >
+                        <UiField v-if="offer.from_mkad" class="w-100 text-center" color="light">
                             {{ offer.from_mkad }} <small>км от МКАД</small>
-                        </DashboardChip>
+                        </UiField>
                         <hr />
                         <div v-if="offer.comments?.length" class="object-offer__comments">
                             <p v-if="offer.comments?.length" class="offer-table-item-mobile__label">
@@ -228,33 +221,25 @@
                             </CompanyObjectItemProperty>
                         </div>
                         <p class="offer-table-item-mobile__label">Статус</p>
-                        <DashboardChip
+                        <UiField
                             v-if="offer.status === 1"
                             class="dashboard-bg-success-l w-100 text-center my-1"
                         >
                             Актив
-                        </DashboardChip>
-                        <DashboardChip
+                        </UiField>
+                        <UiField
                             v-else
                             class="dashboard-bg-danger text-white w-100 text-center my-1"
                         >
                             Пассив
-                        </DashboardChip>
+                        </UiField>
                         <p class="offer-table-item-mobile__label">Реклама</p>
                         <div class="offer-table-item-mobile__advertisements my-1">
-                            <DashboardChip class="dashboard-bg-light">Realtor.ru</DashboardChip>
-                            <DashboardChip v-if="offer.ad_cian" class="dashboard-bg-light">
-                                Циан
-                            </DashboardChip>
-                            <DashboardChip v-if="offer.ad_yandex" class="dashboard-bg-light">
-                                Яндекс
-                            </DashboardChip>
-                            <DashboardChip v-if="offer.ad_avito" class="dashboard-bg-light">
-                                Авито
-                            </DashboardChip>
-                            <DashboardChip v-if="offer.ad_free" class="dashboard-bg-light">
-                                Бесплатные
-                            </DashboardChip>
+                            <UiField color="light">Realtor.ru</UiField>
+                            <UiField v-if="offer.ad_cian" color="light">Циан</UiField>
+                            <UiField v-if="offer.ad_yandex" color="light">Яндекс</UiField>
+                            <UiField v-if="offer.ad_avito" color="light">Авито</UiField>
+                            <UiField v-if="offer.ad_free" color="light">Бесплатные</UiField>
                         </div>
                         <p class="offer-table-item-mobile__label">Ручное описание</p>
                         <div class="object-offer__block">
@@ -280,10 +265,8 @@ import { TaxFormList } from '@/const/const.js';
 import { useStore } from 'vuex';
 import { unitTypes } from '@/const/unitTypes.js';
 import AccordionSimpleTriggerIcon from '@/components/common/Accordion/AccordionSimpleTriggerIcon.vue';
-import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
 import AccordionSimple from '@/components/common/Accordion/AccordionSimple.vue';
 import AccordionSimpleTrigger from '@/components/common/Accordion/AccordionSimpleTrigger.vue';
-import HoverActionsButton from '@/components/common/HoverActions/HoverActionsButton.vue';
 import WithUnitType from '@/components/common/WithUnitType.vue';
 import OfferTableItemMobileAddress from '@/components/Offer/TableItem/OfferTableItemMobileAddress.vue';
 import OfferTableItemPreview from '@/components/Offer/TableItem/Preview/OfferTableItemPreview.vue';
@@ -294,6 +277,8 @@ import { useRoute } from 'vue-router';
 import { getLinkOfferByObject, getLinkPDF } from '@/utils/url.js';
 import CompanyObjectItemProperty from '@/components/Company/Object/CompanyObjectItemProperty.vue';
 import UiForm from '@/components/common/Forms/UiForm.vue';
+import UiField from '@/components/common/UI/UiField.vue';
+import UiButtonIcon from '@/components/common/UI/UiButtonIcon.vue';
 
 const emit = defineEmits(['select', 'unselect', 'addComment', 'deleteFavoriteOffer']);
 const props = defineProps({

@@ -1,20 +1,16 @@
 <template>
-    <div>
+    <div v-if="offers.length">
         <Tabs
             nav-class="messenger-quiz-form-template-offer__tabs"
             nav-item-link-class="messenger-quiz-form-template-offer__tab"
         >
-            <SurveyQuestionOfferMixOffersTab
-                v-for="offer in offers"
-                :key="offer.id"
-                :offer="offer"
-            />
+            <SurveyQuestionObjectOffersTab v-for="offer in offers" :key="offer.id" :offer="offer" />
         </Tabs>
     </div>
 </template>
 <script setup>
 import Tabs from '@/components/common/Tabs/Tabs.vue';
-import SurveyQuestionOfferMixOffersTab from '@/components/Survey/QuestionOfferMix/SurveyQuestionOfferMixOffersTab.vue';
+import SurveyQuestionObjectOffersTab from '@/components/Survey/QuestionOfferMix/SurveyQuestionObjectOffersTab.vue';
 
 defineProps({
     offers: {

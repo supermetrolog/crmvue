@@ -15,12 +15,12 @@
         >
             >
             <template #today-button>
-                <HoverActionsButton
-                    v-tippy="'Перейти на сегодня'"
-                    class="dashboard-bg-success text-white"
-                >
-                    <i class="fa-solid fa-calendar-day" />
-                </HoverActionsButton>
+                <UiButtonIcon
+                    label="Перейти на сегодня"
+                    icon="fa-solid fa-calendar-day"
+                    color="success"
+                    class="text-white"
+                />
             </template>
             <template #event="{ event, view }">
                 <CalendarEvent :event="event" :view="view" />
@@ -35,19 +35,19 @@
 <script>
 import VueCal from 'vue-cal';
 import 'vue-cal/dist/vuecal.css';
-import HoverActionsButton from '@/components/common/HoverActions/HoverActionsButton.vue';
 import CalendarModalEvent from '@/components/Calendar/CalendarModalEvent.vue';
 import FormModalCalendarEvent from '@/components/Forms/FormModalCalendarEvent.vue';
 import { useAsyncPopup } from '@/composables/useAsyncPopup.js';
 import CalendarEvent from '@/components/Calendar/CalendarEvent.vue';
+import UiButtonIcon from '@/components/common/UI/UiButtonIcon.vue';
 
 export default {
     name: 'Calendar',
     components: {
+        UiButtonIcon,
         CalendarEvent,
         FormModalCalendarEvent,
         CalendarModalEvent,
-        HoverActionsButton,
         VueCal
     },
     emits: ['event-created', 'update-event'],

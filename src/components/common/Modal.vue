@@ -21,11 +21,12 @@
                         </p>
                         <slot name="header"></slot>
                         <div class="modal__close">
-                            <i
-                                v-tippy="'Закрыть окно'"
+                            <UiTooltipIcon
                                 @click.prevent="close"
-                                class="icon fa-solid fa-xmark"
-                            ></i>
+                                tooltip="Закрыть окно"
+                                icon="fa-solid fa-xmark"
+                                class="icon"
+                            />
                         </div>
                     </div>
                     <div class="modal__body" :class="bodyClass">
@@ -49,6 +50,7 @@
 <script setup>
 import { computed, onBeforeUnmount, ref, shallowRef, watch } from 'vue';
 import { useTimeoutFn } from '@vueuse/core';
+import UiTooltipIcon from '@/components/common/UI/UiTooltipIcon.vue';
 
 const visibleModel = defineModel('visible');
 const emit = defineEmits(['close']);

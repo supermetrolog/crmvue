@@ -23,7 +23,7 @@
         </div>
         <div class="dashboard-kanban-task__body">
             <Avatar
-                v-tippy="task.created_by?.userProfile?.medium_name"
+                :label="task.created_by?.userProfile?.medium_name"
                 :src="task.created_by?.userProfile?.avatar"
                 :size="35"
             />
@@ -34,7 +34,7 @@
         <div class="dashboard-kanban-task__footer">
             <span>Задача #{{ task.id }}, исполнители:</span>
             <Avatar
-                v-tippy="task.user?.userProfile?.medium_name"
+                :label="task.user?.userProfile?.medium_name"
                 :src="task.user?.userProfile?.avatar"
                 :size="35"
             />

@@ -1,95 +1,84 @@
 <template>
     <div class="offer-table-item-call">
         <template v-if="call">
-            <DashboardChip
+            <UiField
                 v-if="withoutContacts"
-                v-tippy="
-                    'К предложению не прикреплен активный контакт. Нажмите, чтобы перейти в чат предложения.'
-                "
                 @click="$emit('to-chat')"
+                tooltip="К предложению не прикреплен активный контакт. Нажмите, чтобы перейти в чат предложения."
                 class="offer-table-item-call__chip warning"
             >
                 <p>Нет контактов</p>
                 <p class="offer-table-item-call__help">от {{ lastCallDate }}</p>
-            </DashboardChip>
-            <DashboardChip
+            </UiField>
+            <UiField
                 v-else-if="lastCallIsExpired"
-                v-tippy="
-                    `Дата последнего звонка по предложению - ${lastCallDate}. Нажмите, чтобы перейти к опроснику и обновить информацию.`
-                "
                 @click="$emit('to-survey')"
+                :tooltip="`Дата последнего звонка по предложению - ${lastCallDate}. Нажмите, чтобы перейти к опроснику и обновить информацию.`"
                 class="offer-table-item-call__chip expired"
-                with-icon
             >
                 <i class="fa-solid fa-phone" />
                 <span>Прозвонить!</span>
-            </DashboardChip>
-            <DashboardChip
+            </UiField>
+            <UiField
                 v-else-if="!lastCallHasCompleteStatus"
-                v-tippy="
-                    `Не дозвонились. Дата звонка - ${lastCallDate}. Нажмите, чтобы перейти к опроснику и обновить информацию.`
-                "
                 @click="$emit('to-survey')"
-                class="offer-table-item-call__chip dashboard-bg-gray-l"
-                with-icon
+                :tooltip="`Не дозвонились. Дата звонка - ${lastCallDate}. Нажмите, чтобы перейти к опроснику и обновить информацию.`"
+                class="offer-table-item-call__chip"
+                color="gray-l"
             >
                 <i class="fa-solid fa-phone-slash" />
                 <span>{{ lastCallDate }}</span>
-            </DashboardChip>
-            <DashboardChip
+            </UiField>
+            <UiField
                 v-else
-                v-tippy="
-                    `Дата последнего звонка по предложению - ${lastCallDate}. Нажмите, чтобы перейти в чат предложения.`
-                "
                 @click="$emit('to-chat')"
+                :tooltip="`Дата последнего звонка по предложению - ${lastCallDate}. Нажмите, чтобы перейти в чат предложения.`"
                 class="offer-table-item-call__chip"
-                with-icon
             >
                 <i class="fa-solid fa-comments" />
                 <span>{{ lastCallIsExpired ? 'Прозвонить!' : lastCallDate }}</span>
-            </DashboardChip>
+            </UiField>
         </template>
-        <DashboardChip
+        <UiField
             v-else-if="isRecentlyCreated"
-            v-tippy="
+            @click="$emit('to-chat')"
+            tooltip="
                 'Предложение недавно добавлено в систему. Нажмите, чтобы перейти в чат предложения.'
             "
-            @click="$emit('to-chat')"
             class="offer-table-item-call__chip"
         >
             <p class="offer-table-item-call__help">Новая сделка</p>
             <p>от {{ createdAtFormat }}</p>
-        </DashboardChip>
-        <DashboardChip
+        </UiField>
+        <UiField
             v-else-if="withoutContacts"
-            v-tippy="
+            @click="$emit('to-chat')"
+            tooltip="
                 'К предложению не прикреплен активный контакт. Нажмите, чтобы перейти в чат предложения.'
             "
-            @click="$emit('to-chat')"
             class="offer-table-item-call__chip warning"
         >
             <p>Нет контактов</p>
-        </DashboardChip>
-        <DashboardChip
+        </UiField>
+        <UiField
             v-else
-            v-tippy="
+            @click="$emit('to-survey')"
+            tooltip="
                 'Дата последнего звонка неизвестна. По предложению еще не было зафиксированных звонков. Нажмите, чтобы перейти к опроснику и обновить информацию.'
             "
-            @click="$emit('to-survey')"
             class="offer-table-item-call__chip expired"
-            with-icon
         >
             <i class="fa-solid fa-phone" />
             <span>Прозвонить!</span>
-        </DashboardChip>
+        </UiField>
     </div>
 </template>
 <script setup>
-import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
 import { computed } from 'vue';
 import { dayjsFromMoscow, toDateFormat } from '@/utils/formatters/date.js';
 import dayjs from 'dayjs';
 import { CALL_STATUSES } from '@/components/Messenger/Quiz/useMessengerQuiz.js';
+import UiField from '@/components/common/UI/UiField.vue';
 
 defineEmits(['to-chat', 'to-survey']);
 const props = defineProps({

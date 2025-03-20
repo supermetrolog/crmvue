@@ -34,10 +34,10 @@
                     <template #footer>
                         <div class="d-flex gap-2 flex-wrap align-items-center">
                             <TimelineButton
-                                v-tippy="
-                                    'Нажмите, чтобы отправить клиенту ссылку на созданный маршрут'
-                                "
                                 @click="sendRoute"
+                                tooltip="
+                                    Нажмите, чтобы отправить клиенту ссылку на созданный маршрут
+                                "
                                 :disabled="disabled"
                                 icon
                                 success
@@ -46,10 +46,10 @@
                                 <i class="fas fa-paper-plane icon"></i>
                             </TimelineButton>
                             <TimelineButton
-                                v-tippy="
-                                    'Нажмите, чтобы отправить себе ссылку на созданный маршрут'
-                                "
                                 @click="sendRoute(true)"
+                                tooltip="
+                                    Нажмите, чтобы отправить себе ссылку на созданный маршрут
+                                "
                                 :disabled="disabled"
                                 icon
                             >

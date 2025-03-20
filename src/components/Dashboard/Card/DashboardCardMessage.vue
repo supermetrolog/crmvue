@@ -1,13 +1,14 @@
 <template>
     <div class="dashboard-card-message">
-        <i
-            v-tippy="'Открыть чат'"
+        <UiTooltipIcon
             @click="$emit('toChat')"
-            class="fa-solid fa-up-right-from-square dashboard-linker dashboard-card-message__icon"
-        ></i>
+            tooltip="Открыть чат"
+            icon="fa-solid fa-up-right-from-square"
+            class="dashboard-linker dashboard-card-message__icon"
+        />
         <Avatar
             v-if="message.from.model_type === 'user'"
-            v-tippy="message.from.model.userProfile.medium_name"
+            :label="message.from.model.userProfile.medium_name"
             :src="message.from.model.userProfile.avatar"
             :size="35"
         />
@@ -25,10 +26,11 @@
 import Avatar from '@/components/common/Avatar.vue';
 import { plural } from '@/utils/plural.js';
 import dayjs from 'dayjs';
+import UiTooltipIcon from '@/components/common/UI/UiTooltipIcon.vue';
 
 export default {
     name: 'DashboardCardMessage',
-    components: { Avatar },
+    components: { UiTooltipIcon, Avatar },
     props: {
         message: {
             type: Object,

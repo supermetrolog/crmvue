@@ -38,23 +38,18 @@
         <AnimationTransition :speed="0.4">
             <div v-if="hasDiff" class="d-flex gap-1 flex-wrap mt-2">
                 <slot name="button" :update="update" :clear="clear" :loading="loading">
-                    <MessengerButton
-                        v-tippy="'В разработке'"
+                    <UiButton
                         @click="update"
                         :disabled="loading"
                         :class="buttonsClass"
+                        tooltip="В разработке"
                         color="success"
                     >
                         Сохранить изменения
-                    </MessengerButton>
-                    <MessengerButton
-                        @click="clear"
-                        :disabled="loading"
-                        :class="buttonsClass"
-                        color="dark"
-                    >
+                    </UiButton>
+                    <UiButton @click="clear" :disabled="loading" :class="buttonsClass" color="dark">
                         Отменить изменения
-                    </MessengerButton>
+                    </UiButton>
                 </slot>
             </div>
         </AnimationTransition>
@@ -66,8 +61,8 @@ import { computed, ref, watch } from 'vue';
 import ObjectPurpose from '@/components/Object/ObjectPurpose.vue';
 import { spliceWithPrimitive } from '@/utils/helpers/array/spliceWithPrimitive.js';
 import { isEmptyObject } from '@/utils/helpers/object/isEmptyObject.js';
-import MessengerButton from '@/components/Messenger/MessengerButton.vue';
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
+import UiButton from '@/components/common/UI/UiButton.vue';
 
 const emit = defineEmits(['update']);
 const props = defineProps({

@@ -8,31 +8,26 @@
             Старая версия
         </a>
         <div class="offer-table-item-preview__header mb-1">
-            <DashboardChip v-if="isPassive" class="dashboard-bg-danger-l">Пассив</DashboardChip>
-            <DashboardChip v-else class="dashboard-bg-success-l">
+            <UiField v-if="isPassive" class="dashboard-bg-danger-l">Пассив</UiField>
+            <UiField v-else class="dashboard-bg-success-l">
                 {{ dealType }}
-            </DashboardChip>
-            <DashboardChip
+            </UiField>
+            <UiField
                 v-if="offer.hide_from_market"
-                v-tippy="'Не выгружается'"
+                tooltip="Не выгружается"
                 class="dashboard-bg-warning-l"
             >
                 <i class="fa-solid fa-eye-slash"></i>
-            </DashboardChip>
-            <DashboardChip v-tippy="'Класс объекта'" class="dashboard-bg-danger-l">
+            </UiField>
+            <UiField tooltip="Класс объекта" class="dashboard-bg-danger-l">
                 {{ offer.class_name }}
-            </DashboardChip>
-            <DashboardChip
-                v-if="offer.object"
-                v-tippy="'Общая площадь объекта'"
-                class="dashboard-bg-gray-l"
-                with-icon
-            >
+            </UiField>
+            <UiField v-if="offer.object" tooltip="Общая площадь объекта" color="light">
                 <i class="fa-solid fa-expand"></i>
                 <WithUnitType :unit-type="unitTypes.SQUARE_METERS">
                     {{ fullArea }}
                 </WithUnitType>
-            </DashboardChip>
+            </UiField>
         </div>
         <component
             :is="as"
@@ -71,21 +66,20 @@
         </component>
         <div class="offer-table-item-preview__types">
             <template v-if="offer.object_type?.length">
-                <DashboardChip
+                <UiField
                     v-for="element in objectTypes"
                     :key="element.id"
-                    v-tippy="element.name"
-                    class="dashboard-bg-gray-l"
+                    :tooltip="element.name"
+                    color="light"
                 >
                     <i :class="element.icon" />
-                </DashboardChip>
+                </UiField>
             </template>
         </div>
     </div>
 </template>
 
 <script setup>
-import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
 import { computed } from 'vue';
 import { objectOptions } from '@/const/options/object.options.js';
 import OfferTableItemPreviewMotionSlider from '@/components/Offer/TableItem/OfferTableItemPreviewMotionSlider.vue';
@@ -96,6 +90,7 @@ import { toNumberFormat } from '@/utils/formatters/number.js';
 import { getLinkOfferByObject, getLinkOfferOldByObject } from '@/utils/url.js';
 import NoImage from '@/components/common/NoImage.vue';
 import LazyImage from '@/components/common/LazyImage.vue';
+import UiField from '@/components/common/UI/UiField.vue';
 
 defineEmits(['click-preview']);
 const props = defineProps({

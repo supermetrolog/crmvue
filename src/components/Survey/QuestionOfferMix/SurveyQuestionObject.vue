@@ -1,11 +1,8 @@
 <template>
     <div class="messenger-quiz-question-template-offer" :class="{ disabled: disabled }">
         <div class="messenger-quiz-question-template-offer__body">
-            <SurveyQuestionOfferMixPreview
-                @show-preview="$emit('show-preview')"
-                :offer="offerMix.offers[0]"
-            />
-            <SurveyQuestionOfferMixContent :offer="offerMix.offers[0]" :offers="offerMix.offers" />
+            <SurveyQuestionObjectPreview @show-preview="$emit('show-preview')" :object />
+            <SurveyQuestionObjectContent :object />
             <div class="messenger-quiz-question-template-offer__actions">
                 <UiButtonIcon
                     @click="$emit('object-sold')"
@@ -26,13 +23,13 @@
     </div>
 </template>
 <script setup>
-import SurveyQuestionOfferMixPreview from '@/components/Survey/QuestionOfferMix/SurveyQuestionOfferMixPreview.vue';
-import SurveyQuestionOfferMixContent from '@/components/Survey/QuestionOfferMix/SurveyQuestionOfferMixContent.vue';
+import SurveyQuestionObjectPreview from '@/components/Survey/QuestionOfferMix/SurveyQuestionObjectPreview.vue';
+import SurveyQuestionObjectContent from '@/components/Survey/QuestionOfferMix/SurveyQuestionObjectContent.vue';
 import UiButtonIcon from '@/components/common/UI/UiButtonIcon.vue';
 
 defineEmits(['show-preview', 'object-sold', 'object-destroyed']);
 defineProps({
-    offerMix: {
+    object: {
         type: Object,
         required: true
     },

@@ -13,11 +13,12 @@
                 <div>
                     <a class="company-table-item__title" :href="companyUrl" target="_blank">
                         <h4 :class="{ 'text-warning': isPassive }">
-                            <i
+                            <UiTooltipIcon
                                 v-if="company.is_individual"
-                                v-tippy="'Физ.лицо'"
-                                class="fa-solid fa-user-tie mr-1"
-                            ></i>
+                                tooltip="Физ.лицо"
+                                icon="fa-solid fa-user-tie"
+                                class="mr-1"
+                            />
                             <span>{{ companyName }}</span>
                         </h4>
                     </a>
@@ -84,7 +85,7 @@
         <Td class="company-table-item__date" sort="created_at">
             <DashboardChip
                 v-if="isPassive"
-                v-tippy="passiveWhyComment"
+                ref="passiveWhyCommentEl"
                 class="dashboard-bg-danger offer-table-item__chip text-white"
             >
                 Пассив
@@ -122,7 +123,7 @@ import CompanyTableDropdown from '@/components/Company/Table/CompanyTableDropdow
 import Tr from '@/components/common/Table/Tr.vue';
 import Td from '@/components/common/Table/Td.vue';
 import { useStore } from 'vuex';
-import { computed } from 'vue';
+import { computed, useTemplateRef } from 'vue';
 import { useRouter } from 'vue-router';
 import { ActivityProfileList, CompanyCategories, PassiveWhy } from '@/const/const.js';
 import Rating from '@/components/common/Rating.vue';
@@ -137,6 +138,8 @@ import { ucFirst } from '@/utils/formatters/string.js';
 import CompanyLogo from '@/components/Company/CompanyLogo.vue';
 import { messenger } from '@/const/messenger.js';
 import CompanyTableItemCall from '@/components/Company/Table/CompanyTableItemCall.vue';
+import UiTooltipIcon from '@/components/common/UI/UiTooltipIcon.vue';
+import { useTippyText } from '@/composables/useTippyText.js';
 
 const store = useStore();
 const router = useRouter();
@@ -200,4 +203,6 @@ const openInChat = () => {
 const openInSurvey = () => {
     openSurvey(messenger.dialogTypes.COMPANY, props.company.id, props.company.id);
 };
+
+useTippyText(useTemplateRef('passiveWhyCommentEl'), passiveWhyComment);
 </script>

@@ -1209,3 +1209,23 @@
         border-left-color: variables.$color_warning;
     }
 }
+
+.messenger-quiz-question-call {
+    &__radio {
+        .form__row {
+            gap: 0;
+        }
+
+        .radio-chip {
+            border-radius: 0;
+
+            &:first-child {
+                border-radius: 5px 0 0 5px;
+            }
+
+            &:last-child {
+                border-radius: 0 5px 5px 0;
+            }
+        }
+    }
+}

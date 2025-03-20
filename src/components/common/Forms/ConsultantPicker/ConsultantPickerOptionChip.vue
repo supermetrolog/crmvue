@@ -1,7 +1,7 @@
 <template>
     <div class="consultant-picker-option consultant-picker-option-chip">
         <Avatar
-            v-tippy="label"
+            ref="avatar"
             class="consultant-picker-option-chip__avatar"
             :src="option.avatar"
             :size="25"
@@ -15,8 +15,9 @@
 </template>
 <script setup>
 import Avatar from '@/components/common/Avatar.vue';
-import { h } from 'vue';
+import { h, useTemplateRef } from 'vue';
 import ConsultantPickerOptionLabel from '@/components/common/Forms/ConsultantPicker/ConsultantPickerOptionLabel.vue';
+import { useTippy } from 'vue-tippy';
 
 defineEmits(['remove']);
 const props = defineProps({
@@ -26,5 +27,7 @@ const props = defineProps({
     }
 });
 
-const label = { content: h(ConsultantPickerOptionLabel, { option: props.option }) };
+useTippy(useTemplateRef('avatar'), {
+    content: h(ConsultantPickerOptionLabel, { option: props.option })
+});
 </script>

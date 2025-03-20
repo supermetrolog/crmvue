@@ -6,14 +6,15 @@
             'company-box-objects-renter--danger': isExpired
         }"
     >
-        <i
+        <UiTooltipIcon
             v-if="isExpired"
-            v-tippy="'Скоро истечет!'"
-            class="fa-bolt fa-solid icon company-box-objects-renter__expired"
-        ></i>
+            tooltip="Скоро истечет!"
+            icon="fa-solid fa-bolt"
+            class="icon company-box-objects-renter__expired"
+        />
         <div class="company-box-objects-renter__info">
             <p class="company-box-objects-renter__title">
-                {{ $formatter.companyName(deal.company) }}
+                {{ companyName }}
             </p>
             <ul class="company-box-objects-renter__list">
                 <CompanyBoxObjectsRenterParameter label="Чья сделка">
@@ -24,7 +25,7 @@
                 </CompanyBoxObjectsRenterParameter>
                 <CompanyBoxObjectsRenterParameter label="Площадь">
                     <WithUnitType v-if="deal.area" :unit-type="unitTypes.SQUARE_METERS">
-                        {{ $formatter.number(deal.area) }}
+                        {{ dealArea }}
                     </WithUnitType>
                 </CompanyBoxObjectsRenterParameter>
                 <CompanyBoxObjectsRenterParameter label="Цена пола">
@@ -32,7 +33,7 @@
                         v-if="deal.floorPrice"
                         :unit-type="unitTypes.RUB_PER_SQUARE_METERS_PER_YEAR"
                     >
-                        {{ $formatter.number(deal.floorPrice) }}
+                        {{ floorPrice }}
                     </WithUnitType>
                 </CompanyBoxObjectsRenterParameter>
                 <template v-if="extraIsOpen">
@@ -53,46 +54,40 @@
             </ul>
         </div>
         <Dropdown
+            ref="dropdownEl"
             v-model="extraIsOpen"
-            v-tippy="'Подробнее'"
             class="company-box-objects-renter__dropdown"
         />
     </div>
 </template>
 
-<script>
+<script setup>
 import Dropdown from '@/components/common/Dropdown/Dropdown.vue';
 import dayjs from 'dayjs';
 import CompanyBoxObjectsRenterParameter from '@/components/Company/Box/CompanyBoxObjectsRenterParameter.vue';
 import WithUnitType from '@/components/common/WithUnitType.vue';
 import { unitTypes } from '@/const/unitTypes.js';
+import UiTooltipIcon from '@/components/common/UI/UiTooltipIcon.vue';
+import { computed, ref, useTemplateRef } from 'vue';
+import { toNumberFormat } from '@/utils/formatters/number.js';
+import { getCompanyName } from '@/utils/formatters/models/company.js';
+import { useTippyText } from '@/composables/useTippyText.js';
 
-export default {
-    name: 'CompanyBoxObjectsRenter',
-    components: { WithUnitType, CompanyBoxObjectsRenterParameter, Dropdown },
-    props: {
-        deal: {
-            type: Object,
-            required: true
-        }
-    },
-    data() {
-        return {
-            extraIsOpen: false
-        };
-    },
-    computed: {
-        unitTypes() {
-            return unitTypes;
-        },
-        isExpired() {
-            return this.deal.restOfTheTerm < 60 && this.deal.restOfTheTerm > 1;
-        }
-    },
-    methods: {
-        createdAt() {
-            return dayjs(this.deal.dealDate).format('DD.MM.YY');
-        }
+const props = defineProps({
+    deal: {
+        type: Object,
+        required: true
     }
-};
+});
+
+const extraIsOpen = ref(false);
+
+const companyName = computed(() => getCompanyName(props.deal.company));
+const dealArea = computed(() => toNumberFormat(props.deal.area));
+const floorPrice = computed(() => toNumberFormat(props.deal.floorPrice));
+
+const isExpired = computed(() => props.deal.restOfTheTerm < 60 && props.deal.restOfTheTerm > 1);
+const createdAt = computed(() => dayjs(props.deal.dealDate).format('DD.MM.YY'));
+
+useTippyText(useTemplateRef('dropdownEl'), 'Подробнее');
 </script>

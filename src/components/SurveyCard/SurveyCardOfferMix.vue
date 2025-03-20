@@ -14,11 +14,16 @@
                     :key="offer.id"
                     class="dashboard-bg-light py-1 px-2 fs-1"
                 >
-                    <span>{{ getDealType(offer.deal_type) }}, </span>
-                    <WithUnitType :unit-type="unitTypes.SQUARE_METERS">
-                        {{ offer.calc_area }}
+                    <i v-if="offer.calc_area === '0'" class="fa-solid fa-down-long mr-1" />
+                    <span>{{ getDealType(offer.deal_type) }}</span>
+                    <WithUnitType
+                        v-if="offer.calc_area !== '0'"
+                        :unit-type="unitTypes.SQUARE_METERS"
+                    >
+                        , {{ offer.calc_area }}
                     </WithUnitType>
                 </DashboardChip>
+                <p v-if="!offerMix.offers?.length">Без предложений..</p>
             </div>
         </div>
         <div class="d-flex gap-1">

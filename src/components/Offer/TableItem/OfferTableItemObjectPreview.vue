@@ -8,12 +8,12 @@
             Старая версия
         </a>
         <div class="offer-table-item-preview__header mb-1">
-            <DashboardChip class="dashboard-bg-gray-l">
-                {{ object.is_land ? 'Уассток' : 'Объект' }}
-            </DashboardChip>
-            <DashboardChip v-tippy="'Класс объекта'" class="dashboard-bg-danger-l">
+            <UiField class="dashboard-bg-gray-l">
+                {{ object.is_land ? 'Участок' : 'Объект' }}
+            </UiField>
+            <UiField tooltip="Класс объекта" class="dashboard-bg-danger-l">
                 {{ className }}
-            </DashboardChip>
+            </UiField>
         </div>
         <a
             class="offer-table-item-preview__container"
@@ -41,6 +41,7 @@ import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
 import { computed } from 'vue';
 import { objectOptions } from '@/const/options/object.options.js';
 import OfferTableItemPreviewMotionSlider from '@/components/Offer/TableItem/OfferTableItemPreviewMotionSlider.vue';
+import UiField from '@/components/common/UI/UiField.vue';
 
 const props = defineProps({
     object: {

@@ -99,22 +99,19 @@
             <p v-else>&#8212;</p>
         </Td>
         <Td class="text-center request-table__status" sort="updated_at">
-            <DashboardChip
+            <UiField
                 v-if="isPassive"
-                v-tippy="passiveWhyComment"
+                :tooltip="passiveWhyComment"
                 class="dashboard-bg-danger offer-table-item__chip text-white"
             >
                 Пассив
-            </DashboardChip>
-            <DashboardChip
-                v-else-if="isActive"
-                class="dashboard-bg-success-l offer-table-item__chip"
-            >
+            </UiField>
+            <UiField v-else-if="isActive" class="dashboard-bg-success-l offer-table-item__chip">
                 Актив
-            </DashboardChip>
-            <DashboardChip v-else class="dashboard-bg-primary-l offer-table-item__chip">
+            </UiField>
+            <UiField v-else class="dashboard-bg-primary-l offer-table-item__chip">
                 Завершен
-            </DashboardChip>
+            </UiField>
             <!--            <OfferTableItemCall @click="openSurvey" :call="company.last_call" />-->
             <!--            <HoverActionsButton-->
             <!--                @click="openInChat"-->
@@ -149,7 +146,7 @@ import Avatar from '@/components/common/Avatar.vue';
 import CompanyElement from '@/components/Company/CompanyElement.vue';
 import CompanyContact from '@/components/Company/CompanyContact.vue';
 import TableDateBlock from '@/components/common/Table/TableDateBlock.vue';
-import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
+import UiField from '@/components/common/UI/UiField.vue';
 
 defineEmits(['to-chat', 'view']);
 const props = defineProps({
