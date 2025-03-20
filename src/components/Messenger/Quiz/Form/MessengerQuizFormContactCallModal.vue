@@ -48,9 +48,8 @@
             unselect
             :options="model.form.available ? availableReasonOptions : unavailableReasonOptions"
             label="Результат по контакту"
-            show-radio
             :rounded="false"
-            class="mb-2"
+            class="messenger-quiz-question-call__radio mb-2"
             :disabled="!hasAnyAnswer"
         />
         <AnimationTransition :speed="0.3">
@@ -93,7 +92,7 @@
 </template>
 <script setup>
 import UiModal from '@/components/common/UI/UiModal.vue';
-import { computed, toRef } from 'vue';
+import { computed, toRef, watch } from 'vue';
 import RadioOptions from '@/components/common/Forms/RadioOptions.vue';
 import useVuelidate from '@vuelidate/core';
 import { helpers, required } from '@vuelidate/validators';
@@ -111,14 +110,7 @@ import AnimationTransition from '@/components/common/AnimationTransition.vue';
 const visible = defineModel('visible');
 const model = defineModel('form');
 
-const emit = defineEmits([
-    'confirm',
-    'cancel',
-    'schedule-call',
-    'call-scheduled',
-    'next-contact',
-    'finish'
-]);
+const emit = defineEmits(['confirm', 'cancel', 'schedule-call', 'next-contact', 'finish']);
 
 const props = defineProps({
     contacts: {
@@ -132,18 +124,27 @@ const hasAnyAnswer = computed(() => isNotNullish(model.value.form.available));
 const hasPositiveAnswer = computed(() => model.value.form.available === true);
 const hasNegativeAnswer = computed(() => model.value.form.available === false);
 
+watch(
+    () => model.value?.form?.available,
+    value => {
+        if (value) {
+            model.value.form.reason = 1;
+        }
+    }
+);
+
 const availableReasonOptions = {
     1: 'Актуален',
     2: 'Удалить',
-    3: 'Перенести',
-    4: 'Перезвоню'
+    3: 'Перенести'
 };
 
-const unavailableReasonOptions = {
-    2: 'Удалить',
-    3: 'Перенести',
-    4: 'Перезвоню'
-};
+const unavailableReasonOptions = [
+    { value: 4, label: 'Не поднимает' },
+    { value: 5, label: 'Недоступен' },
+    { value: 2, label: 'Удалить' },
+    { value: 3, label: 'Перенести' }
+];
 
 const v$ = useVuelidate(
     {
@@ -162,36 +163,17 @@ function submit() {
     validateWithNotify();
     if (v$.value.$invalid) return;
 
-    if (model.value.form.available) {
-        if (model.value.form.reason === 1) {
-            emit('confirm');
-            return;
-        }
-
-        if (model.value.form.reason === 4) {
-            emit('call-scheduled');
-            return;
-        }
-
-        if (props.canGoToNext) {
-            emit('next-contact');
-            return;
-        }
-
-        emit('finish');
-    } else {
-        if (model.value.form.reason === 4) {
-            emit('call-scheduled');
-            return;
-        }
-
-        if (props.canGoToNext) {
-            emit('next-contact');
-            return;
-        }
-
-        emit('finish');
+    if (model.value.form.available && model.value.form.reason === 1) {
+        emit('confirm');
+        return;
     }
+
+    if (props.canGoToNext) {
+        emit('next-contact');
+        return;
+    }
+
+    emit('finish');
 }
 
 const { confirm } = useConfirm();
