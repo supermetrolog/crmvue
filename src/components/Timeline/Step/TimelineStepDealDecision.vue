@@ -11,8 +11,8 @@
                     <template #footer>
                         <div class="d-flex gap-2 flex-wrap">
                             <TimelineButton
-                                v-tippy="'Нажмите, чтобы сохранить информацию об объектах'"
                                 @click="submit"
+                                tooltip="Нажмите, чтобы сохранить информацию об объектах"
                                 success
                                 :disabled="disabled || !selectedObjects.length"
                             >
@@ -20,8 +20,8 @@
                                 <i class="fa-solid fa-champagne-glasses icon"></i>
                             </TimelineButton>
                             <TimelineButton
-                                v-tippy="'Нажмите, чтобы сохранить информацию об объектах'"
                                 @click="selectNegative"
+                                tooltip="Нажмите, чтобы сохранить информацию об объектах"
                                 :disabled="disabled"
                                 :active="step.negative"
                                 danger

@@ -18,7 +18,7 @@
             </DashboardChip>
             <DashboardChip
                 v-if="contact.faceToFaceMeeting"
-                v-tippy="'Очная встреча'"
+                ref="faceToFaceEl"
                 class="dashboard-bg-success"
             >
                 <i class="fa-solid fa-street-view"></i>
@@ -55,38 +55,41 @@
     </div>
 </template>
 
-<script>
+<script setup>
 import { PositionList } from '@/const/const.js';
 import dayjs from 'dayjs';
 import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
 import CopyField from '@/components/common/CopyField.vue';
+import { useTippyText } from '@/composables/useTippyText.js';
+import { computed, useTemplateRef } from 'vue';
 
-export default {
-    name: 'CompanyBoxContactListItem',
-    components: { CopyField, DashboardChip },
-    props: {
-        contact: {
-            type: Object,
-            required: true
-        }
-    },
-    computed: {
-        position() {
-            return this.contact.position ? PositionList[this.contact.position].label : '-';
-        },
-        updatedAt() {
-            let date = this.contact.updated_at ? this.contact.updated_at : this.contact.created_at;
-            if (!date) return false;
-            return dayjs(date).format('DD.MM.YYYY');
-        },
-        mainPhone() {
-            return this.contact.phones.find(phone => phone.isMain);
-        },
-        mainMail() {
-            let mainMail = this.contact.emails.find(email => email.isMain);
-            if (mainMail) return mainMail.email;
-            else return this.contact.emails[0].email;
-        }
+const props = defineProps({
+    contact: {
+        type: Object,
+        required: true
     }
-};
+});
+
+const position = computed(() => {
+    return props.contact.position ? PositionList[props.contact.position].label : '-';
+});
+
+const updatedAt = computed(() => {
+    let date = props.contact.updated_at ?? props.contact.created_at;
+    if (!date) return null;
+
+    return dayjs(date).format('DD.MM.YYYY');
+});
+
+const mainPhone = computed(() => {
+    return props.contact.phones.find(phone => phone.isMain);
+});
+
+const mainMail = computed(() => {
+    let mainMail = props.contact.emails.find(email => email.isMain);
+    if (mainMail) return mainMail.email;
+    else return props.contact.emails[0].email;
+});
+
+useTippyText(useTemplateRef('faceToFaceEl'), 'Очная встреча');
 </script>

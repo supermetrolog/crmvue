@@ -74,14 +74,16 @@ const reasonOptions = {
     1: 'Актуален',
     2: 'Будет удален',
     3: 'Будет перенесен',
-    4: 'Запланирован звонок'
+    4: 'Не поднимает трубку',
+    5: 'Телефон недоступен'
 };
 
 const reasonOptionsIcons = {
     1: 'fa-solid fa-check',
     2: 'fa-solid fa-trash',
     3: 'fa-solid fa-pen',
-    4: 'fa-solid fa-phone'
+    4: 'fa-solid fa-phone-slash',
+    5: 'fa-solid fa-phone-slash'
 };
 
 const v$ = useVuelidate(

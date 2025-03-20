@@ -13,9 +13,9 @@
                 <span v-else class="account-consultant__helper">телефон не указан</span>
             </p>
             <div class="account-consultant__actions">
-                <Button v-tippy="`В разработке..`" small success>Активность</Button>
-                <Button v-tippy="`В разработке..`" small success>Написать</Button>
-                <Button v-if="canEdit" @click="$emit('edit')" small>Редактировать</Button>
+                <UiButton disabled small color="success">Активность</UiButton>
+                <UiButton disabled small color="success">Написать</UiButton>
+                <UiButton v-if="canEdit" @click="$emit('edit')" small>Редактировать</UiButton>
             </div>
         </div>
     </div>
@@ -23,8 +23,8 @@
 <script setup>
 import Avatar from '@/components/common/Avatar.vue';
 import { RoleList } from '@/const/const';
-import Button from '@/components/common/Button.vue';
 import { computed } from 'vue';
+import UiButton from '@/components/common/UI/UiButton.vue';
 
 defineEmits(['edit']);
 const props = defineProps({

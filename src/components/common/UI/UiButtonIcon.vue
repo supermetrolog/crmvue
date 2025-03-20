@@ -1,5 +1,5 @@
 <template>
-    <button v-tippy="label" class="ui-button-icon" :class="classes" :disabled="disabled || loading">
+    <button ref="button" class="ui-button-icon" :class="classes" :disabled="disabled || loading">
         <slot>
             <Spinner v-if="loading" :size="20" class="mini" />
             <i v-else :class="icon" />
@@ -7,9 +7,10 @@
     </button>
 </template>
 <script setup>
-import { computed } from 'vue';
+import { computed, toRef, useTemplateRef } from 'vue';
 import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
 import Spinner from '@/components/common/Spinner.vue';
+import { useTippy } from 'vue-tippy';
 
 const props = defineProps({
     label: String,
@@ -29,5 +30,7 @@ const classes = computed(() => {
     };
 });
 
-// TODO: Сделать tooltip на vue-tippy composable
+if (props.label) {
+    useTippy(useTemplateRef('button'), { content: toRef(() => props.label) });
+}
 </script>

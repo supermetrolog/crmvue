@@ -76,26 +76,28 @@
             <div class="d-flex justify-content-center">
                 <div v-if="offer.consultant" class="d-flex flex-column align-items-center gap-1">
                     <Avatar
-                        v-tippy="offer.consultant.userProfile.full_name"
+                        :label="offer.consultant.userProfile.full_name"
                         :size="55"
                         :src="offer.consultant.userProfile.avatar"
                     />
                     <div class="d-flex gap-1 align-items-center">
-                        <div
+                        <UiTooltip
                             v-if="offer.object?.agent_visited"
-                            v-tippy="'Был на объекте'"
+                            tooltip="Был на объекте"
+                            as="div"
                             class="offer-table-item__icon"
                         >
                             <i class="fa-solid fa-person-walking"></i>
-                        </div>
-                        <div
+                        </UiTooltip>
+                        <UiTooltip
                             v-if="contractIsSigned"
-                            v-tippy="contractTippy"
+                            :tooltip="contractTippy"
+                            as="div"
                             class="offer-table-item__icon"
                             :class="{ exclusive: isExclusive }"
                         >
                             <i class="pl-2 fa-solid fa-file-signature"></i>
-                        </div>
+                        </UiTooltip>
                     </div>
                 </div>
                 <p v-else>—</p>
@@ -127,14 +129,14 @@
     </Tr>
     <DropDown>
         <OfferTableItemDropdown v-if="blocksDropdownIsOpen">
-            <Button
-                v-tippy="'Свернуть информацию о блоках'"
+            <UiButton
                 @click="hideBlocks"
                 class="offer-table-item__close w-100"
-                info
+                color="light"
+                center
             >
                 <i class="fas fa-angle-up"></i>
-            </Button>
+            </UiButton>
             <Spinner v-if="blocksIsLoading" class="m-4" />
             <OfferMiniList v-else :offers="blockOffers" />
         </OfferTableItemDropdown>
@@ -176,14 +178,14 @@ import { useStore } from 'vuex';
 import OfferTableItemRelationSelect from '@/components/Offer/TableItem/OfferTableItemRelationSelect.vue';
 import { dealOptions } from '@/const/options/deal.options.js';
 import OfferMiniList from '@/components/Offer/OfferMiniList.vue';
-import Button from '@/components/common/Button.vue';
 import OfferTableItem from '@/components/Offer/TableItem/OfferTableItem.vue';
 import OfferTableItemCall from '@/components/Offer/TableItem/OfferTableItemCall.vue';
 import { useMessenger } from '@/components/Messenger/useMessenger.js';
 import { getLinkPDF } from '@/utils/url.js';
 import { messenger, objectChatMemberTypes } from '@/const/messenger.js';
-import { isNullish } from '@/utils/helpers/common/isNullish.js';
 import OfferTableItemAdv from '@/components/Offer/TableItem/OfferTableItemAdv.vue';
+import UiTooltip from '@/components/common/UI/UiTooltip.vue';
+import UiButton from '@/components/common/UI/UiButton.vue';
 
 const emit = defineEmits(['favorite-deleted', 'open-survey']);
 const props = defineProps({

@@ -8,13 +8,13 @@
         />
         <template v-else-if="companyId && canBeCreated">
             <MessengerQuizFormTemplateOffers
-                v-if="offers.length"
+                v-if="objects.length"
                 ref="offersEl"
                 @object-sold="$emit('object-sold', $event)"
                 @object-destroyed="$emit('object-destroyed', $event)"
                 class="messenger-quiz-question-card mb-2"
                 :questions="objectGroupQuestions"
-                :offers
+                :objects
                 :disabled
                 :number="startQuestionNumber"
             />
@@ -24,7 +24,7 @@
                 class="messenger-quiz-question-card mb-2"
                 :requests
                 :disabled
-                :number="offers.length ? startQuestionNumber + 1 : startQuestionNumber"
+                :number="objects.length ? startQuestionNumber + 1 : startQuestionNumber"
             />
         </template>
         <MessengerQuizQuestion
@@ -88,7 +88,7 @@ const companyGroupQuestions = computed(() =>
 const questionsOffset = computed(() => {
     return (
         props.startQuestionNumber +
-        Number(offers.value.length > 0) +
+        Number(objects.value.length > 0) +
         Number(requests.value.length > 0)
     );
 });
@@ -101,9 +101,9 @@ function getForm() {
         .filter(isNotNullish)
         .flat();
 
-    const offersForm = offers.value.length ? offersEl.value.getForm() : [];
+    const offersForm = objects.value.length ? offersEl.value.getForm() : [];
 
-    if (offers.value.length) {
+    if (objects.value.length) {
         const offersActualQuestion = props.questions.find(
             question => question.template === 'offers'
         );
@@ -113,15 +113,14 @@ function getForm() {
 
             answers.push({
                 question_answer_id: offersActualQuestionAnswer.id,
-                value: offersForm.map(offerMix => ({
-                    object_id: offerMix.object_id,
-                    offers: offerMix.offers.map(offer => ({
-                        visual_id: offer.visual_id,
+                value: offersForm.map(object => ({
+                    object_id: object.object_id,
+                    offers: object.offers.map(offer => ({
                         id: offer.id,
                         deal_type: offer.deal_type,
                         calc_area: offer.calc_area
                     })),
-                    answer: offerMix.answer
+                    answer: object.answer
                 }))
             });
         }
@@ -147,8 +146,8 @@ function getForm() {
 }
 
 function validate() {
-    const offersIsValid = !offers.value.length || offersEl.value.validate();
-    if (!offersIsValid) return false;
+    const objectsIsValid = !objects.value.length || offersEl.value.validate();
+    if (!objectsIsValid) return false;
 
     const requestsIsValid = !requests.value.length || requestsEl.value.validate();
     if (!requestsIsValid) return false;
@@ -194,42 +193,28 @@ const isObjectChatMember = computed(() => {
     return false;
 });
 
-const offers = ref([]);
+const objects = ref([]);
 const requests = ref([]);
 
 const isLoading = ref(false);
 
-async function fetchOffersAndRequests() {
+async function fetchObjectsAndRequests() {
     isLoading.value = true;
 
-    const [offersResponse, requestsResponse] = await Promise.allSettled([
-        fetchOffers(),
+    const [objectsResponse, requestsResponse] = await Promise.allSettled([
+        fetchObjects(),
         fetchRequests()
     ]);
 
-    if (offersResponse?.value?.data?.length) {
-        const formattedOffers = Object.values(
-            offersResponse.value.data.reduce((acc, offer) => {
-                if (acc[offer.object_id]) acc[offer.object_id].offers.push(offer);
-                else {
-                    acc[offer.object_id] = {
-                        object_id: offer.object_id,
-                        offers: [offer]
-                    };
-                }
-
-                return acc;
-            }, {})
-        );
-
+    if (objectsResponse?.value?.data?.length) {
         if (isObjectChatMember.value) {
             const currentObjectId = store.state.Messenger.currentDialog.model.object_id;
 
-            offers.value = formattedOffers
-                .filter(offer => offer.object_id === currentObjectId)
-                .concat(formattedOffers.filter(offer => offer.object_id !== currentObjectId));
+            objects.value = objectsResponse.value.data
+                .filter(object => object.id === currentObjectId)
+                .concat(objectsResponse.value.data.filter(object => object.id !== currentObjectId));
         } else {
-            offers.value = formattedOffers;
+            objects.value = objectsResponse.value.data;
         }
     }
 
@@ -240,18 +225,8 @@ async function fetchOffersAndRequests() {
     isLoading.value = false;
 }
 
-async function fetchOffers() {
-    return api.offers.search({
-        company_id: props.companyId,
-        type_id: [2, 3],
-        status: 1,
-        expand:
-            'contact.emails,contact.phones,' +
-            'object,' +
-            'company.mainContact.phones,company.mainContact.emails,company.objects_count,company.requests_count,company.active_contacts_count,' +
-            'offer,',
-        'per-page': 0
-    });
+async function fetchObjects() {
+    return await api.object.list({ company_id: props.companyId, 'per-page': 0 });
 }
 
 async function fetchRequests() {
@@ -260,7 +235,7 @@ async function fetchRequests() {
 
 onMounted(async () => {
     if (props.companyId && props.canBeCreated) {
-        await fetchOffersAndRequests();
+        await fetchObjectsAndRequests();
         processQueueJobs();
     }
 });

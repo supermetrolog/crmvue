@@ -4,11 +4,12 @@
             <div class="modal__header">
                 <p>Список фотографий</p>
                 <div class="modal__close">
-                    <i
-                        v-tippy="'Закрыть окно'"
+                    <UiTooltipIcon
                         @click.prevent="$emit('close')"
-                        class="icon fa-solid fa-xmark"
-                    ></i>
+                        tooltip="Закрыть окно"
+                        icon="fa-solid fa-xmark"
+                        class="icon"
+                    />
                 </div>
             </div>
             <div class="modal__body">
@@ -33,6 +34,7 @@ import FileList from '@/components/common/FileList.vue';
 import { useDelayedLoader } from '@/composables/useDelayedLoader.js';
 import { useStore } from 'vuex';
 import { useInfiniteLoading } from '@/composables/useInfiniteLoading.js';
+import UiTooltipIcon from '@/components/common/UI/UiTooltipIcon.vue';
 
 defineEmits(['close']);
 

@@ -4,11 +4,12 @@
             <div class="company-box-main__header">
                 <div>
                     <p class="company-box-main__title">
-                        <i
+                        <UiTooltipIcon
                             v-if="company.is_individual"
-                            v-tippy="'Физ.лицо'"
-                            class="fa-solid fa-user-tie mr-1"
-                        ></i>
+                            icon="fa-solid fa-user-tie"
+                            tooltip="Физ.лицо"
+                            class="mr-1"
+                        />
                         <span>{{ companyName }}</span>
                     </p>
                     <p v-if="company.companyGroup" class="company-box-main__group">
@@ -90,7 +91,7 @@
                         <Tab name="Описание">
                             <div class="d-flex gap-3">
                                 <CompanyLogo
-                                    v-tippy="'Нажмите, чтобы редактировать логотип'"
+                                    ref="companyLogoEl"
                                     @click="logoFormIsVisible = true"
                                     as="div"
                                     :company-id="company.id"
@@ -237,7 +238,7 @@
 
 <script setup>
 import { ActivityGroupList, ActivityProfileList, CompanyCategories } from '@/const/const';
-import { computed, ref } from 'vue';
+import { computed, ref, useTemplateRef } from 'vue';
 import CompanyBoxContactList from '@/components/Company/Box/CompanyBoxContactList.vue';
 import EmptyLabel from '@/components/common/EmptyLabel.vue';
 import File from '@/components/common/Forms/File.vue';
@@ -257,6 +258,8 @@ import { getCompanyName } from '@/utils/formatters/models/company.js';
 import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
 import { toDateFormat } from '@/utils/formatters/date.js';
 import { toCorrectUrl } from '@/utils/formatters/string.js';
+import UiTooltipIcon from '@/components/common/UI/UiTooltipIcon.vue';
+import { useTippyText } from '@/composables/useTippyText.js';
 
 defineEmits(['create-contact', 'edit-company']);
 
@@ -334,4 +337,8 @@ const onDeleteLogo = () => {
     notify.success('Логотип компании удален');
     store.commit('setCompanyLogo', null);
 };
+
+// tippy
+
+useTippyText(useTemplateRef('companyLogoEl'), 'Нажмите, чтобы редактировать логотип');
 </script>

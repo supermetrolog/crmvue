@@ -49,7 +49,7 @@
                 <p>Пассив</p>
                 <i
                     v-if="COMPANY.passive_why !== null"
-                    v-tippy="passiveWhyComment"
+                    ref="passiveWhyIcon"
                     class="fa-regular fa-question-circle ml-2 icon"
                 />
             </div>
@@ -86,7 +86,7 @@
                 <CompanyBoxServices v-if="!companyIsLoading" class="company-page__column" />
             </div>
         </div>
-        <button v-tippy="'Открыть в чате'" @click="openInChat" class="company-page__chat">
+        <button ref="chatButtonEl" @click="openInChat" class="company-page__chat">
             <i class="fa-solid fa-comment" />
         </button>
     </div>
@@ -108,11 +108,21 @@ import Timeline from '@/components/Timeline/Timeline.vue';
 import CompanyBoxServices from '@/components/Company/Box/CompanyBoxServices.vue';
 import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
 import { useConfirm } from '@/composables/useConfirm.js';
-import { computed, onBeforeMount, onUnmounted, provide, ref, shallowRef, watch } from 'vue';
+import {
+    computed,
+    onBeforeMount,
+    onUnmounted,
+    provide,
+    ref,
+    shallowRef,
+    useTemplateRef,
+    watch
+} from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useMessenger } from '@/components/Messenger/useMessenger.js';
 import { useDocumentTitle } from '@/composables/useDocumentTitle.js';
 import { messenger } from '@/const/messenger.js';
+import { useTippyText } from '@/composables/useTippyText.js';
 
 provide('openContact', openContact);
 provide('createContactComment', createContactComment);
@@ -294,4 +304,9 @@ onBeforeMount(() => {
 onUnmounted(() => {
     store.commit('clearCompanyObjectsStore');
 });
+
+// tippy
+
+useTippyText(useTemplateRef('chatButtonEl'), 'Открыть в чате');
+useTippyText(useTemplateRef('passiveWhyIcon'), passiveWhyComment);
 </script>

@@ -1,12 +1,12 @@
 <template>
     <div class="messenger-quiz-form-template-offer">
         <div class="messenger-quiz-form-template-offer__row">
-            <SurveyQuestionOfferMix
+            <SurveyQuestionObject
                 @show-preview="$emit('show-preview')"
                 @object-sold="$emit('object-sold')"
                 @object-destroyed="$emit('object-destroyed')"
                 @open="$emit('open')"
-                :offer-mix="offerMix"
+                :object
                 class="messenger-quiz-form-template-offer__preview"
                 :class="{ passive: isPassive, active: isActive }"
             />
@@ -53,18 +53,18 @@
             custom-close
             :close-on-press-esc="false"
             :close-on-outside-click="false"
-            :title="`Просмотр объекта #${offerMix?.object_id}, ${viewedObject?.address}`"
+            :title="`Просмотр объекта #${object.id}, ${object.address}`"
         >
-            <Carousel :title="`Объект #${viewedObject.id}`" :slides="viewedObjectSlides" />
+            <Carousel :title="`Объект #${object.id}`" :slides />
             <div class="d-flex mt-2">
                 <MessengerDialogObjectPreview
                     class="messenger-quiz-form-template-offer__panel"
-                    :object-id="viewedObject.id"
+                    :object
                 />
                 <div class="messenger-quiz-form-template-offer__questions">
-                    <SurveyQuestionOfferMixOffers
+                    <SurveyQuestionObjectOffersTabs
                         class="messenger-quiz-form-template-offer__offers"
-                        :offers="offerMix.offers"
+                        :offers="object.offerMix"
                     />
                     <p class="font-weight-semi fs-4">Вопросы по объекту:</p>
                     <div class="d-flex gap-2">
@@ -141,15 +141,14 @@ import { computed, ref, shallowRef, useTemplateRef, watch } from 'vue';
 import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
 import MessengerQuizFormRadioChip from '@/components/Messenger/Quiz/Form/MessengerQuizFormRadioChip.vue';
 import { useNotify } from '@/utils/use/useNotify.js';
-import SurveyQuestionOfferMix from '@/components/Survey/QuestionOfferMix/SurveyQuestionOfferMix.vue';
+import SurveyQuestionObject from '@/components/Survey/QuestionOfferMix/SurveyQuestionObject.vue';
 import UiModal from '@/components/common/UI/UiModal.vue';
 import Carousel from '@/components/common/Carousel.vue';
 import MessengerDialogObjectPreview from '@/components/Messenger/Dialog/Object/MessengerDialogObjectPreview.vue';
 import { getLinkFile } from '@/utils/url.js';
 import UiButton from '@/components/common/UI/UiButton.vue';
 import { useConfirm } from '@/composables/useConfirm.js';
-import { isNullish } from '@/utils/helpers/common/isNullish.js';
-import SurveyQuestionOfferMixOffers from '@/components/Survey/QuestionOfferMix/SurveyQuestionOfferMixOffers.vue';
+import SurveyQuestionObjectOffersTabs from '@/components/Survey/QuestionOfferMix/SurveyQuestionObjectOffersTabs.vue';
 
 const emit = defineEmits(['show-preview', 'object-sold', 'object-destroyed', 'open', 'changed']);
 const props = defineProps({
@@ -158,7 +157,7 @@ const props = defineProps({
         required: true
     },
     disabled: Boolean,
-    offerMix: {
+    object: {
         type: Object,
         required: true
     }
@@ -177,9 +176,8 @@ const isPassive = computed(() => hasAnswers.value === 2);
 
 function getForm() {
     const payload = {
-        object_id: props.offerMix.object_id,
-        offers: props.offerMix.offers.map(offer => ({
-            visual_ids: offer.visual_id,
+        object_id: props.object.id,
+        offers: props.object.offerMix.map(offer => ({
             id: offer.id,
             deal_type: offer.deal_type,
             calc_area: offer.calc_area_general
@@ -207,15 +205,14 @@ function validate() {
     if (hasAnswers.value === 1) {
         const isValid = questionEls.value.every(element => element.validate());
 
-        if (!isValid)
-            notify.info(`Заполните все вопросы по предложению #${props.offerMix.object_id}`);
+        if (!isValid) notify.info(`Заполните все вопросы по предложению #${props.object.id}`);
 
         return isValid;
     }
 
     const isValid = isNotNullish(hasAnswers.value);
 
-    if (!isValid) notify.info(`Заполните положение по предложению #${props.offerMix.object_id}`);
+    if (!isValid) notify.info(`Заполните положение по предложению #${props.object.id}`);
 
     return isValid;
 }
@@ -248,27 +245,23 @@ watch(hasAnswers, value => {
 });
 
 const modalIsVisible = ref(false);
-const viewedObject = shallowRef(null);
-const viewedObjectSlides = shallowRef([]);
+
+const slides = shallowRef([]);
 
 const currentAnswers = ref(null);
 
 function openModal() {
-    if (isNullish(viewedObject.value)) {
-        viewedObject.value = props.offerMix.offers[0].object;
-
-        if (props.offerMix.offers[0]?.object?.photo?.length) {
-            if (props.offerMix.offers[0].object.thumb) {
-                viewedObjectSlides.value = [{ id: 0, src: props.offerMix.offers[0].object.thumb }];
+    if (!slides.value.length) {
+        if (props.object.photo?.length) {
+            if (props.object.thumb) {
+                slides.value = [{ id: 0, src: props.object.thumb }];
             }
 
-            viewedObjectSlides.value = [
-                ...viewedObjectSlides.value,
-                ...props.offerMix.offers[0].object.photo
+            slides.value = [
+                ...slides.value,
+                ...props.object.photo
                     .filter(element =>
-                        props.offerMix.offers[0].object.thumb
-                            ? !props.offerMix.offers[0].object.thumb.includes(element)
-                            : true
+                        props.object.thumb ? !props.object.thumb.includes(element) : true
                     )
                     .map((element, key) => ({ id: key + 1, src: getLinkFile(element) }))
             ];

@@ -5,11 +5,11 @@
     >
         <div class="messenger-quiz-question__header">
             <p
-                v-if="offers.length"
+                v-if="objects.length"
                 class="messenger-quiz-question__title"
                 :class="{ disabled: disabled }"
             >
-                {{ number }}. Актуальны ли эти ({{ offers.length }}) текущие предложения?
+                {{ number }}. Актуальны ли эти ({{ objects.length }}) текущие предложения?
             </p>
             <p v-else class="messenger-quiz-question__title disabled">
                 {{ number }}. У клиента нет предложений..
@@ -20,11 +20,11 @@
             <span>Все предложения обработаны</span>
         </UiField>
         <MessengerQuizFormTemplateAccordion
-            v-if="offers.length"
+            v-if="objects.length"
             ref="accordion"
             class="mt-1"
-            :footer-label="`Скрыть предложения (${offers.length})`"
-            :label="`Предложения клиента (${offers.length})`"
+            :footer-label="`Скрыть предложения (${objects.length})`"
+            :label="`Предложения клиента (${objects.length})`"
             list-class="messenger-quiz-question__offers"
         >
             <template #actions>
@@ -39,15 +39,15 @@
                 </UiButton>
             </template>
             <template #items>
-                <MessengerQuizFormTemplateOfferMix
-                    v-for="offerMix in offers"
-                    :key="offerMix.object_id"
+                <MessengerQuizFormTemplateObject
+                    v-for="object in objects"
+                    :key="object.id"
                     ref="offerEls"
-                    @show-preview="openPreview(offerMix.offers[0].object.photo ?? [])"
-                    @object-sold="onObjectSold(offerMix)"
-                    @object-destroyed="onObjectDestroyed(offerMix)"
+                    @show-preview="openPreview(object.photo ?? [])"
+                    @object-sold="onObjectSold(object)"
+                    @object-destroyed="onObjectDestroyed(object)"
                     @changed="onChangeOfferMixAnswer"
-                    :offer-mix="offerMix"
+                    :object="object"
                     :questions
                 />
             </template>
@@ -56,7 +56,7 @@
 </template>
 <script setup>
 import { ref, useTemplateRef, watch } from 'vue';
-import MessengerQuizFormTemplateOfferMix from '@/components/Messenger/Quiz/Form/Template/MessengerQuizFormTemplateOfferMix.vue';
+import MessengerQuizFormTemplateObject from '@/components/Messenger/Quiz/Form/Template/MessengerQuizFormTemplateObject.vue';
 import { usePreviewer } from '@/composables/usePreviewer.js';
 import { getLinkFile } from '@/utils/url.js';
 import UiButton from '@/components/common/UI/UiButton.vue';
@@ -73,7 +73,7 @@ const props = defineProps({
         required: true
     },
     disabled: Boolean,
-    offers: {
+    objects: {
         type: Array,
         required: true
     },
@@ -104,9 +104,9 @@ function setForm(form) {
             return acc;
         }, {});
 
-        props.offers.forEach((offer, key) => {
-            if (answerMap[offer.object_id]) {
-                offerEls.value[key].setAnswer(answerMap[offer.object_id]);
+        props.objects.forEach((object, key) => {
+            if (answerMap[object.id]) {
+                offerEls.value[key].setAnswer(answerMap[object.id]);
             }
         });
     }
@@ -167,21 +167,21 @@ function openPreview(photos) {
     preview(photos.map((photo, key) => ({ src: getLinkFile(photo), id: key })));
 }
 
-// object
+// objects
 
-function generateObjectEmittedPayload(offerMix) {
+function generateObjectEmittedPayload(object) {
     return {
-        id: offerMix.object_id,
-        company_name: getCompanyShortName(offerMix.offers[0].company, offerMix.offers[0].company_id)
+        id: object.id,
+        company_name: getCompanyShortName(object.company, object.company_id)
     };
 }
 
-function onObjectSold(offerMix) {
-    emit('object-sold', generateObjectEmittedPayload(offerMix));
+function onObjectSold(object) {
+    emit('object-sold', generateObjectEmittedPayload(object));
 }
 
-function onObjectDestroyed(offerMix) {
-    emit('object-destroyed', generateObjectEmittedPayload(offerMix));
+function onObjectDestroyed(object) {
+    emit('object-destroyed', generateObjectEmittedPayload(object));
 }
 
 const everyOfferHasAnswer = ref(false);

@@ -36,16 +36,16 @@
                     <template #footer>
                         <div class="d-flex gap-2 flex-wrap align-items-center">
                             <TimelineButton
-                                v-tippy="'Нажмите, чтобы сохранить результат'"
                                 @click="submit"
+                                tooltip="Нажмите, чтобы сохранить результат"
                                 :disabled="!selectedObjects.length || disabled"
                             >
                                 <span>Готово</span>
                                 <i class="fa-solid fa-thumbs-up icon"></i>
                             </TimelineButton>
                             <TimelineButton
-                                v-tippy="'Нажмите, чтобы отправить презентации с объектами клиенту'"
                                 @click="sendModalIsVisible = true"
+                                tooltip="Нажмите, чтобы отправить презентации с объектами клиенту"
                                 :disabled="!selectedObjects.length || disabled"
                                 success
                             >

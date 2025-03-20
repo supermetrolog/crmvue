@@ -15,12 +15,12 @@
                 >
                     <i
                         v-if="isWithoutActiveContacts"
-                        v-tippy="'Компания без контактов'"
+                        ref="withoutContactsIconEl"
                         class="fa-solid fa-users-slash mr-1"
                     />
                     <i
                         v-if="company.is_individual"
-                        v-tippy="'Физ.лицо'"
+                        ref="isIndividualIconEl"
                         class="fa-solid fa-user-tie mr-1"
                     ></i>
                     <span :class="{ 'error-message': company.noName }">{{ companyName }}</span>
@@ -40,9 +40,10 @@
 <script setup>
 import Rating from '@/components/common/Rating.vue';
 import { plural } from '@/utils/plural.js';
-import { computed } from 'vue';
+import { computed, useTemplateRef } from 'vue';
 import CompanyLogo from '@/components/Company/CompanyLogo.vue';
 import { getCompanyName } from '@/utils/formatters/models/company.js';
+import { useTippyText } from '@/composables/useTippyText.js';
 
 const props = defineProps({
     company: {
@@ -65,4 +66,7 @@ const pluralRequestsCount = computed(() =>
 const pluralObjectsCount = computed(() =>
     plural(props.company.objects_count, '%d объект', '%d объекта', '%d объектов')
 );
+
+useTippyText(useTemplateRef('isIndividualIconEl'), 'Физ.лицо');
+useTippyText(useTemplateRef('withoutContactsIconEl'), 'Компания без активных контактов');
 </script>

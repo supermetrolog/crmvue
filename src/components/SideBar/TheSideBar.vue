@@ -2,7 +2,7 @@
     <div class="sidebar">
         <div class="sidebar__avatar">
             <router-link to="/dashboard">
-                <Avatar :src="currentUser.userProfile?.avatar" />
+                <Avatar :src="currentUser?.userProfile?.avatar" />
             </router-link>
         </div>
         <hr />

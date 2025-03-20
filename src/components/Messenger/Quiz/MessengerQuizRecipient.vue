@@ -2,20 +2,23 @@
     <div class="messenger-quiz-recipient">
         <div class="messenger-quiz-recipient__info">
             <p class="messenger-quiz-recipient__username">
-                <i
+                <UiTooltipIcon
                     v-if="recipient.faceToFaceMeeting"
-                    v-tippy="'Была личная (очная) встреча'"
-                    class="fa-solid fa-street-view mr-1"
+                    tooltip="Была личная (очная) встреча"
+                    icon="fa-solid fa-street-view"
+                    class="mr-1"
                 />
-                <i
+                <UiTooltipIcon
                     v-if="recipient.good"
-                    v-tippy="'Хорошие взаимоотношения'"
-                    class="fa-regular fa-face-smile-beam mr-1"
+                    tooltip="Хорошие взаимоотношения"
+                    icon="fa-regular fa-face-smile-beam"
+                    class="mr-1"
                 />
-                <i
+                <UiTooltipIcon
                     v-if="recipient.isMain"
-                    v-tippy="'Основной контакт'"
-                    class="fa-solid fa-crown mr-1"
+                    tooltip="Основной контакт"
+                    icon="fa-solid fa-crown"
+                    class="mr-1"
                 />
                 <span>{{ recipient.full_name }}</span>
             </p>
@@ -27,7 +30,7 @@
             </p>
             <p class="messenger-quiz-recipient__email">
                 <template v-if="mainEmail">
-                    <i v-tippy="'Основной Email'" class="fa-solid fa-crown mr-1"></i>
+                    <UiTooltipIcon tooltip="Основной Email" icon="fa-solid fa-crown" class="mr-1" />
                     <span>{{ mainEmail.email }}</span>
                 </template>
                 <span v-else-if="recipient.emails?.length">
@@ -45,7 +48,7 @@
         </div>
         <div class="messenger-quiz-recipient__contacts">
             <p v-if="mainPhone">
-                <i v-tippy="'Основной телефон'" class="fa-solid fa-crown mr-1"></i>
+                <UiTooltipIcon tooltip="Основной телефон" icon="fa-solid fa-crown" class="mr-1" />
                 <span class="messenger-quiz-recipient__phone">
                     {{ mainPhone.phone }}
                 </span>
@@ -59,6 +62,7 @@
 <script setup>
 import { computed } from 'vue';
 import { contactOptions } from '@/const/options/contact.options.js';
+import UiTooltipIcon from '@/components/common/UI/UiTooltipIcon.vue';
 
 const props = defineProps({
     recipient: {

@@ -97,7 +97,7 @@ export function useMessengerQuiz() {
         if (form.available) {
             return CALL_STATUSES.COMPLETED;
         } else {
-            return CALL_STATUSES.NOT_AVAILABLE;
+            return form.reason === 4 ? CALL_STATUSES.MISSED : CALL_STATUSES.NOT_AVAILABLE;
         }
     }
 

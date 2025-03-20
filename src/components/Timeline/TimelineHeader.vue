@@ -21,8 +21,8 @@
                 Прохождение таймлайна
             </TimelineButton>
             <TimelineButton
-                v-tippy="messagesTippy"
                 @click="$emit('change-tab', 'log')"
+                :tooltip="messagesTippy"
                 :class="{
                     'animate__animated animate__flash': messagesHasAnimation,
                     active: currentTab === 'log'

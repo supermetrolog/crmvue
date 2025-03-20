@@ -2,7 +2,11 @@
     <div class="account-session">
         <div class="account-session__body" :class="{ current: current }">
             <div>
-                <i v-tippy="systemTippy" class="account-session__icon" :class="systemIcon" />
+                <UiTooltipIcon
+                    :icon="systemIcon"
+                    class="account-session__icon"
+                    :tooltip="systemTippy"
+                />
             </div>
             <div>
                 <div class="account-session__header">
@@ -21,7 +25,7 @@
                 </div>
                 <div class="account-session__footer">
                     <DashboardChip
-                        v-tippy="expiresAtTippy"
+                        ref="expiresAtEl"
                         :class="[expiresAtStateClass, 'account-session__chip']"
                         with-icon
                     >
@@ -29,7 +33,7 @@
                         <span>{{ expiresAt }}</span>
                     </DashboardChip>
                     <DashboardChip
-                        v-tippy="'Дата входа в аккаунт'"
+                        ref="createdAtEl"
                         class="account-session__chip dashboard-bg-gray-l"
                     >
                         {{ createdAt }}
@@ -59,13 +63,15 @@
 const EXPIRES_DATE_LIMIT = 7;
 </script>
 <script setup>
-import { computed } from 'vue';
+import { computed, useTemplateRef } from 'vue';
 import { UAParser } from 'ua-parser-js';
 import { dayjsFromMoscow, toDateFormat } from '@/utils/formatters/date.js';
 import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
 import dayjs from 'dayjs';
 import { plural } from '@/utils/plural.js';
 import HoverActionsButton from '@/components/common/HoverActions/HoverActionsButton.vue';
+import UiTooltipIcon from '@/components/common/UI/UiTooltipIcon.vue';
+import { useTippyText } from '@/composables/useTippyText.js';
 
 defineEmits(['logout']);
 const props = defineProps({
@@ -110,4 +116,7 @@ const systemTippy = computed(() => {
 
     return `${userAgent.value.device.vendor} [${userAgent.value.device.model}]`;
 });
+
+useTippyText(useTemplateRef('expiresAtEl'), expiresAtTippy);
+useTippyText(useTemplateRef('createdAtEl'), 'Дата входа в аккаунт');
 </script>

@@ -12,9 +12,10 @@
     </button>
 </template>
 <script setup>
-import { computed } from 'vue';
+import { computed, toRef, useTemplateRef } from 'vue';
 import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
 import Spinner from '@/components/common/Spinner.vue';
+import { useTippyText } from '@/composables/useTippyText.js';
 
 const props = defineProps({
     label: String,
@@ -55,5 +56,7 @@ const classes = computed(() => {
     };
 });
 
-// TODO: Сделать tooltip на vue-tippy composable
+if (props.tooltip) {
+    useTippyText(useTemplateRef('button'), toRef(props, 'tooltip'));
+}
 </script>

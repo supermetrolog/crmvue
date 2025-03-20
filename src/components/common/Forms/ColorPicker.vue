@@ -5,7 +5,6 @@
         </span>
         <button
             ref="reference"
-            v-tippy="'Нажмите, чтобы выбрать цвет'"
             @click.prevent="pickerIsVisible = !pickerIsVisible"
             class="color-picker__element"
             :class="{ 'color-picker__element--circle': circle }"
@@ -27,9 +26,10 @@
 </template>
 <script setup>
 import { ColorPicker } from 'vue-color-kit';
-import { computed, ref } from 'vue';
+import { computed, ref, useTemplateRef } from 'vue';
 import { useFloating } from '@floating-ui/vue';
 import { onClickOutside } from '@vueuse/core';
+import { useTippy } from 'vue-tippy';
 
 const color = defineModel({ type: String, default: '#000000' });
 const props = defineProps({
@@ -40,7 +40,7 @@ const props = defineProps({
     withoutHashtag: { type: Boolean, default: false }
 });
 
-const reference = ref(null);
+const reference = useTemplateRef('reference');
 const floating = ref(null);
 const pickerIsVisible = ref(false);
 
@@ -58,4 +58,8 @@ const currentColor = computed(() => {
     if (props.withoutHashtag) return '#' + color.value;
     return color.value;
 });
+
+// tippy
+
+useTippy(reference, { content: 'Нажмите, чтобы выбрать цвет' });
 </script>
