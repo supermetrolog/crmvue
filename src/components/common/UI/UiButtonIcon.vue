@@ -10,7 +10,7 @@
 import { computed, toRef, useTemplateRef } from 'vue';
 import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
 import Spinner from '@/components/common/Spinner.vue';
-import { useTippyText } from '@/composables/useTippyText.js';
+import { useTippy } from 'vue-tippy';
 
 const props = defineProps({
     label: String,
@@ -31,6 +31,6 @@ const classes = computed(() => {
 });
 
 if (props.label) {
-    useTippyText(useTemplateRef('button', toRef(props, 'label')));
+    useTippy(useTemplateRef('button'), { content: toRef(() => props.label) });
 }
 </script>
