@@ -260,24 +260,21 @@
                             create-tag
                             resolve-on-load
                             label="Номенклатура товара"
-                            class="col-12"
+                            class="col-12 mt-1"
                             :options="getProductRangeOptions"
                             object
                             :disabled="!form.show_product_ranges"
-                        />
-                        <UiCol :cols="12">
-                            <UiCheckbox v-model="form.show_product_ranges" numeric>
-                                <div class="d-flex align-items-center gap-1">
-                                    <span>Показывать номенклатуру</span>
-                                    <i
-                                        v-tippy="
-                                            'Если отключить этот параметр, то номенклатура товара компании будет скрыта и не будет являться обязательным для заполнения параметром'
-                                        "
-                                        class="fa-regular fa-question-circle fs-3"
+                        >
+                            <template #label="{ label }">
+                                <div class="d-flex gap-2">
+                                    <Switch
+                                        v-model="form.show_product_ranges"
+                                        :transform="Number"
                                     />
+                                    {{ label }}
                                 </div>
-                            </UiCheckbox>
-                        </UiCol>
+                            </template>
+                        </MultiSelect>
                     </UiFormGroup>
                     <UiFormDivider />
                     <div class="row mt-2">
@@ -470,7 +467,7 @@ import { plural } from '@/utils/plural.js';
 import UiModal from '@/components/common/UI/UiModal.vue';
 import UiButton from '@/components/common/UI/UiButton.vue';
 import { useValidation } from '@/composables/useValidation.js';
-import UiCol from '@/components/common/UI/UiCol.vue';
+import Switch from '@/components/common/Forms/Switch.vue';
 
 const emit = defineEmits(['updated', 'created', 'close']);
 const props = defineProps({

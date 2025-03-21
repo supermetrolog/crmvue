@@ -169,10 +169,12 @@ function openPreview(photos) {
 
 // objects
 
+// TODO: Inject Company
+
 function generateObjectEmittedPayload(object) {
     return {
-        id: object.id,
-        company_name: getCompanyShortName(object.company, object.company_id)
+        id: object.id
+        // company_name: getCompanyShortName(object.company, object.company_id)
     };
 }
 
