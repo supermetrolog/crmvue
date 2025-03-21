@@ -442,9 +442,11 @@ async function createObjectMessageWithTask(object, messagePayload, taskPayload) 
     }
 }
 
+// TODO: Inject Company name in task title
+
 async function onObjectDestroyed(object) {
     const taskPayload = await createTaskWithTemplate({
-        title: `Объект #${object.id} (${object.company_name}) снесен, отправить в пассив`,
+        title: `Объект #${object.id} снесен, отправить в пассив`,
         step: TASK_FORM_STEPS.MESSAGE
     });
 
@@ -460,7 +462,7 @@ async function onObjectDestroyed(object) {
 
 async function onObjectSold(object) {
     const taskPayload = await createTaskWithTemplate({
-        title: `Объект #${object.id} (${object.company_name}) продан`,
+        title: `Объект #${object.id} продан`,
         step: TASK_FORM_STEPS.MESSAGE
     });
 
