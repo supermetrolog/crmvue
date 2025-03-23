@@ -5,6 +5,7 @@ import { toCleanObject } from '@/utils/helpers/object/toCleanObjects.js';
 import { isArray } from '@/utils/helpers/array/isArray.js';
 import { isObject } from '@/utils/helpers/object/isObject.js';
 import { cloneObject } from '@/utils/helpers/object/cloneObject.js';
+import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
 
 const compareArrays = (first, second) => {
     if (!Array.isArray(first) || !Array.isArray(second)) return false;
@@ -20,7 +21,13 @@ export function useSearchForm(template, options) {
 
     const form = reactive({});
 
-    const { submit = noop, syncWithQuery = false, setQuery = noop, delay = 500 } = options;
+    const {
+        submit = noop,
+        syncWithQuery = false,
+        setQuery = noop,
+        delay = 500,
+        transform = null
+    } = options;
 
     const isProcessing = ref(false);
 
@@ -52,7 +59,9 @@ export function useSearchForm(template, options) {
         if (syncWithQuery) _query = toCleanObject({ ...route.query, ...unref(form) });
         else _query = toCleanObject(unref(form));
 
-        console.log(_query, template);
+        if (isNotNullish(transform)) {
+            _query = transform(_query);
+        }
 
         isProcessing.value = true;
         if (syncWithQuery) await router.replace({ query: _query });

@@ -71,19 +71,23 @@
                             </UiButton>
                         </template>
                     </ConsultantPicker>
-                    <!--                        <SearchableOptionsPicker-->
-                    <!--                            v-model="form.activity_group_ids"-->
-                    <!--                            :options="ActivityGroupList"-->
-                    <!--                            :v="v$.form.activity_group_ids"-->
-                    <!--                            :transform="Number"-->
-                    <!--                            title="Группа деятельности"-->
-                    <!--                            label="Группа деятельности"-->
-                    <!--                            class="col-12 col-md-6"-->
-                    <!--                            mode="multiple"-->
-                    <!--                            multiple-property="label"-->
-                    <!--                            multiple-->
-                    <!--                            required-->
-                    <!--                        />-->
+                </UiFormGroup>
+                <UiFormDivider />
+                <UiFormGroup>
+                    <UiDateInput
+                        v-model="form.date_start"
+                        placeholder="Дата фиксации"
+                        label="Зафиксировано после"
+                        :max-date="new Date()"
+                        class="col-6"
+                    />
+                    <UiDateInput
+                        v-model="form.date_end"
+                        placeholder="Дата фиксации"
+                        label="Зафиксировано до"
+                        class="col-6"
+                        :min-date="form.date_start"
+                    />
                 </UiFormGroup>
                 <UiFormDivider />
                 <UiFormGroup>
@@ -147,7 +151,8 @@ import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
 import { useSelectedFilters } from '@/composables/useSelectedFilters.js';
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
 import { isArray } from '@/utils/helpers/array/isArray.js';
-import FormCall from '@/components/Forms/Calls/FormCall.vue';
+import UiDateInput from '@/components/common/Forms/UiDateInput.vue';
+import dayjs from 'dayjs';
 
 const emit = defineEmits(['search']);
 
@@ -175,7 +180,9 @@ const formTemplate = {
     search: null,
     user_ids: [],
     statuses: [],
-    type: null
+    type: null,
+    date_start: null,
+    date_end: null
 };
 
 const formKeysOnlyArray = ['statuses', 'user_ids'];
@@ -187,7 +194,7 @@ async function setQueryFields() {
 
     let query = { ...form };
     deleteEmptyFields(query);
-    console.log(query);
+
     await router.replace({ query });
 }
 
@@ -219,7 +226,18 @@ const assignedToSelf = computed(
 const { resetForm, form } = useSearchForm(formTemplate, {
     submit: onSubmit,
     syncWithQuery: true,
-    setQuery: setQueryFields
+    setQuery: setQueryFields,
+    transform: value => {
+        if (value.date_start) {
+            value.date_start = dayjs(value.date_start).toJSON();
+        }
+
+        if (value.date_end) {
+            value.date_end = dayjs(value.date_end).toJSON();
+        }
+
+        return value;
+    }
 });
 
 const { filtersCount, humanizedSelectedFilters } = useSelectedFilters(

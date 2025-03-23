@@ -69,13 +69,13 @@ const agentMenu = [
         url: '/offers',
         key: 'offers'
     },
-    {
-        id: 7,
-        name: 'Барахолка',
-        icon: 'fa-solid fa-shop',
-        url: '/equipments',
-        key: 'equipments'
-    },
+    // {
+    //     id: 7,
+    //     name: 'Барахолка',
+    //     icon: 'fa-solid fa-shop',
+    //     url: '/equipments',
+    //     key: 'equipments'
+    // },
     {
         id: 10,
         name: 'Звонки',
