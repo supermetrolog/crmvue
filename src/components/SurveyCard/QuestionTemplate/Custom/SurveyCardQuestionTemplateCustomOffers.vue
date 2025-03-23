@@ -1,5 +1,5 @@
 <template>
-    <div v-if="answer?.surveyQuestionAnswer?.value" class="d-flex flex-column gap-1">
+    <div v-if="answer?.surveyQuestionAnswer?.value" class="survey-card-list">
         <SurveyCardOfferMix
             v-for="offerMix in answer?.surveyQuestionAnswer?.value"
             :key="offerMix.object_id"
