@@ -9,7 +9,7 @@ import Maska from 'maska';
 import { Formatter } from '@/plugins/index.js';
 import UniqueID from '@/plugins/uid';
 import { VueAgile } from 'vue-agile';
-import { plugin as VueTippy } from 'vue-tippy';
+import { directive as tippyDirective, tippy } from 'vue-tippy';
 import 'tippy.js/dist/tippy.css'; // optional for styling
 import '@vueform/multiselect/themes/default.css';
 import 'vue-color-kit/dist/vue-color-kit.css';
@@ -43,6 +43,8 @@ axios.defaults.baseURL = $generatorURL.api.url();
 axios.interceptors.request.use(axiosRequestInterceptor);
 axios.interceptors.response.use(response => response, axiosResponseErrorInterceptor);
 
+tippy.setDefaultProps({ placement: 'auto-end', allowHTML: true });
+
 const app = createApp(App);
 
 // TODO: Удалить PhoneNumber, Tab, Tabs из глобала
@@ -53,14 +55,7 @@ app.component('Tabs', Tabs)
     .component('Tab', Tab)
     .component('PhoneNumber', PhoneNumber)
     .use(VueAgile)
-    .use(VueTippy, {
-        directive: 'tippy',
-        component: 'tippy',
-        defaultProps: {
-            placement: 'auto-end',
-            allowHTML: true
-        }
-    })
+    .directive('tippy', tippyDirective)
     .use(UniqueID)
     .use(Formatter)
     .use(Url)
