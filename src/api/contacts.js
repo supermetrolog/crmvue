@@ -17,6 +17,10 @@ export default {
         });
         return responseToData(response);
     },
+    async get(id) {
+        const response = await axios.get(`${URL}/${id}`);
+        return responseToData(response);
+    },
     async list(params) {
         const expand = 'emails,phones,websites,wayOfInformings';
 

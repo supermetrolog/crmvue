@@ -44,22 +44,18 @@
             </HoverActionsButton>
         </div>
         <div v-if="!contact.status" class="company-contact-item__section">
-            <DashboardChip
-                class="company-contact-item__chip dashboard-bg-danger dashboard-cl-white"
-            >
+            <UiField class="company-contact-item__chip dashboard-bg-danger dashboard-cl-white">
                 Пассив
-            </DashboardChip>
+            </UiField>
             <span>
                 <b>{{ passiveWhy }}</b>
             </span>
             <p class="mt-1">{{ contact.passive_why_comment }}</p>
         </div>
         <div v-if="contact.warning" class="company-contact-item__section">
-            <DashboardChip
-                class="company-contact-item__chip dashboard-bg-danger dashboard-cl-white"
-            >
+            <UiField class="company-contact-item__chip dashboard-bg-danger dashboard-cl-white">
                 Внимание!
-            </DashboardChip>
+            </UiField>
             <span>{{ contact.warning_why_comment }}</span>
         </div>
         <div class="company-contact-item__userinfo my-1 text-center">
@@ -71,14 +67,13 @@
         <div class="company-contact-item__body">
             <div class="company-contact-item__field justify-content-center">
                 <div v-if="contact.wayOfInformings.length" class="d-flex gap-1">
-                    <HoverActionsButton
+                    <UiButtonIcon
                         v-for="(way, key) of wayOfCommunicate"
                         :key="key"
                         :label="way.label"
                         small
-                    >
-                        <i :class="way.icon" />
-                    </HoverActionsButton>
+                        :icon="way.icon"
+                    />
                 </div>
                 <span v-else class="company-contact-item__error">Способы связи не указаны</span>
             </div>
@@ -105,21 +100,17 @@
         </div>
         <p v-else class="company-contact-item__error">Контакты для связи не указаны</p>
         <div class="company-contact-item__messages mt-2">
-            <Button @click="extraInfoIsVisible = !extraInfoIsVisible" info small icon class="w-100">
-                <span>Комментарии</span>
-                <i
-                    class="fa-regular"
-                    :class="
-                        extraInfoIsVisible ? 'fa-arrow-alt-circle-up' : 'fa-arrow-alt-circle-down'
-                    "
-                />
-            </Button>
-            <CompanyContactItemComments
-                v-if="extraInfoIsVisible"
-                @create="createComment"
-                class="mt-3"
-                :comments="contact.comments"
-            />
+            <UiAccordion :title="`Комментарии (${contact.comments?.length ?? 0})`" without-render>
+                <template #body>
+                    <CompanyContactItemComments
+                        @create="createComment"
+                        @deleted="$emit('comment-deleted', $event)"
+                        @updated="$emit('comment-updated', $event)"
+                        class="mt-3"
+                        :comments="contact.comments"
+                    />
+                </template>
+            </UiAccordion>
         </div>
         <p v-if="contact.consultant" class="company-contact-item__consultant mt-2">
             Ведущий консультант: {{ contact.consultant.userProfile.short_name }}
@@ -130,15 +121,16 @@
 <script setup>
 import { PassiveWhyContact } from '@/const/const.js';
 import HoverActionsButton from '@/components/common/HoverActions/HoverActionsButton.vue';
-import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
 import DashboardCard from '@/components/Dashboard/Card/DashboardCard.vue';
-import Button from '@/components/common/Button.vue';
 import CompanyContactItemComments from '@/components/Company/Contact/CompanyContactItemComments.vue';
-import { computed, ref } from 'vue';
+import { computed } from 'vue';
 import { contactOptions } from '@/const/options/contact.options.js';
 import UiTooltipIcon from '@/components/common/UI/UiTooltipIcon.vue';
+import UiField from '@/components/common/UI/UiField.vue';
+import UiButtonIcon from '@/components/common/UI/UiButtonIcon.vue';
+import UiAccordion from '@/components/common/UI/Accordion/UiAccordion.vue';
 
-const emit = defineEmits(['start-editing', 'delete-contact', 'create-comment']);
+const emit = defineEmits(['start-editing', 'delete-contact', 'create-comment', 'comment-deleted']);
 const props = defineProps({
     contact: {
         type: Object,
@@ -149,8 +141,6 @@ const props = defineProps({
         default: false
     }
 });
-
-const extraInfoIsVisible = ref(false);
 
 const name = computed(() => (props.contact.type ? 'Общий контакт' : props.contact.full_name));
 const position = computed(() => contactOptions.position[props.contact.position]);
