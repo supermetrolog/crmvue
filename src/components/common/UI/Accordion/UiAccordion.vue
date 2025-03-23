@@ -12,6 +12,7 @@
                 :class="{ active: isVisibleModelValue }"
                 :label="title"
                 :opened="isVisibleModelValue"
+                :icon
                 class="w-100"
             />
         </slot>
@@ -38,7 +39,8 @@ const props = defineProps({
     title: String,
     opened: Boolean,
     withoutRender: Boolean,
-    bodyClass: [String, Array, Object]
+    bodyClass: [String, Array, Object],
+    icon: String
 });
 
 isVisibleModelValue.value = props.opened;

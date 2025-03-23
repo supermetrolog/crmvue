@@ -46,11 +46,11 @@ import FormEquipmentFilters from '@/components/Forms/Equipment/FormEquipmentFilt
 export default {
     name: 'FormEquipmentSearch',
     components: {
+        UiForm,
         FormEquipmentFilters,
         FormGroup: UiFormGroup,
         Input: UiInput,
-        Button,
-        Form
+        Button
     },
     emits: ['changed'],
     data() {

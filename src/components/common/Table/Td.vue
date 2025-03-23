@@ -8,28 +8,21 @@
 import { computed } from 'vue';
 import { useRoute } from 'vue-router';
 
+const props = defineProps({
+    sort: String
+});
+
 const route = useRoute();
 
-const props = defineProps({
-    sort: {
-        type: String,
-        default: null
-    }
-});
+const currentSort = computed(() => {
+    if (!props.sort) return false;
 
-const isDescSort = computed(() => {
     const query = { ...route.query };
     if (!query.sort) return false;
 
-    const words = query.sort.split(',');
-    return words.some(item => item === `-${props.sort}`);
+    return query.sort.split(',').find(item => item === props.sort || item === `-${props.sort}`);
 });
 
-const isAscSort = computed(() => {
-    const query = { ...route.query };
-    if (!query.sort) return false;
-
-    const words = query.sort.split(',');
-    return words.some(item => item === props.sort);
-});
+const isDescSort = computed(() => currentSort.value === `-${props.sort}`);
+const isAscSort = computed(() => currentSort.value === props.sort);
 </script>

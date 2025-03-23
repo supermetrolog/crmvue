@@ -30,6 +30,7 @@ import object from '@/api/object.js';
 import effect from '@/api/effect.js';
 import taskComment from '@/api/taskComment.js';
 import taskFavorite from '@/api/taskFavorite.js';
+import contactComment from '@/api/contactComment.js';
 
 export default {
     user,
@@ -63,5 +64,6 @@ export default {
     object,
     effect,
     taskComment,
-    taskFavorite
+    taskFavorite,
+    contactComment
 };
