@@ -1,9 +1,8 @@
 <template>
-    <div class="messenger-quiz-preview">
+    <div class="messenger-quiz-preview survey-card">
         <AnimationTransition :speed="0.3">
             <Spinner v-if="isLoading" label="Загрузка результатов.." class="absolute-center" />
             <div v-else-if="survey">
-                <SurveyCardInfo @edit="$emit('edit', survey)" :quiz="survey" />
                 <div
                     v-if="survey.dependentSurveys.length || survey.related_survey_id"
                     class="d-flex gap-1 mb-2"
@@ -29,6 +28,18 @@
                         Создан от основного опроса
                     </UiButton>
                 </div>
+                <SurveyCardInfo @edit="$emit('edit', survey)" :quiz="survey" />
+                <div v-if="survey.calls.length" class="survey-card__calls">
+                    <p class="text-grey">Звонки в опросе:</p>
+                    <CallInlineCard
+                        v-for="call in survey.calls"
+                        :key="call.id"
+                        @show-call="showCall(call.id)"
+                        @show-contact="showContact(call.contact_id)"
+                        :call="call"
+                        class="messenger-quiz-preview__element"
+                    />
+                </div>
                 <SurveyCardTasks
                     v-if="survey.tasks.length"
                     v-model:tasks="survey.tasks"
@@ -43,9 +54,9 @@
                         class="messenger-quiz-preview__element"
                     />
                 </div>
-                <DashboardChip v-else class="dashboard-bg-light w-100 text-center fs-4 py-3">
+                <UiField v-else color="light" class="w-100 text-center fs-4 py-3">
                     Без изменений
-                </DashboardChip>
+                </UiField>
                 <Teleport to="body">
                     <UiModal
                         v-model:visible="dependentIsVisible"
@@ -62,6 +73,14 @@
                                 :survey="dependent"
                             />
                         </div>
+                    </UiModal>
+                    <UiModal
+                        v-model:visible="contactModalIsVisible"
+                        :title="`Просмотр контакта #${viewedContactId}`"
+                        :width="700"
+                        :min-height="240"
+                    >
+                        <SurveyCardContactPreview :contact-id="viewedContactId" />
                     </UiModal>
                 </Teleport>
             </div>
@@ -84,7 +103,9 @@ import UiButton from '@/components/common/UI/UiButton.vue';
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
 import UiModal from '@/components/common/UI/UiModal.vue';
 import SurveyCardDependent from '@/components/SurveyCard/SurveyCardDependent.vue';
-import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
+import UiField from '@/components/common/UI/UiField.vue';
+import CallInlineCard from '@/components/Call/InlineCard/CallInlineCard.vue';
+import SurveyCardContactPreview from '@/components/SurveyCard/SurveyCardContactPreview.vue';
 
 defineEmits(['hide', 'edit']);
 const props = defineProps({
@@ -156,5 +177,15 @@ async function toOfferChat(chat) {
     );
 
     if (opened) closeDependentModal();
+}
+
+// contact
+
+const viewedContactId = ref(null);
+const contactModalIsVisible = ref(false);
+
+function showContact(contactId) {
+    viewedContactId.value = contactId;
+    contactModalIsVisible.value = true;
 }
 </script>

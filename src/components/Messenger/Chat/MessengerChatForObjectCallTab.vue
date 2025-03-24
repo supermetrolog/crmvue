@@ -1,5 +1,5 @@
 <template>
-    <tippy tag="div" class="messenger-chat__tab-quiz">
+    <Tippy tag="div" class="messenger-chat__tab-quiz">
         <template #default>
             <div v-if="loading" class="messenger-tabs__loading">
                 <Spinner class="absolute-center mini" />
@@ -51,7 +51,7 @@
                 <p v-else>Звонок по объекту отсутствует или не заполнен.</p>
             </div>
         </template>
-    </tippy>
+    </Tippy>
 </template>
 <script setup>
 import { useStore } from 'vuex';

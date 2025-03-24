@@ -34,6 +34,7 @@
                 no-options-text="Список пуст"
                 :open-direction="placement"
                 :object="object"
+                :autocomplete="autocomplete"
             >
                 <template v-if="$slots.singlelabel" #singlelabel="{ value }">
                     <div class="multiselect-single-label">
@@ -228,7 +229,8 @@ const props = defineProps({
     optionValueProp: {
         type: String,
         default: 'value'
-    }
+    },
+    autocomplete: String
 });
 
 const modelValue = defineModel();

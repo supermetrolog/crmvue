@@ -19,6 +19,7 @@ env:
   VITE_VUE_APP_MESSENGER_DATE_FROM_CALL_WARNING: 45
   VITE_VUE_APP_MESSENGER_DATE_FROM_CALL_DANGER: 60
   VITE_VUE_APP_YANDEX_MAP_KEY: ${{ secrets.vue_app_yandex_map_key }}
+  VITE_VUE_APP_SENTRY_DSN: ${{ secrets.vue_app_sentry_dsn }}
 jobs:
   web-deploy:
     name: 🎉 Deploy

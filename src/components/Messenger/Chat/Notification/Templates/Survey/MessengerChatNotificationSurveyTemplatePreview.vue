@@ -1,27 +1,38 @@
 <template>
     <div class="messenger-quiz-preview">
-        <div
-            v-if="survey.dependentSurveys.length || survey.related_survey_id"
-            class="messenger-quiz-preview__links"
-        >
-            <MessengerButton
+        <div v-if="survey.calls.length" class="messenger-quiz-preview__calls">
+            <div class="mt-1 d-flex flex-column gap-1">
+                <CallInlineCard
+                    v-for="call in survey.calls"
+                    :key="call.id"
+                    @show-call="showCall(call.id)"
+                    @show-contact="showContact(call.contact_id)"
+                    :call="call"
+                    class="messenger-quiz-preview__call"
+                />
+            </div>
+        </div>
+        <div class="messenger-quiz-preview__links">
+            <UiButton
                 v-if="survey.dependentSurveys.length"
                 @click="dependentIsVisible = true"
-                class="small"
+                icon="fa-solid fa-link"
                 color="light"
+                small
+                bolder
             >
-                <i class="fa-solid fa-link" />
-                <span>{{ survey.dependentSurveys.length }} связанных опросов</span>
-            </MessengerButton>
-            <MessengerButton
+                {{ survey.dependentSurveys.length }} связанных опросов
+            </UiButton>
+            <UiButton
                 v-if="survey.related_survey_id"
                 @click="showRelatedSurvey"
-                class="small"
+                icon="fa-solid fa-chess-king"
                 color="light"
+                small
+                bolder
             >
-                <i class="fa-solid fa-chess-king"></i>
-                <span>Создан от основного опроса</span>
-            </MessengerButton>
+                Создан от основного опроса
+            </UiButton>
         </div>
         <div v-if="survey.questions.length" class="messenger-quiz-preview__list">
             <MessengerChatNotificationSurveyTemplatePreviewQuestion
@@ -49,7 +60,7 @@
             </MessengerChatNotificationSurveyTemplatePreviewQuestion>
         </div>
         <div v-else class="px-2">
-            <DashboardChip class="dashboard-bg-light w-100">Без изменений</DashboardChip>
+            <UiField class="dashboard-bg-light w-100 text-center">Без изменений</UiField>
         </div>
         <Teleport to="body">
             <UiModal
@@ -68,6 +79,14 @@
                     />
                 </div>
             </UiModal>
+            <UiModal
+                v-model:visible="contactModalIsVisible"
+                :title="`Просмотр контакта #${viewedContactId}`"
+                :width="700"
+                :min-height="240"
+            >
+                <SurveyCardContactPreview :contact-id="viewedContactId" />
+            </UiModal>
         </Teleport>
     </div>
 </template>
@@ -79,11 +98,13 @@ import SurveyCardQuestionTemplateCustomCompany from '@/components/SurveyCard/Que
 import SurveyCardQuestionTemplateCustomRequestsList from '@/components/SurveyCard/QuestionTemplate/Custom/SurveyCardQuestionTemplateCustomRequestsList.vue';
 import { useAsyncPopup } from '@/composables/useAsyncPopup.js';
 import UiModal from '@/components/common/UI/UiModal.vue';
-import MessengerButton from '@/components/Messenger/MessengerButton.vue';
 import { useMessenger } from '@/components/Messenger/useMessenger.js';
 import { messenger } from '@/const/messenger.js';
 import SurveyCardDependent from '@/components/SurveyCard/SurveyCardDependent.vue';
-import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
+import UiButton from '@/components/common/UI/UiButton.vue';
+import UiField from '@/components/common/UI/UiField.vue';
+import CallInlineCard from '@/components/Call/InlineCard/CallInlineCard.vue';
+import SurveyCardContactPreview from '@/components/SurveyCard/SurveyCardContactPreview.vue';
 
 const props = defineProps({
     survey: {
@@ -154,5 +175,17 @@ async function toOfferChat(chat) {
     );
 
     if (opened) closeDependentModal();
+}
+
+// calls
+
+function showCall(callId) {}
+
+const viewedContactId = ref(null);
+const contactModalIsVisible = ref(false);
+
+function showContact(contactId) {
+    viewedContactId.value = contactId;
+    contactModalIsVisible.value = true;
 }
 </script>

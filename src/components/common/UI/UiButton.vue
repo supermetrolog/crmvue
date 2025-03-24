@@ -36,7 +36,8 @@ const props = defineProps({
     disabled: Boolean,
     big: Boolean,
     center: Boolean,
-    tooltip: String
+    tooltip: String,
+    mini: Boolean
 });
 
 const classes = computed(() => {
@@ -44,6 +45,7 @@ const classes = computed(() => {
         'ui-button--loading': props.loading,
         'ui-button--active': props.active,
         'ui-button--small': props.small,
+        'ui-button--mini': props.mini,
         'ui-button--rounded': props.rounded,
         'ui-button--rect': props.rect,
         'ui-button--outlined': props.outlined,

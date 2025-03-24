@@ -15,6 +15,11 @@
     text-align: center;
     flex-shrink: 0;
 
+    &[disabled], &.disabled {
+        opacity: .5;
+        pointer-events: none;
+    }
+
     &:not([disabled]) {
         cursor: pointer;
     }

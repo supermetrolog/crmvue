@@ -1,5 +1,5 @@
 <template>
-    <UiForm @submit="onSubmit">
+    <UiForm>
         <UiFormGroup>
             <div class="col-12 col-md-6">
                 <UiInput
@@ -13,7 +13,7 @@
                 <div class="form-search__actions">
                     <Button
                         @click="extraIsVisible = !extraIsVisible"
-                        :badge="filtersCount || false"
+                        :badge="filtersCount || null"
                         icon
                     >
                         <span>Фильтры</span>
@@ -178,30 +178,13 @@ import UiCheckbox from '@/components/common/Forms/UiCheckbox.vue';
 import { plural } from '@/utils/plural.js';
 import UiFormDivider from '@/components/common/Forms/UiFormDivider.vue';
 import SwitchSlider from '@/components/common/Forms/SwitchSlider.vue';
+import { useSelectedFilters } from '@/composables/useSelectedFilters.js';
 
 const route = useRoute();
 const router = useRouter();
 
 const emit = defineEmits(['search', 'reset']);
 
-const formTemplate = {
-    all: null,
-    consultant_id: null,
-    categories: [],
-    activityGroup: null,
-    activityProfile: null,
-    dateStart: null,
-    dateEnd: null,
-    status: null,
-    product_ranges: [],
-    without_product_ranges: null,
-    show_product_ranges: null,
-
-    activity_profile_ids: [],
-    activity_group_ids: []
-};
-
-const form = reactive({});
 const extraIsVisible = shallowRef(false);
 
 const formDateValidators = computed(() => [
@@ -231,12 +214,30 @@ const onSubmit = query => {
     emit('search', query);
 };
 
-const { filtersCount, resetForm } = useSearchForm(form, {
-    template: formTemplate,
-    submit: onSubmit,
-    syncWithQuery: true,
-    setQuery: setQueryFields
-});
+const { resetForm, form } = useSearchForm(
+    {
+        all: null,
+        consultant_id: null,
+        categories: [],
+        activityGroup: null,
+        activityProfile: null,
+        dateStart: null,
+        dateEnd: null,
+        status: null,
+        product_ranges: [],
+        without_product_ranges: null,
+        show_product_ranges: null,
+        activity_profile_ids: [],
+        activity_group_ids: []
+    },
+    {
+        submit: onSubmit,
+        syncWithQuery: true,
+        setQuery: setQueryFields
+    }
+);
+
+const { filtersCount } = useSelectedFilters(form);
 
 watch(
     () => form.without_product_ranges,

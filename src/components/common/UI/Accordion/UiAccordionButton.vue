@@ -3,6 +3,7 @@
         <div
             class="d-flex justify-content-center align-items-center gap-2 justify-content-center w-100 c-pointer"
         >
+            <i v-if="icon" :class="icon" />
             <span>{{ label }}</span>
             <div
                 v-tippy="`Нажмите, чтобы ${opened ? 'скрыть' : 'посмотреть'} содержимое`"
@@ -19,6 +20,7 @@ import UiField from '@/components/common/UI/UiField.vue';
 
 defineProps({
     label: String,
-    opened: Boolean
+    opened: Boolean,
+    icon: String
 });
 </script>

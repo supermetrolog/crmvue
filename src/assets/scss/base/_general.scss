@@ -280,6 +280,32 @@ main {
     );
 }
 
-.ui-accordion {
+body:has(.modal.active) {
+    .ui-dropdown-actions {
+        z-index: 4001;
+    }
+}
 
+.call-table-item {
+    &__phones {
+        max-height: 60px;
+        overflow-y: auto;
+        padding-right: 3px;
+        @include mixins.flex-box($d: column, $gap: 2px, $a: start);
+    }
+
+    &__phone {
+        text-align: left!important;
+        width: 100%;
+        font-size: 14px;
+        padding: 2px 3px;
+        border-radius: 3px;
+        background-color: rgba(variables.$color_grey_light, .5);
+        @include mixins.transition(background-color);
+
+        &:hover {
+            background-color: variables.$bg-success-l;
+        }
+
+    }
 }

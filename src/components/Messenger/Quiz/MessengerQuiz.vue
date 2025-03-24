@@ -121,7 +121,7 @@ import { useMessengerQuizContactSuggest } from '@/components/Messenger/Quiz/useM
 import MessengerQuizPreviews from '@/components/Messenger/Quiz/MessengerQuizPreviews.vue';
 import MessengerQuizContactTaskSuggestModal from '@/components/Messenger/Quiz/MessengerQuizContactTaskSuggestModal.vue';
 import { getContactFullName } from '@/utils/formatters/models/contact.js';
-import { useMessengerQuiz } from '@/components/Messenger/Quiz/useMessengerQuiz.js';
+import { CALL_STATUSES, useMessengerQuiz } from '@/components/Messenger/Quiz/useMessengerQuiz.js';
 import UiModal from '@/components/common/UI/UiModal.vue';
 import MessengerQuizArchivedContacts from '@/components/Messenger/Quiz/MessengerQuizArchivedContacts.vue';
 import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
@@ -226,6 +226,15 @@ function prepareAnswers(...answers) {
     }));
 }
 
+function getCallStatusByForm(form) {
+    if (form.available) {
+        return CALL_STATUSES.COMPLETED;
+    } else {
+        if (form.reason === 5) return CALL_STATUSES.BLOCKED;
+        return CALL_STATUSES.MISSED;
+    }
+}
+
 async function send() {
     const valid = quizForm.value.validate();
     if (!valid) return;
@@ -260,12 +269,22 @@ async function send() {
 
         let createdSurvey;
 
+        const callsForm = selectedContacts.value.map(element => ({
+            user_id: currentUser.value.id,
+            contact_id: element.entity.id,
+            type: 0,
+            status: getCallStatusByForm(element.form),
+            description: element.form.description
+        }));
+
         try {
-            createdSurvey = await createSurvey(
-                finalContact.value,
-                prepareAnswers(...answers),
-                targetChatMemberId
-            );
+            createdSurvey = await createSurvey({
+                contact_id: finalContact.value.id,
+                user_id: currentUser.value.id,
+                chat_member_id: targetChatMemberId,
+                question_answers: prepareAnswers(...answers),
+                calls: callsForm
+            });
         } catch (error) {
             notify.info('Произошла ошибка при сохранении опросника, попробуйте позже');
             isLoading.value = false;
@@ -273,19 +292,6 @@ async function send() {
             return;
         } finally {
             loaders.surveyCreating = false;
-        }
-
-        try {
-            loaders.callsCreating = true;
-
-            await createCallsWithContacts(
-                selectedContacts.value.filter(
-                    element => element.entity.id !== finalContact.value.id
-                ),
-                targetChatMemberId
-            );
-        } finally {
-            loaders.callsCreating = false;
         }
 
         let surveyMessage;
@@ -307,7 +313,12 @@ async function send() {
         if (offersAnswers.length) {
             try {
                 loaders.relationCreating = true;
-                await createRelatedSurveys(finalContact.value, offersAnswers, createdSurvey);
+                await createRelatedSurveys(
+                    finalContact.value,
+                    createdSurvey.calls,
+                    offersAnswers,
+                    createdSurvey
+                );
             } finally {
                 loaders.relationCreating = false;
             }
