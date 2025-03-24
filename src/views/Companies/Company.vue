@@ -47,10 +47,11 @@
         >
             <div class="d-flex align-items-center justify-content-center">
                 <p>Пассив</p>
-                <i
+                <UiTooltipIcon
                     v-if="COMPANY.passive_why !== null"
-                    ref="passiveWhyIcon"
-                    class="fa-regular fa-question-circle ml-2 icon"
+                    :tooltip="passiveWhyComment"
+                    icon="fa-regular fa-question-circle"
+                    class="ml-2 icon"
                 />
             </div>
         </DashboardChip>
@@ -123,6 +124,7 @@ import { useMessenger } from '@/components/Messenger/useMessenger.js';
 import { useDocumentTitle } from '@/composables/useDocumentTitle.js';
 import { messenger } from '@/const/messenger.js';
 import { useTippyText } from '@/composables/useTippyText.js';
+import UiTooltipIcon from '@/components/common/UI/UiTooltipIcon.vue';
 
 provide('openContact', openContact);
 provide('createContactComment', createContactComment);
@@ -308,5 +310,4 @@ onUnmounted(() => {
 // tippy
 
 useTippyText(useTemplateRef('chatButtonEl'), 'Открыть в чате');
-useTippyText(useTemplateRef('passiveWhyIcon'), passiveWhyComment);
 </script>
