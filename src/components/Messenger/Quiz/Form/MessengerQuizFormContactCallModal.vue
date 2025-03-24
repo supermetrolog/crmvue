@@ -41,6 +41,7 @@
                 </div>
             </div>
         </div>
+        <MessengerQuizFormContactCallModalDescription :contact="model.entity" />
         <RadioOptions
             v-model="model.form.reason"
             :v="v$.reason"
@@ -106,6 +107,7 @@ import { useConfirm } from '@/composables/useConfirm.js';
 import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
 import UiTextarea from '@/components/common/Forms/UiTextarea.vue';
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
+import MessengerQuizFormContactCallModalDescription from '@/components/Messenger/Quiz/Form/MessengerQuizFormContactCallModalDescription.vue';
 
 const visible = defineModel('visible');
 const model = defineModel('form');
