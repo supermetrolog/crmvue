@@ -1,4 +1,5 @@
 import { notify } from '@kyvg/vue3-notification';
+import { createSharedComposable } from '@vueuse/core';
 
 const GROUP = 'app';
 
@@ -18,6 +19,6 @@ function info(text, title) {
     notify({ group: GROUP, text, title, duration: 3500 });
 }
 
-export function useNotify() {
+export const useNotify = createSharedComposable(() => {
     return { success, error, warning, info, notify };
-}
+});

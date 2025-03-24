@@ -72,4 +72,11 @@
         }
     }
 
+    &__comments-list {
+        max-height: 350px;
+        overflow-y: auto;
+        padding-right: 5px;
+        @include mixins.flex-box($d: column, $gap: 8px);
+    }
+
 }

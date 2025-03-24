@@ -5,7 +5,7 @@
             :tasks="extraTasks"
             :notifications="message.notifications"
         />
-        <p class="messenger-chat-template-survey__header">
+        <div class="messenger-chat-template-survey__header">
             <span class="d-flex gap-1">
                 <UiButtonIcon
                     @click="showPreview"
@@ -13,6 +13,7 @@
                     label="Подробнее"
                     icon="fa-solid fa-file-lines"
                     :disabled="surveyIsLoading"
+                    color="gray-l"
                 />
                 <UiButtonIcon
                     v-if="canBeEdit"
@@ -21,6 +22,7 @@
                     :disabled="surveyIsLoading"
                     :label="editButtonLabel"
                     icon="fa-solid fa-pen"
+                    color="gray-l"
                 />
                 <UiButtonIcon
                     v-if="currentUserIsAdmin"
@@ -28,18 +30,17 @@
                     small
                     label="Сырой вид"
                     icon="fa-solid fa-file"
+                    color="gray-l"
                 />
             </span>
-            <span class="messenger-chat-template-survey__title">Опросник заполнен!</span>
-            <span class="messenger-chat-template-survey__info">
-                <span v-tippy="originalDate" class="mr-1">{{ formattedDate }},</span>
-                <template v-if="survey">
-                    <span class="mr-1 font-weight-bold">{{ senderShortName }}</span>
-                    <span class="mr-1">с</span>
-                    <span class="font-weight-bold">{{ recipientUsername }}</span>
-                </template>
-            </span>
-        </p>
+            <UiField class="fs-3" small color="gray-l">Опрос заполнен!</UiField>
+            <div v-if="survey" class="d-flex align-items-center gap-1 ml-auto">
+                <Avatar :src="survey.user.userProfile.avatar" :size="25" />
+                <span class="font-weight-bold">{{ senderShortName }}</span>
+                <span>с</span>
+                <span class="font-weight-bold">{{ recipientUsername }}</span>
+            </div>
+        </div>
         <MessengerChatNotificationSurveyTemplateSkeleton v-if="surveyIsLoading" />
         <MessengerChatNotificationSurveyTemplatePreview v-else-if="survey" :survey :short />
         <Teleport v-if="currentUserIsAdmin" to="body">
@@ -66,6 +67,8 @@ import { useAsyncPopup } from '@/composables/useAsyncPopup.js';
 import { useSurveyEditing } from '@/components/Survey/useSurveyEditing.js';
 import { useAuth } from '@/composables/useAuth.js';
 import UiModal from '@/components/common/UI/UiModal.vue';
+import UiField from '@/components/common/UI/UiField.vue';
+import Avatar from '@/components/common/Avatar.vue';
 
 const props = defineProps({
     message: {
@@ -85,16 +88,6 @@ const recipientUsername = computed(() => {
     const contact = props.message.contacts[0];
     if (contact.type === entityOptions.contact.typeStatement.GENERAL) return 'Общий контакт';
     return contact.first_name + (contact.last_name ? ` ${contact.last_name}` : '');
-});
-
-// date
-
-const formattedDate = computed(() => {
-    return props.message.dayjs_date.format('DD.MM.YYYY');
-});
-
-const originalDate = computed(() => {
-    return props.message.dayjs_date.format('D MMMM YYYY., H:mm:ss');
 });
 
 // user

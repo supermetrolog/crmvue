@@ -144,14 +144,14 @@ import CheckboxOptions from '@/components/common/Forms/CheckboxOptions.vue';
 export default {
     name: 'FormEquipmentFilters',
     components: {
+        UiForm,
         CheckboxOptions,
         RadioOptions,
         Switch,
         FormGroup: UiFormGroup,
         Modal,
         MultiSelect,
-        DoubleInput,
-        Form
+        DoubleInput
     },
     mixins: [WithQueryFiltersMixin],
     emits: ['changed', 'close'],

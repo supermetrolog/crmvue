@@ -1,8 +1,8 @@
 <template>
     <div class="form__control">
         <label for="" :class="{ required: required }">
-            <span v-if="label" class="form__label">
-                {{ label }}
+            <span v-if="label || $slots.label" class="form__label">
+                <slot name="label" :label="label">{{ label }}</slot>
             </span>
             <Multiselect
                 ref="multiselect"
@@ -34,6 +34,7 @@
                 no-options-text="Список пуст"
                 :open-direction="placement"
                 :object="object"
+                :autocomplete="autocomplete"
             >
                 <template v-if="$slots.singlelabel" #singlelabel="{ value }">
                     <div class="multiselect-single-label">
@@ -66,11 +67,12 @@
                                     {{ option[optionLabelProp] }}
                                 </slot>
                             </span>
-                            <i
+                            <UiButtonIcon
                                 v-if="!disabled"
-                                v-tippy="'Удалить'"
                                 @click="handleTagRemove(option, $event)"
-                                class="ml-1 fa-solid fa-close"
+                                icon="fa-solid fa-close"
+                                label="Удалить"
+                                class="ml-1"
                             />
                         </div>
                     </slot>
@@ -123,6 +125,7 @@ import { isString } from '@/utils/helpers/string/isString.js';
 import { isNotEmptyString } from '@/utils/helpers/string/isNotEmptyString.js';
 import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
 import { plural } from '@/utils/plural.js';
+import UiButtonIcon from '@/components/common/UI/UiButtonIcon.vue';
 
 const emit = defineEmits(['change']);
 const props = defineProps({
@@ -226,7 +229,8 @@ const props = defineProps({
     optionValueProp: {
         type: String,
         default: 'value'
-    }
+    },
+    autocomplete: String
 });
 
 const modelValue = defineModel();

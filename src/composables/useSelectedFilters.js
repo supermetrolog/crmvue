@@ -44,11 +44,14 @@ export const filtersAliases = {
     dateEnd: 'Создано до:',
     status: 'Статус:',
     all: 'Поисковой запрос',
+    search: 'Поисковой запрос',
     consultant_id: 'Консультант:',
     agent_id: 'Консультант:',
     productRanges: 'Номенклатура:',
     without_product_ranges: 'Без номенклатуры',
-    with_passive_consultant: 'С неактивными консультантами'
+    with_passive_consultant: 'С неактивными консультантами',
+    statuses: 'Статус:',
+    user_ids: 'Сотрудник:'
 };
 
 const IGNORING_FILTERS = new Set([
@@ -60,7 +63,7 @@ const IGNORING_FILTERS = new Set([
 ]);
 
 export function useSelectedFilters(form = {}, humanizeGetters = {}, options = {}) {
-    const { useFakeRegion = true } = toValue(options);
+    const { useFakeRegion = true, ignore: localIgnoringFilters = new Set() } = toValue(options);
 
     const route = useRoute();
 
@@ -84,7 +87,7 @@ export function useSelectedFilters(form = {}, humanizeGetters = {}, options = {}
         const filters = [];
 
         for (const key in route.query) {
-            if (IGNORING_FILTERS.has(key)) continue;
+            if (IGNORING_FILTERS.has(key) || localIgnoringFilters.has(key)) continue;
 
             const value = route.query[key];
 
@@ -111,7 +114,7 @@ export function useSelectedFilters(form = {}, humanizeGetters = {}, options = {}
         if (isEmptyObject(query)) return filters;
 
         for (const key in query) {
-            if (IGNORING_FILTERS.has(key)) continue;
+            if (IGNORING_FILTERS.has(key) || localIgnoringFilters.has(key)) continue;
 
             const value = query[key];
 

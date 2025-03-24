@@ -342,8 +342,7 @@ import {
     DirectionList,
     DistrictList,
     GateTypeList,
-    ObjectClassList,
-    OutsideMkad
+    ObjectClassList
 } from '@/const/const.js';
 import { computed, onBeforeUnmount, onMounted, reactive, watch } from 'vue';
 import { deleteEmptyFields } from '@/utils/helpers/object/deleteEmptyFields.js';
@@ -360,7 +359,6 @@ import { useConsultantsOptions } from '@/composables/options/useConsultantsOptio
 import { objectPurposesWithSectionsOptions } from '@/const/options/object.options.js';
 import UiFormDivider from '@/components/common/Forms/UiFormDivider.vue';
 import UiFormGroup from '@/components/common/Forms/UiFormGroup.vue';
-import RadioOptions from '@/components/common/Forms/RadioOptions.vue';
 import Switch from '@/components/common/Forms/Switch.vue';
 
 const emit = defineEmits(['close', 'search', 'reset']);

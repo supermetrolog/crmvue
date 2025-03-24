@@ -52,15 +52,9 @@ export function useMessengerQuiz() {
     const store = useStore();
     const { currentUserId } = useAuth();
 
-    async function createSurvey(contact, answers, chatMemberId = null, relatedSurveyId = null) {
+    async function createSurvey(payload) {
         try {
-            return await api.survey.create({
-                contact_id: contact.id,
-                user_id: currentUserId.value,
-                chat_member_id: chatMemberId ?? store.state.Messenger.currentDialog.id,
-                question_answers: answers,
-                related_survey_id: relatedSurveyId
-            });
+            return await api.survey.create(payload);
         } catch (error) {
             return null;
         }
@@ -169,7 +163,7 @@ export function useMessengerQuiz() {
         return await api.messenger.sendMessage(chatMemberId, messagePayload);
     }
 
-    async function createRelatedSurveys(contact, payload, relatedSurvey) {
+    async function createRelatedSurveys(contact, calls, payload, relatedSurvey) {
         const payloadWithAnswers = payload.filter(offer => offer.answer === 1);
         const payloadWithoutUpdates = payload.filter(offer => offer.answer === 3);
 
@@ -214,13 +208,26 @@ export function useMessengerQuiz() {
 
         await Promise.allSettled(
             payloadWithAnswersForm.map(element =>
-                createSurvey(contact, element.answers, element.chatMemberId, relatedSurvey.id)
+                createSurvey({
+                    contact_id: contact.id,
+                    user_id: currentUserId.value,
+                    chat_member_id: element.chatMemberId,
+                    question_answers: element.answers,
+                    related_survey_id: relatedSurvey.id,
+                    call_ids: calls.map(call => call.id)
+                })
             )
         );
 
         await Promise.allSettled(
             payloadWithoutUpdatesForm.map(element =>
-                createSurvey(contact, [], element, relatedSurvey.id)
+                createSurvey({
+                    contact_id: contact.id,
+                    user_id: currentUserId.value,
+                    chat_member_id: element,
+                    related_survey_id: relatedSurvey.id,
+                    call_ids: calls.map(call => call.id)
+                })
             )
         );
     }

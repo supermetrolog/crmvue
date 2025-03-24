@@ -16,9 +16,7 @@ export default {
         return responseToData(response);
     },
     async list(params) {
-        const stringParams = new URLSearchParams(params).toString();
-
-        const response = await axios.get(URL + (stringParams ? `?${stringParams}` : ''));
+        const response = await axios.get(URL, { params });
         return responseToPaginatedData(response);
     },
     async get(id) {

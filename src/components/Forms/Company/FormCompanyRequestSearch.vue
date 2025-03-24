@@ -12,7 +12,7 @@
                     <div class="form-search__actions ml-4">
                         <Button
                             @click="extraIsVisible = !extraIsVisible"
-                            :badge="filtersCount || false"
+                            :badge="filtersCount || null"
                         >
                             <span>Фильтры</span>
                         </Button>
@@ -323,7 +323,7 @@ import Modal from '@/components/common/Modal.vue';
 import { deleteEmptyFields } from '@/utils/helpers/object/deleteEmptyFields.js';
 import { useSearchForm } from '@/composables/useSearchForm.js';
 import { useRoute, useRouter } from 'vue-router';
-import { computed, onBeforeMount, reactive, shallowRef } from 'vue';
+import { computed, onBeforeMount, shallowRef } from 'vue';
 import {
     DealTypeList,
     DirectionList,
@@ -338,6 +338,7 @@ import SwitchSlider from '@/components/common/Forms/SwitchSlider.vue';
 import Switch from '@/components/common/Forms/Switch.vue';
 import { entityOptions } from '@/const/options/options.js';
 import CheckboxOptions from '@/components/common/Forms/CheckboxOptions.vue';
+import { useSelectedFilters } from '@/composables/useSelectedFilters.js';
 
 const route = useRoute();
 const router = useRouter();
@@ -387,7 +388,6 @@ const formTemplate = {
     region_neardy: null
 };
 
-const form = reactive({ ...formTemplate });
 const extraIsVisible = shallowRef(false);
 
 const REGION_LIST = computed(() => store.getters.REGION_LIST);
@@ -476,12 +476,14 @@ const rules = {
     }
 };
 
-const v$ = useVuelidate(rules, { form });
-const { filtersCount, resetForm } = useSearchForm(form, {
-    template: formTemplate,
+const { resetForm, form } = useSearchForm(formTemplate, {
     syncWithQuery: true,
     setQuery: setQueryFields
 });
+
+const v$ = useVuelidate(rules, { form });
+
+const { filtersCount } = useSelectedFilters(form);
 
 onBeforeMount(() => {
     if (form.regions?.length) FETCH_REGION_LIST();

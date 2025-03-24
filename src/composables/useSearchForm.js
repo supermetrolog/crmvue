@@ -1,7 +1,11 @@
-import { computed, shallowRef, unref, watch } from 'vue';
-import { noop, tryOnBeforeMount, tryOnScopeDispose } from '@vueuse/core';
+import { onBeforeMount, onScopeDispose, reactive, ref, unref, watch } from 'vue';
+import { noop } from '@vueuse/core';
 import { useRoute, useRouter } from 'vue-router';
 import { toCleanObject } from '@/utils/helpers/object/toCleanObjects.js';
+import { isArray } from '@/utils/helpers/array/isArray.js';
+import { isObject } from '@/utils/helpers/object/isObject.js';
+import { cloneObject } from '@/utils/helpers/object/cloneObject.js';
+import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
 
 const compareArrays = (first, second) => {
     if (!Array.isArray(first) || !Array.isArray(second)) return false;
@@ -11,44 +15,33 @@ const compareArrays = (first, second) => {
     return JSON.stringify(first) === JSON.stringify(second);
 };
 
-/**
- *
- * @param {reactive|Ref} form
- * @param options
- * @returns {{filtersCount: Ref<number>, resetForm: resetForm}}
- */
-export function useSearchForm(form, options) {
+export function useSearchForm(template, options) {
     const route = useRoute();
     const router = useRouter();
 
+    const form = reactive({});
+
     const {
-        template = {},
         submit = noop,
         syncWithQuery = false,
         setQuery = noop,
-        delay = 500
+        delay = 500,
+        transform = null
     } = options;
 
-    const isProcessing = shallowRef(false);
-
-    const filtersCount = computed(() => {
-        return Object.keys(template).reduce((acc, key) => {
-            if (!(key in form)) return acc;
-
-            const value = form[key];
-            if (value !== null && value !== '' && value !== undefined) {
-                if (Array.isArray(value)) {
-                    if (value.length) return acc + 1;
-                } else return acc + 1;
-            }
-
-            return acc;
-        }, 0);
-    });
+    const isProcessing = ref(false);
 
     function resetForm() {
-        Object.assign(form, template);
+        Object.keys(template).forEach(key => {
+            if (isArray(template[key]) || isObject(template[key])) {
+                form[key] = cloneObject(template[key]);
+            } else {
+                form[key] = template[key];
+            }
+        });
     }
+
+    resetForm();
 
     function queryToForm() {
         const cleanedQuery = toCleanObject(route.query);
@@ -65,6 +58,10 @@ export function useSearchForm(form, options) {
 
         if (syncWithQuery) _query = toCleanObject({ ...route.query, ...unref(form) });
         else _query = toCleanObject(unref(form));
+
+        if (isNotNullish(transform)) {
+            _query = transform(_query);
+        }
 
         isProcessing.value = true;
         if (syncWithQuery) await router.replace({ query: _query });
@@ -88,7 +85,7 @@ export function useSearchForm(form, options) {
     }
 
     stopFormWatch = watch(
-        () => form,
+        form,
         () => {
             clearTimeout(timeout);
             timeout = setTimeout(() => onSubmit(), delay);
@@ -96,8 +93,8 @@ export function useSearchForm(form, options) {
         { deep: true, immediate: !syncWithQuery }
     );
 
-    tryOnBeforeMount(async () => {
-        if (setQuery !== noop) await setQuery();
+    onBeforeMount(() => {
+        if (setQuery !== noop) setQuery();
     });
 
     function stop() {
@@ -107,7 +104,10 @@ export function useSearchForm(form, options) {
         clearTimeout(timeout);
     }
 
-    tryOnScopeDispose(stop);
+    onScopeDispose(stop);
 
-    return { filtersCount, resetForm };
+    return {
+        resetForm,
+        form
+    };
 }

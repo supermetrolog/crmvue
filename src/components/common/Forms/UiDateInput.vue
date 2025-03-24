@@ -13,6 +13,7 @@
                 :preset-dates="_presets"
                 :required
                 :min-date
+                :max-date
                 :time-picker-inline
                 :format
                 :placeholder

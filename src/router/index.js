@@ -292,6 +292,16 @@ const routes = [
         },
         component: () => import('../views/Equipments.vue')
     },
+    {
+        path: '/calls',
+        name: 'calls',
+        meta: {
+            layout: 'default',
+            auth: { isAuth: true },
+            title: 'Звонки'
+        },
+        component: () => import('../views/Calls.vue')
+    },
     // {
     //     path: '/surveys',
     //     name: 'surveys',

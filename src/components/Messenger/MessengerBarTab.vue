@@ -1,7 +1,7 @@
 <template>
     <div @click="$emit('select')" class="messenger-bar-tab" :class="{ visible: isVisible }">
         <div class="messenger-bar-tab__list">
-            <div v-tippy="label" class="messenger-bar-tab__label mb-1">
+            <div class="messenger-bar-tab__label mb-1">
                 {{ label }}
             </div>
             <Spinner v-if="loading" class="mini" />
