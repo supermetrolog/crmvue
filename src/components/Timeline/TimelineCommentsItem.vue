@@ -64,7 +64,7 @@ export default {
                 result.isLabel = false;
             } else if (date.isToday()) result.value = 'Сегодня';
             else if (date.isYesterday()) result.value = 'Вчера';
-            else result.value = this.data.created_at_format;
+            else result.value = date.format('D.MM.YYYY, HH:mm');
 
             return result;
         },

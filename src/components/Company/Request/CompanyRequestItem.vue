@@ -154,7 +154,7 @@
                             </p>
                             <p>дата переезда</p>
                             <p v-if="request.movingDate" class="parameters-inner">
-                                {{ request.movingDate_format }}
+                                {{ request.movingDate }}
                             </p>
                             <p v-if="request.unknownMovingDate !== null" class="parameters-inner">
                                 {{ unknownMovingDateOptions[request.unknownMovingDate] }}
@@ -193,7 +193,7 @@
             <div class="footer row mt-1">
                 <div class="col-8 consultant text-left">
                     <p>конс: {{ request.consultant.userProfile.short_name }}</p>
-                    <p>{{ request.created_at_format }}</p>
+                    <p>{{ request.created_at }}</p>
                 </div>
                 <div v-if="!reedOnly" class="col-4 date text-right">
                     <button @click="clickTimeline" class="btn px-2 btn-primary scale timeline-btn">таймлайн</button>
@@ -222,6 +222,7 @@ import Progress from '@/components/common/Progress.vue';
 import { mapGetters } from 'vuex';
 import DealListItem from '@/components/Deal/DealListItem.vue';
 
+// TODO: MovingDate dayjs format
 export default {
     name: 'CompanyRequestItem',
     components: {

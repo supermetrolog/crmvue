@@ -127,7 +127,7 @@
                         </CompanyBoxRequestsListItemParameter>
                         <CompanyBoxRequestsListItemParameter label="Дата переезда">
                             <template v-if="request.movingDate">
-                                {{ request.movingDate_format }}
+                                {{ request.movingDate }}
                             </template>
                             <template v-else-if="request.unknownMovingDate !== null">
                                 {{ unknownMovingOption }}
@@ -206,6 +206,7 @@ import AccordionSimpleTriggerButton from '@/components/common/Accordion/Accordio
 import { objectPurposesOptions } from '@/const/options/object.options.js';
 import UiField from '@/components/common/UI/UiField.vue';
 
+// TODO: MovingDate dayjs format
 export default {
     name: 'CompanyBoxRequestsListItem',
     components: {
@@ -238,7 +239,6 @@ export default {
             firstFloorOnly: Number,
             trainLine: Number,
             trainLineLength: Number,
-            movingDate_format: String,
             unknownMovingDate: [Number],
             pricePerFloor: Number,
             electricity: [Number, String],
