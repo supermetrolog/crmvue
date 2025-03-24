@@ -18,6 +18,7 @@
   "dependencies": {
     "@floating-ui/vue": "^1.0.6",
     "@kyvg/vue3-notification": "^3.2.1",
+    "@sentry/vue": "^9.8.0",
     "@vueform/multiselect": "^2.6.11",
     "@vuelidate/core": "^2.0.0-alpha.19",
     "@vuelidate/validators": "^2.0.0-alpha.17",

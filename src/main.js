@@ -44,8 +44,10 @@ axios.interceptors.request.use(axiosRequestInterceptor);
 axios.interceptors.response.use(response => response, axiosResponseErrorInterceptor);
 
 tippy.setDefaultProps({ placement: 'auto-end', allowHTML: true });
+import { initSentry } from '@/plugins/sentry.js';
 
 const app = createApp(App);
+initSentry(app);
 
 // TODO: Удалить PhoneNumber, Tab, Tabs из глобала
 
