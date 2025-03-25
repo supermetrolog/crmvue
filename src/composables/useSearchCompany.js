@@ -1,5 +1,5 @@
 import api from '@/api/api.js';
-import { unref } from 'vue';
+import { toValue } from 'vue';
 
 import { getCompanyName } from '@/utils/formatters/models/company.js';
 
@@ -16,7 +16,7 @@ export function useSearchCompany(defaultQuery) {
         let query = {};
 
         if (querySearch == null) {
-            const initialQuery = unref(defaultQuery);
+            const initialQuery = toValue(defaultQuery);
 
             if (initialQuery) query = { id: initialQuery };
             else return [];

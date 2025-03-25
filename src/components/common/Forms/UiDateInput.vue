@@ -1,8 +1,5 @@
 <template>
-    <div
-        class="form__control ui-date-input"
-        :class="{ 'form__control--disabled': disabled, required: required }"
-    >
+    <div class="form__control ui-date-input" :class="{ required: required }">
         <label>
             <span v-if="label" class="form__label">{{ label }}</span>
             <VueDatePicker
@@ -23,6 +20,7 @@
                 class="ui-date-input__picker"
                 teleport
                 :inline
+                :disabled
             >
                 <template #calendar-header="{ index, day }">
                     <div :class="{ 'color-success': index === 5 || index === 6 }">

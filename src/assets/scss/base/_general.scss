@@ -234,6 +234,10 @@ main {
         }
     }
 
+    &__picker .dp__input:disabled {
+        opacity: .6;
+    }
+
     &__presets-label {
         font-weight: 500;
         color: variables.$color_grey;
