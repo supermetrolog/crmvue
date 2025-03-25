@@ -1,5 +1,11 @@
 <template>
-    <UiModal @close="$emit('close')" custom-close show :width="750" title="Клонирование запроса">
+    <UiModal
+        @close="$emit('close')"
+        custom-close
+        show
+        :width="750"
+        :title="`Клонирование запроса #${request.id}`"
+    >
         <Loader v-if="isLoading" />
         <UiForm>
             <UiFormGroup>
@@ -16,10 +22,10 @@
             </UiFormGroup>
         </UiForm>
         <template #actions="{ close }">
-            <UiButton @click="submit" color="success-light" small icon="fa-solid fa-check">
+            <UiButton @click="submit" color="success-light" icon="fa-solid fa-check" bolder>
                 Клонировать
             </UiButton>
-            <UiButton @click="close" color="light" icon="fa-solid fa-ban" small>Отмена</UiButton>
+            <UiButton @click="close" color="light" icon="fa-solid fa-ban" bolder>Отмена</UiButton>
         </template>
     </UiModal>
 </template>

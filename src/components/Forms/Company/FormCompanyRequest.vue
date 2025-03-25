@@ -12,7 +12,7 @@
         <Loader v-if="isLoading" />
         <UiForm>
             <Tabs always-render>
-                <Tab name="Основное">
+                <Tab name="Основное" required>
                     <UiFormGroup>
                         <UiInput v-model="form.name" label="Название" class="col-12" />
                         <CompanyPicker
@@ -224,7 +224,7 @@
                             class="col-md-4"
                         />
                     </UiFormGroup>
-                    <UiFormDivider />
+                    <UiFormDivider v-if="isEditMode" />
                     <UiFormGroup v-if="isEditMode">
                         <MultiSelect
                             v-model="form.status"
@@ -255,7 +255,7 @@
                         />
                     </UiFormGroup>
                 </Tab>
-                <Tab name="Локация">
+                <Tab name="Локация" required>
                     <UiFormGroup>
                         <MultiSelect
                             v-model="form.regions"
@@ -319,7 +319,7 @@
                             />
                         </AnimationTransition>
                         <AnimationTransition>
-                            <UiCol v-if="hasDirections" :cols="12" class="mb-2">
+                            <UiCol v-if="hasDirections" :cols="12">
                                 <span class="form__subtitle">Направления МО</span>
                                 <div class="form__row mt-1">
                                     <CheckboxChip
@@ -491,12 +491,10 @@
             </Tabs>
         </UiForm>
         <template #actions="{ close }">
-            <UiButton @click="submit" color="success-light" small icon="fa-solid fa-check" bolder>
+            <UiButton @click="submit" color="success-light" icon="fa-solid fa-check" bolder>
                 Сохранить
             </UiButton>
-            <UiButton @click="close" color="light" small icon="fa-solid fa-ban" bolder>
-                Отмена
-            </UiButton>
+            <UiButton @click="close" color="light" icon="fa-solid fa-ban" bolder>Отмена</UiButton>
         </template>
     </UiModal>
 </template>
@@ -640,8 +638,13 @@ const normalizeForm = () => {
         form.region_neardy = null;
     }
 
-    form.objectTypes = form.objectTypes.map(element => ({ object_type: element }));
-    form.objectTypesGeneral = form.objectTypesGeneral.map(element => ({ type: element }));
+    if (form.objectTypes.some(element => isNullish(element.object_type))) {
+        form.objectTypes = form.objectTypes.map(element => ({ object_type: element }));
+    }
+
+    if (form.objectTypesGeneral.some(element => isNullish(element.type))) {
+        form.objectTypesGeneral = form.objectTypesGeneral.map(element => ({ type: element }));
+    }
 };
 
 const normalizeFormData = () => {

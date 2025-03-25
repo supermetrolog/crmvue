@@ -9,26 +9,35 @@
         <div class="company-item-request__header">
             <p>{{ status }}</p>
             <div v-if="!readOnly" class="company-item-request__actions">
-                <HoverActionsButton
-                    v-if="!isDone"
-                    @click="$emit('update')"
-                    small
-                    label="Редактировать"
-                >
-                    <i class="fa-solid fa-pen" />
-                </HoverActionsButton>
-                <HoverActionsButton @click="$emit('clone')" small label="Клонировать">
-                    <i class="fa-solid fa-clone" />
-                </HoverActionsButton>
-                <HoverActionsButton
-                    v-if="!isDone"
-                    @click="$emit('disable')"
-                    small
-                    :label="isDisabled ? 'Восстановить' : 'Удалить'"
-                >
-                    <i v-if="isDisabled" class="fa-solid fa-undo" />
-                    <i v-else class="fa-solid fa-times" />
-                </HoverActionsButton>
+                <UiDropdownActions>
+                    <template #trigger>
+                        <UiButtonIcon
+                            icon="fa-solid fa-gear"
+                            label="Действия над запросом"
+                            small
+                            :color="isActive ? 'white' : 'light'"
+                        />
+                    </template>
+                    <template #menu>
+                        <UiDropdownActionsButton
+                            v-if="!isDone"
+                            @handle="$emit('update')"
+                            label="Редактировать"
+                            icon="fa-solid fa-pen"
+                        />
+                        <UiDropdownActionsButton
+                            @handle="$emit('clone')"
+                            label="Клонировать"
+                            icon="fa-solid fa-clone"
+                        />
+                        <UiDropdownActionsButton
+                            v-if="!isDone"
+                            @handle="$emit('disable')"
+                            :label="isDisabled ? 'Восстановить' : 'Удалить'"
+                            :icon="isDisabled ? 'fa-solid fa-undo' : 'fa-solid fa-xmark'"
+                        />
+                    </template>
+                </UiDropdownActions>
             </div>
         </div>
         <div class="company-item-request__location">
@@ -197,7 +206,6 @@ import { mapGetters } from 'vuex';
 import DealListItem from '@/components/Deal/DealListItem.vue';
 import Progress from '@/components/common/Progress.vue';
 import Button from '@/components/common/Button.vue';
-import HoverActionsButton from '@/components/common/HoverActions/HoverActionsButton.vue';
 import WithUnitType from '@/components/common/WithUnitType.vue';
 import { unitTypes } from '@/const/unitTypes.js';
 import CompanyBoxRequestsListItemParameter from '@/components/Company/Box/CompanyBoxRequestsListItemParameter.vue';
@@ -205,17 +213,22 @@ import AccordionSimple from '@/components/common/Accordion/AccordionSimple.vue';
 import AccordionSimpleTriggerButton from '@/components/common/Accordion/AccordionSimpleTriggerButton.vue';
 import { objectPurposesOptions } from '@/const/options/object.options.js';
 import UiField from '@/components/common/UI/UiField.vue';
+import UiDropdownActionsButton from '@/components/common/UI/UiDropdownActionsButton.vue';
+import UiDropdownActions from '@/components/common/UI/UiDropdownActions.vue';
+import UiButtonIcon from '@/components/common/UI/UiButtonIcon.vue';
 
 // TODO: MovingDate dayjs format
 export default {
     name: 'CompanyBoxRequestsListItem',
     components: {
+        UiButtonIcon,
+        UiDropdownActions,
+        UiDropdownActionsButton,
         UiField,
         AccordionSimpleTriggerButton,
         AccordionSimple,
         CompanyBoxRequestsListItemParameter,
         WithUnitType,
-        HoverActionsButton,
         Button,
         DealListItem,
         Progress
