@@ -132,7 +132,7 @@
 <script setup>
 import UiForm from '@/components/common/Forms/UiForm.vue';
 import UiFormGroup from '@/components/common/Forms/UiFormGroup.vue';
-import { computed, ref } from 'vue';
+import { computed, ref, watch } from 'vue';
 import UiModal from '@/components/common/UI/UiModal.vue';
 import UiInput from '@/components/common/Forms/UiInput.vue';
 import UiButton from '@/components/common/UI/UiButton.vue';
@@ -239,6 +239,20 @@ const { resetForm, form } = useSearchForm(formTemplate, {
         return value;
     }
 });
+
+watch(
+    () => form.search,
+    () => {
+        router.replace({ query: { ...route.query, page: 1 } });
+    }
+);
+
+watch(
+    () => route?.query?.page,
+    () => {
+        emit('search');
+    }
+);
 
 const { filtersCount, humanizedSelectedFilters } = useSelectedFilters(
     form,

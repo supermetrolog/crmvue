@@ -6,7 +6,7 @@
                     <div class="white-block mb-3">
                         <div class="row">
                             <UiCol :cols="12">
-                                <FormCallsSearch @search="fetchCalls" />
+                                <FormCallsSearch @search="debouncedFetchCalls" />
                             </UiCol>
                             <PaginationClassic
                                 v-if="calls.length"
@@ -15,13 +15,14 @@
                                 :pagination="pagination"
                                 class="col-xxl-6 col-lg-8 col-2"
                             />
-                            <UiCol v-show="!isLoading" :cols="4" :xxl="6">
+                            <UiCol :cols="calls.length ? 4 : 12" :xxl="calls.length ? 6 : 12">
                                 <div class="d-flex gap-2 flex-wrap justify-content-end">
                                     <UiButton
                                         @click="fetchCalls"
                                         color="light"
                                         icon="fa-solid fa-refresh"
                                         bolder
+                                        :loading="isLoading"
                                     >
                                         Обновить таблицу
                                     </UiButton>
@@ -29,6 +30,7 @@
                                         @click="createCall"
                                         color="success-light"
                                         icon="fa-solid fa-plus"
+                                        :disabled="isLoading"
                                         bolder
                                     >
                                         Зафиксировать звонок
@@ -102,7 +104,7 @@ async function fetchCalls() {
 
 fetchCalls();
 
-const debouncedFetchCalls = useDebounceFn(fetchCalls, 300);
+const debouncedFetchCalls = useDebounceFn(fetchCalls, 200);
 
 watch(() => route.query?.sort, debouncedFetchCalls);
 
