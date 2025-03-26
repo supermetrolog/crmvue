@@ -522,7 +522,7 @@ const { form, isEditMode } = useFormData(
         passive_why_comment: null,
         files: [],
         new_files: [],
-        show_product_ranges: 1,
+        show_product_ranges: 0,
 
         activity_group_ids: [],
         activity_profile_ids: []
