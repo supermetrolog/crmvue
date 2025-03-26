@@ -48,6 +48,9 @@
                 <OfferTableItemArea
                     @show-blocks="showBlocks"
                     @hide-blocks="hideBlocks"
+                    @pin-blocks="pinBlocks"
+                    :blocks-shown="blocksDropdownIsOpen"
+                    :blocks-pinned="blocksDropdownIsPinned"
                     :offer="offer"
                 />
             </div>
@@ -128,7 +131,7 @@
         </Td>
     </Tr>
     <DropDown>
-        <OfferTableItemDropdown v-if="blocksDropdownIsOpen">
+        <OfferTableItemDropdown v-if="blocksDropdownIsOpen || blocksDropdownIsPinned">
             <UiButton
                 @click="hideBlocks"
                 class="offer-table-item__close w-100"
@@ -173,7 +176,7 @@ import OfferTableItemPrice from '@/components/Offer/TableItem/OfferTableItemPric
 import { useDelayedLoader } from '@/composables/useDelayedLoader.js';
 import Spinner from '@/components/common/Spinner.vue';
 import TableDateBlock from '@/components/common/Table/TableDateBlock.vue';
-import { computed, shallowRef } from 'vue';
+import { computed, ref, shallowRef } from 'vue';
 import { useStore } from 'vuex';
 import OfferTableItemRelationSelect from '@/components/Offer/TableItem/OfferTableItemRelationSelect.vue';
 import { dealOptions } from '@/const/options/deal.options.js';
@@ -280,13 +283,21 @@ const openRelations = type => {
     searchRelatedOffers(type, true);
 };
 
+const blocksDropdownIsPinned = ref(false);
+
 const showBlocks = () => {
     blocksDropdownIsOpen.value = true;
     if (!blockOffers.value.length) searchBlockOffers();
 };
 
+const pinBlocks = () => {
+    blocksDropdownIsPinned.value = true;
+    blocksDropdownIsOpen.value = false;
+};
+
 const hideBlocks = () => {
     blocksDropdownIsOpen.value = false;
+    blocksDropdownIsPinned.value = false;
 };
 
 const openInChat = () =>

@@ -25,11 +25,13 @@
         </div>
         <div
             v-if="offer.blocks?.length > 1"
-            v-tippy="isOpened ? 'Нажмите, чтобы скрыть блоки' : 'Нажмите, чтобы закрепить блоки'"
+            v-tippy="
+                blocksPinned ? 'Нажмите, чтобы скрыть блоки' : 'Нажмите, чтобы закрепить блоки'
+            "
             v-element-hover="[onHover, { delayEnter: 300, delayLeave: 500 }]"
             @click="toggleBlocks"
             class="offer-table-item-area__label mt-1"
-            :class="{ active: isOpened }"
+            :class="{ active: blocksShown || blocksPinned }"
         >
             *собрано из блоков
         </div>
@@ -39,30 +41,30 @@
 <script setup>
 import WithUnitType from '@/components/common/WithUnitType.vue';
 import { unitTypes } from '@/const/unitTypes.js';
-import { shallowRef } from 'vue';
+import { ref } from 'vue';
 import { vElementHover } from '@vueuse/components';
 
-const emit = defineEmits(['show-blocks', 'hide-blocks']);
-defineProps({
+const emit = defineEmits(['show-blocks', 'hide-blocks', 'pin-blocks']);
+const props = defineProps({
     offer: {
         type: Object,
         required: true
-    }
+    },
+    blocksShown: Boolean,
+    blocksPinned: Boolean
 });
 
-const isOpened = shallowRef(false);
-const isHovered = shallowRef(false);
+const isHovered = ref(false);
 
 const toggleBlocks = () => {
-    isOpened.value = !isOpened.value;
-    if (isOpened.value) emit('show-blocks');
-    else emit('hide-blocks');
+    if (props.blocksPinned) emit('hide-blocks');
+    else emit('pin-blocks');
 };
 
 const onHover = hovered => {
     isHovered.value = hovered;
 
-    if (isOpened.value) return;
+    if (props.blocksPinned) return;
 
     emit(isHovered.value ? 'show-blocks' : 'hide-blocks');
 };
