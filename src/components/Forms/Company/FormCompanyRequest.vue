@@ -374,20 +374,18 @@
                     </UiFormGroup>
                     <UiFormDivider />
                     <UiFormGroup>
+                        <SwitchSlider
+                            v-model="form.heated"
+                            class="col-12"
+                            label="Отопление"
+                            vertical
+                        />
                         <UiCol :cols="12">
                             <span class="form__subtitle">
                                 <span>Необходимые коммуникации</span>
                                 <span class="text-grey fs-2 ml-1">(Выберите необходимое)</span>
                             </span>
                             <div class="form__row mt-1">
-                                <RadioChip
-                                    v-model="form.heated"
-                                    :value="1"
-                                    :rounded="false"
-                                    label="Отопление"
-                                    unselect
-                                    icon="fa-solid fa-temperature-arrow-up"
-                                />
                                 <RadioChip
                                     v-model="form.water"
                                     :value="1"
@@ -549,6 +547,7 @@ import UiFormDivider from '@/components/common/Forms/UiFormDivider.vue';
 import UiCheckbox from '@/components/common/Forms/UiCheckbox.vue';
 import UiCol from '@/components/common/UI/UiCol.vue';
 import RadioChip from '@/components/common/Forms/RadioChip.vue';
+import SwitchSlider from '@/components/common/Forms/SwitchSlider.vue';
 
 const emit = defineEmits(['close', 'created', 'updated']);
 const props = defineProps({
