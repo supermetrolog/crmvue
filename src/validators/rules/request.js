@@ -17,17 +17,17 @@ function dateRangeValidator(value, form, vm) {
 }
 
 export const validationRulesForRequest = {
-    regions: {
+    region_ids: {
         required: helpers.withMessage('Выберите регион', required)
     },
     dealType: {
         required: helpers.withMessage('Выберите тип сделки', required)
     },
-    objectTypesGeneral: {
+    object_type_general_ids: {
         required: helpers.withMessage('Выберите тип объекта', required)
     },
     distanceFromMKAD: {
-        customRequired: helpers.withMessage('Заполните поле', distanceValidator)
+        customRequired: helpers.withMessage('Заполните удаленность от МКАД', distanceValidator)
     },
     company_id: {
         required: helpers.withMessage('Выберите компанию', required)
@@ -36,22 +36,28 @@ export const validationRulesForRequest = {
         required: helpers.withMessage('Выберите контакт', required)
     },
     minArea: {
-        required: helpers.withMessage('Заполните поле', required)
+        required: helpers.withMessage('Заполните минимальную площадь', required)
     },
     maxArea: {
-        required: helpers.withMessage('Заполните поле', required)
+        required: helpers.withMessage('Заполните максимальную площадь', required)
     },
     minCeilingHeight: {
-        required: helpers.withMessage('Заполните поле', required)
+        required: helpers.withMessage('Заполните минимальную высоту', required)
     },
     consultant_id: {
-        required: helpers.withMessage('Выберите вариант', required)
+        required: helpers.withMessage('Выберите консультанта', required)
     },
     movingDate: {
-        customRequiredForMovingDate: helpers.withMessage('Заполните поле', movingDateValidator),
-        maxValue: helpers.withMessage('Неверная дата', dateRangeValidator)
+        customRequiredForMovingDate: helpers.withMessage(
+            'Заполните дату переезда',
+            movingDateValidator
+        ),
+        maxValue: helpers.withMessage('Неверная дата переезда', dateRangeValidator)
     },
     passive_why: {
-        customRequiredPassiveWhy: helpers.withMessage('Выберите причину', passiveWhyValidator)
+        customRequiredPassiveWhy: helpers.withMessage(
+            'Выберите причину пассива',
+            passiveWhyValidator
+        )
     }
 };

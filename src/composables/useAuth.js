@@ -7,24 +7,14 @@ import { createSharedComposable } from '@vueuse/core';
 const isAuth = shallowRef(false);
 const redirectRoute = shallowRef(null);
 
-/**
- * Залогинить пользователя
- */
 function login() {
     isAuth.value = true;
 }
 
-/**
- * Разлогинить пользователя
- */
 function logout() {
     isAuth.value = false;
 }
 
-/**
- * Установить редирект после следующего логина
- * @param value - Full path для `router`
- */
 function setRedirect(value) {
     redirectRoute.value = value;
 }
@@ -41,6 +31,10 @@ export const useAuth = createSharedComposable(() => {
     const currentUserId = computed(() => Number(currentUser.value?.id));
 
     const currentUserIsModerator = computed(
+        () => currentUser.value?.role === userOptions.roleStatement.MODERATOR
+    );
+
+    const currentUserIsModeratorOrHigher = computed(
         () => currentUser.value?.role >= userOptions.roleStatement.MODERATOR
     );
 
@@ -63,6 +57,7 @@ export const useAuth = createSharedComposable(() => {
         currentUserId,
         currentUserIsAdmin,
         currentUserIsModerator,
+        currentUserIsModeratorOrHigher,
         currentUserIsDirector
     };
 });

@@ -110,7 +110,7 @@
                             </p>
                             <p>высота потолков <small class="text-grey">(м)</small></p>
                             <p class="parameters-inner">
-                                {{ request.format_ceilingHeight }}
+                                {{ formatCeilingHeight }}
                             </p>
                             <p>площадь пола <small class="text-grey">(м<sup>2</sup>)</small></p>
                             <p class="parameters-inner">
@@ -221,6 +221,7 @@ import {
 import Progress from '@/components/common/Progress.vue';
 import { mapGetters } from 'vuex';
 import DealListItem from '@/components/Deal/DealListItem.vue';
+import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
 
 // TODO: MovingDate dayjs format
 export default {
@@ -267,6 +268,11 @@ export default {
         unknownMovingDateOptions: () => unknownMovingDate,
         dealType() {
             return this.dealTypeList[this.request.dealType].label;
+        },
+        formatCeilingHeight() {
+            if (isNotNullish(this.request.maxCeilingHeight))
+                return `${this.request.minCeilingHeight} - ${this.request.maxCeilingHeight}`;
+            return `от ${this.request.minCeilingHeight}`;
         }
     },
     methods: {

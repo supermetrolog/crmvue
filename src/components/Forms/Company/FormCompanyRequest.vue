@@ -23,6 +23,7 @@
                             placement="top"
                             class="col-6"
                             required
+                            :disabled="isEditMode && !currentUserIsModeratorOrHigher"
                         />
                         <MultiSelect
                             v-model="form.contact_id"
@@ -98,6 +99,7 @@
                             class="col-6"
                             required
                             :options="getConsultantsOptions"
+                            :disabled="isEditMode && !currentUserIsModeratorOrHigher"
                         >
                             <template #after>
                                 <AnimationTransition :speed="0.4">
@@ -107,7 +109,10 @@
                                         small
                                         color="light"
                                         icon="fa-solid fa-user-lock"
-                                        :disabled="assignedToCompanyConsultant"
+                                        :disabled="
+                                            assignedToCompanyConsultant ||
+                                            !currentUserIsModeratorOrHigher
+                                        "
                                         :loading="companyConsultantIsLoading"
                                     >
                                         <span
@@ -159,7 +164,7 @@
                             v-model="form.movingDate"
                             @change="form.unknownMovingDate = null"
                             :v="v$.form.movingDate"
-                            :disabled="form.unknownMovingDate"
+                            :disabled="Boolean(form.unknownMovingDate)"
                             label="Дата переезда"
                             placeholder="Укажите дату переезда.."
                             :required="isNullish(form.unknownMovingDate)"
@@ -190,35 +195,35 @@
                     <UiFormDivider />
                     <UiFormGroup>
                         <AnimationTransition :speed="0.4">
-                            <div v-if="v$.form.objectTypesGeneral.$error" class="col-12">
+                            <div v-if="v$.form.object_type_general_ids.$error" class="col-12">
                                 <DashboardChip class="dashboard-bg-danger-l w-100 text-center">
-                                    {{ v$.form.objectTypesGeneral.$errors[0].$message }}
+                                    {{ v$.form.object_type_general_ids.$errors[0].$message }}
                                 </DashboardChip>
                             </div>
                         </AnimationTransition>
                         <ObjectTypePicker
-                            v-model:value="form.objectTypes"
-                            v-model:extra="form.objectTypesGeneral"
+                            v-model:value="form.object_type_ids"
+                            v-model:extra="form.object_type_general_ids"
                             :extra-value="0"
-                            :v="v$.form.objectTypesGeneral"
+                            :v="v$.form.object_type_general_ids"
                             label="Склад"
                             :options="objectPurposesWithSectionsOptions.warehouse"
                             class="col-md-4"
                         />
                         <ObjectTypePicker
-                            v-model:value="form.objectTypes"
-                            v-model:extra="form.objectTypesGeneral"
+                            v-model:value="form.object_type_ids"
+                            v-model:extra="form.object_type_general_ids"
                             :extra-value="1"
-                            :v="v$.form.objectTypesGeneral"
+                            :v="v$.form.object_type_general_ids"
                             label="Производство"
                             :options="objectPurposesWithSectionsOptions.production"
                             class="col-md-4"
                         />
                         <ObjectTypePicker
-                            v-model:value="form.objectTypes"
-                            v-model:extra="form.objectTypesGeneral"
+                            v-model:value="form.object_type_ids"
+                            v-model:extra="form.object_type_general_ids"
                             :extra-value="2"
-                            :v="v$.form.objectTypesGeneral"
+                            :v="v$.form.object_type_general_ids"
                             label="Участок"
                             :options="objectPurposesWithSectionsOptions.plot"
                             class="col-md-4"
@@ -234,6 +239,7 @@
                             label="Статус"
                             class="col-6"
                             :options="entityOptions.request.status"
+                            :disabled="!currentUserIsModeratorOrHigher"
                         />
                         <MultiSelect
                             v-model="form.passive_why"
@@ -258,9 +264,9 @@
                 <Tab name="Локация" required>
                     <UiFormGroup>
                         <MultiSelect
-                            v-model="form.regions"
+                            v-model="form.region_ids"
                             @change="changeRegion"
-                            :v="v$.form.regions"
+                            :v="v$.form.region_ids"
                             :options="getClearedRegionsOptions"
                             :close-on-select="false"
                             :hide-selected="false"
@@ -268,7 +274,6 @@
                             label="Регионы"
                             class="col-8"
                             mode="multiple"
-                            name="region"
                             searchable
                             multiple
                             required
@@ -299,10 +304,8 @@
                         <AnimationTransition>
                             <CheckboxOptions
                                 v-if="hasDistricts"
-                                v-model="form.districts"
+                                v-model="form.district_ids"
                                 class="col-12"
-                                label="Округа Москвы"
-                                property="district"
                                 :options="DistrictList"
                             />
                         </AnimationTransition>
@@ -325,10 +328,9 @@
                                     <CheckboxChip
                                         v-for="(directionItem, index) in DirectionList"
                                         :key="index"
-                                        v-model="form.directions"
-                                        :value="index"
+                                        v-model="form.direction_ids"
+                                        :value="Number(index)"
                                         :text="directionItem.full"
-                                        property="direction"
                                         show-checkbox
                                         :rounded="false"
                                     />
@@ -358,17 +360,15 @@
                     <UiFormDivider />
                     <UiFormGroup>
                         <CheckboxOptions
-                            v-model="form.gateTypes"
+                            v-model="form.gate_types"
                             class="col-8"
                             label="Тип ворот"
                             :options="GateTypeList"
-                            property="gate_type"
                         />
                         <CheckboxOptions
-                            v-model="form.objectClasses"
+                            v-model="form.object_classes"
                             class="col-4"
                             label="Классы объекта"
-                            property="object_class"
                             :options="ObjectClassList"
                         />
                     </UiFormGroup>
@@ -548,6 +548,7 @@ import UiCheckbox from '@/components/common/Forms/UiCheckbox.vue';
 import UiCol from '@/components/common/UI/UiCol.vue';
 import RadioChip from '@/components/common/Forms/RadioChip.vue';
 import SwitchSlider from '@/components/common/Forms/SwitchSlider.vue';
+import { useAuth } from '@/composables/useAuth.js';
 
 const emit = defineEmits(['close', 'created', 'updated']);
 const props = defineProps({
@@ -570,7 +571,6 @@ const { form, isEditMode } = useFormData(
         name: null,
         id: null,
         dealType: null,
-        regions: [],
         expressRequest: null,
         distanceFromMKAD: null,
         distanceFromMKADnotApplicable: null,
@@ -579,9 +579,7 @@ const { form, isEditMode } = useFormData(
         minCeilingHeight: null,
         maxCeilingHeight: null,
         firstFloorOnly: null,
-        objectClasses: [],
         heated: null,
-        gateTypes: [],
         antiDustOnly: null,
         electricity: '',
         haveCranes: null,
@@ -591,10 +589,6 @@ const { form, isEditMode } = useFormData(
         consultant_id: null,
         description: null,
         pricePerFloor: null,
-        objectTypes: [],
-        objectTypesGeneral: [],
-        directions: [],
-        districts: [],
         movingDate: null,
         unknownMovingDate: null,
         passive_why: null,
@@ -606,7 +600,14 @@ const { form, isEditMode } = useFormData(
         shelving: null,
         outside_mkad: null,
         region_neardy: null,
-        contact_id: null
+        contact_id: null,
+        gate_types: [],
+        region_ids: [],
+        object_type_ids: [],
+        object_type_general_ids: [],
+        direction_ids: [],
+        district_ids: [],
+        object_classes: []
     }),
     props.formData
 );
@@ -622,33 +623,30 @@ const pricePerFloorUnit = computed(() => {
     if (form.dealType === null || form.dealType === undefined || form.dealType === 1) return '₽';
     return '₽ за м<sup>2</sup>/год';
 });
-const hasDirections = computed(() => form.regions.some(item => item.region === 1));
-const hasDistricts = computed(() => form.regions.some(item => item.region === 6));
+const hasDirections = computed(() => form.region_ids.some(item => Number(item) === 1));
+const hasDistricts = computed(() => form.region_ids.some(item => Number(item) === 6));
 const isPassive = computed(() => form.status === entityOptions.request.statusStatement.PASSIVE);
 
 const normalizeForm = () => {
-    if (!form.regions.some(item => Number(item.region) === 6)) {
-        form.districts = [];
+    if (!form.region_ids.some(item => Number(item) === 6)) {
+        form.district_ids = [];
         form.outside_mkad = null;
     }
 
-    if (!form.regions.some(item => Number(item.region) === 1)) {
-        form.directions = [];
+    if (!form.region_ids.some(item => Number(item) === 1)) {
+        form.direction_ids = [];
         form.region_neardy = null;
-    }
-
-    if (form.objectTypes.some(element => isNullish(element.object_type))) {
-        form.objectTypes = form.objectTypes.map(element => ({ object_type: element }));
-    }
-
-    if (form.objectTypesGeneral.some(element => isNullish(element.type))) {
-        form.objectTypesGeneral = form.objectTypesGeneral.map(element => ({ type: element }));
     }
 };
 
 const normalizeFormData = () => {
-    form.objectTypes = form.objectTypes.map(element => element.object_type);
-    form.objectTypesGeneral = form.objectTypesGeneral.map(element => element.type);
+    form.object_type_ids = props.formData.objectTypes.map(element => element.object_type);
+    form.object_type_general_ids = props.formData.objectTypesGeneral.map(element => element.type);
+    form.region_ids = props.formData.regions.map(element => element.region);
+    form.district_ids = props.formData.districts.map(element => element.district);
+    form.direction_ids = props.formData.directions.map(element => element.direction);
+    form.object_classes = props.formData.objectClasses.map(element => element.object_class);
+    form.gate_types = props.formData.gateTypes.map(element => element.gate_type);
 };
 
 const updateRequest = async () => {
@@ -707,18 +705,18 @@ const onChangeCompany = () => {
 };
 
 const changeRegion = () => {
-    if (form.regions === null) {
-        form.directions = [];
-        form.districts = [];
+    if (form.region_ids === null) {
+        form.direction_ids = [];
+        form.district_ids = [];
     }
 
-    if (!form.regions.some(item => Number(item.region ?? item) === 1)) {
-        form.directions = [];
+    if (!form.region_ids.some(item => Number(item) === 1)) {
+        form.direction_ids = [];
         form.region_neardy = null;
     }
 
-    if (!form.regions.some(item => Number(item.region ?? item) === 6)) {
-        form.districts = [];
+    if (!form.region_ids.some(item => Number(item) === 6)) {
+        form.district_ids = [];
         form.outside_mkad = null;
     }
 };
@@ -788,4 +786,8 @@ function selectMainCompanyContact() {
 const mainCompanyContactIsSelected = computed(
     () => form.contact_id === mainCompanyContact.value?.value
 );
+
+// auth
+
+const { currentUserIsModeratorOrHigher } = useAuth();
 </script>

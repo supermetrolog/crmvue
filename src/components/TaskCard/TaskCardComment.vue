@@ -62,7 +62,7 @@ const props = defineProps({
     }
 });
 
-const { currentUserIsAdmin, currentUserId, currentUserIsModerator } = useAuth();
+const { currentUserIsAdmin, currentUserId, currentUserIsModeratorOrHigher } = useAuth();
 
 const createdAt = computed(() => toBeautifulDateFormat(props.comment.created_at));
 
@@ -71,7 +71,8 @@ const canBeEdited = computed(
 );
 
 const canBeDeleted = computed(
-    () => currentUserIsModerator.value || props.comment.created_by_id === currentUserId.value
+    () =>
+        currentUserIsModeratorOrHigher.value || props.comment.created_by_id === currentUserId.value
 );
 
 // linkify

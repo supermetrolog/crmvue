@@ -64,7 +64,7 @@ const props = defineProps({
 });
 
 const { openMessenger } = useMessenger();
-const { currentUserId, currentUserIsModerator } = useAuth();
+const { currentUserId, currentUserIsModeratorOrHigher } = useAuth();
 
 const lastElementsCount = shallowRef(5);
 const currentTask = ref(null);
@@ -84,7 +84,7 @@ const userCanDrag = computed(() => {
         currentTask.value.deleted_at === null &&
             (Number(currentTask.value.created_by_id) === Number(currentUserId.value) ||
                 Number(currentTask.value.user_id) === Number(currentUserId.value) ||
-                currentUserIsModerator.value)
+                currentUserIsModeratorOrHigher.value)
     );
 });
 
@@ -92,7 +92,7 @@ const userCanEdit = computed(() => {
     if (!currentTask.value) return false;
     return Boolean(
         Number(currentTask.value.created_by_id) === Number(currentUserId.value) ||
-            currentUserIsModerator.value
+            currentUserIsModeratorOrHigher.value
     );
 });
 

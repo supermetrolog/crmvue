@@ -25,17 +25,19 @@
                             label="Редактировать"
                             icon="fa-solid fa-pen"
                         />
-                        <UiDropdownActionsButton
-                            @handle="$emit('clone')"
-                            label="Клонировать"
-                            icon="fa-solid fa-clone"
-                        />
-                        <UiDropdownActionsButton
-                            v-if="!isDone"
-                            @handle="$emit('disable')"
-                            :label="isDisabled ? 'Восстановить' : 'Удалить'"
-                            :icon="isDisabled ? 'fa-solid fa-undo' : 'fa-solid fa-xmark'"
-                        />
+                        <UiCan moderator-or-higher>
+                            <UiDropdownActionsButton
+                                @handle="$emit('clone')"
+                                label="Клонировать"
+                                icon="fa-solid fa-clone"
+                            />
+                            <UiDropdownActionsButton
+                                v-if="!isDone"
+                                @handle="$emit('disable')"
+                                :label="isDisabled ? 'Восстановить' : 'Удалить'"
+                                :icon="isDisabled ? 'fa-solid fa-undo' : 'fa-solid fa-xmark'"
+                            />
+                        </UiCan>
                     </template>
                 </UiDropdownActions>
             </div>
@@ -70,9 +72,9 @@
                     <div class="company-item-request__parameters">
                         <CompanyBoxRequestsListItemParameter label="Высота потолков">
                             <template #unit-type>(м)</template>
-                            <template v-if="!!request.format_ceilingHeight" #extended>
+                            <template #extended>
                                 <WithUnitType :unit-type="unitTypes.METERS">
-                                    {{ request.format_ceilingHeight }}
+                                    {{ formatCeilingHeight }}
                                 </WithUnitType>
                             </template>
                         </CompanyBoxRequestsListItemParameter>
@@ -216,11 +218,14 @@ import UiField from '@/components/common/UI/UiField.vue';
 import UiDropdownActionsButton from '@/components/common/UI/UiDropdownActionsButton.vue';
 import UiDropdownActions from '@/components/common/UI/UiDropdownActions.vue';
 import UiButtonIcon from '@/components/common/UI/UiButtonIcon.vue';
+import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
+import UiCan from '@/components/common/UI/UiCan.vue';
 
 // TODO: MovingDate dayjs format
 export default {
     name: 'CompanyBoxRequestsListItem',
     components: {
+        UiCan,
         UiButtonIcon,
         UiDropdownActions,
         UiDropdownActionsButton,
@@ -246,7 +251,6 @@ export default {
             heated: Number,
             haveCranes: Number,
             antiDustOnly: Number,
-            format_ceilingHeight: String,
             objectClasses: Array,
             objectTypes: Array,
             firstFloorOnly: Number,
@@ -330,6 +334,11 @@ export default {
         },
         createdAt() {
             return this.$formatter.toDate(this.request.created_at, 'DD.MM.YYYY, HH:mm');
+        },
+        formatCeilingHeight() {
+            if (isNotNullish(this.request.maxCeilingHeight))
+                return `${this.request.minCeilingHeight} - ${this.request.maxCeilingHeight}`;
+            return `от ${this.request.minCeilingHeight}`;
         }
     },
     methods: {
