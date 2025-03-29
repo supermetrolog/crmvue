@@ -1,6 +1,8 @@
 <template>
     <p class="with-unit-type">
-        <slot />
+        <slot>
+            {{ value }}
+        </slot>
         <component :is="unitComponentName" />
     </p>
 </template>
@@ -74,7 +76,8 @@ export default {
         unitType: {
             type: String,
             default: unitTypes.NONE
-        }
+        },
+        value: [String, Number]
     },
     computed: {
         unitComponentName() {
