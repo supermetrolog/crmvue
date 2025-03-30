@@ -1,20 +1,16 @@
 <template>
-    <Button ref="button" :active solid icon class="timeline-button" :class="{ active: active }">
-        <i v-if="active" class="fa-solid fa-check" />
-        <slot />
-    </Button>
+    <UiButton :tooltip :active outlined class="timeline-button" :class="{ active }">
+        <div class="d-flex align-items-center gap-2">
+            <i v-if="active" class="fa-solid fa-check" />
+            <slot />
+        </div>
+    </UiButton>
 </template>
 <script setup>
-import Button from '@/components/common/Button.vue';
-import { useTippyText } from '@/composables/useTippyText.js';
-import { toRef, useTemplateRef } from 'vue';
+import UiButton from '@/components/common/UI/UiButton.vue';
 
-const props = defineProps({
+defineProps({
     active: Boolean,
     tooltip: String
 });
-
-if (props.tooltip) {
-    useTippyText(useTemplateRef('button'), toRef(props, 'tooltip'));
-}
 </script>

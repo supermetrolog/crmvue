@@ -25,7 +25,7 @@
                     @next="$emit('next-step')"
                     title="4. Организация осмотра объектов"
                     :success="data.additional"
-                    :disabled="!data.timelineStepObjects.length"
+                    :disabled="!data.objects.length"
                 >
                     <p>
                         4.2. Скорректируйте маршрут и отправьте всю необходимую информацию по
@@ -39,8 +39,7 @@
                                     Нажмите, чтобы отправить клиенту ссылку на созданный маршрут
                                 "
                                 :disabled="disabled"
-                                icon
-                                success
+                                color="success"
                             >
                                 <span>Отправить клиенту</span>
                                 <i class="fas fa-paper-plane icon"></i>
@@ -51,7 +50,6 @@
                                     Нажмите, чтобы отправить себе ссылку на созданный маршрут
                                 "
                                 :disabled="disabled"
-                                icon
                             >
                                 <span>Отправить себе</span>
                                 <i class="fa-solid fa-paper-plane icon"></i>
@@ -73,7 +71,7 @@
                             </p>
                             <p>
                                 Показано {{ correctObjects.length }} из
-                                {{ data.timelineStepObjects.length }} предложений.
+                                {{ data.objects.length }} предложений.
                             </p>
                         </DashboardChip>
                     </div>
@@ -178,7 +176,7 @@
                     </div>
                 </div>
             </div>
-            <div v-else-if="!data.timelineStepObjects" class="col-12">
+            <div v-else-if="!data.objects" class="col-12">
                 <DashboardChip class="dashboard-bg-warning-l timeline-routes-error mx-auto">
                     Для создания маршрута выполните прыдыдущий этап.
                 </DashboardChip>
@@ -258,7 +256,7 @@ export default {
             return this.correctObjects.map(element => element.offer);
         },
         hasArchivedOffers() {
-            return this.data.timelineStepObjects.length !== this.correctObjects.length;
+            return this.data.objects.length !== this.correctObjects.length;
         }
     },
     watch: {
@@ -345,9 +343,7 @@ export default {
         }
     },
     created() {
-        this.correctObjects = this.data.timelineStepObjects.filter(object =>
-            isNotNullish(object.offer)
-        );
+        this.correctObjects = this.data.objects.filter(object => isNotNullish(object.offer));
         this.getLocation();
     }
 };

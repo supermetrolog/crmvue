@@ -5,10 +5,10 @@
                 <TimelineInfo
                     @next="$emit('next-step')"
                     title="6. Анализ показа объектов"
-                    :success="data.timelineStepObjects.length"
+                    :success="data.objects.length"
                 >
                     <p>Отметьте объекты, которые заинтересовали клиента во время показа.</p>
-                    <p v-if="data.timelineStepObjects.length">
+                    <p v-if="data.objects.length">
                         На данный момент клиент заинтетересован в
                         {{ infoText }}.
                     </p>
@@ -43,7 +43,7 @@
                     @unselect="unselect"
                     @addComment="addComment"
                     :objects="notSubmittedObjects"
-                    :current-objects="step.timelineStepObjects"
+                    :current-objects="step.objects"
                     :selected-objects="selectedObjects"
                     :disabled="disabled"
                     with-separator
@@ -71,12 +71,7 @@ export default {
     mixins: [TimelineStepWithObjectsMixin],
     computed: {
         infoText() {
-            return plural(
-                this.data.timelineStepObjects.length,
-                '%d объекте',
-                '%d объектах',
-                '%d объектах'
-            );
+            return plural(this.data.objects.length, '%d объекте', '%d объектах', '%d объектах');
         }
     },
     methods: {

@@ -4,6 +4,10 @@
 .company-preview {
     &__header {
         @include mixins.flex-box($gap: 5px, $wrap: true, $a: center);
+
+        .ui-chip {
+            font-size: 15px;
+        }
     }
 
     &__body {
@@ -41,17 +45,16 @@
     }
 
     &__tabs {
-        border-left: 1px solid  #e7e7e777;
         flex-grow: 1;
 
         .tabs-component-tabs {
             gap: 5px;
-            background-color: #e7e7e7;
+            background-color: variables.$color_grey_light;
             padding: 15px;
         }
 
         .tabs-component-panels {
-            padding: 15px!important;
+            padding: 10px 0!important;
         }
     }
 
@@ -84,9 +87,11 @@
 
 .company-preview-tab {
     color: inherit;
+    font-size: 16px!important;
+    padding: 7px 10px!important;
 
     &:hover, &.is-active {
-        background-color: variables.$bg-success-l;
+        background-color: #f7f7f7;
     }
 
     &__grid {

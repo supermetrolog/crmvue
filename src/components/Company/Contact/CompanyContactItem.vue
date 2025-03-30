@@ -83,9 +83,7 @@
             class="company-contact-item__phones mt-1"
         >
             <PhoneNumber
-                v-for="phone of contact.phones"
-                :key="phone.id"
-                :phone="phone"
+                :phone="mainPhone"
                 :contact="contact"
                 class="company-contact-item__phone"
             />
@@ -158,4 +156,12 @@ const editContact = () => {
 const deleteContact = () => {
     emit('delete-contact', { ...props.contact, header: name.value });
 };
+
+const mainPhone = computed(() => {
+    if (props.contact.phones?.length) {
+        return props.contact.phones.find(phone => phone.isMain) ?? props.contact.phones[0];
+    }
+
+    return null;
+});
 </script>

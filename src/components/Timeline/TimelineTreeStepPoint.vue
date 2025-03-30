@@ -22,34 +22,13 @@ const props = defineProps({
         type: Object,
         required: true
     },
-    available: {
-        type: Boolean,
-        default: false
-    },
-    selected: {
-        type: Boolean,
-        default: false
-    },
-    done: {
-        type: Boolean,
-        default: false
-    },
-    icon: {
-        type: String,
-        default: null
-    },
-    point: {
-        type: Boolean,
-        default: false
-    },
-    process: {
-        type: Boolean,
-        default: false
-    },
-    attention: {
-        type: Boolean,
-        default: false
-    }
+    available: Boolean,
+    selected: Boolean,
+    done: Boolean,
+    icon: String,
+    point: Boolean,
+    process: Boolean,
+    attention: Boolean
 });
 
 const className = computed(() => {

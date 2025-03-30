@@ -11,22 +11,19 @@
             <div class="col-12">
                 <Accordion @changed="onTabSwitched" :default-tab-hash="step.id">
                     <AccordionItem
-                        v-for="timelineStep in timeline.timelineSteps"
+                        v-for="timelineStep in timeline.steps"
                         :id="timelineStep.id"
                         :key="timelineStep.id"
                         :title="
                             TimelineOptions[timelineStep.number].label +
-                            ` (${timelineStep.timelineActionComments.length})`
+                            ` (${timelineStep.comments.length})`
                         "
                         :title-classes="
                             timelineStep.status === 1 ? 'success_block' : 'warning_block'
                         "
                     >
                         <div class="timeline-logs__wrapper">
-                            <TimelineComments
-                                @view="viewLetter"
-                                :data="timelineStep.timelineActionComments"
-                            />
+                            <TimelineComments @view="viewLetter" :data="timelineStep.comments" />
                             <UiForm :ref="'#' + timelineStep.id" @submit="submit(timelineStep)">
                                 <UiFormGroup v-if="!disabled">
                                     <UiTextarea

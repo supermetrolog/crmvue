@@ -13,14 +13,14 @@ export const Timeline = [
                 visual_id: '1.1',
                 name: 'MeetingActivity',
                 label: 'Изучение деятельности',
-                checkDone: point => point.additional === 1
+                checkDone: point => point.additional === 1 || point.status === 1
             },
             {
                 id: 1,
                 visual_id: '1.2',
                 name: 'MeetingConfirmation',
                 label: 'Подтверждение запроса',
-                checkDone: point => point.done === 1
+                checkDone: point => point.status === 1
             }
         ]
     },
@@ -43,14 +43,14 @@ export const Timeline = [
                 name: 'FeedbackInterest',
                 label: 'Интерес клиента',
                 visual_id: '3.1',
-                checkDone: point => point.timelineStepObjects.length > 0
+                checkDone: point => point.objects.length > 0
             },
             {
                 id: 1,
                 visual_id: '3.2',
                 name: 'FeedbackCommunication',
                 label: 'Способ связи',
-                checkDone: point => point.timelineStepFeedbackways.length > 0
+                checkDone: point => point.feedback_ways.length > 0
             }
         ]
     },
@@ -66,7 +66,7 @@ export const Timeline = [
                 visual_id: '4.1',
                 name: 'InspectionObjects',
                 label: 'Объекты для просмотра',
-                checkDone: point => point.timelineStepObjects.length > 0
+                checkDone: point => point.objects.length > 0
             },
             {
                 id: 1,
@@ -110,7 +110,7 @@ export const Timeline = [
                 visual_id: '8.1',
                 name: 'DealDecision',
                 label: 'Решение по объекту',
-                checkDone: point => point.timelineStepObjects.length > 0
+                checkDone: point => point.objects.length > 0
             },
             {
                 id: 1,

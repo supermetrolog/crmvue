@@ -94,15 +94,10 @@ watch(
     { immediate: true }
 );
 
-if (props.autoHeight) {
-    watch(modelValue, () => {
-        textarea.value.style.height = 'auto';
-        textarea.value.style.height = textarea.value.scrollHeight + 'px';
-    });
-}
-
 onMounted(() => {
+    textarea.value.style.height = 'auto';
     textarea.value.style.height = textarea.value.scrollHeight + 'px';
+
     if (props.autofocus) focus();
 });
 

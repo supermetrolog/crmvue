@@ -4,6 +4,16 @@
 .request-preview {
     &__header {
         @include mixins.flex-box($gap: 5px, $a: center, $wrap: true);
+
+        .ui-chip {
+            font-size: 15px;
+        }
+    }
+
+    &__content {
+        display: grid;
+        grid-template-columns: 2fr 4fr 6fr;
+        gap: 8px;
     }
 
     &__parameters {
@@ -13,33 +23,33 @@
     &__box {
         padding: 10px;
         border: 1px solid rgba(0, 0, 0, .1);
-        border-radius: 5px;
-        height: 400px;
+        border-radius: 4px;
+        min-height: 400px;
         overflow-y: auto;
     }
 
     &__tabs {
-        border-left: 1px solid  #e7e7e777;
-        border-right: 1px solid  #e7e7e777;
-        border-bottom: 1px solid  #e7e7e777;
+        border-left: 1px solid  rgba(0, 0, 0, .1);
+        border-right: 1px solid  rgba(0, 0, 0, .1);
+        border-bottom: 1px solid  rgba(0, 0, 0, .1);
+        border-radius: 4px;
         flex-grow: 1;
         height: 400px;
 
         .tabs-component-tabs {
             gap: 5px;
-            background-color: #e7e7e7;
+            background-color: variables.$color_grey_light;
             padding: 15px;
         }
 
         .tabs-component-panels {
-            padding: 15px!important;
+            padding: 10px!important;
         }
     }
 
     &__subtitle {
-        color: #838385;
-        font-size: 14px;
-        font-weight: 300;
+        color: #808080;
+        font-size: 15px;
     }
 
     &__grid {
@@ -59,23 +69,25 @@
 
     &__value {
         font-weight: 500;
-        font-size: 14px;
+        font-size: 16px;
     }
 }
 
 .request-preview-location {
-    font-size: 14px;
+    color: #303030;
 
     &__name {
-        font-weight: 500;
+        color: #000;
     }
 }
 
 .request-preview-tab {
     color: inherit;
+    font-size: 16px!important;
+    padding: 7px 10px!important;
 
     &:hover, &.is-active {
-        background-color: variables.$bg-success-l;
+        background-color: #f7f7f7;
     }
 
     &__grid {

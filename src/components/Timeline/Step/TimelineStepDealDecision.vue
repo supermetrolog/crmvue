@@ -5,7 +5,7 @@
                 <TimelineInfo
                     @next="$emit('next-step')"
                     title="8. Оформление сделки"
-                    :success="data.timelineStepObjects.length"
+                    :success="data.objects.length"
                 >
                     <p>8.1. Выберите объект, по которому произошла сделка.</p>
                     <template #footer>
@@ -13,8 +13,8 @@
                             <TimelineButton
                                 @click="submit"
                                 tooltip="Нажмите, чтобы сохранить информацию об объектах"
-                                success
                                 :disabled="disabled || !selectedObjects.length"
+                                color="success"
                             >
                                 <span>Сделка подписана!</span>
                                 <i class="fa-solid fa-champagne-glasses icon"></i>
@@ -24,7 +24,7 @@
                                 tooltip="Нажмите, чтобы сохранить информацию об объектах"
                                 :disabled="disabled"
                                 :active="step.negative"
-                                danger
+                                color="danger"
                             >
                                 <span>Сделка провалилась</span>
                                 <i class="fa-regular fa-face-rolling-eyes icon"></i>
@@ -53,7 +53,7 @@
                     @unselect="unselect"
                     @addComment="addComment"
                     :objects="notSubmittedObjects"
-                    :current-objects="step.timelineStepObjects"
+                    :current-objects="step.objects"
                     :selected-objects="selectedObjects"
                     :disabled="disabled"
                     with-separator
@@ -73,7 +73,6 @@ import { TimelineStepWithObjectsMixin } from '@/components/Timeline/mixins.js';
 import CompanyObjectsList from '@/components/Company/CompanyObjectsList.vue';
 import TimelineInfo from '@/components/Timeline/TimelineInfo.vue';
 import { DealDoneComment, DealOffersNotFound } from '@/components/Timeline/comments.js';
-import Button from '@/components/common/Button.vue';
 import TimelineButton from '@/components/Timeline/TimelineButton.vue';
 
 export default {

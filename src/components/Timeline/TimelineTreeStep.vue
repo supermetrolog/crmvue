@@ -2,7 +2,7 @@
     <div class="timeline-tree-item">
         <TimelineTreeStepRow
             @click="select({ step: step.id })"
-            :step="step"
+            :step
             :done="isDone"
             :available="isAvailable"
             :attention="isAttention"
@@ -10,75 +10,63 @@
             :icon="step.icon"
             :process="isProcess"
         />
-        <div v-if="step.steps" class="timeline-tree-item__steps">
+        <div v-if="step.steps?.length" class="timeline-tree-item__steps">
             <TimelineTreeStepPoint
                 v-for="point in step.steps"
                 :key="point.id"
                 @click.stop="select({ step: step.id, point: point.id })"
                 point
                 :step="point"
-                :selected="isSelected && isSelectedPoint(point.id)"
+                :selected="isSelected && checkIsSelectedPoint(point.id)"
                 :available="isAvailable"
-                :done="isDonePoint(point)"
+                :done="checkIsDonePoint(point)"
             />
         </div>
     </div>
 </template>
 
-<script>
+<script setup>
 import TimelineTreeStepPoint from '@/components/Timeline/TimelineTreeStepPoint.vue';
 import TimelineTreeStepRow from '@/components/Timeline/TimelineTreeStepRow.vue';
+import { computed } from 'vue';
+import { useRoute } from 'vue-router';
 
-export default {
-    name: 'TimelineTreeStep',
-    components: { TimelineTreeStepRow, TimelineTreeStepPoint },
-    emits: ['select'],
-    props: {
-        step: {
-            type: Object,
-            required: true
-        },
-        selected: {
-            type: Number,
-            default: null
-        },
-        current: {
-            type: Object,
-            default: null
-        }
+const emit = defineEmits(['select']);
+const props = defineProps({
+    step: {
+        type: Object,
+        required: true
     },
-    computed: {
-        isSelected() {
-            return this.selected === this.step.id;
-        },
-        isAvailable() {
-            return this.step.id < this.current.length;
-        },
-        isDone() {
-            return this.isAvailable && this.current[this.step.id].status === 1;
-        },
-        isAttention() {
-            return this.isAvailable && this.current[this.step.id].status === 2;
-        },
-        isProcess() {
-            return this.isAvailable && this.current[this.step.id].status === 0;
-        }
-    },
-    methods: {
-        isSelectedPoint(pointKey) {
-            const point = this.$route.query.point;
+    selected: Number,
+    current: Object
+});
 
-            if (!point) return pointKey === 0;
-            return pointKey === Number(point);
-        },
-        isDonePoint(point) {
-            if (Object.hasOwnProperty.call(point, 'checkDone'))
-                return this.isAvailable && point.checkDone(this.current[this.step.id]);
-            return false;
-        },
-        select(payload) {
-            if (this.isAvailable) this.$emit('select', payload);
-        }
+const isSelected = computed(() => props.selected === props.step.id);
+
+const isAvailable = computed(() => props.step.id < props.current.length);
+
+const isDone = computed(() => isAvailable.value && props.current[props.step.id].status === 1);
+const isAttention = computed(() => isAvailable.value && props.current[props.step.id].status === 2);
+const isProcess = computed(() => isAvailable.value && props.current[props.step.id].status === 0);
+
+const route = useRoute();
+
+function checkIsSelectedPoint(pointKey) {
+    const point = route.query?.point;
+
+    if (!point) return pointKey === 0;
+    return pointKey === Number(point);
+}
+
+function checkIsDonePoint(point) {
+    if (Object.hasOwn(point, 'checkDone')) {
+        return isAvailable.value && point.checkDone(props.current[props.step.id]);
     }
-};
+
+    return false;
+}
+
+function select(payload) {
+    if (isAvailable.value) emit('select', payload);
+}
 </script>

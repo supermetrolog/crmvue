@@ -25,7 +25,7 @@
                         <TimelineTree
                             @select="changeStep"
                             :selected="selectedStep?.number"
-                            :current="timeline.timelineSteps"
+                            :current="timeline.steps"
                         />
                     </div>
                     <div class="col-10">
@@ -85,10 +85,7 @@ import Spinner from '@/components/common/Spinner.vue';
 import EmptyData from '@/components/common/EmptyData.vue';
 import { useDelayedLoader } from '@/composables/useDelayedLoader.js';
 import TimelineTree from '@/components/Timeline/TimelineTree.vue';
-import Tabs from '@/components/common/Tabs/Tabs.vue';
-import Tab from '@/components/common/Tabs/Tab.vue';
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
-import { entityOptions } from '@/const/options/options.js';
 import TimelineBackdrop from '@/components/Timeline/TimelineBackdrop.vue';
 import TimelineStepOffers from '@/components/Timeline/Step/TimelineStepOffers.vue';
 import TimelineStepFeedbackCommunication from '@/components/Timeline/Step/TimelineStepFeedbackCommunication.vue';
@@ -101,13 +98,11 @@ import TimelineExtraBlock from '@/components/Timeline/TimelineExtraBlock.vue';
 import TimelineStepDealDecision from '@/components/Timeline/Step/TimelineStepDealDecision.vue';
 import TimelineStepDealConfirmation from '@/components/Timeline/Step/TimelineStepDealConfirmation.vue';
 import { Timeline as steps } from '@/const/const.js';
-import { getCompanyName } from '@/utils/formatters/models/company.js';
 import { computed, onMounted, ref, watch } from 'vue';
 import { useAuth } from '@/composables/useAuth.js';
 import { useRoute, useRouter } from 'vue-router';
 import { requestOptions } from '@/const/options/request.options.js';
 import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
-import { isNullish } from '@/utils/helpers/common/isNullish.js';
 import TimelineHeaderSkeleton from '@/components/Timeline/TimelineHeaderSkeleton.vue';
 import FormCompanyRequest from '@/components/Forms/Company/FormCompanyRequest.vue';
 
@@ -129,7 +124,9 @@ const route = useRoute();
 
 const selectedStep = computed(() => {
     if (!timeline.value) return null;
-    if (route.query.step) return timeline.value.timelineSteps[route.query.step];
+
+    if (route.query.step) return timeline.value.steps[route.query.step];
+    return timeline.value.steps[0];
 });
 
 const COMPONENTS = {
@@ -187,21 +184,25 @@ async function onObjectsUpdated(data, goToNext = false, callback = null) {
 async function updateStep(data, goToNext = false, callback = null) {
     stepIsLoading.value = true;
 
-    const stepUpdated = await store.dispatch('UPDATE_STEP', data);
+    try {
+        const stepUpdated = await store.dispatch('UPDATE_STEP', data);
 
-    if (stepUpdated) {
-        await fetchTimeline();
+        if (stepUpdated) {
+            await fetchTimeline();
 
-        stepIsChanging.value = true;
+            stepIsChanging.value = true;
 
-        if (goToNext) await nextStep();
+            if (goToNext) await nextStep();
 
-        stepIsChanging.value = false;
+            stepIsChanging.value = false;
+        }
+
+        if (isNotNullish(callback)) {
+            callback();
+        }
+    } finally {
+        stepIsLoading.value = false;
     }
-
-    if (isNotNullish(callback)) callback();
-
-    stepIsLoading.value = false;
 }
 
 async function nextStep() {
@@ -274,9 +275,9 @@ async function updateTimeline() {
 function getPriorityStep() {
     let highPriorityTimelineStep = null;
 
-    for (let i = 0; i < timeline.value.timelineSteps.length; i++) {
-        if (timeline.value.timelineSteps[i].status === 0) {
-            highPriorityTimelineStep = timeline.value.timelineSteps[i].number;
+    for (let i = 0; i < timeline.value.steps.length; i++) {
+        if (timeline.value.steps[i].status === 0) {
+            highPriorityTimelineStep = timeline.value.steps[i].number;
             break;
         }
     }

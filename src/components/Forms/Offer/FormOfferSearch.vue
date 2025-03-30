@@ -9,21 +9,14 @@
             />
             <div class="col-6">
                 <div class="offer-search__actions">
-                    <Button @click="extraVisible = !extraVisible" icon :badge="filtersCount">
+                    <Button @click="extraVisible = !extraVisible" icon :badge="filtersCount" dark>
                         <span>Фильтры</span>
                         <i class="fa-solid fa-sliders icon" />
                     </Button>
-                    <Button @click="resetForm" :disabled="resetIsDisabled">
+                    <Button @click="resetForm" :disabled="resetIsDisabled" dark>
                         <i class="fa-regular fa-trash-can icon"></i>
                     </Button>
-                    <Button
-                        @click="toggleFavorites"
-                        warning
-                        :active="form.favorites"
-                        :badge="favoritesCount || false"
-                    >
-                        избранные
-                    </Button>
+                    <slot name="buttons"></slot>
                 </div>
             </div>
             <div class="col-12">
@@ -111,7 +104,7 @@
                             :hide-selected="false"
                             multiple-property="label"
                             label="Регионы"
-                            class="col-7"
+                            class="col-9"
                             mode="multiple"
                             searchable
                             multiple
@@ -155,6 +148,8 @@
                                 label="МКАД"
                                 :options="OutsideMkad"
                                 unselect
+                                show-radio
+                                :rounded="false"
                             />
                         </AnimationTransition>
                         <AnimationTransition>
@@ -166,7 +161,9 @@
                                         :key="index"
                                         v-model="form.direction"
                                         :value="Number(index)"
-                                        :text="directionItem.short"
+                                        :text="directionItem.full"
+                                        :rounded="false"
+                                        show-checkbox
                                     />
                                 </div>
                                 <Switch
@@ -389,6 +386,7 @@ import RadioOptions from '@/components/common/Forms/RadioOptions.vue';
 import { isEmptyArray } from '@/utils/helpers/array/isEmptyArray.js';
 import { isNullish } from '@/utils/helpers/common/isNullish.js';
 import { isEmptyString } from '@/utils/helpers/string/isEmptyString.js';
+import { deepToRaw } from '@/utils/common/deepToRaw.js';
 
 const emit = defineEmits(['close', 'search', 'reset', 'resetSelected', 'changed-query']);
 const props = defineProps({
@@ -634,6 +632,8 @@ const toDefaultForm = () => {
 
 const resetForm = () => {
     toDefaultForm();
+    delete form.type_id;
+
     emit('reset');
 };
 
@@ -645,13 +645,8 @@ const hasApproximateDistance = computed(() => {
     return Object.hasOwnProperty.call(form, 'approximateDistanceFromMKAD');
 });
 
-const toggleFavorites = () => {
-    if (form.favorites) form.favorites = null;
-    else form.favorites = 1;
-};
-
 const setQueryFields = async () => {
-    Object.assign(form, props.queryParams);
+    Object.assign(form, structuredClone(deepToRaw(props.queryParams)));
 };
 
 toDefaultForm();

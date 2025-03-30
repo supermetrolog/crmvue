@@ -10,15 +10,14 @@ const Timeline = {
     mutations: {
         updateTimeline(state, data) {
             state.timeline = data.timeline;
-            state.timelineList = data.timelineList;
+            state.timelineList = data.request_timelines;
         },
         updateStep(state, data) {
-            state.timeline.timelineSteps = state.timeline.timelineSteps.map(step => {
-                if (step.id === data.id) {
-                    step = data;
-                }
-                return step;
-            });
+            const stepIndex = state.timeline.steps.findIndex(step => step.id === data.id);
+
+            if (stepIndex !== -1) {
+                state.timeline.steps[stepIndex] = data;
+            }
         },
         updateTimelineComments(state, data) {
             state.timelineComments = data;

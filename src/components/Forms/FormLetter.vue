@@ -2,7 +2,7 @@
     <div class="row">
         <div class="col-12">
             <UiForm @submit="onSubmit">
-                <Loader v-if="isLoading" />
+                <Loader v-if="loading" />
                 <FormGroup class="mb-1">
                     <MultiSelect
                         ref="contactSelect"
@@ -15,7 +15,7 @@
                         :close-on-select="false"
                         :hide-selected="false"
                         :groups="true"
-                        class="col-5"
+                        class="col-8"
                         :multiple-label="
                             n =>
                                 plural(
@@ -28,7 +28,20 @@
                         placeholder="Выберите контакт"
                         mode="multiple"
                         label="Контакт клиента"
-                    />
+                    >
+                        <template #after>
+                            <div class="d-flex">
+                                <CheckboxChip
+                                    v-model="form.selfSend"
+                                    @change="changeSelfSend"
+                                    :value="form.selfSend"
+                                    text="Отправить себе"
+                                    :rounded="false"
+                                    show-checkbox
+                                />
+                            </div>
+                        </template>
+                    </MultiSelect>
                     <CheckboxIcons
                         v-if="alreadySended"
                         v-model="form.wayOfSending"
@@ -36,16 +49,8 @@
                         required
                         label="Способ связи"
                         :options="wayOfSendingOptions"
+                        class="col-4"
                     />
-                    <div class="mt-3 ml-2">
-                        <CheckboxChip
-                            v-model="form.selfSend"
-                            @change="changeSelfSend"
-                            :value="form.selfSend"
-                            text="Отправить себе"
-                            class="mt-4"
-                        />
-                    </div>
                 </FormGroup>
                 <AnimationTransition :speed="0.5">
                     <FormGroup v-if="form.contactForSendMessage?.length">
@@ -63,21 +68,22 @@
                         </div>
                     </FormGroup>
                 </AnimationTransition>
-                <FormGroup>
-                    <div class="col-12">
-                        <Submit class="w-100" :disabled="disabled || v$?.$errors?.length" success>
-                            Отправить
-                        </Submit>
-                    </div>
-                </FormGroup>
                 <template v-if="!alreadySended">
                     <FormGroup class="mb-2">
                         <Input v-model="form.subject" class="col-12" placeholder="Тема письма" />
                     </FormGroup>
-                    <FormGroup class="pb-5">
+                    <FormGroup class="mb-2">
                         <VueEditor v-model="form.message" class="col-12" />
                     </FormGroup>
                 </template>
+                <UiFormDivider />
+                <UiFormGroup>
+                    <UiCol :cols="12">
+                        <Submit class="w-100" :disabled="disabled || v$?.$errors?.length" success>
+                            Отправить
+                        </Submit>
+                    </UiCol>
+                </UiFormGroup>
             </UiForm>
         </div>
         <div class="col-12">
@@ -105,10 +111,15 @@ import AnimationTransition from '@/components/common/AnimationTransition.vue';
 import CheckboxChip from '@/components/common/Forms/CheckboxChip.vue';
 import { contains } from '@/utils/helpers/array/contains.js';
 import VueEditor from '@/components/common/Forms/VueEditor.vue';
+import UiFormDivider from '@/components/common/Forms/UiFormDivider.vue';
+import UiCol from '@/components/common/UI/UiCol.vue';
 
 export default {
     name: 'FormLetter',
     components: {
+        UiCol,
+        UiFormGroup,
+        UiFormDivider,
         UiForm,
         VueEditor,
         CheckboxChip,
@@ -122,17 +133,10 @@ export default {
         CheckboxIcons
     },
     props: {
-        alreadySended: {
-            type: Boolean,
-            default: false
-        },
-        formdata: {
-            type: Object
-        },
-        disabled: {
-            type: Boolean,
-            default: false
-        }
+        alreadySended: Boolean,
+        formdata: Object,
+        disabled: Boolean,
+        loading: Boolean
     },
     data() {
         return {
@@ -210,18 +214,15 @@ export default {
             await this.v$.$validate();
             if (this.v$.form.$error) return;
 
-            this.isLoading = true;
             this.normalizeContacts();
 
             if (this.alreadySended) {
                 this.form.message = null;
                 this.form.subject = null;
-                await this.$emit('alreadySent', this.form);
+                this.$emit('alreadySent', this.form);
             } else {
-                await this.$emit('send', this.form);
+                this.$emit('send', this.form);
             }
-
-            this.isLoading = false;
         },
         normalizeContacts() {
             let emails = this.form.contactForSendMessage.filter(elem => elem.type === 1);

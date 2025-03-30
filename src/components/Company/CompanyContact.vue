@@ -11,24 +11,17 @@
         <p v-else class="error-message">Должность не указана</p>
         <div v-if="contact.phones?.length" class="mt-1 company-contact__list">
             <PhoneNumber
-                v-for="phone of contact.phones"
-                :key="phone.id"
                 @click="$emit('open-phone')"
-                :phone="phone"
+                :phone="mainPhone"
                 :contact="contact"
-                :hidden="hidden"
+                :hidden
                 clickable
                 class="company-contact__phone"
             />
         </div>
         <div v-if="contact.emails?.length" class="mt-1 company-contact__list">
-            <a
-                v-for="email of contact.emails"
-                :key="email.email"
-                class="company-contact__phone"
-                :href="'mailto:' + email.email"
-            >
-                {{ email.email }}
+            <a class="company-contact__phone" :href="'mailto:' + mainEmail.email">
+                {{ mainEmail.email }}
             </a>
         </div>
     </div>
@@ -61,4 +54,20 @@ const fullName = computed(() => getContactFullName(props.contact));
 const isPassive = computed(() => props.contact.status === 0);
 
 useTippyText(useTemplateRef('passiveIconEl'), 'Контакт в пассиве');
+
+const mainPhone = computed(() => {
+    if (props.contact.phones?.length) {
+        return props.contact.phones.find(phone => phone.isMain) ?? props.contact.phones[0];
+    }
+
+    return null;
+});
+
+const mainEmail = computed(() => {
+    if (props.contact.emails?.length) {
+        return props.contact.emails.find(email => email.isMain) ?? props.contact.emails[0];
+    }
+
+    return null;
+});
 </script>

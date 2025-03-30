@@ -1,19 +1,14 @@
 <template>
-    <div class="timeline-info" :class="{ success: success && !disabled }">
+    <div class="timeline-info" :class="{ success: success && !disabled, disabled, paused }">
         <div class="timeline-info__content">
-            <AnimationTransition :speed="0.5">
-                <i
-                    v-if="success && !disabled"
-                    class="fa-regular fa-circle-check timeline-info__icon"
-                ></i>
-                <i v-else-if="disabled" class="fa-regular fa-circle-pause timeline-info__icon"></i>
-            </AnimationTransition>
             <div>
+                <slot name="before" />
+                <UiField v-if="disabled" color="danger-light" class="mb-1">
+                    <i class="fa-solid fa-exclamation-triangle icon" />
+                    <span>Для прохождения шага выполните предыдущей</span>
+                </UiField>
                 <p v-if="title" class="timeline-info__title">
                     <span>{{ title }}</span>
-                    <DashboardChip v-if="disabled" class="dashboard-bg-success mb-1">
-                        Для прохождения шага выполните предыдущей
-                    </DashboardChip>
                 </p>
                 <div class="timeline-info__description">
                     <slot />
@@ -26,21 +21,15 @@
     </div>
 </template>
 <script setup>
-import AnimationTransition from '@/components/common/AnimationTransition.vue';
-import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
+import UiField from '@/components/common/UI/UiField.vue';
 
-defineEmits(['next']);
 defineProps({
-    title: {
-        type: String,
-        default: null
-    },
+    title: String,
     success: {
         type: [Boolean, Number],
         default: false
     },
     disabled: Boolean,
-    withoutNext: Boolean,
-    hasTutorial: Boolean
+    paused: Boolean
 });
 </script>

@@ -3,17 +3,9 @@
         <RequestPreviewHeader class="mb-2" :request />
         <RequestPreviewParameters class="mb-2" :request />
         <div class="request-preview__content">
-            <div class="row">
-                <div class="col-2">
-                    <RequestPreviewRequirements :request />
-                </div>
-                <div class="col-3">
-                    <RequestPreviewLocation :request />
-                </div>
-                <div class="col-7">
-                    <RequestPreviewTabs :request />
-                </div>
-            </div>
+            <RequestPreviewRequirements :request />
+            <RequestPreviewLocation :request />
+            <RequestPreviewTabs :request />
         </div>
     </div>
 </template>
@@ -26,20 +18,8 @@ import RequestPreviewLocation from '@/components/Request/RequestPreviewLocation.
 import RequestPreviewTabs from '@/components/Request/RequestPreviewTabs.vue';
 
 defineProps({
-    request: {
-        type: Object
-    },
-    readOnly: {
-        type: Boolean,
-        default: false
-    },
-    editOnly: {
-        type: Boolean,
-        default: false
-    },
-    withDeal: {
-        type: Boolean,
-        default: true
-    }
+    request: Object,
+    readOnly: Boolean,
+    editOnly: Boolean
 });
 </script>

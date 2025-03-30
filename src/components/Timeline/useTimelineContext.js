@@ -13,6 +13,7 @@ export function useTimelineContext(step) {
         const mainContactIndex = store.state.CompanyContact.companyContacts.findIndex(
             element => element.isMain
         );
+
         if (mainContactIndex) {
             return [
                 store.state.CompanyContact.companyContacts[mainContactIndex],
@@ -36,16 +37,37 @@ export function useTimelineContext(step) {
     const data = ref(cloneObject(toValue(step)));
 
     watch(
-        () => toValue(step),
+        step,
         () => {
             data.value = cloneObject(toValue(step));
-        }
+        },
+        { deep: true }
     );
+
+    function generatePayload(payload) {
+        return {
+            id: data.value.id,
+            additional: data.value.additional,
+            comment: data.value.comment,
+            date: data.value.date,
+            done: data.value.done,
+            negative: data.value.negative,
+            status: data.value.status,
+            ...payload
+        };
+    }
+
+    const isCompletedStep = computed(() => toValue(step).status === 1);
+
+    const timeline = computed(() => store.state.Timeline.timeline);
 
     return {
         company,
         contacts,
         request,
-        data
+        data,
+        isCompletedStep,
+        generatePayload,
+        timeline
     };
 }

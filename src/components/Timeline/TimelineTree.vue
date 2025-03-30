@@ -7,8 +7,8 @@
                 :key="step.id"
                 @select="$emit('select', $event)"
                 :step="step"
-                :selected="selected"
-                :current="current"
+                :selected
+                :current
             />
         </div>
     </div>
@@ -24,9 +24,6 @@ defineProps({
         type: Array,
         default: () => []
     },
-    selected: {
-        type: Number,
-        default: null
-    }
+    selected: Number
 });
 </script>

@@ -128,15 +128,6 @@
         }
     }
 
-    &.done {
-        background-color: #a3e9b6;
-
-        .timeline-tree-step__point {
-            border-color: variables.$cl-success!important;
-            background-color: transparent;
-        }
-    }
-
     &.selected {
         background-color: #369ecd;
         z-index: 10;
@@ -147,8 +138,21 @@
         }
     }
 
+    &.done {
+        background-color: #a3e9b6;
+
+        .timeline-tree-step__point {
+            border-color: variables.$cl-success!important;
+            background-color: transparent;
+        }
+    }
+
     &.selected &__label {
         color: #fff;
+    }
+
+    &.done &__label {
+        color: #000;
     }
 
     &.in-process {
@@ -169,6 +173,10 @@
         left: calc(100% + 2px);
         top: 0;
         height: 100%;
+    }
+
+    &.done &__caret {
+        color: #a3e9b6;
     }
 }
 
