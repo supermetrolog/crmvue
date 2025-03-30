@@ -82,9 +82,9 @@ import PaginationClassic from '@/components/common/Pagination/PaginationClassic.
 import UiButton from '@/components/common/UI/UiButton.vue';
 import EmptyData from '@/components/common/EmptyData.vue';
 import Spinner from '@/components/common/Spinner.vue';
-import Table from '@/components/common/table/Table.vue';
-import Th from '@/components/common/table/Th.vue';
-import Tr from '@/components/common/table/Tr.vue';
+import Table from '@/components/common/Table/Table.vue';
+import Th from '@/components/common/Table/Th.vue';
+import Tr from '@/components/common/Table/Tr.vue';
 import Loader from '@/components/common/Loader.vue';
 import TimelineStepOffersTableItem from '@/components/Timeline/Step/TimelineStepOffersTableItem.vue';
 import { computed } from 'vue';
