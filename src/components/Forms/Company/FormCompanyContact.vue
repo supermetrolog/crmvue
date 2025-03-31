@@ -7,15 +7,6 @@
         :min-height="500"
         :title="isEditMode ? `Редактирование контакта ${formdata.id}` : 'Создание нового контакта'"
     >
-        <template #header>
-            <span>|</span>
-            <Switch
-                v-model="form.isMain"
-                :transform="Number"
-                true-title="Основной контакт"
-                false-title="Обычный контакт"
-            />
-        </template>
         <Loader v-if="isLoading" />
         <UiForm v-else>
             <UiFormGroup>
@@ -26,7 +17,14 @@
                     :v="v$.form.first_name"
                     required
                     class="col-4"
-                />
+                >
+                    <UiCheckbox
+                        v-model="form.isMain"
+                        numeric
+                        label="Основной контакт компании"
+                        class="mt-1"
+                    />
+                </UiInput>
                 <UiInput v-model="form.last_name" label="Отчество" class="col-4" />
             </UiFormGroup>
             <UiFormGroup>
@@ -105,40 +103,13 @@
                             :text="element.name"
                             :icon="element.icon"
                             show-checkbox
+                            :rounded="false"
                         />
-                    </div>
-                </UiCol>
-                <UiCol :cols="12">
-                    <span class="form__subtitle">Должность</span>
-                    <div class="form__row row">
-                        <MultiSelect
-                            v-model="form.position"
-                            @change="onChangePosition"
-                            :v="v$.form.position"
-                            required
-                            class="col-6"
-                            :options="PositionList"
-                            :disabled="form.position_unknown"
-                        />
-                        <UiCheckbox
-                            v-model="form.position_unknown"
-                            @change="onChangePositionUnknown"
-                            numeric
-                            class="col-4"
-                        >
-                            Должность неизвестна
-                        </UiCheckbox>
                     </div>
                 </UiCol>
             </UiFormGroup>
+            <UiFormDivider />
             <UiFormGroup>
-                <ConsultantPicker
-                    v-model="form.consultant_id"
-                    class="col-6"
-                    :v="v$.form.consultant_id"
-                    required
-                    :options="getConsultantsOptions"
-                />
                 <MultiSelect
                     v-model="form.company_id"
                     class="col-6"
@@ -157,68 +128,123 @@
                         }
                     "
                 />
+                <MultiSelect
+                    v-model="form.position"
+                    @change="onChangePosition"
+                    :v="v$.form.position"
+                    :required="!form.position_unknown"
+                    :disabled="form.position_unknown"
+                    :options="PositionList"
+                    label="Должность"
+                    class="col-6"
+                >
+                    <template #after>
+                        <UiCheckbox
+                            v-model="form.position_unknown"
+                            @change="onChangePositionUnknown"
+                            numeric
+                        >
+                            Должность неизвестна
+                        </UiCheckbox>
+                    </template>
+                </MultiSelect>
             </UiFormGroup>
             <UiFormGroup>
+                <ConsultantPicker
+                    v-model="form.consultant_id"
+                    class="col-6"
+                    :v="v$.form.consultant_id"
+                    required
+                    :options="getConsultantsOptions"
+                />
                 <UiCol :cols="6">
                     <span class="form__subtitle">Прочее</span>
                     <div class="form__row mt-1">
-                        <CheckboxChip v-model="form.good" text="Хорошие взаимоотношения" />
-                        <CheckboxChip v-model="form.faceToFaceMeeting" text="Очная встреча" />
-                        <CheckboxChip
+                        <RadioChip
+                            v-model="form.good"
+                            icon="fa-regular fa-smile"
+                            label="Хорошие взаимоотношения"
+                            :rounded="false"
+                            :value="1"
+                            unselect
+                        />
+                        <RadioChip
+                            v-model="form.faceToFaceMeeting"
+                            icon="fa-regular fa-handshake"
+                            label="Очная встреча"
+                            :value="1"
+                            :rounded="false"
+                            unselect
+                        />
+                        <RadioChip
                             v-model="form.warning"
                             @change="onChangeWarning"
-                            text="Внимание!"
+                            icon="fa-solid fa-exclamation-triangle"
+                            label="Внимание!"
+                            :value="1"
+                            :rounded="false"
+                            unselect
                         />
                     </div>
-                    <AnimationTransition>
-                        <UiTextarea
-                            v-if="form.warning"
-                            v-model="form.warning_why_comment"
-                            class="mt-2"
-                            :v="v$.form.warning_why_comment"
-                            required
-                            label="Причина"
-                            placeholder="Опишите причину"
-                        />
-                    </AnimationTransition>
                 </UiCol>
-                <UiCol :cols="6">
-                    <span class="form__subtitle">Статус</span>
-                    <div class="form__row mt-1">
-                        <RadioChip
-                            v-for="(status, value) in ActivePassive"
-                            :key="value"
-                            v-model="form.status"
-                            :label="status"
-                            :value="Number(value)"
-                        />
-                    </div>
-                    <AnimationTransition>
-                        <MultiSelect
-                            v-if="!form.status"
-                            v-model="form.passive_why"
-                            :v="v$.form.passive_why"
-                            required
-                            label="Причина пассива"
-                            class="mt-2"
-                            :options="PassiveWhyContact"
-                        >
+                <AnimationTransition :speed="0.5">
+                    <UiCol v-if="form.warning" :cols="12">
+                        <div class="dashboard-bg-light p-2 br-1">
                             <UiTextarea
-                                v-model="form.passive_why_comment"
-                                placeholder="Опишите причину"
+                                v-model="form.warning_why_comment"
+                                :v="v$.form.warning_why_comment"
+                                :min-height="50"
+                                :auto-height
+                                :max-height="150"
+                                required
+                                label="Комментарий"
+                                placeholder='Опишите причину к статусу "Внимание"..'
                             />
-                        </MultiSelect>
-                    </AnimationTransition>
-                </UiCol>
+                        </div>
+                    </UiCol>
+                </AnimationTransition>
             </UiFormGroup>
+            <template v-if="isEditMode">
+                <UiFormDivider />
+                <UiFormGroup>
+                    <UiCol :cols="12">
+                        <span class="form__subtitle">Статус</span>
+                        <div class="form__row mt-1">
+                            <RadioChip
+                                v-for="(status, value) in ActivePassive"
+                                :key="value"
+                                v-model="form.status"
+                                :label="status"
+                                :value="Number(value)"
+                                :rounded="false"
+                                show-radio
+                            />
+                        </div>
+                        <AnimationTransition>
+                            <div v-if="!form.status" class="dashboard-bg-light p-2 br-1 mt-2">
+                                <MultiSelect
+                                    v-model="form.passive_why"
+                                    :v="v$.form.passive_why"
+                                    required
+                                    label="Причина пассива"
+                                    :options="PassiveWhyContact"
+                                >
+                                    <UiTextarea
+                                        v-model="form.passive_why_comment"
+                                        placeholder="Опишите причину"
+                                    />
+                                </MultiSelect>
+                            </div>
+                        </AnimationTransition>
+                    </UiCol>
+                </UiFormGroup>
+            </template>
         </UiForm>
         <template #actions="{ close }">
-            <UiButton @click="submit" color="success-light" icon="fa-solid fa-check" bolder small>
+            <UiButton @click="submit" color="success-light" icon="fa-solid fa-check">
                 Сохранить
             </UiButton>
-            <UiButton @click="close" color="light" icon="fa-solid fa-ban" bolder small>
-                Отмена
-            </UiButton>
+            <UiButton @click="close" color="light" icon="fa-solid fa-ban"> Отмена </UiButton>
         </template>
     </UiModal>
 </template>
@@ -245,7 +271,6 @@ import AnimationTransition from '@/components/common/AnimationTransition.vue';
 import RadioChip from '@/components/common/Forms/RadioChip.vue';
 import { reactive, ref, toRef } from 'vue';
 import { useFormData } from '@/utils/use/useFormData.js';
-import Switch from '@/components/common/Forms/Switch.vue';
 import { useSearchCompany } from '@/composables/useSearchCompany.js';
 import api from '@/api/api.js';
 import UiCheckbox from '@/components/common/Forms/UiCheckbox.vue';
