@@ -7,13 +7,9 @@
                     title="1. Знакомство с клиентом"
                     :success="step.additional === 1"
                     :paused="isPausedStep"
+                    :step
+                    :timeline
                 >
-                    <template v-if="isPausedStep" #before>
-                        <UiField color="white" class="mb-1">
-                            <i class="fa-regular fa-circle-pause" />
-                            <span>На паузе до {{ stepPauseDate }}</span>
-                        </UiField>
-                    </template>
                     <span>
                         1.1. Изучите деятельность компании клиента, свяжитесь с контактным лицом и
                         обсудите задачу
@@ -59,22 +55,6 @@
                         </div>
                     </template>
                 </TimelineInfo>
-            </UiCol>
-            <UiCol v-if="isPausedStep && step.comment" :cols="12">
-                <p class="text-grey mb-1">Комментарий:</p>
-                <div class="timeline-step-comment">
-                    <Avatar :src="timeline.consultant.userProfile.avatar" :size="30" />
-                    <div class="timeline-step-comment__content">
-                        <div class="timeline-step-comment__header">
-                            <span class="timeline-step-comment__username">
-                                {{ timeline.consultant.userProfile.medium_name }}
-                            </span>
-                            <span class="timeline-step-comment__dot mx-1">·</span>
-                            <span class="timeline-step-comment__date">{{ updatedAt }}</span>
-                        </div>
-                        <div>{{ step.comment }}</div>
-                    </div>
-                </div>
             </UiCol>
             <div class="col-12">
                 <CompanyPreview
@@ -178,10 +158,8 @@ import UiFormGroup from '@/components/common/Forms/UiFormGroup.vue';
 import UiDateInput from '@/components/common/Forms/UiDateInput.vue';
 import UiTextarea from '@/components/common/Forms/UiTextarea.vue';
 import UiButton from '@/components/common/UI/UiButton.vue';
-import UiField from '@/components/common/UI/UiField.vue';
-import { toBeautifulDateFormat, toDateFormat } from '@/utils/formatters/date.js';
-import Avatar from '@/components/common/Avatar.vue';
 import UiCol from '@/components/common/UI/UiCol.vue';
+import TimelineStepPauseComment from '@/components/Timeline/Step/TimelineStepPauseComment.vue';
 
 const emit = defineEmits(['update-step', 'updated-objects', 'next-step']);
 const props = defineProps({
@@ -316,8 +294,4 @@ function setAsProcessed() {
 }
 
 const isPausedStep = computed(() => props.step.negative && props.step.additional !== 1);
-
-const stepPauseDate = computed(() => toDateFormat(props.step.date, 'D.MM.YY'));
-
-const updatedAt = computed(() => toBeautifulDateFormat(props.step.updated_at));
 </script>

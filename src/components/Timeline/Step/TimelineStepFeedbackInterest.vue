@@ -6,6 +6,8 @@
                     @next="$emit('next-step')"
                     title="3. Обратная связь от клиента"
                     :success="data.objects.length"
+                    :step
+                    :timeline="TIMELINE"
                 >
                     <p>3.1. Выберите объекты, которые заинтересовали клиента</p>
                     <p v-if="data.objects.length">

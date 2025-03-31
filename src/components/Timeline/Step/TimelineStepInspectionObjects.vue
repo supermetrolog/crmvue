@@ -27,6 +27,8 @@
                     @next="$emit('next-step')"
                     title="4. Организация осмотра объектов"
                     :success="data.objects.length"
+                    :step
+                    :timeline="TIMELINE"
                 >
                     <p>4.1. Отметьте объекты, которые клиент хотел бы осмотреть</p>
                     <p v-if="data.objects.length">

@@ -68,16 +68,7 @@
         background-color: #fff;
         position: relative;
         z-index: 10;
-
-        &:has(i) {
-            border-color: transparent;
-        }
-
-        i {
-            position: absolute;
-            left: -5px;
-            top: -5px;
-        }
+        @include mixins.flex-box($a: center, $j: center);
 
         &.done {
             border-color: variables.$cl-success!important;
@@ -118,6 +109,10 @@
         opacity: .5;
     }
 
+    &__point-icon {
+        font-size: 14px;
+    }
+
     &.available {
         .timeline-tree-step__label, .timeline-tree-step__icon {
             opacity: 1;
@@ -135,6 +130,24 @@
 
         .timeline-tree-step__label {
             font-weight: 500;
+        }
+    }
+
+    &.paused {
+        .timeline-tree-step__point {
+            border-color: #e49f4f;
+            background-color: #fff;
+            border-width: 3px;
+
+            &-icon {
+                color: #e49f4f!important;
+            }
+        }
+    }
+
+    &.unavailable {
+        .timeline-tree-step__point {
+            border-color: #c6c6c6;
         }
     }
 

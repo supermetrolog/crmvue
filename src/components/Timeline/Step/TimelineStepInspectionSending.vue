@@ -26,6 +26,8 @@
                     title="4. Организация осмотра объектов"
                     :success="data.additional"
                     :disabled="!data.objects.length"
+                    :step
+                    :timeline="TIMELINE"
                 >
                     <p>
                         4.2. Скорректируйте маршрут и отправьте всю необходимую информацию по

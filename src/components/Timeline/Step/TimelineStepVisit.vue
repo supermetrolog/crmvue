@@ -6,6 +6,8 @@
                     @next="$emit('next-step')"
                     title="5. Заполнение информации о показах"
                     :success="data.objects.length"
+                    :step
+                    :timeline="TIMELINE"
                 >
                     <p>Отметьте объекты, которые осмотрели вместе с клиентом.</p>
                     <p v-if="data.objects.length">

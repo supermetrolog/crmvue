@@ -6,6 +6,8 @@
                     @next="$emit('next-step')"
                     title="8. Оформление сделки"
                     :success="data.objects.length"
+                    :step
+                    :timeline="TIMELINE"
                 >
                     <p>8.1. Выберите объект, по которому произошла сделка.</p>
                     <template #footer>

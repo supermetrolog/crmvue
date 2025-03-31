@@ -6,6 +6,8 @@
                     @next="$emit('next-step')"
                     title="7. Подготовка к переговорам"
                     :success="data.objects.length"
+                    :step
+                    :timeline="TIMELINE"
                 >
                     <p>Отметьте объекты, по которым клиент готов провести переговоры.</p>
                     <p v-if="data.objects.length">

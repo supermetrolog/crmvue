@@ -6,6 +6,8 @@
                     @next="$emit('next-step')"
                     title="6. Анализ показа объектов"
                     :success="data.objects.length"
+                    :step
+                    :timeline="TIMELINE"
                 >
                     <p>Отметьте объекты, которые заинтересовали клиента во время показа.</p>
                     <p v-if="data.objects.length">
