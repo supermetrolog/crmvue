@@ -11,29 +11,26 @@
             />
         </div>
         <div class="timeline-page-header__tabs">
-            <TimelineButton
+            <UiButton
                 @click="$emit('change-tab', 'main')"
-                :class="{ active: currentTab === 'main' }"
-                info
-                solid
                 class="timeline-page-header__button"
+                :color="currentTab === 'main' ? 'success-light' : 'light'"
+                :class="{ 'font-weight-semi': currentTab === 'main' }"
             >
                 Прохождение таймлайна
-            </TimelineButton>
-            <TimelineButton
+            </UiButton>
+            <UiButton
                 @click="$emit('change-tab', 'log')"
+                class="timeline-page-header__button"
+                :color="currentTab === 'log' ? 'success-light' : 'light'"
                 :tooltip="messagesTippy"
                 :class="{
                     'animate__animated animate__flash': messagesHasAnimation,
-                    active: currentTab === 'log'
+                    'font-weight-semi': currentTab === 'log'
                 }"
-                :badge="messagesCount"
-                solid
-                info
-                class="timeline-page-header__button"
             >
-                Логи таймлайна
-            </TimelineButton>
+                Логи таймлайна ({{ messagesCount }})
+            </UiButton>
         </div>
         <teleport to="body">
             <FormModalCompanyRequestDisable
@@ -63,7 +60,7 @@ import { computed, onBeforeUnmount, ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
 import TimelineHeaderInfo from '@/components/Timeline/TimelineHeaderInfo.vue';
 import TimelineHeaderActions from '@/components/Timeline/TimelineHeaderActions.vue';
-import TimelineButton from '@/components/Timeline/TimelineButton.vue';
+import UiButton from '@/components/common/UI/UiButton.vue';
 
 const emit = defineEmits(['change-tab', 'edit']);
 const props = defineProps({
@@ -96,10 +93,7 @@ const consultants = computed(() => {
 
 const messagesCount = computed(() => {
     if (timeline.value)
-        return timeline.value.timelineSteps.reduce(
-            (total, current) => total + current.timelineActionComments?.length,
-            0
-        );
+        return timeline.value.steps.reduce((total, current) => total + current.comments?.length, 0);
 
     return 0;
 });
@@ -113,11 +107,11 @@ const messagesTippy = computed(() => {
 
     const totalText = 'Всего сообщений по таймлайну: ' + messagesCount.value + '<br>';
 
-    const currentStep = timeline.value.timelineSteps[Number(route.query.step) || 0];
+    const currentStep = timeline.value.steps[Number(route.query.step) || 0];
 
     if (!currentStep) return totalText;
 
-    const localText = 'Сообщений на текущем шаге: ' + currentStep.timelineActionComments?.length;
+    const localText = 'Сообщений на текущем шаге: ' + currentStep.comments?.length;
 
     return totalText + localText;
 });

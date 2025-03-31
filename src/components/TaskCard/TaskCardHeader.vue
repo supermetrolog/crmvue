@@ -174,7 +174,7 @@ const props = defineProps({
 });
 
 const store = useStore();
-const { currentUserId, currentUserIsModerator } = useAuth();
+const { currentUserId, currentUserIsModeratorOrHigher } = useAuth();
 
 const isCompleted = computed(() => props.task.status === taskOptions.statusTypes.COMPLETED);
 const isDeleted = computed(() => props.task.deleted_at !== null);
@@ -193,13 +193,13 @@ const isFavorite = computed(() => isFavoriteTask(props.task.id));
 // permissions
 
 const canBeDeleted = computed(() => () => {
-    if (currentUserIsModerator.value) return true;
+    if (currentUserIsModeratorOrHigher.value) return true;
 
     return currentUserId.value === props.task.created_by_id && isRecent.value;
 });
 
 const canBeEdit = computed(
-    () => currentUserIsModerator.value || props.task.created_by_id === currentUserId.value
+    () => currentUserIsModeratorOrHigher.value || props.task.created_by_id === currentUserId.value
 );
 
 const canBeDragged = computed(() => canBeEdit.value || props.task.user_id === currentUserId.value);
@@ -209,7 +209,7 @@ const canBePostponed = computed(() => {
         !isCompleted.value &&
         (props.task.created_by_id === currentUserId.value ||
             props.task.user_id === currentUserId.value ||
-            currentUserIsModerator.value)
+            currentUserIsModeratorOrHigher.value)
     );
 });
 

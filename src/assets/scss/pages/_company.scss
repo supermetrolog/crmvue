@@ -2,9 +2,10 @@
 @use '../utils/mixins';
 
 .company-item-request {
-    $request_thin_border: 0.3px solid black;
+    $request_thin_border: 0.3px solid #aaa;
 
     border: $request_thin_border;
+    border-radius: 4px;
     width: 100%;
     position: relative;
     background-color: lighten(variables.$color_light, 3);
@@ -38,11 +39,16 @@
             grid-area: name;
             border-bottom: $request_thin_border;
             border-right: $request_thin_border;
+            border-top-left-radius: 4px;
+
+            @include mixins.flex-box($a: center);
         }
 
         &:nth-child(2) {
             grid-area: type;
             border-bottom: $request_thin_border;
+            border-top-right-radius: 4px;
+
             @include mixins.flex-box($a: center, $j: space-between);
             @include mixins.media('max', 'xxl') {
                 flex-wrap: wrap;
@@ -60,6 +66,8 @@
     &__timeline {
         grid-area: timeline;
         border-bottom: $request_thin_border;
+        height: 100%;
+        @include mixins.flex-box($d: column, $gap: 4px);
 
         p {
             span {
@@ -86,7 +94,9 @@
     }
 
     &__parameters {
-        @include mixins.flex-box($gap: 5px, $d: column);
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
     }
 }
 

@@ -77,10 +77,6 @@ defineProps({
         type: String,
         default: 'col-6 col-xl-3'
     },
-    viewMode: {
-        type: Boolean,
-        default: false
-    },
     pagination: {
         type: Object,
         default: () => {}

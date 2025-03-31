@@ -8,7 +8,6 @@
                 class="company-preview__document"
                 read-only
             />
-            {{ files }}
         </div>
         <EmptyLabel v-else class="mx-auto">Список файлов пуст...</EmptyLabel>
     </div>

@@ -2,19 +2,24 @@
     <div>
         <div class="company-box-main__subtitle mb-2">
             <strong>Контакты</strong>
-            <HoverActionsButton
+            <UiButtonIcon
                 @click="$emit('create')"
+                label="Добавить контакт"
                 :disabled="loading"
                 small
-                label="Создать контакт"
-            >
-                <i class="fa-solid fa-plus" />
-            </HoverActionsButton>
+                color="light"
+                icon="fa-solid fa-plus"
+            />
         </div>
         <div v-if="loading" class="company-box-main__contacts">
             <CompanyBoxContactListItemSkeleton v-for="key in 5" :key="key" />
         </div>
-        <div v-show="!loading" ref="listElement" @wheel.prevent class="company-box-main__contacts">
+        <div
+            v-show="!loading"
+            ref="listElement"
+            @wheel.prevent
+            class="company-box-main__contacts pb-2"
+        >
             <CompanyBoxContactListItem
                 v-for="contact in contacts"
                 :key="contact.id"
@@ -27,10 +32,10 @@
 
 <script setup>
 import CompanyBoxContactListItem from './CompanyBoxContactListItem.vue';
-import HoverActionsButton from '@/components/common/HoverActions/HoverActionsButton.vue';
 import { inject, useTemplateRef } from 'vue';
 import { useHorizontalScroll } from '@/composables/useHorizontalScroll.js';
 import CompanyBoxContactListItemSkeleton from '@/components/Company/Box/CompanyBoxContactListItemSkeleton.vue';
+import UiButtonIcon from '@/components/common/UI/UiButtonIcon.vue';
 
 const emit = defineEmits(['create', 'show']);
 defineProps({

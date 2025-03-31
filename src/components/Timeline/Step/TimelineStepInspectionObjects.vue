@@ -26,10 +26,10 @@
                 <TimelineInfo
                     @next="$emit('next-step')"
                     title="4. Организация осмотра объектов"
-                    :success="data.timelineStepObjects.length"
+                    :success="data.objects.length"
                 >
                     <p>4.1. Отметьте объекты, которые клиент хотел бы осмотреть</p>
-                    <p v-if="data.timelineStepObjects.length">
+                    <p v-if="data.objects.length">
                         На данный момент клиента
                         {{ infoText }}.
                     </p>
@@ -47,7 +47,7 @@
                                 @click="sendModalIsVisible = true"
                                 tooltip="Нажмите, чтобы отправить презентации с объектами клиенту"
                                 :disabled="!selectedObjects.length || disabled"
-                                success
+                                color="success"
                             >
                                 <span>Отправить презентации</span>
                                 <i class="fa-solid fa-paper-plane icon"></i>
@@ -56,7 +56,7 @@
                                 @click="selectNegative"
                                 :active="step.negative"
                                 :disabled="disabled"
-                                danger
+                                color="danger"
                             >
                                 <span>Нет подходящих</span>
                                 <i class="fa-solid fa-frown-open icon"></i>
@@ -85,7 +85,7 @@
                     @unselect="unselect"
                     @addComment="addComment"
                     :objects="notSubmittedObjects"
-                    :current-objects="step.timelineStepObjects"
+                    :current-objects="step.objects"
                     :selected-objects="selectedObjects"
                     :disabled="disabled"
                     with-separator
@@ -132,7 +132,7 @@ export default {
     computed: {
         infoText() {
             return plural(
-                this.data.timelineStepObjects.length,
+                this.data.objects.length,
                 'заинтересовал %d объект',
                 'заинтересовало %d объекта',
                 'заинтересовало %d объектов'

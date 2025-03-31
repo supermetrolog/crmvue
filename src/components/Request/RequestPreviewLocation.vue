@@ -1,7 +1,7 @@
 <template>
     <div class="request-preview__box request-preview__location request-preview-location">
         <p class="request-preview__subtitle mb-1">
-            <i class="fa-solid fa-earth-europe request-preview-location__icon"></i>
+            <i class="fa-solid fa-earth-europe request-preview-location__icon mr-1"></i>
             <span>Локация поиска</span>
         </p>
         <div class="request-preview__table">

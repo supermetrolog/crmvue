@@ -2,7 +2,8 @@
     <Tr
         class="offer-table-item"
         :class="{
-            passive: isPassive
+            passive: isPassive,
+            selected
         }"
     >
         <Td class="offer-table-item__id text-center" :class="{ passive: isPassive }">
@@ -11,6 +12,13 @@
                     {{ offer.visual_id }}
                 </p>
                 <div class="offer-table-item__actions">
+                    <UiCheckbox
+                        v-if="!isPassive"
+                        v-tippy="'Выбрать предложение'"
+                        @click="$emit(selected ? 'unselect' : 'select')"
+                        :checked="selected"
+                        class="offer-table-item__checkbox mb-1"
+                    />
                     <template v-if="offer.type_id !== 3">
                         <HoverActionsButton
                             @click="toggleFavorite"
@@ -34,7 +42,10 @@
             </div>
         </Td>
         <Td class="offer-table-item__preview">
-            <OfferTableItemPreview :is-passive="isPassive" :offer="offer" />
+            <UiField v-if="count" color="warning" class="mb-1">
+                Отправлено {{ count }} раз, последний {{ lastSentAt }}
+            </UiField>
+            <OfferTableItemPreview :with-old-url="false" :is-passive="isPassive" :offer="offer" />
         </Td>
         <Td class="offer-table-item__region text-center">
             <OfferTableItemAddress :offer="offer" />
@@ -105,9 +116,6 @@
                 </div>
                 <p v-else>—</p>
             </div>
-        </Td>
-        <Td class="offer-table-item__advertisement">
-            <OfferTableItemAdv :offer />
         </Td>
         <Td class="offer-table-item__date" sort="last_update">
             <DashboardChip
@@ -186,28 +194,22 @@ import OfferTableItemCall from '@/components/Offer/TableItem/OfferTableItemCall.
 import { useMessenger } from '@/components/Messenger/useMessenger.js';
 import { getLinkPDF } from '@/utils/url.js';
 import { messenger, objectChatMemberTypes } from '@/const/messenger.js';
-import OfferTableItemAdv from '@/components/Offer/TableItem/OfferTableItemAdv.vue';
 import UiTooltip from '@/components/common/UI/UiTooltip.vue';
 import UiButton from '@/components/common/UI/UiButton.vue';
+import UiCheckbox from '@/components/common/Forms/UiCheckbox.vue';
+import UiField from '@/components/common/UI/UiField.vue';
+import { toDateFormat } from '@/utils/formatters/date.js';
 
-const emit = defineEmits(['favorite-deleted', 'open-survey']);
+const emit = defineEmits(['favorite-deleted', 'open-survey', 'select', 'unselect']);
 const props = defineProps({
     offer: {
         type: Object,
         required: true
     },
-    loader: {
-        type: Boolean,
-        default: false
-    },
-    sortable: {
-        type: Boolean,
-        default: true
-    },
-    withoutRelations: {
-        type: Boolean,
-        default: false
-    }
+    loader: Boolean,
+    selected: Boolean,
+    count: Number,
+    lastSent: String
 });
 
 const { isLoading: blocksIsLoading } = useDelayedLoader();
@@ -357,4 +359,6 @@ const hasActiveContact = computed(() => {
 });
 
 const objectCreatedAt = computed(() => props.offer.object.publ_time * 1000);
+
+const lastSentAt = computed(() => toDateFormat(props.lastSent, 'D.MM.YY'));
 </script>

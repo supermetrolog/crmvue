@@ -5,10 +5,10 @@
                 <TimelineInfo
                     @next="$emit('next-step')"
                     title="5. Заполнение информации о показах"
-                    :success="data.timelineStepObjects.length"
+                    :success="data.objects.length"
                 >
                     <p>Отметьте объекты, которые осмотрели вместе с клиентом.</p>
-                    <p v-if="data.timelineStepObjects.length">
+                    <p v-if="data.objects.length">
                         На данный момент
                         {{ infoText }}.
                     </p>
@@ -43,7 +43,7 @@
                     @unselect="unselect"
                     @addComment="addComment"
                     :objects="notSubmittedObjects"
-                    :current-objects="step.timelineStepObjects"
+                    :current-objects="step.objects"
                     :selected-objects="selectedObjects"
                     :disabled="disabled"
                     with-separator
@@ -72,7 +72,7 @@ export default {
     computed: {
         infoText() {
             return plural(
-                this.data.timelineStepObjects.length,
+                this.data.objects.length,
                 'осмотрен %d объект',
                 'осмотрено %d объекта',
                 'осмотрено %d объектов'

@@ -153,11 +153,11 @@ function closeEditForm() {
 async function updateRequest() {
     const updatedRequest = await api.request.get(editedRequest.value.id);
 
-    if (updatedRequest?.length) {
-        const index = props.requests.findIndex(element => element.id === updatedRequest[0].id);
+    if (updatedRequest) {
+        const index = props.requests.findIndex(element => element.id === updatedRequest.id);
 
         if (index !== -1) {
-            Object.assign(props.requests[index], updatedRequest[0]);
+            Object.assign(props.requests[index], updatedRequest);
         }
     }
 

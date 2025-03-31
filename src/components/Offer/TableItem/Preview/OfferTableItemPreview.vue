@@ -1,6 +1,7 @@
 <template>
     <div class="offer-table-item-preview">
         <a
+            v-if="withOldUrl"
             :href="offerOldUrl"
             target="_blank"
             class="button button--small offer-table-item__button"
@@ -105,6 +106,10 @@ const props = defineProps({
     as: {
         type: String,
         default: 'a'
+    },
+    withOldUrl: {
+        type: Boolean,
+        default: true
     }
 });
 

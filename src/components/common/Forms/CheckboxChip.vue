@@ -35,6 +35,7 @@
 <script setup>
 import { useFormControlValidation } from '@/composables/useFormControlValidation.js';
 import { computed, toRef } from 'vue';
+import { isNullish } from '@/utils/helpers/common/isNullish.js';
 
 const modelValue = defineModel({ type: [Array, Number, String, Boolean] });
 const emit = defineEmits(['change', 'icon-clicked']);
@@ -72,7 +73,7 @@ const { hasValidationError, validate } = useFormControlValidation(toRef(props, '
 
 const isActive = computed(() => {
     if (modelValue.value instanceof Array) {
-        if (props.property === null) {
+        if (isNullish(props.property)) {
             return (
                 modelValue.value.includes(props.value) ||
                 modelValue.value.includes(props.value.toString())
@@ -90,7 +91,7 @@ const isActive = computed(() => {
 const isDisabled = computed(() => props.multiple && modelValue.value == props.disabledValue);
 
 const onClick = event => {
-    if (props.property === null) return true;
+    if (isNullish(props.property)) return true;
 
     event.preventDefault();
 

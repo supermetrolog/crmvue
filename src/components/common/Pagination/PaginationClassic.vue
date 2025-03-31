@@ -1,6 +1,23 @@
 <template>
-    <div class="pagination-classic" :class="{ disabled: isDisabled || disabled }">
-        <div class="pagination-classic__pages">
+    <div class="pagination-classic" :class="{ disabled: isDisabled || disabled || loading }">
+        <div v-if="loading || !pagination" class="pagination-classic__pages">
+            <PaginationPage navigate>
+                <i class="fa-solid fa-angles-left"></i>
+            </PaginationPage>
+            <PaginationPage navigate>
+                <i class="fa-solid fa-angle-left"></i>
+            </PaginationPage>
+            <PaginationPage v-for="number of 5" :key="number" class="loading">
+                {{ number }}
+            </PaginationPage>
+            <PaginationPage navigate>
+                <i class="fa-solid fa-angle-right"></i>
+            </PaginationPage>
+            <PaginationPage navigate>
+                <i class="fa-solid fa-angles-right"></i>
+            </PaginationPage>
+        </div>
+        <div v-else class="pagination-classic__pages">
             <PaginationPage @click="next(1)" navigate :disabled="isFirstPage">
                 <i class="fa-solid fa-angles-left"></i>
             </PaginationPage>
@@ -32,7 +49,7 @@
             </PaginationPage>
         </div>
         <PaginationDescription
-            v-if="withDescription"
+            v-if="withDescription && !loading && pagination"
             :pagination="pagination"
             :count-visible-rows="countVisibleRows"
         />
@@ -60,14 +77,12 @@ const props = defineProps({
         type: Boolean,
         default: true
     },
-    disabled: {
-        type: Boolean,
-        default: false
-    }
+    disabled: Boolean,
+    loading: Boolean
 });
 
 let timeout = null;
-const nextPage = shallowRef(props.pagination.currentPage);
+const nextPage = shallowRef(props.pagination?.currentPage);
 
 watch(
     () => props.pagination?.currentPage,
@@ -91,6 +106,7 @@ const countVisibleRows = computed(() => {
 
     return from + ' - ' + to;
 });
+
 const pageList = computed(() => {
     if (!props.pagination) return [];
 
@@ -106,7 +122,7 @@ const pageList = computed(() => {
     return Array.from(Array(max - min + 1).keys()).map((_, key) => min + key);
 });
 
-const isDisabled = computed(() => props.pagination.currentPage !== nextPage.value);
+const isDisabled = computed(() => props.pagination?.currentPage !== nextPage.value);
 
 const next = page => {
     if (isDisabled.value) return;

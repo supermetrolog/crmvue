@@ -1,38 +1,17 @@
 <template>
-    <Modal @close="$emit('close')" show class="form-company-deal" :width="1000">
-        <template #header>
-            <Switch
-                v-model="form.is_our"
-                @change="changeIsCompetitor"
-                :transform="Number"
-                :checked="form.is_our"
-                false-title="Сделка конкурентов"
-                true-title="Наша сделка"
-            />
-        </template>
+    <UiModal
+        @close="$emit('close')"
+        title="Оформление сделки"
+        show
+        custom-close
+        :width="800"
+        :close-on-outside-click="false"
+        :close-on-press-esc="false"
+    >
         <Loader v-if="isLoading" />
-        <UiForm @submit="onSubmit">
+        <UiForm>
             <UiFormGroup>
-                <MultiSelect
-                    v-model="form.competitor_company_id"
-                    :disabled="!!form.is_our"
-                    :v="v$.form.competitor_company_id"
-                    extra-classes="long-text"
-                    label="Компания конкурент"
-                    :required="!form.is_our"
-                    class="col-6"
-                    :filterResults="false"
-                    :min-chars="1"
-                    :resolve-on-load="true"
-                    :delay="500"
-                    :searchable="true"
-                    :options="
-                        async query => {
-                            if (!query?.length) return [];
-                            return await searchCompetitorCompany(query);
-                        }
-                    "
-                />
+                <UiInput v-model="form.name" label="Название" class="col-12" />
                 <MultiSelect
                     v-model="form.offerHandler"
                     @change="changeOfferHandler"
@@ -41,7 +20,7 @@
                     extra-classes="long-text"
                     label="Предложение"
                     required
-                    class="col-6"
+                    class="col-12"
                     :filterResults="false"
                     :min-chars="1"
                     :resolve-on-load="true"
@@ -55,39 +34,65 @@
                     "
                 >
                     <template #option="{ option }">
-                        <div class="form-company-deal__offer">
-                            <VLazyImage
+                        <div class="d-flex gap-2">
+                            <LazyImage
                                 :src="option.description.thumb"
-                                class="form-company-deal__thumb"
-                                alt="company deal thumb"
+                                style="height: 50px; min-width: 90px; max-width: 90px"
                             />
-                            <p>
-                                <span>
-                                    <b> #{{ option.value.visual_id }} </b>,
-                                </span>
-                                <span v-if="option.description.deal">
-                                    {{ option.description.deal }},
-                                </span>
-                                <span>{{ option.description.district }}</span>
-                            </p>
+                            <div>
+                                <p class="font-weight-semi">#{{ option.value.visual_id }},</p>
+                                <p v-if="option.description.deal" class="fs-2">
+                                    {{ option.description.deal }}
+                                </p>
+                                <p class="fs-2">
+                                    {{ option.description.address }}
+                                </p>
+                            </div>
                         </div>
                     </template>
+                    <template #after>
+                        <Switch
+                            v-model="form.is_our"
+                            @change="changeIsCompetitor"
+                            :transform="Number"
+                            :checked="form.is_our"
+                            false-title="Сделка конкурентов"
+                            true-title="Наша сделка"
+                        />
+                    </template>
                 </MultiSelect>
+                <AnimationTransition :speed="0.45">
+                    <UiCol v-if="!form.is_our" :cols="12">
+                        <div class="dashboard-bg-light py-2 br-1">
+                            <MultiSelect
+                                v-model="form.competitor_company_id"
+                                :v="v$.form.competitor_company_id"
+                                extra-classes="long-text"
+                                label="Компания конкурент"
+                                :required="!form.is_our"
+                                class="col-12"
+                                :filterResults="false"
+                                :min-chars="1"
+                                :resolve-on-load="true"
+                                :delay="500"
+                                :searchable="true"
+                                :options="
+                                    async query => {
+                                        if (!query?.length) return [];
+                                        return await searchCompetitorCompany(query);
+                                    }
+                                "
+                            />
+                        </div>
+                    </UiCol>
+                </AnimationTransition>
             </UiFormGroup>
+            <UiFormDivider />
             <UiFormGroup>
-                <UiInput v-model="form.name" label="Название" class="col-6 pr-1" />
-                <UiInput
-                    v-model="form.area"
-                    label="Площадь сделки"
-                    class="col-6"
-                    maska="##########"
-                    type="number"
-                    unit="м<sup>2</sup>"
-                />
                 <MultiSelect
+                    v-if="!company_id"
                     v-model="form.company_id"
                     @change="onChangeCompany"
-                    :disabled="!!company_id"
                     extra-classes="long-text"
                     label="Компания"
                     required
@@ -105,19 +110,6 @@
                         }
                     "
                 />
-                <MultiSelect
-                    :key="requestOptions.length"
-                    v-model="form.request_id"
-                    :disabled="!form.company_id || !!request_id"
-                    extra-classes="long-text"
-                    :v="v$.form.request_id"
-                    :required="!!request_id"
-                    label="Запрос"
-                    class="col-6"
-                    :options="requestOptions"
-                />
-            </UiFormGroup>
-            <UiFormGroup>
                 <UiInput
                     v-model="form.clientLegalEntity"
                     label="Юр. лицо клиента в сделке"
@@ -125,15 +117,39 @@
                 />
                 <MultiSelect
                     v-model="form.formOfOrganization"
-                    label="ФО"
+                    label="Форма организации"
                     title="Форма организации"
-                    class="col-3"
+                    class="col-6"
                     :options="CompanyFormOrganization"
+                />
+            </UiFormGroup>
+            <UiFormGroup>
+                <MultiSelect
+                    v-if="!request_id"
+                    :key="requestOptions.length"
+                    v-model="form.request_id"
+                    :disabled="!form.company_id"
+                    extra-classes="long-text"
+                    :v="v$.form.request_id"
+                    :required="!!request_id"
+                    label="Запрос"
+                    class="col-12"
+                    :options="requestOptions"
+                />
+            </UiFormGroup>
+            <UiFormGroup>
+                <UiInput
+                    v-model="form.area"
+                    label="Площадь сделки"
+                    class="col-6"
+                    maska="##########"
+                    type="number"
+                    unit="м<sup>2</sup>"
                 />
                 <UiInput
                     v-model="form.floorPrice"
                     label="Цена пола"
-                    class="col-3"
+                    class="col-6"
                     maska="##########"
                 />
             </UiFormGroup>
@@ -143,30 +159,44 @@
                     :v="v$.form.consultant_id"
                     required
                     label="Консультант"
-                    class="col-6"
+                    class="col-5"
                     :options="CONSULTANT_LIST"
                 />
-                <UiInput v-model="form.dealDate" label="Дата сделки" type="date" class="col-3" />
+                <UiDateInput v-model="form.dealDate" label="Дата сделки" class="col-4" />
                 <UiInput
                     v-model="form.contractTerm"
                     label="Срок контракта"
                     :disabled="!contractTermVisible"
                     class="col-3"
                     maska="####"
+                    type="number"
                     unit="мес."
                 />
             </UiFormGroup>
+            <UiFormDivider />
             <UiFormGroup>
-                <UiTextarea v-model="form.description" label="Описание" class="col-12" />
+                <UiTextarea
+                    v-model="form.description"
+                    :min-height="50"
+                    auto-height
+                    :max-height="150"
+                    label="Описание"
+                    class="col-12"
+                />
             </UiFormGroup>
-            <Submit success class="col-4 mx-auto">{{ formData ? 'Сохранить' : 'Создать' }}</Submit>
         </UiForm>
-    </Modal>
+        <template #actions="{ close }">
+            <UiButton @click="submit" icon="fa-solid fa-check" color="success-light">
+                Сохранить
+            </UiButton>
+            <UiButton @click="close" icon="fa-solid fa-ban" color="light">Отмена</UiButton>
+        </template>
+    </UiModal>
 </template>
 
 <script setup>
 import { useStore } from 'vuex';
-import useVuelidate from '@vuelidate/core';
+
 import UiForm from '@/components/common/Forms/UiForm.vue';
 import UiFormGroup from '@/components/common/Forms/UiFormGroup.vue';
 import UiInput from '@/components/common/Forms/UiInput.vue';
@@ -175,89 +205,76 @@ import MultiSelect from '@/components/common/Forms/MultiSelect.vue';
 import api from '@//api/api.js';
 import { CompanyFormOrganization } from '@/const/const.js';
 import Loader from '@/components/common/Loader.vue';
-import Modal from '@/components/common/Modal.vue';
-import Submit from '@/components/common/Forms/FormSubmit.vue';
-import dayjs from 'dayjs';
-import { computed, onBeforeMount, reactive, ref, shallowRef } from 'vue';
+import { computed, onBeforeMount, reactive, ref } from 'vue';
 import { validationRulesForCompanyDeal } from '@/validators/rules.js';
 import Switch from '@/components/common/Forms/Switch.vue';
-import VLazyImage from 'v-lazy-image';
-import { useValidationNotify } from '@/composables/useValidationNotify.js';
+import LazyImage from '@/components/common/LazyImage.vue';
+import UiCol from '@/components/common/UI/UiCol.vue';
+import AnimationTransition from '@/components/common/AnimationTransition.vue';
+import UiFormDivider from '@/components/common/Forms/UiFormDivider.vue';
+import UiDateInput from '@/components/common/Forms/UiDateInput.vue';
+import UiModal from '@/components/common/UI/UiModal.vue';
+import UiButton from '@/components/common/UI/UiButton.vue';
+import { useValidation } from '@/composables/useValidation.js';
+import { useFormData } from '@/utils/use/useFormData.js';
 
 const emit = defineEmits(['updated', 'created', 'close']);
 const props = defineProps({
-    formData: {
-        type: Object
-    },
-    request_id: {
-        type: Number
-    },
-    company_id: {
-        type: Number
-    },
-    object_id: {
-        type: Number
-    },
-    complex_id: {
-        type: Number
-    },
-    type_id: {
-        type: Number
-    },
-    original_id: {
-        type: Number
-    },
-    visual_id: {
-        type: String
-    },
-    isOurDeal: {
-        type: Boolean,
-        default: false
-    },
-    dealType: {
-        type: Number,
-        default: null
-    }
+    formData: Object,
+    request_id: Number,
+    company_id: Number,
+    object_id: Number,
+    complex_id: Number,
+    type_id: Number,
+    original_id: Number,
+    visual_id: Number,
+    isOurDeal: Boolean,
+    dealType: Number
 });
 
 const store = useStore();
 
-const isLoading = shallowRef(false);
+const isLoading = ref(false);
+
 const selectedCompany = ref(null);
 const selectedCompetitorCompany = ref(null);
 const selectedOffer = ref(null);
 const requestOptions = ref([]);
 
-const form = reactive({
-    request_id: null,
-    company_id: null,
-    consultant_id: null,
-    name: null,
-    area: null,
-    floorPrice: null,
-    clientLegalEntity: null,
-    description: null,
-    dealDate: dayjs(new Date()).format('YYYY-MM-DD'),
-    contractTerm: null,
-    is_our: 1,
-    is_competitor: 0,
-    competitor_company_id: null,
-    complex_id: null,
-    object_id: null,
-    type_id: null,
-    formOfOrganization: null,
-    offerHandler: null,
-    original_id: null,
-    visual_id: null
-});
+const { form, isEditMode } = useFormData(
+    reactive({
+        request_id: null,
+        company_id: null,
+        consultant_id: null,
+        name: null,
+        area: null,
+        floorPrice: null,
+        clientLegalEntity: null,
+        description: null,
+        dealDate: new Date(),
+        contractTerm: null,
+        is_our: 1,
+        is_competitor: 0,
+        competitor_company_id: null,
+        complex_id: null,
+        object_id: null,
+        type_id: null,
+        formOfOrganization: null,
+        offerHandler: null,
+        original_id: null,
+        visual_id: null
+    }),
+    props.formData
+);
 
-const v$ = useVuelidate({ form: validationRulesForCompanyDeal }, { form });
+const { v$, validate } = useValidation({ form: validationRulesForCompanyDeal }, { form });
 
 const CONSULTANT_LIST = computed(() => store.getters.CONSULTANT_LIST);
 
 const changeIsCompetitor = () => {
     form.is_competitor = Number(!form.is_our);
 };
+
 const contractTermVisible = () => {
     if (!requestOptions.value.length || !form.request_id) return false;
 
@@ -291,20 +308,17 @@ const create = async () => {
     isLoading.value = false;
 };
 
-const { validateWithNotify } = useValidationNotify(v$);
-
-const onSubmit = () => {
-    validateWithNotify();
-
+async function submit() {
     if (!form.clientLegalEntity) form.formOfOrganization = null;
 
-    if (!v$.value.form.$error) {
-        isLoading.value = true;
+    const isValid = await validate();
+    if (!isValid) return;
 
-        if (props.formData) update();
-        else create();
-    }
-};
+    isLoading.value = true;
+
+    if (isEditMode.value) update();
+    else create();
+}
 
 const onChangeCompany = async () => {
     if (props.request_id) return;
@@ -436,7 +450,7 @@ const searchOffer = async query => {
                 thumb: item.thumb,
                 deal: item.deal_type_name,
                 area: item.calc_area_floor,
-                district: item.district_name
+                address: item.address
             },
             label: item.visual_id
         });
