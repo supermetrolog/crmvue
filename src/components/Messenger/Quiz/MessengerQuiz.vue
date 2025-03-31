@@ -437,19 +437,21 @@ async function scheduleCall(contact, companyName) {
 async function createObjectMessageWithTask(object, messagePayload, taskPayload) {
     const targetChatMemberId = await api.messenger.getChatMemberIdByQuery({
         model_type: messenger.dialogTypes.OBJECT,
-        model_id: object.id
+        object_id: object.id
     });
 
-    const createdMessage = await api.messenger.sendMessageWithTask(
-        targetChatMemberId,
-        messagePayload,
-        taskPayload
-    );
+    if (targetChatMemberId) {
+        const createdMessage = await api.messenger.sendMessageWithTask(
+            targetChatMemberId,
+            messagePayload,
+            taskPayload
+        );
 
-    if (createdMessage) {
-        notify.success('Сообщение и задача успешно созданы');
-    } else {
-        notify.error('Произошла ошибка. Попробуйте еще раз..');
+        if (createdMessage) {
+            notify.success('Сообщение и задача успешно созданы');
+        } else {
+            notify.error('Произошла ошибка. Попробуйте еще раз..');
+        }
     }
 }
 
