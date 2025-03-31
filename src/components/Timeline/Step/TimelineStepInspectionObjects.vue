@@ -7,7 +7,11 @@
                 title="Выбор заинтересовавших предложений"
                 width="1200"
             >
-                <FormLetter @send="localSend" :formdata="preparedLetterMessage">
+                <FormLetter
+                    @send="localSend"
+                    :formdata="preparedLetterMessage"
+                    :loading="isSending"
+                >
                     <CompanyObjectsList
                         @select="select"
                         @unselect="unselect"
@@ -128,7 +132,8 @@ export default {
         return {
             isAlreadySent: false,
             currentRecommendedFilter: null,
-            queryParams: null
+            queryParams: null,
+            isSending: false
         };
     },
     computed: {
@@ -147,9 +152,13 @@ export default {
             this.$emit('next-step');
         },
         async localSend(event) {
+            this.isSending = true;
+
             const sendingSuccessfully = await this.send(event);
 
             if (sendingSuccessfully) this.sendModalIsVisible = false;
+
+            this.isSending = false;
         },
         getNegativeComment(step) {
             return [new InspectionOffersNotFound(step)];

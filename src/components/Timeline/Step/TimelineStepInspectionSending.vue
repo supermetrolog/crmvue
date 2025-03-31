@@ -7,7 +7,11 @@
                 title="Отправка маршрута"
                 width="1200"
             >
-                <FormLetter @send="localSend" :formdata="preparedLetterMessage">
+                <FormLetter
+                    @send="localSend"
+                    :formdata="preparedLetterMessage"
+                    :loading="isSending"
+                >
                     <CompanyObjectsList
                         @addComment="addComment"
                         :objects="normalizedObjects"
@@ -240,7 +244,8 @@ export default {
             alphabet: 'ABCDEFGHIJKL',
             preparedLetterMessageState: null,
             selectedObjects: [],
-            correctObjects: []
+            correctObjects: [],
+            isSending: false
         };
     },
     computed: {
@@ -325,10 +330,14 @@ export default {
             this.preparedLetterMessageState = formData;
         },
         async localSend(event) {
+            this.isSending = true;
+
             this.selectedObjects = this.correctObjects.map(element => element.offer);
 
             await this.send(event);
             this.sendModalIsVisible = false;
+
+            this.isSending = false;
         },
 
         // Переопределение из миксина для указания additional
