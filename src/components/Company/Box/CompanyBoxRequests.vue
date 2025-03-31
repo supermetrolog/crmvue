@@ -24,6 +24,7 @@
                     @update="$emit('update-request', $event)"
                     @clone="cloneRequest"
                     @disable="toggleRequestStatus"
+                    @change-consultant="changeRequestConsultant"
                     :requests
                 />
                 <DealList
@@ -56,6 +57,12 @@
                     @cloned="onRequestCloned"
                     :request="clonedRequestItem"
                 />
+                <FormModalCompanyRequestChangeConsultant
+                    v-if="changeModalIsVisible"
+                    @close="changeModalIsVisible = false"
+                    @changed="onRequestConsultantChanged"
+                    :request="changedRequest"
+                />
             </teleport>
         </template>
     </CompanyBoxLayout>
@@ -75,6 +82,8 @@ import UiModal from '@/components/common/UI/UiModal.vue';
 import FormCompanyRequestDisable from '@/components/Forms/Company/FormCompanyRequestDisable.vue';
 import Loader from '@/components/common/Loader.vue';
 import { useConfirm } from '@/composables/useConfirm.js';
+import FormModalCompanyRequestChangeConsultant from '@/components/Forms/Company/FormModalCompanyRequestChangeConsultant.vue';
+import { useNotify } from '@/utils/use/useNotify.js';
 
 const emit = defineEmits([
     'update-deal',
@@ -82,7 +91,8 @@ const emit = defineEmits([
     'create-request',
     'update-request',
     'request-cloned',
-    'request-disabled'
+    'request-disabled',
+    'request-updated'
 ]);
 
 const props = defineProps({
@@ -166,5 +176,25 @@ function onRequestCloned() {
     cloneModalIsVisible.value = false;
     clonedRequestItem.value = null;
     emit('request-cloned');
+    notify.success('Запрос успешно клонирован');
+}
+
+// change consultant
+
+const changedRequest = shallowRef(null);
+const changeModalIsVisible = ref(false);
+
+function changeRequestConsultant(request) {
+    changedRequest.value = request;
+    changeModalIsVisible.value = true;
+}
+
+const notify = useNotify();
+
+function onRequestConsultantChanged(request) {
+    changeModalIsVisible.value = false;
+    changedRequest.value = null;
+    emit('request-updated', request);
+    notify.success('Консультант компании успешно изменен');
 }
 </script>

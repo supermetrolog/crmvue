@@ -7,8 +7,8 @@
                 tooltip="Срочный запрос"
                 class="icon mr-2 text-danger"
             />
-            <span>{{ dealType }}, </span>
-            <WithUnitType :value="areaRange" :unit-type="unitTypes.SQUARE_METERS" />
+            <span>{{ dealType }},</span>
+            <WithUnitType class="ml-1" :value="areaRange" :unit-type="unitTypes.SQUARE_METERS" />
         </div>
         <div class="company-item-request__header">
             <p>{{ statusText }}</p>
@@ -30,6 +30,11 @@
                             icon="fa-solid fa-pen"
                         />
                         <UiCan moderator-or-higher>
+                            <UiDropdownActionsButton
+                                @handle="$emit('change-consultant')"
+                                label="Изменить консультанта"
+                                icon="fa-solid fa-user-tag"
+                            />
                             <UiDropdownActionsButton
                                 @handle="$emit('clone')"
                                 label="Клонировать"
@@ -135,7 +140,7 @@ import CompanyBoxRequestsListItemAccordion from '@/components/Company/Box/Compan
 import Avatar from '@/components/common/Avatar.vue';
 import UiTooltipIcon from '@/components/common/UI/UiTooltipIcon.vue';
 
-defineEmits(['update', 'disable', 'clone']);
+defineEmits(['update', 'disable', 'clone', 'change-consultant']);
 const props = defineProps({
     request: {
         type: Object,

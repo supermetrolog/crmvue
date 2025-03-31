@@ -11,7 +11,7 @@
         <p v-else class="error-message">Должность не указана</p>
         <div v-if="contact.phones?.length" class="mt-1 company-contact__list">
             <PhoneNumber
-                @click="$emit('open-phone')"
+                @click.stop="$emit('open-phone')"
                 :phone="mainPhone"
                 :contact="contact"
                 :hidden

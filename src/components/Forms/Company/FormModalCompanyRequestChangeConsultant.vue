@@ -4,15 +4,44 @@
         custom-close
         show
         :width="750"
-        :title="`Клонирование запроса #${request.id}`"
+        :title="`Изменение консультанта для запроса #${request.id}`"
     >
         <Loader v-if="isLoading" />
         <UiForm>
             <UiFormGroup>
+                <UiCol v-if="request.consultant" :cols="12">
+                    <p class="text-grey mb-1 font-weight-semi">Текущий консультант запроса:</p>
+                    <div class="dashboard-bg-light br-1 py-1 px-2">
+                        <div class="d-flex gap-2 align-items-center">
+                            <Avatar :src="request.consultant.userProfile.avatar" :size="40" />
+                            <span class="font-weight-semi">
+                                {{ request.consultant.userProfile.full_name }},
+                            </span>
+                            <span class="text-grey">{{ consultantRole }}</span>
+                            <span
+                                v-if="request.consultant.is_online"
+                                class="text-grey fs-2 ml-auto align-self-end"
+                            >
+                                <i class="fa-solid fa-circle mr-1 dashboard-cl-success fs-1" />
+                                <span>Сейчас в сети</span>
+                            </span>
+                            <span
+                                v-else-if="request.consultant.last_seen"
+                                class="text-grey ml-auto fs-2 align-self-end"
+                            >
+                                <i class="fa-solid fa-circle text-grey fs-1" />
+                                Был в сети {{ lastSeen }}
+                            </span>
+                        </div>
+                    </div>
+                </UiCol>
+            </UiFormGroup>
+            <UiFormDivider />
+            <UiFormGroup>
                 <ConsultantPicker
                     v-model="form.consultant_id"
                     :v="v$.form.consultant_id"
-                    :options="getConsultantsOptions"
+                    :options="getPreparedConsultantsOptions"
                     required
                     class="col-12"
                 >
@@ -20,7 +49,11 @@
                         <div class="d-flex gap-1 flex-wrap">
                             <AnimationTransition :speed="0.4">
                                 <UiButton
-                                    v-if="consultantIsLoading || companyConsultant"
+                                    v-if="
+                                        consultantIsLoading ||
+                                        (companyConsultant &&
+                                            request.consultant_id !== companyConsultant.id)
+                                    "
                                     @click.prevent="assignToCompanyConsultant"
                                     small
                                     color="light"
@@ -39,19 +72,6 @@
                                     </template>
                                 </UiButton>
                             </AnimationTransition>
-                            <UiButton
-                                v-if="requestConsultant"
-                                @click.prevent="assignOldRequestConsultant"
-                                small
-                                color="light"
-                                icon="fa-solid fa-user-lock"
-                                :disabled="assignedToOldRequestConsultant"
-                            >
-                                <span>
-                                    {{ requestConsultant.userProfile.medium_name }}
-                                </span>
-                                <span class="text-grey fs-2"> (Конс. текущ. запроса) </span>
-                            </UiButton>
                         </div>
                     </template>
                 </ConsultantPicker>
@@ -64,10 +84,10 @@
             </UiFormGroup>
         </UiForm>
         <template #actions="{ close }">
-            <UiButton @click="submit" color="success-light" icon="fa-solid fa-check" bolder>
-                Клонировать
+            <UiButton @click="submit" color="success-light" icon="fa-solid fa-user-check">
+                Изменить консультанта
             </UiButton>
-            <UiButton @click="close" color="light" icon="fa-solid fa-ban" bolder>Отмена</UiButton>
+            <UiButton @click="close" color="light" icon="fa-solid fa-ban">Отмена</UiButton>
         </template>
     </UiModal>
 </template>
@@ -86,10 +106,13 @@ import UiModal from '@/components/common/UI/UiModal.vue';
 import UiButton from '@/components/common/UI/UiButton.vue';
 import { useValidation } from '@/composables/useValidation.js';
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
+import Avatar from '@/components/common/Avatar.vue';
 import UiCol from '@/components/common/UI/UiCol.vue';
+import { userOptions } from '@/const/options/user.options.js';
+import { toBeautifulDateFormat } from '@/utils/formatters/date.js';
 import UiFormDivider from '@/components/common/Forms/UiFormDivider.vue';
 
-const emit = defineEmits(['cloned', 'close']);
+const emit = defineEmits(['changed', 'close']);
 const props = defineProps({
     request: {
         type: Object,
@@ -98,6 +121,12 @@ const props = defineProps({
 });
 
 const { getConsultantsOptions } = useConsultantsOptions();
+
+async function getPreparedConsultantsOptions() {
+    const consultantsOptions = await getConsultantsOptions();
+
+    return consultantsOptions.filter(element => element.id !== props.request.consultant_id);
+}
 
 const isLoading = ref(false);
 
@@ -123,8 +152,8 @@ async function submit() {
     isLoading.value = true;
 
     try {
-        const createdRequest = await api.request.clone(props.request.id, form);
-        if (createdRequest) emit('cloned');
+        const request = await api.request.changeConsultant(props.request.id, form);
+        if (request) emit('changed', request);
     } finally {
         isLoading.value = false;
     }
@@ -135,7 +164,6 @@ async function submit() {
 // company consultant
 
 const companyConsultant = shallowRef(null);
-const requestConsultant = shallowRef(null);
 const consultantIsLoading = ref(false);
 
 async function fetchConsultant() {
@@ -155,11 +183,9 @@ watch(
     () => props.request?.id,
     value => {
         if (value) {
-            requestConsultant.value = props.request?.consultant;
             fetchConsultant();
         } else {
             companyConsultant.value = null;
-            requestConsultant.value = null;
         }
     },
     { immediate: true }
@@ -175,13 +201,8 @@ const assignedToCompanyConsultant = computed(
     () => form.consultant_id === companyConsultant.value?.id
 );
 
-function assignOldRequestConsultant() {
-    if (requestConsultant.value) {
-        form.consultant_id = requestConsultant.value.id;
-    }
-}
+// current consultant
 
-const assignedToOldRequestConsultant = computed(
-    () => form.consultant_id === requestConsultant.value?.id
-);
+const consultantRole = computed(() => userOptions.role[props.request.consultant.role]);
+const lastSeen = computed(() => toBeautifulDateFormat(props.request.consultant.last_seen));
 </script>
