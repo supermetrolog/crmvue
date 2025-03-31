@@ -79,7 +79,6 @@ export default {
         };
     },
     computed: {
-        ...mapGetters(['CURRENT_STEP_OBJECTS']),
         dataForRoute() {
             const data = {
                 coords: []
