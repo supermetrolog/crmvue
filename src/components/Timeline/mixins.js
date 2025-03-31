@@ -1,4 +1,4 @@
-import { mapActions, mapGetters } from 'vuex';
+import { mapGetters } from 'vuex';
 import { cloneObject } from '@/utils/helpers/object/cloneObject.js';
 import api from '@/api/api.js';
 import CommentWithAutoSetComment, {
@@ -111,7 +111,6 @@ export const TimelineStepWithObjectsMixin = {
         }
     },
     methods: {
-        ...mapActions(['UPDATE_STEP']),
         async alreadySent({ wayOfSending, contactForSendMessage, contacts, company_id }) {
             const sendClientFlag = false;
 
@@ -258,7 +257,6 @@ export const TimelineStepWithObjectsMixin = {
             data.status = 1;
             data.timelineStepObjects = [];
         },
-        onAfterSending() {},
         generateSelectedObjectsPayload() {
             return this.selectedObjects.map(item => ({
                 object_id: item.object_id,
@@ -285,9 +283,10 @@ export const TimelineStepWithObjectsMixin = {
             await this.sendObjects(step);
         },
         async sendObjects(data) {
-            if (await this.UPDATE_STEP(data)) {
-                await this.onAfterSending();
-                await this.$emit('updated-objects', data);
+            const isUpdated = await api.timeline.updateTimelineStep(data.id, data);
+
+            if (isUpdated) {
+                this.$emit('updated-objects', data);
                 this.reset();
             }
         },

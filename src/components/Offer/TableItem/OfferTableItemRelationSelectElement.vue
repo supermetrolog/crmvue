@@ -6,7 +6,7 @@
                 : `${label}. Нажмите, чтобы просмотреть их.`,
             hideOnClick: false
         }"
-        @click="$emit('open', type)"
+        @click.stop="$emit('open', type)"
         class="offer-table-item__relation-button"
         :class="{ active: active }"
     >

@@ -4,6 +4,10 @@ import { responseToData } from '@/api/helpers/responseToData.js';
 const URL = '/timeline';
 
 export default {
+    async get(id) {
+        const response = await axios.get(`${URL}/${id}`);
+        return responseToData(response);
+    },
     async getByConsultantAndRequest(consultantId, requestId) {
         const params = {
             consultant_id: consultantId,

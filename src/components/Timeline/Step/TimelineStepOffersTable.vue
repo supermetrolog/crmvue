@@ -42,24 +42,21 @@
             <template #tbody>
                 <Loader v-if="loading" />
                 <TimelineStepOffersTableItem
-                    v-for="offer in objects"
-                    :key="offer.id"
+                    v-for="offer in preparedObjects"
+                    :key="offer.object.id"
                     @favorite-deleted="$emit('favorite-deleted', $event)"
-                    @select="$emit('select', offer)"
-                    @unselect="$emit('unselect', offer)"
-                    :offer="offer"
+                    @select="$emit('select', offer.object)"
+                    @unselect="$emit('unselect', offer.object)"
+                    @show-submitted="showSubmitted(offer)"
+                    :offer="offer.object"
                     :loader="loading"
-                    :selected="selectedObjectsSet.has(offer.id)"
-                    :last-sent="
-                        currentObjectsHash[
-                            `${offer.object_id}-${offer.original_id}-${offer.type_id}`
-                        ]?.created_at
-                    "
-                    :count="
-                        currentObjectsHash[
-                            `${offer.object_id}-${offer.original_id}-${offer.type_id}`
-                        ]?.count
-                    "
+                    :selected="offer.selected"
+                    :last-sent="offer.lastSent"
+                    :count="offer.count"
+                    :submitted="offer.submitted"
+                    :visited="offer.visited"
+                    :visited-data="offer.visitedData"
+                    :submitted-data="offer.submittedData"
                 />
             </template>
         </Table>
@@ -74,6 +71,42 @@
             :loading="!pagination && loading"
             :pagination="pagination"
         />
+        <teleport to="body">
+            <UiModal
+                v-model:visible="submittedModalIsVisible"
+                @close="closeSubmittedModal"
+                custom-close
+                :title="`Просмотр отправлений объекта #${viewedSubmittedOffer?.object?.visual_id}`"
+                :width="550"
+            >
+                <p class="mb-1 text-grey font-weight-semi">Предложения:</p>
+                <div v-for="(offer, key) in viewedSubmittedOffer.submittedData" :key="key">
+                    <UiField color="light">
+                        <i class="fa-regular fa-clock" />
+                        <span>{{ offer.last_sent }}</span>
+                        <span>{{ offer.consultant }}</span>
+                        <span>предлагал этот объект клиенту.</span>
+                    </UiField>
+                </div>
+                <template v-if="viewedSubmittedOffer.visitedData?.length">
+                    <p class="mb-1 mt-2 text-grey font-weight-semi">Показы:</p>
+                    <div v-for="(offer, key) in viewedSubmittedOffer.visitedData" :key="key">
+                        <UiField color="light">
+                            <i class="fa-regular fa-clock" />
+                            <span>{{ offer.last_sent }}</span>
+                            <span>{{ offer.consultant }}</span>
+                            <span>показывал этот объект клиенту.</span>
+                        </UiField>
+                    </div>
+                </template>
+                <p v-else class="mt-2 text-grey font-weight-semi">Показов не было.</p>
+                <template #actions="{ close }">
+                    <UiButton @click="close" icon="fa-solid fa-close" color="light" small>
+                        Закрыть
+                    </UiButton>
+                </template>
+            </UiModal>
+        </teleport>
     </div>
 </template>
 
@@ -87,7 +120,9 @@ import Th from '@/components/common/Table/Th.vue';
 import Tr from '@/components/common/Table/Tr.vue';
 import Loader from '@/components/common/Loader.vue';
 import TimelineStepOffersTableItem from '@/components/Timeline/Step/TimelineStepOffersTableItem.vue';
-import { computed } from 'vue';
+import { computed, ref, shallowRef } from 'vue';
+import UiModal from '@/components/common/UI/UiModal.vue';
+import UiField from '@/components/common/UI/UiField.vue';
 
 defineEmits(['to-map', 'next-page', 'refresh', 'favorite-deleted']);
 const props = defineProps({
@@ -105,11 +140,38 @@ const props = defineProps({
         type: Array,
         default: () => []
     },
-    submittedView: Boolean
+    submittedView: Boolean,
+    alreadySubmittedSet: Set,
+    alreadyVisitedSet: Set,
+    alreadySubmitted: Object,
+    alreadyVisited: Object
 });
 
 const selectedObjectsSet = computed(() => {
     return new Set(props.selectedObjects.map(object => object.id));
+});
+
+const preparedObjects = computed(() => {
+    return props.objects.map(object => {
+        const objectId = `${object.object_id}-${object.original_id}-${object.type_id}`;
+        const shortObjectId = `${object.object_id}-${object.original_id}`;
+
+        const submitted = props.alreadySubmittedSet.has(shortObjectId);
+        const visited = props.alreadyVisitedSet.has(shortObjectId);
+
+        return {
+            objectId,
+            shortObjectId,
+            object,
+            selected: selectedObjectsSet.value.has(object.id),
+            lastSent: currentObjectsHash.value[objectId]?.created_at,
+            count: currentObjectsHash.value[objectId]?.count,
+            visited,
+            submitted,
+            visitedData: visited ? props.alreadyVisited[shortObjectId] : null,
+            submittedData: submitted ? props.alreadySubmitted[shortObjectId] : null
+        };
+    });
 });
 
 const currentObjectsHash = computed(() => {
@@ -122,4 +184,19 @@ const currentObjectsHash = computed(() => {
         return acc;
     }, {});
 });
+
+// submitted modal
+
+const submittedModalIsVisible = ref(false);
+const viewedSubmittedOffer = shallowRef(null);
+
+function showSubmitted(offer) {
+    viewedSubmittedOffer.value = offer;
+    submittedModalIsVisible.value = true;
+}
+
+function closeSubmittedModal() {
+    submittedModalIsVisible.value = false;
+    viewedSubmittedOffer.value = null;
+}
 </script>

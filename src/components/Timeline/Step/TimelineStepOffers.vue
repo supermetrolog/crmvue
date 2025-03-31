@@ -190,6 +190,10 @@
                     :loading="isSearchLoading"
                     :pagination="pagination"
                     :submitted-view="isSubmittedView"
+                    :already-submitted="alreadySubmittedObjects"
+                    :already-visited="alreadyVisitedObjects"
+                    :already-submitted-set="alreadySubmittedObjectsSet"
+                    :already-visited-set="alreadyVisitedObjectsSet"
                 />
             </UiCol>
         </div>
@@ -513,7 +517,7 @@ async function fetchObjects(query = {}, withLoader = true) {
             'object,offer,generalOffersMix.offer,comments,' +
             'contact.emails,contact.phones,' +
             'consultant.userProfile,' +
-            'company.mainContact.phones,company.mainContact.emails,company.objects_count,company.requests_count,company.active_contacts_count',
+            'company.mainContact.phones,company.mainContact.emails,company.objects_count,company.active_requests_count,company.active_contacts_count',
         timeline_id: timeline.value.id,
         ...structuredClone(deepToRaw(query)),
         page: currentPage.value
@@ -1029,4 +1033,9 @@ function setAsProcessed() {
 }
 
 const isPausedStep = computed(() => props.step.negative);
+
+const alreadySubmittedObjects = computed(() => store.state.Timeline.alreadySubmittedObjects);
+const alreadyVisitedObjects = computed(() => store.state.Timeline.alreadyVisitedObjects);
+const alreadySubmittedObjectsSet = computed(() => store.state.Timeline.alreadySubmittedObjectsSet);
+const alreadyVisitedObjectsSet = computed(() => store.state.Timeline.alreadyVisitedObjectsSet);
 </script>

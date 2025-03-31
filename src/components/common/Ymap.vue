@@ -19,22 +19,7 @@
             :controls="options.controls"
             :detailed-controls="options.detailedControls"
             style="width: 100%; height: 400px"
-        >
-            <!-- <ymap-marker
-              v-for="object in CURRENT_STEP_OBJECTS"
-              :key="object.original_id"
-              :marker-id="object.original_id"
-              :coords="[object.latitude, object.longitude]"
-              :hint-content="object.object_type_name"
-              :balloon="{
-                header: object.district_name + ' - ' + object.direction_name,
-                body: object.object_type_name,
-                footer: object.address,
-              }"
-              :icon="{ color: 'green' }"
-              cluster-name="1"
-            ></ymap-marker> -->
-        </yandex-map>
+        />
     </div>
 </template>
 
