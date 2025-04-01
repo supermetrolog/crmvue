@@ -57,7 +57,7 @@
                         Очистить
                     </UiButton>
                 </div>
-                <template v-if="hasOffers">
+                <template v-if="hasRequests">
                     <p class="mt-1 text-grey">Купля:</p>
                     <UiTextarea
                         v-model="requestsDescription"
