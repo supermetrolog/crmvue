@@ -40,5 +40,9 @@ export default {
     async clone(id, payload) {
         const response = await axios.post(`${URL}/${id}/clone`, payload);
         return responseToData(response);
+    },
+    async changeConsultant(id, payload) {
+        const response = await axios.post(`${URL}/${id}/change-consultant`, payload);
+        return responseToData(response);
     }
 };

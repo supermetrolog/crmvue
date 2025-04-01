@@ -7,20 +7,25 @@ export const Timeline = [
         name: 'Meeting',
         label: 'Знакомство с клиентом',
         icon: 'fa-solid fa-phone-alt',
+        checkPause: point => point.negative === 1,
         steps: [
             {
                 id: 0,
                 visual_id: '1.1',
                 name: 'MeetingActivity',
                 label: 'Изучение деятельности',
-                checkDone: point => point.additional === 1 || point.status === 1
+                checkDone: point => point.additional === 1 || point.status === 1,
+                checkPause: point => point.negative === 1 && point.additional !== 1
             },
             {
                 id: 1,
                 visual_id: '1.2',
                 name: 'MeetingConfirmation',
                 label: 'Подтверждение запроса',
-                checkDone: point => point.status === 1
+                checkDone: point => point.status === 1,
+                checkPause: point => point.negative === 1 && point.additional === 1,
+                checkDisable: point =>
+                    point.negative === 1 && point.additional === 0 && point.status !== 1
             }
         ]
     },

@@ -2,6 +2,7 @@
     <div class="company-element">
         <div class="company-element__main">
             <CompanyLogo
+                @click.stop
                 :company-id="company.id"
                 :company-name="companyName"
                 :src="company.logo"
@@ -9,6 +10,7 @@
             />
             <div class="company-element__body">
                 <router-link
+                    @click.stop
                     class="company-element__name"
                     :to="{ name: 'company', params: { id: company.id } }"
                     target="_blank"
@@ -60,7 +62,12 @@ const pluralContactsCount = computed(() =>
 );
 
 const pluralRequestsCount = computed(() =>
-    plural(props.company.requests_count, '%d запрос', '%d запроса', '%d запросов')
+    plural(
+        props.company.active_requests_count ?? props.company.requests_count,
+        '%d запрос',
+        '%d запроса',
+        '%d запросов'
+    )
 );
 
 const pluralObjectsCount = computed(() =>

@@ -1,5 +1,6 @@
 <template>
     <Tr
+        @click.stop="toggleSelect"
         class="offer-table-item"
         :class="{
             passive: isPassive,
@@ -15,25 +16,25 @@
                     <UiCheckbox
                         v-if="!isPassive"
                         v-tippy="'Выбрать предложение'"
-                        @click="$emit(selected ? 'unselect' : 'select')"
+                        @click.stop="toggleSelect"
                         :checked="selected"
                         class="offer-table-item__checkbox mb-1"
                     />
                     <template v-if="offer.type_id !== 3">
                         <HoverActionsButton
-                            @click="toggleFavorite"
+                            @click.stop="toggleFavorite"
                             :label="isFavorite ? 'Удалить из избранного' : 'Добавить в избранное'"
                             :active="isFavorite"
                         >
                             <i class="fa-solid fa-star" />
                         </HoverActionsButton>
-                        <HoverActionsButton @click="openPDF" label="Открыть PDF">
+                        <HoverActionsButton @click.stop="openPDF" label="Открыть PDF">
                             <i class="fa-solid fa-file-pdf" />
                         </HoverActionsButton>
                     </template>
                 </div>
                 <OfferTableItemRelationSelect
-                    v-if="offer.type_id !== 3 && offer.object?.offers?.length && !withoutRelations"
+                    v-if="offer.type_id !== 3 && offer.object?.offers?.length"
                     @open="openRelations"
                     :offers="offer.object.offers"
                     :current="offer.id"
@@ -44,6 +45,22 @@
         <Td class="offer-table-item__preview">
             <UiField v-if="count" color="warning" class="mb-1">
                 Отправлено {{ count }} раз, последний {{ lastSentAt }}
+            </UiField>
+            <UiField
+                v-if="submitted"
+                @click.stop="$emit('show-submitted')"
+                color="warning"
+                class="mb-1 c-pointer"
+                tooltip="Нажмите, чтобы посмотреть подробнее"
+            >
+                <i class="fa-solid fa-exclamation-triangle" />
+                <span>Предлагал</span>
+                <span v-if="visited">и показывал</span>
+                <span>{{ submittedData[0].consultant }}</span>
+                <span>
+                    {{ visitedData?.[0]?.last_sent ?? submittedData[0].last_sent }}
+                </span>
+                <span v-if="submittedData.length > 1">(+{{ submittedData.length - 1 }})</span>
             </UiField>
             <OfferTableItemPreview :with-old-url="false" :is-passive="isPassive" :offer="offer" />
         </Td>
@@ -141,7 +158,7 @@
     <DropDown>
         <OfferTableItemDropdown v-if="blocksDropdownIsOpen || blocksDropdownIsPinned">
             <UiButton
-                @click="hideBlocks"
+                @click.stop="hideBlocks"
                 class="offer-table-item__close w-100"
                 color="light"
                 center
@@ -156,12 +173,7 @@
         <OfferTableItemDropdown v-if="relationDropdownIsOpen">
             <Spinner v-if="relationsIsLoading" class="m-4" />
             <div v-else class="offer-table-item-dropdown__list">
-                <OfferTableItem
-                    v-for="offer in relatedOffers"
-                    :key="offer.id"
-                    :offer="offer"
-                    without-relations
-                />
+                <OfferTableItem v-for="offer in relatedOffers" :key="offer.id" :offer="offer" />
             </div>
         </OfferTableItemDropdown>
     </DropDown>
@@ -200,7 +212,13 @@ import UiCheckbox from '@/components/common/Forms/UiCheckbox.vue';
 import UiField from '@/components/common/UI/UiField.vue';
 import { toDateFormat } from '@/utils/formatters/date.js';
 
-const emit = defineEmits(['favorite-deleted', 'open-survey', 'select', 'unselect']);
+const emit = defineEmits([
+    'favorite-deleted',
+    'open-survey',
+    'select',
+    'unselect',
+    'show-submitted'
+]);
 const props = defineProps({
     offer: {
         type: Object,
@@ -209,7 +227,11 @@ const props = defineProps({
     loader: Boolean,
     selected: Boolean,
     count: Number,
-    lastSent: String
+    lastSent: String,
+    visited: Boolean,
+    submitted: Boolean,
+    submittedData: Object,
+    visitedData: Object
 });
 
 const { isLoading: blocksIsLoading } = useDelayedLoader();
@@ -249,7 +271,7 @@ const searchRelatedOffers = async (dealType, withLoading = false) => {
         expand:
             'contact.emails,contact.phones,' +
             'object,' +
-            'company.mainContact.phones,company.mainContact.emails,company.objects_count,company.requests_count,company.contacts_count,' +
+            'company.mainContact.phones,company.mainContact.emails,company.objects_count,company.active_requests_count,company.active_contacts_count,' +
             'offer,' +
             'consultant.userProfile'
     });
@@ -361,4 +383,10 @@ const hasActiveContact = computed(() => {
 const objectCreatedAt = computed(() => props.offer.object.publ_time * 1000);
 
 const lastSentAt = computed(() => toDateFormat(props.lastSent, 'D.MM.YY'));
+
+function toggleSelect() {
+    if (isPassive.value) return;
+
+    emit(props.selected ? 'unselect' : 'select');
+}
 </script>

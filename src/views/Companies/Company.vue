@@ -80,6 +80,7 @@
                     @update-request="updateRequest"
                     @request-cloned="getCompanyRequests"
                     @request-disabled="getCompanyRequests"
+                    @request-updated="onRequestUpdated"
                     :requests="COMPANY_REQUESTS"
                     :deals="COMPANY.dealsRequestEmpty"
                     class="company-page__column mb-2 mb-lg-0"
@@ -310,4 +311,16 @@ onUnmounted(() => {
 // tippy
 
 useTippyText(useTemplateRef('chatButtonEl'), 'Открыть в чате');
+
+// request update
+
+function onRequestUpdated(request) {
+    const requestIndex = store.state.CompanyRequest.companyRequests.findIndex(
+        item => item.id === request.id
+    );
+
+    if (requestIndex !== -1) {
+        store.state.CompanyRequest.companyRequests.splice(requestIndex, 1, request);
+    }
+}
 </script>

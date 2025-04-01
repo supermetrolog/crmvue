@@ -7,6 +7,8 @@
                     title="3. Обратная связь от клиента"
                     :success="step.feedback_ways.length"
                     :disabled="isDisabled"
+                    :step
+                    :timeline
                 >
                     <p>3.2. Укажите, каким способом была получена обратная связь</p>
                     <template #footer>
@@ -57,7 +59,7 @@ const props = defineProps({
     disabled: Boolean
 });
 
-const { generatePayload } = useTimelineContext(toRef(props, 'step'));
+const { generatePayload, timeline } = useTimelineContext(toRef(props, 'step'));
 
 const ways = ref([]);
 const actionsIsVisible = ref(false);

@@ -32,7 +32,7 @@
         </div>
         <component
             :is="as"
-            @click="$emit('click-preview')"
+            @click.stop="$emit('click-preview')"
             class="offer-table-item-preview__container"
             :href="offerUrl"
             target="_blank"

@@ -7,13 +7,9 @@
                     title="2. Предложение возможных вариантов"
                     :success="isCompletedStep"
                     :paused="isPausedStep"
+                    :step
+                    :timeline
                 >
-                    <template v-if="isPausedStep" #before>
-                        <UiField color="white" class="mb-1">
-                            <i class="fa-regular fa-circle-pause" />
-                            <span>На паузе до {{ stepPauseDate }}</span>
-                        </UiField>
-                    </template>
                     <p>
                         Внимательно изучите автоподборки CRM или подберите варианты вручную и
                         отправьте клиенту
@@ -91,22 +87,6 @@
                     </template>
                 </TimelineInfo>
             </div>
-            <UiCol v-if="isPausedStep && step.comment" :cols="12">
-                <p class="text-grey mb-1">Комментарий:</p>
-                <div class="timeline-step-comment">
-                    <Avatar :src="timeline.consultant.userProfile.avatar" :size="30" />
-                    <div class="timeline-step-comment__content">
-                        <div class="timeline-step-comment__header">
-                            <span class="timeline-step-comment__username">
-                                {{ timeline.consultant.userProfile.medium_name }}
-                            </span>
-                            <span class="timeline-step-comment__dot mx-1">·</span>
-                            <span class="timeline-step-comment__date">{{ updatedAt }}</span>
-                        </div>
-                        <div>{{ step.comment }}</div>
-                    </div>
-                </div>
-            </UiCol>
             <UiCol :cols="12">
                 <FormOfferSearch
                     @search="search"
@@ -210,6 +190,10 @@
                     :loading="isSearchLoading"
                     :pagination="pagination"
                     :submitted-view="isSubmittedView"
+                    :already-submitted="alreadySubmittedObjects"
+                    :already-visited="alreadyVisitedObjects"
+                    :already-submitted-set="alreadySubmittedObjectsSet"
+                    :already-visited-set="alreadyVisitedObjectsSet"
                 />
             </UiCol>
         </div>
@@ -328,8 +312,6 @@ import UiFormGroup from '@/components/common/Forms/UiFormGroup.vue';
 import UiDateInput from '@/components/common/Forms/UiDateInput.vue';
 import UiTextarea from '@/components/common/Forms/UiTextarea.vue';
 import dayjs from 'dayjs';
-import { toBeautifulDateFormat, toDateFormat } from '@/utils/formatters/date.js';
-import Avatar from '@/components/common/Avatar.vue';
 import UiCol from '@/components/common/UI/UiCol.vue';
 import { useNotify } from '@/utils/use/useNotify.js';
 import { spliceById } from '@/utils/helpers/array/spliceById.js';
@@ -535,7 +517,7 @@ async function fetchObjects(query = {}, withLoader = true) {
             'object,offer,generalOffersMix.offer,comments,' +
             'contact.emails,contact.phones,' +
             'consultant.userProfile,' +
-            'company.mainContact.phones,company.mainContact.emails,company.objects_count,company.requests_count,company.active_contacts_count',
+            'company.mainContact.phones,company.mainContact.emails,company.objects_count,company.active_requests_count,company.active_contacts_count',
         timeline_id: timeline.value.id,
         ...structuredClone(deepToRaw(query)),
         page: currentPage.value
@@ -1052,7 +1034,8 @@ function setAsProcessed() {
 
 const isPausedStep = computed(() => props.step.negative);
 
-const stepPauseDate = computed(() => toDateFormat(props.step.date, 'D.MM.YY'));
-
-const updatedAt = computed(() => toBeautifulDateFormat(props.step.updated_at));
+const alreadySubmittedObjects = computed(() => store.state.Timeline.alreadySubmittedObjects);
+const alreadyVisitedObjects = computed(() => store.state.Timeline.alreadyVisitedObjects);
+const alreadySubmittedObjectsSet = computed(() => store.state.Timeline.alreadySubmittedObjectsSet);
+const alreadyVisitedObjectsSet = computed(() => store.state.Timeline.alreadyVisitedObjectsSet);
 </script>

@@ -8,13 +8,9 @@
                     :success="step.done"
                     :disabled="step.additional !== 1 && step.status !== 1"
                     :paused="isPausedStep"
+                    :step
+                    :timeline
                 >
-                    <template v-if="isPausedStep" #before>
-                        <UiField color="white" class="mb-1">
-                            <i class="fa-regular fa-circle-pause" />
-                            <span>На паузе до {{ stepPauseDate }}</span>
-                        </UiField>
-                    </template>
                     <p>
                         1.2. Проверьте правильность заполнения запроса, отредактируйте при
                         необходимости и затем утвердите
@@ -70,22 +66,6 @@
                     </template>
                 </TimelineInfo>
             </div>
-            <UiCol v-if="isPausedStep && step.comment" :cols="12">
-                <p class="text-grey mb-1">Комментарий:</p>
-                <div class="timeline-step-comment">
-                    <Avatar :src="timeline.consultant.userProfile.avatar" :size="30" />
-                    <div class="timeline-step-comment__content">
-                        <div class="timeline-step-comment__header">
-                            <span class="timeline-step-comment__username">
-                                {{ timeline.consultant.userProfile.medium_name }}
-                            </span>
-                            <span class="timeline-step-comment__dot mx-1">·</span>
-                            <span class="timeline-step-comment__date">{{ updatedAt }}</span>
-                        </div>
-                        <div>{{ step.comment }}</div>
-                    </div>
-                </div>
-            </UiCol>
             <div class="col-12">
                 <Loader v-if="isLoading" />
                 <RequestPreview
@@ -150,10 +130,7 @@ import Loader from '@/components/common/Loader.vue';
 import TimelineButton from '@/components/Timeline/TimelineButton.vue';
 import { useTimelineContext } from '@/components/Timeline/useTimelineContext.js';
 import RequestPreview from '@/components/Request/RequestPreview.vue';
-import Avatar from '@/components/common/Avatar.vue';
-import UiCol from '@/components/common/UI/UiCol.vue';
 import { computed, ref } from 'vue';
-import { toBeautifulDateFormat, toDateFormat } from '@/utils/formatters/date.js';
 import dayjs from 'dayjs';
 import UiModal from '@/components/common/UI/UiModal.vue';
 import UiButton from '@/components/common/UI/UiButton.vue';
@@ -161,7 +138,6 @@ import UiForm from '@/components/common/Forms/UiForm.vue';
 import UiFormGroup from '@/components/common/Forms/UiFormGroup.vue';
 import UiDateInput from '@/components/common/Forms/UiDateInput.vue';
 import UiTextarea from '@/components/common/Forms/UiTextarea.vue';
-import UiField from '@/components/common/UI/UiField.vue';
 
 const emit = defineEmits(['update-step', 'updated-objects', 'next-step', 'edit-request']);
 const props = defineProps({
@@ -238,8 +214,4 @@ function setAsProcessed() {
 }
 
 const isPausedStep = computed(() => props.step.negative && props.step.additional === 1);
-
-const stepPauseDate = computed(() => toDateFormat(props.step.date, 'D.MM.YY'));
-
-const updatedAt = computed(() => toBeautifulDateFormat(props.step.updated_at));
 </script>

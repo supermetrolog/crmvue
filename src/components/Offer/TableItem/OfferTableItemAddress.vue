@@ -1,5 +1,5 @@
 <template>
-    <a :href="$url.offerByObject(offer)">
+    <a :href="$url.offerByObject(offer)" target="_blank">
         <p v-if="offer.region_name" class="font-weight-bold">
             {{ offer.region_name }}
         </p>

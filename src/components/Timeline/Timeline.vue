@@ -105,6 +105,7 @@ import { requestOptions } from '@/const/options/request.options.js';
 import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
 import TimelineHeaderSkeleton from '@/components/Timeline/TimelineHeaderSkeleton.vue';
 import FormCompanyRequest from '@/components/Forms/Company/FormCompanyRequest.vue';
+import api from '@/api/api.js';
 
 defineEmits(['close']);
 
@@ -185,7 +186,7 @@ async function updateStep(data, goToNext = false, callback = null) {
     stepIsLoading.value = true;
 
     try {
-        const stepUpdated = await store.dispatch('UPDATE_STEP', data);
+        const stepUpdated = await api.timeline.updateTimelineStep(data.id, data);
 
         if (stepUpdated) {
             await fetchTimeline();
@@ -252,7 +253,7 @@ const { isLoading: isGeneralLoading } = useDelayedLoader(true);
 async function fetchTimeline(withLoader = false) {
     if (withLoader) isGeneralLoading.value = true;
 
-    await store.dispatch('FETCH_TIMELINE', route.query);
+    await store.dispatch('fetchTimeline', route.query);
 
     if (withLoader) isGeneralLoading.value = false;
     return Boolean(timeline.value);
@@ -267,7 +268,7 @@ watch(
 );
 
 async function updateTimeline() {
-    await store.dispatch('FETCH_TIMELINE', route.query);
+    await store.dispatch('fetchTimeline', route.query);
 }
 
 // priority
@@ -298,7 +299,10 @@ function moveToPriorityStep() {
 
 onMounted(async () => {
     const timelineExist = await fetchTimeline(true);
-    if (timelineExist) moveToPriorityStep();
+    if (timelineExist) {
+        moveToPriorityStep();
+        store.dispatch('fetchRequestTimelinesData');
+    }
 });
 
 // request

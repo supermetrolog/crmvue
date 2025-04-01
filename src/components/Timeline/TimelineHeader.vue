@@ -88,7 +88,7 @@ const messagesHasAnimation = ref(false);
 const timeline = computed(() => store.state.Timeline.timeline);
 
 const consultants = computed(() => {
-    return store.state.Timeline.timelineList.map(element => element.consultant);
+    return store.state.Timeline.request_timelines.map(element => element.consultant);
 });
 
 const messagesCount = computed(() => {

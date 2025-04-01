@@ -29,7 +29,7 @@
                 blocksPinned ? 'Нажмите, чтобы скрыть блоки' : 'Нажмите, чтобы закрепить блоки'
             "
             v-element-hover="[onHover, { delayEnter: 300, delayLeave: 500 }]"
-            @click="toggleBlocks"
+            @click.stop="toggleBlocks"
             class="offer-table-item-area__label mt-1"
             :class="{ active: blocksShown || blocksPinned }"
         >

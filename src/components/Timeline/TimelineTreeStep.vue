@@ -9,6 +9,7 @@
             :selected="isSelected"
             :icon="step.icon"
             :process="isProcess"
+            :paused="isPaused"
         />
         <div v-if="step.steps?.length" class="timeline-tree-item__steps">
             <TimelineTreeStepPoint
@@ -20,6 +21,8 @@
                 :selected="isSelected && checkIsSelectedPoint(point.id)"
                 :available="isAvailable"
                 :done="checkIsDonePoint(point)"
+                :paused="checkIsPausedPoint(point)"
+                :disabled="checkIsDisabledPoint(point)"
             />
         </div>
     </div>
@@ -49,6 +52,14 @@ const isDone = computed(() => isAvailable.value && props.current[props.step.id].
 const isAttention = computed(() => isAvailable.value && props.current[props.step.id].status === 2);
 const isProcess = computed(() => isAvailable.value && props.current[props.step.id].status === 0);
 
+const isPaused = computed(() => {
+    if (Object.hasOwn(props.step, 'checkPause')) {
+        return isAvailable.value && props.step.checkPause(props.current[props.step.id]);
+    }
+
+    return false;
+});
+
 const route = useRoute();
 
 function checkIsSelectedPoint(pointKey) {
@@ -56,6 +67,22 @@ function checkIsSelectedPoint(pointKey) {
 
     if (!point) return pointKey === 0;
     return pointKey === Number(point);
+}
+
+function checkIsPausedPoint(point) {
+    if (Object.hasOwn(point, 'checkPause')) {
+        return isAvailable.value && point.checkPause(props.current[props.step.id]);
+    }
+
+    return false;
+}
+
+function checkIsDisabledPoint(point) {
+    if (Object.hasOwn(point, 'checkDisable')) {
+        return isAvailable.value && point.checkDisable(props.current[props.step.id]);
+    }
+
+    return false;
 }
 
 function checkIsDonePoint(point) {

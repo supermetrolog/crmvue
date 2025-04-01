@@ -26,6 +26,8 @@
                     :success="step.status === 1"
                     :disabled="!step.objects.length"
                     without-next
+                    :step
+                    :timeline
                 >
                     <p>8.2. Заполните данные по сделке.</p>
                     <template #footer>
@@ -70,7 +72,7 @@ const props = defineProps({
 });
 
 const dealFormIsVisible = shallowRef(false);
-const { request, generatePayload } = useTimelineContext(toRef(props, 'step'));
+const { request, generatePayload, timeline } = useTimelineContext(toRef(props, 'step'));
 
 const updateStep = () => {
     emit('update-step', generatePayload({ status: 1 }), false, () => {
