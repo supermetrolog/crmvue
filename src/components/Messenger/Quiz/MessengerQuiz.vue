@@ -40,7 +40,7 @@
                     :last-survey="lastSurvey"
                 />
                 <MessengerQuizFooter
-                    v-if="contacts.length && !disabled && canBeCreated"
+                    v-if="footerShouldBeVisible"
                     @complete="send"
                     :disabled="isCompleted"
                 />
@@ -129,7 +129,7 @@ import { isNullish } from '@/utils/helpers/common/isNullish.js';
 import { useSurveyEditing } from '@/components/Survey/useSurveyEditing.js';
 
 const emit = defineEmits(['complete']);
-defineProps({ disabled: Boolean });
+const props = defineProps({ disabled: Boolean });
 
 // remaining last survey
 
@@ -643,4 +643,12 @@ const archivedContactsCount = ref(0);
 // COMPUTES
 
 const isGeneralLoading = computed(() => contactsIsLoading.value);
+
+const footerShouldBeVisible = computed(
+    () =>
+        contacts.value.length &&
+        !props.disabled &&
+        canBeCreated.value &&
+        store.state.Quizz.questions?.length
+);
 </script>
