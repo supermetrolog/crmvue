@@ -29,6 +29,12 @@
                             label="Редактировать"
                             icon="fa-solid fa-pen"
                         />
+                        <UiDropdownActionsButton
+                            v-if="!isDone"
+                            @handle="$emit('disable')"
+                            :label="isDisabled ? 'Восстановить' : 'В пассив'"
+                            :icon="isDisabled ? 'fa-solid fa-undo' : 'fa-solid fa-ban'"
+                        />
                         <UiCan moderator-or-higher>
                             <UiDropdownActionsButton
                                 v-if="!isDone"
@@ -41,13 +47,12 @@
                                 label="Клонировать"
                                 icon="fa-solid fa-clone"
                             />
-                            <UiDropdownActionsButton
-                                v-if="!isDone"
-                                @handle="$emit('disable')"
-                                :label="isDisabled ? 'Восстановить' : 'В пассив'"
-                                :icon="isDisabled ? 'fa-solid fa-undo' : 'fa-solid fa-xmark'"
-                            />
                         </UiCan>
+                        <UiDropdownActionsButton
+                            @handle="openTimeline"
+                            label="Открыть таймлайн"
+                            icon="fa-solid fa-up-right-from-square"
+                        />
                     </template>
                 </UiDropdownActions>
             </div>

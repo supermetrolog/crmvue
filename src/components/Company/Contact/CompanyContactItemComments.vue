@@ -67,13 +67,12 @@
                     @click="updateComment"
                     :loading="isUpdating"
                     :disabled="!editingComment.comment?.length"
-                    small
                     color="success-light"
                     icon="fa-solid fa-check"
                 >
                     Сохранить
                 </UiButton>
-                <UiButton @click="cancelUpdate" small color="light" icon="fa-solid fa-ban">
+                <UiButton @click="cancelUpdate" color="light" icon="fa-solid fa-ban">
                     Отмена
                 </UiButton>
             </template>

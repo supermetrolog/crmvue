@@ -29,7 +29,6 @@
             </div>
             <MessengerQuizFormTemplate
                 ref="quizFormEl"
-                @show-call-question="showCallQuestion"
                 @object-sold="$emit('object-sold', $event)"
                 @object-destroyed="$emit('object-destroyed', $event)"
                 :questions="questions"
@@ -296,11 +295,6 @@ function openCallModal(contact) {
 function closeCallModal() {
     callModalIsVisible.value = false;
     currentCallContactForm.value = null;
-}
-
-function showCallQuestion() {
-    currentCallContactForm.value = selectedContacts.value[0];
-    callModalIsVisible.value = true;
 }
 
 function confirmCallAndSuggestNext() {
