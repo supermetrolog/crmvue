@@ -31,6 +31,7 @@
                         />
                         <UiCan moderator-or-higher>
                             <UiDropdownActionsButton
+                                v-if="!isDone"
                                 @handle="$emit('change-consultant')"
                                 label="Изменить консультанта"
                                 icon="fa-solid fa-user-tag"
