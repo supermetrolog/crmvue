@@ -357,7 +357,7 @@
     }
 
     &__block {
-        margin-bottom: 10px;
+        margin-bottom: 15px;
         font-weight: 700;
         color: darken($color: variables.$color_success, $amount: 12);
         letter-spacing: 0.4px;
@@ -639,7 +639,7 @@
         @include mixins.transition(background-color .5s, border-color .5s, color .5s);
         padding: 5px 15px;
         border: 1px solid #d1d5db;
-        border-radius: 15px;
+        border-radius: 4px;
         min-height: 35px;
         min-width: 35px;
         background-color: #fff;
@@ -675,6 +675,10 @@
             border-color: #f93154;
         }
 
+        &--rounded {
+            border-radius: 15px;
+        }
+
         &--danger {
             &:hover {
                 background-color: rgba(249, 49, 84, .5);
@@ -703,21 +707,6 @@
         &--show-checkbox {
             padding-left: 7px;
         }
-    }
-}
-
-.form-company-deal {
-    .form__textarea {
-        height: 100px;
-    }
-
-    &__offer {
-        @include mixins.flex-box($gap: 5px, $a: center);
-    }
-
-    &__thumb {
-        height: 40px;
-        width: 40px;
     }
 }
 
@@ -946,7 +935,7 @@
 
     .form__tooltip {
         top: 10px!important;
-        right: 10px;
+        right: 10px!important;
     }
 }
 

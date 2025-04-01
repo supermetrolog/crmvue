@@ -9,7 +9,8 @@
                 'checkbox-chip__label--danger': danger,
                 'checkbox-chip__label--icon': !text && icon,
                 invalid: hasValidationError && !disabled,
-                'checkbox-chip__label--show-checkbox': showCheckbox
+                'checkbox-chip__label--show-checkbox': showCheckbox,
+                'checkbox-chip__label--rounded': rounded
             }"
         >
             <input
@@ -34,52 +35,36 @@
 <script setup>
 import { useFormControlValidation } from '@/composables/useFormControlValidation.js';
 import { computed, toRef } from 'vue';
+import { isNullish } from '@/utils/helpers/common/isNullish.js';
 
 const modelValue = defineModel({ type: [Array, Number, String, Boolean] });
 const emit = defineEmits(['change', 'icon-clicked']);
 const props = defineProps({
-    text: {
-        type: [String, Number, null],
-        default: null
-    },
+    text: [String, Number],
     required: Boolean,
-    name: {
-        type: String,
-        default: null
-    },
+    name: String,
     disabled: Boolean,
     value: {
         type: [String, Number, Boolean],
         default: false
     },
-    icon: {
-        type: String,
-        default: null
-    },
+    icon: String,
     danger: Boolean,
-    v: {
-        type: Object,
-        default: null
-    },
-    multiple: {
-        type: Boolean,
-        default: null
-    },
-    property: {
-        type: String,
-        default: null
-    },
+    v: Object,
+    multiple: Boolean,
+    property: String,
     disabledValue: {
         type: [Number, String],
         default: 0
     },
     reactive: Boolean,
-    iconLabel: {
-        type: String,
-        default: null
-    },
+    iconLabel: String,
     handledIcon: Boolean,
-    showCheckbox: Boolean
+    showCheckbox: Boolean,
+    rounded: {
+        type: Boolean,
+        default: true
+    }
 });
 
 const { hasValidationError, validate } = useFormControlValidation(toRef(props, 'v'), modelValue, {
@@ -88,7 +73,7 @@ const { hasValidationError, validate } = useFormControlValidation(toRef(props, '
 
 const isActive = computed(() => {
     if (modelValue.value instanceof Array) {
-        if (props.property === null) {
+        if (isNullish(props.property)) {
             return (
                 modelValue.value.includes(props.value) ||
                 modelValue.value.includes(props.value.toString())
@@ -106,7 +91,7 @@ const isActive = computed(() => {
 const isDisabled = computed(() => props.multiple && modelValue.value == props.disabledValue);
 
 const onClick = event => {
-    if (props.property === null) return true;
+    if (isNullish(props.property)) return true;
 
     event.preventDefault();
 

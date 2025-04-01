@@ -20,7 +20,12 @@
         </UiFormGroup>
         <UiFormGroup>
             <UiCol :cols="12">
-                <UiButton class="w-100" color="danger">Завершить</UiButton>
+                <div class="d-flex gap-1">
+                    <UiButton color="danger" icon="fa-solid fa-check" bolder>Завершить</UiButton>
+                    <UiButton @click="$emit('cancel')" color="light" icon="fa-solid fa-ban" bolder>
+                        Отмена
+                    </UiButton>
+                </div>
             </UiCol>
         </UiFormGroup>
     </UiForm>
@@ -40,13 +45,16 @@ import UiButton from '@/components/common/UI/UiButton.vue';
 import { useValidation } from '@/composables/useValidation.js';
 import UiCol from '@/components/common/UI/UiCol.vue';
 
-const emit = defineEmits(['disabled']);
+const emit = defineEmits(['disabled', 'cancel']);
 const props = defineProps({
     request_id: {
         type: Number,
         required: true
-    }
+    },
+    customClose: Boolean
 });
+
+// TODO: Убрать customClose, вынести все в модалки
 
 const isLoading = shallowRef(false);
 const form = reactive({

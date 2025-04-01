@@ -6,6 +6,7 @@
             @update="$emit('update', request)"
             @clone="$emit('clone', request)"
             @disable="$emit('disable', request)"
+            @change-consultant="$emit('change-consultant', request)"
             :request="request"
         />
     </div>
@@ -14,7 +15,7 @@
 <script setup>
 import CompanyBoxRequestsListItem from '@/components/Company/Box/CompanyBoxRequestsListItem.vue';
 
-defineEmits(['update', 'clone', 'disable']);
+defineEmits(['update', 'clone', 'disable', 'change-consultant']);
 defineProps({
     requests: {
         type: Array,

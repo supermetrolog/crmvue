@@ -197,7 +197,7 @@ export default {
             return text;
         },
         createdAt() {
-            return this.request.created_at_format.split(',')[0];
+            return dayjs(this.request.created_at).format('D.MM.YY, HH:mm');
         },
         updatedAt() {
             let dayjsDate = dayjs(this.request.created_at, 'YYYY-MM-DD HH:mm:ss');

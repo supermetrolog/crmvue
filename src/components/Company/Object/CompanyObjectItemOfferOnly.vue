@@ -241,18 +241,18 @@
                             <UiField v-if="offer.ad_avito" color="light">Авито</UiField>
                             <UiField v-if="offer.ad_free" color="light">Бесплатные</UiField>
                         </div>
-                        <p class="offer-table-item-mobile__label">Ручное описание</p>
-                        <div class="object-offer__block">
-                            <p>
-                                {{ offer.object.description || '—' }}
-                            </p>
-                        </div>
-                        <p class="offer-table-item-mobile__label">Авто описание</p>
-                        <div class="object-offer__block">
-                            <p>
-                                {{ offer.object.description_auto || '—' }}
-                            </p>
-                        </div>
+                        <!--                        <p class="offer-table-item-mobile__label">Ручное описание</p>-->
+                        <!--                        <div class="object-offer__block">-->
+                        <!--                            <p>-->
+                        <!--                                {{ offer.object.description || '—' }}-->
+                        <!--                            </p>-->
+                        <!--                        </div>-->
+                        <!--                        <p class="offer-table-item-mobile__label">Авто описание</p>-->
+                        <!--                        <div class="object-offer__block">-->
+                        <!--                            <p>-->
+                        <!--                                {{ offer.object.description_auto || '—' }}-->
+                        <!--                            </p>-->
+                        <!--                        </div>-->
                     </div>
                 </template>
             </AccordionSimple>

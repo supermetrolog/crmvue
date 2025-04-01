@@ -1,6 +1,7 @@
 <template>
     <div class="offer-table-item-preview">
         <a
+            v-if="withOldUrl"
             :href="offerOldUrl"
             target="_blank"
             class="button button--small offer-table-item__button"
@@ -31,7 +32,7 @@
         </div>
         <component
             :is="as"
-            @click="$emit('click-preview')"
+            @click.stop="$emit('click-preview')"
             class="offer-table-item-preview__container"
             :href="offerUrl"
             target="_blank"
@@ -105,6 +106,10 @@ const props = defineProps({
     as: {
         type: String,
         default: 'a'
+    },
+    withOldUrl: {
+        type: Boolean,
+        default: true
     }
 });
 

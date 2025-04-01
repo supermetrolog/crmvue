@@ -1,65 +1,101 @@
 // import axios from "axios"
 import api from '@/api/api';
+import { toBeautifulDateFormat } from '@/utils/formatters/date.js';
+
+function generateUniqueObjectId(object) {
+    return `${object.object_id}-${object.offer_id}`;
+}
+
+function generateObjectExcept(timeline, object) {
+    return {
+        consultant: timeline.consultant.userProfile.medium_name,
+        count: object.duplicate_count,
+        last_sent: toBeautifulDateFormat(object.created_at, 'D.MM.YY')
+    };
+}
 
 const Timeline = {
     state: {
         timeline: null,
-        timelineList: [],
-        timelineComments: []
+        request_timelines: [],
+        request_timelines_full: [],
+        alreadySubmittedObjects: {},
+        alreadySubmittedObjectsSet: new Set(),
+        alreadyVisitedObjects: {},
+        alreadyVisitedObjectsSet: new Set()
     },
     mutations: {
         updateTimeline(state, data) {
             state.timeline = data.timeline;
-            state.timelineList = data.timelineList;
-        },
-        updateStep(state, data) {
-            state.timeline.timelineSteps = state.timeline.timelineSteps.map(step => {
-                if (step.id === data.id) {
-                    step = data;
-                }
-                return step;
-            });
-        },
-        updateTimelineComments(state, data) {
-            state.timelineComments = data;
+            state.request_timelines = data.request_timelines;
         }
     },
     actions: {
-        async FETCH_TIMELINE(context, data) {
+        async fetchTimeline({ commit }, data) {
             const timeline = await api.timeline.getByConsultantAndRequest(
                 data.consultant_id,
                 data.request_id
             );
 
-            context.commit('updateTimeline', timeline);
+            commit('updateTimeline', timeline);
         },
-        async UPDATE_STEP(context, newStep) {
-            // context.commit('updateStep', newStep)
-            return await api.timeline.updateTimelineStep(newStep.id, newStep);
-        },
-        async CREATE_NEW_BRANCH(context, step) {
-            context.commit('createNewBranch', step);
-        },
-        async CREATE_NEW_STEP(context, param) {
-            context.commit('createNewStep', param);
-        },
-        async FETCH_TIMELINE_COMMENTS(context, timeline_id) {
-            const comments = await api.timeline.getTimelineComments(timeline_id);
-            context.commit('updateTimelineComments', comments);
+        async fetchRequestTimelinesData({ state }) {
+            const data = await Promise.allSettled(
+                state.request_timelines
+                    .filter(timeline => timeline.consultant_id !== state.timeline.consultant_id)
+                    .map(timeline => api.timeline.get(timeline.id))
+            );
+
+            state.request_timelines_full = data.map(response => response.value);
+
+            const alreadySubmittedObjectsSet = new Set();
+            const alreadyVisitedObjectsSet = new Set();
+
+            const payload = state.request_timelines_full.reduce(
+                (acc, timeline) => {
+                    if (timeline.steps.length >= 2) {
+                        timeline.steps[1].objects.forEach(object => {
+                            const objectId = generateUniqueObjectId(object);
+
+                            if (alreadySubmittedObjectsSet.has(objectId)) {
+                                acc.submitted[objectId].push(
+                                    generateObjectExcept(timeline, object)
+                                );
+                            } else {
+                                alreadySubmittedObjectsSet.add(objectId);
+                                acc.submitted[objectId] = [generateObjectExcept(timeline, object)];
+                            }
+                        });
+                    }
+
+                    if (timeline.steps.length >= 4) {
+                        timeline.steps[3].objects.forEach(object => {
+                            const objectId = generateUniqueObjectId(object);
+
+                            if (alreadyVisitedObjectsSet.has(objectId)) {
+                                acc.visited[objectId].push(generateObjectExcept(timeline, object));
+                            } else {
+                                alreadyVisitedObjectsSet.add(objectId);
+                                acc.visited[objectId] = [generateObjectExcept(timeline, object)];
+                            }
+                        });
+                    }
+
+                    return acc;
+                },
+                { submitted: {}, visited: {} }
+            );
+
+            state.alreadySubmittedObjects = payload.submitted;
+            state.alreadyVisitedObjects = payload.visited;
+
+            state.alreadySubmittedObjectsSet = alreadySubmittedObjectsSet;
+            state.alreadyVisitedObjectsSet = alreadyVisitedObjectsSet;
         }
     },
     getters: {
         TIMELINE(state) {
             return state.timeline;
-        },
-        TIMELINE_LIST(state) {
-            return state.timelineList;
-        },
-        TIMELINE_REQUEST_ID(state) {
-            return state.timeline.request_id;
-        },
-        TIMELINE_COMMENTS(state) {
-            return state.timelineComments;
         }
     }
 };

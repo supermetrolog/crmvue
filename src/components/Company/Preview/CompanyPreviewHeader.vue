@@ -1,19 +1,5 @@
 <template>
     <div class="company-preview__header">
-        <Tippy v-if="companyWarnings.length">
-            <UiChip color="danger">
-                <span>Необходимо заполнить!</span>
-                <i class="fa-regular fa-circle-question" />
-            </UiChip>
-            <template #content>
-                <div>
-                    <p class="color-light">Необходимо заполнить ({{ companyWarnings.length }}):</p>
-                    <p v-for="warning in companyWarnings" :key="warning.key">
-                        - {{ warning.label }}
-                    </p>
-                </div>
-            </template>
-        </Tippy>
         <UiChip v-if="isPassive" color="danger">
             <span>Пассив</span>
             <i v-tippy="statusTippy" class="fa-regular fa-question-circle" />
@@ -47,8 +33,6 @@ import {
     PassiveWhy
 } from '@/const/const.js';
 import { computed } from 'vue';
-import { companyProperties } from '@/const/properties/company.properties.js';
-import { Tippy } from 'vue-tippy';
 import UiChip from '@/components/common/UI/UiChip.vue';
 import CompanyPreviewRating from '@/components/Company/Preview/CompanyPreviewRating.vue';
 
@@ -92,19 +76,5 @@ const statusTippy = computed(() => {
     let text = PassiveWhy[props.company.passive_why].label;
     if (props.company.passive_why_comment) text += ': ' + props.company.passive_why_comment;
     return text;
-});
-
-const companyWarnings = computed(() => {
-    return companyProperties.progressCharacteristics.reduce((acc, property) => {
-        const isValid = property.validator(props.company[property.key], props.company);
-
-        if (!isValid)
-            acc.push({
-                key: property.key,
-                label: property.label
-            });
-
-        return acc;
-    }, []);
 });
 </script>

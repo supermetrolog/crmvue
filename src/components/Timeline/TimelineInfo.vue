@@ -1,46 +1,60 @@
 <template>
-    <div class="timeline-info" :class="{ success: success && !disabled }">
-        <div class="timeline-info__content">
-            <AnimationTransition :speed="0.5">
-                <i
-                    v-if="success && !disabled"
-                    class="fa-regular fa-circle-check timeline-info__icon"
-                ></i>
-                <i v-else-if="disabled" class="fa-regular fa-circle-pause timeline-info__icon"></i>
-            </AnimationTransition>
-            <div>
-                <p v-if="title" class="timeline-info__title">
-                    <span>{{ title }}</span>
-                    <DashboardChip v-if="disabled" class="dashboard-bg-success mb-1">
-                        Для прохождения шага выполните предыдущей
-                    </DashboardChip>
-                </p>
-                <div class="timeline-info__description">
-                    <slot />
+    <div>
+        <div class="timeline-info" :class="{ success: success && !disabled, disabled, paused }">
+            <div class="timeline-info__content">
+                <div>
+                    <slot name="before" />
+                    <UiField v-if="paused" color="white" class="mb-1">
+                        <i class="fa-regular fa-circle-pause" />
+                        <span>На паузе до {{ stepPauseDate }}</span>
+                    </UiField>
+                    <UiField v-if="disabled" color="danger-light" class="mb-1">
+                        <i class="fa-solid fa-exclamation-triangle icon" />
+                        <span>Для прохождения шага выполните предыдущей</span>
+                    </UiField>
+                    <p v-if="title" class="timeline-info__title">
+                        <span>{{ title }}</span>
+                    </p>
+                    <div class="timeline-info__description">
+                        <slot />
+                    </div>
                 </div>
             </div>
+            <div v-if="$slots.footer" class="timeline-info__footer">
+                <slot name="footer" />
+            </div>
         </div>
-        <div v-if="$slots.footer" class="timeline-info__footer">
-            <slot name="footer" />
-        </div>
+        <TimelineStepPauseComment
+            v-if="paused && step.comment"
+            class="mt-1"
+            :step
+            :user="timeline.consultant"
+        />
     </div>
 </template>
 <script setup>
-import AnimationTransition from '@/components/common/AnimationTransition.vue';
-import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
+import UiField from '@/components/common/UI/UiField.vue';
+import { computed } from 'vue';
+import { toDateFormat } from '@/utils/formatters/date.js';
+import TimelineStepPauseComment from '@/components/Timeline/Step/TimelineStepPauseComment.vue';
 
-defineEmits(['next']);
-defineProps({
-    title: {
-        type: String,
-        default: null
-    },
+const props = defineProps({
+    title: String,
     success: {
         type: [Boolean, Number],
         default: false
     },
     disabled: Boolean,
-    withoutNext: Boolean,
-    hasTutorial: Boolean
+    paused: Boolean,
+    step: {
+        type: Object,
+        required: true
+    },
+    timeline: {
+        type: Object,
+        required: true
+    }
 });
+
+const stepPauseDate = computed(() => toDateFormat(props.step.date, 'D.MM.YY'));
 </script>

@@ -1,36 +1,46 @@
 <template>
     <div class="timeline-page-header-actions">
-        <HoverActionsButton @click="$emit('edit')" :disabled label="Редактировать запрос">
-            <i class="fa-solid fa-pen"></i>
-        </HoverActionsButton>
-        <HoverActionsButton @click="$emit('disable')" :disabled label="Отправить в пассив">
-            <i class="fa-solid fa-ban" />
-        </HoverActionsButton>
-        <HoverActionsButton @click="$emit('complete')" :disabled label="Оформить сделку">
-            <i class="fa-solid fa-check"></i>
-        </HoverActionsButton>
-        <HoverActionsButton disabled label="Уведомления">
-            <i class="fa-solid fa-bell" />
-        </HoverActionsButton>
-        <Button
+        <UiButtonIcon
+            @click="$emit('edit')"
+            :disabled
+            icon="fa-solid fa-pen"
+            color="light"
+            label="Редактировать запрос"
+        />
+        <UiButtonIcon
+            @click="$emit('disable')"
+            :disabled
+            label="Отправить в пассив"
+            icon="fa-solid fa-ban"
+            color="light"
+        />
+        <UiButtonIcon
+            @click="$emit('complete')"
+            :disabled
+            label="Оформить сделку"
+            icon="fa-solid fa-check"
+            color="light"
+        />
+        <UiButton
             v-for="consultant in consultants"
             :key="consultant.id"
             @click="changeTimeline(consultant.id)"
             class="timeline-page-header__consultant"
-            info
             :class="{ active: isViewedUser(consultant.id) }"
+            color="light"
+            :icon="isViewedUser(consultant.id) ? 'fa-solid fa-user-check' : 'fa-solid fa-user'"
         >
             {{ consultant.userProfile.short_name }}
-        </Button>
+        </UiButton>
         <TimelineHeaderStatus :request />
     </div>
 </template>
 
 <script setup>
-import Button from '@/components/common/Button.vue';
 import { useRoute, useRouter } from 'vue-router';
-import HoverActionsButton from '@/components/common/HoverActions/HoverActionsButton.vue';
 import TimelineHeaderStatus from '@/components/Timeline/TimelineHeaderStatus.vue';
+import UiButton from '@/components/common/UI/UiButton.vue';
+import UiButtonIcon from '@/components/common/UI/UiButtonIcon.vue';
 
 defineEmits(['complete', 'disable', 'edit']);
 defineProps({

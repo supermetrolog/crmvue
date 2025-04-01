@@ -6,41 +6,15 @@ const URL = '/requests';
 
 export default {
     async byCompanyId(companyId) {
-        const params = {
-            expand:
-                'company,' +
-                'consultant.userProfile,' +
-                'contact.emails,' +
-                'directions,districts,gateTypes,objectClasses,objectTypes,objectTypesGeneral,' +
-                'regions.info,' +
-                'deal.company,deal.offer,deal.consultant.userProfile,deal.offer.generalOffersMix,deal.competitor,' +
-                'timeline_progress',
-            sort: '-created_at'
-        };
-
-        const response = await axios.get(`${URL}/company-requests/${companyId}`, { params });
+        const response = await axios.get(`${URL}/company-requests/${companyId}`);
         return responseToData(response);
     },
     async get(id) {
         const response = await axios.get(`${URL}/${id}`);
         return responseToData(response);
     },
-    async search(query = {}, expand = null) {
-        const _expand =
-            expand ??
-            'regions.info,' +
-                'directions,' +
-                'districts,' +
-                'company,company.contacts_count,company.active_contacts_count,company.objects_count,company.requests_count,' +
-                'consultant.userProfile,' +
-                'timeline_progress,' +
-                'gateTypes,' +
-                'objectClasses,objectTypes,objectTypesGeneral,' +
-                'contact,contact.emails,contact.phones';
-
-        const stringParams = new URLSearchParams(query).toString();
-
-        const response = await axios.get(`${URL}?${stringParams}&expand=${_expand}`);
+    async search(params) {
+        const response = await axios.get(URL, { params });
         return responseToPaginatedData(response);
     },
     async create(payload) {
@@ -61,6 +35,14 @@ export default {
     },
     async undisable(id) {
         const response = await axios.patch(`${URL}/undisable/${id}`);
+        return responseToData(response);
+    },
+    async clone(id, payload) {
+        const response = await axios.post(`${URL}/${id}/clone`, payload);
+        return responseToData(response);
+    },
+    async changeConsultant(id, payload) {
+        const response = await axios.post(`${URL}/${id}/change-consultant`, payload);
         return responseToData(response);
     }
 };

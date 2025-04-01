@@ -60,14 +60,14 @@ const props = defineProps({
 
 const createdAt = computed(() => toBeautifulDateFormat(props.comment.created_at));
 
-const { currentUserId, currentUserIsModerator, currentUserIsAdmin } = useAuth();
+const { currentUserId, currentUserIsModeratorOrHigher } = useAuth();
 
 const canBeDeleted = computed(
-    () => currentUserIsModerator.value || props.comment.author_id === currentUserId.value
+    () => currentUserIsModeratorOrHigher.value || props.comment.author_id === currentUserId.value
 );
 
 const canBeEdit = computed(
-    () => currentUserIsAdmin.value || props.comment.author_id === currentUserId.value
+    () => currentUserIsModeratorOrHigher.value || props.comment.author_id === currentUserId.value
 );
 
 const messageElement = useTemplateRef('messageElement');

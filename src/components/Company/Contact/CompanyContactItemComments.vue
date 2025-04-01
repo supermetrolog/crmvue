@@ -133,7 +133,6 @@ const modalIsVisible = ref(false);
 const editingComment = ref(null);
 
 function editComment(comment) {
-    console.log('edit');
     editingComment.value = { ...comment };
     modalIsVisible.value = true;
 }

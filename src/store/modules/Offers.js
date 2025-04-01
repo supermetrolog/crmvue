@@ -111,9 +111,6 @@ const Offers = {
         OFFERS(state) {
             return state.offers;
         },
-        OFFER(state) {
-            return state.offer;
-        },
         OFFERS_PAGINATION(state) {
             return state.pagination;
         },

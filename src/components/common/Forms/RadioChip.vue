@@ -15,7 +15,10 @@
             class="radio-chip__input"
             :value="value"
         />
-        <slot>{{ label }}</slot>
+        <slot>
+            <i v-if="icon" :class="icon" class="mr-1" />
+            {{ label }}
+        </slot>
     </label>
 </template>
 
@@ -37,7 +40,8 @@ const props = defineProps({
     rounded: {
         type: Boolean,
         default: true
-    }
+    },
+    icon: String
 });
 
 const field = ref(modelValue);

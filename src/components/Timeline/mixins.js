@@ -1,4 +1,4 @@
-import { mapActions, mapGetters } from 'vuex';
+import { mapGetters } from 'vuex';
 import { cloneObject } from '@/utils/helpers/object/cloneObject.js';
 import api from '@/api/api.js';
 import CommentWithAutoSetComment, {
@@ -8,7 +8,6 @@ import CommentWithAutoSetComment, {
     SendOffersComment
 } from '@/components/Timeline/comments.js';
 import { notify } from '@kyvg/vue3-notification';
-import { useQueryHash } from '@/utils/use/useQueryHash.js';
 
 export const TimelineStepMixin = {
     emits: ['update-step', 'updated-objects', 'next-step'],
@@ -62,15 +61,14 @@ export const TimelineStepWithObjectsMixin = {
         ...mapGetters(['TIMELINE', 'THIS_USER', 'COMPANY_CONTACTS', 'COMPANY_REQUESTS']),
         previousTimelineStepObjects() {
             if (!this.TIMELINE) return null;
-            return this.TIMELINE.timelineSteps.find(item => item.number === this.step.number - 1)
-                .timelineStepObjects;
+            return this.TIMELINE.steps.find(item => item.number === this.step.number - 1).objects;
         },
         submittedObjects() {
             // TODO: Изучить, всегда ли original_id уникальный. Если да, то можно возвращать не массив, а объект.
             // Ускорит вычисления в дальнейшем. Пропадет смысл пробегаться по массиву много раз.
-            return this.step.timelineStepObjects.map(item => {
-                if (item.offer?.id) return item.offer;
-                else return { ...item, noOffer: true };
+            return this.step.objects.map(item => {
+                if (item.offer?.id) return { ...item.offer, duplicate_count: item.duplicate_count };
+                else return { ...item, noOffer: true, duplicate_count: item.duplicate_count };
             });
         },
         notSubmittedObjects() {
@@ -113,7 +111,6 @@ export const TimelineStepWithObjectsMixin = {
         }
     },
     methods: {
-        ...mapActions(['UPDATE_STEP']),
         async alreadySent({ wayOfSending, contactForSendMessage, contacts, company_id }) {
             const sendClientFlag = false;
 
@@ -260,48 +257,36 @@ export const TimelineStepWithObjectsMixin = {
             data.status = 1;
             data.timelineStepObjects = [];
         },
-        onAfterSending() {},
-        normalizeObjectsData(data) {
-            this.selectedObjects.map(item => {
-                let price = null;
-
-                if (item.deal_type === 1 || item.deal_type === 4) {
-                    price = item.calc_price_warehouse;
-                } else if (item.deal_type === 2) {
-                    price = item.calc_price_sale;
-                } else if (item.deal_type === 3) {
-                    price = item.calc_price_safe_pallet;
-                }
-
-                data.timelineStepObjects.push({
-                    timeline_step_id: data.id,
-                    object_id: item.object_id,
-                    offer_id: item.original_id,
-                    complex_id: item.complex_id,
-                    type_id: item.type_id,
-                    comment: item.comment,
-                    timeline_id: data.timeline_id,
-                    class_name: item.class_name,
-                    deal_type_name: item.deal_type_name,
-                    visual_id: item.visual_id,
-                    address: item.address,
-                    area: item.calc_area_general,
-                    price,
-                    image: item.thumb
-                });
-            });
+        generateSelectedObjectsPayload() {
+            return this.selectedObjects.map(item => ({
+                object_id: item.object_id,
+                offer_id: item.original_id,
+                type_id: item.type_id,
+                comment: item.comment
+            }));
         },
         async sendObjectsHandler() {
-            let data = cloneObject(this.step);
+            const step = {
+                id: this.step.id,
+                additional: this.step.additional,
+                comment: this.step.comment,
+                date: this.step.date,
+                done: this.step.done,
+                negative: this.step.negative,
+                status: this.step.status
+            };
 
-            await this.onBeforeSending(data);
-            this.normalizeObjectsData(data);
-            await this.sendObjects(data);
+            await this.onBeforeSending(step);
+
+            step.objects = this.generateSelectedObjectsPayload();
+
+            await this.sendObjects(step);
         },
         async sendObjects(data) {
-            if (await this.UPDATE_STEP(data)) {
-                await this.onAfterSending();
-                await this.$emit('updated-objects', data);
+            const isUpdated = await api.timeline.updateTimelineStep(data.id, data);
+
+            if (isUpdated) {
+                this.$emit('updated-objects', data);
                 this.reset();
             }
         },
@@ -337,93 +322,6 @@ export const TimelineStepWithObjectsMixin = {
     },
     created() {
         this.setPreventStepObjects();
-    }
-};
-
-export const TimelineStepWithSearchableObjectsMixin = {
-    mixins: [TimelineStepWithObjectsMixin],
-    data() {
-        return {
-            objects: [],
-            contactsForSendingMessage: [],
-            searchMode: false,
-            searchParams: null,
-            waitHash: null,
-            pagination: null,
-            currentPage: 1,
-            controlPanelHeight: 0,
-            isSearchLoading: false
-        };
-    },
-    computed: {
-        ...mapGetters(['FAVORITES_OFFERS', 'TIMELINE'])
-    },
-    methods: {
-        ...mapActions(['SEARCH_FAVORITES_OFFERS']),
-        async fetchObjects(query = {}, withLoader = true) {
-            if (withLoader) this.isSearchLoading = true;
-
-            const _query = {
-                type_id: [1, 2, 3],
-                'per-page': 20,
-                expand: 'object,offer,generalOffersMix.offer,comments',
-                timeline_id: this.TIMELINE.id,
-                ...query,
-                page: this.currentPage
-            };
-
-            if (_query.status === 2) {
-                _query.type_id = [3];
-            }
-
-            const { setHash, confirmHash } = useQueryHash('search-favorite-offers');
-            setHash(_query);
-
-            if (!this.FAVORITES_OFFERS.length) await this.SEARCH_FAVORITES_OFFERS();
-            if (_query.favorites) {
-                _query.original_id = this.FAVORITES_OFFERS.map(item => item.original_id);
-                _query.object_id = this.FAVORITES_OFFERS.map(item => item.object_id);
-                _query.complex_id = this.FAVORITES_OFFERS.map(item => item.complex_id);
-            }
-
-            const data = await api.companyObjects.searchOffers(_query);
-
-            if (confirmHash(_query)) this.setObjects(data);
-
-            if (withLoader) this.isSearchLoading = false;
-        },
-        async setPreventStepObjects() {
-            this.isDefaultLoading = true;
-
-            const objects = [];
-            this.step.timelineStepObjects.forEach(item => {
-                if (item.offer?.id) objects.push(item.offer);
-                else objects.push({ ...item, noOffer: true });
-            });
-            this.preventStepObjects = objects;
-
-            this.isDefaultLoading = false;
-        },
-        async search(params, withLoader = true) {
-            this.searchParams = params;
-            this.searchMode = true;
-            await this.fetchObjects(params, withLoader);
-        },
-        async refresh() {
-            this.currentPage = 1;
-            await this.search(this.searchParams);
-        },
-        nextPage(page) {
-            if (page) this.currentPage = page;
-            else this.currentPage++;
-            this.fetchObjects(this.searchParams, true);
-        },
-        async fetchData() {
-            await this.fetchObjects();
-        }
-    },
-    mounted() {
-        this.fetchData();
     }
 };
 

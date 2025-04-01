@@ -2,6 +2,7 @@
     <div class="timeline-tree-step timeline-tree-step-row" :class="className">
         <div class="timeline-tree-step__row" :class="{ done: done }">
             <i v-if="attention" class="fa-solid fa-circle-exclamation"></i>
+            <i v-else-if="paused" class="fa-solid fa-pause"></i>
             <i v-else-if="process" class="fa-solid fa-clock-rotate-left"></i>
             <i v-else-if="done" class="fa-solid fa-check dashboard-cl-success"></i>
         </div>
@@ -26,30 +27,13 @@ const props = defineProps({
         type: Object,
         required: true
     },
-    available: {
-        type: Boolean,
-        default: false
-    },
-    selected: {
-        type: Boolean,
-        default: false
-    },
-    done: {
-        type: Boolean,
-        default: false
-    },
-    icon: {
-        type: String,
-        default: null
-    },
-    process: {
-        type: Boolean,
-        default: false
-    },
-    attention: {
-        type: Boolean,
-        default: false
-    }
+    available: Boolean,
+    selected: Boolean,
+    done: Boolean,
+    icon: String,
+    process: Boolean,
+    attention: Boolean,
+    paused: Boolean
 });
 
 const className = computed(() => {

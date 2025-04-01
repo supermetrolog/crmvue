@@ -4,7 +4,7 @@
             @click="$emit('done')"
             tooltip="Нажмите, чтобы сохранить ваш результат"
             :disabled="disabled || !objectsLength"
-            success
+            color="success"
         >
             <span>Подтвердить</span>
             <i class="fa-solid fa-thumbs-up icon"></i>
@@ -14,7 +14,7 @@
             tooltip="В случае нахождения более подходящих предложений вам придет уведомление!"
             :active="isNegative"
             :disabled="disabled"
-            danger
+            color="danger"
         >
             <span>Нет подходящих</span>
             <i class="fa-regular fa-frown-open icon"></i>

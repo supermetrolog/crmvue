@@ -43,7 +43,13 @@
         <Td class="text-center request-table__price" sort="pricePerFloor">
             <p v-if="request.pricePerFloor !== null">
                 <WithUnitType :unit-type="unitTypes.RUB_PER_SQUARE_METERS_PER_YEAR">
-                    <b>{{ $formatter.number(request.pricePerFloor) }}</b>
+                    <b>
+                        {{
+                            $formatter.number(
+                                request.price_per_floor_month ?? request.pricePerFloor
+                            )
+                        }}
+                    </b>
                 </WithUnitType>
                 <br />
                 <WithUnitType :unit-type="unitTypes.RUB_PER_SQUARE_METERS_PER_MONTH">

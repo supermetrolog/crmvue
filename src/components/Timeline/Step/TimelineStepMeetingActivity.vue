@@ -1,34 +1,14 @@
 <template>
     <div class="timeline-step">
-        <teleport to="body">
-            <!--            <FormModalEvent-->
-            <!--                v-if="notificationFormIsVisible"-->
-            <!--                @close="notificationFormIsVisible = false"-->
-            <!--                @created="onEventUpdated"-->
-            <!--                @updated="onEventUpdated"-->
-            <!--                :formdata="{ consultant_id: currentUserId }"-->
-            <!--            />-->
-            <FormCompanyContact
-                v-if="companyContactFormIsVisible"
-                @close="cancelContactEditing"
-                @updated="fetchCompanyContacts"
-                @created="fetchCompanyContacts"
-                :company_id="company.id"
-                :formdata="editableContact"
-            />
-            <FormCompany
-                v-if="companyFormIsVisible"
-                @close="companyFormIsVisible = false"
-                @updated="onCompanyUpdated"
-                :form-data="company"
-            />
-        </teleport>
         <div class="row">
-            <div class="col-12 mb-2">
+            <UiCol :cols="12">
                 <TimelineInfo
                     @next="$emit('next-step')"
                     title="1. Знакомство с клиентом"
                     :success="step.additional === 1"
+                    :paused="isPausedStep"
+                    :step
+                    :timeline
                 >
                     <span>
                         1.1. Изучите деятельность компании клиента, свяжитесь с контактным лицом и
@@ -37,36 +17,45 @@
                     <template #footer>
                         <div class="d-flex gap-2">
                             <TimelineButton
-                                @click="selectPhone"
-                                success
-                                :active="data.additional === 1"
-                                :disabled
+                                @click="setAsCompleted"
+                                color="success"
+                                :active="data.additional === 1 || isCompletedStep"
+                                :disabled="
+                                    disabled ||
+                                    data.additional === 1 ||
+                                    isCompletedStep ||
+                                    isPausedStep
+                                "
                             >
                                 <span>Подтвердить</span>
                                 <i class="fa-solid fa-thumbs-up icon"></i>
                             </TimelineButton>
-                            <TimelineButton @click="companyFormIsVisible = true" danger>
+                            <TimelineButton @click="companyFormIsVisible = true" color="danger">
                                 <span>Редактировать</span>
                                 <i class="fa-solid fa-pen icon"></i>
                             </TimelineButton>
-                            <TimelineButton @click="selectNegative" :active="data.negative" warning>
+                            <TimelineButton
+                                v-if="isPausedStep"
+                                @click="setAsProcessed"
+                                :disabled="disabled || isCompletedStep"
+                                color="success"
+                            >
+                                <span>Снять с паузы</span>
+                                <i class="fa-regular fa-circle-play icon"></i>
+                            </TimelineButton>
+                            <TimelineButton
+                                v-else
+                                @click="pausedFormIsVisible = true"
+                                :disabled="disabled || data.additional === 1 || isCompletedStep"
+                                color="warning"
+                            >
                                 <span>Шаг на паузу</span>
                                 <i class="fa-regular fa-circle-pause icon"></i>
                             </TimelineButton>
-                            <!--                            <TimelineButton-->
-                            <!--                                @click="notificationFormIsVisible = true"-->
-                            <!--                                :active="data.additional === 2"-->
-                            <!--                                :disabled-->
-                            <!--                                solid-->
-                            <!--                                icon-->
-                            <!--                            >-->
-                            <!--                                <span>Перезвонить</span>-->
-                            <!--                                <i class="fa-solid fa-clock-rotate-left icon"></i>-->
-                            <!--                            </TimelineButton>-->
                         </div>
                     </template>
                 </TimelineInfo>
-            </div>
+            </UiCol>
             <div class="col-12">
                 <CompanyPreview
                     v-if="company"
@@ -88,6 +77,64 @@
                 />
             </div>
         </div>
+        <teleport to="body">
+            <FormCompanyContact
+                v-if="companyContactFormIsVisible"
+                @close="cancelContactEditing"
+                @updated="fetchCompanyContacts"
+                @created="fetchCompanyContacts"
+                :company_id="company.id"
+                :formdata="editableContact"
+            />
+            <FormCompany
+                v-if="companyFormIsVisible"
+                @close="companyFormIsVisible = false"
+                @updated="onCompanyUpdated"
+                :form-data="company"
+            />
+            <UiModal
+                v-model:visible="pausedFormIsVisible"
+                @closed="clearForm"
+                title="Постановка шага на паузу"
+                :width="500"
+            >
+                <UiForm>
+                    <UiFormGroup>
+                        <UiDateInput
+                            v-model="pauseDate"
+                            :min-date="new Date()"
+                            presets-label="Пауза на"
+                            :presets="pausePresets"
+                            required
+                            placeholder="Выберите дату.."
+                            label="Дата продолжения шага"
+                            class="col-12"
+                        />
+                        <UiTextarea
+                            v-model="pauseComment"
+                            label="Комментарий"
+                            :min-height="50"
+                            :max-height="150"
+                            auto-height
+                            class="col-12"
+                        />
+                    </UiFormGroup>
+                </UiForm>
+                <template #actions="{ close }">
+                    <UiButton
+                        @click="setAsPaused"
+                        color="success-light"
+                        icon="fa-regular fa-circle-pause"
+                        :disabled="!Boolean(pauseDate)"
+                    >
+                        Поставить на паузу
+                    </UiButton>
+                    <UiButton @click="close" color="light" icon="fa-solid fa-ban">
+                        Отмена
+                    </UiButton>
+                </template>
+            </UiModal>
+        </teleport>
     </div>
 </template>
 
@@ -96,15 +143,23 @@ import { useStore } from 'vuex';
 import FormCompanyContact from '@/components/Forms/Company/FormCompanyContact.vue';
 import FormCompany from '@/components/Forms/Company/FormCompany.vue';
 import TimelineInfo from '@/components/Timeline/TimelineInfo.vue';
-import { CallingErrorComment, PhonedComment } from '@/components/Timeline/comments.js';
 import { useDelayedLoader } from '@/composables/useDelayedLoader.js';
 import EmptyData from '@/components/common/EmptyData.vue';
 import CompanyPreview from '@/components/Company/Preview/CompanyPreview.vue';
-import { onMounted, ref } from 'vue';
+import { computed, onMounted, ref, toRef } from 'vue';
 import { useTimelineContext } from '@/components/Timeline/useTimelineContext.js';
 import { useRoute } from 'vue-router';
 import CompanyBoxContactList from '@/components/Company/Box/CompanyBoxContactList.vue';
 import TimelineButton from '@/components/Timeline/TimelineButton.vue';
+import UiModal from '@/components/common/UI/UiModal.vue';
+import dayjs from 'dayjs';
+import UiForm from '@/components/common/Forms/UiForm.vue';
+import UiFormGroup from '@/components/common/Forms/UiFormGroup.vue';
+import UiDateInput from '@/components/common/Forms/UiDateInput.vue';
+import UiTextarea from '@/components/common/Forms/UiTextarea.vue';
+import UiButton from '@/components/common/UI/UiButton.vue';
+import UiCol from '@/components/common/UI/UiCol.vue';
+import TimelineStepPauseComment from '@/components/Timeline/Step/TimelineStepPauseComment.vue';
 
 const emit = defineEmits(['update-step', 'updated-objects', 'next-step']);
 const props = defineProps({
@@ -118,19 +173,20 @@ const props = defineProps({
     }
 });
 
-const { company, contacts, data } = useTimelineContext(() => props.step);
+const { company, contacts, data, isCompletedStep, generatePayload, timeline } = useTimelineContext(
+    toRef(props, 'step')
+);
 
 const { isLoading } = useDelayedLoader();
-
-const companyContactFormIsVisible = ref(false);
-const companyFormIsVisible = ref(false);
-// const notificationFormIsVisible = ref(false);
-const editableContact = ref(null);
 
 // company manipulation
 
 const store = useStore();
 const route = useRoute();
+
+const companyContactFormIsVisible = ref(false);
+const companyFormIsVisible = ref(false);
+const editableContact = ref(null);
 
 const { isLoading: contactsIsLoading } = useDelayedLoader(true);
 
@@ -168,57 +224,74 @@ function onLogoUpdated(logo) {
     store.commit('setCompanyLogo', logo);
 }
 
-// events
-
-// function onEventUpdated(event) {
-//     notificationFormIsVisible.value = false;
-//     selectCallback(event);
-// }
-
-function selectPhone() {
-    let goToNext = false;
-
-    if (data.value.additional === 1) {
-        data.value.additional = 0;
-        data.value.newActionComments = [];
-    } else {
-        data.value.additional = 1;
-        data.value.newActionComments = [new PhonedComment(data.value)];
-        goToNext = true;
-    }
-
-    data.value.negative = 0;
-    data.value.date = null;
-
-    emit('update-step', data.value, goToNext);
-}
-
-function selectNegative() {
-    if (data.value.negative) {
-        data.value.negative = 0;
-        data.value.newActionComments = [];
-    } else {
-        data.value.negative = 1;
-        data.value.additional = 0;
-        data.value.date = null;
-        data.value.newActionComments = [new CallingErrorComment(data.value)];
-    }
-
-    emit('update-step', data.value);
-}
-
-// function selectCallback(newCalendarEvent) {
-//     data.value.additional = 2;
-//     data.value.date = newCalendarEvent.startDate;
-//     data.value.newActionComments = [
-//         new CallbackComment(data.value, dayjs(data.value.date).format('D.MM.YYYY, HH:mm:ss'))
-//     ];
-//     data.value.negative = 0;
-//
-//     emit('update-step', data.value);
-// }
-
 onMounted(() => {
     fetchCompanyContacts(true);
 });
+
+// events
+
+function setAsCompleted() {
+    emit(
+        'update-step',
+        generatePayload({ negative: 0, date: null, additional: 1, comment: null }),
+        true
+    );
+}
+
+const pausedFormIsVisible = ref(false);
+const pauseDate = ref(null);
+const pauseComment = ref(null);
+
+const pausePresets = [
+    {
+        value: dayjs().add(1, 'day').toDate(),
+        label: '1 день'
+    },
+    {
+        value: dayjs().add(2, 'day').toDate(),
+        label: '2 дня'
+    },
+    {
+        value: dayjs().add(3, 'day').toDate(),
+        label: '3 дня'
+    },
+    {
+        value: dayjs().add(5, 'day').toDate(),
+        label: '5 дней'
+    },
+    {
+        value: dayjs().add(7, 'day').toDate(),
+        label: 'Неделю'
+    },
+    {
+        value: dayjs().add(14, 'day').toDate(),
+        label: '2 недели'
+    }
+];
+
+function clearForm() {
+    pauseDate.value = null;
+    pauseComment.value = null;
+}
+
+function setAsPaused() {
+    emit(
+        'update-step',
+        generatePayload({
+            negative: 1,
+            additional: 0,
+            date: dayjs(pauseDate.value).toJSON(),
+            comment: pauseComment.value
+        })
+    );
+
+    pausedFormIsVisible.value = false;
+    clearForm();
+}
+
+function setAsProcessed() {
+    emit('update-step', generatePayload({ negative: 0, date: null, comment: null }));
+}
+
+const isPausedStep = computed(() => props.step.negative && props.step.additional !== 1);
 </script>

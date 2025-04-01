@@ -1,0 +1,8 @@
+@use '../../../utils/mixins';
+
+.ui-link {
+    &:has(i) {
+        @include mixins.flex-box($gap: 5px);
+        font-weight: 500;
+    }
+}

@@ -26,7 +26,7 @@
     &__content {
         overflow-y: auto;
         scrollbar-gutter: stable;
-        max-height: calc(100vh - 150px);
+        max-height: calc(100vh - 160px);
         padding-right: 5px;
     }
 
@@ -73,11 +73,11 @@
     }
 
     &__consultant {
-        border-radius: 2px;
         box-shadow: none;
         text-transform: none;
         font-weight: 500;
         padding: 7px 15px;
+        font-size: 14px;
 
         &.active {
             background-color: #a3e9b6;
@@ -90,6 +90,8 @@
 
     &__button {
         font-weight: 400;
+        font-size: 15px;
+        color: #000;
     }
 }
 
@@ -154,10 +156,24 @@
     background-color: #369ecd;
     color: #fff;
 
-    //&.success {
-    //    background-color: #effaf5;
-    //    border-color: #48c78e;
-    //}
+    &.success {
+        background-color: #a3e9b6;
+        border-color: #48c78e;
+        color: #555;
+    }
+
+    &.disabled {
+        background-color: #e7e7e7;
+        color: #000;
+    }
+
+    &.paused {
+        background-color: #f88f01;
+    }
+
+    &.disabled &__title, &.disabled &__description, &.disabled &__footer {
+        opacity: .5;
+    }
 
     &__content {
         @include mixins.flex-box($gap: 5px)
@@ -304,14 +320,13 @@
 
 .timeline-button {
     box-shadow: none;
-    border-radius: 10px;
     text-transform: none;
     border-width: 1px;
     font-weight: 400;
 
     &.active {
         background-color: #e7e7e7;
-        font-weight: 600;
+        font-weight: 500;
 
         &.button--success {
             background-color: rgb(159, 250, 214);
@@ -323,11 +338,47 @@
     }
 }
 
+.timeline-step-comment {
+    padding: 4px 8px;
+    border-radius: 4px;
+    background-color: variables.$color_grey_light;
+    max-width: 100%;
+    width: max-content;
+    @include mixins.flex-box($gap: 8px);
+
+    &__content {
+        max-width: 100%;
+        width: max-content;
+    }
+
+    &__message {
+        word-break: break-word;
+    }
+
+    &__header {
+        font-size: 14px;
+        @include mixins.flex-box($a: center);
+    }
+
+    &__username {
+        font-weight: 500;
+    }
+
+    &__dot, &__date {
+        color: #736969;
+    }
+
+    &__dot {
+        font-weight: 600;
+    }
+}
+
 .timeline-step-offers {
     &__button {
+        font-size: 15px;
         color: #000;
         box-shadow: none;
-        border: 1px solid rgba(0, 0, 0, .3);
+        border: 1px solid rgba(0, 0, 0, .25)!important;
         font-weight: 400;
         text-transform: none;
         padding: 6px 15px;
@@ -341,6 +392,13 @@
             &:hover, &.active {
                 color: #000!important;
                 background-color: #fbd194!important;
+            }
+        }
+
+        &.button--info {
+            &:hover, &.active {
+                color: #000!important;
+                background-color: #e7e7e7!important;
             }
         }
 
@@ -365,4 +423,8 @@
         line-height: 1;
         @include mixins.flex-box($d: column);
     }
+}
+
+.offer-search__actions .button {
+    text-transform: none;
 }

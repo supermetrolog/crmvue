@@ -1,6 +1,8 @@
 <template>
     <div class="timeline-tree-step timeline-tree-step-point" :class="className">
-        <div class="timeline-tree-step__point" :class="{ done: done, general: !point }"></div>
+        <div class="timeline-tree-step__point" :class="{ done: done, general: !point }">
+            <i v-if="paused" class="timeline-tree-step__point-icon fa-solid fa-pause" />
+        </div>
         <span class="timeline-tree-step__label">{{ step.visual_id }}. {{ step.label }}</span>
         <svg
             v-if="selected"
@@ -22,34 +24,15 @@ const props = defineProps({
         type: Object,
         required: true
     },
-    available: {
-        type: Boolean,
-        default: false
-    },
-    selected: {
-        type: Boolean,
-        default: false
-    },
-    done: {
-        type: Boolean,
-        default: false
-    },
-    icon: {
-        type: String,
-        default: null
-    },
-    point: {
-        type: Boolean,
-        default: false
-    },
-    process: {
-        type: Boolean,
-        default: false
-    },
-    attention: {
-        type: Boolean,
-        default: false
-    }
+    available: Boolean,
+    selected: Boolean,
+    done: Boolean,
+    icon: String,
+    point: Boolean,
+    process: Boolean,
+    attention: Boolean,
+    paused: Boolean,
+    disabled: Boolean
 });
 
 const className = computed(() => {
@@ -59,7 +42,9 @@ const className = computed(() => {
         available: props.available,
         selected: props.selected,
         done: props.done,
-        'in-process': props.process
+        'in-process': props.process,
+        paused: props.paused,
+        unavailable: props.disabled
     };
 });
 </script>

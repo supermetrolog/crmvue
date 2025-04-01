@@ -216,6 +216,10 @@ main {
         right: 10px;
     }
 
+    .dp__input {
+        height: 40px;
+    }
+
     &[class*="col-"] {
         .form__tooltip {
             right: 25px;
@@ -232,6 +236,10 @@ main {
         .dp__input {
             background-color: #f8f8f8;;
         }
+    }
+
+    &__picker .dp__input:disabled {
+        opacity: .6;
     }
 
     &__presets-label {
