@@ -1,26 +1,19 @@
 <template>
-    <MessengerQuizFormWarningModal
-        title="Созвонитесь с клиентом!"
-        message="Для заполнения вопросов укажите, удалось ли дозвониться до клиента."
-        icon="fa-solid fa-phone-volume"
-        :width="520"
-    >
-        <template #actions>
-            <UiButton
-                @click="$emit('show-call-question')"
-                class="font-weight-bold"
-                icon="fa-solid fa-up-right-from-square"
-                color="light"
-                uppercase
-            >
-                Перейти к вопросу
-            </UiButton>
-        </template>
-    </MessengerQuizFormWarningModal>
+    <div class="messenger-quiz__disabled">
+        <svg
+            width="150px"
+            height="150px"
+            viewBox="0 0 24 24"
+            opacity=".8"
+            xmlns="http://www.w3.org/2000/svg"
+        >
+            <path
+                fill-rule="evenodd"
+                clip-rule="evenodd"
+                d="M7 7c0-2.762 2.238-5 5-5s5 2.238 5 5v3h.4c.88 0 1.6.72 1.6 1.6v7c0 1.32-1.08 2.4-2.4 2.4H7.4C6.08 21 5 19.92 5 18.6v-7c0-.88.72-1.6 1.6-1.6H7V7Zm8 0v3H9V7c0-1.658 1.342-3 3-3s3 1.342 3 3Zm-3 5.25a1.75 1.75 0 0 0-.75 3.332V18a.75.75 0 0 0 1.5 0v-2.418A1.75 1.75 0 0 0 12 12.25Z"
+                fill="currentColor"
+            />
+        </svg>
+    </div>
 </template>
-<script setup>
-import MessengerQuizFormWarningModal from '@/components/Messenger/Quiz/Form/MessengerQuizFormWarningModal.vue';
-import UiButton from '@/components/common/UI/UiButton.vue';
-
-defineEmits(['show-call-question']);
-</script>
+<script setup></script>

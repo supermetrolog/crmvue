@@ -1,5 +1,5 @@
 <template>
-    <Table fluid class="call-table">
+    <Table shadow fluid class="call-table">
         <template #thead>
             <Tr>
                 <Th>#</Th>

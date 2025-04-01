@@ -24,14 +24,15 @@
                     icon="fa-solid fa-pen"
                     color="gray-l"
                 />
-                <UiButtonIcon
-                    v-if="currentUserIsAdmin"
-                    @click="defaultTextIsVisible = true"
-                    small
-                    label="Сырой вид"
-                    icon="fa-solid fa-file"
-                    color="gray-l"
-                />
+                <UiCan admin>
+                    <UiButtonIcon
+                        @click="defaultTextIsVisible = true"
+                        small
+                        label="Сырой вид"
+                        icon="fa-solid fa-file"
+                        color="gray-l"
+                    />
+                </UiCan>
             </span>
             <UiField class="fs-3" small color="gray-l">Опрос заполнен!</UiField>
             <div v-if="survey" class="d-flex align-items-center gap-1 ml-auto">
@@ -69,6 +70,7 @@ import { useAuth } from '@/composables/useAuth.js';
 import UiModal from '@/components/common/UI/UiModal.vue';
 import UiField from '@/components/common/UI/UiField.vue';
 import Avatar from '@/components/common/Avatar.vue';
+import UiCan from '@/components/common/UI/UiCan.vue';
 
 const props = defineProps({
     message: {

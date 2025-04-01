@@ -58,7 +58,7 @@
                                 <i class="fa-solid fa-envelope-circle-check icon"></i>
                             </TimelineButton>
                             <TimelineButton
-                                tooltip="'Скачать выбранные предложения в PDF'"
+                                tooltip="Скачать выбранные предложения в PDF"
                                 :disabled="!selectedObjects.length || disabled || true"
                                 color="danger"
                             >

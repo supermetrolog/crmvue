@@ -1,8 +1,9 @@
 <template>
     <div class="header__functions">
-        <HoverActionsButton
+        <UiButtonIcon
             ref="activityButton"
             @click="activityIsVisible = !activityIsVisible"
+            color="light"
             :label="activityCountLabelPlural"
             :active="activityIsVisible"
             class="header__button header__online"
@@ -16,7 +17,7 @@
             >
                 {{ preparedActivityCount }}
             </div>
-        </HoverActionsButton>
+        </UiButtonIcon>
         <AnimationTransition>
             <HeaderActivity
                 v-if="activityIsVisible"
@@ -24,10 +25,11 @@
                 @online-updated="activityCount = $event"
             />
         </AnimationTransition>
-        <HoverActionsButton
+        <UiButtonIcon
             ref="callsButton"
             @click="callsIsVisible = !callsIsVisible"
             :active="callsIsVisible"
+            color="light"
             class="header__button"
             :class="{ 'current-call-exist': CURRENT_CALLS.length }"
         >
@@ -40,14 +42,15 @@
             >
                 {{ CALLS_COUNT }}
             </span>
-        </HoverActionsButton>
+        </UiButtonIcon>
         <AnimationTransition>
             <HeaderCalls v-if="callsIsVisible" v-on-click-outside="callsClickOutside" />
         </AnimationTransition>
-        <HoverActionsButton
+        <UiButtonIcon
             ref="notificationsButton"
             @click="notificationsIsVisible = !notificationsIsVisible"
             :active="notificationsIsVisible"
+            color="light"
             class="header__button"
         >
             <Spinner v-if="isLoading" class="mini" />
@@ -55,7 +58,7 @@
             <span v-if="NOTIFICATIONS_COUNT !== 0" class="header__badge badge badge-danger">
                 {{ NOTIFICATIONS_COUNT }}
             </span>
-        </HoverActionsButton>
+        </UiButtonIcon>
         <AnimationTransition>
             <HeaderNotifications
                 v-if="notificationsIsVisible"
@@ -71,12 +74,12 @@ import HeaderNotifications from '@/components/Header/HeaderNotifications.vue';
 import { useStore } from 'vuex';
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
 import { computed, onMounted, ref, shallowRef, useTemplateRef, watch } from 'vue';
-import HoverActionsButton from '@/components/common/HoverActions/HoverActionsButton.vue';
 import { plural } from '@/utils/plural.js';
 import api from '@/api/api.js';
 import Spinner from '@/components/common/Spinner.vue';
 import { useDocumentVisibility, useIntervalFn } from '@vueuse/core';
 import HeaderActivity from '@/components/Header/HeaderActivity.vue';
+import UiButtonIcon from '@/components/common/UI/UiButtonIcon.vue';
 
 const ONLINE_INTERVAL = 60000;
 

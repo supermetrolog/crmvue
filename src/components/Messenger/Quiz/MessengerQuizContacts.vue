@@ -55,12 +55,13 @@
             :title="`Просмотр комментариев (${comments.length})`"
             :width="600"
         >
-            <MessengerQuizContactsComments :comments />
-            <template #actions="{ close }">
-                <UiButton @click="close" small color="light" icon="fa-solid fa-ban">
-                    Закрыть
-                </UiButton>
-            </template>
+            <MessengerQuizContactsComments
+                @updated="onUpdatedComment"
+                @deleted="onDeletedComment"
+                @created="onCreatedComment"
+                :comments
+                :contact="viewedCommentsContact"
+            />
         </UiModal>
     </div>
 </template>
@@ -73,6 +74,7 @@ import UiButtonIcon from '@/components/common/UI/UiButtonIcon.vue';
 import UiField from '@/components/common/UI/UiField.vue';
 import UiModal from '@/components/common/UI/UiModal.vue';
 import UiButton from '@/components/common/UI/UiButton.vue';
+import { spliceById } from '@/utils/helpers/array/spliceById.js';
 
 const currentContact = defineModel('contact');
 const emit = defineEmits(['suggest-create', 'edit', 'selected', 'show-archived']);
@@ -107,9 +109,12 @@ function selectCurrentContact(contact) {
 // COMMENTS
 
 const commentsModalIsOpen = ref(false);
+const viewedCommentsContact = shallowRef(null);
 const comments = shallowRef([]);
 
 function showComments(contact) {
+    viewedCommentsContact.value = contact;
+
     comments.value = contact.comments;
     commentsModalIsOpen.value = true;
 }
@@ -117,4 +122,17 @@ function showComments(contact) {
 const selectedContactsSet = computed(
     () => new Set(props.selectedContacts.map(contact => contact.entity.id))
 );
+
+function onDeletedComment(commentId) {
+    spliceById(comments.value, commentId);
+}
+
+function onUpdatedComment(comment) {
+    const commentIndex = comments.value.findIndex(element => element.id === comment.id);
+    if (commentIndex !== -1) Object.assign(comments.value[commentIndex], comment);
+}
+
+function onCreatedComment(comment) {
+    comments.value.push(comment);
+}
 </script>

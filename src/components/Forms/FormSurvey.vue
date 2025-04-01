@@ -1,17 +1,15 @@
 <template>
     <Spinner v-if="isLoading" small label="Загрузка вопросов.." center class="absolute-center" />
     <UiForm v-else>
-        <Loader v-if="isUpdating" small class="center" />
-        <template v-else>
-            <SurveyCardInfo :quiz="formData" :editable="false" />
-            <hr />
-            <MessengerQuizFormTemplate
-                ref="quizForm"
-                :questions="formData.questions"
-                :company-id="companyId"
-                has-available-contact
-            />
-        </template>
+        <Loader v-if="isUpdating" label="Изменение опроса.." small class="center" />
+        <SurveyCardInfo :quiz="formData" :editable="false" />
+        <hr />
+        <MessengerQuizFormTemplate
+            ref="quizForm"
+            :questions="formData.questions"
+            :company-id="companyId"
+            has-available-contact
+        />
         <UiFormGroup v-if="!isLoading" class="justify-content-center mt-3 gap-2">
             <UiButton @click="submit" color="success-light" icon="fa-solid fa-check">
                 Сохранить
@@ -140,20 +138,26 @@ const notify = useNotify();
 
 const isUpdating = ref(false);
 
+function prepareAnswers(...answers) {
+    return answers.map(element => ({
+        question_answer_id: element.question_answer_id,
+        value: element.value,
+        files: element.files,
+        file: element.file
+    }));
+}
+
 async function submit() {
     const isValid = validate();
     if (!isValid) return;
 
-    const form = quizForm.value?.getForm();
+    const { answers } = quizForm.value.getForm();
 
     isUpdating.value = true;
 
     try {
         const response = await api.survey.updateWithAnswers(props.formData.id, {
-            question_answers: form.map(element => ({
-                question_answer_id: element.question_answer_id,
-                value: element.value
-            }))
+            question_answers: prepareAnswers(...answers)
         });
 
         if (response) {

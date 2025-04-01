@@ -38,7 +38,6 @@
         />
         <MessengerQuizFormWarningNeedCompletedCall
             v-if="(!canBeCreated && isLoading) || (canBeCreated && !hasAvailableContact)"
-            @show-call-question="$emit('show-call-question')"
         />
     </div>
 </template>
@@ -55,7 +54,7 @@ import { useStore } from 'vuex';
 import { messenger } from '@/const/messenger.js';
 import MessengerQuizFormWarningNeedCompletedCall from '@/components/Messenger/Quiz/Form/Warning/MessengerQuizFormWarningNeedCompletedCall.vue';
 
-defineEmits(['object-sold', 'object-destroyed', 'show-call-question']);
+defineEmits(['object-sold', 'object-destroyed']);
 const props = defineProps({
     questions: {
         type: Array,

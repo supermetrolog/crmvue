@@ -178,7 +178,8 @@ const isActive = computed(() => props.request.status === 1);
 
 const passiveWhyComment = computed(() => {
     if (!props.request.passive_why) return 'Причина не указана';
-    let text = PassiveWhyRequest[props.request.passive_why].label;
+
+    let text = PassiveWhyRequest[props.request.passive_why]?.label ?? 'Другое';
     if (props.request.passive_why_comment) text += ': ' + props.request.passive_why_comment;
     return text;
 });

@@ -665,6 +665,7 @@
 
 .messenger-quiz-header-comments {
     height: 100%;
+    font-size: 16px;
 
     &__list {
         @include mixins.flex-box($d: column, $gap: 10px);
@@ -1231,6 +1232,14 @@
 }
 
 .messenger-quiz-question-call {
+    &:not(&.active):not(&.passive) {
+        background-color: #fde4d1;
+
+        .messenger-quiz-question__contact {
+            color: #248e33;
+        }
+    }
+
     &__radio {
         .form__row {
             gap: 0;

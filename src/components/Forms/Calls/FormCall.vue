@@ -93,12 +93,10 @@
             </UiFormGroup>
         </UiForm>
         <template #actions="{ close }">
-            <UiButton @click="submit" color="success-light" icon="fa-solid fa-check" bolder small>
+            <UiButton @click="submit" color="success-light" icon="fa-solid fa-check">
                 Сохранить
             </UiButton>
-            <UiButton @click="close" color="light" icon="fa-solid fa-ban" bolder small>
-                Отмена
-            </UiButton>
+            <UiButton @click="close" color="light" icon="fa-solid fa-ban">Отмена</UiButton>
         </template>
     </UiModal>
 </template>
@@ -108,7 +106,7 @@ import UiForm from '@/components/common/Forms/UiForm.vue';
 import UiTextarea from '@/components/common/Forms/UiTextarea.vue';
 import MultiSelect from '@/components/common/Forms/MultiSelect.vue';
 import Loader from '@/components/common/Loader.vue';
-import { computed, reactive, ref, shallowRef } from 'vue';
+import { computed, reactive, ref } from 'vue';
 import api from '@/api/api.js';
 import { useConsultantsOptions } from '@/composables/options/useConsultantsOptions.js';
 import ConsultantPicker from '@/components/common/Forms/ConsultantPicker/ConsultantPicker.vue';

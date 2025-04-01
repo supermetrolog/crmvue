@@ -108,7 +108,7 @@ function setForm(form) {
         if (offersAnswer && offersAnswer.value) {
             equipmentsEl.value.setOffersValue(true);
 
-            const offersAnswerDescription = form.tab.find(answer =>
+            const offersAnswerDescription = form['text-answer'].find(answer =>
                 answer.effects.has(quizEffectKinds.HAS_EQUIPMENTS_OFFERS_DESCRIPTION)
             );
 
@@ -123,7 +123,7 @@ function setForm(form) {
         if (requestsAnswer && requestsAnswer.value) {
             equipmentsEl.value.setRequestsValue(true);
 
-            const requestsAnswerDescription = form.tab.find(answer =>
+            const requestsAnswerDescription = form['text-answer'].find(answer =>
                 answer.effects.has(quizEffectKinds.HAS_EQUIPMENTS_REQUESTS_DESCRIPTION)
             );
 
