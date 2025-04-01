@@ -1,7 +1,7 @@
 <template>
     <div class="users-table">
         <Loader v-if="isLoading" />
-        <Table>
+        <Table shadow>
             <template #thead>
                 <Tr>
                     <Th></Th>

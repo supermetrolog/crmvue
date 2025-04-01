@@ -3,7 +3,7 @@
         <Loader v-if="isLoading" />
         <div class="row no-gutters">
             <div class="col-12">
-                <Table>
+                <Table shadow>
                     <template #thead>
                         <Tr class="text-left">
                             <Th> Название</Th>

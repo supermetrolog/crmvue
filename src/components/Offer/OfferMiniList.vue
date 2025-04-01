@@ -1,5 +1,5 @@
 <template>
-    <Table v-if="offers.length" class="offer-mini-list">
+    <Table v-if="offers.length" shadow class="offer-mini-list">
         <template #thead>
             <Tr>
                 <Th>Действия</Th>

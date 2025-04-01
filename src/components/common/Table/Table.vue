@@ -1,5 +1,5 @@
 <template>
-    <table class="table" :class="{ 'table--fluid': fluid }">
+    <table class="table" :class="{ 'table--fluid': fluid, 'table--shadow': shadow }">
         <thead>
             <slot name="thead" />
         </thead>
@@ -11,9 +11,7 @@
 
 <script setup>
 defineProps({
-    fluid: {
-        type: Boolean,
-        default: false
-    }
+    fluid: Boolean,
+    shadow: Boolean
 });
 </script>

@@ -1,6 +1,6 @@
 <template>
     <div class="request-table">
-        <Table v-if="requests.length">
+        <Table v-if="requests.length" shadow>
             <template #thead>
                 <Tr>
                     <Th>#</Th>
