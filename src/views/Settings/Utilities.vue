@@ -69,10 +69,10 @@
             </UiModal>
         </Teleport>
         <div class="row">
-            <div class="col-12">
-                <DashboardCard title="Инструменты администратора">
+            <UiCol :cols="8">
+                <DashboardCard title="Инструменты модератора">
                     <div class="row">
-                        <UiCol cols="3">
+                        <UiCol :cols="4">
                             <DashboardCard>
                                 <p class="mb-1">Object Land Purposes Fix</p>
                                 <p class="text-grey">Описание:</p>
@@ -88,7 +88,35 @@
                         </UiCol>
                     </div>
                 </DashboardCard>
-            </div>
+            </UiCol>
+            <UiCol :cols="4">
+                <DashboardCard :title="`Последние действия (${pagination?.totalCout ?? 0})`">
+                    <div v-if="histories.length" class="d-flex flex-column gap-1 position-relative">
+                        <Loader v-if="historiesIsLoading" />
+                        <div
+                            v-for="history in histories"
+                            :key="history.id"
+                            v-tippy="'Нажмите, чтобы посмотреть подробнее'"
+                            class="py-1 px-2 dashboard-bg-light br-1 c-pointer"
+                        >
+                            <div class="d-flex gap-2 align-items-center">
+                                <Avatar :src="history.initiator.userProfile.avatar" :size="40" />
+                                <div>
+                                    <p>
+                                        {{ history.initiator.userProfile.medium_name }},
+                                        <span class="text-grey fs-2">
+                                            {{ getCreatedAt(history.created_at) }}
+                                        </span>
+                                    </p>
+                                    <p class="text-grey fs-2">{{ eventToLabel(history.event) }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <Spinner v-else-if="historiesIsLoading" label="Загрузка истории" />
+                    <EmptyData v-else>Действия отсутствуют..</EmptyData>
+                </DashboardCard>
+            </UiCol>
         </div>
     </div>
 </template>
@@ -103,6 +131,11 @@ import UiButton from '@/components/common/UI/UiButton.vue';
 import UiModal from '@/components/common/UI/UiModal.vue';
 import MultiSelect from '@/components/common/Forms/MultiSelect.vue';
 import LazyImage from '@/components/common/LazyImage.vue';
+import Avatar from '@/components/common/Avatar.vue';
+import EmptyData from '@/components/common/EmptyData.vue';
+import Spinner from '@/components/common/Spinner.vue';
+import Loader from '@/components/common/Loader.vue';
+import { dayjsFromMoscow } from '@/utils/formatters/date.js';
 
 const notify = useNotify();
 const { confirm } = useConfirm();
@@ -151,9 +184,45 @@ async function runPurposesFix() {
 
     try {
         await api.object.fixLandPurposes(toRaw(purposesFixForm));
+
         notify.success('Назначения исправлены');
+        fetchHistories();
     } finally {
         purposesFixIsRunning.value = false;
     }
+}
+
+// histories
+
+const historiesIsLoading = ref(false);
+const histories = ref([]);
+const pagination = ref(null);
+
+async function fetchHistories() {
+    historiesIsLoading.value = true;
+
+    try {
+        const response = await api.utilityHistory.list({ sort: '-created_at', 'per-page': 0 });
+
+        if (response) {
+            histories.value = response.data;
+            pagination.value = response.pagination;
+        }
+    } finally {
+        historiesIsLoading.value = false;
+    }
+}
+
+// temporary
+
+function eventToLabel(event) {
+    return {
+        'fix-land-object-purposes': 'Исправил назначения объекта',
+        'reassign-consultants-to-companies': 'Переназначил консультанта для компаний'
+    }[event];
+}
+
+function getCreatedAt(date) {
+    return dayjsFromMoscow(date).fromNow();
 }
 </script>
