@@ -49,11 +49,11 @@ export default {
         return responseToData(response);
     },
     async archive(id) {
-        const response = await axios.get(`${URL}/${id}/archive`);
+        const response = await axios.post(`${URL}/${id}/archive`);
         return responseToData(response);
     },
     async restore(id) {
-        const response = await axios.get(`${URL}/${id}/restore`);
+        const response = await axios.post(`${URL}/${id}/restore`);
         return responseToData(response);
     },
     async activity(payload) {

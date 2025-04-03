@@ -49,7 +49,6 @@
 
 <script setup>
 import { useStore } from 'vuex';
-import useValidate from '@vuelidate/core';
 import { helpers, required } from '@vuelidate/validators';
 import UiForm from '@/components/common/Forms/UiForm.vue';
 import UiFormGroup from '@/components/common/Forms/UiFormGroup.vue';
@@ -61,19 +60,25 @@ import Loader from '@/components/common/Loader.vue';
 import Modal from '@/components/common/Modal.vue';
 import { onlyEnglish, onlyRussian } from '@//validators';
 import Submit from '@/components/common/Forms/FormSubmit.vue';
-import { onMounted, reactive, shallowRef } from 'vue';
+import { reactive, ref } from 'vue';
+import { useValidation } from '@/composables/useValidation.js';
+import { useFormData } from '@/utils/use/useFormData.js';
 
 const emit = defineEmits(['close', 'updated', 'created']);
-const props = defineProps({ formData: { type: Object, default: null } });
+const props = defineProps({ formData: Object });
 const store = useStore();
 
-const isLoading = shallowRef(false);
-const form = reactive({
-    nameRu: null,
-    nameEng: null,
-    description: null,
-    formOfOrganization: null
-});
+const isLoading = ref(false);
+
+const { form, isEditMode } = useFormData(
+    reactive({
+        nameRu: null,
+        nameEng: null,
+        description: null,
+        formOfOrganization: null
+    }),
+    props.formData
+);
 
 const rules = {
     nameRu: {
@@ -85,38 +90,39 @@ const rules = {
     }
 };
 
-const v$ = useValidate(rules, form);
+const { v$, validate } = useValidation(rules, form);
 
 const update = async () => {
     isLoading.value = true;
+
     const updated = await store.dispatch('UPDATE_COMPANY_GROUPS', form);
+
     if (updated) {
         emit('updated');
         emit('close');
     }
+
     isLoading.value = false;
 };
 
 const create = async () => {
     isLoading.value = true;
+
     const created = await store.dispatch('CREATE_COMPANY_GROUPS', form);
+
     if (created) {
         emit('created');
         emit('close');
     }
+
     isLoading.value = false;
 };
 
-const onSubmit = () => {
-    v$.$validate();
+async function onSubmit() {
+    const isValid = await validate();
+    if (!isValid) return;
 
-    if (!v$.form.$error) {
-        if (props.formData) update();
-        else create();
-    }
-};
-
-onMounted(() => {
-    if (props.formData) Object.assign(form, props.formData);
-});
+    if (isEditMode.value) await update();
+    else await create();
+}
 </script>

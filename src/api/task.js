@@ -106,7 +106,7 @@ export default {
         return responseToData(response);
     },
     async restore(id) {
-        const response = await axios.patch(`${URL}/${id}/restore`);
+        const response = await axios.post(`${URL}/${id}/restore`);
         return responseToData(response);
     },
     async postpone(id, payload) {
