@@ -32,9 +32,6 @@ export const validationRulesForRequest = {
     company_id: {
         required: helpers.withMessage('Выберите компанию', required)
     },
-    contact_id: {
-        required: helpers.withMessage('Выберите контакт', required)
-    },
     minArea: {
         required: helpers.withMessage('Заполните минимальную площадь', required)
     },

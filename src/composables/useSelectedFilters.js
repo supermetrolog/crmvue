@@ -1,6 +1,6 @@
 import { computed, onMounted } from 'vue';
 import { toValue } from '@vueuse/core';
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
 import { isEmpty } from '@/utils/helpers/common/isEmpty.js';
 import { isArray } from '@/utils/helpers/array/isArray.js';
@@ -51,7 +51,15 @@ export const filtersAliases = {
     without_product_ranges: 'Без номенклатуры',
     with_passive_consultant: 'С неактивными консультантами',
     statuses: 'Статус:',
-    user_ids: 'Сотрудник:'
+    user_ids: 'Сотрудник:',
+    consultant_ids: 'Консультанты:',
+    gaz: 'Газ',
+    maxElectricity: 'Макс. электричество:',
+    antiDustOnly: 'Только антипыль',
+    trainLine: 'Ж/Д ветка',
+    haveCranes: 'Нужны краны',
+    shelving: 'Стеллажи',
+    sewerage: 'Канализация'
 };
 
 const IGNORING_FILTERS = new Set([
@@ -150,12 +158,23 @@ export function useSelectedFilters(form = {}, humanizeGetters = {}, options = {}
         if (!store.getters.REGION_LIST?.length) store.dispatch('FETCH_REGION_LIST');
     });
 
+    const router = useRouter();
+
+    function removeQueryFilterByKey(key) {
+        const query = { ...route.query };
+
+        delete query[key];
+
+        router.replace({ query });
+    }
+
     return {
         filtersCount,
         queryFiltersCount,
         selectedQueryFilters,
         selectedFilters,
         humanizedSelectedQueryFilters,
-        humanizedSelectedFilters
+        humanizedSelectedFilters,
+        removeQueryFilterByKey
     };
 }

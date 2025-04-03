@@ -114,13 +114,7 @@ const viewMode = ref(false);
 const companyFormIsVisible = ref(false);
 const firstPagination = ref(null);
 
-function onlyValueFn(value) {
-    return value;
-}
-
 const gettersForFilters = {
-    nameRu: onlyValueFn,
-    nameEng: onlyValueFn,
     consultant_id: value => {
         if (consultantsOptions.value.length)
             return consultantsOptions.value.find(element => Number(element.value) === Number(value))
