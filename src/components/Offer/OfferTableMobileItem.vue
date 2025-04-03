@@ -113,7 +113,7 @@
                     </div>
                 </template>
             </AccordionSimple>
-            <p class="text-right mt-1 text-grey">Обновление: {{ offer.last_update_format }}</p>
+            <p class="text-right mt-1 text-grey">Обновление: {{ updatedAt }}</p>
         </DashboardCard>
     </div>
 </template>
@@ -136,6 +136,8 @@ import { useStore } from 'vuex';
 import { useMessenger } from '@/components/Messenger/useMessenger.js';
 import { useAuth } from '@/composables/useAuth.js';
 import { getLinkPDF } from '@/utils/url.js';
+import { toDateFormat } from '@/utils/formatters/date.js';
+import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
 
 const emit = defineEmits(['favorite-deleted']);
 const props = defineProps({
@@ -182,4 +184,9 @@ const openPDF = () => {
         '_blank'
     );
 };
+
+const updatedAt = computed(() => {
+    if (isNotNullish(props.offer.last_update)) return toDateFormat(props.offer.last_update * 1000);
+    return null;
+});
 </script>

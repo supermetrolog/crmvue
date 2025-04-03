@@ -15,10 +15,7 @@ const props = defineProps({
         type: String,
         default: 'Завершение запроса'
     },
-    request_id: {
-        type: Number,
-        required: true
-    },
+    request_id: Number,
     show: Boolean
 });
 

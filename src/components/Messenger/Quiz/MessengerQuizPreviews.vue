@@ -1,7 +1,7 @@
 <template>
     <div class="messenger-quiz__surveys">
         <Spinner v-if="surveysIsLoading" small label="Загрузка завершенных опросов" />
-        <AccordionSimple v-else>
+        <AccordionSimple v-else-if="surveysCount">
             <template #title>
                 <AccordionSimpleTriggerButton
                     :label="`Последний опрос - ${lastSurveyCreatedAt} | ${surveysCount} завершенных`"

@@ -32,7 +32,6 @@
                             :options="contacts"
                             extra-classes="long-text"
                             label="Контакт"
-                            required
                             class="col-6"
                         >
                             <template #after>
@@ -306,6 +305,7 @@
                                 v-if="hasDistricts"
                                 v-model="form.district_ids"
                                 class="col-12"
+                                label="Округа"
                                 :options="DistrictList"
                             />
                         </AnimationTransition>

@@ -1,15 +1,13 @@
-import { onBeforeUnmount, onMounted, shallowRef, watch } from 'vue';
+import { onBeforeUnmount, onMounted, ref, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useStore } from 'vuex';
-import { noop } from '@vueuse/core';
+import { noop, unrefElement } from '@vueuse/core';
 
 /**
- * Composable для работы с таблицами, синхронизированными с `query`
- *
- * @param {function: void} fetch - Функция обновления данных
- * @param options - Дополнительная конфигурация
- * @param {function: void} options.initQuery - Функция инициализации query-параметров
- * @param {Ref<HTMLElement>} options.scrollTo - Элемент, к которому необходимо совершить скролл после `next()`
+ * @param {function: void} fetch
+ * @param options
+ * @param {function: void} options.initQuery
+ * @param {Ref<HTMLElement>} options.scrollTo
  * @returns {{next: (function: void), nextWithScroll: (function: void), queryIsInitialized: Ref<boolean>}}
  */
 export function useTableContent(fetch, options = {}) {
@@ -17,31 +15,21 @@ export function useTableContent(fetch, options = {}) {
     const route = useRoute();
     const store = useStore();
 
-    /**
-     * Флаг инициализации `query`.
-     * @type {shallowRef<boolean>}
-     */
-    const queryIsInitialized = shallowRef(false);
+    const queryIsInitialized = ref(false);
 
     let stop = noop;
     let { initQuery = noop, scrollTo = null } = options;
 
     /**
-     * Перейти к определенной странице. Фиксирует номер страницы в `query`.
-     *
-     * @param {number, string} page - номер страницы
+     * @param {number, string} page
      * @returns {Promise<void>}
      */
     async function next(page) {
-        const query = { ...route.query };
-        query.page = page;
-        await router.replace({ query });
+        await router.replace({ query: { ...route.query, page } });
     }
 
     /**
-     * Перейти к определенной странице и проскроллить к определенному элементу. Фиксирует номер страницы в `query`.
-     *
-     * @param {number, string} page - номер страницы
+     * @param {number, string} page
      * @returns {Promise<void>}
      */
     async function nextWithScroll(page) {
@@ -49,7 +37,7 @@ export function useTableContent(fetch, options = {}) {
 
         if (scrollTo === null) return;
 
-        (scrollTo.value.$el ?? scrollTo.value).scrollIntoView({
+        unrefElement(scrollTo).scrollIntoView({
             behavior: 'smooth',
             block: 'end',
             alignToTop: false

@@ -4,21 +4,29 @@
             <div class="row mb-4">
                 <FormCompanyRequestSearch v-if="queryIsInitialized" class="col-8" />
             </div>
-            <div v-if="requestsPagination" class="row justify-content-between">
+            <div class="row justify-content-between">
                 <PaginationClassic
                     ref="firstPagination"
                     @next="next"
                     class="col-6"
-                    :pagination="requestsPagination"
+                    :pagination="pagination"
+                    :loading="isLoading"
                 />
-                <div class="company-table__actions col-12 col-md-4">
+                <div class="company-table__actions col-12 col-md-4 align-items-end">
                     <Switch
                         v-if="!isMobile"
                         v-model="isCardView"
                         false-title="Таблица"
                         true-title="Карточки"
                     />
-                    <RefreshButton @click="fetchRequests" :disabled="isLoadingOriginal" />
+                    <UiButton
+                        @click="fetchRequests"
+                        color="light"
+                        icon="fa-solid fa-refresh"
+                        :disabled="isLoading"
+                    >
+                        Обновить
+                    </UiButton>
                 </div>
             </div>
             <div class="row">
@@ -40,9 +48,9 @@
                 </div>
                 <div class="col-12">
                     <PaginationClassic
-                        v-if="requestsPagination"
                         @next="nextWithScroll"
-                        :pagination="requestsPagination"
+                        :pagination="pagination"
+                        :loading="isLoading"
                     />
                 </div>
             </div>
@@ -79,11 +87,9 @@ import FormCompanyRequestSearch from '@/components/Forms/Company/FormCompanyRequ
 import PaginationClassic from '@/components/common/Pagination/PaginationClassic.vue';
 import CompanyRequestTable from '@/components/Company/Request/CompanyRequestTable.vue';
 import CompanyRequestTableMobile from '@/components/Company/Request/CompanyRequestTableMobile.vue';
-import RefreshButton from '@/components/common/RefreshButton.vue';
-import { computed, ref, shallowRef } from 'vue';
+import { computed, ref, shallowRef, useTemplateRef } from 'vue';
 import { useTableContent } from '@/composables/useTableContent.js';
-import { useDelayedLoader } from '@/composables/useDelayedLoader.js';
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import EmptyData from '@/components/common/EmptyData.vue';
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
 import { useMobile } from '@/composables/useMobile.js';
@@ -94,41 +100,82 @@ import FormModalCompanyRequestDisable from '@/components/Forms/Company/FormModal
 import { useConfirm } from '@/composables/useConfirm.js';
 import DashboardCardRequestView from '@/components/Dashboard/Card/Request/DashboardCardRequestView.vue';
 import { useMessenger } from '@/components/Messenger/useMessenger.js';
+import { useAuth } from '@/composables/useAuth.js';
+import { singleToArrayByKeys } from '@/utils/helpers/object/singleToArrayByKeys.js';
+import UiButton from '@/components/common/UI/UiButton.vue';
 
 const store = useStore();
 const route = useRoute();
-const { isLoading, isLoadingOriginal } = useDelayedLoader();
+
+const isLoading = ref();
 const { confirm } = useConfirm();
 const { openChat } = useMessenger();
 
-const isCardView = shallowRef(false);
-const firstPagination = ref(null);
+const isCardView = ref(false);
 const isMobile = useMobile();
 
-const editableRequest = ref(null);
-const disablingRequest = ref(null);
-const viewingRequest = ref(null);
-const formRequestIsVisible = shallowRef(false);
-const formDisableIsVisible = shallowRef(false);
-const requestViewIsVisible = shallowRef(false);
+const editableRequest = shallowRef(null);
+const disablingRequest = shallowRef(null);
+const viewingRequest = shallowRef(null);
 
-const requests = computed(() => store.getters.REQUESTS);
-const requestsPagination = computed(() => store.getters.REQUESTS_PAGINATION);
+const formRequestIsVisible = ref(false);
+const formDisableIsVisible = ref(false);
+const requestViewIsVisible = ref(false);
+
+const firstPagination = useTemplateRef('firstPagination');
+const pagination = ref(null);
+const requests = ref([]);
 
 const currentViewComponentName = computed(() => {
     if (isMobile) return CompanyRequestTableMobile;
     return isCardView.value ? CompanyRequestTableMobile : CompanyRequestTable;
 });
 
-const fetchRequests = async () => {
+const formKeysOnlyArray = [
+    'directions',
+    'districts',
+    'regions',
+    'objectTypesGeneral',
+    'objectTypes',
+    'gateTypesGeneral',
+    'gateTypes',
+    'objectClasses',
+    'consultant_ids'
+];
+
+async function fetchRequests() {
     isLoading.value = true;
 
-    await store.dispatch('SEARCH_REQUESTS', { query: route.query });
-    isLoading.value = false;
-};
+    const payload = { ...route.query };
+
+    singleToArrayByKeys(payload, formKeysOnlyArray);
+
+    try {
+        const response = await api.request.search(payload);
+
+        if (response) {
+            requests.value = response.data;
+            pagination.value = response.pagination;
+        }
+    } finally {
+        isLoading.value = false;
+    }
+}
+
+const { currentUserId } = useAuth();
+const router = useRouter();
 
 const { next, nextWithScroll, queryIsInitialized } = useTableContent(fetchRequests, {
-    scrollTo: firstPagination
+    scrollTo: firstPagination,
+    initQuery: async () => {
+        const query = { ...route.query };
+
+        const queryIsEmpty = Object.keys(query).length === 0;
+
+        if (queryIsEmpty) {
+            await router.replace({ query: { consultant_ids: [currentUserId.value] } });
+        }
+    }
 });
 
 const editRequest = request => {
