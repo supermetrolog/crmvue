@@ -41,7 +41,7 @@ export default {
         return responseToData(response);
     },
     async update(id, payload) {
-        const response = await axios.patchForm(`${URL}/${id}`, payload);
+        const response = await axios.putForm(`${URL}/${id}`, payload);
         return responseToData(response);
     },
     async delete(id) {
