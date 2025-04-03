@@ -6,31 +6,29 @@
                 <Table shadow>
                     <template #thead>
                         <Tr class="text-left">
-                            <Th> Название</Th>
-                            <Th> Описание</Th>
-                            <Th></Th>
+                            <Th>Название</Th>
+                            <Th>Описание</Th>
+                            <Th>Действия</Th>
                         </Tr>
                     </template>
                     <template #tbody>
                         <Tr v-for="item in companyGroups" :key="item.id">
-                            <Td> {{ item.full_name }}</Td>
+                            <Td> {{ item.nameRu ?? item.nameEng }}</Td>
                             <Td class="description">
                                 {{ item.description }}
                             </Td>
-                            <Td>
+                            <Td width="150">
                                 <div class="d-flex align-items-center justify-content-center gap-2">
-                                    <HoverActionsButton
+                                    <UiButtonIcon
                                         @click="emit('edit', item)"
                                         label="Редактировать"
-                                    >
-                                        <i class="fas fa-edit"></i>
-                                    </HoverActionsButton>
-                                    <HoverActionsButton
+                                        icon="fa-solid fa-edit"
+                                    />
+                                    <UiButtonIcon
                                         @click="deleteGroup(item.id)"
                                         label="Удалить"
-                                    >
-                                        <i class="fas fa-trash"></i>
-                                    </HoverActionsButton>
+                                        icon="fa-solid fa-trash"
+                                    />
                                 </div>
                             </Td>
                         </Tr>
@@ -46,11 +44,11 @@ import Table from '@/components/common/Table/Table.vue';
 import Tr from '@/components/common/Table/Tr.vue';
 import Th from '@/components/common/Table/Th.vue';
 import Td from '@/components/common/Table/Td.vue';
-import HoverActionsButton from '@/components/common/HoverActions/HoverActionsButton.vue';
 import { useConfirm } from '@/composables/useConfirm.js';
 import { useStore } from 'vuex';
 import { shallowRef } from 'vue';
 import Loader from '@/components/common/Loader.vue';
+import UiButtonIcon from '@/components/common/UI/UiButtonIcon.vue';
 
 const emit = defineEmits(['edit', 'deleted']);
 defineProps({ companyGroups: { type: Array, default: () => [] } });

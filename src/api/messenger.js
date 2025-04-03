@@ -90,7 +90,7 @@ export default {
     async updateMessage(message) {
         const url = `/chat-member-messages/${message.id}`;
 
-        const response = await axios.patchForm(url, message);
+        const response = await axios.putForm(url, message);
         return responseToData(response);
     },
     async getMedia(chatMemberID, { extension = null, page = 1 }) {

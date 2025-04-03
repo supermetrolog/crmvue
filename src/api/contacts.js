@@ -32,7 +32,7 @@ export default {
         return responseToData(response);
     },
     async update(id, payload) {
-        const response = await axios.patch(`${URL}/${id}`, payload);
+        const response = await axios.put(`${URL}/${id}`, payload);
         return responseToData(response);
     },
     async delete(id) {
