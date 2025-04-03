@@ -90,7 +90,23 @@
                 </DashboardCard>
             </UiCol>
             <UiCol :cols="4">
-                <DashboardCard :title="`Последние действия (${pagination?.totalCout ?? 0})`">
+                <DashboardCard class="dashboard-stats-block">
+                    <template #header>
+                        <div class="dashboard-stats-block__header">
+                            <h3 class="dashboard-card__title">
+                                <span>Последние действия ({{ pagination?.totalCount ?? 0 }})</span>
+                            </h3>
+                            <UiButton
+                                @click="fetchHistories"
+                                small
+                                color="light"
+                                icon="fa-solid fa-refresh"
+                                :loading="historiesIsLoading"
+                            >
+                                Обновить
+                            </UiButton>
+                        </div>
+                    </template>
                     <div v-if="histories.length" class="d-flex flex-column gap-1 position-relative">
                         <Loader v-if="historiesIsLoading" />
                         <div
@@ -122,7 +138,7 @@
 </template>
 <script setup>
 import DashboardCard from '@/components/Dashboard/Card/DashboardCard.vue';
-import { reactive, ref, toRaw } from 'vue';
+import { onMounted, reactive, ref, toRaw } from 'vue';
 import api from '@/api/api.js';
 import { useNotify } from '@/utils/use/useNotify.js';
 import { useConfirm } from '@/composables/useConfirm.js';
@@ -194,7 +210,7 @@ async function runPurposesFix() {
 
 // histories
 
-const historiesIsLoading = ref(false);
+const historiesIsLoading = ref(true);
 const histories = ref([]);
 const pagination = ref(null);
 
@@ -212,6 +228,8 @@ async function fetchHistories() {
         historiesIsLoading.value = false;
     }
 }
+
+onMounted(fetchHistories);
 
 // temporary
 
