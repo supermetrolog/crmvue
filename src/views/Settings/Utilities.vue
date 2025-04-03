@@ -81,6 +81,22 @@
                                     @click="purposesFixFormIsVisible = true"
                                     small
                                     class="mt-2"
+                                    color="light"
+                                >
+                                    Использовать
+                                </UiButton>
+                            </DashboardCard>
+                        </UiCol>
+                        <UiCol :cols="4">
+                            <DashboardCard>
+                                <p class="mb-1">Reassign Company Consultants</p>
+                                <p class="text-grey">Описание:</p>
+                                <p>Переназначить консультантов для выбранных компаний</p>
+                                <UiButton
+                                    @click="reassignCompanyConsultantsIsVisible = true"
+                                    small
+                                    class="mt-2"
+                                    color="light"
                                 >
                                     Использовать
                                 </UiButton>
@@ -113,6 +129,7 @@
                             v-for="history in histories"
                             :key="history.id"
                             v-tippy="'Нажмите, чтобы посмотреть подробнее'"
+                            @click="showHistory(history)"
                             class="py-1 px-2 dashboard-bg-light br-1 c-pointer"
                         >
                             <div class="d-flex gap-2 align-items-center">
@@ -134,11 +151,38 @@
                 </DashboardCard>
             </UiCol>
         </div>
+        <teleport to="body">
+            <UiModal
+                v-model:visible="historyViewIsVisible"
+                :title="`Просмотр истории ${viewableHistoryId}`"
+                :width="400"
+                :min-height="200"
+            >
+                <Spinner v-if="historyIsLoading" small label="Загрузка истории" />
+                <div v-else-if="viewableHistory">
+                    <div class="d-flex gap-2 align-items-center mb-1">
+                        <Avatar :src="viewableHistory.initiator.userProfile.avatar" :size="40" />
+                        <div>
+                            <p>
+                                {{ viewableHistory.initiator.userProfile.medium_name }},
+                                <span class="text-grey fs-2">
+                                    {{ getCreatedAt(viewableHistory.created_at) }}
+                                </span>
+                            </p>
+                            <p class="text-grey fs-2">{{ eventToLabel(viewableHistory.event) }}</p>
+                        </div>
+                    </div>
+                    <p class="mb-1">Метаданные:</p>
+                    <p>{{ viewableHistory.metadata }}</p>
+                </div>
+                <EmptyData v-else>История не найдена..</EmptyData>
+            </UiModal>
+        </teleport>
     </div>
 </template>
 <script setup>
 import DashboardCard from '@/components/Dashboard/Card/DashboardCard.vue';
-import { onMounted, reactive, ref, toRaw } from 'vue';
+import { onMounted, reactive, ref, shallowRef, toRaw } from 'vue';
 import api from '@/api/api.js';
 import { useNotify } from '@/utils/use/useNotify.js';
 import { useConfirm } from '@/composables/useConfirm.js';
@@ -230,6 +274,37 @@ async function fetchHistories() {
 }
 
 onMounted(fetchHistories);
+
+const historyViewIsVisible = ref(false);
+const viewableHistoryId = shallowRef(null);
+const viewableHistory = shallowRef(null);
+const historyIsLoading = ref(false);
+
+async function fetchHistory() {
+    historyIsLoading.value = true;
+
+    try {
+        const response = await api.utilityHistory.get(viewableHistoryId.value);
+
+        if (response) {
+            viewableHistory.value = response;
+        }
+    } finally {
+        historyIsLoading.value = false;
+    }
+}
+
+function showHistory(history) {
+    viewableHistoryId.value = history.id;
+
+    fetchHistory();
+
+    historyViewIsVisible.value = true;
+}
+
+// reassigning
+
+const reassignCompanyConsultantsIsVisible = ref(false);
 
 // temporary
 
