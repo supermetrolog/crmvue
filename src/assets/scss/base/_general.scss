@@ -226,8 +226,13 @@ main {
         }
     }
 
+    .dp--clear-btn {
+        justify-content: flex-end;
+        width: min-content;
+    }
+
     &:has(.form__tooltip) {
-        .dp__clear_icon {
+        .dp--clear-btn {
             right: 25px;
         }
     }

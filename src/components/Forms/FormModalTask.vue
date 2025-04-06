@@ -94,6 +94,8 @@
                         :presets="endPresets"
                         :min-date="form.date.start"
                         :v="v$.form.date.end"
+                        :start-date="form.date.start"
+                        :focus-start-date="endDateIsFocusedToStart"
                         presets-label="Выполнить за"
                         placeholder="Дата окончания"
                         label="Дата окончания"
@@ -592,4 +594,10 @@ function assignToModerator() {
 function setStartToday() {
     form.value.date.start = new Date();
 }
+
+const endDateIsFocusedToStart = computed(
+    () =>
+        isNullish(form.value.date.end) ||
+        (form.value.date.start && dayjs(form.value.date.end).isBefore(dayjs(form.value.date.start)))
+);
 </script>

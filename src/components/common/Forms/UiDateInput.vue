@@ -15,12 +15,13 @@
                 :format
                 :placeholder
                 :class="[inputClass, { filled: hasValue }]"
-                :input-class-name="validationClass"
                 :highlight="{ weekdays: [0, 6] }"
                 class="ui-date-input__picker"
                 teleport
                 :inline
                 :disabled
+                :start-date
+                :focus-start-date
             >
                 <template #calendar-header="{ index, day }">
                     <div :class="{ 'color-success': index === 5 || index === 6 }">
@@ -72,7 +73,9 @@ const props = defineProps({
     reactive: Boolean,
     inline: Boolean,
     inputClass: [String, Object, Array],
-    v: Object
+    v: Object,
+    startDate: [Date, String],
+    focusStartDate: Boolean
 });
 
 const _presets = computed(() => {
