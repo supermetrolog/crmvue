@@ -222,19 +222,21 @@
         .checkbox-chip__label {
             flex-direction: column-reverse;
             gap: 10px;
-            padding: 10px;
+            padding: 10px 5px;
             border-radius: 5px;
             width: 110px;
             font-size: 15px;
             font-weight: 500;
-            background-color: variables.$bg-gray-l;
+            border: 2px solid variables.$bg-gray-l;
+            //background-color: variables.$color_grey_light;
 
             i {
                 font-size: 24px;
             }
 
             &.active {
-                background-color: variables.$bg-success;
+                background-color: #a3e9b6;
+                color: #000;
             }
         }
     }

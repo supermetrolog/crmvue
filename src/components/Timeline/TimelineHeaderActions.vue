@@ -21,7 +21,7 @@
             icon="fa-solid fa-check"
             color="light"
         />
-        <span class="timeline-page-header__dot">·</span>
+        <span class="timeline-page-header__dot">|</span>
         <UiButton
             v-for="consultant in consultants"
             :key="consultant.id"
@@ -34,7 +34,7 @@
             {{ consultant.userProfile.short_name }}
         </UiButton>
         <template v-if="canBeCreated">
-            <span class="timeline-page-header__dot">·</span>
+            <span class="timeline-page-header__dot">|</span>
             <UiButton
                 @click="createTimeline"
                 class="timeline-page-header__consultant"
@@ -45,7 +45,7 @@
                 Создать мой таймлайн
             </UiButton>
         </template>
-        <span class="timeline-page-header__dot">·</span>
+        <span class="timeline-page-header__dot">|</span>
         <TimelineHeaderStatus :request />
     </div>
 </template>
