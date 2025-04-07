@@ -10,6 +10,15 @@
             >
                 <template #extra>
                     <DashboardChip
+                        v-if="currentUserIsAdmin"
+                        @click="throwError"
+                        class="settings-form__button settings-form__button--info"
+                        :class="{ disabled: refreshIsLoading }"
+                    >
+                        <i class="fa-solid fa-user-cog" />
+                        <span class="ml-1">Секретная кнопка</span>
+                    </DashboardChip>
+                    <DashboardChip
                         @click="refreshQuestions"
                         class="settings-form__button settings-form__button--info"
                         :class="{ disabled: refreshIsLoading }"
@@ -91,6 +100,13 @@ import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
 import MessengerQuizEditableQuestion from '@/components/Messenger/Quiz/Question/MessengerQuizEditableQuestion.vue';
 import { useStore } from 'vuex';
 import FormQuestion from '@/components/Forms/FormQuestion.vue';
+import { useAuth } from '@/composables/useAuth.js';
+
+const { currentUserIsAdmin } = useAuth();
+
+function throwError() {
+    throw new Error('Test Error');
+}
 
 const defaultFields = {
     RADIO: 1,
