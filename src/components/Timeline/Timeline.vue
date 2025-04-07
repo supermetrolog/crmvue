@@ -17,18 +17,30 @@
                 :current-tab="currentTab"
             />
         </template>
-        <Spinner v-if="isGeneralLoading" class="mt-5 absolute-center" />
-        <template v-else-if="timeline">
-            <div class="timeline-page">
+        <div class="timeline-page">
+            <div v-if="isGeneralLoading || timelineIsChanging" class="timeline-page__wrapper row">
+                <UiCol :cols="2">
+                    <TimelineTreeSkeleton />
+                </UiCol>
+                <UiCol :cols="10">
+                    <Spinner
+                        class="absolute-center"
+                        :label="
+                            timelineIsChanging ? 'Смена консультанта..' : 'Загрузка таймлайна..'
+                        "
+                    />
+                </UiCol>
+            </div>
+            <template v-else-if="timeline">
                 <div v-if="currentTab === 'main'" class="timeline-page__wrapper row">
-                    <div class="col-2">
+                    <UiCol :cols="2">
                         <TimelineTree
                             @select="changeStep"
                             :selected="selectedStep?.number"
                             :current="timeline.steps"
                         />
-                    </div>
-                    <div class="col-10">
+                    </UiCol>
+                    <UiCol :cols="10">
                         <div class="timeline-page__content" :class="{ disabled: isDisabled }">
                             <Loader v-if="stepIsLoading || stepIsChanging" />
                             <div v-if="!stepIsChanging" class="timeline-page__current">
@@ -50,7 +62,7 @@
                                 @close="backdropIsVisible = false"
                             />
                         </div>
-                    </div>
+                    </UiCol>
                 </div>
                 <TimelineExtraBlock
                     v-else-if="currentTab === 'log'"
@@ -58,9 +70,34 @@
                     :step="selectedStep"
                     :disabled="isDisabled"
                 />
+            </template>
+            <div v-else-if="canBeCreated" class="timeline-create">
+                <div class="timeline-create__window">
+                    <div class="timeline-create__body">
+                        <div class="timeline-create__content">
+                            <i class="timeline-create__icon fa-solid fa-link-slash" />
+                            <div>
+                                <p class="fs-3 font-weight-semi mb-2">
+                                    К вам не прикреплен таймлайн по запросу!
+                                </p>
+                                <p>Вы можете создать свой собственный таймлайн.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="timeline-create__footer">
+                        <UiButton
+                            @click="createTimeline"
+                            icon="fa-solid fa-plus"
+                            color="light"
+                            :loading="isCreating"
+                        >
+                            Создать мой таймлайн
+                        </UiButton>
+                    </div>
+                </div>
             </div>
-        </template>
-        <EmptyData v-else>Информация о таймлайне не была найдена..</EmptyData>
+            <EmptyData v-else>Информация о таймлайне не была найдена..</EmptyData>
+        </div>
         <teleport to="body">
             <FormCompanyRequest
                 v-if="requestFormIsVisible"
@@ -84,7 +121,7 @@ import Loader from '@/components/common/Loader.vue';
 import Spinner from '@/components/common/Spinner.vue';
 import EmptyData from '@/components/common/EmptyData.vue';
 import { useDelayedLoader } from '@/composables/useDelayedLoader.js';
-import TimelineTree from '@/components/Timeline/TimelineTree.vue';
+import TimelineTree from '@/components/Timeline/Tree/TimelineTree.vue';
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
 import TimelineBackdrop from '@/components/Timeline/TimelineBackdrop.vue';
 import TimelineStepOffers from '@/components/Timeline/Step/TimelineStepOffers.vue';
@@ -106,7 +143,10 @@ import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
 import TimelineHeaderSkeleton from '@/components/Timeline/TimelineHeaderSkeleton.vue';
 import FormCompanyRequest from '@/components/Forms/Company/FormCompanyRequest.vue';
 import api from '@/api/api.js';
-
+import UiButton from '@/components/common/UI/UiButton.vue';
+import { useConfirm } from '@/composables/useConfirm.js';
+import UiCol from '@/components/common/UI/UiCol.vue';
+import TimelineTreeSkeleton from '@/components/Timeline/Tree/Skeleton/TimelineTreeSkeleton.vue';
 defineEmits(['close']);
 
 const { isLoading: stepIsLoading } = useDelayedLoader();
@@ -259,12 +299,17 @@ async function fetchTimeline(withLoader = false) {
     return Boolean(timeline.value);
 }
 
+const timelineIsChanging = ref(false);
+
 watch(
     () => route.query?.consultant_id,
-    (newValue, oldValue) => {
-        if (newValue !== oldValue) fetchTimeline();
-    },
-    { deep: true }
+    async (newValue, oldValue) => {
+        if (newValue !== oldValue) {
+            timelineIsChanging.value = true;
+            await fetchTimeline();
+            timelineIsChanging.value = false;
+        }
+    }
 );
 
 async function updateTimeline() {
@@ -311,5 +356,31 @@ const requestFormIsVisible = ref(false);
 
 function fetchRequests() {
     store.dispatch('FETCH_COMPANY_REQUESTS', route.params.id);
+}
+
+const canBeCreated = computed(() => {
+    if (currentRequest.value) return currentRequest.value.consultant_id === currentUserId.value;
+    return false;
+});
+
+const isCreating = ref(false);
+
+const { confirm } = useConfirm();
+
+async function createTimeline() {
+    const confirmed = await confirm(
+        'Новый таймлайн',
+        'Вы уверены, что хотите создать новый таймлайн?'
+    );
+    if (!confirmed) return;
+
+    isCreating.value = true;
+
+    await store.dispatch('createTimeline', {
+        request_id: currentRequest.value.id,
+        consultant_id: currentUserId.value
+    });
+
+    isCreating.value = false;
 }
 </script>

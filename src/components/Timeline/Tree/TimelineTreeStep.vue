@@ -29,8 +29,8 @@
 </template>
 
 <script setup>
-import TimelineTreeStepPoint from '@/components/Timeline/TimelineTreeStepPoint.vue';
-import TimelineTreeStepRow from '@/components/Timeline/TimelineTreeStepRow.vue';
+import TimelineTreeStepPoint from '@/components/Timeline/Tree/TimelineTreeStepPoint.vue';
+import TimelineTreeStepRow from '@/components/Timeline/Tree/TimelineTreeStepRow.vue';
 import { computed } from 'vue';
 import { useRoute } from 'vue-router';
 

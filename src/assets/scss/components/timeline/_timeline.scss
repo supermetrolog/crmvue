@@ -93,6 +93,11 @@
         font-size: 15px;
         color: #000;
     }
+
+    &__dot {
+        color: #736969;
+        font-weight: 600;
+    }
 }
 
 .timeline-page-header-info {
@@ -427,4 +432,42 @@
 
 .offer-search__actions .button {
     text-transform: none;
+}
+
+.timeline-create {
+    &__window {
+        border-radius: 15px;
+        overflow: hidden;
+        background-color: #fff;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translateY(-50%) translateX(-50%);
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.12);
+    }
+
+    &__body {
+        background-color: #f93154;
+        color: #fff;
+        padding: 15px;
+    }
+
+    &__content {
+        @include mixins.flex-box($gap: 1rem, $a: center, $j: center);
+    }
+
+    &__footer {
+        padding: 15px;
+        border-top: 1px solid #d9d9dc;
+    }
+
+    &__icon {
+        font-size: 70px;
+        opacity: 0.5;
+    }
+
+    &__label {
+        font-size: 22px;
+        font-weight: 500;
+    }
 }
