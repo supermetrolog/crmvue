@@ -15,7 +15,7 @@
 </template>
 
 <script setup>
-import TimelineTreeStep from '@/components/Timeline/TimelineTreeStep.vue';
+import TimelineTreeStep from '@/components/Timeline/Tree/TimelineTreeStep.vue';
 import { Timeline as steps } from '@/const/const.js';
 
 defineEmits(['select']);

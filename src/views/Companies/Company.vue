@@ -126,6 +126,7 @@ import { useDocumentTitle } from '@/composables/useDocumentTitle.js';
 import { messenger } from '@/const/messenger.js';
 import { useTippyText } from '@/composables/useTippyText.js';
 import UiTooltipIcon from '@/components/common/UI/UiTooltipIcon.vue';
+import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
 
 provide('openContact', openContact);
 provide('createContactComment', createContactComment);
@@ -146,7 +147,6 @@ const requestFormIsVisible = shallowRef(false);
 const contactFormIsVisible = shallowRef(false);
 const companyFormIsVisible = shallowRef(false);
 const dealFormIsVisible = shallowRef(false);
-const timelineIsVisible = shallowRef(false);
 const contactModalIsVisible = shallowRef(false);
 
 const request = ref(null);
@@ -164,14 +164,6 @@ const passiveWhyComment = computed(() => {
     if (COMPANY.value.passive_why_comment) text += ': ' + COMPANY.value.passive_why_comment;
     return text;
 });
-
-watch(
-    () => route.query,
-    () => {
-        timelineIsVisible.value = !!route.query.request_id;
-    },
-    { immediate: true }
-);
 
 watch(
     () => COMPANY.value?.id,
@@ -276,11 +268,6 @@ const onCompanyUpdated = () => {
     getCompanyContacts();
 };
 
-const closeTimeline = () => {
-    timelineIsVisible.value = false;
-    router.push({ name: 'company' });
-};
-
 async function createContactComment(data) {
     await store.dispatch('CREATE_CONTACT_COMMENT', data);
 }
@@ -322,5 +309,22 @@ function onRequestUpdated(request) {
     if (requestIndex !== -1) {
         store.state.CompanyRequest.companyRequests.splice(requestIndex, 1, request);
     }
+}
+
+// timeline
+
+const timelineIsVisible = ref(false);
+
+watch(
+    () => route.query,
+    () => {
+        timelineIsVisible.value = isNotNullish(route.query.request_id);
+    },
+    { immediate: true }
+);
+
+function closeTimeline() {
+    timelineIsVisible.value = false;
+    router.push({ name: 'company' });
 }
 </script>

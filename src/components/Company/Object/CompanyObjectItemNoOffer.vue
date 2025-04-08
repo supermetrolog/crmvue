@@ -1,7 +1,7 @@
 <template>
     <div>
         <DashboardCard
-            class="offer-table-item-mobile"
+            class="offer-table-item-mobile offer-table-item-mobile--no-offer"
             :class="{
                 passive: isPassive,
                 general: offer.type_id === 2
@@ -16,7 +16,7 @@
                     Старая версия
                 </a>
                 <div class="offer-table-item-preview__header mb-1">
-                    <UiField v-if="isPassive" class="dashboard-bg-danger-l"> Пассив </UiField>
+                    <UiField v-if="isPassive" class="dashboard-bg-danger-l">Пассив</UiField>
                     <UiField v-else class="dashboard-bg-success-l">
                         {{ dealType }}
                     </UiField>
@@ -27,7 +27,11 @@
                     >
                         <i class="fa-solid fa-eye-slash"></i>
                     </UiField>
-                    <UiField tooltip="Класс объекта" class="dashboard-bg-danger-l">
+                    <UiField
+                        v-if="offer.class_name"
+                        tooltip="Класс объекта"
+                        class="dashboard-bg-danger-l"
+                    >
                         {{ offer.class_name }}
                     </UiField>
                 </div>
@@ -68,7 +72,7 @@
                 </UiField>
             </div>
             <div class="offer-table-item-mobile__header">
-                <UiField color="light">
+                <UiField v-if="offer.visual_id" color="light">
                     {{ offer.visual_id }}
                 </UiField>
                 <div class="offer-table-item-mobile__actions">
@@ -83,11 +87,11 @@
             </div>
             <div class="object-offer__block mb-1">
                 <p class="object-offer__block-title">Адрес</p>
-                <p>{{ offer.address }}</p>
+                <p>{{ offer.address ?? '-' }}</p>
             </div>
             <div class="row">
                 <div class="col-6">
-                    <div class="offer-table-item-area">
+                    <div v-if="offer.area" class="offer-table-item-area">
                         <with-unit-type
                             :unit-type="unitTypes.SQUARE_METERS"
                             class="offer-table-item-area__title"
@@ -97,7 +101,7 @@
                     </div>
                 </div>
                 <div class="col-6">
-                    <div class="offer-table-item-price">
+                    <div v-if="offer.price" class="offer-table-item-price">
                         <div class="font-weight-bold">
                             <with-unit-type :unit-type="unitTypes.RUB_PER_SQUARE_METERS">
                                 {{ offer.price }}

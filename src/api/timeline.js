@@ -33,12 +33,12 @@ export default {
         const response = await axios.patch(`${URL}/update-step/${timelineStepId}`, payload);
         return responseToData(response);
     },
-    async sendObjects(payload) {
-        const response = await axios.post(`${URL}/send-objects`, payload);
-        return responseToData(response);
-    },
     async addActionComments(payload) {
         const response = await axios.post(`${URL}/add-action-comments`, payload);
+        return responseToData(response);
+    },
+    async create(payload) {
+        const response = await axios.post(URL, payload);
         return responseToData(response);
     }
 };

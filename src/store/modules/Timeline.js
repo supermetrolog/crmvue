@@ -28,6 +28,10 @@ const Timeline = {
         updateTimeline(state, data) {
             state.timeline = data.timeline;
             state.request_timelines = data.request_timelines;
+        },
+        addTimeline(state, timeline) {
+            state.timeline = timeline;
+            state.request_timelines.push(timeline);
         }
     },
     actions: {
@@ -38,6 +42,12 @@ const Timeline = {
             );
 
             commit('updateTimeline', timeline);
+        },
+        async createTimeline({ commit }, payload) {
+            const timeline = await api.timeline.create(payload);
+            if (timeline) {
+                commit('addTimeline', timeline);
+            }
         },
         async fetchRequestTimelinesData({ state }) {
             const data = await Promise.allSettled(
