@@ -168,6 +168,23 @@ main {
     }
 }
 
+.schedule {
+    .dp--preset-dates {
+        max-height: 500px;
+    }
+
+    .form__label.required::after {
+        content: '*';
+        font-size: 18px;
+        color: variables.$color_danger;
+        margin-left: 3px;
+    }
+
+    .dp--preset-range {
+        font-size: 16px;
+    }
+}
+
 .date-picker-tooltip {
     background-color: red;
 }
@@ -254,6 +271,10 @@ main {
     }
 }
 
+.dp__overlay_cell_disabled {
+    opacity: .4;
+}
+
 .ui-field {
     font-size: 14px;
     padding: 5px 10px;
@@ -321,4 +342,8 @@ body:has(.modal.active) {
         }
 
     }
+}
+
+.dp__cell_disabled {
+    opacity: .3;
 }

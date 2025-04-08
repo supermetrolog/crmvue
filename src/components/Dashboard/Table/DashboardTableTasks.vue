@@ -12,7 +12,7 @@
             />
             <EmptyData v-if="!tasks.length">Список задач пуст..</EmptyData>
         </template>
-        <Modal @close="previewIsVisible = false" :show="previewIsVisible" :blackout-opacity="0.5">
+        <UiModal v-model:visible="previewIsVisible" title="Просмотр задачи" :blackout-opacity="0.5">
             <template #container>
                 <div v-if="previewIsLoading" class="dashboard-tasks-table__card">
                     <Spinner label="Загрузка задачи.." class="absolute-center" />
@@ -32,7 +32,7 @@
                     :editable="userCanEdit"
                 />
             </template>
-        </Modal>
+        </UiModal>
     </div>
 </template>
 
@@ -45,10 +45,10 @@ import TaskCard from '@/components/TaskCard/TaskCard.vue';
 import api from '@/api/api.js';
 import { useMessenger } from '@/components/Messenger/useMessenger.js';
 import { useAuth } from '@/composables/useAuth.js';
-import Modal from '@/components/common/Modal.vue';
 import Spinner from '@/components/common/Spinner.vue';
 import { toDateFormat } from '@/utils/formatters/date.js';
 import { spliceById } from '@/utils/helpers/array/spliceById.js';
+import UiModal from '@/components/common/UI/UiModal.vue';
 
 const emit = defineEmits(['task-updated', 'hide']);
 const props = defineProps({
@@ -56,10 +56,7 @@ const props = defineProps({
         type: Array,
         default: () => []
     },
-    isLoading: {
-        type: Boolean,
-        default: false
-    },
+    isLoading: Boolean,
     hidden: Boolean
 });
 

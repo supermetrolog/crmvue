@@ -16,9 +16,13 @@
                             <DashboardTableTasksFilters
                                 v-model:status="filters.status"
                                 v-model:type="filters.type"
+                                @reset="resetFilters"
                                 :counts="counts"
                                 :relations="relations"
                                 :target="targetUser?.id"
+                                :has-filters="
+                                    filters.createdById || filters.userId || filters.tags?.length
+                                "
                             >
                                 <template #filters>
                                     <MultiSelect
@@ -72,66 +76,65 @@
                     </DashboardCard>
                 </div>
                 <div class="col-xl-9 col-xxl-10">
-                    <DashboardCard class="dashboard-task-table">
-                        <template #header>
-                            <div class="dashboard-task-table__header">
-                                <UiForm>
-                                    <UiFormGroup class="align-items-end">
-                                        <div class="col-8 d-flex align-items-end">
-                                            <UiInput
-                                                v-model="querySearch"
-                                                label="Поиск"
-                                                class="w-100"
-                                            />
-                                            <Button
-                                                @click="querySearch = null"
-                                                :disabled="!querySearch?.length"
-                                                class="ml-2"
-                                                danger
-                                            >
-                                                Очистить
-                                            </Button>
-                                        </div>
-                                        <MultiSelect
-                                            v-model="sortingOption"
-                                            class="offset-1 col-3"
-                                            label="Сортировка"
-                                            :options="sortingOptions"
+                    <DashboardCard class="mb-2">
+                        <UiForm>
+                            <UiFormGroup class="align-items-end">
+                                <UiCol :cols="8">
+                                    <div class="d-flex align-items-end">
+                                        <UiInput
+                                            v-model="querySearch"
+                                            label="Поиск"
+                                            class="w-100"
                                         />
-                                        <div class="col-12 mb-2">
-                                            <div class="d-flex align-items-end">
-                                                <AnimationTransition :speed="0.6">
-                                                    <PaginationClassic
-                                                        v-if="tasks.data?.length && !isFavoriteView"
-                                                        @next="setNextPage"
-                                                        :pagination="tasks.pagination"
-                                                    />
-                                                </AnimationTransition>
-                                                <Button
-                                                    @click="toggleFavoriteView"
-                                                    :disabled="isLoading"
-                                                    :active="isFavoriteView"
-                                                    small
-                                                    warning
-                                                    icon
-                                                    :badge="favoriteTasksEntities.length"
-                                                    class="ml-auto"
-                                                >
-                                                    <i class="fa-solid fa-star" />
-                                                    <span>Избранное</span>
-                                                </Button>
-                                            </div>
-                                        </div>
-                                    </UiFormGroup>
-                                </UiForm>
-                            </div>
-                        </template>
+                                        <UiButton
+                                            @click="querySearch = null"
+                                            :disabled="!querySearch?.length"
+                                            class="ml-2"
+                                            icon="fa-solid fa-trash"
+                                            color="danger-light"
+                                        >
+                                            Очистить
+                                        </UiButton>
+                                    </div>
+                                </UiCol>
+                                <MultiSelect
+                                    v-model="sortingOption"
+                                    class="offset-1 col-3"
+                                    label="Сортировка"
+                                    :options="sortingOptions"
+                                />
+                            </UiFormGroup>
+                        </UiForm>
+                        <div class="d-flex align-items-end mt-2">
+                            <AnimationTransition :speed="0.6">
+                                <PaginationClassic
+                                    v-if="tasks.data?.length && !isFavoriteView"
+                                    @next="setNextPage"
+                                    :pagination="tasks.pagination"
+                                />
+                            </AnimationTransition>
+                            <Button
+                                @click="toggleFavoriteView"
+                                :disabled="isLoading"
+                                :active="isFavoriteView"
+                                small
+                                warning
+                                icon
+                                :badge="favoriteTasksEntities.length"
+                                class="ml-auto"
+                            >
+                                <i class="fa-solid fa-star" />
+                                <span>Избранное</span>
+                            </Button>
+                        </div>
+                    </DashboardCard>
+                    <DashboardCard class="dashboard-task-table">
                         <AnimationTransition :speed="0.2">
                             <div v-if="isFavoriteView">
-                                <DashboardChip class="dashboard-bg-warning-l mb-4" with-icon>
+                                <UiField class="mb-2" color="light">
                                     <i class="fa-solid fa-star"></i>
                                     <span>Избранные задачи</span>
-                                </DashboardChip>
+                                </UiField>
                                 <DashboardTableFavoriteTasks class="mb-4" />
                             </div>
                             <DashboardTableTasks
@@ -139,17 +142,19 @@
                                 @task-updated="onTaskUpdated"
                                 :is-loading="isLoading"
                                 :tasks="tasks.data"
-                            />
-                        </AnimationTransition>
-                        <AnimationTransition :speed="0.6">
-                            <PaginationClassic
-                                v-if="tasks.data?.length && !isFavoriteView"
-                                @next="setNextPage"
-                                class="mt-3"
-                                :pagination="tasks.pagination"
+                                :class="{ 'pt-3': tasks.data[0]?.tags?.length }"
                             />
                         </AnimationTransition>
                     </DashboardCard>
+                    <AnimationTransition :speed="0.6">
+                        <DashboardCard v-if="tasks.data?.length && !isFavoriteView" class="mt-2">
+                            <PaginationClassic
+                                v-if="tasks.data?.length && !isFavoriteView"
+                                @next="setNextPage"
+                                :pagination="tasks.pagination"
+                            />
+                        </DashboardCard>
+                    </AnimationTransition>
                 </div>
             </div>
         </div>
@@ -181,7 +186,9 @@ import DashboardTargetUser from '@/components/Dashboard/DashboardTargetUser.vue'
 import { useFavoriteTasks } from '@/composables/useFavoriteTasks.js';
 import DashboardTableFavoriteTasks from '@/components/Dashboard/Table/DashboardTableFavoriteTasks.vue';
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
-import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
+import UiField from '@/components/common/UI/UiField.vue';
+import UiCol from '@/components/common/UI/UiCol.vue';
+import UiButton from '@/components/common/UI/UiButton.vue';
 
 const store = useStore();
 
@@ -201,6 +208,14 @@ const filters = reactive({
     type: [],
     status: []
 });
+
+function resetFilters() {
+    filters.createdById = null;
+    filters.userId = null;
+    filters.tags = [];
+    filters.type = [];
+    filters.status = [];
+}
 
 const sortingOptions = [
     { value: '-updated_at', label: 'По умолчанию' },

@@ -1,7 +1,19 @@
 <template>
     <div class="dashboard-aside__filters">
-        <Button @click="reset" class="w-100" :disabled="!hasFilters" small danger>Сбросить</Button>
-        <div class="dashboard-aside__menu mt-3">
+        <p class="mb-2 font-weight-semi fs-4">Фильтры</p>
+        <UiButton
+            @click="reset"
+            class="w-100"
+            :disabled="!hasAnyFilters"
+            small
+            color="danger-light"
+            icon="fa-solid fa-trash"
+            center
+        >
+            Сбросить
+        </UiButton>
+        <hr />
+        <div class="dashboard-aside__menu">
             <p class="dashboard-aside__label">Статусы</p>
             <DashboardCardNavLink
                 @select="toggleAll"
@@ -116,8 +128,9 @@ import { taskOptions } from '@/const/options/task.options.js';
 import { spliceWithPrimitive } from '@/utils/helpers/array/spliceWithPrimitive.js';
 import { useStore } from 'vuex';
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
-import Button from '@/components/common/Button.vue';
+import UiButton from '@/components/common/UI/UiButton.vue';
 
+const emit = defineEmits(['reset']);
 const store = useStore();
 const statusModelValue = defineModel('status', { type: Array, default: () => [] });
 const typeModelValue = defineModel('type', { type: Array, default: () => [] });
@@ -131,7 +144,8 @@ const props = defineProps({
         type: Object,
         required: true
     },
-    target: Number
+    target: Number,
+    hasFilters: Boolean
 });
 
 const field = shallowReactive({
@@ -174,8 +188,8 @@ const viewingLabel = computed(() => {
     return 'Где я наблюдатель';
 });
 
-const hasFilters = computed(() => {
-    return typeModelValue.value.length || statusModelValue.value.length;
+const hasAnyFilters = computed(() => {
+    return typeModelValue.value.length || statusModelValue.value.length || props.hasFilters;
 });
 
 const toggleField = key => {
@@ -250,6 +264,8 @@ const reset = () => {
 
     statusModelValue.value = [];
     typeModelValue.value = [];
+
+    emit('reset');
 };
 
 const init = () => {

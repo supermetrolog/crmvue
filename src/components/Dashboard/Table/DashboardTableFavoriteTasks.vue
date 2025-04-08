@@ -1,5 +1,6 @@
 <template>
-    <div class="dashboard-favorite-tasks-table">
+    <div class="dashboard-favorite-tasks-table position-relative">
+        <Loader v-if="isLoading" />
         <VirtualDragList
             v-model="currentTasks"
             @drop="onDropTask"
@@ -18,7 +19,7 @@
             </template>
         </VirtualDragList>
         <EmptyData v-if="!favoriteTasksEntities.length">Список избранного пуст..</EmptyData>
-        <Modal @close="previewIsVisible = false" :show="previewIsVisible" :blackout-opacity="0.5">
+        <UiModal v-model:visible="previewIsVisible" title="Просмотр задачи" :blackout-opacity="0.5">
             <template #container>
                 <div v-if="previewIsLoading" class="dashboard-tasks-table__card">
                     <Spinner label="Загрузка задачи.." class="absolute-center" />
@@ -38,7 +39,7 @@
                     :editable="userCanEdit"
                 />
             </template>
-        </Modal>
+        </UiModal>
     </div>
 </template>
 
@@ -49,13 +50,14 @@ import TaskCard from '@/components/TaskCard/TaskCard.vue';
 import api from '@/api/api.js';
 import { useMessenger } from '@/components/Messenger/useMessenger.js';
 import { useAuth } from '@/composables/useAuth.js';
-import Modal from '@/components/common/Modal.vue';
 import Spinner from '@/components/common/Spinner.vue';
 import { toDateFormat } from '@/utils/formatters/date.js';
 import { spliceById } from '@/utils/helpers/array/spliceById.js';
 import EmptyData from '@/components/common/EmptyData.vue';
 import VirtualDragList from 'vue-virtual-draglist';
 import { useFavoriteTasks } from '@/composables/useFavoriteTasks.js';
+import UiModal from '@/components/common/UI/UiModal.vue';
+import Loader from '@/components/common/Loader.vue';
 
 const emit = defineEmits(['task-updated', 'hide', 'position-changed']);
 
@@ -154,6 +156,8 @@ function onChangedFilesCount(count) {
 
 // dnd
 
+const isLoading = ref(false);
+
 const { favoriteTasksEntities, changeTaskFavoritePosition } = useFavoriteTasks();
 
 async function onDropTask(dropEvent) {
@@ -167,14 +171,20 @@ async function onDropTask(dropEvent) {
                 : null
     };
 
-    const changed = await changeTaskFavoritePosition(
-        dropEvent.item.id,
-        payload,
-        dropEvent.oldIndex,
-        dropEvent.newIndex
-    );
+    isLoading.value = true;
 
-    if (!changed) generateCurrentTasks();
+    try {
+        await changeTaskFavoritePosition(
+            dropEvent.item.id,
+            payload,
+            dropEvent.oldIndex,
+            dropEvent.newIndex
+        );
+    } catch (error) {
+        generateCurrentTasks();
+    } finally {
+        isLoading.value = false;
+    }
 }
 
 function generateCurrentTasks() {
