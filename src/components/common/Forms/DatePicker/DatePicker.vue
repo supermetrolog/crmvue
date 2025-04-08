@@ -1,8 +1,10 @@
 <template>
     <div class="schedule">
+        <p v-if="label" class="form__label mb-1" :class="{ required: required }">{{ label }}</p>
         <VueDatePicker
             ref="datePicker"
-            v-model="value"
+            @update:model-value="onInput"
+            :model-value="modelValue"
             locale="ru"
             inline
             :markers="markers"
@@ -11,108 +13,126 @@
             month-name-format="long"
             :highlight="{ weekdays: [0, 6] }"
             :style="{ '--dp-cell-size': size }"
+            time-picker-inline
+            :min-date
+            :max-date
+            :preset-dates="_presets"
+            six-weeks="center"
+            :start-date
+            :focus-start-date
+            :disabled
         >
+            <template v-if="presetsLabel" #presets-label>
+                <span class="ui-date-input__presets-label">{{ presetsLabel }}:</span>
+            </template>
             <template #calendar-header="{ index, day }">
                 <div :class="index === 5 || index === 6 ? 'color-success' : ''">
                     {{ day }}
                 </div>
             </template>
-            <template #left-sidebar>
-                <div class="schedule-sidebar">
-                    <AnimationTransition>
-                        <div v-if="value" class="schedule-sidebar__body">
-                            <div class="schedule-sidebar__day">
-                                <span class="schedule-sidebar__day-title">Выбрано</span>
-                                <span>{{ formattedDate.day }}</span>
-                                <span>{{ formattedDate.time }}</span>
-                            </div>
-                        </div>
-                    </AnimationTransition>
-                    <div class="schedule-sidebar__footer">
-                        <MessengerButton
-                            @click="switchView('сalendar')"
-                            class="schedule-sidebar__button"
-                        >
-                            Указать день
-                        </MessengerButton>
-                        <MessengerButton
-                            @click="switchView('time')"
-                            class="schedule-sidebar__button"
-                        >
-                            Указать время
-                        </MessengerButton>
-                        <MessengerButton
-                            @click="value = new Date()"
-                            class="schedule-sidebar__button"
-                        >
-                            Сегодня
-                        </MessengerButton>
-                        <MessengerButton
-                            @click="$emit('select')"
-                            :disabled="!value"
-                            color="success"
-                            class="schedule-sidebar__button"
-                        >
-                            Выбрать дату
-                        </MessengerButton>
-                    </div>
-                </div>
-            </template>
             <template #marker-tooltip="{ tooltip }">
                 <DatePickerTooltip :tooltip="tooltip" />
             </template>
-            <template #action-row></template>
+            <template #action-preview>
+                <AnimationTransition>
+                    <div v-if="modelValue" class="schedule-sidebar__body">
+                        <div class="schedule-sidebar__day">
+                            <span class="schedule-sidebar__day-title">Выбрано</span>
+                            <span>{{ formattedDate.day }}</span>
+                            <span>{{ formattedDate.time }}</span>
+                        </div>
+                    </div>
+                </AnimationTransition>
+            </template>
         </VueDatePicker>
+        <ValidationMessage v-if="hasValidationError && !disabled" :message="error" />
     </div>
 </template>
-<script>
-import AnimationTransition from '@/components/common/AnimationTransition.vue';
-import MessengerButton from '@/components/Messenger/MessengerButton.vue';
+<script setup>
 import VueDatePicker from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css';
 import DatePickerTooltip from '@/components/common/Forms/DatePicker/DatePickerTooltip.vue';
 import dayjs from 'dayjs';
+import { computed, toRef, useTemplateRef, watch } from 'vue';
+import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
+import AnimationTransition from '@/components/common/AnimationTransition.vue';
+import ValidationMessage from '@/components/common/Forms/VaildationMessage.vue';
+import { useFormControlValidation } from '@/composables/useFormControlValidation.js';
 
-export default {
-    name: 'DatePicker',
-    components: { DatePickerTooltip, VueDatePicker, MessengerButton, AnimationTransition },
-    emits: ['update:modelValue', 'select'],
-    props: {
-        modelValue: {
-            type: [String, Date, Number],
-            default: null
-        },
-        markers: {
-            type: Array,
-            default: () => []
-        },
-        size: {
-            type: String,
-            default: '100px'
-        }
+const modelValue = defineModel();
+const emit = defineEmits(['change']);
+
+const props = defineProps({
+    markers: {
+        type: Array,
+        default: () => []
     },
-    computed: {
-        value: {
-            set(value) {
-                this.$emit('update:modelValue', value);
+    size: {
+        type: String,
+        default: '100px'
+    },
+    presetsLabel: String,
+    label: String,
+    minDate: [Date, String],
+    maxDate: [Date, String],
+    required: Boolean,
+    disabled: Boolean,
+    presets: Array,
+    v$: Object,
+    startDate: [Date, String],
+    focusStartDate: Boolean
+});
+
+const formattedDate = computed(() => {
+    const dayjs_date = dayjs(modelValue.value);
+
+    return {
+        day: dayjs_date.format('D MMMM'),
+        time: dayjs_date.format('HH:mm')
+    };
+});
+
+const _presets = computed(() => {
+    if (!props.presets?.length) return undefined;
+
+    if (isNotNullish(props.presetsLabel)) {
+        return [
+            {
+                slot: 'presets-label',
+                value: new Date(),
+                label: props.presetsLabel
             },
-            get() {
-                return this.modelValue;
-            }
-        },
-        formattedDate() {
-            const dayjs_date = dayjs(this.value);
+            ...props.presets
+        ];
+    }
 
-            return {
-                day: dayjs_date.format('D MMMM'),
-                time: dayjs_date.format('HH:mm')
-            };
-        }
-    },
-    methods: {
-        switchView(view) {
-            this.$refs.datePicker.switchView(view);
+    return props.presets;
+});
+
+function onInput(value) {
+    if (value !== modelValue.value) {
+        modelValue.value = value;
+        validate();
+        emit('change', value);
+    }
+}
+
+const { hasValidationError, validate, error } = useFormControlValidation(
+    toRef(props, 'v'),
+    modelValue,
+    { reactive: props.reactive }
+);
+
+const datePicker = useTemplateRef('datePicker');
+
+watch(
+    () => props.startDate,
+    () => {
+        if (props.startDate && props.focusStartDate) {
+            const date = dayjs(props.startDate);
+
+            datePicker.value.setMonthYear({ month: date.month(), year: date.year() });
         }
     }
-};
+);
 </script>

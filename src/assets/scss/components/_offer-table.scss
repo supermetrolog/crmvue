@@ -573,6 +573,10 @@
         top: -30px;
         right: 0;
     }
+
+    &--no-offer &__block {
+        top: 0;
+    }
 }
 
 .offer-table-item-preview-slider {

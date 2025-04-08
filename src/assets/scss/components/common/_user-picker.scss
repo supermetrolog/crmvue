@@ -21,7 +21,7 @@
     @include mixins.flex-box($gap: 10px);
     height: max-content;
     padding: 10px;
-    border-radius: 20px;
+    border-radius: 10px;
     background-color: #F3F3F3;
     box-shadow: 0 0 5px 1px rgba(13, 31, 47, .2);
     @include mixins.transition(background-color, color, opacity);

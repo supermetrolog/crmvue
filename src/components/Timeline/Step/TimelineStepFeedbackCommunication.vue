@@ -1,7 +1,7 @@
 <template>
     <div class="timeline-step">
         <div class="row">
-            <div class="col-12 mb-2">
+            <UiCol :cols="12">
                 <TimelineInfo
                     @next="$emit('next-step')"
                     title="3. Обратная связь от клиента"
@@ -12,11 +12,6 @@
                 >
                     <p>3.2. Укажите, каким способом была получена обратная связь</p>
                     <template #footer>
-                        <TimelineFeedbackPicker
-                            v-model="ways"
-                            class="mb-2"
-                            :disabled="disabled || isDisabled"
-                        />
                         <div class="d-flex gap-2">
                             <TimelineButton
                                 @click="confirm"
@@ -37,7 +32,10 @@
                         </div>
                     </template>
                 </TimelineInfo>
-            </div>
+            </UiCol>
+            <UiCol :cols="12">
+                <TimelineFeedbackPicker v-model="ways" :disabled="disabled || isDisabled" />
+            </UiCol>
         </div>
     </div>
 </template>
@@ -49,6 +47,7 @@ import { waitHash } from '@/utils/helpers/common/waitHash.js';
 import TimelineButton from '@/components/Timeline/TimelineButton.vue';
 import { useTimelineContext } from '@/components/Timeline/useTimelineContext.js';
 import { computed, onBeforeMount, ref, toRef, watch } from 'vue';
+import UiCol from '@/components/common/UI/UiCol.vue';
 
 const emit = defineEmits(['update-step', 'updated-objects', 'next-step']);
 const props = defineProps({

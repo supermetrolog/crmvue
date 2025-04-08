@@ -21,6 +21,7 @@
             icon="fa-solid fa-check"
             color="light"
         />
+        <span class="timeline-page-header__dot">|</span>
         <UiButton
             v-for="consultant in consultants"
             :key="consultant.id"
@@ -32,6 +33,19 @@
         >
             {{ consultant.userProfile.short_name }}
         </UiButton>
+        <template v-if="canBeCreated">
+            <span class="timeline-page-header__dot">|</span>
+            <UiButton
+                @click="createTimeline"
+                class="timeline-page-header__consultant"
+                color="light"
+                icon="fa-solid fa-plus"
+                :loading="isCreating"
+            >
+                Создать мой таймлайн
+            </UiButton>
+        </template>
+        <span class="timeline-page-header__dot">|</span>
         <TimelineHeaderStatus :request />
     </div>
 </template>
@@ -41,9 +55,13 @@ import { useRoute, useRouter } from 'vue-router';
 import TimelineHeaderStatus from '@/components/Timeline/TimelineHeaderStatus.vue';
 import UiButton from '@/components/common/UI/UiButton.vue';
 import UiButtonIcon from '@/components/common/UI/UiButtonIcon.vue';
+import { computed, ref } from 'vue';
+import { useAuth } from '@/composables/useAuth.js';
+import { useConfirm } from '@/composables/useConfirm.js';
+import { useStore } from 'vuex';
 
 defineEmits(['complete', 'disable', 'edit']);
-defineProps({
+const props = defineProps({
     disabled: Boolean,
     request: {
         type: Object,
@@ -71,5 +89,38 @@ async function changeTimeline(consultantId) {
     query.step = 0;
 
     await router.push({ query: query });
+}
+
+const { currentUserId } = useAuth();
+
+const canBeCreated = computed(() => {
+    return (
+        !props.consultants.some(consultant => consultant.id === currentUserId.value) &&
+        props.request.consultant_id === currentUserId.value
+    );
+});
+
+const isCreating = ref(false);
+
+const { confirm } = useConfirm();
+const store = useStore();
+
+async function createTimeline() {
+    const confirmed = await confirm(
+        'Новый таймлайн',
+        'Вы уверены, что хотите создать новый таймлайн?'
+    );
+    if (!confirmed) return;
+
+    try {
+        isCreating.value = true;
+
+        await store.dispatch('createTimeline', {
+            request_id: props.request.id,
+            consultant_id: currentUserId.value
+        });
+    } finally {
+        isCreating.value = false;
+    }
 }
 </script>

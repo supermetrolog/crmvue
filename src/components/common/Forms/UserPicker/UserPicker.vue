@@ -1,6 +1,7 @@
 <template>
     <div class="user-picker">
-        <UiInput v-model="debouncedUserQuerySearch" rounded placeholder="Введите сотрудника.." />
+        <UiInput v-model="debouncedUserQuerySearch" :disabled placeholder="Введите сотрудника.." />
+        <slot name="after-search" />
         <div ref="list" class="user-picker__list">
             <UserPickerElement
                 v-for="(user, index) in users"
@@ -44,14 +45,8 @@ const props = defineProps({
         type: Array,
         default: () => []
     },
-    single: {
-        type: Boolean,
-        default: false
-    },
-    disabled: {
-        type: Boolean,
-        default: false
-    }
+    single: Boolean,
+    disabled: Boolean
 });
 
 const store = useStore();
