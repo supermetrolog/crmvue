@@ -53,7 +53,6 @@
                 </UserPicker>
             </template>
             <template #2>
-                <UiField color="light">На выполнение:</UiField>
                 <div class="task-form__dates">
                     <DatePicker
                         v-model="form.date.start"
@@ -204,6 +203,8 @@ import UiField from '@/components/common/UI/UiField.vue';
 import UiButton from '@/components/common/UI/UiButton.vue';
 import { useValidation } from '@/composables/useValidation.js';
 import { isNullish } from '@/utils/helpers/common/isNullish.js';
+import { isString } from '@/utils/helpers/string/isString.js';
+import { dayjsFromMoscow } from '@/utils/formatters/date.js';
 
 const store = useStore();
 const { getTagsOptions } = useTagsOptions();
@@ -252,7 +253,7 @@ const form = ref({
     message: null,
     date: {
         end: null,
-        start: null
+        start: new Date()
     },
     tags: [],
     user_id: null,
@@ -337,6 +338,12 @@ const fetchConsultants = async () => {
     consultantsIsLoading.value = false;
 };
 
+function parseDate(date, defaultValue = null) {
+    if (isNullish(date)) return defaultValue;
+    if (isString(date) && isEditing.value) return dayjsFromMoscow(date).toDate();
+    return dayjs(date).toDate();
+}
+
 const {
     isVisible,
     onPopupShowed,
@@ -360,8 +367,8 @@ onPopupShowed(() => {
             title: props.value.title,
             message: props.value.message,
             date: {
-                end: props.value.end,
-                start: props.value.start
+                end: parseDate(props.value.end),
+                start: parseDate(props.value.start)
             },
             user_id: props.value.user_id,
             status: props.value.status ?? taskOptions.statusTypes.NEW,
