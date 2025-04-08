@@ -2,9 +2,9 @@
     <div class="form__control" :class="{ 'form__control--disabled': disabled, required: required }">
         <label>
             <span v-if="label" class="form__label">{{ label }}</span>
-            <DashboardChip v-if="helper" class="form__helper dashboard-bg-light w-auto mb-2">
+            <UiField v-if="helper" class="form__helper mb-2" color="light">
                 {{ helper }}
-            </DashboardChip>
+            </UiField>
             <textarea
                 ref="textarea"
                 @input="onInput"
@@ -25,9 +25,9 @@
 import ValidationMessage from '@/components/common/Forms/VaildationMessage.vue';
 import { computed, onMounted, toRef, useTemplateRef, watch } from 'vue';
 import { useFormControlValidation } from '@/composables/useFormControlValidation.js';
-import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
 import { isNullish } from '@/utils/helpers/common/isNullish.js';
 import { isNotEmptyString } from '@/utils/helpers/string/isNotEmptyString.js';
+import UiField from '@/components/common/UI/UiField.vue';
 
 const modelValue = defineModel({ type: String });
 const props = defineProps({

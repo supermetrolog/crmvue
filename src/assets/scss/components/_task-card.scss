@@ -609,3 +609,21 @@
         @include mixins.flex-box($gap: 5px, $wrap: true);
     }
 }
+
+.task-form {
+    &__dates {
+        position: relative;
+        @include mixins.flex-box($j: space-between);
+    }
+
+    &__dates-divider {
+        position: absolute;
+        top: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 2px;
+        height: 100%;
+        background-color: rgba(0, 0, 0, .1);
+        text-align: center;
+    }
+}

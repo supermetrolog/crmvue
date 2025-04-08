@@ -63,25 +63,34 @@
             </template>
         </div>
         <div class="stepper__footer">
-            <MessengerButton v-if="currentStep > 0" @click="selectStep(currentStep - 1)">
+            <UiButton
+                @click="selectStep(currentStep - 1)"
+                :disabled="currentStep === 0"
+                rounded
+                color="white"
+                bolder
+            >
                 Назад
-            </MessengerButton>
-            <MessengerButton @click="complete" color="success" :disabled="hasError">
+            </UiButton>
+            <UiButton @click="complete" :disabled="hasError" rounded color="success-light" bolder>
                 Завершить
-            </MessengerButton>
-            <MessengerButton
-                v-if="currentStep < steps.length - 1"
+            </UiButton>
+            <UiButton
                 @click="selectStep(currentStep + 1)"
+                :disabled="currentStep === steps.length - 1"
+                rounded
+                color="white"
+                bolder
             >
                 Далее
-            </MessengerButton>
+            </UiButton>
         </div>
     </div>
 </template>
 <script setup>
-import MessengerButton from '@/components/Messenger/MessengerButton.vue';
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
 import { computed, ref } from 'vue';
+import UiButton from '@/components/common/UI/UiButton.vue';
 
 const currentStep = defineModel('step', { type: Number, default: 0 });
 const emit = defineEmits(['complete']);
