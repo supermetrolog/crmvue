@@ -1,3 +1,5 @@
+import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
+
 const API = import.meta.env.VITE_VUE_APP_API_URL;
 const HOST = import.meta.env.VITE_VUE_APP_HOST;
 const OLD_HOST = import.meta.env.VITE_VUE_APP_OBJECT_URL;
@@ -10,10 +12,13 @@ export function getLinkOfferByObject(offer) {
     if (offer.type_id === 3 || !offer) {
         return url;
     }
+
     if (offer.generalOffersMix) {
         url += '?offer_id=' + offer.generalOffersMix.original_id + '';
+    } else if (isNotNullish(offer.original_id)) {
+        url += '?offer_id=' + offer.original_id;
     } else {
-        url += '?offer_id=' + offer.original_id + '';
+        url += '?offer_id=' + offer.offer_id;
     }
 
     return url;

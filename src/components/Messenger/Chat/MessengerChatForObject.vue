@@ -28,7 +28,6 @@
         </div>
         <MessengerChatEmpty v-else />
         <teleport to="body">
-            <MessengerSchedule ref="schedule" />
             <FormModalMessageAlert />
         </teleport>
     </div>
@@ -40,7 +39,6 @@ import MessengerChatContent from '@/components/Messenger/Chat/MessengerChatConte
 import MessengerChatEmpty from '@/components/Messenger/Chat/MessengerChatEmpty.vue';
 import MessengerQuiz from '@/components/Messenger/Quiz/MessengerQuiz.vue';
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
-import MessengerSchedule from '@/components/Messenger/Schedule/MessengerSchedule.vue';
 import MessengerChatSettings from '@/components/Messenger/Chat/Settings/MessengerChatSettings.vue';
 import FormModalMessageAlert from '@/components/Forms/FormModalMessageAlert.vue';
 import { computed, provide, useTemplateRef, watch } from 'vue';
@@ -67,7 +65,6 @@ const creators = {
     alert: showAlertCreator
 };
 
-const schedule = useTemplateRef('schedule');
 const quizHelper = useTemplateRef('quizHelper');
 const chatSettings = useTemplateRef('chatSettings');
 
@@ -146,7 +143,6 @@ const editAddition = async ({
 
 provide('$createAddition', createAddition);
 provide('$editAddition', editAddition);
-provide('$openSchedule', async () => await schedule.value.open());
 provide('$toggleQuizHelper', () => quizHelper.value.toggle());
 provide('$toggleSettings', () => chatSettings.value.toggle());
 

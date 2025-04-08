@@ -173,7 +173,6 @@ import {
     required,
     requiredIf
 } from '@vuelidate/validators';
-import useVuelidate from '@vuelidate/core';
 import { useStore } from 'vuex';
 import MultiSelect from '@/components/common/Forms/MultiSelect.vue';
 import TaskTagOption from '@/components/common/Forms/TaskTagOption.vue';

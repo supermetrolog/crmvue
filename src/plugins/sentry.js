@@ -10,7 +10,7 @@ export function initSentry(app) {
     if (import.meta.env.PROD) {
         init({
             app,
-            dsn: import.meta.env.VITE_VUE_APP_SENTRY_DSN,
+            dsn: import.meta.env.VITE_VUE_APP_GLITCH_DSN,
             integrations: [browserTracingIntegration({ router }), dedupeIntegration()],
             skipBrowserExtensionCheck: true
         });

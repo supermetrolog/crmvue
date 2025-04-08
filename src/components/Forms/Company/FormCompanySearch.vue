@@ -114,7 +114,7 @@
                                         :true-value="0"
                                         :false-value="null"
                                     >
-                                        С отключенной номенклатурой
+                                        Со скрытой номенклатурой
                                     </UiCheckbox>
                                 </div>
                             </template>
@@ -126,6 +126,69 @@
                                 />
                             </template>
                         </MultiSelect>
+                    </UiFormGroup>
+                    <UiFormDivider />
+                    <UiFormGroup>
+                        <UiCol :cols="12">
+                            <p class="font-weight-semi fs-2">
+                                <UiTooltipIcon
+                                    icon="fa-solid fa-star"
+                                    class="text-success"
+                                    tooltip="Новый фильтр"
+                                />
+                                Связь с запросами
+                            </p>
+                        </UiCol>
+                        <UiCol :cols="12">
+                            <div class="d-flex gap-1 flex-wrap">
+                                <RadioChip
+                                    v-model="form.requests_filter"
+                                    value="active"
+                                    unselect
+                                    icon="fa-solid fa-up-long text-primary"
+                                    :rounded="false"
+                                    label="С активными запросами"
+                                />
+                                <RadioChip
+                                    v-model="form.requests_filter"
+                                    value="not-active"
+                                    unselect
+                                    icon="fa-solid fa-up-long text-grey"
+                                    :rounded="false"
+                                    label="Без активных запросов"
+                                />
+                                <RadioChip
+                                    v-model="form.requests_filter"
+                                    value="passive"
+                                    unselect
+                                    :rounded="false"
+                                    icon="fa-solid fa-ban text-danger"
+                                    label="С архивными запросами"
+                                />
+                                <RadioChip
+                                    v-model="form.requests_filter"
+                                    value="none"
+                                    unselect
+                                    icon="fa-solid fa-xmark"
+                                    :rounded="false"
+                                    label="Без запросов когда-либо"
+                                />
+                            </div>
+                        </UiCol>
+                        <AnimationTransition :speed="0.5">
+                            <UiCol v-if="hasRequestsFilter" :cols="12">
+                                <div class="py-1 px-2 dashboard-bg-light br-1">
+                                    <DoubleInput
+                                        v-model:first="form.requests_area_min"
+                                        v-model:second="form.requests_area_max"
+                                        :disabled="form.requests_filter === 'none'"
+                                        label="S пола в запросе"
+                                        type="number"
+                                        unit="м<sup>2</sup>"
+                                    />
+                                </div>
+                            </UiCol>
+                        </AnimationTransition>
                     </UiFormGroup>
                     <UiFormDivider />
                     <UiFormGroup>
@@ -164,7 +227,7 @@ import { maxDate } from '@//validators';
 import DoubleInput from '@/components/common/Forms/DoubleInput.vue';
 import { deleteEmptyFields } from '@/utils/helpers/object/deleteEmptyFields.js';
 import Modal from '@/components/common/Modal.vue';
-import { computed, reactive, shallowRef, watch } from 'vue';
+import { computed, shallowRef, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useSearchForm } from '@/composables/useSearchForm.js';
 import CheckboxOptions from '@/components/common/Forms/CheckboxOptions.vue';
@@ -179,6 +242,11 @@ import { plural } from '@/utils/plural.js';
 import UiFormDivider from '@/components/common/Forms/UiFormDivider.vue';
 import SwitchSlider from '@/components/common/Forms/SwitchSlider.vue';
 import { useSelectedFilters } from '@/composables/useSelectedFilters.js';
+import UiCol from '@/components/common/UI/UiCol.vue';
+import UiTooltipIcon from '@/components/common/UI/UiTooltipIcon.vue';
+import RadioChip from '@/components/common/Forms/RadioChip.vue';
+import AnimationTransition from '@/components/common/AnimationTransition.vue';
+import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
 
 const route = useRoute();
 const router = useRouter();
@@ -228,7 +296,10 @@ const { resetForm, form } = useSearchForm(
         without_product_ranges: null,
         show_product_ranges: null,
         activity_profile_ids: [],
-        activity_group_ids: []
+        activity_group_ids: [],
+        requests_filter: null,
+        requests_area_min: null,
+        requests_area_max: null
     },
     {
         submit: onSubmit,
@@ -250,6 +321,25 @@ watch(
     () => form.with_passive_consultant,
     value => {
         if (value) form.consultant_id = null;
+    }
+);
+
+const hasRequestsFilter = computed(() => isNotNullish(form.requests_filter));
+
+watch(hasRequestsFilter, value => {
+    if (!value) {
+        form.requests_area_min = null;
+        form.requests_area_max = null;
+    }
+});
+
+watch(
+    () => form.requests_filter,
+    value => {
+        if (value === 'area') {
+            form.requests_area_min = null;
+            form.requests_area_max = null;
+        }
     }
 );
 
