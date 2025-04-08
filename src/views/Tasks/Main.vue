@@ -128,10 +128,10 @@
                         </template>
                         <AnimationTransition :speed="0.2">
                             <div v-if="isFavoriteView">
-                                <DashboardChip class="dashboard-bg-warning-l mb-4" with-icon>
+                                <UiField class="mb-2" color="light">
                                     <i class="fa-solid fa-star"></i>
                                     <span>Избранные задачи</span>
-                                </DashboardChip>
+                                </UiField>
                                 <DashboardTableFavoriteTasks class="mb-4" />
                             </div>
                             <DashboardTableTasks
@@ -181,7 +181,7 @@ import DashboardTargetUser from '@/components/Dashboard/DashboardTargetUser.vue'
 import { useFavoriteTasks } from '@/composables/useFavoriteTasks.js';
 import DashboardTableFavoriteTasks from '@/components/Dashboard/Table/DashboardTableFavoriteTasks.vue';
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
-import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
+import UiField from '@/components/common/UI/UiField.vue';
 
 const store = useStore();
 
