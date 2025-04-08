@@ -1,17 +1,21 @@
 <template>
     <div class="dashboard-card-task skeleton-body">
-        <p class="dashboard-card-task__text skeleton w-100">Текст</p>
+        <span class="skeleton mr-3">#1234</span>
+        <div class="avatar skeleton mr-2">Test</div>
+        <p class="dashboard-card-task__text skeleton w-100 mr-3">Текст</p>
         <div class="dashboard-card-task__meta">
-            <DashboardChip class="skeleton">Статус</DashboardChip>
             <span class="dashboard-card-task__date skeleton">01 янв</span>
-            <HoverActionsButton disabled class="skeleton">
-                <i class="fa-solid fa-check-double" />
-            </HoverActionsButton>
+            <UiButtonIcon disabled class="skeleton" icon="fa-solid fa-check-double" />
         </div>
     </div>
 </template>
 
 <script setup>
-import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
-import HoverActionsButton from '@/components/common/HoverActions/HoverActionsButton.vue';
+import UiButtonIcon from '@/components/common/UI/UiButtonIcon.vue';
 </script>
+<style scoped>
+.avatar {
+    height: 55px;
+    width: 55px;
+}
+</style>
