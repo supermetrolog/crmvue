@@ -158,17 +158,19 @@ async function addFiles() {
 
     isCreating.value = true;
 
-    const response = await api.task.addFiles(props.task.id, { files: newFiles.value });
+    try {
+        const response = await api.task.addFiles(props.task.id, { files: newFiles.value });
 
-    if (response) {
-        newFiles.value = [];
-        fileInputEl.value.clear();
-        notify.success('Файлы успешно добавлены.');
+        if (response) {
+            newFiles.value = [];
+            fileInputEl.value.clear();
+            notify.success('Файлы успешно добавлены.');
 
-        files.value = response;
-        emit('count-changed', files.value.length);
+            files.value = response;
+            emit('count-changed', files.value.length);
+        }
+    } finally {
+        isCreating.value = false;
     }
-
-    isCreating.value = false;
 }
 </script>
