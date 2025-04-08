@@ -203,7 +203,7 @@ import UiField from '@/components/common/UI/UiField.vue';
 import UiButton from '@/components/common/UI/UiButton.vue';
 import { useValidation } from '@/composables/useValidation.js';
 import { isNullish } from '@/utils/helpers/common/isNullish.js';
-import { isString } from 'maska/types/utils.js';
+import { isString } from '@/utils/helpers/string/isString.js';
 import { dayjsFromMoscow } from '@/utils/formatters/date.js';
 
 const store = useStore();
