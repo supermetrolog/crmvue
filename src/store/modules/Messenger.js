@@ -636,19 +636,6 @@ const Messenger = {
 
             return false;
         },
-        async addReminder({ commit }, { messageID, options }) {
-            const addition = await api.reminder.createFromMessage(messageID, {
-                ...options,
-                status: 1
-            });
-
-            if (addition) {
-                commit('addAddition', { messageID, additionType: 'reminder', addition });
-                return true;
-            }
-
-            return false;
-        },
         async deleteAddition({ commit }, { messageID, additionID, additionType }) {
             const response = await api[additionType].delete(additionID);
 

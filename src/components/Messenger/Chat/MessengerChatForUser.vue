@@ -10,7 +10,6 @@
         </div>
         <MessengerChatEmpty v-else />
         <teleport to="body">
-            <MessengerSchedule ref="schedule" />
             <FormModalMessageAlert />
             <FormModalMessage ref="messageUpdate" />
         </teleport>
@@ -20,7 +19,6 @@
 import { useStore } from 'vuex';
 import MessengerChatLoader from '@/components/Messenger/Chat/MessengerChatLoader.vue';
 import MessengerChatEmpty from '@/components/Messenger/Chat/MessengerChatEmpty.vue';
-import MessengerSchedule from '@/components/Messenger/Schedule/MessengerSchedule.vue';
 import MessengerChatSettings from '@/components/Messenger/Chat/Settings/MessengerChatSettings.vue';
 import FormModalMessageAlert from '@/components/Forms/FormModalMessageAlert.vue';
 import FormModalMessage from '@/components/Forms/FormModalMessage.vue';
@@ -42,15 +40,12 @@ const notify = useNotify();
 
 const { show: showTaskCreator } = useAsyncPopup('taskCreator');
 const { show: showAlertCreator } = useAsyncPopup('alertCreator');
-const { show: showReminderCreator } = useAsyncPopup('reminderCreator');
 
 const creators = {
     task: showTaskCreator,
-    alert: showAlertCreator,
-    reminder: showReminderCreator
+    alert: showAlertCreator
 };
 
-const schedule = ref(null);
 const messageUpdate = ref(null);
 const chatSettings = ref(null);
 const currentTab = shallowRef(CHAT_TABS.CHAT);
@@ -91,7 +86,6 @@ const editAddition = async ({
 
 provide('$createAddition', createAddition);
 provide('$editAddition', editAddition);
-provide('$openSchedule', async () => await schedule.value.open());
 provide('$toggleSettings', () => chatSettings.value.toggle());
 provide('$messageUpdate', props => messageUpdate.value.open(props));
 

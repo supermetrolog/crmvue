@@ -153,7 +153,7 @@ import Rating from '@/components/common/Rating.vue';
 import MessengerPanelCompanyTabs from '@/components/Messenger/Panel/Company/MessengerPanelCompanyTabs.vue';
 import { computed, ref } from 'vue';
 import { getCompanyName, getCompanyShortName } from '@/utils/formatters/models/company.js';
-import { ucFirst } from '@/utils/formatters/string.js';
+import { toCorrectUrl, ucFirst } from '@/utils/formatters/string.js';
 import { companyOptions } from '@/const/options/company.options.js';
 import { alg } from '@/utils/alg.js';
 import { useMessenger } from '@/components/Messenger/useMessenger.js';
@@ -198,7 +198,7 @@ const website = computed(() => {
     if (!props.company.generalContact) return null;
 
     return props.company.generalContact.websites.length
-        ? props.company.generalContact.websites[0].website
+        ? toCorrectUrl(props.company.generalContact.websites[0].website)
         : null;
 });
 
