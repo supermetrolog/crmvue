@@ -1257,6 +1257,23 @@
             }
         }
     }
+
+    .messenger-quiz-question__main {
+        .radio-chip {
+            display: flex;
+            align-items: center;
+        }
+    }
+
+    &__description {
+        font-weight: 400;
+    }
+
+    &__schedule {
+        border: 1px solid #a8a8a8;
+        box-shadow: none;
+        line-height: 1.1;
+    }
 }
 
 .survey-card-list {
