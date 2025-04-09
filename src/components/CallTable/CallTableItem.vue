@@ -64,7 +64,8 @@
             <p v-else class="messenger-warning">&#8212;</p>
         </Td>
         <Td sort="contact_position" :width="350">
-            <p>{{ position }}</p>
+            <p v-if="call.contact.position_unknown" class="text-grey">Должность неизвестна</p>
+            <p v-else>{{ position }}</p>
         </Td>
         <Td sort="user_name" :width="250">
             <div class="d-flex align-items-center gap-2">
@@ -104,7 +105,6 @@ const statusLabel = computed(() => callStatus[props.call.status]);
 const createdAt = computed(() => toBeautifulDateFormat(props.call.created_at));
 
 const position = computed(() => {
-    if (props.call.contact.position_unknown) return 'Должность неизвестна';
     return contactOptions.position[props.call.contact.position];
 });
 

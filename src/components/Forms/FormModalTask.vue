@@ -8,9 +8,6 @@
         custom-close
         class="task-form"
     >
-        <div>
-            <DashboardTableTasksItem :task="taskPreview" />
-        </div>
         <Stepper v-model:step="step" @complete="submit" :steps="steps" :v="v$.form" keep-alive>
             <template #1>
                 <UiField v-if="isEditing" color="light" class="task-form__warning mb-2 mx-auto">
@@ -192,7 +189,6 @@ import { useTagsOptions } from '@/composables/options/useTagsOptions.js';
 import { taskOptions } from '@/const/options/task.options.js';
 import FormModalTaskDescription from '@/components/Forms/FormModalTaskDescription.vue';
 import { useAuth } from '@/composables/useAuth.js';
-import DashboardTableTasksItem from '@/components/Dashboard/Table/TasksItem/DashboardTableTasksItem.vue';
 import { useDebounceFn, useTimeoutFn } from '@vueuse/core';
 import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
 import FileInput from '@/components/common/Forms/FileInput.vue';
@@ -261,41 +257,6 @@ const form = ref({
     observers: [],
     files: [],
     current_files: []
-});
-
-const taskPreview = computed(() => {
-    return {
-        tags: [],
-        id: 1,
-        created_by_type: 'user',
-        created_by_id: currentUser.value.id,
-        created_by: currentUser.value,
-        title: form.value.title || 'Заполните заголовок..',
-        status: 1,
-        observers: selectedObservers.value,
-        user_id: form.value.user_id,
-        user: selectedUser.value,
-        end: form.value.date.end,
-        start: form.value.date.start
-    };
-});
-
-const selectedUser = computed(() => {
-    return consultants.value.find(element => element.id === form.value.user_id);
-});
-
-const selectedObservers = computed(() => {
-    return form.value.observers.reduce((acc, element) => {
-        const user = consultants.value.find(el => el.id === element);
-
-        if (user)
-            acc.push({
-                user_id: element,
-                user
-            });
-
-        return acc;
-    }, []);
 });
 
 const consultantsForObservers = computed(() => {
