@@ -99,7 +99,7 @@
 
         .messenger-bar-tab__label {
             color: #000;
-            font-weight: 600;
+            font-weight: 500;
         }
     }
 
@@ -160,7 +160,6 @@
         writing-mode: vertical-lr;
         transform: rotate(180deg);
         padding: 12px 0 8px;
-        font-weight: 500;
         color: #696969;
         @include mixins.flex-box($a: center);
     }
