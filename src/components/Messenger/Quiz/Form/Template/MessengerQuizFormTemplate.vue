@@ -36,9 +36,11 @@
             class="messenger-quiz-question-card mb-2"
             :number="questionsOffset + key"
         />
-        <MessengerQuizFormWarningNeedCompletedCall
-            v-if="(!canBeCreated && isLoading) || (canBeCreated && !hasAvailableContact)"
-        />
+        <AnimationTransition :speed="0.5">
+            <MessengerQuizFormWarningNeedCompletedCall
+                v-if="(!canBeCreated && isLoading) || (canBeCreated && !hasAvailableContact)"
+            />
+        </AnimationTransition>
     </div>
 </template>
 <script setup>
@@ -53,6 +55,7 @@ import Spinner from '@/components/common/Spinner.vue';
 import { useStore } from 'vuex';
 import { messenger } from '@/const/messenger.js';
 import MessengerQuizFormWarningNeedCompletedCall from '@/components/Messenger/Quiz/Form/Warning/MessengerQuizFormWarningNeedCompletedCall.vue';
+import AnimationTransition from '@/components/common/AnimationTransition.vue';
 
 defineEmits(['object-sold', 'object-destroyed']);
 const props = defineProps({

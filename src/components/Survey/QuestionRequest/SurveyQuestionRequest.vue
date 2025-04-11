@@ -76,9 +76,15 @@
                 </Tooltip>
                 <span>{{ locationText }}</span>
             </p>
-            <p v-if="hasActivity" class="messenger-quiz-form-request-picker-element__category">
-                {{ categoryName }}
-            </p>
+            <div class="d-flex justify-content-between align-items-end">
+                <span
+                    v-if="hasActivity"
+                    class="messenger-quiz-form-request-picker-element__category"
+                >
+                    {{ categoryName }}
+                </span>
+                <span class="flex-shrink-0">Создан {{ createdAt }}</span>
+            </div>
         </div>
     </div>
 </template>
@@ -94,6 +100,7 @@ import { locationOptions } from '@/const/options/location.options.js';
 import { toNumberOrRangeFormat } from '@/utils/formatters/number.js';
 import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
 import UiButtonIcon from '@/components/common/UI/UiButtonIcon.vue';
+import { toDateFormat } from '@/utils/formatters/date.js';
 
 defineEmits(['edit']);
 const props = defineProps({
@@ -168,4 +175,6 @@ const locationText = computed(() => {
 const areaRange = computed(() =>
     toNumberOrRangeFormat(props.request.minArea, props.request.maxArea)
 );
+
+const createdAt = computed(() => toDateFormat(props.request.created_at, 'D.MM.YYг.'));
 </script>

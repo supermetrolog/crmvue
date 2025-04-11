@@ -4,6 +4,7 @@
         <VueDatePicker
             ref="datePicker"
             @update:model-value="onInput"
+            @update-month-year="onUpdateMonthAndYear"
             :model-value="modelValue"
             locale="ru"
             inline
@@ -53,7 +54,7 @@ import VueDatePicker from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css';
 import DatePickerTooltip from '@/components/common/Forms/DatePicker/DatePickerTooltip.vue';
 import dayjs from 'dayjs';
-import { computed, toRef, useTemplateRef, watch } from 'vue';
+import { computed, ref, toRef, useTemplateRef, watch } from 'vue';
 import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
 import ValidationMessage from '@/components/common/Forms/VaildationMessage.vue';
@@ -125,13 +126,28 @@ const { hasValidationError, validate, error } = useFormControlValidation(
 
 const datePicker = useTemplateRef('datePicker');
 
+const currentMonth = ref(null);
+const currentYear = ref(null);
+
+function onUpdateMonthAndYear({ month, year }) {
+    currentMonth.value = month;
+    currentYear.value = year;
+}
+
+function setMonthAndYearInPicker(month, year) {
+    datePicker.value.setMonthYear({ month, year });
+}
+
 watch(
     () => props.startDate,
     () => {
         if (props.startDate && props.focusStartDate) {
             const date = dayjs(props.startDate);
+            const [month, year] = [date.month(), date.year()];
 
-            datePicker.value.setMonthYear({ month: date.month(), year: date.year() });
+            if (month !== currentMonth.value || year !== currentYear.value) {
+                setMonthAndYearInPicker(month, year);
+            }
         }
     }
 );

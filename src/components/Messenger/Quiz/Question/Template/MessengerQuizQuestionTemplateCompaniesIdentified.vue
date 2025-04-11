@@ -60,8 +60,8 @@ function getForm() {
     return form;
 }
 
-function validate() {
-    return templateRef.value.validate();
+function validate(withNotify = true) {
+    return templateRef.value.validate(withNotify);
 }
 
 function setForm(form) {

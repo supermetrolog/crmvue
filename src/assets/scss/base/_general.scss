@@ -279,7 +279,6 @@ main {
     font-size: 14px;
     padding: 5px 10px;
     border-radius: 5px;
-    font-weight: 500;
     width: max-content;
     max-width: 100%;
     @include mixins.transition(opacity, background-color, color);
@@ -298,6 +297,10 @@ main {
 
     &--bordered {
         border: 1px solid rgba(205, 201, 201, 0.1);
+    }
+
+    &--bolder {
+        font-weight: 500;
     }
 
     @include mixins.bg-color-scheme(

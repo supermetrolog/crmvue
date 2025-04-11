@@ -12,14 +12,16 @@ const props = defineProps({
     color: String,
     bordered: Boolean,
     small: Boolean,
-    tooltip: String
+    tooltip: String,
+    bolder: Boolean
 });
 
 const classes = computed(() => {
     return {
         'ui-field--small': props.small,
         'ui-field--bordered': props.bordered,
-        [`ui-field--cl-${props.color}`]: isNotNullish(props.color)
+        [`ui-field--cl-${props.color}`]: isNotNullish(props.color),
+        'ui-field--bolder': props.bolder
     };
 });
 

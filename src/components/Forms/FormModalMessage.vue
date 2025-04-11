@@ -1,5 +1,4 @@
 <template>
-    {{ isVisible }}
     <UiModal
         v-model:visible="isVisible"
         @close="close"
@@ -167,19 +166,21 @@ const sendMessage = async () => {
 
     if (!canBeSend.value) return;
 
-    isLoading.value = true;
+    try {
+        isLoading.value = true;
 
-    const send = await store.dispatch('Messenger/updateMessage', {
-        ...form.value,
-        message,
-        contact: currentContact.value,
-        tag: currentTag.value
-    });
+        const send = await store.dispatch('Messenger/updateMessage', {
+            ...form.value,
+            message,
+            contact: currentContact.value,
+            tag: currentTag.value
+        });
 
-    isLoading.value = false;
-
-    if (send) submit(send);
-    else cancel();
+        if (send) submit(send);
+        else cancel();
+    } finally {
+        isLoading.value = false;
+    }
 };
 
 const keyHandler = event => {

@@ -1,6 +1,6 @@
 <template>
     <div class="dashboard-card-task-date">
-        <span class="dashboard-card-task__date">до {{ expiredDate }}</span>
+        <span v-if="task.end" class="dashboard-card-task__date">до {{ expiredDate }}</span>
         <span>
             <i
                 v-if="isExpired"

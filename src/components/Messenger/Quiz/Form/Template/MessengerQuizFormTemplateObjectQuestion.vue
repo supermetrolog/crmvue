@@ -6,7 +6,6 @@
         :question="question"
         :can-be-disabled="canBeDisabled"
         :disabled
-        :number
     />
 </template>
 <script setup>
@@ -15,15 +14,12 @@ import MessengerQuizQuestionTemplateHasFreeArea from '@/components/Messenger/Qui
 import MessengerQuizQuestionTemplateDefault from '@/components/Messenger/Quiz/Question/Template/MessengerQuizQuestionTemplateDefault.vue';
 import MessengerQuizQuestionTemplateCompaniesIdentified from '@/components/Messenger/Quiz/Question/Template/MessengerQuizQuestionTemplateCompaniesIdentified.vue';
 import MessengerQuizQuestionTemplateWantsToSell from '@/components/Messenger/Quiz/Question/Template/MessengerQuizQuestionTemplateWantsToSell.vue';
-import MessengerQuizQuestionTemplateNewRequestsOrOffers from '@/components/Messenger/Quiz/Question/Template/MessengerQuizQuestionTemplateNewRequestsOrOffers.vue';
-import MessengerQuizQuestionTemplateEquipments from '@/components/Messenger/Quiz/Question/Template/MessengerQuizQuestionTemplateEquipments.vue';
 
 const props = defineProps({
     question: {
         type: Object,
         required: true
     },
-    number: Number,
     canBeDisabled: {
         type: Boolean,
         default: true
@@ -34,9 +30,7 @@ const props = defineProps({
 const TEMPLATES = {
     'free-area': MessengerQuizQuestionTemplateHasFreeArea,
     'wants-to-sell': MessengerQuizQuestionTemplateWantsToSell,
-    'companies-identified': MessengerQuizQuestionTemplateCompaniesIdentified,
-    'new-requests-or-offers': MessengerQuizQuestionTemplateNewRequestsOrOffers,
-    equipments: MessengerQuizQuestionTemplateEquipments
+    'companies-identified': MessengerQuizQuestionTemplateCompaniesIdentified
 };
 
 const currentComponent = computed(() => {
@@ -51,8 +45,8 @@ function getForm() {
     return templateRef.value.getForm();
 }
 
-function validate(withNotify = true) {
-    return templateRef.value.validate(withNotify);
+function validate() {
+    return templateRef.value.validate();
 }
 
 function setForm(form) {

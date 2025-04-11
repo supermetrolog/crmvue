@@ -34,7 +34,7 @@
                     />
                 </UiCan>
             </span>
-            <UiField class="fs-3" small color="gray-l">Опрос заполнен!</UiField>
+            <UiField class="fs-3" small color="light">Опрос заполнен!</UiField>
             <div v-if="survey" class="d-flex align-items-center gap-1 ml-auto">
                 <Avatar :src="survey.user.userProfile.avatar" :size="25" />
                 <span class="font-weight-bold">{{ senderShortName }}</span>
