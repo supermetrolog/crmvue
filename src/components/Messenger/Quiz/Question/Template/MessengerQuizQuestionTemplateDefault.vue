@@ -443,9 +443,10 @@ function setMainAnswer() {
 
 const notify = useNotify();
 
-function validate() {
+function validate(withNotify = true) {
     if (isNullish(form.main) && !hasNullMainAnswer.value) {
-        notify.info('Вы должны ответить на все вопросы');
+        if (withNotify) notify.info('Вы должны ответить на все вопросы');
+
         return false;
     }
 

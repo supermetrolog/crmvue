@@ -7,6 +7,10 @@
             <SurveyQuestionObjectOffersTab v-for="offer in offers" :key="offer.id" :offer="offer" />
         </Tabs>
     </div>
+    <p v-else class="text-grey fs-3">
+        <i class="fa-solid fa-ban mr-1" />
+        <span>Нет предложений</span>
+    </p>
 </template>
 <script setup>
 import Tabs from '@/components/common/Tabs/Tabs.vue';
