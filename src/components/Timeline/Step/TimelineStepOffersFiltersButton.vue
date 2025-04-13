@@ -2,7 +2,6 @@
     <Tippy>
         <Button
             solid
-            info
             class="timeline-step-offers__button timeline-step-offers__button--filters"
             :active
             :class="{ active: active }"
