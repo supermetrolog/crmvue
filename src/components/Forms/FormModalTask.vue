@@ -248,7 +248,7 @@ const form = ref({
     title: null,
     message: null,
     date: {
-        end: null,
+        end: dayjs().add(7, 'day').toDate(),
         start: new Date()
     },
     tags: [],
@@ -277,8 +277,8 @@ const clearForm = () => {
         title: null,
         message: null,
         date: {
-            end: null,
-            start: null
+            end: dayjs().add(7, 'day').toDate(),
+            start: new Date()
         },
         user_id: null,
         status: 1,
@@ -357,6 +357,10 @@ const externalPresets = reactive({
 
 function generateStartPresets() {
     startPresets.value = [
+        {
+            value: new Date(),
+            label: 'Сегодня'
+        },
         ...(externalPresets.call ? generateCallStartPresets() : []),
         {
             value: dayjs().add(1, 'day').toDate(),
