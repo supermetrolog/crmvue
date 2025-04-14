@@ -1,33 +1,23 @@
 <template>
     <nav class="sidebar-mobile-menu">
         <ul class="sidebar-mobile-menu__list">
-            <li v-for="element in menu" :key="element.id" class="sidebar-mobile-menu__item">
-                <MobileSidebarMenuExtra v-if="element.internal" :link="element" />
-                <router-link
-                    v-else
-                    active-class="active"
-                    class="sidebar-mobile-menu__link"
-                    :to="element.url"
-                >
-                    <i :class="element.icon" />
-                    <span>{{ element.name }}</span>
-                </router-link>
-            </li>
+            <MobileSidebarMenuItem v-for="item in preparedMenu" :key="item.id" :item="item" />
         </ul>
     </nav>
 </template>
 
 <script setup>
-import { Menu } from '@/const/menu.js';
-import MobileSidebarMenuExtra from '@/components/SideBar/MobileSidebarMenuExtra.vue';
+import { menu } from '@/const/menu.js';
 import { computed } from 'vue';
 import { useAuth } from '@/composables/useAuth.js';
+import MobileSidebarMenuItem from '@/components/SideBar/MobileSidebarMenuItem.vue';
 
-const { currentUserId, currentUserIsAdmin, currentUserIsDirector } = useAuth();
+const { currentUser } = useAuth();
 
-const menu = computed(() => {
-    if (currentUserId.value && (currentUserIsAdmin.value || currentUserIsDirector.value))
-        return Menu.admin;
-    return Menu.agent;
+const preparedMenu = computed(() => {
+    return menu.filter(menuItem => {
+        if (menuItem.auth) return menuItem.auth.has(currentUser.value.role);
+        return true;
+    });
 });
 </script>

@@ -33,7 +33,7 @@ const layoutComponent = computed(() => {
     if (route.meta.layout === 'login') return Login;
     if (isMobile) return Mobile;
 
-    return LAYOUTS[route.meta.layout];
+    return LAYOUTS[route.meta.layout] ?? Default;
 });
 
 const disableSplash = () => {

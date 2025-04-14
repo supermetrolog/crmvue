@@ -78,14 +78,15 @@ function getForm() {
 
 const notify = useNotify();
 
-function validate() {
-    const isValid = templateRef.value.validate();
+function validate(withNotify = true) {
+    const isValid = templateRef.value.validate(withNotify);
     if (!isValid) return false;
 
     const mainAnswer = templateRef.value.getMainAnswer();
 
     if (mainAnswer === true && !offers.value.length && !requests.value.length) {
-        notify.info('Укажите новые предложения или запросы..');
+        if (withNotify) notify.info('Укажите новые предложения или запросы..');
+
         return false;
     }
 

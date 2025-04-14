@@ -16,7 +16,7 @@
         <template #body>
             <div class="sidebar-mobile-menu__accordion-body">
                 <router-link
-                    v-for="element in link.internal"
+                    v-for="element in internal"
                     :key="element.id"
                     class="sidebar-mobile-menu__link"
                     exact-active-class="active"
@@ -37,6 +37,10 @@ import AccordionSimpleTriggerIcon from '@/components/common/Accordion/AccordionS
 defineProps({
     link: {
         type: Object,
+        required: true
+    },
+    internal: {
+        type: Array,
         required: true
     }
 });

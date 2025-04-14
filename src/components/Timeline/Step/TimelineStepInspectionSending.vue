@@ -69,11 +69,11 @@
                     <div class="col-12">
                         <DashboardChip class="dashboard-bg-warning-l">
                             <p>
-                                <i class="fa-solid fa-exclamation-triangle"></i>
-                                <span
-                                    >В некоторых выбранных предложениях отсутствует необходимая для
-                                    построеная маршрута информация об адресе.</span
-                                >
+                                <i class="fa-solid fa-exclamation-triangle mr-1"></i>
+                                <span>
+                                    В некоторых выбранных предложениях отсутствует необходимая для
+                                    построения маршрута информация об адресе.
+                                </span>
                             </p>
                             <p>
                                 Показано {{ correctObjects.length }} из

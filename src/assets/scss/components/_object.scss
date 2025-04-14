@@ -449,6 +449,14 @@
         border-bottom: 3px solid variables.$cl-success;
         padding-bottom: 15px;
     }
+
+    @include mixins.media('min', 'ultra') {
+        &__item {
+            max-width: none;
+            flex: none;
+            width: 400px;
+        }
+    }
 }
 
 .object-view {

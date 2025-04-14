@@ -2,6 +2,7 @@
     <div class="object-type-picker">
         <div class="object-type-picker__wrapper">
             <button
+                v-if="hasExtraValue"
                 @click.prevent="toggleDisabled"
                 class="object-type-picker__extra"
                 :class="{ active: !disabled, invalid: hasValidationError }"
@@ -29,39 +30,33 @@
 
 <script setup>
 import { computed } from 'vue';
+import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
 
 const modelValue = defineModel('value');
 const extraModelValue = defineModel('extra');
 
 const props = defineProps({
-    label: {
-        type: String,
-        required: true
-    },
+    label: String,
     options: {
         type: Object,
         required: true
     },
-    extraValue: {
-        type: Number,
-        required: true
-    },
-    v: {
-        type: Object,
-        default: null
-    }
+    extraValue: Number,
+    v: Object
 });
 
 const disabled = computed(() => {
     if (!extraModelValue.value) return false;
     return !extraModelValue.value.includes(props.extraValue);
 });
+
 const cache = computed(() => {
     return modelValue.value.reduce((acc, element) => {
         acc[element] = true;
         return acc;
     }, {});
 });
+
 const hasValidationError = computed(() => {
     return Boolean(props.v && props.v.$error);
 });
@@ -80,6 +75,7 @@ const select = key => {
 
     validate();
 };
+
 const toggleDisabled = () => {
     if (!disabled.value) {
         const extraIndex = extraModelValue.value.findIndex(
@@ -94,4 +90,6 @@ const toggleDisabled = () => {
 
     validate();
 };
+
+const hasExtraValue = computed(() => isNotNullish(props.extraValue));
 </script>

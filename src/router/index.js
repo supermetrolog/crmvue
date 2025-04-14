@@ -57,16 +57,17 @@ const routes = [
                     title: ['Задачи', 'Настройки']
                 },
                 component: () => import('../views/Settings/Tasks.vue')
-            },
-            {
-                path: 'utilities',
-                name: 'settings-utilities',
-                meta: {
-                    title: ['Инструменты администратора', 'Настройки']
-                },
-                component: () => import('../views/Settings/Utilities.vue')
             }
         ]
+    },
+    {
+        path: '/utilities',
+        name: 'utilities',
+        meta: {
+            title: 'Инструменты модератора',
+            auth: { isAuth: true, roles: [AUTH_ROLE.ADMIN, AUTH_ROLE.OWNER, AUTH_ROLE.MODERATOR] }
+        },
+        component: () => import('../views/Settings/Utilities.vue')
     },
     {
         path: '/calendar',

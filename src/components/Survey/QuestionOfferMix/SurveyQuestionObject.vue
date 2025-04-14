@@ -5,14 +5,14 @@
             <SurveyQuestionObjectContent :object />
             <div class="messenger-quiz-question-template-offer__actions">
                 <UiButtonIcon
-                    @click="$emit('object-sold')"
+                    @click.stop="$emit('object-sold')"
                     icon="fa-solid fa-dollar-sign"
                     class="dashboard-bg-danger-l"
                     label="Объект продан"
                     small
                 />
                 <UiButtonIcon
-                    @click="$emit('object-destroyed')"
+                    @click.stop="$emit('object-destroyed')"
                     icon="fa-solid fa-ban"
                     class="dashboard-bg-danger-l"
                     label="Объект снесен"
