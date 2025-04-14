@@ -118,7 +118,7 @@
                         auto-height
                         class="col-12"
                         label="Заголовок задачи"
-                        placeholder="Заполните заголовок.."
+                        placeholder="Укажите основную суть задачи.."
                         required
                     />
                     <UiTextarea
@@ -129,8 +129,7 @@
                         auto-height
                         :class="{ 'col-7': hasCustomDescription, 'col-12': !hasCustomDescription }"
                         label="Описание задачи"
-                        placeholder="Заполните описание.."
-                        helper="Опишите задачу, что нужно сделать, почему и с каким объектом/компанией это связано!"
+                        placeholder="Дайте дополнительные комментарии, опишите алгоритмы выполнения.."
                     />
                     <FormModalTaskDescription
                         v-if="hasCustomDescription"
