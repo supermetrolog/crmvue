@@ -1,22 +1,23 @@
 <template>
     <nav class="sidebar__nav">
         <ul class="sidebar__menu">
-            <SideBarMenuItem v-for="menuItem in menu" :key="menuItem.id" :item="menuItem" />
+            <SideBarMenuItem v-for="menuItem in preparedMenu" :key="menuItem.id" :item="menuItem" />
         </ul>
     </nav>
 </template>
 
 <script setup>
-import { Menu } from '@/const/menu.js';
+import { menu } from '@/const/menu.js';
 import SideBarMenuItem from '@/components/SideBar/SideBarMenuItem.vue';
 import { computed } from 'vue';
 import { useAuth } from '@/composables/useAuth.js';
 
-const { currentUserId, currentUserIsAdmin, currentUserIsDirector } = useAuth();
+const { currentUser } = useAuth();
 
-const menu = computed(() => {
-    if (currentUserId.value && (currentUserIsAdmin.value || currentUserIsDirector.value))
-        return Menu.admin;
-    return Menu.agent;
+const preparedMenu = computed(() => {
+    return menu.filter(menuItem => {
+        if (menuItem.auth) return menuItem.auth.has(currentUser.value.role);
+        return true;
+    });
 });
 </script>

@@ -1,4 +1,6 @@
-const agentMenu = [
+import { AUTH_ROLE } from '@/const/role.js';
+
+export const menu = [
     {
         id: 8,
         name: 'Дашборд',
@@ -98,16 +100,20 @@ const agentMenu = [
     //     key: 'surveys'
     // },
     {
+        id: 11,
+        name: 'Инструменты',
+        icon: 'fa-solid fa-screwdriver-wrench',
+        url: '/utilities',
+        key: 'utilities',
+        auth: new Set([AUTH_ROLE.MODERATOR, AUTH_ROLE.ADMIN, AUTH_ROLE.OWNER])
+    },
+    {
         id: 5,
         name: 'Профиль',
         icon: 'fa-solid fa-user-astronaut',
         url: '/account',
         key: 'account'
-    }
-];
-
-const adminMenu = [
-    ...agentMenu,
+    },
     {
         id: 3,
         name: 'Настройки',
@@ -120,7 +126,8 @@ const adminMenu = [
                 name: 'Опросник',
                 url: '/settings/survey',
                 icon: 'fa-solid fa-square-poll-horizontal',
-                exact: true
+                exact: true,
+                auth: new Set([AUTH_ROLE.ADMIN])
             },
             {
                 id: 1,
@@ -128,14 +135,9 @@ const adminMenu = [
                 url: '/settings/messenger',
                 icon: 'fa-solid fa-message'
             },
-            { id: 2, name: 'Задачи', url: '/settings/tasks', icon: 'fa-solid fa-list-check' },
-            {
-                id: 3,
-                name: 'Инструменты',
-                url: '/settings/utilities',
-                icon: 'fa-solid fa-screwdriver-wrench'
-            }
-        ]
+            { id: 2, name: 'Задачи', url: '/settings/tasks', icon: 'fa-solid fa-list-check' }
+        ],
+        auth: new Set([AUTH_ROLE.ADMIN, AUTH_ROLE.OWNER])
     },
     {
         id: 4,
@@ -157,11 +159,7 @@ const adminMenu = [
                 url: '/users/sessions',
                 icon: 'fa-solid fa-shield-halved'
             }
-        ]
+        ],
+        auth: new Set([AUTH_ROLE.ADMIN])
     }
 ];
-
-export const Menu = {
-    admin: adminMenu,
-    agent: agentMenu
-};

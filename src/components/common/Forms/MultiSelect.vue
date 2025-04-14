@@ -7,7 +7,7 @@
             <Multiselect
                 ref="multiselect"
                 v-model="field"
-                @change="onChange($event)"
+                @change="onChange"
                 :value-prop="optionValueProp"
                 :label="optionLabelProp"
                 class="form__multiselect"
@@ -291,13 +291,13 @@ const removeElement = index => {
     field.value.splice(index, 1);
 };
 
-const onChange = value => {
+const onChange = (value, instance) => {
     if (value === undefined) return;
 
     if (props.name) {
         const newModelValue = value.map(element => ({ [props.name]: props.transform(element) }));
         modelValue.value = newModelValue;
-        emit('change', newModelValue);
+        emit('change', newModelValue, instance?.iv);
     } else {
         let finalValue = null;
 
@@ -305,7 +305,7 @@ const onChange = value => {
         else finalValue = props.transform(value);
 
         modelValue.value = finalValue;
-        emit('change', finalValue);
+        emit('change', finalValue, instance?.iv);
     }
 
     validate();

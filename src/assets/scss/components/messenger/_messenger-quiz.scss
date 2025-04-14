@@ -861,10 +861,14 @@
     }
 
     &__panel {
-        width: 400px;
+        width: 330px;
         border-left: 1px solid rgba(0, 0, 0, .1);
         border-right: 1px solid rgba(0, 0, 0, .1);
         border-bottom: 1px solid rgba(0, 0, 0, .1);
+
+        .messenger-dialog-preview__tab-link {
+            padding: 5px;
+        }
     }
 
     &__questions {
@@ -879,7 +883,7 @@
 
     &__offers {
         .tabs-component-panels {
-            padding: 10px 0 0 0!important;
+            padding: 5px 0 0 0!important;
         }
     }
 
@@ -1049,7 +1053,83 @@
     }
 }
 
-.messenger-quiz-question-template-offers {}
+.messenger-quiz-question-template-offers {
+    &__modal {
+        font-size: 14px;
+        @include mixins.flex-box($gap: 10px);
+    }
+
+    &__objects {
+        width: 550px;
+        flex-shrink: 0;
+    }
+
+    &__object {
+        @include mixins.flex-box($gap: 10px, $a: center);
+        padding-right: 10px;
+    }
+
+    &__object-preview {
+        cursor: pointer;
+        @include mixins.transition(background-color);
+
+        &:hover, &.active {
+            background-color: variables.$color_grey_light;
+
+            .ui-field--cl-light {
+                background-color: variables.$color_light_trans;
+            }
+        }
+    }
+
+    &__column {
+        @include mixins.flex-box($d: column, $gap: 8px);
+        overflow-y: auto;
+        max-height: 700px;
+
+        padding: 5px 0 5px 5px;
+        border-bottom: 1px solid rgba(0, 0, 0, .1);
+        border-top: 1px solid rgba(0, 0, 0, .1);
+        border-left: 1px solid rgba(0, 0, 0, .1);
+        border-radius: 4px 0 0 4px;
+    }
+
+    &__icon {
+        font-size: 35px;
+    }
+
+    &__preview {
+        overflow-y: auto;
+        max-height: 700px;
+        width: 100%;
+
+        padding: 5px;
+        border-bottom: 1px solid rgba(0, 0, 0, .1);
+        border-top: 1px solid rgba(0, 0, 0, .1);
+        border-left: 1px solid rgba(0, 0, 0, .1);
+        border-radius: 4px 0 0 4px;
+    }
+
+    .messenger-quiz-question-template-offer {
+        .ui-field {
+            font-weight: 400;
+        }
+    }
+
+    &__address {
+        @include mixins.text-overflow();
+    }
+
+    &__answer {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        backdrop-filter: blur(2px);
+        @include mixins.flex-box($a: center, $j: center);
+    }
+}
 
 .messenger-quiz-question-template-offer {
     font-size: 13px;
@@ -1256,6 +1336,23 @@
                 border-radius: 0 5px 5px 0;
             }
         }
+    }
+
+    .messenger-quiz-question__main {
+        .radio-chip {
+            display: flex;
+            align-items: center;
+        }
+    }
+
+    &__description {
+        font-weight: 400;
+    }
+
+    &__schedule {
+        border: 1px solid #a8a8a8;
+        box-shadow: none;
+        line-height: 1.1;
     }
 }
 

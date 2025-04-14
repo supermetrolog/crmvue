@@ -14,8 +14,7 @@
 <script setup>
 import { useStore } from 'vuex';
 import MessengerTabs from '@/components/Messenger/MessengerTabs.vue';
-import { computed, shallowRef, watch } from 'vue';
-import { useDelayedLoader } from '@/composables/useDelayedLoader.js';
+import { computed, shallowRef } from 'vue';
 import InProgress from '@/components/common/InProgress.vue';
 import MessengerPanelLoader from '@/components/Messenger/Panel/MessengerPanelLoader.vue';
 import MessengerPanelEmpty from '@/components/Messenger/Panel/MessengerPanelEmpty.vue';
@@ -29,26 +28,20 @@ const PANEL_TABS = {
 
 const tabs = [
     { id: PANEL_TABS.USER, key: 'user', label: 'Профиль' },
-    { id: PANEL_TABS.STATISTIC, key: 'statistic', label: 'Статистика' }
+    { id: PANEL_TABS.STATISTIC, key: 'statistic', label: 'Активность' }
 ];
 
 const store = useStore();
-const { isLoading } = useDelayedLoader(store.state.Messenger.loadingPanel);
 
-const currentTab = shallowRef(PANEL_TABS.USER);
+const isLoading = computed(() => store.state.Messenger.loadingPanel);
 
 const hasPanel = computed(() => {
     return store.state.Messenger.currentPanelUserID;
 });
 
-watch(
-    () => store.state.Messenger.loadingPanel,
-    value => {
-        isLoading.value = value;
-    }
-);
+const currentTab = shallowRef(PANEL_TABS.USER);
 
-const switchTab = tabId => {
+function switchTab(tabId) {
     currentTab.value = tabId;
-};
+}
 </script>

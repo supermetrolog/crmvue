@@ -163,7 +163,6 @@
         top: 1px;
         left: 1px;
         background-color: rgba(255, 255, 255, 0.9);
-        font-weight: 600;
     }
 
     &__deals {
@@ -195,6 +194,7 @@
     &__category {
         font-size: 13px!important;
         padding: 3px 7px!important;
+        font-weight: 400!important;
     }
 
     &__id {

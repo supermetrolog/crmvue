@@ -8,9 +8,6 @@
         custom-close
         class="task-form"
     >
-        <div>
-            <DashboardTableTasksItem :task="taskPreview" />
-        </div>
         <Stepper v-model:step="step" @complete="submit" :steps="steps" :v="v$.form" keep-alive>
             <template #1>
                 <UiField v-if="isEditing" color="light" class="task-form__warning mb-2 mx-auto">
@@ -121,7 +118,7 @@
                         auto-height
                         class="col-12"
                         label="Заголовок задачи"
-                        placeholder="Заполните заголовок.."
+                        placeholder="Укажите основную суть задачи.."
                         required
                     />
                     <UiTextarea
@@ -132,8 +129,7 @@
                         auto-height
                         :class="{ 'col-7': hasCustomDescription, 'col-12': !hasCustomDescription }"
                         label="Описание задачи"
-                        placeholder="Заполните описание.."
-                        helper="Опишите задачу, что нужно сделать, почему и с каким объектом/компанией это связано!"
+                        placeholder="Дайте дополнительные комментарии, опишите алгоритмы выполнения.."
                     />
                     <FormModalTaskDescription
                         v-if="hasCustomDescription"
@@ -192,7 +188,6 @@ import { useTagsOptions } from '@/composables/options/useTagsOptions.js';
 import { taskOptions } from '@/const/options/task.options.js';
 import FormModalTaskDescription from '@/components/Forms/FormModalTaskDescription.vue';
 import { useAuth } from '@/composables/useAuth.js';
-import DashboardTableTasksItem from '@/components/Dashboard/Table/TasksItem/DashboardTableTasksItem.vue';
 import { useDebounceFn, useTimeoutFn } from '@vueuse/core';
 import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
 import FileInput from '@/components/common/Forms/FileInput.vue';
@@ -252,7 +247,7 @@ const form = ref({
     title: null,
     message: null,
     date: {
-        end: null,
+        end: dayjs().add(7, 'day').toDate(),
         start: new Date()
     },
     tags: [],
@@ -261,41 +256,6 @@ const form = ref({
     observers: [],
     files: [],
     current_files: []
-});
-
-const taskPreview = computed(() => {
-    return {
-        tags: [],
-        id: 1,
-        created_by_type: 'user',
-        created_by_id: currentUser.value.id,
-        created_by: currentUser.value,
-        title: form.value.title || 'Заполните заголовок..',
-        status: 1,
-        observers: selectedObservers.value,
-        user_id: form.value.user_id,
-        user: selectedUser.value,
-        end: form.value.date.end,
-        start: form.value.date.start
-    };
-});
-
-const selectedUser = computed(() => {
-    return consultants.value.find(element => element.id === form.value.user_id);
-});
-
-const selectedObservers = computed(() => {
-    return form.value.observers.reduce((acc, element) => {
-        const user = consultants.value.find(el => el.id === element);
-
-        if (user)
-            acc.push({
-                user_id: element,
-                user
-            });
-
-        return acc;
-    }, []);
 });
 
 const consultantsForObservers = computed(() => {
@@ -316,8 +276,8 @@ const clearForm = () => {
         title: null,
         message: null,
         date: {
-            end: null,
-            start: null
+            end: dayjs().add(7, 'day').toDate(),
+            start: new Date()
         },
         user_id: null,
         status: 1,
@@ -396,6 +356,10 @@ const externalPresets = reactive({
 
 function generateStartPresets() {
     startPresets.value = [
+        {
+            value: new Date(),
+            label: 'Сегодня'
+        },
         ...(externalPresets.call ? generateCallStartPresets() : []),
         {
             value: dayjs().add(1, 'day').toDate(),

@@ -68,14 +68,16 @@ function getForm() {
 
 const notify = useNotify();
 
-function validate() {
-    const isValid = templateRef.value.validate();
+function validate(withNotify = true) {
+    const isValid = templateRef.value.validate(withNotify);
     if (!isValid) return false;
 
     const mainAnswer = templateRef.value.getMainAnswer();
 
     if (mainAnswer === true && isNullish(conditionModelValue.value)) {
-        notify.info('Укажите, необходимо ли добавить/редактировать площади под продажу..');
+        if (withNotify)
+            notify.info('Укажите, необходимо ли добавить/редактировать площади под продажу..');
+
         return false;
     }
 

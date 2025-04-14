@@ -20,12 +20,24 @@
                     :key="contact.entity.id"
                     ref="selectedContactsEls"
                     v-model:form="contact.form"
-                    @open-modal="openCallModal(contact)"
                     @schedule-call="$emit('schedule-call', contact.entity, companyName)"
                     :contact="contact.entity"
                     class="messenger-quiz__question"
                     :number="key + 1"
                 />
+                <AnimationTransition :speed="0.4">
+                    <UiButton
+                        v-if="selectedContactsUnavailable && availableContacts.length > 0"
+                        @click="suggestNextContact"
+                        icon="fa-solid fa-user-plus"
+                        color="success-light"
+                        center
+                        bolder
+                        class="mx-auto"
+                    >
+                        Выбрать другой контакт для звонка
+                    </UiButton>
+                </AnimationTransition>
             </div>
             <MessengerQuizFormTemplate
                 ref="quizFormEl"
@@ -44,17 +56,6 @@
             @suggest="$emit('suggest-create-contact')"
             @selected="selectNextContact"
             :contacts="availableContacts"
-        />
-        <MessengerQuizFormContactCallModal
-            v-model:visible="callModalIsVisible"
-            v-model:form="currentCallContactForm"
-            @schedule-call="$emit('schedule-call', currentCallContactForm.entity, companyName)"
-            @confirm="closeCallModal"
-            @cancel="closeCallModal"
-            @call-scheduled="closeCallModal"
-            @finish="closeCallModal"
-            @next-contact="confirmCallAndSuggestNext"
-            :can-go-to-next="availableContacts.length > 0"
         />
         <UiModal
             v-model:visible="contactPickerIsVisible"
@@ -94,7 +95,6 @@ import { computed, onMounted, ref, shallowRef, useTemplateRef, watch } from 'vue
 import MessengerQuizQuestionCall from '@/components/Messenger/Quiz/Question/Call/MessengerQuizQuestionCall.vue';
 import MessengerQuizFormContactSuggestModal from '@/components/Messenger/Quiz/Form/MessengerQuizFormContactSuggestModal.vue';
 import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
-import MessengerQuizFormContactCallModal from '@/components/Messenger/Quiz/Form/MessengerQuizFormContactCallModal.vue';
 import MessengerQuizFormTemplate from '@/components/Messenger/Quiz/Form/Template/MessengerQuizFormTemplate.vue';
 import { useAsyncPopup } from '@/composables/useAsyncPopup.js';
 import Spinner from '@/components/common/Spinner.vue';
@@ -279,26 +279,5 @@ function scheduleContactsCall() {
 function scheduleCall() {
     contactPickerIsVisible.value = false;
     emit('schedule-call', selectedContact.value, companyName.value);
-}
-
-// call modal
-
-const callModalIsVisible = ref(false);
-const currentCallContactForm = shallowRef(null);
-
-function openCallModal(contact) {
-    currentCallContactForm.value = contact;
-
-    callModalIsVisible.value = true;
-}
-
-function closeCallModal() {
-    callModalIsVisible.value = false;
-    currentCallContactForm.value = null;
-}
-
-function confirmCallAndSuggestNext() {
-    closeCallModal();
-    suggestNextContact();
 }
 </script>

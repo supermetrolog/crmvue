@@ -61,7 +61,6 @@ import { computed, onBeforeMount, reactive, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import UiForm from '@/components/common/Forms/UiForm.vue';
 import UiInput from '@/components/common/Forms/UiInput.vue';
-import { waitHash } from '@/utils/helpers/common/waitHash.js';
 import { useDebounceFn } from '@vueuse/core';
 import { deleteEmptyFields } from '@/utils/helpers/object/deleteEmptyFields.js';
 import { toCleanObject } from '@/utils/helpers/object/toCleanObjects.js';
@@ -171,23 +170,7 @@ const queryToForm = () => {
     });
 };
 
-watch(
-    () => route.query,
-    (newQuery, oldQuery) => {
-        if (oldQuery == null) queryToForm();
-        else {
-            const _newQuery = { ...newQuery };
-
-            delete _newQuery.page;
-            delete oldQuery.page;
-
-            if (waitHash(_newQuery) !== waitHash(oldQuery)) {
-                queryToForm();
-            }
-        }
-    },
-    { immediate: true }
-);
+watch(() => route.query, queryToForm, { immediate: true });
 
 watch(
     () => form,
@@ -223,4 +206,13 @@ onBeforeMount(() => {
 });
 
 const debouncedOnSubmit = useDebounceFn(onSubmit, 500);
+
+// all query search
+
+watch(
+    () => route.query.all,
+    value => {
+        form.all = value;
+    }
+);
 </script>

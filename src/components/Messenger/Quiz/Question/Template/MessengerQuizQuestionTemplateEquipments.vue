@@ -84,8 +84,8 @@ function getForm() {
     return form;
 }
 
-function validate() {
-    const isValid = templateRef.value.validate();
+function validate(withNotify = true) {
+    const isValid = templateRef.value.validate(withNotify);
     if (!isValid) return false;
 
     const mainAnswer = templateRef.value.getMainAnswer();

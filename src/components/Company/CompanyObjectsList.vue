@@ -12,6 +12,7 @@
                 <CompanyObjectItemNoOffer
                     v-if="object.noOffer"
                     :offer="object"
+                    class="objects-list__item"
                     :class="col"
                     :currentStepID="currentStepId"
                 />
@@ -24,6 +25,7 @@
                     :disabled="disabled"
                     :offer="object"
                     :is-selected="selectedObjects.some(item => item.id === object.id)"
+                    class="objects-list__item"
                     :class="col"
                     :currentStepID="currentStepId"
                 />

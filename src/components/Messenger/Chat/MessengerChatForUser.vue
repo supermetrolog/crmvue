@@ -5,6 +5,7 @@
         </MessengerTabs>
         <MessengerChatLoader v-if="isLoading" />
         <div v-else-if="currentPanel && currentChat" class="messenger-chat__wrapper">
+            <MessengerChatHeader />
             <MessengerChatContent />
             <MessengerChatSettings ref="chatSettings" />
         </div>
@@ -29,6 +30,7 @@ import { useDelayedLoader } from '@/composables/useDelayedLoader.js';
 import { useAsyncPopup } from '@/composables/useAsyncPopup.js';
 import MessengerChatContent from '@/components/Messenger/Chat/MessengerChatContent.vue';
 import MessengerTabs from '@/components/Messenger/MessengerTabs.vue';
+import MessengerChatHeader from '@/components/Messenger/Chat/Header/MessengerChatHeader.vue';
 
 const CHAT_TABS = {
     CHAT: 1

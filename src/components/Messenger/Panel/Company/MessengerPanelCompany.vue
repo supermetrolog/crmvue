@@ -2,27 +2,37 @@
     <div class="messenger-panel-company">
         <div class="messenger-panel-company__card">
             <div class="messenger-panel-company__actions">
-                <UiButtonIcon
-                    @click="$emit('edit')"
-                    label="Редактировать компанию"
-                    color="light"
-                    icon="fa-solid fa-pen"
-                    small
-                />
-                <UiButtonIcon
-                    @click="toChat"
-                    label="Перейти в чат компании"
-                    color="light"
-                    icon="fa-solid fa-comment"
-                    small
-                />
-                <UiButtonIcon
-                    @click="onCompanyDestroyed"
-                    label="Компания ликвидирована"
-                    color="danger-l"
-                    icon="fa-solid fa-ban"
-                    small
-                />
+                <UiDropdownActions>
+                    <template #trigger>
+                        <UiButtonIcon
+                            icon="fa-solid fa-ellipsis-vertical"
+                            label="Действия над компанией"
+                            small
+                        />
+                    </template>
+                    <template #menu>
+                        <UiDropdownActionsButton
+                            @handle="$emit('edit')"
+                            label="Редактировать"
+                            icon="fa-solid fa-pen"
+                        />
+                        <UiDropdownActionsButton
+                            @handle="toChat"
+                            label="Перейти в чат компании"
+                            icon="fa-solid fa-comment"
+                        />
+                        <UiDropdownActionsButton
+                            @handle="onCompanyDestroyed"
+                            label="Компания ликвидирована"
+                            icon="fa-solid fa-ban text-danger"
+                        />
+                        <UiDropdownActionsButton
+                            @handle="logoFormIsVisible = true"
+                            label="Изменить логотип"
+                            icon="fa-solid fa-image"
+                        />
+                    </template>
+                </UiDropdownActions>
             </div>
             <div class="messenger-panel-company__header">
                 <CompanyLogo
@@ -93,7 +103,7 @@
             </p>
             <p
                 v-else
-                class="messenger-panel-company__site messenger-warning messenger-warning--animated bold"
+                class="messenger-panel-company__site messenger-warning messenger-warning--animated"
             >
                 Сайт: не заполнен
             </p>
@@ -167,6 +177,8 @@ import Avatar from '@/components/common/Avatar.vue';
 import { TASK_FORM_STEPS, useTaskManager } from '@/composables/useTaskManager.js';
 import api from '@/api/api.js';
 import UiButtonIcon from '@/components/common/UI/UiButtonIcon.vue';
+import UiDropdownActions from '@/components/common/UI/UiDropdownActions.vue';
+import UiDropdownActionsButton from '@/components/common/UI/UiDropdownActionsButton.vue';
 
 defineEmits(['edit']);
 const props = defineProps({

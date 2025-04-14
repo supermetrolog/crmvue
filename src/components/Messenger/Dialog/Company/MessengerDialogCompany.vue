@@ -54,7 +54,12 @@
                         :text="model.office_address"
                         icon="fa-solid fa-earth-americas"
                     />
-                    <span v-if="model.office_address">{{ model.office_address }}</span>
+                    <span
+                        v-if="model.office_address"
+                        class="messenger-dialog-company__address-content"
+                    >
+                        {{ model.office_address }}
+                    </span>
                     <span v-else class="messenger-warning">Адрес офиса не заполнен</span>
                 </p>
             </div>

@@ -1,7 +1,7 @@
 <template>
     <li class="sidebar__item">
         <Tippy
-            v-if="item.internal"
+            v-if="internalMenu.length"
             :delay="[500, 0]"
             interactive
             :interactive-border="15"
@@ -22,7 +22,7 @@
             <template #content>
                 <div class="sidebar__internal">
                     <SideBarMenuItem
-                        v-for="item in item.internal"
+                        v-for="item in internalMenu"
                         :key="item.id"
                         :item="item"
                         class="sidebar__internal-item"
@@ -48,8 +48,12 @@
 
 <script setup>
 import { Tippy } from 'vue-tippy';
+import { computed } from 'vue';
+import { isNullish } from '@/utils/helpers/common/isNullish.js';
+import { useAuth } from '@/composables/useAuth.js';
+import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
 
-defineProps({
+const props = defineProps({
     item: {
         id: Number,
         name: String,
@@ -69,5 +73,16 @@ defineProps({
         required: true
     },
     internal: Boolean
+});
+
+const { currentUser } = useAuth();
+
+const internalMenu = computed(() => {
+    if (isNullish(props.item.internal)) return [];
+
+    return props.item.internal.filter(menuItem => {
+        if (isNotNullish(menuItem.auth)) return menuItem.auth.has(currentUser.value.role);
+        return true;
+    });
 });
 </script>

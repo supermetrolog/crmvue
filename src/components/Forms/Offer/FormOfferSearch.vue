@@ -27,6 +27,7 @@
                         @delete="removeFilter(item.value)"
                         :value="item.value"
                         :html="item.label"
+                        class="form-offer-search__filter"
                     />
                 </div>
             </div>

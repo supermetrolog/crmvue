@@ -9,7 +9,7 @@
             v-if="value !== null"
             v-tippy="title"
             @click="$emit('delete')"
-            class="chip__icon fa-solid fa-xmark"
+            class="chip__icon fa-solid fa-close"
             :title="title"
         />
     </div>
