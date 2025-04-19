@@ -327,6 +327,8 @@ onMounted(() => {
         localFiles.value = [...props.native];
     }
 });
+
+defineExpose({ open });
 </script>
 <style>
 .flip-list-move {

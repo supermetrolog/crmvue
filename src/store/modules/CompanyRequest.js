@@ -1,5 +1,6 @@
 import api from '@/api/api';
 import { useQueryHash } from '@/utils/use/useQueryHash.js';
+import { spliceById } from '@/utils/helpers/array/spliceById.js';
 
 const CompanyRequest = {
     state: {
@@ -13,14 +14,15 @@ const CompanyRequest = {
         },
         updateRequests(state, { data, concat }) {
             state.pagination = data.pagination;
+
             if (concat) {
                 state.requests = state.requests.concat(data.data);
             } else {
                 state.requests = data.data;
             }
         },
-        deleteRequest(state, request_id) {
-            state.companyRequests = state.companyRequests.filter(item => item.id != request_id);
+        deleteRequest(state, requestId) {
+            spliceById(state.companyRequests, requestId);
         }
     },
     actions: {
@@ -29,16 +31,13 @@ const CompanyRequest = {
             setHash(query);
 
             const data = await api.request.search(query);
+
             if (data) {
                 if (confirmHash(query)) commit('updateRequests', { data, concat });
                 else return false;
             }
+
             return data;
-        },
-        async DELETE_REQUEST(context, request) {
-            if (await api.request.delete(request.id)) {
-                context.commit('deleteRequest', request.id);
-            }
         },
         async FETCH_COMPANY_REQUESTS(context, id) {
             const requests = await api.request.byCompanyId(id);
@@ -46,7 +45,6 @@ const CompanyRequest = {
             return requests;
         }
     },
-
     getters: {
         COMPANY_REQUESTS(state) {
             return state.companyRequests;

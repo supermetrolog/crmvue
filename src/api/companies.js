@@ -32,10 +32,7 @@ export default {
         return responseToData(response);
     },
     async searchCompanies(query) {
-        const expand =
-            'objects.offerMix.generalOfferMix,' +
-            'objects.objectFloors,' +
-            'requests.timelines.timelineSteps';
+        const expand = 'objects.offerMix.generalOfferMix,' + 'objects.objectFloors';
 
         const response = await axios.get(URL, { params: { expand, ...query } });
         return responseToPaginatedData(response);

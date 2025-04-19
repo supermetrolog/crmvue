@@ -35,7 +35,7 @@ import { computed } from 'vue';
 
 const props = defineProps({
     label: { type: String, required: true },
-    origin: { type: Object, default: null }
+    origin: Object
 });
 
 const isCompleted = computed(() => props.origin.status === 1);

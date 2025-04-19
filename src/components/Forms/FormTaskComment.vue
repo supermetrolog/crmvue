@@ -105,7 +105,7 @@ function createPayload() {
 const fileInputElement = useTemplateRef('fileInputElement');
 
 function openFileDialog() {
-    fileInputElement.value.clickOpenFile();
+    fileInputElement.value.open();
 }
 
 function deleteCurrentFile(fileIndex) {

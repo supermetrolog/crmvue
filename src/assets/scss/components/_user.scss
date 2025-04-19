@@ -49,3 +49,58 @@
         }
     }
 }
+
+.user-folders {
+    &:has(.user-folder.chosen) {
+        .user-folder:hover {
+            background-color: variables.$color_grey_light;
+        }
+    }
+}
+
+.user-folder {
+    @include mixins.transition(width, background-color, padding-right);
+    overflow-x: hidden;
+    position: relative;
+
+    &__actions {
+        position: absolute;
+        right: 8px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: variables.$color_dark_grey;
+        @include mixins.flex-box($a: center, $gap: 6px);
+    }
+
+    &.move, &.edit {
+        padding-right: 30px;
+    }
+
+    &.move.edit {
+        padding-right: 55px;
+    }
+
+    &__edit-icon {
+        @include mixins.transition(color);
+    }
+
+    &__edit-icon:hover {
+        color: variables.$color_success;
+    }
+
+    &.chosen {
+        pointer-events: none;
+    }
+
+    &.placeholder {
+        background-color: variables.$bg-success-l;
+    }
+
+    &.ghost {
+        display: none;
+    }
+
+    &.active {
+        background-color: variables.$bg-success-l;
+    }
+}

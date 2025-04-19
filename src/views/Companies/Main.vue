@@ -21,6 +21,16 @@
                 </div>
             </div>
             <div class="row">
+                <UserFolders
+                    v-model:selected="currentFolder"
+                    morph="company"
+                    class="col-12"
+                    movable
+                    editable
+                    selectable
+                />
+            </div>
+            <div class="row">
                 <div class="col-12">
                     <div class="d-flex flex-column flex-md-row justify-content-between">
                         <PaginationClassic
@@ -85,7 +95,7 @@ import Button from '@/components/common/Button.vue';
 import Switch from '@/components/common/Forms/Switch.vue';
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
 import EmptyData from '@/components/common/EmptyData.vue';
-import { computed, ref } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { useTableContent } from '@/composables/useTableContent.js';
 import { useRoute, useRouter } from 'vue-router';
 import { useDelayedLoader } from '@/composables/useDelayedLoader.js';
@@ -99,6 +109,9 @@ import { isArray } from '@/utils/helpers/array/isArray.js';
 import { isEmptyArray } from '@/utils/helpers/array/isEmptyArray.js';
 import { companyOptions } from '@/const/options/company.options.js';
 import { toDateFormat } from '@/utils/formatters/date.js';
+import UserFolders from '@/components/UserFolder/UserFolders.vue';
+import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
+import { useDebounceFn } from '@vueuse/core';
 
 const route = useRoute();
 const router = useRouter();
@@ -153,9 +166,19 @@ const { humanizedSelectedQueryFilters } = useSelectedFilters({}, gettersForFilte
 
 const getCompanies = async () => {
     isLoading.value = true;
-    await store.dispatch('SEARCH_COMPANIES', { query: route.query });
+
+    const query = { ...route.query };
+
+    if (isNotNullish(currentFolder.value)) {
+        query.folder_ids = [currentFolder.value];
+    }
+
+    await store.dispatch('SEARCH_COMPANIES', { query });
+
     isLoading.value = false;
 };
+
+const debouncedFetchCompanies = useDebounceFn(getCompanies, 300);
 
 const { next, nextWithScroll, queryIsInitialized } = useTableContent(getCompanies, {
     scrollTo: firstPagination
@@ -173,4 +196,10 @@ function removeFilter(filter) {
 
     router.replace({ query });
 }
+
+// folders
+
+const currentFolder = ref(null);
+
+watch(currentFolder, debouncedFetchCompanies);
 </script>

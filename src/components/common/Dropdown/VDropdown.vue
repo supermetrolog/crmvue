@@ -1,13 +1,13 @@
 <template>
-    <ExtDropdown ref="dropdownEl" @visible-change="visibleHandler">
+    <Dropdown ref="dropdownEl" @visible-change="visibleHandler">
         <template #trigger>
             <slot name="trigger" />
         </template>
         <slot />
-    </ExtDropdown>
+    </Dropdown>
 </template>
 <script setup>
-import ExtDropdown from 'v-dropdown';
+import { Dropdown } from 'v-dropdown';
 import { useTemplateRef } from 'vue';
 
 const dropdownEl = useTemplateRef('dropdownEl');
