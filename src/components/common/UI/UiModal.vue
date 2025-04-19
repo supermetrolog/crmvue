@@ -59,6 +59,7 @@
 <script setup>
 import { computed, onBeforeUnmount, ref, watch } from 'vue';
 import { useTimeoutFn } from '@vueuse/core';
+import { useModalScrollLock } from '@/composables/useModalScrollLock.js';
 
 const visibleModel = defineModel('visible');
 const emit = defineEmits(['close', 'closed']);
@@ -135,25 +136,27 @@ function tryShowCloseErrorAnimation() {
 
 // visibility
 
-const alreadyHidden = ref(false);
+const { lockScroll, unlockScroll } = useModalScrollLock();
+
+const scrollIsLocked = ref(false);
 
 watch(
     visibleModel,
-    value => {
+    (value, oldValue) => {
         if (value) {
             document.addEventListener('keydown', escapeHandler, true);
 
-            if (document.body.classList.contains('is-modal')) {
-                alreadyHidden.value = true;
-                return;
-            } else alreadyHidden.value = false;
-
-            document.body.classList.add('is-modal');
-        } else {
+            if (!scrollIsLocked.value) {
+                lockScroll();
+                scrollIsLocked.value = true;
+            }
+        } else if (oldValue) {
             document.removeEventListener('keydown', escapeHandler, true);
-            if (alreadyHidden.value) return;
 
-            document.body.classList.remove('is-modal');
+            if (scrollIsLocked.value) {
+                unlockScroll();
+                scrollIsLocked.value = false;
+            }
         }
     },
     { immediate: true }
@@ -170,8 +173,7 @@ function escapeHandler(event) {
 
 onBeforeUnmount(() => {
     document.removeEventListener('keydown', escapeHandler, true);
-    if (alreadyHidden.value) return;
-    document.body.classList.remove('is-modal');
+    if (scrollIsLocked.value) unlockScroll();
 });
 </script>
 <style scoped>
