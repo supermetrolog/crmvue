@@ -1398,6 +1398,12 @@
             border-bottom: 2px solid #f93154!important;
         }
     }
+
+    &:not(.toolbar) {
+        .ql-toolbar {
+            display: none;
+        }
+    }
 }
 
 

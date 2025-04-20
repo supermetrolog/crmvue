@@ -1,6 +1,9 @@
 <template>
     <div>
-        <div class="vue-editor" :class="{ 'vue-editor--invalid': hasValidationError && !disabled }">
+        <div
+            class="vue-editor"
+            :class="{ 'vue-editor--invalid': hasValidationError && !disabled, toolbar }"
+        >
             <p v-if="label" @click="focus" class="vue-editor__label mb-1" :class="{ required }">
                 {{ label }}
             </p>
@@ -42,7 +45,11 @@ const props = defineProps({
         default: 400
     },
     v: Object,
-    placeholder: String
+    placeholder: String,
+    toolbar: {
+        type: Boolean,
+        default: true
+    }
 });
 
 const defaultOptions = {
