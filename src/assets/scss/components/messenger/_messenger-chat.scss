@@ -315,6 +315,10 @@
     }
 }
 
+.dd-content:has(.messenger-chat-form-recipient-card) {
+    overflow: visible;
+}
+
 .messenger-chat-form-recipient {
     border-radius: 5px;
     overflow: hidden;
@@ -325,8 +329,9 @@
     @media screen and (max-width: 1800px) {
         width: 100%;
 
-        .v-dropdown-trigger {
+        .dd-trigger {
             display: block;
+            width: 100%;
         }
     }
 

@@ -1,6 +1,6 @@
 <template>
     <div class="messenger-chat-form-recipient">
-        <VDropdown :customContainerClass="dropdownClass">
+        <VDropdown>
             <template #trigger>
                 <MessengerChatFormRecipientContact
                     v-if="current"
@@ -17,42 +17,44 @@
                     <i class="fa-solid fa-chevron-right messenger-chat-form-contact__chevron"></i>
                 </div>
             </template>
-            <div class="messenger-chat-form-recipient__body">
-                <div class="messenger-chat-form-recipient__list">
-                    <MessengerChatFormRecipientContact
-                        v-if="mainContact"
-                        @click="$emit('change', mainContact)"
-                        :contact="mainContact"
-                        :class="{ active: current && mainContact.id === current.id }"
-                    />
-                    <MessengerChatFormRecipientContact
-                        v-for="contact in contacts"
-                        :key="contact.id"
-                        @click="$emit('change', contact)"
-                        :contact="contact"
-                        :class="{
-                            active: current && contact.id === current.id
-                        }"
-                    />
-                    <div
-                        @click="$emit('change', null)"
-                        class="messenger-chat-form-contact"
-                        :class="{ active: !current }"
-                    >
-                        <div class="messenger-chat-form-contact__icon rounded-icon">
-                            <i class="fa-solid fa-phone-slash"></i>
-                        </div>
-                        <div class="messenger-chat-form-contact__description">
-                            <p class="messenger-chat-form-contact__username">Без звонка</p>
+            <DropdownContent :class="dropdownClass">
+                <div class="messenger-chat-form-recipient__body">
+                    <div class="messenger-chat-form-recipient__list">
+                        <MessengerChatFormRecipientContact
+                            v-if="mainContact"
+                            @click="$emit('change', mainContact)"
+                            :contact="mainContact"
+                            :class="{ active: current && mainContact.id === current.id }"
+                        />
+                        <MessengerChatFormRecipientContact
+                            v-for="contact in contacts"
+                            :key="contact.id"
+                            @click="$emit('change', contact)"
+                            :contact="contact"
+                            :class="{
+                                active: current && contact.id === current.id
+                            }"
+                        />
+                        <div
+                            @click="$emit('change', null)"
+                            class="messenger-chat-form-contact"
+                            :class="{ active: !current }"
+                        >
+                            <div class="messenger-chat-form-contact__icon rounded-icon">
+                                <i class="fa-solid fa-phone-slash"></i>
+                            </div>
+                            <div class="messenger-chat-form-contact__description">
+                                <p class="messenger-chat-form-contact__username">Без звонка</p>
+                            </div>
                         </div>
                     </div>
+                    <MessengerChatFormRecipientCard
+                        v-if="current"
+                        class="messenger-chat-form-recipient__card"
+                        :contact="current"
+                    />
                 </div>
-                <MessengerChatFormRecipientCard
-                    v-if="current"
-                    class="messenger-chat-form-recipient__card"
-                    :contact="current"
-                />
-            </div>
+            </DropdownContent>
         </VDropdown>
     </div>
 </template>
@@ -64,6 +66,7 @@ import MessengerChatFormRecipientCard from '@/components/Messenger/Chat/Form/Mes
 import VDropdown from '@/components/common/Dropdown/VDropdown.vue';
 import { computed } from 'vue';
 import { tryOnBeforeMount } from '@vueuse/core';
+import { DropdownContent } from 'v-dropdown';
 
 const emit = defineEmits(['change']);
 const props = defineProps({
