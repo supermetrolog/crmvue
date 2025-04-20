@@ -67,6 +67,7 @@
                 show
                 :width="1700"
                 :close-on-press-esc="false"
+                :lock-scroll="false"
                 title="Предложения клиента"
             >
                 <div class="messenger-quiz-question-template-offers__modal">

@@ -93,6 +93,10 @@ const props = defineProps({
     },
     customClose: Boolean,
     hideHeader: Boolean,
+    lockScroll: {
+        type: Boolean,
+        default: true
+    },
     small: Boolean,
     bodyClass: [String, Object, Array],
     footerClass: [String, Object, Array],
@@ -110,6 +114,11 @@ const minHeightSize = computed(() => props.minHeight + 'px');
 function close() {
     if (props.customClose) {
         emit('close');
+
+        if (scrollIsLocked.value) {
+            unlockScroll();
+            scrollIsLocked.value = false;
+        }
     } else {
         visibleModel.value = false;
         emit('closed');
@@ -136,7 +145,7 @@ function tryShowCloseErrorAnimation() {
 
 // visibility
 
-const { lockScroll, unlockScroll } = useModalScrollLock();
+const { lockScroll: makeScrollLIsLock, unlockScroll } = useModalScrollLock();
 
 const scrollIsLocked = ref(false);
 
@@ -146,8 +155,8 @@ watch(
         if (value) {
             document.addEventListener('keydown', escapeHandler, true);
 
-            if (!scrollIsLocked.value) {
-                lockScroll();
+            if (!scrollIsLocked.value && props.lockScroll) {
+                makeScrollLIsLock();
                 scrollIsLocked.value = true;
             }
         } else if (oldValue) {
