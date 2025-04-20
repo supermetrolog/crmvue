@@ -20,7 +20,7 @@
                     </div>
                 </div>
             </div>
-            <div class="row">
+            <div class="row mb-1">
                 <UserFolders
                     v-model:selected="currentFolder"
                     morph="company"
@@ -34,10 +34,10 @@
                 <div class="col-12">
                     <div class="d-flex flex-column flex-md-row justify-content-between">
                         <PaginationClassic
-                            v-if="COMPANIES_PAGINATION && COMPANIES.length"
                             ref="firstPagination"
                             @next="next"
                             :pagination="COMPANIES_PAGINATION"
+                            :loading="!COMPANIES_PAGINATION && isLoading"
                         />
                         <div class="company-table__actions justify-content-start">
                             <Switch
@@ -49,11 +49,11 @@
                             <Button
                                 @click="companyFormIsVisible = true"
                                 success
-                                :disabled="isLoadingOriginal"
+                                :disabled="isLoading"
                             >
                                 Создать компанию
                             </Button>
-                            <RefreshButton @click="getCompanies" :disabled="isLoadingOriginal" />
+                            <RefreshButton @click="getCompanies" :disabled="isLoading" />
                         </div>
                     </div>
                 </div>
@@ -65,7 +65,7 @@
                             :is="currentViewComponentName"
                             v-if="COMPANIES.length"
                             :companies="COMPANIES"
-                            :loader="isLoadingOriginal"
+                            :loader="isLoading"
                         />
                         <Spinner v-else-if="isLoading" />
                         <EmptyData v-else>Ничего не найдено</EmptyData>
@@ -98,7 +98,6 @@ import EmptyData from '@/components/common/EmptyData.vue';
 import { computed, ref, watch } from 'vue';
 import { useTableContent } from '@/composables/useTableContent.js';
 import { useRoute, useRouter } from 'vue-router';
-import { useDelayedLoader } from '@/composables/useDelayedLoader.js';
 import Spinner from '@/components/common/Spinner.vue';
 import { useMobile } from '@/composables/useMobile.js';
 import Chip from '@/components/common/Chip.vue';
@@ -122,7 +121,7 @@ const COMPANIES_PAGINATION = computed(() => store.getters.COMPANIES_PAGINATION);
 const { consultantsOptions } = useConsultantsOptions();
 
 const isMobile = useMobile();
-const { isLoading, isLoadingOriginal } = useDelayedLoader(true);
+const isLoading = ref(true);
 const viewMode = ref(false);
 const companyFormIsVisible = ref(false);
 const firstPagination = ref(null);
