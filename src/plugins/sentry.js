@@ -14,6 +14,8 @@ export function initSentry(app) {
             integrations: [browserTracingIntegration({ router }), dedupeIntegration()],
             skipBrowserExtensionCheck: true
         });
+
+        console.warn('[Sentry] Sentry initialized');
     } else {
         console.warn('[Sentry] Skip Sentry initialization in dev mode');
     }
