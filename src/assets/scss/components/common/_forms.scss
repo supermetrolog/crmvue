@@ -1362,12 +1362,41 @@
 .vue-editor {
     &__label {
         font-weight: 500;
+
+        &.required {
+            position: relative;
+            width: fit-content;
+
+            &::before {
+                content: "*";
+                position: absolute;
+                right: -10px;
+                color: variables.$color_danger;
+                font-size: 16px;
+            }
+        }
     }
 
     .ql-editor {
         font-size: 16px;
-        min-height: 200px;
-        max-height: 400px;
+    }
+
+    .ql-editor.ql-blank::before {
+        font-size: 14px;
+    }
+
+    .ql-toolbar {
+        border-radius: 4px 4px 0 0;
+    }
+
+    .ql-container {
+        border-radius: 0 0 4px 4px;
+    }
+
+    &--invalid {
+        .ql-container {
+            border-bottom: 2px solid #f93154!important;
+        }
     }
 }
 

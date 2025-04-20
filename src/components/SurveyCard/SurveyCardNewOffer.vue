@@ -5,7 +5,7 @@
                 {{ dealType }}
             </span>
         </p>
-        <p v-if="offer.description">{{ offer.description }}</p>
+        <div v-if="offer.description" v-html="offer.description"></div>
         <p v-else>Без описания</p>
         <div v-if="editable" class="survey-card-custom-element__actions">
             <UiButtonIcon

@@ -1,8 +1,11 @@
 <template>
     <div>
-        <div class="vue-editor">
-            <p v-if="label" @click="focus" class="vue-editor__label mb-1">{{ label }}</p>
+        <div class="vue-editor" :class="{ 'vue-editor--invalid': hasValidationError && !disabled }">
+            <p v-if="label" @click="focus" class="vue-editor__label mb-1" :class="{ required }">
+                {{ label }}
+            </p>
             <div ref="editor"></div>
+            <ValidationMessage v-if="hasValidationError && !disabled" :message="error" />
         </div>
     </div>
 </template>
@@ -10,19 +13,36 @@
 import 'quill/dist/quill.core.css';
 import 'quill/dist/quill.snow.css';
 import Quill from 'quill';
-import { onBeforeUnmount, onMounted, onUnmounted, ref, watch } from 'vue';
+import {
+    computed,
+    onBeforeUnmount,
+    onMounted,
+    onUnmounted,
+    toRef,
+    useTemplateRef,
+    watch
+} from 'vue';
+import { useFormControlValidation } from '@/composables/useFormControlValidation.js';
+import ValidationMessage from '@/components/common/Forms/VaildationMessage.vue';
 
 const emit = defineEmits(['ready', 'change', 'blur', 'focus']);
-const modelValue = defineModel({ type: String, default: null });
+
+const modelValue = defineModel({ type: String });
+
 const props = defineProps({
-    disabled: {
-        type: Boolean,
-        default: false
+    disabled: Boolean,
+    required: Boolean,
+    label: String,
+    minHeight: {
+        type: Number,
+        default: 100
     },
-    label: {
-        type: String,
-        default: null
-    }
+    maxHeight: {
+        type: Number,
+        default: 400
+    },
+    v: Object,
+    placeholder: String
 });
 
 const defaultOptions = {
@@ -34,19 +54,20 @@ const defaultOptions = {
             [{ align: '' }, { align: 'center' }, { align: 'right' }, { align: 'justify' }],
             ['blockquote'],
             [{ list: 'ordered' }, { list: 'bullet' }, { list: 'check' }],
-            [{ indent: '-1' }, { indent: '+1' }],
             [{ color: [] }, { background: [] }],
-            ['link', 'image', 'video'],
+            ['link'],
             ['clean']
         ]
     }
 };
 
-const editor = ref(null);
+const editor = useTemplateRef('editor');
+
 const state = {
     editorOption: {},
     quill: null
 };
+
 let content = '';
 
 watch(modelValue, () => {
@@ -72,33 +93,36 @@ const focus = () => {
 };
 
 const initialize = () => {
-    if (editor.value) {
-        state.editorOption = defaultOptions;
-        state.editorOption.readOnly = props.disabled;
+    if (!editor.value) return;
 
-        state.quill = new Quill(editor.value, state.editorOption);
+    state.editorOption = defaultOptions;
+    state.editorOption.readOnly = props.disabled;
+    state.editorOption.placeholder = props.placeholder;
 
-        if (modelValue.value) state.quill.clipboard.dangerouslyPasteHTML(modelValue.value);
+    state.quill = new Quill(editor.value, state.editorOption);
 
-        state.quill.on('selection-change', range => {
-            if (range) emit('focus', state.quill);
-            else emit('blur', state.quill);
-        });
+    if (modelValue.value) state.quill.clipboard.dangerouslyPasteHTML(modelValue.value);
 
-        state.quill.on('text-change', () => {
-            let html = state.quill.getSemanticHTML();
-            const text = state.quill.getText().trim();
+    state.quill.on('selection-change', range => {
+        if (range) emit('focus', state.quill);
+        else emit('blur', state.quill);
+    });
 
-            if (text.length === 0 && !html.includes('img')) html = '';
+    state.quill.on('text-change', () => {
+        let html = state.quill.getSemanticHTML();
+        const text = state.quill.getText().trim();
 
-            content = html;
-            modelValue.value = content;
+        if (text.length === 0 && !html.includes('img')) html = '';
 
-            emit('change', { html, text });
-        });
+        content = html;
+        modelValue.value = content;
 
-        emit('ready', state.quill);
-    }
+        if (props.v) validate();
+
+        emit('change', { html, text });
+    });
+
+    emit('ready', state.quill);
 };
 
 onMounted(() => {
@@ -120,4 +144,18 @@ onBeforeUnmount(() => {
 onUnmounted(() => {
     state.quill = null;
 });
+
+const { hasValidationError, validate, error } = useFormControlValidation(
+    toRef(props, 'v'),
+    modelValue
+);
+
+const minHeightPx = computed(() => props.minHeight + 'px');
+const maxHeightPx = computed(() => props.maxHeight + 'px');
 </script>
+<style>
+.vue-editor .ql-editor {
+    min-height: v-bind(minHeightPx);
+    max-height: v-bind(maxHeightPx);
+}
+</style>

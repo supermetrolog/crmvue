@@ -38,13 +38,11 @@
                     show-radio
                     :v="v$.form.dealType"
                 />
-                <UiTextarea
+                <VueEditor
                     v-model="form.description"
-                    class="mt-2"
-                    auto-height
-                    :min-height="70"
-                    :max-height="250"
                     label="Описание запроса"
+                    class="mt-2"
+                    :min-height="80"
                 />
             </UiForm>
             <template #actions="{ close }">
@@ -70,12 +68,12 @@ import UiButton from '@/components/common/UI/UiButton.vue';
 import UiModal from '@/components/common/UI/UiModal.vue';
 import UiForm from '@/components/common/Forms/UiForm.vue';
 import RadioOptions from '@/components/common/Forms/RadioOptions.vue';
-import UiTextarea from '@/components/common/Forms/UiTextarea.vue';
 import useVuelidate from '@vuelidate/core';
 import { helpers, required } from '@vuelidate/validators';
 import { useValidationNotify } from '@/composables/useValidationNotify.js';
 import { spliceById } from '@/utils/helpers/array/spliceById.js';
 import SurveyCardNewRequest from '@/components/SurveyCard/SurveyCardNewRequest.vue';
+import VueEditor from '@/components/common/Forms/VueEditor.vue';
 
 const modelValue = defineModel({ type: Array, default: () => [] });
 const props = defineProps({

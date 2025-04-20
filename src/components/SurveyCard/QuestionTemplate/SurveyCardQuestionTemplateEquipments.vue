@@ -5,7 +5,7 @@
                 <div v-for="answer in answers" :key="answer.id">
                     <div v-if="answer?.surveyQuestionAnswer?.value">
                         <p class="mb-1">{{ answer.value }}:</p>
-                        <p class="bg-white p-1">{{ answer.surveyQuestionAnswer.value }}</p>
+                        <div class="bg-white p-1" v-html="answer.surveyQuestionAnswer.value"></div>
                     </div>
                 </div>
             </div>
