@@ -5,7 +5,7 @@
                 {{ dealType }}
             </span>
         </p>
-        <p v-if="request.description">{{ request.description }}</p>
+        <div v-if="request.description" v-html="request.description"></div>
         <p v-else>Без описания</p>
         <div v-if="editable" class="survey-card-custom-element__actions">
             <UiButtonIcon

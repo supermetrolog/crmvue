@@ -24,12 +24,11 @@
                 </div>
                 <template v-if="hasOffers">
                     <p class="mt-1 text-grey">Продажа:</p>
-                    <UiTextarea
+                    <VueEditor
                         v-model="offersDescription"
-                        auto-height
-                        required
                         :min-height="50"
                         :max-height="200"
+                        required
                         placeholder="Что хотят продать? Условия, цены, подробности.."
                         class="w-100"
                         :v="v$.offersDescription"
@@ -59,12 +58,11 @@
                 </div>
                 <template v-if="hasRequests">
                     <p class="mt-1 text-grey">Купля:</p>
-                    <UiTextarea
+                    <VueEditor
                         v-model="requestsDescription"
-                        auto-height
-                        required
                         :min-height="50"
                         :max-height="200"
+                        required
                         placeholder="Что хотят купить? Бюджет, подробности.."
                         class="w-100"
                         :v="v$.requestsDescription"
@@ -75,20 +73,19 @@
         <UiModal
             v-model:visible="offerFormIsVisible"
             @close="offerFormIsVisible = false"
-            :width="600"
+            :width="720"
             custom-close
             :close-on-press-esc="false"
             :close-on-outside-click="false"
             title="Продажа оборудования"
         >
             <UiForm>
-                <UiTextarea
+                <VueEditor
                     v-model="offersDescription"
-                    required
-                    :min-height="50"
-                    :max-height="200"
-                    auto-height
                     label="Описание по продаже"
+                    :min-height="80"
+                    :max-height="200"
+                    required
                     placeholder="Что хотят продать? Условия, цены, подробности.."
                     class="w-100"
                     :v="v$.offersDescription"
@@ -112,20 +109,19 @@
         <UiModal
             v-model:visible="requestFormIsVisible"
             @close="requestFormIsVisible = false"
-            :width="600"
+            :width="720"
             custom-close
             :close-on-press-esc="false"
             :close-on-outside-click="false"
             title="Покупка оборудования"
         >
             <UiForm>
-                <UiTextarea
+                <VueEditor
                     v-model="requestsDescription"
                     :v="v$.requestsDescription"
-                    auto-height
-                    required
-                    :min-height="50"
+                    :min-height="80"
                     :max-height="200"
+                    required
                     label="Описание по покупке"
                     placeholder="Что хотят купить? Бюджет, подробности.."
                     class="w-100"
@@ -152,11 +148,11 @@
 import { ref } from 'vue';
 import useVuelidate from '@vuelidate/core';
 import { helpers, required } from '@vuelidate/validators';
-import UiTextarea from '@/components/common/Forms/UiTextarea.vue';
 import { useNotify } from '@/utils/use/useNotify.js';
 import UiButton from '@/components/common/UI/UiButton.vue';
 import UiModal from '@/components/common/UI/UiModal.vue';
 import UiForm from '@/components/common/Forms/UiForm.vue';
+import VueEditor from '@/components/common/Forms/VueEditor.vue';
 
 const hasRequests = ref(false);
 const hasOffers = ref(false);
