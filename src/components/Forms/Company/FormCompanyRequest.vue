@@ -549,6 +549,8 @@ import UiCol from '@/components/common/UI/UiCol.vue';
 import RadioChip from '@/components/common/Forms/RadioChip.vue';
 import SwitchSlider from '@/components/common/Forms/SwitchSlider.vue';
 import { useAuth } from '@/composables/useAuth.js';
+import { isString } from '@/utils/helpers/string/isString.js';
+import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
 
 const emit = defineEmits(['close', 'created', 'updated']);
 const props = defineProps({
@@ -581,7 +583,7 @@ const { form, isEditMode } = useFormData(
         firstFloorOnly: null,
         heated: null,
         antiDustOnly: null,
-        electricity: '',
+        electricity: null,
         haveCranes: null,
         trainLine: null,
         trainLineLength: null,
@@ -636,6 +638,10 @@ const normalizeForm = () => {
     if (!form.region_ids.some(item => Number(item) === 1)) {
         form.direction_ids = [];
         form.region_neardy = null;
+    }
+
+    if (isNotNullish(form.electricity) && isString(form.electricity)) {
+        form.electricity = Number(form.electricity);
     }
 };
 

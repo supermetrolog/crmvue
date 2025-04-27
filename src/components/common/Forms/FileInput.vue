@@ -199,7 +199,7 @@ onChange(_files => {
         emit('update:data', null);
     }
 
-    if (isNotNullish(files)) {
+    if (isNotNullish(_files)) {
         setProperties(Array.from(_files));
     }
 });
@@ -328,7 +328,7 @@ onMounted(() => {
     }
 });
 
-defineExpose({ open });
+defineExpose({ clear, clearAll });
 </script>
 <style>
 .flip-list-move {
