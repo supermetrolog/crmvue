@@ -67,7 +67,7 @@
                 @updated="onUpdateFolder"
                 @created="onCreateFolder"
                 @deleted="onDeleteFolder"
-                :morph
+                :category
                 :form-data="editingFolder"
             />
         </teleport>
@@ -88,7 +88,7 @@ const selectedFolder = defineModel('selected', { type: Number });
 
 const emit = defineEmits(['select']);
 const props = defineProps({
-    morph: {
+    category: {
         type: String,
         required: true
     },
@@ -138,7 +138,7 @@ function selectFolder(key) {
     }
 }
 
-const { folders, isLoading, updateOrder, deleteFolder } = useUserFolders(props.morph);
+const { folders, isLoading, updateOrder, deleteFolder } = useUserFolders(props.category);
 
 // create
 

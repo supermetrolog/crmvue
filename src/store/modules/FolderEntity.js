@@ -24,23 +24,21 @@ const FolderEntity = {
         }
     },
     actions: {
-        async fetchEntities({ state }, morph) {
-            if (state[morph].loading) return;
+        async fetchEntities({ state }, category) {
+            if (state[category].loading) return;
 
             try {
-                state[morph].loading = true;
+                state[category].loading = true;
 
-                const response = await api.folder.searchEntities({
-                    morph: morph
-                });
+                const response = await api.folder.searchEntities({ category });
 
-                state[morph].entities = response.data;
+                state[category].entities = response.data;
 
-                state[morph].loaded = true;
+                state[category].loaded = true;
             } catch (error) {
                 console.error('Error fetching entity folders:', error);
             } finally {
-                state[morph].loading = false;
+                state[category].loading = false;
             }
         }
     },

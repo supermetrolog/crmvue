@@ -23,7 +23,7 @@
             <div class="row mb-1">
                 <UserFolders
                     v-model:selected="currentFolder"
-                    morph="company"
+                    category="company"
                     class="col-12"
                     movable
                     editable

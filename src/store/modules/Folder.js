@@ -18,7 +18,7 @@ const Folder = {
                 state[morph].loading = true;
 
                 const response = await api.folder.search({
-                    morph: morph
+                    category: morph
                 });
 
                 state[morph].folders = response.data;

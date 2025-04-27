@@ -63,7 +63,7 @@ const COLORS = ['#c78a1b', '#fe6a49', '#423f3f', '#457dfa'];
 const emit = defineEmits(['created', 'updated', 'close', 'deleted']);
 const props = defineProps({
     formData: Object,
-    morph: {
+    category: {
         type: String,
         required: true
     }
@@ -76,7 +76,7 @@ const { form, isDeletedEntity, isEditMode } = useFormData(
         name: null,
         color: '7c7c86',
         icon: 'fa-solid fa-folder',
-        morph: props.morph
+        category: props.category
     }),
     props.formData
 );
