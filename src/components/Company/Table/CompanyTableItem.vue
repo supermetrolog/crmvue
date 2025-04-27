@@ -2,6 +2,7 @@
     <Tr class="company-table-item" :class="{ CompanyTableOdd: odd, CompanyTableEven: !odd }">
         <Td class="text-center company-table-item__id">
             <p class="mb-1">{{ company.id }}</p>
+            <UserFoldersDropdown morph="company" :entity="company.id" />
         </Td>
         <Td class="company-table-item__name" sort="nameRu">
             <div class="company-table-item__main">
@@ -140,6 +141,7 @@ import { messenger } from '@/const/messenger.js';
 import CompanyTableItemCall from '@/components/Company/Table/CompanyTableItemCall.vue';
 import UiTooltipIcon from '@/components/common/UI/UiTooltipIcon.vue';
 import { useTippyText } from '@/composables/useTippyText.js';
+import UserFoldersDropdown from '@/components/UserFolder/UserFoldersDropdown.vue';
 
 const store = useStore();
 const router = useRouter();

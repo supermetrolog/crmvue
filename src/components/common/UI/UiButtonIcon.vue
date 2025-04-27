@@ -4,6 +4,13 @@
             <Spinner v-if="loading" :size="20" class="mini" />
             <i v-else :class="icon" />
         </slot>
+        <span
+            v-if="badge"
+            class="ui-button-icon__badge"
+            :class="`ui-button-icon__badge--cl-${badgeColor}`"
+        >
+            {{ badge }}
+        </span>
     </button>
 </template>
 <script setup>
@@ -19,7 +26,9 @@ const props = defineProps({
     icon: String,
     color: String,
     disabled: Boolean,
-    loading: Boolean
+    loading: Boolean,
+    badge: [Number, String],
+    badgeColor: String
 });
 
 const classes = computed(() => {

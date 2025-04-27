@@ -1,8 +1,9 @@
 import { config } from '@/configs/config.js';
+import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
 
 const TITLE_SEPARATOR = '|';
 
-function setTitle(value = null) {
+export function setTitle(value = null) {
     if (Array.isArray(value)) {
         document.title = [...value, config.title].join(` ${TITLE_SEPARATOR} `);
         return;
@@ -16,6 +17,10 @@ function setTitle(value = null) {
     document.title = config.title;
 }
 
-export function useDocumentTitle() {
+export function useDocumentTitle(title) {
+    if (isNotNullish(title)) {
+        setTitle(title);
+    }
+
     return { setTitle };
 }

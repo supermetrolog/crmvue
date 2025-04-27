@@ -5,9 +5,9 @@
             <CompanyTableTimeline
                 v-for="timeline in timelines"
                 :key="timeline.id"
-                @click="openTimeline"
+                @click="$emit('open-timeline')"
+                :timeline="timeline"
                 class="company-table-item__timeline"
-                :current-steps="timeline.steps"
                 :request-name="requestName"
             />
         </td>
@@ -41,13 +41,8 @@ defineProps({
         type: String,
         required: true
     },
-    attention: {
-        type: Boolean,
-        default: false
-    }
+    attention: Boolean
 });
 
-const emit = defineEmits(['open-timeline']);
-
-const openTimeline = () => emit('open-timeline');
+defineEmits(['open-timeline']);
 </script>

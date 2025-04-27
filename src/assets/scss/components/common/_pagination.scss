@@ -52,6 +52,10 @@
         &.loading {
             animation: wave 1s infinite alternate;
         }
+
+        &.skeleton {
+            outline: none;
+        }
     }
 
     @keyframes wave {
