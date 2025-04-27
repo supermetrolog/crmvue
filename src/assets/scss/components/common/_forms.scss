@@ -1343,6 +1343,7 @@
     &__element {
         border: 2px solid rgba(0, 0, 0, .2);
         aspect-ratio: 1 / 1;
+        border-radius: 4px;
         @include mixins.transition(opacity);
         @include mixins.hover {
             cursor: pointer;
@@ -1355,6 +1356,33 @@
     }
 }
 
+.icon-picker {
+    @include mixins.flex-box($a: center, $gap: 10px, $wrap: wrap);
+
+    &__label {
+        font-weight: 500;
+    }
+
+    &__preview {
+        @include mixins.flex-box($a: center, $j: center);
+    }
+
+    &__wrapper {
+        padding: 8px;
+    }
+
+    &__list {
+        @include mixins.flex-box($gap: 5px, $wrap: true);
+        width: 310px;
+    }
+
+    &__element {
+        width: 40px!important;
+        height: 40px!important;
+        justify-content: center;
+    }
+}
+
 .color-picker-popup {
     z-index: 4005!important;
 }
@@ -1362,12 +1390,47 @@
 .vue-editor {
     &__label {
         font-weight: 500;
+
+        &.required {
+            position: relative;
+            width: fit-content;
+
+            &::before {
+                content: "*";
+                position: absolute;
+                right: -10px;
+                color: variables.$color_danger;
+                font-size: 16px;
+            }
+        }
     }
 
     .ql-editor {
         font-size: 16px;
-        min-height: 200px;
-        max-height: 400px;
+    }
+
+    .ql-editor.ql-blank::before {
+        font-size: 14px;
+    }
+
+    .ql-toolbar {
+        border-radius: 4px 4px 0 0;
+    }
+
+    .ql-container {
+        border-radius: 0 0 4px 4px;
+    }
+
+    &--invalid {
+        .ql-container {
+            border-bottom: 2px solid #f93154!important;
+        }
+    }
+
+    &:not(.toolbar) {
+        .ql-toolbar {
+            display: none;
+        }
     }
 }
 

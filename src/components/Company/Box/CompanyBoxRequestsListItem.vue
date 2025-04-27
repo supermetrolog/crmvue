@@ -166,7 +166,7 @@ const statusText = computed(() => {
     if (isActive.value) return 'В работе';
     if (isDone.value) return 'Завершен';
 
-    return null;
+    return 'Завершен';
 });
 
 const dealTitle = computed(() => {

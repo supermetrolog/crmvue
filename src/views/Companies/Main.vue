@@ -20,14 +20,24 @@
                     </div>
                 </div>
             </div>
+            <div class="row mb-1">
+                <UserFolders
+                    v-model:selected="currentFolder"
+                    category="company"
+                    class="col-12"
+                    movable
+                    editable
+                    selectable
+                />
+            </div>
             <div class="row">
                 <div class="col-12">
                     <div class="d-flex flex-column flex-md-row justify-content-between">
                         <PaginationClassic
-                            v-if="COMPANIES_PAGINATION && COMPANIES.length"
                             ref="firstPagination"
                             @next="next"
                             :pagination="COMPANIES_PAGINATION"
+                            :loading="!COMPANIES_PAGINATION && isLoading"
                         />
                         <div class="company-table__actions justify-content-start">
                             <Switch
@@ -39,11 +49,11 @@
                             <Button
                                 @click="companyFormIsVisible = true"
                                 success
-                                :disabled="isLoadingOriginal"
+                                :disabled="isLoading"
                             >
                                 Создать компанию
                             </Button>
-                            <RefreshButton @click="getCompanies" :disabled="isLoadingOriginal" />
+                            <RefreshButton @click="getCompanies" :disabled="isLoading" />
                         </div>
                     </div>
                 </div>
@@ -55,7 +65,7 @@
                             :is="currentViewComponentName"
                             v-if="COMPANIES.length"
                             :companies="COMPANIES"
-                            :loader="isLoadingOriginal"
+                            :loader="isLoading"
                         />
                         <Spinner v-else-if="isLoading" />
                         <EmptyData v-else>Ничего не найдено</EmptyData>
@@ -85,10 +95,9 @@ import Button from '@/components/common/Button.vue';
 import Switch from '@/components/common/Forms/Switch.vue';
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
 import EmptyData from '@/components/common/EmptyData.vue';
-import { computed, ref } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { useTableContent } from '@/composables/useTableContent.js';
 import { useRoute, useRouter } from 'vue-router';
-import { useDelayedLoader } from '@/composables/useDelayedLoader.js';
 import Spinner from '@/components/common/Spinner.vue';
 import { useMobile } from '@/composables/useMobile.js';
 import Chip from '@/components/common/Chip.vue';
@@ -99,6 +108,9 @@ import { isArray } from '@/utils/helpers/array/isArray.js';
 import { isEmptyArray } from '@/utils/helpers/array/isEmptyArray.js';
 import { companyOptions } from '@/const/options/company.options.js';
 import { toDateFormat } from '@/utils/formatters/date.js';
+import UserFolders from '@/components/UserFolder/UserFolders.vue';
+import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
+import { useDebounceFn } from '@vueuse/core';
 
 const route = useRoute();
 const router = useRouter();
@@ -109,7 +121,7 @@ const COMPANIES_PAGINATION = computed(() => store.getters.COMPANIES_PAGINATION);
 const { consultantsOptions } = useConsultantsOptions();
 
 const isMobile = useMobile();
-const { isLoading, isLoadingOriginal } = useDelayedLoader(true);
+const isLoading = ref(true);
 const viewMode = ref(false);
 const companyFormIsVisible = ref(false);
 const firstPagination = ref(null);
@@ -153,9 +165,19 @@ const { humanizedSelectedQueryFilters } = useSelectedFilters({}, gettersForFilte
 
 const getCompanies = async () => {
     isLoading.value = true;
-    await store.dispatch('SEARCH_COMPANIES', { query: route.query });
+
+    const query = { ...route.query };
+
+    if (isNotNullish(currentFolder.value)) {
+        query.folder_ids = [currentFolder.value];
+    }
+
+    await store.dispatch('SEARCH_COMPANIES', { query });
+
     isLoading.value = false;
 };
+
+const debouncedFetchCompanies = useDebounceFn(getCompanies, 300);
 
 const { next, nextWithScroll, queryIsInitialized } = useTableContent(getCompanies, {
     scrollTo: firstPagination
@@ -173,4 +195,10 @@ function removeFilter(filter) {
 
     router.replace({ query });
 }
+
+// folders
+
+const currentFolder = ref(null);
+
+watch(currentFolder, debouncedFetchCompanies);
 </script>

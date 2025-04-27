@@ -4,7 +4,7 @@
         <slot name="icon">
             <i v-if="icon" :class="[icon, iconClass]" />
         </slot>
-        <span>
+        <span v-if="$slots.default">
             <slot></slot>
         </span>
         <Spinner v-if="loading" class="mini" />

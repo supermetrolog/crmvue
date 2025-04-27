@@ -23,6 +23,7 @@ env:
 jobs:
   web-deploy:
     name: 🎉 Deploy
+    environment: stage
     runs-on: ubuntu-latest
     steps:
       - name: 🚚 Get latest code

@@ -1,20 +1,8 @@
 <template>
     <div class="pagination-classic" :class="{ disabled: isDisabled || disabled || loading }">
-        <div v-if="loading || !pagination" class="pagination-classic__pages">
-            <PaginationPage navigate>
-                <i class="fa-solid fa-angles-left"></i>
-            </PaginationPage>
-            <PaginationPage navigate>
-                <i class="fa-solid fa-angle-left"></i>
-            </PaginationPage>
-            <PaginationPage v-for="number of 5" :key="number" class="loading">
+        <div v-if="loading || !pagination" class="pagination-classic__pages skeleton-body">
+            <PaginationPage v-for="number of 7" :key="number" class="skeleton skeleton--rect">
                 {{ number }}
-            </PaginationPage>
-            <PaginationPage navigate>
-                <i class="fa-solid fa-angle-right"></i>
-            </PaginationPage>
-            <PaginationPage navigate>
-                <i class="fa-solid fa-angles-right"></i>
             </PaginationPage>
         </div>
         <div v-else class="pagination-classic__pages">

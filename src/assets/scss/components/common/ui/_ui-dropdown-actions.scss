@@ -17,7 +17,7 @@
         border: none;
         @include mixins.transition(background-color, color);
 
-        &:has(i) {
+        &:has(i), &:has(.spinner) {
             @include mixins.flex-box($gap: 7px, $a: center);
 
             i {
@@ -52,5 +52,10 @@
 
     &__element:not(:last-child) &__button {
         border-bottom: 1px solid rgba(0, 0, 0, .1);
+    }
+
+    &__footer {
+        border-top: 1px solid rgba(0, 0, 0, .4);
+        background-color: variables.$bg-gray-l;
     }
 }

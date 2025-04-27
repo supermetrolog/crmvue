@@ -528,8 +528,9 @@
         border-radius: 5px;
         border: 1px solid rgba(211, 211, 211, 1);
         margin-right: 1px;
-        background-color: rgba(201, 201, 201, 0.4);
-        color: #000;
+        background-color: rgba(168, 168, 168, 0.2);
+        color: rgb(135, 135, 135);
+        opacity: .8;
 
         &.active {
             background-color: variables.$bg-success;

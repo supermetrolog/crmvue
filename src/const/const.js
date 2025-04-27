@@ -6,6 +6,7 @@ export const Timeline = [
         visual_id: '1',
         name: 'Meeting',
         label: 'Знакомство с клиентом',
+        shortLabel: 'Знакомство',
         icon: 'fa-solid fa-phone-alt',
         checkPause: point => point.negative === 1,
         steps: [
@@ -64,6 +65,7 @@ export const Timeline = [
         visual_id: '4',
         name: 'Inspection',
         label: 'Организация осмотров',
+        shortLabel: 'Осмотр',
         icon: 'fa-solid fa-map-location-dot',
         steps: [
             {
@@ -94,6 +96,7 @@ export const Timeline = [
         visual_id: '6',
         name: 'Interest',
         label: 'Интерес к объектам',
+        shortLabel: 'Интерес',
         icon: 'fa-solid fa-heartbeat'
     },
     {

@@ -19,6 +19,8 @@ import { useAuth } from '@/composables/useAuth.js';
 import Quizz from '@/store/modules/Quiz.js';
 import { getAccessTokenFromLocalStorage } from '@/services/localStorage.js';
 import { setAccessToken } from '@/services/axios.js';
+import Folder from '@/store/modules/Folder.js';
+import FolderEntity from '@/store/modules/FolderEntity.js';
 
 const store = createStore({
     state: {},
@@ -73,7 +75,9 @@ const store = createStore({
         Complex,
         Messenger,
         Task,
-        Quizz
+        Quizz,
+        Folder,
+        FolderEntity
     }
 });
 

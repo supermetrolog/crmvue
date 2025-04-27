@@ -230,7 +230,7 @@ const fileInputElement = useTemplateRef('fileInputElement');
 const files = ref([]);
 
 function openFileDialog() {
-    fileInputElement.value.clickOpenFile();
+    fileInputElement.value.open();
 }
 
 function deleteFile(fileIndex) {

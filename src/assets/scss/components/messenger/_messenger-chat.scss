@@ -254,21 +254,12 @@
     }
 
     &__editor {
-        width: 100%;
+        width: calc(100% - 120px);
 
-        .form__textarea {
-            height: 50px;
+        .ql-container {
+            border-radius: 5px;
             border: 1px solid transparent;
             background-color: #F3F3F3;
-            padding: 10px 15px;
-            border-radius: 5px;
-            outline: none;
-            min-height: 50px;
-            max-height: 146px;
-
-            &::-webkit-scrollbar {
-                display: none;
-            }
         }
     }
 
@@ -315,6 +306,10 @@
     }
 }
 
+.dd-content:has(.messenger-chat-form-recipient-card) {
+    overflow: visible;
+}
+
 .messenger-chat-form-recipient {
     border-radius: 5px;
     overflow: hidden;
@@ -325,8 +320,9 @@
     @media screen and (max-width: 1800px) {
         width: 100%;
 
-        .v-dropdown-trigger {
+        .dd-trigger {
             display: block;
+            width: 100%;
         }
     }
 

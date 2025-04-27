@@ -7,8 +7,11 @@
             :class="[buttonClass, { active: active }]"
         >
             <slot :loading="loading">
-                <i v-if="icon" :class="icon" />
+                <slot name="icon">
+                    <i v-if="icon" :class="icon" />
+                </slot>
                 <span>{{ label }}</span>
+                <slot name="after"></slot>
                 <Spinner v-if="loading" class="mini ml-auto" />
             </slot>
         </button>

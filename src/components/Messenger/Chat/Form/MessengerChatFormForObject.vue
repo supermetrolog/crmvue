@@ -29,13 +29,14 @@
             <Button @click="attachFile" class="messenger-chat-form__button" warning icon>
                 <i class="fa-solid fa-paperclip"></i>
             </Button>
-            <UiTextarea
-                v-model.trim="message"
-                @keydown.enter.prevent="keyHandler"
+            <VueEditor
+                v-model="message"
                 @paste="pasteHandler"
+                :toolbar="false"
                 placeholder="Напишите сообщение..."
                 class="messenger-chat-form__editor"
-                auto-height
+                :min-height="50"
+                :max-height="140"
             />
             <Button
                 @click="sendMessage"
@@ -53,7 +54,6 @@
 import UiForm from '@/components/common/Forms/UiForm.vue';
 import { useStore } from 'vuex';
 import Button from '@/components/common/Button.vue';
-import UiTextarea from '@/components/common/Forms/UiTextarea.vue';
 import MessengerChatFormRecipient from '@/components/Messenger/Chat/Form/MessengerChatFormRecipient.vue';
 import MessengerChatFormCategories from '@/components/Messenger/Chat/Form/MessengerChatFormCategories.vue';
 import MessengerChatFormAttachments from '@/components/Messenger/Chat/Form/MessengerChatFormAttachments.vue';
@@ -67,6 +67,7 @@ import { MAX_FILES_COUNT, SIZE_TO_COMPRESSION } from '@/const/messenger.js';
 import { blobToFile } from '@/utils/helpers/forms/blobToFile.js';
 import Loader from '@/components/common/Loader.vue';
 import MessengerChatFormReply from '@/components/Messenger/Chat/Form/MessengerChatFormReply.vue';
+import VueEditor from '@/components/common/Forms/VueEditor.vue';
 
 const compressionOptions = {
     maxSizeMB: 1,
@@ -153,11 +154,6 @@ const sendMessage = async () => {
     }
 
     isLoading.value = false;
-};
-
-const keyHandler = event => {
-    if (event.shiftKey) message.value = message.value + '\n';
-    else sendMessage();
 };
 
 let pastedUniqueIndex = 1;
