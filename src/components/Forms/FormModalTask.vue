@@ -50,6 +50,10 @@
                 </UserPicker>
             </template>
             <template #2>
+                <Spinner v-if="consultantsIsLoading" center />
+                <UserPicker v-else v-model="form.observers" :users="consultantsForObservers" />
+            </template>
+            <template #3>
                 <div class="task-form__dates">
                     <DatePicker
                         v-model="form.date.start"
@@ -76,7 +80,7 @@
                     />
                 </div>
             </template>
-            <template #3>
+            <template #4>
                 <div class="row">
                     <MultiSelect
                         v-model="form.tags"
@@ -137,20 +141,15 @@
                         :info="additionalContent"
                         class="col-5"
                     />
+                    <Spinner v-if="filesIsLoading" label="Загрузка файлов.." center />
+                    <FileInput
+                        v-else
+                        v-model:native="form.files"
+                        v-model:data="form.current_files"
+                        class="col-12"
+                        label="Файлы или фотографии к задаче"
+                    />
                 </div>
-            </template>
-            <template #4>
-                <Spinner v-if="consultantsIsLoading" center />
-                <UserPicker v-else v-model="form.observers" :users="consultantsForObservers" />
-            </template>
-            <template #5>
-                <Spinner v-if="filesIsLoading" label="Загрузка файлов.." center />
-                <FileInput
-                    v-else
-                    v-model:native="form.files"
-                    v-model:data="form.current_files"
-                    label="Файлы или фотографии к задаче"
-                />
             </template>
         </Stepper>
     </UiModal>
@@ -212,24 +211,19 @@ const steps = [
         icon: 'fa-solid fa-user'
     },
     {
+        name: 'observers',
+        title: 'Наблюдатели',
+        icon: 'fa-solid fa-eye'
+    },
+    {
         name: 'date',
         title: 'Выбор даты',
         icon: 'fa-solid fa-clock'
     },
     {
         name: 'message',
-        title: 'Описание задачи',
+        title: 'Параметры задачи',
         icon: 'fa-solid fa-pen'
-    },
-    {
-        name: 'observers',
-        title: 'Наблюдатели',
-        icon: 'fa-solid fa-eye'
-    },
-    {
-        name: 'files',
-        title: 'Файлы',
-        icon: 'fa-solid fa-file-circle-plus'
     }
 ];
 
