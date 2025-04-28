@@ -43,9 +43,10 @@
                             v-if="selectedFolder"
                             @click="selectFolder(null)"
                             color="light"
+                            icon="fa-solid fa-xmark"
                             small
                         >
-                            <i class="fa-solid fa-xmark text-grey" />
+                            Закрыть папку
                         </UiButton>
                     </AnimationTransition>
                     <UiButton
@@ -54,6 +55,7 @@
                         icon="fa-solid fa-folder-plus text-grey"
                         color="light"
                         small
+                        class="flex-shrink-0"
                     >
                         Новая папка
                     </UiButton>
