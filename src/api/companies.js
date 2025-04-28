@@ -56,5 +56,13 @@ export default {
     async deleteLogo(companyId) {
         const response = await axios.delete(`${URL}/${companyId}/logo`);
         return responseHasStatus(response, STATUS_SUCCESS);
+    },
+    async enable(companyId) {
+        const response = await axios.post(`${URL}/${companyId}/enable`);
+        return responseHasStatus(response, STATUS_SUCCESS);
+    },
+    async disable(companyId, payload) {
+        const response = await axios.post(`${URL}/${companyId}/disable`, payload);
+        return responseHasStatus(response, STATUS_SUCCESS);
     }
 };
