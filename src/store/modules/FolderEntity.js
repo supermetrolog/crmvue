@@ -8,18 +8,30 @@ const FolderEntity = {
             loaded: false,
             entities: [],
             needsUpdate: false
+        },
+        offer_mix: {
+            loading: false,
+            loaded: false,
+            entities: [],
+            needsUpdate: false
+        },
+        task: {
+            loading: false,
+            loaded: false,
+            entities: [],
+            needsUpdate: false
         }
     },
     mutations: {
-        removeByFolderId(state, folderId) {
-            const oldEntitiesLength = state.company.entities.length;
+        removeByFolderId(state, { folderId, category }) {
+            const oldEntitiesLength = state[category].entities.length;
 
-            state.company.entities = state.company.entities.filter(
+            state[category].entities = state[category].entities.filter(
                 entity => entity.folder_id !== folderId
             );
 
-            if (oldEntitiesLength !== state.company.entities.length) {
-                state.company.needsUpdate = true;
+            if (oldEntitiesLength !== state[category].entities.length) {
+                state[category].needsUpdate = true;
             }
         }
     },

@@ -59,6 +59,11 @@
         </div>
         <div @click="$emit('view', $event)" class="dashboard-card-task__body">
             <div class="dashboard-card-task__content">
+                <UserFoldersDropdown
+                    :entity="task.id"
+                    :button-color="isAlreadyExpired && !isCanceled ? 'light' : 'grey-l'"
+                    morph="task"
+                />
                 <span class="dashboard-card-task__id">#{{ task.id }}</span>
                 <Avatar
                     v-if="task.created_by_type === 'user'"
@@ -127,6 +132,7 @@ import { useAuth } from '@/composables/useAuth.js';
 import DashboardTableTasksItemObserver from '@/components/Dashboard/Table/TasksItem/DashboardTableTasksItemObserver.vue';
 import { isString } from '@/utils/helpers/string/isString.js';
 import { useFavoriteTasks } from '@/composables/useFavoriteTasks.js';
+import UserFoldersDropdown from '@/components/UserFolder/UserFoldersDropdown.vue';
 
 defineEmits(['view']);
 const props = defineProps({

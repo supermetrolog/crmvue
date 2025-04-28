@@ -15,7 +15,10 @@
             </Tr>
         </template>
         <template #tbody>
-            <Loader v-if="loader" />
+            <Loader v-if="loader && offers.length" />
+            <template v-else-if="loader">
+                <OfferTableItemSkeleton v-for="item in 5" :key="item" />
+            </template>
             <OfferTableItem
                 v-for="offer in offers"
                 :key="offer.id"
@@ -33,6 +36,7 @@ import Tr from '@/components/common/Table/Tr.vue';
 import Th from '@/components/common/Table/Th.vue';
 import OfferTableItem from '@/components/Offer/TableItem/OfferTableItem.vue';
 import Loader from '@/components/common/Loader.vue';
+import OfferTableItemSkeleton from '@/components/Offer/TableItem/OfferTableItemSkeleton.vue';
 
 defineEmits(['favorite-deleted']);
 defineProps({

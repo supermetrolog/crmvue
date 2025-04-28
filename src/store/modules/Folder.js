@@ -7,6 +7,16 @@ const Folder = {
             loading: false,
             loaded: false,
             folders: []
+        },
+        offer_mix: {
+            loading: false,
+            loaded: false,
+            folders: []
+        },
+        task: {
+            loading: false,
+            loaded: false,
+            folders: []
         }
     },
     mutations: {},

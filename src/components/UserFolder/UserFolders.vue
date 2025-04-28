@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div v-if="isLoading" class="d-flex gap-2 user-folders">
+        <div v-if="isLoading || isDeleting" class="d-flex gap-2 user-folders">
             <UserFolderSkeleton v-for="key in 3" :key="key" />
         </div>
         <VirtualDragList
@@ -22,17 +22,43 @@
             class="d-flex"
         >
             <template #item="{ record }">
-                <UserFolder
-                    @click="selectFolder(record.id)"
-                    @enable-sort="onEnableSort(record.id)"
-                    @disable-sort="onDisableSort(record.id)"
-                    @edit="editFolder(record)"
-                    :folder="record"
-                    :movable="movable && !isActiveDrag"
-                    :dragging="isActiveDrag && activeDragKey === record.id"
-                    :active="selectedFolder === record.id"
-                    editable
-                />
+                <Dropdown trigger="contextmenu" block>
+                    <template #trigger>
+                        <UserFolder
+                            @click="selectFolder(record.id)"
+                            @enable-sort="onEnableSort(record.id)"
+                            @disable-sort="onDisableSort(record.id)"
+                            @edit="editFolder(record)"
+                            :folder="record"
+                            :movable="movable && !isActiveDrag"
+                            :dragging="isActiveDrag && activeDragKey === record.id"
+                            :active="selectedFolder === record.id"
+                            editable
+                        />
+                    </template>
+                    <template #default>
+                        <DropdownContent>
+                            <div class="d-flex flex-column">
+                                <UserFolder :folder="record" disabled />
+                                <UiDropdownActionsButton
+                                    @handle="editFolder(record)"
+                                    icon="fa-solid fa-pen"
+                                    label="Редактировать"
+                                />
+                                <UiDropdownActionsButton
+                                    @handle="handleClearFolder(record)"
+                                    icon="fa-solid fa-folder-minus"
+                                    label="Очистить папку"
+                                />
+                                <UiDropdownActionsButton
+                                    @handle="handleDeleteFolder(record.id)"
+                                    icon="fa-solid fa-trash"
+                                    label="Удалить папку"
+                                />
+                            </div>
+                        </DropdownContent>
+                    </template>
+                </Dropdown>
             </template>
             <template #footer>
                 <UiField v-if="!folders.length" color="light">Список папок пуст..</UiField>
@@ -68,7 +94,7 @@
                 @close="closeForm"
                 @updated="onUpdateFolder"
                 @created="onCreateFolder"
-                @deleted="onDeleteFolder"
+                @deleted="onDeleteFolder(editingFolder.id)"
                 :category
                 :form-data="editingFolder"
             />
@@ -85,6 +111,14 @@ import FormUserFolder from '@/components/Forms/FormUserFolder.vue';
 import UiField from '@/components/common/UI/UiField.vue';
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
 import UserFolderSkeleton from '@/components/UserFolder/UserFolderSkeleton.vue';
+import { useNotify } from '@/utils/use/useNotify.js';
+import { Dropdown, DropdownContent } from 'v-dropdown';
+import UiDropdownActionsButton from '@/components/common/UI/UiDropdownActionsButton.vue';
+import api from '@/api/api.js';
+import { useAsync } from '@/composables/useAsync.js';
+import { useConfirm } from '@/composables/useConfirm.js';
+
+const FOLDERS_COUNT_LIMIT = 10;
 
 const selectedFolder = defineModel('selected', { type: Number });
 
@@ -140,15 +174,23 @@ function selectFolder(key) {
     }
 }
 
-const { folders, isLoading, updateOrder, deleteFolder } = useUserFolders(props.category);
+const { folders, isLoading, updateOrder, deleteFolder, clearFolder } = useUserFolders(
+    props.category
+);
 
 // create
 
 const formIsVisible = ref(false);
 const editingFolder = shallowRef(null);
 
+const notify = useNotify();
+
 function createFolder() {
-    formIsVisible.value = true;
+    if (folders.value.length < FOLDERS_COUNT_LIMIT) {
+        formIsVisible.value = true;
+    } else {
+        notify.info(`Достигнут лимит количества папок (${FOLDERS_COUNT_LIMIT}) в категории.`);
+    }
 }
 
 function onCreateFolder(folder) {
@@ -171,8 +213,40 @@ function closeForm() {
     editingFolder.value = null;
 }
 
-function onDeleteFolder() {
-    deleteFolder(editingFolder.value.id);
-    if (selectedFolder.value === editingFolder.value.id) selectedFolder.value = null;
+function onDeleteFolder(folderId) {
+    deleteFolder(folderId);
+    if (selectedFolder.value === folderId) selectedFolder.value = null;
+}
+
+const { isLoading: isDeleting, execute: handleDeleteFolder } = useAsync(api.folder.delete, {
+    onFetchResponse: ({ args }) => {
+        notify.success('Папка успешно удалена.');
+        onDeleteFolder(args[0]);
+    },
+    confirmation: true,
+    confirmationContent: {
+        title: 'Удалить папку',
+        message: 'Вы уверены, что хотите удалить папку? Удаленную папку нельзя восстановить.',
+        okButton: 'Удалить',
+        okIcon: 'fa-solid fa-trash'
+    }
+});
+
+const { confirm } = useConfirm();
+
+async function handleClearFolder(folder) {
+    const confirmed = await confirm({
+        title: 'Очистить папку',
+        message:
+            'Все объекты, привязанные к папке, будут откреплены от нее. Это действие нельзя отменить',
+        okButton: 'Очистить'
+    });
+
+    if (!confirmed) return;
+
+    await api.folder.clear(folder.id);
+    notify.success('Папка успешно очищена.');
+
+    clearFolder(folder.id);
 }
 </script>
