@@ -283,15 +283,44 @@
 .header-summary-messages-content {
     &__grid {
         display: grid;
-        grid-template-columns: 1fr 1fr 1fr;
+        grid-template-columns: 1fr 1fr;
         gap: 10px;
+    }
+
+    &__dialog {
+        border: 1px solid rgba(0, 0, 0, .1);
+        background-color: #fff;
+    }
+
+    &__preview {
+        border: 1px solid rgba(0, 0, 0, .1);
+        border-radius: 5px;
+    }
+
+    &__empty {
+        width: 100%;
+        height: 100%;
+        //font-size: 120px;
+        color: variables.$color_grey;
+        @include mixins.flex-box($a: center, $j: center);
+    }
+}
+
+.header-summary-messages-content-preview {
+    &__header {
+        background-color: transparent!important;
+    }
+
+    &__list {
+        overflow-y: scroll;
+        height: 580px;
     }
 }
 
 .header-summary-dialogs {
     padding: 10px;
-    background-color: variables.$color_grey_alt;
     border-radius: 5px;
+    border: 1px solid rgba(0, 0, 0, .1);
 
     &__header {
         @include mixins.flex-box($j: space-between);
@@ -304,8 +333,7 @@
 
     &__list {
         @include mixins.flex-box($d: column, $gap: 5px);
-        max-height: 500px;
-        min-height: 150px;
+        height: 600px;
         overflow-y: auto;
         padding-right: 10px;
         margin-right: -10px;

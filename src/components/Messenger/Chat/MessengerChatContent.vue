@@ -72,7 +72,6 @@
     </div>
 </template>
 <script setup>
-import MessengerChatHeader from '@/components/Messenger/Chat/Header/MessengerChatHeader.vue';
 import MessengerChatForm from '@/components/Messenger/Chat/Form/MessengerChatForm.vue';
 import { useStore } from 'vuex';
 import MessengerChatLabel from '@/components/Messenger/Chat/MessengerChatLabel.vue';
