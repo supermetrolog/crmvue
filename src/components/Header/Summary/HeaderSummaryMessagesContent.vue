@@ -1,6 +1,6 @@
 <template>
     <div class="header-summary-messages-content">
-        <div v-if="count > 0" class="header-summary-messages-content__grid">
+        <div class="header-summary-messages-content__grid">
             <div>
                 <HeaderSummaryDialogs
                     :title="isLoading ? 'Поиск чатов..' : `Найдено ${dialogsLabel}`"
@@ -8,7 +8,7 @@
                     <template #actions>
                         <UiButton
                             @click="fetchChats()"
-                            :disabled="isLoading"
+                            :loading="isLoading"
                             small
                             class="ml-auto mb-2"
                             icon="fa-solid fa-refresh"
@@ -17,7 +17,7 @@
                             Обновить
                         </UiButton>
                     </template>
-                    <HeaderSummaryDialogsList :loading="isLoading">
+                    <HeaderSummaryDialogsList v-if="count > 0" :loading="isLoading">
                         <HeaderSummaryMessagesDialog
                             v-for="dialog in dialogs"
                             :key="dialog.id"
@@ -27,6 +27,12 @@
                             :current="dialog.id === currenDialog?.id"
                         />
                     </HeaderSummaryDialogsList>
+                    <HeaderSummaryEmpty
+                        v-else
+                        :loading="isLoading"
+                        empty-title="Новых сообщений нет. Отлично!"
+                        loading-title="Поиск сообщений.."
+                    />
                 </HeaderSummaryDialogs>
             </div>
             <div class="header-summary-messages-content__preview">
@@ -41,12 +47,6 @@
                 </div>
             </div>
         </div>
-        <HeaderSummaryEmpty
-            v-else
-            :loading="isLoading"
-            empty-title="Новых сообщений нет. Отлично!"
-            loading-title="Поиск сообщений.."
-        />
     </div>
 </template>
 <script setup>
