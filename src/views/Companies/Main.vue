@@ -46,14 +46,15 @@
                                 false-title="Таблица"
                                 true-title="Карточки"
                             />
-                            <Button
+                            <UiButton
                                 @click="companyFormIsVisible = true"
-                                success
+                                color="light"
                                 :disabled="isLoading"
+                                small
+                                icon="fa-solid fa-plus"
                             >
                                 Создать компанию
-                            </Button>
-                            <RefreshButton @click="getCompanies" :disabled="isLoading" />
+                            </UiButton>
                         </div>
                     </div>
                 </div>
@@ -90,8 +91,6 @@ import FormCompanySearch from '@/components/Forms/Company/FormCompanySearch.vue'
 import CompanyTable from '@/components/Company/Table/CompanyTable.vue';
 import CompanyGrid from '@/components/Company/CompanyGrid.vue';
 import PaginationClassic from '@/components/common/Pagination/PaginationClassic.vue';
-import RefreshButton from '@/components/common/RefreshButton.vue';
-import Button from '@/components/common/Button.vue';
 import Switch from '@/components/common/Forms/Switch.vue';
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
 import EmptyData from '@/components/common/EmptyData.vue';
@@ -111,6 +110,7 @@ import { toDateFormat } from '@/utils/formatters/date.js';
 import UserFolders from '@/components/UserFolder/UserFolders.vue';
 import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
 import { useDebounceFn } from '@vueuse/core';
+import UiButton from '@/components/common/UI/UiButton.vue';
 
 const route = useRoute();
 const router = useRouter();
