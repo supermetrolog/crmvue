@@ -17,14 +17,21 @@
                             icon="fa-solid fa-pen"
                         />
                         <UiDropdownActionsButton
+                            v-if="isPassive"
+                            @handle="$emit('enable')"
+                            label="Восстановить компанию"
+                            icon="fa-solid fa-undo"
+                        />
+                        <UiDropdownActionsButton
+                            v-else
+                            @handle="$emit('disable')"
+                            label="Отправить в архив"
+                            icon="fa-solid fa-ban text-danger"
+                        />
+                        <UiDropdownActionsButton
                             @handle="toChat"
                             label="Перейти в чат компании"
                             icon="fa-solid fa-comment"
-                        />
-                        <UiDropdownActionsButton
-                            @handle="onCompanyDestroyed"
-                            label="Компания ликвидирована"
-                            icon="fa-solid fa-ban text-danger"
                         />
                         <UiDropdownActionsButton
                             @handle="logoFormIsVisible = true"
@@ -162,7 +169,7 @@
 import Rating from '@/components/common/Rating.vue';
 import MessengerPanelCompanyTabs from '@/components/Messenger/Panel/Company/MessengerPanelCompanyTabs.vue';
 import { computed, ref } from 'vue';
-import { getCompanyName, getCompanyShortName } from '@/utils/formatters/models/company.js';
+import { getCompanyName } from '@/utils/formatters/models/company.js';
 import { toCorrectUrl, ucFirst } from '@/utils/formatters/string.js';
 import { companyOptions } from '@/const/options/company.options.js';
 import { alg } from '@/utils/alg.js';
@@ -174,13 +181,11 @@ import { useStore } from 'vuex';
 import { useNotify } from '@/utils/use/useNotify.js';
 import FormCompanyLogo from '@/components/Forms/Company/FormCompanyLogo.vue';
 import Avatar from '@/components/common/Avatar.vue';
-import { TASK_FORM_STEPS, useTaskManager } from '@/composables/useTaskManager.js';
-import api from '@/api/api.js';
 import UiButtonIcon from '@/components/common/UI/UiButtonIcon.vue';
 import UiDropdownActions from '@/components/common/UI/UiDropdownActions.vue';
 import UiDropdownActionsButton from '@/components/common/UI/UiDropdownActionsButton.vue';
 
-defineEmits(['edit']);
+defineEmits(['edit', 'disable', 'enable']);
 const props = defineProps({
     company: {
         type: Object,
@@ -257,38 +262,4 @@ const onDeleteLogo = () => {
     notify.success('Логотип компании удален');
     store.commit('Messenger/onCompanyLogoUpdated', { id: props.company.id });
 };
-
-const { createTaskWithTemplate } = useTaskManager();
-
-async function onCompanyDestroyed() {
-    const company = store.state.Messenger.currentPanel;
-
-    const taskPayload = await createTaskWithTemplate({
-        title: `Компания ${getCompanyShortName(company)} ликвидирована, отправить в пассив`,
-        step: TASK_FORM_STEPS.MESSAGE
-    });
-
-    if (!taskPayload) return;
-
-    const messagePayload = {
-        message: `<b>Компания ликвидирована!</b>`
-    };
-
-    const currentCompanyDialogId = await api.messenger.getChatMemberIdByQuery({
-        model_type: messenger.dialogTypes.COMPANY,
-        model_id: company.id
-    });
-
-    const createdMessage = await api.messenger.sendMessageWithTask(
-        currentCompanyDialogId,
-        messagePayload,
-        taskPayload
-    );
-
-    if (createdMessage) {
-        notify.success('Сообщение и задача успешно созданы');
-    } else {
-        notify.error('Произошла ошибка. Попробуйте еще раз..');
-    }
-}
 </script>

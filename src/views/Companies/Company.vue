@@ -21,8 +21,8 @@
             <FormCompanyRequest
                 v-if="requestFormIsVisible"
                 @close="closeRequestForm"
-                @created="getCompanyRequests"
-                @updated="getCompanyRequests"
+                @created="fetchCompanyRequests"
+                @updated="fetchCompanyRequests"
                 :company-id="COMPANY.id"
                 :form-data="request"
             />
@@ -40,27 +40,21 @@
                 @updated="onCompanyUpdated"
                 :form-data="COMPANY"
             />
+            <FormCompanyDisable
+                v-if="disablingFormIsVisible"
+                @close="disablingFormIsVisible = false"
+                @disabled="onDisabledCompany"
+                :company="COMPANY"
+            />
         </teleport>
-        <DashboardChip
-            v-if="!companyIsLoading && COMPANY.status === 0"
-            class="company-page__chip dashboard-bg-danger text-white w-100 mb-2"
-        >
-            <div class="d-flex align-items-center justify-content-center">
-                <p>Пассив</p>
-                <UiTooltipIcon
-                    v-if="COMPANY.passive_why !== null"
-                    :tooltip="passiveWhyComment"
-                    icon="fa-regular fa-question-circle"
-                    class="ml-2 icon"
-                />
-            </div>
-        </DashboardChip>
         <div class="company-page__wrapper">
-            <Loader v-if="companyIsLoading" />
+            <Loader v-if="companyIsLoading || enableIsLoading" />
             <CompanyBox
                 v-if="!companyIsLoading"
                 @edit-company="companyFormIsVisible = true"
                 @create-contact="createContact"
+                @enable="enableCompany(COMPANY.id)"
+                @disable="disableCompany"
                 :company="COMPANY"
                 :contacts="COMPANY_CONTACTS"
                 class="mb-2"
@@ -78,8 +72,8 @@
                     @deal-deleted="getCompany(false)"
                     @create-request="requestFormIsVisible = true"
                     @update-request="updateRequest"
-                    @request-cloned="getCompanyRequests"
-                    @request-disabled="getCompanyRequests"
+                    @request-cloned="fetchCompanyRequests"
+                    @request-disabled="fetchCompanyRequests"
                     @request-updated="onRequestUpdated"
                     :requests="COMPANY_REQUESTS"
                     :deals="COMPANY.dealsRequestEmpty"
@@ -97,7 +91,6 @@
 <script setup>
 import CompanyBoxRequests from '@/components/Company/Box/CompanyBoxRequests.vue';
 import { useStore } from 'vuex';
-import { PassiveWhy } from '@/const/const.js';
 import Loader from '@/components/common/Loader.vue';
 import FormCompany from '@/components/Forms/Company/FormCompany.vue';
 import FormCompanyContact from '@/components/Forms/Company/FormCompanyContact.vue';
@@ -108,7 +101,6 @@ import CompanyBox from '@/components/Company/Box/CompanyBox.vue';
 import FormCompanyRequest from '@/components/Forms/Company/FormCompanyRequest.vue';
 import Timeline from '@/components/Timeline/Timeline.vue';
 import CompanyBoxServices from '@/components/Company/Box/CompanyBoxServices.vue';
-import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
 import { useConfirm } from '@/composables/useConfirm.js';
 import {
     computed,
@@ -125,8 +117,11 @@ import { useMessenger } from '@/components/Messenger/useMessenger.js';
 import { useDocumentTitle } from '@/composables/useDocumentTitle.js';
 import { messenger } from '@/const/messenger.js';
 import { useTippyText } from '@/composables/useTippyText.js';
-import UiTooltipIcon from '@/components/common/UI/UiTooltipIcon.vue';
 import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
+import { useAsync } from '@/composables/useAsync.js';
+import api from '@/api/api.js';
+import { useNotify } from '@/utils/use/useNotify.js';
+import FormCompanyDisable from '@/components/Forms/Company/FormCompanyDisable.vue';
 
 provide('openContact', openContact);
 provide('createContactComment', createContactComment);
@@ -159,12 +154,6 @@ const COMPANY_REQUESTS = computed(() => store.getters.COMPANY_REQUESTS);
 const COMPANY_CONTACTS = computed(() => store.getters.COMPANY_CONTACTS);
 const COMPANY_OBJECTS = computed(() => store.getters.COMPANY_OBJECTS);
 
-const passiveWhyComment = computed(() => {
-    let text = PassiveWhy[COMPANY.value.passive_why].label;
-    if (COMPANY.value.passive_why_comment) text += ': ' + COMPANY.value.passive_why_comment;
-    return text;
-});
-
 watch(
     () => COMPANY.value?.id,
     value => {
@@ -190,11 +179,11 @@ const getCompany = async (withLoader = false) => {
     await store.dispatch('ADD_TO_TRANSITION_LIST', COMPANY.value);
 };
 
-const getCompanyRequests = async (withLoader = false) => {
+async function fetchCompanyRequests(withLoader = false) {
     requestsIsLoading.value = withLoader;
     await store.dispatch('FETCH_COMPANY_REQUESTS', route.params.id);
     requestsIsLoading.value = false;
-};
+}
 
 const getCompanyContacts = async (withLoader = false) => {
     contactsIsLoading.value = withLoader;
@@ -288,7 +277,7 @@ onBeforeMount(() => {
     getCompany(true);
     getCompanyContacts(true);
     getCompanyObjects(true);
-    getCompanyRequests(true);
+    fetchCompanyRequests(true);
 });
 
 onUnmounted(() => {
@@ -326,5 +315,40 @@ watch(
 function closeTimeline() {
     timelineIsVisible.value = false;
     router.push({ name: 'company' });
+}
+
+// status
+
+const notify = useNotify();
+
+const { isLoading: enableIsLoading, execute: enableCompany } = useAsync(api.companies.enable, {
+    onFetchResponse: () => {
+        notify.success('Компания успешно восстановлена.');
+        COMPANY.value.status = 1;
+        COMPANY.value.status.passive_why = null;
+
+        console.log(store.state.company);
+    },
+    confirmation: true,
+    confirmationContent: {
+        title: 'Восстановить компанию',
+        message: 'Вы уверены, что хотите восстановить компанию из архива?'
+    }
+});
+
+const disablingFormIsVisible = ref(false);
+
+function disableCompany() {
+    disablingFormIsVisible.value = true;
+}
+
+function onDisabledCompany(payload) {
+    COMPANY.value.status = 0;
+    COMPANY.value.passive_why = payload.passive_why;
+    COMPANY.value.passive_why_comment = payload.passive_why_comment;
+
+    disablingFormIsVisible.value = false;
+
+    fetchCompanyRequests(true);
 }
 </script>

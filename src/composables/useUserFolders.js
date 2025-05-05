@@ -4,22 +4,22 @@ import { createSharedComposable } from '@vueuse/core';
 import api from '@/api/api.js';
 import { spliceById } from '@/utils/helpers/array/spliceById.js';
 
-function createSharedFolders(morph) {
+function createSharedFolders(category) {
     const store = useStore();
 
-    const isLoading = computed(() => store.state.Folder[morph].loading);
+    const isLoading = computed(() => store.state.Folder[category].loading);
 
     const folders = computed({
         get() {
-            return store.state.Folder[morph].folders;
+            return store.state.Folder[category].folders;
         },
         set(value) {
-            store.state.Folder[morph].folders = value;
+            store.state.Folder[category].folders = value;
         }
     });
 
-    if (!store.state.Folder[morph].loaded) {
-        store.dispatch('Folder/fetchFolders', morph);
+    if (!store.state.Folder[category].loaded) {
+        store.dispatch('Folder/fetchFolders', category);
     }
 
     async function updateOrder() {
@@ -29,23 +29,34 @@ function createSharedFolders(morph) {
             });
         } catch (error) {
             console.error('Error updating folder order:', error);
-            store.dispatch('Folder/fetchFolders', morph);
+            store.dispatch('Folder/fetchFolders', category);
         }
     }
 
     function deleteFolder(folderId) {
-        spliceById(store.state.Folder[morph].folders, folderId);
+        spliceById(store.state.Folder[category].folders, folderId);
 
-        store.commit('FolderEntity/removeByFolderId', folderId);
+        store.commit('FolderEntity/removeByFolderId', { folderId, category });
     }
 
-    return { folders, isLoading, updateOrder, deleteFolder };
+    function clearFolder(folderId) {
+        const folderIndex = store.state.Folder[category].folders.findIndex(
+            folder => folder.id === folderId
+        );
+        if (folderIndex !== -1) {
+            store.state.Folder[category].folders[folderIndex].entities_count = 0;
+        }
+
+        store.commit('FolderEntity/removeByFolderId', { folderId, category });
+    }
+
+    return { folders, isLoading, updateOrder, deleteFolder, clearFolder };
 }
 
 const FOLDER_MORPH = {
     COMPANY: 'company',
     OBJECT: 'object',
-    OFFER: 'offer',
+    OFFER: 'offer_mix',
     TASK: 'task'
 };
 
@@ -57,17 +68,17 @@ export function useUserFolders(morph) {
 }
 
 export const useCompanyFolders = createSharedComposable(() => {
-    return createSharedFolders('company');
+    return createSharedFolders(FOLDER_MORPH.COMPANY);
 });
 
 export const useObjectFolders = createSharedComposable(() => {
-    return createSharedFolders('object');
+    return createSharedFolders(FOLDER_MORPH.OBJECT);
 });
 
 export const useOfferFolders = createSharedComposable(() => {
-    return createSharedFolders('offer');
+    return createSharedFolders(FOLDER_MORPH.OFFER);
 });
 
 export const useTaskFolders = createSharedComposable(() => {
-    return createSharedFolders('task');
+    return createSharedFolders(FOLDER_MORPH.TASK);
 });

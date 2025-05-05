@@ -52,6 +52,7 @@
             />
             <MessengerDialogFunctions v-if="statistic" :counts="statistic" />
         </div>
+        <MessengerDialogLastMessage v-if="lastMessage" :last-message />
     </div>
 </template>
 <script setup>
@@ -66,6 +67,7 @@ import MessengerDialogObjectDealType from '@/components/Messenger/Dialog/Object/
 import OfferTableItemPreviewMotionSlider from '@/components/Offer/TableItem/OfferTableItemPreviewMotionSlider.vue';
 import Avatar from '@/components/common/Avatar.vue';
 import UiButtonIcon from '@/components/common/UI/UiButtonIcon.vue';
+import MessengerDialogLastMessage from '@/components/Messenger/Dialog/MessengerDialogLastMessage.vue';
 
 defineEmits(['update-call', 'show-preview']);
 const props = defineProps({
@@ -75,6 +77,7 @@ const props = defineProps({
     },
     current: Boolean,
     lastCall: Object,
+    lastMessage: Object,
     statistic: Object,
     allDealTypes: Boolean,
     motionSlider: Boolean,

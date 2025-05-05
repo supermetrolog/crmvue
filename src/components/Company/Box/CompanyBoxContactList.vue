@@ -2,14 +2,15 @@
     <div>
         <div class="company-box-main__subtitle mb-2">
             <strong>Контакты</strong>
-            <UiButtonIcon
+            <UiButton
                 @click="$emit('create')"
-                label="Добавить контакт"
                 :disabled="loading"
                 small
                 color="light"
                 icon="fa-solid fa-plus"
-            />
+            >
+                Добавить контакт
+            </UiButton>
         </div>
         <div v-if="loading" class="company-box-main__contacts">
             <CompanyBoxContactListItemSkeleton v-for="key in 5" :key="key" />
@@ -35,7 +36,7 @@ import CompanyBoxContactListItem from './CompanyBoxContactListItem.vue';
 import { inject, useTemplateRef } from 'vue';
 import { useHorizontalScroll } from '@/composables/useHorizontalScroll.js';
 import CompanyBoxContactListItemSkeleton from '@/components/Company/Box/CompanyBoxContactListItemSkeleton.vue';
-import UiButtonIcon from '@/components/common/UI/UiButtonIcon.vue';
+import UiButton from '@/components/common/UI/UiButton.vue';
 
 const emit = defineEmits(['create', 'show']);
 defineProps({

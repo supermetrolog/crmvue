@@ -12,6 +12,7 @@
         <div class="messenger-dialog__footer">
             <MessengerDialogFunctions v-if="statistic" :counts="statistic" />
         </div>
+        <MessengerDialogLastMessage v-if="lastMessage" :last-message />
     </div>
 </template>
 <script setup>
@@ -19,20 +20,16 @@ import MessengerDialogFunctions from '@/components/Messenger/Dialog/MessengerDia
 import { computed } from 'vue';
 import Avatar from '@/components/common/Avatar.vue';
 import { userOptions } from '@/const/options/user.options.js';
+import MessengerDialogLastMessage from '@/components/Messenger/Dialog/MessengerDialogLastMessage.vue';
 
 const props = defineProps({
     model: {
         type: Object,
         required: true
     },
-    current: {
-        type: Boolean,
-        default: false
-    },
-    statistic: {
-        type: Object,
-        default: null
-    }
+    current: Boolean,
+    statistic: Object,
+    lastMessage: Object
 });
 
 const role = computed(() => userOptions.role[props.model.role]);

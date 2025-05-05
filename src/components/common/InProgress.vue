@@ -3,7 +3,7 @@
         <template #image>
             <i class="fa-solid fa-code mb-3" style="font-size: 80px"></i>
         </template>
-        В разработке..
+        <slot>В разработке..</slot>
     </EmptyData>
 </template>
 <script setup>

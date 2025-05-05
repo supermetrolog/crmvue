@@ -36,7 +36,7 @@ const props = defineProps({
 });
 
 function handle() {
-    if (props.closeOnClick) {
+    if (props.closeOnClick && closeDropdown) {
         closeDropdown();
     }
 

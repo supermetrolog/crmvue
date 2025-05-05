@@ -1,5 +1,42 @@
 <template>
     <CompanyBoxLayout class="company-box-main">
+        <template #before>
+            <div class="d-flex gap-2 justify-content-end mb-2 align-items-center">
+                <UiButton
+                    v-if="isPassive"
+                    @click="$emit('enable')"
+                    small
+                    color="light"
+                    icon="fa-solid fa-undo"
+                >
+                    Восстановить
+                </UiButton>
+                <UiButton
+                    v-else
+                    @click="$emit('disable')"
+                    small
+                    color="light"
+                    icon="fa-solid fa-ban"
+                >
+                    В пассив
+                </UiButton>
+                <span>|</span>
+                <UiButton @click="$emit('edit-company')" small color="light" icon="fa-solid fa-pen">
+                    Редактировать
+                </UiButton>
+            </div>
+            <UiField v-if="isPassive" class="company-page__chip w-100 mb-2" color="danger">
+                <div class="d-flex align-items-center justify-content-center w-100">
+                    <p>Пассив</p>
+                    <UiTooltipIcon
+                        v-if="company.passive_why !== null"
+                        :tooltip="passiveWhyComment"
+                        icon="fa-regular fa-question-circle"
+                        class="ml-2 icon"
+                    />
+                </div>
+            </UiField>
+        </template>
         <template #header>
             <div class="company-box-main__header">
                 <div>
@@ -16,19 +53,15 @@
                         {{ company.companyGroup.full_name }}
                     </p>
                 </div>
-                <div class="company-box-main__actions">
-                    <HoverActionsButton @click="$emit('edit-company')" small label="Редактировать">
-                        <i class="fa-solid fa-pen" />
-                    </HoverActionsButton>
-                </div>
                 <div class="company-box-main__info ml-md-auto">
-                    <DashboardChip
+                    <UiField
                         v-for="category in categories"
                         :key="category.id"
-                        class="dashboard-bg-success-l"
+                        color="success-light"
+                        class="text-white"
                     >
                         {{ category.label }}
-                    </DashboardChip>
+                    </UiField>
                     <span>ID {{ company.id }}</span>
                     <Rating v-if="company.rating" :rating="company.rating" />
                 </div>
@@ -116,83 +149,47 @@
                         <Tab name="Ревизиты">
                             <div class="d-flex">
                                 <ul class="company-box-main__list">
-                                    <CompanyBoxRow label="Юр. адрес">
-                                        <span v-if="company.legalAddress">
-                                            {{ company.legalAddress }}
-                                        </span>
-                                    </CompanyBoxRow>
-                                    <CompanyBoxRow label="ОГРН">
-                                        <span v-if="company.ogrn">
-                                            {{ company.ogrn }}
-                                        </span>
-                                    </CompanyBoxRow>
-                                    <CompanyBoxRow label="ИНН">
-                                        <span v-if="company.inn">
-                                            {{ company.inn }}
-                                        </span>
-                                    </CompanyBoxRow>
-                                    <CompanyBoxRow label="КПП">
-                                        <span v-if="company.kpp">
-                                            {{ company.kpp }}
-                                        </span>
-                                    </CompanyBoxRow>
-                                    <CompanyBoxRow label="Расчетный счет">
-                                        <span v-if="company.checkingAccount">
-                                            {{ company.checkingAccount }}
-                                        </span>
-                                    </CompanyBoxRow>
-                                    <CompanyBoxRow label="Кор. счет">
-                                        <span v-if="company.correspondentAccount">
-                                            {{ company.correspondentAccount }}
-                                        </span>
-                                    </CompanyBoxRow>
-                                    <CompanyBoxRow label="В банке">
-                                        <span v-if="company.inTheBank">
-                                            {{ company.inTheBank }}
-                                        </span>
-                                    </CompanyBoxRow>
+                                    <CompanyBoxRow
+                                        label="Юр. адрес"
+                                        :value="company.legalAddress"
+                                    />
+                                    <CompanyBoxRow label="ОГРН" :value="company.ogrn" />
+                                    <CompanyBoxRow label="ИНН" :value="company.inn" />
+                                    <CompanyBoxRow label="КПП" :value="company.kpp" />
+                                    <CompanyBoxRow
+                                        label="Расчетный счет"
+                                        :value="company.checkingAccount"
+                                    />
+                                    <CompanyBoxRow
+                                        label="Кор. счет"
+                                        :value="company.correspondentAccount"
+                                    />
+                                    <CompanyBoxRow label="В банке" :value="company.inTheBank" />
                                 </ul>
                                 <ul class="company-box-main__list">
-                                    <CompanyBoxRow label="БИК">
-                                        <span v-if="company.bik">
-                                            {{ company.bik }}
-                                        </span>
-                                    </CompanyBoxRow>
-                                    <CompanyBoxRow label="ОКПО">
-                                        <span v-if="company.okpo">
-                                            {{ company.okpo }}
-                                        </span>
-                                    </CompanyBoxRow>
-                                    <CompanyBoxRow label="ОКВЭД">
-                                        <span v-if="company.okved">
-                                            {{ company.okved }}
-                                        </span>
-                                    </CompanyBoxRow>
-                                    <CompanyBoxRow label="Имя подписанта">
-                                        <span v-if="company.signatoryName">
-                                            {{ company.signatoryName }}
-                                        </span>
-                                    </CompanyBoxRow>
-                                    <CompanyBoxRow label="Фамилия подписанта">
-                                        <span v-if="company.signatoryMiddleName">
-                                            {{ company.signatoryMiddleName }}
-                                        </span>
-                                    </CompanyBoxRow>
-                                    <CompanyBoxRow label="Отчество подписанта">
-                                        <span v-if="company.signatoryLastName">
-                                            {{ company.signatoryLastName }}
-                                        </span>
-                                    </CompanyBoxRow>
-                                    <CompanyBoxRow label="№ документа">
-                                        <span v-if="company.documentNumber">
-                                            {{ company.documentNumber }}
-                                        </span>
-                                    </CompanyBoxRow>
-                                    <CompanyBoxRow label="Действует на основе">
-                                        <span v-if="company.basis">
-                                            {{ company.basis }}
-                                        </span>
-                                    </CompanyBoxRow>
+                                    <CompanyBoxRow label="БИК" :value="company.bik" />
+                                    <CompanyBoxRow label="ОКПО" :value="company.okpo" />
+                                    <CompanyBoxRow label="ОКВЭД" :value="company.okved" />
+                                    <CompanyBoxRow
+                                        label="Имя подписанта"
+                                        :value="company.signatoryName"
+                                    />
+                                    <CompanyBoxRow
+                                        label="Фамилия подписанта"
+                                        :value="company.signatoryMiddleName"
+                                    />
+                                    <CompanyBoxRow
+                                        label="Отчество подписанта"
+                                        :value="company.signatoryLastName"
+                                    />
+                                    <CompanyBoxRow
+                                        label="№ документа"
+                                        :value="company.documentNumber"
+                                    />
+                                    <CompanyBoxRow
+                                        label="Действует на основе"
+                                        :value="company.basis"
+                                    />
                                 </ul>
                             </div>
                         </Tab>
@@ -237,7 +234,12 @@
 </template>
 
 <script setup>
-import { ActivityGroupList, ActivityProfileList, CompanyCategories } from '@/const/const';
+import {
+    ActivityGroupList,
+    ActivityProfileList,
+    CompanyCategories,
+    PassiveWhy
+} from '@/const/const';
 import { computed, ref, useTemplateRef } from 'vue';
 import CompanyBoxContactList from '@/components/Company/Box/CompanyBoxContactList.vue';
 import EmptyLabel from '@/components/common/EmptyLabel.vue';
@@ -247,8 +249,6 @@ import Tab from '@/components/common/Tabs/Tab.vue';
 import CompanyBoxRow from '@/components/Company/Box/CompanyBoxRow.vue';
 import CompanyLogo from '@/components/Company/CompanyLogo.vue';
 import Rating from '@/components/common/Rating.vue';
-import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
-import HoverActionsButton from '@/components/common/HoverActions/HoverActionsButton.vue';
 import CompanyBoxLayout from '@/components/Company/Box/CompanyBoxLayout.vue';
 import FormCompanyLogo from '@/components/Forms/Company/FormCompanyLogo.vue';
 import Modal from '@/components/common/Modal.vue';
@@ -260,8 +260,10 @@ import { toDateFormat } from '@/utils/formatters/date.js';
 import { toCorrectUrl } from '@/utils/formatters/string.js';
 import UiTooltipIcon from '@/components/common/UI/UiTooltipIcon.vue';
 import { useTippyText } from '@/composables/useTippyText.js';
+import UiField from '@/components/common/UI/UiField.vue';
+import UiButton from '@/components/common/UI/UiButton.vue';
 
-defineEmits(['create-contact', 'edit-company']);
+defineEmits(['create-contact', 'edit-company', 'disable', 'enable']);
 
 const props = defineProps({
     company: {
@@ -319,24 +321,34 @@ const activityProfiles = computed(() => {
 
 const companyName = computed(() => getCompanyName(props.company));
 
-const closeForm = () => {
+function closeForm() {
     logoFormIsVisible.value = false;
     logoEdited.value = false;
-};
+}
 
-const onUpdateLogo = logo => {
+function onUpdateLogo(logo) {
     closeForm();
 
     notify.success('Логотип компании обновлен');
     store.commit('setCompanyLogo', logo);
-};
+}
 
-const onDeleteLogo = () => {
+function onDeleteLogo() {
     closeForm();
 
     notify.success('Логотип компании удален');
     store.commit('setCompanyLogo', null);
-};
+}
+
+// status
+
+const isPassive = computed(() => props.company.status === 0);
+
+const passiveWhyComment = computed(() => {
+    let text = PassiveWhy[props.company.passive_why].label;
+    if (props.company.passive_why_comment) text += ': ' + props.company.passive_why_comment;
+    return text;
+});
 
 // tippy
 

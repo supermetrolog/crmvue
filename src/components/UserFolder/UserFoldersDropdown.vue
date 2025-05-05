@@ -6,8 +6,10 @@
                 label="Управление папками"
                 icon="fa-solid fa-folder-open"
                 class="mx-auto"
+                :class="buttonClass"
                 :badge="entityFoldersCount"
                 badge-color="dark"
+                :color="buttonColor"
             />
         </template>
         <template #menu>
@@ -62,7 +64,9 @@ const props = defineProps({
         type: Number,
         required: true
     },
-    creatable: Boolean
+    creatable: Boolean,
+    buttonClass: [String, Array, Object],
+    buttonColor: String
 });
 
 const { isLoading, entityFoldersSet, entityFoldersCount, folders, addToFolder, removeFromFolder } =

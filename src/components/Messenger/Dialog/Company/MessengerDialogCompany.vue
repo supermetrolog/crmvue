@@ -70,6 +70,7 @@
             />
             <MessengerDialogFunctions v-if="statistic" :counts="statistic" />
         </div>
+        <MessengerDialogLastMessage v-if="lastMessage" :last-message />
     </div>
 </template>
 <script setup>
@@ -83,6 +84,7 @@ import { useAuth } from '@/composables/useAuth.js';
 import { plural } from '@/utils/plural.js';
 import { companyOptions } from '@/const/options/company.options.js';
 import Avatar from '@/components/common/Avatar.vue';
+import MessengerDialogLastMessage from '@/components/Messenger/Dialog/MessengerDialogLastMessage.vue';
 
 defineEmits(['update-call']);
 const props = defineProps({
@@ -92,7 +94,8 @@ const props = defineProps({
     },
     current: Boolean,
     lastCall: Object,
-    statistic: Object
+    statistic: Object,
+    lastMessage: Object
 });
 
 const { currentUserId } = useAuth();
