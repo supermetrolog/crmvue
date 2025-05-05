@@ -16,7 +16,6 @@
                 @task-updated="onTaskUpdated"
                 :hidden="!count"
                 :tasks="tasks.data"
-                :is-loading="isLoading"
             />
         </div>
         <PaginationClassic

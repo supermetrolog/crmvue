@@ -19,7 +19,7 @@
 
     &__button {
         cursor: pointer;
-        border-radius: 0;
+        border-radius: 2px;
         height: 35px;
         width: 35px;
         background-color: lighten(variables.$color_grey, 50);
@@ -27,26 +27,24 @@
         font-size: 14px;
         font-weight: bold;
         border: unset;
-        outline: 1px solid variables.$color_dark;
+        outline: 1px solid rgba(0, 0, 0, .1);
         transition: background-color .2s ease;
 
         &:not(:disabled):not(.active):hover {
-            background-color: #86c5e0;
+            background-color: variables.$color_grey_light;
         }
 
         &:disabled {
             cursor: default;
             background-color: #b1b1b7;
-            border: none;
-            outline: none;
+            opacity: .7;
         }
 
         &.active {
-            background-color: #11698e;
+            background-color: variables.$color_grey_light;
             cursor: default;
-            outline: 1px solid #11698e;
-            border: 1px solid #11698e;
-            color: #f7f7f7;
+            outline-color: variables.$bg-primary-l;
+            color: #000;
         }
 
         &.loading {
@@ -64,8 +62,8 @@
             color: variables.$color_primary;
         }
         to {
-            color: #f7f7f7;
-            background-color: #11698e;
+            color: #000;
+            background-color: variables.$color_grey_light;
         }
     }
 
