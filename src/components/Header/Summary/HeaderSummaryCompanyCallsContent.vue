@@ -4,10 +4,16 @@
             :title="`Список клиентов для обзвона (${companiesCounts.outdated_call_count})`"
         >
             <template #actions>
-                <Button @click="fetchChats" :disabled="isLoading" class="ml-auto mb-2" small icon>
-                    <span>Обновить</span>
-                    <i class="fa-solid fa-refresh" />
-                </Button>
+                <UiButton
+                    @click="fetchChats()"
+                    :loading="isLoading"
+                    small
+                    class="ml-auto mb-2"
+                    icon="fa-solid fa-refresh"
+                    color="light"
+                >
+                    Обновить
+                </UiButton>
             </template>
             <HeaderSummaryDialogsGrid
                 :loading="isLoading && count > 0"
@@ -41,7 +47,6 @@ import { onMounted, reactive } from 'vue';
 import api from '@/api/api.js';
 import { useAuth } from '@/composables/useAuth.js';
 import PaginationClassic from '@/components/common/Pagination/PaginationClassic.vue';
-import Button from '@/components/common/Button.vue';
 import { useMessenger } from '@/components/Messenger/useMessenger.js';
 import MessengerDialogCompany from '@/components/Messenger/Dialog/Company/MessengerDialogCompany.vue';
 import { messenger } from '@/const/messenger.js';
@@ -50,6 +55,7 @@ import HeaderSummaryDialogs from '@/components/Header/Summary/Dialogs/HeaderSumm
 import HeaderSummaryDialogsGrid from '@/components/Header/Summary/Dialogs/HeaderSummaryDialogsGrid.vue';
 import HeaderSummaryEmpty from '@/components/Header/Summary/HeaderSummaryEmpty.vue';
 import { useDelayedLoader } from '@/composables/useDelayedLoader.js';
+import UiButton from '@/components/common/UI/UiButton.vue';
 
 const emit = defineEmits(['close']);
 const props = defineProps({

@@ -4,10 +4,16 @@
             :title="`Список предложений для обзвона (${objectCounts.outdated_call_count})`"
         >
             <template #actions>
-                <Button @click="fetchChats" :disabled="isLoading" class="ml-auto mb-2" small icon>
-                    <span>Обновить</span>
-                    <i class="fa-solid fa-refresh" />
-                </Button>
+                <UiButton
+                    @click="fetchChats()"
+                    :loading="isLoading"
+                    small
+                    class="ml-auto mb-2"
+                    icon="fa-solid fa-refresh"
+                    color="light"
+                >
+                    Обновить
+                </UiButton>
             </template>
             <HeaderSummaryDialogsGrid
                 :loading="isLoading && count > 0"
@@ -50,6 +56,7 @@ import HeaderSummaryDialogs from '@/components/Header/Summary/Dialogs/HeaderSumm
 import HeaderSummaryDialogsGrid from '@/components/Header/Summary/Dialogs/HeaderSummaryDialogsGrid.vue';
 import MessengerDialogObject from '@/components/Messenger/Dialog/Object/MessengerDialogObject.vue';
 import HeaderSummaryEmpty from '@/components/Header/Summary/HeaderSummaryEmpty.vue';
+import UiButton from '@/components/common/UI/UiButton.vue';
 
 const emit = defineEmits(['close']);
 const props = defineProps({
