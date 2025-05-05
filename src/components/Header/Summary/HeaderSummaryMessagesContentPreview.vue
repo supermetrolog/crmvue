@@ -71,7 +71,7 @@ import HeaderSummaryMessagesContentNotification from '@/components/Header/Summar
 import HeaderSummaryMessagesContentHeader from '@/components/Header/Summary/HeaderSummaryMessagesContentHeader.vue';
 import MessengerChatLabelRow from '@/components/Messenger/Chat/MessengerChatLabelRow.vue';
 
-defineEmits(['close', 'to-chat']);
+const emit = defineEmits(['close', 'to-chat', 'read']);
 const props = defineProps({
     dialog: Object
 });
@@ -197,9 +197,9 @@ watch(isLoading, value => {
 // read
 
 const readMessages = debounce(async messageID => {
-    // const reads = await api.messenger.readMessages(messageID);
-    // if (reads) {
-    //     emit('read');
-    // }
+    const reads = await api.messenger.readMessages(messageID);
+    if (reads) {
+        emit('read');
+    }
 }, 2000);
 </script>

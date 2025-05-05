@@ -30,10 +30,14 @@
                 </HeaderSummaryDialogs>
             </div>
             <div class="header-summary-messages-content__preview">
-                <HeaderSummaryMessagesContentPreview v-if="currenDialog" :dialog="currenDialog" />
+                <HeaderSummaryMessagesContentPreview
+                    v-if="currenDialog"
+                    @to-chat="openDialogChat(currenDialog)"
+                    @read="onReadMessages"
+                    :dialog="currenDialog"
+                />
                 <div v-else class="header-summary-messages-content__empty">
-                    <!--                    <i class="fa-regular fa-comments"></i>-->
-                    <InProgress>В доработке..</InProgress>
+                    <i class="fa-regular fa-comments"></i>
                 </div>
             </div>
         </div>
@@ -57,7 +61,6 @@ import HeaderSummaryDialogs from '@/components/Header/Summary/Dialogs/HeaderSumm
 import HeaderSummaryMessagesContentPreview from '@/components/Header/Summary/HeaderSummaryMessagesContentPreview.vue';
 import { messenger } from '@/const/messenger.js';
 import { useMessenger } from '@/components/Messenger/useMessenger.js';
-import InProgress from '@/components/common/InProgress.vue';
 
 const emit = defineEmits(['close']);
 const props = defineProps({
@@ -101,12 +104,14 @@ onMounted(() => {
 const currenDialog = shallowRef(null);
 
 function selectDialog(dialog) {
-    // if (currenDialog.value?.id === dialog.id) {
-    //     currenDialog.value = null;
-    // } else {
-    //     currenDialog.value = dialog;
-    // }
+    if (currenDialog.value?.id === dialog.id) {
+        currenDialog.value = null;
+    } else {
+        currenDialog.value = dialog;
+    }
+}
 
+function openDialogChat(dialog) {
     if (dialog.model_type === messenger.dialogTypes.USER) {
         return toUserChat(dialog);
     }
@@ -140,5 +145,20 @@ async function toOfferChat(chat) {
         chat.model.type
     );
     if (opened) emit('close');
+}
+
+// read
+
+async function onReadMessages() {
+    const currenDialogId = currenDialog.value.id;
+
+    const response = await api.messenger.getChats({
+        id: currenDialogId
+    });
+
+    if (response.data.length) {
+        const dialogIndex = dialogs.value.findIndex(dialog => dialog.id === currenDialogId);
+        Object.assign(dialogs.value[dialogIndex], response.data[0]);
+    }
 }
 </script>
