@@ -3,98 +3,98 @@
         <Loader v-if="isUpdating" class="small" />
         <div class="row mb-1">
             <div class="col-12">
-                <div class="d-flex align-items-center mb-2">
-                    <p class="form__subtitle">Текущий логотип</p>
-                    <AnimationTransition :speed="0.4">
-                        <UiButton
-                            v-if="logoShouldBeDeleted"
-                            @click="unmarkCurrentLogoAsDeleted"
-                            icon="fa-solid fa-rotate-left"
-                            small
-                            class="ml-2"
-                            color="light"
-                            bolder
-                        >
-                            Отменить удаление
-                        </UiButton>
-                        <UiButton
-                            v-else
-                            @click="markCurrentLogoAsDeleted"
-                            class="ml-2"
-                            small
-                            :disabled="logoShouldBeDeleted || !currentLogo"
-                            color="danger"
-                            icon="fa-solid fa-trash"
-                            bolder
-                        >
-                            Удалить логотип
-                        </UiButton>
-                    </AnimationTransition>
-                    <UiButton
-                        @click="cropperIsVisible = true"
-                        :disabled="!canBeEdit"
-                        icon="fa-solid fa-crop-simple"
-                        small
-                        class="ml-2"
-                        color="light"
-                        bolder
-                    >
-                        Редактировать
-                    </UiButton>
-                    <AnimationTransition>
-                        <UiButton
-                            @click="toInitial"
-                            icon="fa-solid fa-solid fa-angles-left"
-                            :disabled="!newLogo"
-                            small
-                            class="ml-2"
-                            color="light"
-                            bolder
-                        >
-                            Вернуть исходный
-                        </UiButton>
-                    </AnimationTransition>
-                </div>
-                <div class="form-company-logo__preview">
-                    <div v-if="isCompressing" class="form-company-logo__compression">
-                        <div class="file__body file__body--loading">
-                            <Progress :percent="compressionProgress" title="загрузки" :height="4" />
+                <div class="d-flex gap-1">
+                    <div class="d-flex flex-column w-100">
+                        <p class="form__subtitle mb-1">Текущий логотип</p>
+                        <div class="form-company-logo__preview">
+                            <div v-if="isCompressing" class="form-company-logo__compression">
+                                <div class="file__body file__body--loading">
+                                    <Progress
+                                        :percent="compressionProgress"
+                                        title="загрузки"
+                                        :height="4"
+                                    />
+                                </div>
+                            </div>
+                            <CompanyLogo
+                                v-else
+                                ref="companyLogoEl"
+                                :src="currentLogo?.src"
+                                as="div"
+                                :class="{
+                                    'form-company-logo__deleted-logo': logoShouldBeDeleted
+                                }"
+                                :company-id="currentCompanyId"
+                                :size="100"
+                            />
+                            <div v-if="company" class="form-company-logo__description">
+                                <p class="form-company-logo__company">
+                                    <i
+                                        v-if="company.is_individual"
+                                        v-tippy="'Физ.лицо'"
+                                        class="fa-solid fa-user-tie mr-1"
+                                    ></i>
+                                    <span>{{ companyName }}</span>
+                                </p>
+                                <div class="form-company-logo__categories mt-1">
+                                    <UiField
+                                        v-for="category in categories"
+                                        :key="category.id"
+                                        class="form-company-logo__category"
+                                        color="light"
+                                    >
+                                        {{ category.label }}
+                                    </UiField>
+                                </div>
+                                <p class="form-company-logo__text">
+                                    {{ company.description }}sadfghjk
+                                </p>
+                            </div>
                         </div>
                     </div>
-                    <CompanyLogo
-                        v-else
-                        :src="currentLogo?.src"
-                        as="div"
-                        :class="{
-                            'form-company-logo__deleted-logo': logoShouldBeDeleted
-                        }"
-                        :company-id="currentCompanyId"
-                        :size="100"
-                    />
-                    <div v-if="company" class="form-company-logo__description">
-                        <p class="form-company-logo__company">
-                            <i
-                                v-if="company.is_individual"
-                                v-tippy="'Физ.лицо'"
-                                class="fa-solid fa-user-tie mr-1"
-                            ></i>
-                            <span>{{ companyName }}</span>
-                        </p>
-                        <div class="form-company-logo__categories mt-1">
-                            <DashboardChip
-                                v-for="category in categories"
-                                :key="category.id"
-                                class="dashboard-bg-gray-l form-company-logo__category"
+                    <div class="form-company-logo__actions">
+                        <p class="form__subtitle">Действия</p>
+                        <AnimationTransition :speed="0.4">
+                            <UiButton
+                                v-if="logoShouldBeDeleted"
+                                @click="unmarkCurrentLogoAsDeleted"
+                                icon="fa-solid fa-rotate-left"
+                                small
+                                color="light"
                             >
-                                {{ category.label }}
-                            </DashboardChip>
-                        </div>
-                        <p class="form-company-logo__address mt-1">
-                            <span v-if="company.officeAdress || company.office_address">
-                                {{ company.officeAdress ?? company.office_address }}
-                            </span>
-                            <span v-else class="messenger-warning">Адрес офиса не заполнен</span>
-                        </p>
+                                Отменить удаление
+                            </UiButton>
+                            <UiButton
+                                v-else
+                                @click="markCurrentLogoAsDeleted"
+                                small
+                                :disabled="logoShouldBeDeleted || !currentLogo"
+                                color="danger"
+                                icon="fa-solid fa-trash"
+                            >
+                                Удалить логотип
+                            </UiButton>
+                        </AnimationTransition>
+                        <UiButton
+                            @click="cropperIsVisible = true"
+                            :disabled="!canBeEdit"
+                            icon="fa-solid fa-crop-simple"
+                            small
+                            color="light"
+                        >
+                            Редактировать
+                        </UiButton>
+                        <AnimationTransition>
+                            <UiButton
+                                @click="toInitial"
+                                icon="fa-solid fa-angles-left"
+                                :disabled="!newLogo"
+                                small
+                                color="light"
+                            >
+                                Вернуть исходный
+                            </UiButton>
+                        </AnimationTransition>
                     </div>
                 </div>
             </div>
@@ -110,7 +110,7 @@
         >
             Выбрать файлы
         </FileInput>
-        <div class="d-flex gap-2 justify-content-center w-100 mt-3">
+        <div class="d-flex gap-2 w-100 mt-3">
             <UiButton
                 @click="editLogo"
                 :disabled="!canBeSaved"
@@ -135,19 +135,15 @@
                     ref="cropperEl"
                     :src="currentLogo.src"
                     :need-transform="!newLogo"
-                    :height="400"
-                    :width="400"
+                    :height="500"
+                    :width="500"
+                    fill
                 />
                 <template #actions>
-                    <UiButton
-                        @click="saveCropped"
-                        color="success-light"
-                        small
-                        icon="fa-solid fa-check"
-                    >
+                    <UiButton @click="saveCropped" color="success-light" icon="fa-solid fa-check">
                         Сохранить
                     </UiButton>
-                    <UiButton @click="closeCropper" color="light" small icon="fa-solid fa-ban">
+                    <UiButton @click="closeCropper" color="light" icon="fa-solid fa-ban">
                         Отменить
                     </UiButton>
                 </template>
@@ -162,7 +158,6 @@ import AnimationTransition from '@/components/common/AnimationTransition.vue';
 import CompanyLogo from '@/components/Company/CompanyLogo.vue';
 import api from '@/api/api.js';
 import { computed, ref, shallowRef, useTemplateRef } from 'vue';
-import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
 import { CompanyCategories } from '@/const/const.js';
 import { useEventListener } from '@vueuse/core';
 import { SIZE_TO_COMPRESSION } from '@/const/messenger.js';
@@ -170,26 +165,18 @@ import imageCompression from 'browser-image-compression';
 import { blobToFile } from '@/utils/helpers/forms/blobToFile.js';
 import { useNotify } from '@/utils/use/useNotify.js';
 import Progress from '@/components/common/Progress.vue';
-import ImageCropper from '@/components/common/ImageCropper.vue';
+import ImageCropper from '@/components/common/ImageCropper/ImageCropper.vue';
 import Loader from '@/components/common/Loader.vue';
 import { getCompanyName } from '@/utils/formatters/models/company.js';
 import UiButton from '@/components/common/UI/UiButton.vue';
 import UiModal from '@/components/common/UI/UiModal.vue';
+import UiField from '@/components/common/UI/UiField.vue';
 
 const emit = defineEmits(['updated', 'deleted', 'canceled', 'edited']);
 const props = defineProps({
-    company: {
-        type: Object,
-        default: null
-    },
-    companyId: {
-        type: Number,
-        default: null
-    },
-    logo: {
-        type: Object,
-        default: null
-    }
+    company: Object,
+    companyId: Number,
+    logo: Object
 });
 
 const notify = useNotify();
@@ -296,7 +283,7 @@ const saveCropped = async () => {
     const blob = await cropperEl.value.getBlob();
     const url = cropperEl.value.getUrl();
 
-    const file = blobToFile(blob, { name: generateCroppedFileName() });
+    const file = new File([blob], generateCroppedFileName());
 
     croppedLogo.value = {
         src: url
