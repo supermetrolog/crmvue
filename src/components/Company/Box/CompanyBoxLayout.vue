@@ -1,5 +1,6 @@
 <template>
     <div class="company-box-layout">
+        <slot name="before" />
         <div class="company-box-layout__inner">
             <div class="company-box-layout__header">
                 <slot name="header" />
@@ -11,8 +12,4 @@
     </div>
 </template>
 
-<script>
-export default {
-    name: 'CompanyBoxLayout'
-};
-</script>
+<script setup></script>
