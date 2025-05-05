@@ -25,8 +25,9 @@
             </template>
             <template #item="{ record: message }">
                 <div>
+                    <MessengerChatLabelRow v-if="message.isRow" :label="message.label" />
                     <MessengerChatLabel
-                        v-if="message.isLabel"
+                        v-else-if="message.isLabel"
                         class="messenger-chat__label"
                         :date="message.label"
                     />
@@ -90,6 +91,7 @@ import Loader from '@/components/common/Loader.vue';
 import { vIntersectionObserver } from '@vueuse/components';
 import MessengerChatContentDisabled from '@/components/Messenger/Chat/MessengerChatContentDisabled.vue';
 import { useMessengerChatContext } from '@/components/Messenger/Chat/useMessengerChatContext.js';
+import MessengerChatLabelRow from '@/components/Messenger/Chat/MessengerChatLabelRow.vue';
 
 defineProps({ disabled: Boolean });
 

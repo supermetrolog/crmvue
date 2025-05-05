@@ -13,6 +13,12 @@
             >
                 <i class="fa-solid fa-up-right-from-square"></i>
             </a>
+            <UiTooltipIcon
+                @click="$emit('to-chat')"
+                tooltip="Перейти в чат"
+                icon="fa-solid fa-comment"
+                class="messenger-chat-header__function"
+            />
         </div>
     </div>
 </template>
@@ -26,7 +32,9 @@ import MessengerChatHeaderUser from '@/components/Messenger/Chat/Header/Messenge
 import MessengerChatHeaderCompany from '@/components/Messenger/Chat/Header/MessengerChatHeaderCompany.vue';
 import { messenger } from '@/const/messenger.js';
 import { useAuth } from '@/composables/useAuth.js';
+import UiTooltipIcon from '@/components/common/UI/UiTooltipIcon.vue';
 
+defineEmits(['to-chat']);
 const props = defineProps({
     dialog: Object
 });

@@ -207,11 +207,16 @@
 }
 
 .messenger-chat-label {
-    padding: 7px 12px;
+    padding: 5px 10px;
     background-color: variables.$color_grey_light;
     font-size: 14px;
-    font-weight: 600;
+    font-weight: 500;
     border-radius: 15px;
+
+    &--row {
+        width: 100%;
+        text-align: center;
+    }
 }
 
 .messenger-chat-avatar {

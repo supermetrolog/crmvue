@@ -1,6 +1,7 @@
 <template>
     <div class="header-summary-messages-content-preview position-relative">
         <HeaderSummaryMessagesContentHeader
+            @to-chat="$emit('to-chat')"
             :dialog
             class="header-summary-messages-content-preview__header"
         />
@@ -28,8 +29,9 @@
                 </template>
                 <template #item="{ record: message }">
                     <div>
+                        <MessengerChatLabelRow v-if="message.isRow" :label="message.label" />
                         <MessengerChatLabel
-                            v-if="message.isLabel"
+                            v-else-if="message.isLabel"
                             class="messenger-chat__label"
                             :date="message.label"
                         />
@@ -67,8 +69,9 @@ import { messagesToSections } from '@/utils/mapper.js';
 import HeaderSummaryMessagesContentMessage from '@/components/Header/Summary/HeaderSummaryMessagesContentMessage.vue';
 import HeaderSummaryMessagesContentNotification from '@/components/Header/Summary/HeaderSummaryMessagesContentNotification.vue';
 import HeaderSummaryMessagesContentHeader from '@/components/Header/Summary/HeaderSummaryMessagesContentHeader.vue';
+import MessengerChatLabelRow from '@/components/Messenger/Chat/MessengerChatLabelRow.vue';
 
-const emit = defineEmits(['close']);
+defineEmits(['close', 'to-chat']);
 const props = defineProps({
     dialog: Object
 });
@@ -194,9 +197,9 @@ watch(isLoading, value => {
 // read
 
 const readMessages = debounce(async messageID => {
-    const reads = await api.messenger.readMessages(messageID);
-    if (reads) {
-        emit('read');
-    }
+    // const reads = await api.messenger.readMessages(messageID);
+    // if (reads) {
+    //     emit('read');
+    // }
 }, 2000);
 </script>

@@ -10,6 +10,7 @@ import { taskOptions } from '@/const/options/task.options.js';
 import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
 import { isNumeric } from '@/utils/helpers/common/isNumeric.js';
 import { isNotEmptyString } from '@/utils/helpers/string/isNotEmptyString.js';
+import { isNullish } from '@/utils/helpers/common/isNullish.js';
 
 const needCacheMessage = (dialogID, asideID, panelID) => {
     return Boolean(
@@ -361,6 +362,19 @@ const Messenger = {
                 state.currentDialog.model.id === id
             )
                 state.currentDialog.model.logo = logo?.src;
+        },
+
+        setCurrentDialogLastMessage(state, message) {
+            if (isNullish(state.currentDialog)) return;
+
+            const chatMemberStateName = 'chatMembers' + ucFirst(state.currentDialog.model_type);
+            const chatMemberIndex = state[chatMemberStateName].data.findIndex(
+                element => element.id === state.currentDialog.id
+            );
+
+            if (chatMemberIndex !== -1) {
+                state[chatMemberStateName].data[chatMemberIndex].last_message = message;
+            }
         }
     },
     actions: {
@@ -577,6 +591,7 @@ const Messenger = {
                 response.is_viewed = true;
 
                 commit('addMessages', [response]);
+                commit('setCurrentDialogLastMessage', response);
                 state.newMessage = '';
 
                 return true;

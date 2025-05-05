@@ -94,6 +94,7 @@ import { useAsyncPopup } from '@/composables/useAsyncPopup.js';
 import { useIntersectionObserver, useTimeoutFn } from '@vueuse/core';
 import MessengerChatMessageTemplate from '@/components/Messenger/Chat/Message/MessengerChatMessageTemplate.vue';
 import { useLinkify } from '@/composables/useLinkify.js';
+import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
 
 const store = useStore();
 const notify = useNotify();
@@ -128,6 +129,7 @@ provide('$messageID', props.message.id);
 
 const isDeleteLoading = ref(false);
 const isViewed = ref(props.message.is_viewed);
+const isNewMessage = isNotNullish(props.message.is_viewed) && !props.message.is_viewed;
 
 const target = useTemplateRef('target');
 
@@ -142,7 +144,8 @@ const classList = computed(() => {
     return {
         'messenger-chat-message--right': props.self,
         'messenger-chat-message--not-viewed': !props.message.is_viewed && !isViewed.value,
-        'messenger-chat-message--reply': props.reply
+        'messenger-chat-message--reply': props.reply,
+        'messenger-chat-message--new': isNewMessage
     };
 });
 

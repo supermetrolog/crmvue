@@ -92,6 +92,7 @@ import api from '@/api/api.js';
 import { useIntersectionObserver, useTimeoutFn } from '@vueuse/core';
 import MessengerChatNotificationTemplate from '@/components/Messenger/Chat/Notification/MessengerChatNotificationTemplate.vue';
 import { useLinkify } from '@/composables/useLinkify.js';
+import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
 
 const emit = defineEmits(['deleted', 'reply', 'cancel-reply', 'viewed', 'create-task']);
 const props = defineProps({
@@ -120,13 +121,17 @@ const { confirm } = useConfirm();
 provide('$messageID', props.message.id);
 
 const isDeleteLoading = ref(false);
+
 const isViewed = ref(props.message.is_viewed);
+const isNewMessage = isNotNullish(props.message.is_viewed) && !props.message.is_viewed;
+
 const target = useTemplateRef('target');
 
 const classList = computed(() => {
     return {
         'messenger-chat-message--not-viewed': !props.message.is_viewed && !isViewed.value,
-        'messenger-chat-message--reply': props.reply
+        'messenger-chat-message--reply': props.reply,
+        'messenger-chat-message--new': isNewMessage
     };
 });
 
