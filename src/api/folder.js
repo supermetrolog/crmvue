@@ -43,6 +43,10 @@ export default {
         const response = await axios.delete(`${URL}/${folderId}/entities`, { data: payload });
         return responseToData(response);
     },
+    async clear(folderId) {
+        const response = await axios.post(`${URL}/${folderId}/clear`);
+        return responseHasStatus(response, STATUS_SUCCESS);
+    },
     async sortFolders() {},
     async sortEntities() {}
 };

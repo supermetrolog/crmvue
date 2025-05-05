@@ -15,7 +15,6 @@ export function initSentry(app) {
             skipBrowserExtensionCheck: true
         });
 
-        console.log(import.meta.env.VITE_VUE_APP_GLITCH_DSN);
         console.warn('[Sentry] Sentry initialized');
     } else {
         console.warn('[Sentry] Skip Sentry initialization in dev mode');
