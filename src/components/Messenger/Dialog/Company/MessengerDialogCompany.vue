@@ -10,13 +10,6 @@
                     :size="75"
                 />
                 <span class="messenger-dialog-company__id">{{ model.id }}</span>
-                <Avatar
-                    v-if="model.consultant"
-                    :size="30"
-                    :label="`${model.consultant.userProfile.medium_name} - консультант`"
-                    :src="model.consultant.userProfile.avatar"
-                    class="messenger-dialog__avatar messenger-dialog-company__avatar"
-                />
             </div>
             <div class="messenger-dialog-company__description">
                 <p v-if="hasUndefinedName" class="messenger-warning">[Нет уникального названия]</p>
@@ -37,31 +30,35 @@
                         class="fa-solid fa-user-tie mr-1"
                     ></i>
                     <span>{{ companyName }}</span>
-                </p>
-                <div class="messenger-dialog-company__categories mt-1">
-                    <UiField
-                        v-for="category in categories"
-                        :key="category.id"
-                        class="messenger-dialog-company__category"
-                        color="light"
-                    >
-                        {{ category.label }}
-                    </UiField>
-                </div>
-                <p class="messenger-dialog-company__address mt-1">
-                    <Tooltip
-                        v-if="model.office_address"
-                        :text="model.office_address"
-                        icon="fa-solid fa-earth-americas"
+                    <Avatar
+                        v-if="model.consultant"
+                        :size="25"
+                        :label="`${model.consultant.userProfile.medium_name} - консультант`"
+                        :src="model.consultant.userProfile.avatar"
+                        class="messenger-dialog-company__avatar"
                     />
-                    <span
-                        v-if="model.office_address"
-                        class="messenger-dialog-company__address-content"
-                    >
-                        {{ model.office_address }}
-                    </span>
-                    <span v-else class="messenger-warning">Адрес офиса не заполнен</span>
                 </p>
+                <div class="messenger-dialog-company__text">
+                    <p
+                        v-if="model.activity_groups.length"
+                        class="messenger-dialog-company__category"
+                    >
+                        {{ activityGroups }}
+                    </p>
+                    <p v-else class="messenger-warning">- Группа деятельности не заполнена</p>
+                    <p
+                        v-if="model.activity_profiles.length"
+                        class="messenger-dialog-company__category"
+                    >
+                        {{ activityProfiles }}
+                    </p>
+                    <p v-else class="messenger-warning">Профиль деятельности не заполнен</p>
+                    <p class="mt-1">
+                        <span>{{ contactsCountLabel }}, </span>
+                        <span>{{ requestsCountLabel }}, </span>
+                        <span>{{ objectsCountLabel }}</span>
+                    </p>
+                </div>
             </div>
         </div>
         <div class="messenger-dialog__footer">
@@ -79,15 +76,14 @@
 <script setup>
 import MessengerDialogPhone from '@/components/Messenger/Dialog/MessengerDialogPhone.vue';
 import MessengerDialogFunctions from '@/components/Messenger/Dialog/MessengerDialogFunctions.vue';
-import Tooltip from '@/components/common/Tooltip.vue';
 import { computed } from 'vue';
 import CompanyLogo from '@/components/Company/CompanyLogo.vue';
 import { alg } from '@/utils/alg.js';
-import { CompanyCategories } from '@/const/const.js';
-import Avatar from '@/components/common/Avatar.vue';
 import { getCompanyName } from '@/utils/formatters/models/company.js';
 import { useAuth } from '@/composables/useAuth.js';
-import UiField from '@/components/common/UI/UiField.vue';
+import { plural } from '@/utils/plural.js';
+import { companyOptions } from '@/const/options/company.options.js';
+import Avatar from '@/components/common/Avatar.vue';
 import MessengerDialogLastMessage from '@/components/Messenger/Dialog/MessengerDialogLastMessage.vue';
 
 defineEmits(['update-call']);
@@ -119,12 +115,36 @@ const hasUndefinedName = computed(() => {
 
 const companyName = computed(() => getCompanyName(props.model));
 
-const categories = computed(() => {
-    return props.model.categories.map(element => {
-        return {
-            id: element.id,
-            label: CompanyCategories[element.category]
-        };
-    });
+const contactsCountLabel = plural(
+    props.model.contacts_count,
+    '%d контакт',
+    '%d контакта',
+    '%d контактов'
+);
+
+const requestsCountLabel = plural(
+    props.model.requests_count,
+    '%d запрос',
+    '%d запроса',
+    '%d запросов'
+);
+
+const objectsCountLabel = plural(
+    props.model.objects_count,
+    '%d объект',
+    '%d объекта',
+    '%d объектов'
+);
+
+const activityGroups = computed(() => {
+    return props.model.activity_groups
+        .map(el => companyOptions.activityGroup[el.activity_group_id])
+        .join(', ');
+});
+
+const activityProfiles = computed(() => {
+    return props.model.activity_profiles
+        .map(el => companyOptions.activityProfile[el.activity_profile_id])
+        .join(', ');
 });
 </script>
