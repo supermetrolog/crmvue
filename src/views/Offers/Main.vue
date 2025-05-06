@@ -27,40 +27,55 @@
                     </div>
                 </div>
             </div>
-            <div v-if="offersPagination" class="row justify-content-between">
+            <div class="row mb-2">
+                <UserFolders
+                    v-model:selected="currentFolder"
+                    category="offer_mix"
+                    class="col-12"
+                    movable
+                    editable
+                    selectable
+                />
+            </div>
+            <div class="row justify-content-between">
                 <PaginationClassic
                     ref="firstPaginationEl"
                     @next="next"
                     class="col-12 col-md-6"
                     :pagination="offersPagination"
+                    :loading="!offersPagination && isLoading"
                 />
-                <div class="company-table__actions col-12 col-md-4">
+                <div class="company-table__actions col-12 col-md-4 align-items-center">
                     <Switch
                         v-if="!isMobile"
                         v-model="isCardView"
                         false-title="Таблица"
                         true-title="Карточки"
+                        :disabled="isLoading"
                     />
-                    <Button @click="searchingIsVisible = true" success :disabled="isLoading">
+                    |
+                    <UiButton
+                        @click="searchingIsVisible = true"
+                        color="light"
+                        :disabled="isLoading"
+                        small
+                        icon="fa-solid fa-plus"
+                    >
                         Создать комплекс
-                    </Button>
-                    <RefreshButton @click="getOffers(true)" :disabled="isLoading" />
+                    </UiButton>
                 </div>
             </div>
             <div class="row">
                 <div class="col-12 offers-page__table">
                     <AnimationTransition :speed="0.2">
+                        <EmptyData v-if="!offers.length && !isLoading">Ничего не найдено</EmptyData>
                         <component
                             :is="currentViewComponentName"
-                            v-if="offers.length"
+                            v-else
                             @favorite-deleted="deleteFavoriteOffer"
                             :offers="offers"
                             :loader="isLoading"
                         />
-                        <template v-else>
-                            <Loader v-if="isLoading" />
-                            <EmptyData v-else>Ничего не найдено</EmptyData>
-                        </template>
                     </AnimationTransition>
                 </div>
                 <div class="col-12">
@@ -77,20 +92,17 @@
 
 <script setup>
 import { useStore } from 'vuex';
-import RefreshButton from '@/components/common/RefreshButton.vue';
 import FormModalOfferSearch from '@/components/Forms/Offer/FormModalOfferSearch.vue';
 import PaginationClassic from '@/components/common/Pagination/PaginationClassic.vue';
-import Loader from '@/components/common/Loader.vue';
 import OfferTableMobile from '@/components/Offer/OfferTableMobile.vue';
 import OfferTable from '@/components/Offer/OfferTable.vue';
 import Chip from '@/components/common/Chip.vue';
 import FormComplex from '@/components/Forms/Complex/FormComplex.vue';
-import Button from '@/components/common/Button.vue';
 import EmptyData from '@/components/common/EmptyData.vue';
 import Switch from '@/components/common/Forms/Switch.vue';
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
 import { useMobile } from '@/composables/useMobile.js';
-import { computed, shallowRef, useTemplateRef } from 'vue';
+import { computed, ref, useTemplateRef, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useTableContent } from '@/composables/useTableContent.js';
 import { ActivePassiveFUCK, GateTypeList, YesNo } from '@/const/const.js';
@@ -103,6 +115,9 @@ import FormOfferSearchExternal from '@/components/Forms/Offer/FormOfferSearchExt
 import { useSelectedFilters } from '@/composables/useSelectedFilters.js';
 import { singleToArrayByKeys } from '@/utils/helpers/object/singleToArrayByKeys.js';
 import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
+import UserFolders from '@/components/UserFolder/UserFolders.vue';
+import UiButton from '@/components/common/UI/UiButton.vue';
+import { useDebounceFn } from '@vueuse/core';
 
 const isMobile = useMobile();
 const store = useStore();
@@ -111,10 +126,10 @@ const router = useRouter();
 
 const firstPaginationEl = useTemplateRef('firstPaginationEl');
 
-const isCardView = shallowRef(false);
-const formIsVisible = shallowRef(false);
-const isLoading = shallowRef(false);
-const searchingIsVisible = shallowRef(false);
+const isCardView = ref(false);
+const formIsVisible = ref(false);
+const isLoading = ref(false);
+const searchingIsVisible = ref(false);
 
 const consultants = computed(() => store.getters.CONSULTANT_LIST);
 const offersPagination = computed(() => store.getters.OFFERS_PAGINATION);
@@ -275,6 +290,8 @@ const getOffers = async (withLoader = true) => {
     isLoading.value = false;
 };
 
+const debouncedFetchOffers = useDebounceFn(getOffers, 300);
+
 function createPayload() {
     const query = { ...route.query };
 
@@ -292,6 +309,10 @@ function createPayload() {
         'company.mainContact.phones,company.mainContact.emails,company.objects_count,company.active_requests_count,company.active_contacts_count,' +
         'offer,' +
         'consultant.userProfile';
+
+    if (isNotNullish(currentFolder.value)) {
+        query.folder_ids = [currentFolder.value];
+    }
 
     return query;
 }
@@ -329,4 +350,10 @@ const { nextWithScroll, next } = useTableContent(getOffers, {
     scrollTo: firstPaginationEl,
     initQuery: () => {}
 });
+
+// folders
+
+const currentFolder = ref(null);
+
+watch(currentFolder, () => debouncedFetchOffers());
 </script>

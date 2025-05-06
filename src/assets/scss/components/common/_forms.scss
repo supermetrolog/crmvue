@@ -1776,9 +1776,6 @@
         opacity: .3;
     }
 
-    &__picker {
-    }
-
     &__picked {
         width: 300px;
         height: 300px;
@@ -1802,16 +1799,26 @@
         padding: 3px 6px!important;
     }
 
-    &__address {
-        font-size: 14px;
-    }
-
     &__button {
         width: calc(200px - .25rem)!important;
     }
 
     &__control {
         width: 100%!important;
+    }
+
+    &__text {
+        @include mixins.text-overflow(2);
+        font-size: 14px;
+    }
+
+    &__actions {
+        display: flex;
+        flex-direction: column;
+        flex-shrink: 0;
+        gap: 5px;
+        padding-left: 10px;
+        border-left: 1px solid rgba(0, 0, 0, .1);
     }
 }
 
@@ -1822,11 +1829,24 @@
     }
 
     &__controls {
-        @include mixins.flex-box($d: column, $gap: 5px);
+        width: 220px;
     }
 
     &__footer {
         margin-top: 10px;
+    }
+
+    &__color {
+        input {
+            cursor: pointer;
+            padding: 2px 3px;
+        }
+    }
+
+    &__preview {
+        height: 200px;
+        width: 200px;
+        border: 1px solid rgba(0, 0, 0, .1);
     }
 }
 

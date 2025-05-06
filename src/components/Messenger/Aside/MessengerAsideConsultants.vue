@@ -42,6 +42,7 @@
                             :model="record.model"
                             :statistic="record.statistic"
                             :class="{ skeleton: isLoading }"
+                            :last-message="record.last_message"
                         />
                     </template>
                     <template v-if="consultants.length >= 20" #footer>

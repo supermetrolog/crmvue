@@ -12,17 +12,19 @@
                 </p>
                 <div class="offer-table-item__actions">
                     <template v-if="offer.type_id !== 3">
-                        <HoverActionsButton
+                        <UiButtonIcon
                             @click="toggleFavorite"
                             :label="isFavorite ? 'Удалить из избранного' : 'Добавить в избранное'"
                             :active="isFavorite"
-                        >
-                            <i class="fa-solid fa-star" />
-                        </HoverActionsButton>
-                        <HoverActionsButton @click="openPDF" label="Открыть PDF">
-                            <i class="fa-solid fa-file-pdf" />
-                        </HoverActionsButton>
+                            icon="fa-solid fa-star"
+                        />
+                        <UiButtonIcon
+                            @click="openPDF"
+                            label="Открыть PDF"
+                            icon="fa-solid fa-file-pdf"
+                        />
                     </template>
+                    <UserFoldersDropdown :entity="offer.id" morph="offer_mix" />
                 </div>
                 <OfferTableItemRelationSelect
                     v-if="offer.type_id !== 3 && offer.object?.offers?.length && !withoutRelations"
@@ -164,7 +166,6 @@ import Td from '@/components/common/Table/Td.vue';
 import Tr from '@/components/common/Table/Tr.vue';
 import api from '@/api/api.js';
 import OfferTableItemDropdown from '@/components/Offer/TableItem/OfferTableItemDropdown.vue';
-import HoverActionsButton from '@/components/common/HoverActions/HoverActionsButton.vue';
 import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
 import OfferTableItemArea from '@/components/Offer/TableItem/OfferTableItemArea.vue';
 import CompanyContact from '@/components/Company/CompanyContact.vue';
@@ -189,6 +190,8 @@ import { messenger, objectChatMemberTypes } from '@/const/messenger.js';
 import OfferTableItemAdv from '@/components/Offer/TableItem/OfferTableItemAdv.vue';
 import UiTooltip from '@/components/common/UI/UiTooltip.vue';
 import UiButton from '@/components/common/UI/UiButton.vue';
+import UiButtonIcon from '@/components/common/UI/UiButtonIcon.vue';
+import UserFoldersDropdown from '@/components/UserFolder/UserFoldersDropdown.vue';
 
 const emit = defineEmits(['favorite-deleted', 'open-survey']);
 const props = defineProps({

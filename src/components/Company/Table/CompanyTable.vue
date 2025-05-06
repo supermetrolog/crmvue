@@ -6,9 +6,7 @@
                 <Th class="text-left" sort="nameRu">название компании</Th>
                 <Th>категория</Th>
                 <Th>контакт</Th>
-                <Th>опросник</Th>
                 <Th>консультант</Th>
-                <Th>Задачи бд</Th>
                 <Th sort="created_at">обновление</Th>
             </Tr>
         </template>

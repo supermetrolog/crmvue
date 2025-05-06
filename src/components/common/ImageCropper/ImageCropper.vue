@@ -8,7 +8,7 @@
                 <img ref="cropperEl" :src="src" alt="cropped img" />
             </div>
             <div class="image-cropper__controls">
-                <slot name="controls"></slot>
+                <ImageCropperFill v-if="fill" v-model="fillColor" :preview="filledImage" />
             </div>
         </div>
         <div v-if="$slots.footer" class="image-cropper__footer">
@@ -17,8 +17,10 @@
     </div>
 </template>
 <script setup>
-import { computed, onMounted, onUnmounted, ref, useTemplateRef, watch } from 'vue';
+import { computed, onMounted, onUnmounted, ref, shallowRef, useTemplateRef, watch } from 'vue';
 import Cropper from 'cropperjs';
+import { useDebounceFn } from '@vueuse/core';
+import ImageCropperFill from '@/components/common/ImageCropper/ImageCropperFill.vue';
 
 const emit = defineEmits(['cropend']);
 const props = defineProps({
@@ -26,10 +28,7 @@ const props = defineProps({
         type: Object,
         default: () => ({})
     },
-    src: {
-        type: String,
-        default: null
-    },
+    src: String,
     viewMode: {
         type: Number,
         default: 0
@@ -58,10 +57,7 @@ const props = defineProps({
         type: Boolean,
         default: true
     },
-    background: {
-        type: Boolean,
-        default: false
-    },
+    background: Boolean,
     autoCrop: {
         type: Boolean,
         default: true
@@ -102,10 +98,7 @@ const props = defineProps({
         type: Boolean,
         default: true
     },
-    toggleDragModeOnDblclick: {
-        type: Boolean,
-        default: false
-    },
+    toggleDragModeOnDblclick: Boolean,
     minContainerWidth: {
         type: Number,
         default: 60
@@ -130,16 +123,15 @@ const props = defineProps({
         type: Number,
         default: 300
     },
-    needTransform: {
-        type: Boolean,
-        default: false
-    }
+    needTransform: Boolean,
+    fill: Boolean
 });
 
 watch(
     () => props.src,
     value => {
         cropper.replace(value);
+        generatePreview();
     }
 );
 
@@ -152,18 +144,19 @@ let cropper = null;
 const widthInPx = computed(() => props.width + 'px');
 const heightInPx = computed(() => props.height + 'px');
 
-const rotate = degree => {
+function rotate(degree) {
     if (isReady.value) cropper.rotate(degree);
-};
+}
 
-const reset = () => {
+function reset() {
     if (isReady.value) cropper.reset();
-};
-const getUrl = () => {
-    if (isReady.value) return cropper.getCroppedCanvas().toDataURL();
-};
+}
 
-const getBlob = async () => {
+function getUrl() {
+    if (isReady.value) return cropper.getCroppedCanvas({ fillColor: fillColor.value }).toDataURL();
+}
+
+async function getBlob() {
     if (!isReady.value) return;
 
     let resolve = () => {};
@@ -172,12 +165,12 @@ const getBlob = async () => {
         resolve = _resolve;
     });
 
-    cropper.getCroppedCanvas().toBlob(blob => {
+    cropper.getCroppedCanvas({ fillColor: fillColor.value }).toBlob(blob => {
         resolve(blob);
     });
 
     return await promise;
-};
+}
 
 defineExpose({ rotate, reset, getUrl, getBlob });
 
@@ -207,9 +200,14 @@ const createOptions = () => {
         toggleDragModeOnDblclick: props.toggleDragModeOnDblclick,
         ready() {
             isReady.value = true;
+            generatePreview();
         },
         cropend() {
             emit('cropend');
+            generatePreview();
+        },
+        zoom() {
+            generatePreview();
         }
     };
 };
@@ -226,12 +224,19 @@ const destroyCropper = () => {
     }
 };
 
-onMounted(async () => {
-    initCropper();
-});
-onUnmounted(() => {
-    destroyCropper();
-});
+onMounted(initCropper);
+onUnmounted(destroyCropper);
+
+// fill
+
+const filledImage = shallowRef(null);
+const fillColor = ref(undefined);
+
+const generatePreview = useDebounceFn(() => {
+    filledImage.value = getUrl();
+}, 300);
+
+watch(fillColor, generatePreview);
 </script>
 <style scoped>
 .image-cropper__image {

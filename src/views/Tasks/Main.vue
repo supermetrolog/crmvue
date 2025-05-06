@@ -111,6 +111,7 @@
                                     v-if="tasks.data?.length && !isFavoriteView"
                                     @next="setNextPage"
                                     :pagination="tasks.pagination"
+                                    :loading="isLoading"
                                 />
                             </AnimationTransition>
                             <Button
@@ -128,6 +129,16 @@
                             </Button>
                         </div>
                     </DashboardCard>
+                    <div class="row mb-2">
+                        <UserFolders
+                            v-model:selected="currentFolder"
+                            category="task"
+                            class="col-12"
+                            movable
+                            editable
+                            selectable
+                        />
+                    </div>
                     <DashboardCard class="dashboard-task-table">
                         <AnimationTransition :speed="0.2">
                             <div v-if="isFavoriteView">
@@ -152,6 +163,7 @@
                                 v-if="tasks.data?.length && !isFavoriteView"
                                 @next="setNextPage"
                                 :pagination="tasks.pagination"
+                                :loading="isLoading"
                             />
                         </DashboardCard>
                     </AnimationTransition>
@@ -176,19 +188,19 @@ import Button from '@/components/common/Button.vue';
 import UiInput from '@/components/common/Forms/UiInput.vue';
 import { useTagsOptions } from '@/composables/options/useTagsOptions.js';
 import { useConsultantsOptions } from '@/composables/options/useConsultantsOptions.js';
-import { useDelayedLoader } from '@/composables/useDelayedLoader.js';
 import { taskOptions } from '@/const/options/task.options.js';
 import { useQueryHash } from '@/utils/use/useQueryHash.js';
 import api from '@/api/api.js';
 import gsap from 'gsap';
 import { debounce } from '@/utils/common/debounce.js';
-import DashboardTargetUser from '@/components/Dashboard/DashboardTargetUser.vue';
 import { useFavoriteTasks } from '@/composables/useFavoriteTasks.js';
 import DashboardTableFavoriteTasks from '@/components/Dashboard/Table/DashboardTableFavoriteTasks.vue';
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
 import UiField from '@/components/common/UI/UiField.vue';
 import UiCol from '@/components/common/UI/UiCol.vue';
 import UiButton from '@/components/common/UI/UiButton.vue';
+import UserFolders from '@/components/UserFolder/UserFolders.vue';
+import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
 
 const store = useStore();
 
@@ -199,7 +211,8 @@ const targetUser = ref({
 
 const { getTagsOptions } = useTagsOptions();
 const { getConsultantsOptions } = useConsultantsOptions();
-const { isLoading } = useDelayedLoader();
+
+const isLoading = ref(false);
 
 const filters = reactive({
     createdById: null,
@@ -303,6 +316,7 @@ const createQuery = page => {
     if (filters.status.length) {
         query.status = filters.status;
     }
+
     if (filters.type.length && targetUser.value.id) setModeInQuery(query);
     else if (targetUser.value) {
         query.created_by_id = targetUser.value.id;
@@ -310,18 +324,22 @@ const createQuery = page => {
         query.user_id = targetUser.value.id;
         query.multiple = 1;
     }
+
     if (sortingOption.value) query.sort = sortingOption.value;
 
     if (filters.createdById && !createdByFilterIsDisabled.value) {
         query.created_by_id = filters.createdById;
         query.multiple = null;
     }
+
     if (filters.userId && !userFilterIsDisabled.value) {
         query.user_id = filters.userId;
         query.multiple = null;
     }
 
-    query.tag_ids = filters.tags;
+    if (isNotNullish(currentFolder.value)) {
+        query.folder_ids = [currentFolder.value];
+    }
 
     return query;
 };
@@ -356,19 +374,22 @@ const createCountsQuery = () => {
 
 const { setHash, confirmHash } = useQueryHash('search-tasks');
 
-const fetchTasks = async (page = 1) => {
+async function fetchTasks(page = 1) {
     isLoading.value = true;
     const query = createQuery(page);
     setHash(query);
 
-    const response = await api.task.get(query);
-    if (response && confirmHash(query)) {
-        tasks.data = response.data;
-        tasks.pagination = response.pagination;
-    }
+    try {
+        const response = await api.task.get(query);
 
-    isLoading.value = false;
-};
+        if (response && confirmHash(query)) {
+            tasks.data = response.data;
+            tasks.pagination = response.pagination;
+        }
+    } finally {
+        isLoading.value = false;
+    }
+}
 
 const { setHash: setCountsHash, confirmHash: confirmCountsHash } = useQueryHash('counts-tasks');
 
@@ -413,15 +434,13 @@ const onTaskUpdated = task => {
     if (taskIndex !== -1) Object.assign(tasks.data[taskIndex], task);
 };
 
-const init = () => {
+function init() {
     fetchCounts();
     fetchTasks();
     fetchRelationCounts();
-};
+}
 
-onMounted(() => {
-    init();
-});
+onMounted(init);
 
 // favorites
 
@@ -434,4 +453,10 @@ const isFavoriteView = ref(false);
 function toggleFavoriteView() {
     isFavoriteView.value = !isFavoriteView.value;
 }
+
+// folders
+
+const currentFolder = ref(null);
+
+watch(currentFolder, debouncedFetchTasks);
 </script>

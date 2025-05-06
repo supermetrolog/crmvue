@@ -30,10 +30,6 @@
         max-width: 100%;
     }
 
-    //&:has(.avatar) &__content {
-    //    max-width: calc(100% - 75px);
-    //}
-
     &__body {
         padding: 7px 10px 0;
     }
@@ -47,6 +43,10 @@
 
     &--right &__wrapper {
         margin-left: auto;
+    }
+
+    &--new .messenger-chat-message__content {
+        background-color: rgba(variables.$bg-success-l, .1);
     }
 
     &--not-viewed {

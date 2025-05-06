@@ -5,14 +5,6 @@
             <CompanyTableObjectItem :object="object" class="col-12" />
         </td>
         <td>
-            <div></div>
-        </td>
-        <td class="text-warning">
-            <div>
-                <span v-if="attention">Объект давно не обновляли!</span>
-            </div>
-        </td>
-        <td>
             <div class="d-flex justify-content-center">
                 <TableDateBlock :date="date" label="Дата обновления" />
             </div>

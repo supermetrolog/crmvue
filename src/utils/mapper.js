@@ -3,6 +3,7 @@ import { deleteObjectsWithEmptyProperties } from '@/utils/deleteObjectsWithEmpty
 
 import { dayjsFromMoscow } from '@/utils/formatters/date.js';
 import { chunk } from '@/utils/helpers/array/chunk.js';
+import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
 
 const propertiesToTableFormat = (object, props) => {
     return Object.keys(props).reduce((acc, property) => {
@@ -217,18 +218,19 @@ const propertiesToRangeFormat = (object, properties) => {
     }, []);
 };
 
-/**
- * Создает `label` для сообщений. Имеет свойство `isLabel = true` для отличия от сообщений.
- * `id` генерирует на основе сообщения.
- *
- * @param {Message} message
- * @returns {MessageLabel}
- */
-function createLabel(message) {
+function createLabel(message, postfix = '-label') {
     return {
         isLabel: true,
         label: message.dayjs_date,
-        id: message.id + '-label'
+        id: `${message.id}${postfix}`
+    };
+}
+
+function createRow(message, postfix = '-label-row') {
+    return {
+        isRow: true,
+        label: 'Новые сообщения',
+        id: `${message.id}${postfix}`
     };
 }
 
@@ -242,26 +244,41 @@ function createLabel(message) {
  * Анализ сообщений и вставка label'ов между сообщениями из разных дней.
  * Дополнительно добавление `dayjs_date` в тело сообщения.
  *
- * @param {array<Message>} messages - список сырых сообщений
+ * @param {array<Message>} messages
  * @param {dayjs.Dayjs|null} [lastMessageDate=null]
- * @param {boolean} [reversed=false] - проверка на соответсвие дате с начала
- * @returns {MessagesToSectionsResult} - список сообщений + label'ов между ними
+ * @param {boolean} [reversed=false]
+ * @returns {MessagesToSectionsResult}
  */
 export function messagesToSections(messages, lastMessageDate = null, reversed = false) {
     let hasLeakedMessages = false;
+    let hasNewMessageLabel = false;
 
     const _messages = messages.reduce((acc, message, index) => {
         message.dayjs_date = dayjsFromMoscow(message.created_at);
 
         if (index === 0) {
-            if (lastMessageDate && reversed)
+            if (lastMessageDate && reversed) {
                 hasLeakedMessages = message.dayjs_date.isSame(lastMessageDate, 'day');
+            }
+
+            if (isNotNullish(message.is_viewed) && !message.is_viewed) {
+                acc.push(createRow(message));
+                hasNewMessageLabel = true;
+            }
+
             acc.push(createLabel(message), message);
+
             return acc;
         }
 
-        if (index === messages.length - 1 && lastMessageDate && !reversed)
+        if (index === messages.length - 1 && lastMessageDate && !reversed) {
             hasLeakedMessages = message.dayjs_date.isSame(lastMessageDate, 'day');
+        }
+
+        if (!hasNewMessageLabel && isNotNullish(message.is_viewed) && !message.is_viewed) {
+            acc.push(createRow(message));
+            hasNewMessageLabel = true;
+        }
 
         if (messages[index - 1].dayjs_date.isBefore(message.dayjs_date, 'day'))
             acc.push(createLabel(message), message);

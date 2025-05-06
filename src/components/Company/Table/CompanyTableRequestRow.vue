@@ -1,7 +1,7 @@
 <template>
     <tr class="table-request-row">
         <td></td>
-        <td colspan="5">
+        <td colspan="4">
             <CompanyTableTimeline
                 v-for="timeline in timelines"
                 :key="timeline.id"
@@ -10,11 +10,6 @@
                 class="company-table-item__timeline"
                 :request-name="requestName"
             />
-        </td>
-        <td class="text-warning">
-            <div class="d-flex justify-content-center align-items-center">
-                <span v-if="attention">Уделите внимание запросу!</span>
-            </div>
         </td>
         <td>
             <div class="d-flex justify-content-center">

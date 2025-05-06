@@ -1,9 +1,15 @@
 <template>
     <div>
-        <Button @click="fetchTasks" :disabled="isLoading" class="ml-auto" small icon>
-            <span>Обновить</span>
-            <i class="fa-solid fa-refresh" />
-        </Button>
+        <UiButton
+            @click="fetchTasks()"
+            :disabled="isLoading"
+            small
+            class="ml-auto mb-2"
+            icon="fa-solid fa-refresh"
+            color="light"
+        >
+            Обновить
+        </UiButton>
         <div class="header-summary__list my-2">
             <HeaderSummaryEmpty
                 v-if="count === 0"
@@ -28,15 +34,14 @@
 </template>
 <script setup>
 import { onMounted, reactive } from 'vue';
-
 import api from '@/api/api.js';
 import { useAuth } from '@/composables/useAuth.js';
 import { useDelayedLoader } from '@/composables/useDelayedLoader.js';
 import PaginationClassic from '@/components/common/Pagination/PaginationClassic.vue';
 import DashboardTableTasks from '@/components/Dashboard/Table/DashboardTableTasks.vue';
 import { taskOptions } from '@/const/options/task.options.js';
-import Button from '@/components/common/Button.vue';
 import HeaderSummaryEmpty from '@/components/Header/Summary/HeaderSummaryEmpty.vue';
+import UiButton from '@/components/common/UI/UiButton.vue';
 
 const emit = defineEmits(['count-updated', 'close']);
 const props = defineProps({

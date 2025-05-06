@@ -119,7 +119,7 @@ function createSharedFolderEntities(morph) {
 const FOLDER_MORPH = {
     COMPANY: 'company',
     OBJECT: 'object',
-    OFFER: 'offer',
+    OFFER: 'offer_mix',
     TASK: 'task'
 };
 
@@ -189,17 +189,17 @@ export function useUserFolderEntities(morph, entityId) {
 }
 
 export const useCompanyFolderEntities = createSharedComposable(() => {
-    return createSharedFolderEntities('company');
+    return createSharedFolderEntities(FOLDER_MORPH.COMPANY);
 });
 
 export const useObjectFolderEntities = createSharedComposable(() => {
-    return createSharedFolderEntities('object');
+    return createSharedFolderEntities(FOLDER_MORPH.OBJECT);
 });
 
 export const useOfferFolderEntities = createSharedComposable(() => {
-    return createSharedFolderEntities('offer');
+    return createSharedFolderEntities(FOLDER_MORPH.OFFER);
 });
 
 export const useTaskFolderEntities = createSharedComposable(() => {
-    return createSharedFolderEntities('task');
+    return createSharedFolderEntities(FOLDER_MORPH.TASK);
 });
