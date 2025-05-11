@@ -1,40 +1,39 @@
 <template>
     <div class="header-summary-messages-content">
         <div class="header-summary-messages-content__grid">
-            <div>
-                <HeaderSummaryDialogs
-                    :title="isLoading ? 'Поиск чатов..' : `Найдено ${dialogsLabel}`"
-                >
-                    <template #actions>
-                        <UiButton
-                            @click="fetchChats()"
-                            :loading="isLoading"
-                            small
-                            class="ml-auto mb-2"
-                            icon="fa-solid fa-refresh"
-                            color="light"
-                        >
-                            Обновить
-                        </UiButton>
-                    </template>
-                    <HeaderSummaryDialogsList v-if="count > 0" :loading="isLoading">
-                        <HeaderSummaryMessagesDialog
-                            v-for="dialog in dialogs"
-                            :key="dialog.id"
-                            @click="selectDialog(dialog)"
-                            :dialog="dialog"
-                            class="header-summary-messages-content__dialog"
-                            :current="dialog.id === currenDialog?.id"
-                        />
-                    </HeaderSummaryDialogsList>
-                    <HeaderSummaryEmpty
-                        v-else
+            <HeaderSummaryDialogs
+                class="header-summary-messages-content__chats"
+                :title="isLoading ? 'Поиск чатов..' : `Найдено ${dialogsLabel}`"
+            >
+                <template #actions>
+                    <UiButton
+                        @click="fetchChats()"
                         :loading="isLoading"
-                        empty-title="Новых сообщений нет. Отлично!"
-                        loading-title="Поиск сообщений.."
+                        small
+                        class="ml-auto mb-2"
+                        icon="fa-solid fa-refresh"
+                        color="light"
+                    >
+                        Обновить
+                    </UiButton>
+                </template>
+                <HeaderSummaryDialogsList v-if="count > 0" :loading="isLoading">
+                    <HeaderSummaryMessagesDialog
+                        v-for="dialog in dialogs"
+                        :key="dialog.id"
+                        @click="selectDialog(dialog)"
+                        :dialog="dialog"
+                        class="header-summary-messages-content__dialog"
+                        :current="dialog.id === currenDialog?.id"
                     />
-                </HeaderSummaryDialogs>
-            </div>
+                </HeaderSummaryDialogsList>
+                <HeaderSummaryEmpty
+                    v-else
+                    :loading="isLoading"
+                    empty-title="Новых сообщений нет. Отлично!"
+                    loading-title="Поиск сообщений.."
+                />
+            </HeaderSummaryDialogs>
             <div class="header-summary-messages-content__preview">
                 <HeaderSummaryMessagesContentPreview
                     v-if="currenDialog"
@@ -54,11 +53,11 @@ import { computed, onMounted, ref, shallowRef } from 'vue';
 import api from '@/api/api.js';
 import HeaderSummaryEmpty from '@/components/Header/Summary/HeaderSummaryEmpty.vue';
 import UiButton from '@/components/common/UI/UiButton.vue';
-import HeaderSummaryMessagesDialog from '@/components/Header/Summary/HeaderSummaryMessagesDialog.vue';
+import HeaderSummaryMessagesDialog from '@/components/Header/Summary/Messages/HeaderSummaryMessagesDialog.vue';
 import { plural } from '@/utils/plural.js';
 import HeaderSummaryDialogsList from '@/components/Header/Summary/Dialogs/HeaderSummaryDialogsList.vue';
 import HeaderSummaryDialogs from '@/components/Header/Summary/Dialogs/HeaderSummaryDialogs.vue';
-import HeaderSummaryMessagesContentPreview from '@/components/Header/Summary/HeaderSummaryMessagesContentPreview.vue';
+import HeaderSummaryMessagesContentPreview from '@/components/Header/Summary/Messages/HeaderSummaryMessagesContentPreview.vue';
 import { messenger } from '@/const/messenger.js';
 import { useMessenger } from '@/components/Messenger/useMessenger.js';
 

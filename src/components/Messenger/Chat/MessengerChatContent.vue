@@ -9,7 +9,7 @@
             v-model="messages"
             disabled
             data-key="id"
-            :keeps="60"
+            :keeps="20"
             class="messenger-chat__virtual"
             :class="{ 'scroll-lock': scrollIsLock }"
             wrap-class="messenger-chat__body"
@@ -92,6 +92,7 @@ import { vIntersectionObserver } from '@vueuse/components';
 import MessengerChatContentDisabled from '@/components/Messenger/Chat/MessengerChatContentDisabled.vue';
 import { useMessengerChatContext } from '@/components/Messenger/Chat/useMessengerChatContext.js';
 import MessengerChatLabelRow from '@/components/Messenger/Chat/MessengerChatLabelRow.vue';
+import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
 
 defineProps({ disabled: Boolean });
 
@@ -133,7 +134,11 @@ watch(isLoading, value => {
 const { start: scrollToCorrectPosition } = useTimeoutFn(
     () => {
         const notViewedMessage = messages.value.find(
-            element => !element.is_viewed && !element.isLabel
+            element =>
+                isNotNullish(element.is_viewed) &&
+                !element.is_viewed &&
+                !element.isLabel &&
+                !element.isRow
         );
 
         if (notViewedMessage) virtual.value.scrollToKey(notViewedMessage.id);

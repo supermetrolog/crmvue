@@ -56,7 +56,7 @@
     </div>
 </template>
 <script setup>
-import { entityOptions } from '@/const/options/options';
+import { entityOptions } from '@/const/options/options.js';
 import Avatar from '@/components/common/Avatar.vue';
 import MessengerChatMessageAdditions from '@/components/Messenger/Chat/Message/Additions/MessengerChatMessageAdditions.vue';
 import AnimationTransition from '@/components/common/AnimationTransition.vue';

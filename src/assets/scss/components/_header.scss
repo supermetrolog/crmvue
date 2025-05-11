@@ -282,9 +282,13 @@
 
 .header-summary-messages-content {
     &__grid {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
+        display: flex;
         gap: 10px;
+    }
+
+    &__chats {
+        width: 40%;
+        flex-shrink: 0;
     }
 
     &__dialog {
@@ -295,6 +299,8 @@
     &__preview {
         border: 1px solid rgba(0, 0, 0, .1);
         border-radius: 5px;
+        width: 60%;
+        flex-shrink: 0;
     }
 
     &__empty {
@@ -307,13 +313,15 @@
 }
 
 .header-summary-messages-content-preview {
+    height: 100%;
+
     &__header {
         background-color: transparent!important;
     }
 
     &__list {
         overflow-y: scroll;
-        height: 580px;
+        height: 580px!important;
     }
 }
 
