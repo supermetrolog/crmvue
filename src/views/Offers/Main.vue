@@ -73,6 +73,7 @@
                             :is="currentViewComponentName"
                             v-else
                             @favorite-deleted="deleteFavoriteOffer"
+                            @deleted-from-folder="onDeletedFromFolder"
                             :offers="offers"
                             :loader="isLoading"
                         />
@@ -117,7 +118,8 @@ import { singleToArrayByKeys } from '@/utils/helpers/object/singleToArrayByKeys.
 import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
 import UserFolders from '@/components/UserFolder/UserFolders.vue';
 import UiButton from '@/components/common/UI/UiButton.vue';
-import { useDebounceFn } from '@vueuse/core';
+import { useDebounceFn, useTimeoutFn } from '@vueuse/core';
+import { spliceById } from '@/utils/helpers/array/spliceById.js';
 
 const isMobile = useMobile();
 const store = useStore();
@@ -356,4 +358,17 @@ const { nextWithScroll, next } = useTableContent(getOffers, {
 const currentFolder = ref(null);
 
 watch(currentFolder, () => debouncedFetchOffers());
+
+function onDeletedFromFolder(offerId, folderId) {
+    if (isNotNullish(currentFolder.value) && currentFolder.value === folderId) {
+        const offerIndex = store.state.Offers.offers.findIndex(offer => offer.id === offerId);
+        if (offerIndex === -1) return;
+
+        store.state.Offers.offers[offerIndex].isDeleting = true;
+
+        useTimeoutFn(() => {
+            store.state.Offers.offers.splice(offerIndex, 1);
+        }, 500);
+    }
+}
 </script>

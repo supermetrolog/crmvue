@@ -1,8 +1,15 @@
 <template>
-    <Tr class="company-table-item" :class="{ CompanyTableOdd: odd, CompanyTableEven: !odd }">
+    <Tr
+        class="company-table-item"
+        :class="{ CompanyTableOdd: odd, CompanyTableEven: !odd, 'fade-out': company.isDeleting }"
+    >
         <Td class="text-center company-table-item__id">
             <p class="mb-1">{{ company.id }}</p>
-            <UserFoldersDropdown morph="company" :entity="company.id" />
+            <UserFoldersDropdown
+                @deleted-from-folder="$emit('deleted-from-folder', $event)"
+                morph="company"
+                :entity="company.id"
+            />
         </Td>
         <Td class="company-table-item__name" sort="nameRu">
             <div class="company-table-item__main">
@@ -143,6 +150,7 @@ const store = useStore();
 const router = useRouter();
 const { openChat, openSurvey } = useMessenger();
 
+defineEmits(['deleted-from-folder']);
 const props = defineProps({
     company: { type: Object, required: true },
     odd: { type: Boolean, default: false }
