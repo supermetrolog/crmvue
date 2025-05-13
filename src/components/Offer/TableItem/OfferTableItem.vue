@@ -2,7 +2,8 @@
     <Tr
         class="offer-table-item"
         :class="{
-            passive: isPassive
+            passive: isPassive,
+            'fade-out': offer.isDeleting
         }"
     >
         <Td class="offer-table-item__id text-center" :class="{ passive: isPassive }">
@@ -24,7 +25,11 @@
                             icon="fa-solid fa-file-pdf"
                         />
                     </template>
-                    <UserFoldersDropdown :entity="offer.id" morph="offer_mix" />
+                    <UserFoldersDropdown
+                        @deleted-from-folder="$emit('deleted-from-folder', $event)"
+                        :entity="offer.id"
+                        morph="offer_mix"
+                    />
                 </div>
                 <OfferTableItemRelationSelect
                     v-if="offer.type_id !== 3 && offer.object?.offers?.length && !withoutRelations"
@@ -193,7 +198,7 @@ import UiButton from '@/components/common/UI/UiButton.vue';
 import UiButtonIcon from '@/components/common/UI/UiButtonIcon.vue';
 import UserFoldersDropdown from '@/components/UserFolder/UserFoldersDropdown.vue';
 
-const emit = defineEmits(['favorite-deleted', 'open-survey']);
+const emit = defineEmits(['favorite-deleted', 'open-survey', 'deleted-from-folder']);
 const props = defineProps({
     offer: {
         type: Object,

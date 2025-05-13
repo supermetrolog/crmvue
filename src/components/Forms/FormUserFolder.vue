@@ -22,22 +22,6 @@
                     </div>
                 </UiCol>
             </UiFormGroup>
-            <template v-if="isEditMode">
-                <UiFormDivider />
-                <UiFormGroup>
-                    <UiCol :cols="12">
-                        <p class="form__label mb-1">Действия</p>
-                        <UiButton
-                            @click="close"
-                            color="light"
-                            icon="fa-solid fa-folder-minus"
-                            small
-                        >
-                            Очистить папку
-                        </UiButton>
-                    </UiCol>
-                </UiFormGroup>
-            </template>
         </UiForm>
         <template #actions>
             <UiButton @click="submit" color="success-light" icon="fa-solid fa-check">
@@ -72,7 +56,6 @@ import ColorPicker from '@/components/common/Forms/ColorPicker.vue';
 import UiInput from '@/components/common/Forms/UiInput.vue';
 import IconPicker from '@/components/common/Forms/IconPicker.vue';
 import UiCol from '@/components/common/UI/UiCol.vue';
-import UiFormDivider from '@/components/common/Forms/UiFormDivider.vue';
 
 const COLORS = ['#c78a1b', '#fe6a49', '#423f3f', '#457dfa'];
 

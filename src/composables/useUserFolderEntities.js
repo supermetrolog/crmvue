@@ -111,6 +111,8 @@ function createSharedFolderEntities(morph) {
                     (store.state.Folder[morph].folders[folderIndex].entities_count ?? 0) + 1;
             }
         }
+
+        return true;
     }
 
     return { entityFolderMap, isLoading, addEntityToFolder, removeEntityFromFolder };

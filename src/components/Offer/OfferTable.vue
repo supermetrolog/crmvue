@@ -23,6 +23,7 @@
                 v-for="offer in offers"
                 :key="offer.id"
                 @favorite-deleted="$emit('favorite-deleted')"
+                @deleted-from-folder="$emit('deleted-from-folder', offer.id, $event)"
                 :offer="offer"
                 :loader="loader"
             />
@@ -38,7 +39,7 @@ import OfferTableItem from '@/components/Offer/TableItem/OfferTableItem.vue';
 import Loader from '@/components/common/Loader.vue';
 import OfferTableItemSkeleton from '@/components/Offer/TableItem/OfferTableItemSkeleton.vue';
 
-defineEmits(['favorite-deleted']);
+defineEmits(['favorite-deleted', 'deleted-from-folder']);
 defineProps({
     offers: {
         type: Array
