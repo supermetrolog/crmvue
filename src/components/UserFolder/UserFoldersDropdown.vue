@@ -55,6 +55,7 @@ import UiButtonIcon from '@/components/common/UI/UiButtonIcon.vue';
 import UiDropdownActions from '@/components/common/UI/UiDropdownActions.vue';
 import { useUserFolderEntities } from '@/composables/useUserFolderEntities.js';
 
+const emit = defineEmits(['deleted-from-folder']);
 const props = defineProps({
     morph: {
         type: String,
@@ -72,9 +73,10 @@ const props = defineProps({
 const { isLoading, entityFoldersSet, entityFoldersCount, folders, addToFolder, removeFromFolder } =
     useUserFolderEntities(props.morph, props.entity);
 
-function handleFolder(folder) {
+async function handleFolder(folder) {
     if (entityFoldersSet.value.has(folder.id)) {
-        removeFromFolder(folder.id);
+        const deleted = await removeFromFolder(folder.id);
+        if (deleted) emit('deleted-from-folder', folder.id);
     } else {
         addToFolder(folder.id);
     }

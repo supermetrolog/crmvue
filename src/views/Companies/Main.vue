@@ -65,6 +65,7 @@
                         <component
                             :is="currentViewComponentName"
                             v-if="COMPANIES.length"
+                            @deleted-from-folder="onDeletedFromFolder"
                             :companies="COMPANIES"
                             :loader="isLoading"
                         />
@@ -111,6 +112,7 @@ import UserFolders from '@/components/UserFolder/UserFolders.vue';
 import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
 import { useDebounceFn } from '@vueuse/core';
 import UiButton from '@/components/common/UI/UiButton.vue';
+import { useTimeoutFn } from '@vueuse/core';
 
 const route = useRoute();
 const router = useRouter();
@@ -201,4 +203,19 @@ function removeFilter(filter) {
 const currentFolder = ref(null);
 
 watch(currentFolder, debouncedFetchCompanies);
+
+function onDeletedFromFolder(companyId, folderId) {
+    if (isNotNullish(currentFolder.value) && currentFolder.value === folderId) {
+        const companyIndex = store.state.Companies.companies.findIndex(
+            offer => offer.id === companyId
+        );
+        if (companyIndex === -1) return;
+
+        store.state.Companies.companies[companyIndex].isDeleting = true;
+
+        useTimeoutFn(() => {
+            store.state.Companies.companies.splice(companyIndex, 1);
+        }, 500);
+    }
+}
 </script>

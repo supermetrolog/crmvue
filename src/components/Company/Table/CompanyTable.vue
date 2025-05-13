@@ -15,6 +15,7 @@
             <CompanyTableItem
                 v-for="(company, idx) in companies"
                 :key="company.id"
+                @deleted-from-folder="$emit('deleted-from-folder', company.id, $event)"
                 :company="company"
                 :odd="!(idx % 2)"
             />
@@ -29,6 +30,7 @@ import Th from '@/components/common/Table/Th.vue';
 import Tr from '@/components/common/Table/Tr.vue';
 import Loader from '@/components/common/Loader.vue';
 
+defineEmits(['deleted-from-folder']);
 defineProps({
     companies: {
         type: Array,
