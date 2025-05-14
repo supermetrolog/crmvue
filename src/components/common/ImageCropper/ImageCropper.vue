@@ -10,7 +10,7 @@
                 </UiField>
             </AnimationTransition>
             <div class="image-cropper__image">
-                <img ref="cropperEl" :src="src" alt="cropped img" />
+                <img ref="cropperEl" :src="src" alt="cropped img" crossorigin="anonymous" />
             </div>
             <div class="image-cropper__controls">
                 <ImageCropperFill

@@ -171,6 +171,7 @@ import { getCompanyName } from '@/utils/formatters/models/company.js';
 import UiButton from '@/components/common/UI/UiButton.vue';
 import UiModal from '@/components/common/UI/UiModal.vue';
 import UiField from '@/components/common/UI/UiField.vue';
+import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
 
 const emit = defineEmits(['updated', 'deleted', 'canceled', 'edited']);
 const props = defineProps({
@@ -206,7 +207,7 @@ const currentLogo = computed(() => {
 });
 
 const canBeSaved = computed(() => newLogo.value || logoShouldBeDeleted.value);
-const canBeEdit = computed(() => newLogo.value && !logoShouldBeDeleted.value);
+const canBeEdit = computed(() => isNotNullish(currentLogo.value) && !logoShouldBeDeleted.value);
 
 const companyName = computed(() => getCompanyName(props.company));
 const categories = computed(() => {
