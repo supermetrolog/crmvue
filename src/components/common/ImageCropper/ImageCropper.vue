@@ -1,14 +1,25 @@
 <template>
-    <div class="image-cropper">
+    <div class="image-cropper" :class="{ 'image-cropper--picking': colorPickerIsEnabled }">
         <div v-if="$slots.header" class="image-cropper__header">
             <slot name="header"></slot>
         </div>
         <div class="image-cropper__container">
+            <AnimationTransition :speed="0.4">
+                <UiField v-if="colorPickerIsEnabled" class="image-cropper__field" color="light">
+                    Режим выбора цвета для заливки
+                </UiField>
+            </AnimationTransition>
             <div class="image-cropper__image">
                 <img ref="cropperEl" :src="src" alt="cropped img" />
             </div>
             <div class="image-cropper__controls">
-                <ImageCropperFill v-if="fill" v-model="fillColor" :preview="filledImage" />
+                <ImageCropperFill
+                    v-if="fill"
+                    v-model="fillColor"
+                    @open="onOpenFill"
+                    @close="onCloseFill"
+                    :preview="filledImage"
+                />
             </div>
         </div>
         <div v-if="$slots.footer" class="image-cropper__footer">
@@ -21,6 +32,8 @@ import { computed, onMounted, onUnmounted, ref, shallowRef, useTemplateRef, watc
 import Cropper from 'cropperjs';
 import { useDebounceFn } from '@vueuse/core';
 import ImageCropperFill from '@/components/common/ImageCropper/ImageCropperFill.vue';
+import UiField from '@/components/common/UI/UiField.vue';
+import AnimationTransition from '@/components/common/AnimationTransition.vue';
 
 const emit = defineEmits(['cropend']);
 const props = defineProps({
@@ -231,12 +244,21 @@ onUnmounted(destroyCropper);
 
 const filledImage = shallowRef(null);
 const fillColor = ref(undefined);
+const colorPickerIsEnabled = ref(false);
 
 const generatePreview = useDebounceFn(() => {
     filledImage.value = getUrl();
 }, 300);
 
 watch(fillColor, generatePreview);
+
+function onOpenFill() {
+    colorPickerIsEnabled.value = true;
+}
+
+function onCloseFill() {
+    colorPickerIsEnabled.value = false;
+}
 </script>
 <style scoped>
 .image-cropper__image {

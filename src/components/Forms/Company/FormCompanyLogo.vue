@@ -47,7 +47,7 @@
                                     </UiField>
                                 </div>
                                 <p class="form-company-logo__text">
-                                    {{ company.description }}sadfghjk
+                                    {{ company.description }}
                                 </p>
                             </div>
                         </div>
