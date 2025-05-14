@@ -119,7 +119,7 @@ import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
 import UserFolders from '@/components/UserFolder/UserFolders.vue';
 import UiButton from '@/components/common/UI/UiButton.vue';
 import { useDebounceFn, useTimeoutFn } from '@vueuse/core';
-import { spliceById } from '@/utils/helpers/array/spliceById.js';
+import { isEmptyArray } from '@/utils/helpers/array/isEmptyArray.js';
 
 const isMobile = useMobile();
 const store = useStore();
@@ -248,7 +248,14 @@ const gettersForFilters = {
         if (!value) return null;
         return YesNo[value];
     },
-    sort: value => value
+    sort: value => value,
+    cian_regions: value => {
+        if (isNotNullish(value) && !isEmptyArray(value)) {
+            return value.map(element => locationOptions.cianRegion[element]).join(', ');
+        }
+
+        return null;
+    }
 };
 
 const { humanizedSelectedQueryFilters } = useSelectedFilters({}, gettersForFilters);

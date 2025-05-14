@@ -59,7 +59,8 @@ export const filtersAliases = {
     trainLine: 'Ж/Д ветка',
     haveCranes: 'Нужны краны',
     shelving: 'Стеллажи',
-    sewerage: 'Канализация'
+    sewerage: 'Канализация',
+    cian_regions: 'Регионы ЦИАН:'
 };
 
 const IGNORING_FILTERS = new Set([
