@@ -576,7 +576,7 @@ const Messenger = {
             return data ?? { data: [], pagination: null };
         },
         async sendMessage({ commit, state, getters }, options) {
-            const message = state.newMessage.replaceAll('\n', '<br />');
+            const message = state.newMessage;
 
             const response = await api.messenger.sendMessage(state.currentPanelDialogID, {
                 message: message.length ? message : null,

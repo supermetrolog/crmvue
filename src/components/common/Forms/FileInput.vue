@@ -328,7 +328,7 @@ onMounted(() => {
     }
 });
 
-defineExpose({ clear, clearAll });
+defineExpose({ clear, clearAll, open });
 </script>
 <style>
 .flip-list-move {

@@ -53,6 +53,21 @@ const props = defineProps({
 });
 
 const defaultOptions = {
+    formats: [
+        'bold',
+        'color',
+        'font',
+        'italic',
+        'link',
+        'size',
+        'strike',
+        'underline',
+        'blockquote',
+        'indent',
+        'list',
+        'align',
+        'direction'
+    ],
     theme: 'snow',
     modules: {
         toolbar: [
