@@ -99,7 +99,7 @@
         </div>
         <div v-if="!isCompanyContact" class="messenger-quiz-contact__actions">
             <UiButtonIcon
-                @click="$emit('show-comments')"
+                @click.stop="$emit('show-comments')"
                 small
                 label="Посмотреть комментарии"
                 class="messenger-quiz-contact__button position-relative"
@@ -117,7 +117,7 @@
                 <i class="fa-solid fa-comments"></i>
             </UiButtonIcon>
             <UiButtonIcon
-                @click="$emit('edit')"
+                @click.stop="$emit('edit')"
                 small
                 label="Редактировать контакт"
                 class="messenger-quiz-contact__button"
