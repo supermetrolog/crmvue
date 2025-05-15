@@ -167,6 +167,15 @@
             <UiFormDivider />
             <UiFormGroup>
                 <CheckboxOptions
+                    v-model="form.cian_regions"
+                    class="col-12"
+                    label="Регион ЦИАН"
+                    :options="locationOptions.cianRegion"
+                />
+            </UiFormGroup>
+            <UiFormDivider />
+            <UiFormGroup>
+                <CheckboxOptions
                     v-model="form.class"
                     class="col-md-3 col-12"
                     label="Классы"
@@ -360,6 +369,7 @@ import { objectPurposesWithSectionsOptions } from '@/const/options/object.option
 import UiFormDivider from '@/components/common/Forms/UiFormDivider.vue';
 import UiFormGroup from '@/components/common/Forms/UiFormGroup.vue';
 import Switch from '@/components/common/Forms/Switch.vue';
+import { locationOptions } from '@/const/options/location.options.js';
 
 const emit = defineEmits(['close', 'search', 'reset']);
 
@@ -378,7 +388,8 @@ const formKeysOnlyArray = [
     'direction',
     'district_moscow',
     'object_type',
-    'floor_types'
+    'floor_types',
+    'cian_regions'
 ];
 
 const defaultForm = {
@@ -420,7 +431,8 @@ const defaultForm = {
     ad_avito: null,
     favorites: null,
     outside_mkad: null,
-    region_neardy: null
+    region_neardy: null,
+    cian_regions: []
 };
 
 const route = useRoute();
@@ -451,7 +463,9 @@ const resetIsDisabled = computed(() => {
         filterCount.value === 0 && (querySearch.value?.length === 0 || querySearch.value == null)
     );
 });
+
 const favoritesCount = computed(() => store.getters.FAVORITES_OFFERS.length);
+
 const filterCount = computed(() => {
     let count = 0;
 
