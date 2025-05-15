@@ -39,13 +39,16 @@
                             :pagination="COMPANIES_PAGINATION"
                             :loading="!COMPANIES_PAGINATION && isLoading"
                         />
-                        <div class="company-table__actions justify-content-start">
+                        <div
+                            class="company-table__actions justify-content-start align-items-center"
+                        >
                             <Switch
                                 v-if="!isMobile"
                                 v-model="viewMode"
                                 false-title="Таблица"
                                 true-title="Карточки"
                             />
+                            |
                             <UiButton
                                 @click="companyFormIsVisible = true"
                                 color="light"

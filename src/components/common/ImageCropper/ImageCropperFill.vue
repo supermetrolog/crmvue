@@ -3,7 +3,9 @@
         <UiFormGroup>
             <UiCol :cols="12">
                 <UiInput
+                    ref="picker"
                     v-model="modelValue"
+                    @click="openColorPicker"
                     label="Заливка"
                     type="color"
                     class="image-cropper__color"
@@ -48,10 +50,28 @@ import UiInput from '@/components/common/Forms/UiInput.vue';
 import UiButton from '@/components/common/UI/UiButton.vue';
 import UiFormDivider from '@/components/common/Forms/UiFormDivider.vue';
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
+import { ref, useTemplateRef } from 'vue';
+import { onClickOutside } from '@vueuse/core';
 
 const modelValue = defineModel();
 
+const emit = defineEmits(['open', 'close']);
 defineProps({
     preview: String
 });
+
+const isOpened = ref(false);
+const picker = useTemplateRef('picker');
+
+onClickOutside(picker, closeColorPicker);
+
+function openColorPicker() {
+    isOpened.value = true;
+    emit('open');
+}
+
+function closeColorPicker() {
+    isOpened.value = false;
+    emit('close');
+}
 </script>
