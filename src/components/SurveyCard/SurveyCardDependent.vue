@@ -9,6 +9,7 @@
                 :model="survey.chatMember.model"
                 short
                 motion-slider
+                show-company
             />
             <MessengerDialogCompany
                 v-else

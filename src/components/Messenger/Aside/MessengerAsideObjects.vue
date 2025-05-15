@@ -48,6 +48,7 @@
                     :class="{ skeleton: isLoading }"
                     :last-call="record.last_call"
                     :last-message="record.last_message"
+                    show-company
                 />
             </template>
             <template v-if="objects.length >= 20" #footer>

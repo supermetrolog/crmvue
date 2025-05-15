@@ -26,6 +26,7 @@
                     :model="chat.model"
                     :statistic="chat.statistic"
                     class="header-summary-dialogs__dialog"
+                    show-company
                 />
                 <template #empty>
                     <HeaderSummaryEmpty
