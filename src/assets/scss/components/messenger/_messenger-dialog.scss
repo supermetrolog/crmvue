@@ -107,6 +107,10 @@
         @include mixins.transition(opacity);
     }
 
+    &__last-message-header {
+        @include mixins.flex-box($gap: 5px, $a: center);
+    }
+
     &__last-message {
         margin-top: 7px;
         font-size: 14px;
@@ -115,6 +119,20 @@
         padding: 5px;
 
         @include mixins.flex-box($a: center, $gap: 5px);
+
+        &.column {
+            flex-direction: column;
+
+            .messenger-dialog__last-message-date {
+                margin-left: 0;
+            }
+
+            .messenger-dialog__last-message-header {
+                width: 100%;
+                border-bottom: 1px solid rgba(0, 0, 0, .1);
+                padding-bottom: 3px;
+            }
+        }
     }
 
     &__last-message-user {
@@ -210,7 +228,7 @@
 
     &__company {
         font-weight: 600;
-        @include mixins.text-overflow(2);
+        @include mixins.text-overflow(1);
     }
 
     &__category {

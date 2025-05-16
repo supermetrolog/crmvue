@@ -95,7 +95,7 @@ import { useValidation } from '@/composables/useValidation.js';
 import { helpers, minLength, required } from '@vuelidate/validators';
 
 const emit = defineEmits(['create', 'deleted', 'updated']);
-defineProps({
+const props = defineProps({
     comments: {
         type: Array,
         required: true
@@ -186,5 +186,7 @@ function scrollToEnd() {
     });
 }
 
-onMounted(scrollToEnd);
+onMounted(() => {
+    if (props.comments.length) scrollToEnd();
+});
 </script>

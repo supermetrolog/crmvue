@@ -93,9 +93,9 @@ async function loadMessages() {
 // read
 
 const readMessage = debounce(async messageID => {
-    // const reads = await api.messenger.readMessages(messageID);
-    // if (reads) {
-    //     emit('read');
-    // }
+    const reads = await api.messenger.readMessages(messageID);
+    if (reads) {
+        emit('read');
+    }
 }, 2000);
 </script>

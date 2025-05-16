@@ -115,7 +115,7 @@
                 Сайт: не заполнен
             </p>
             <ul class="messenger-panel-company__options">
-                <li v-if="activityGroups" class="messenger-panel-company__option">
+                <li v-if="company.activity_groups?.length" class="messenger-panel-company__option">
                     <span>- {{ activityGroups }}</span>
                 </li>
                 <li v-else class="messenger-panel-company__option">
@@ -123,7 +123,10 @@
                         >- Группа деятельности не заполнена</span
                     >
                 </li>
-                <li v-if="activityProfiles" class="messenger-panel-company__option">
+                <li
+                    v-if="company.activity_profiles?.length"
+                    class="messenger-panel-company__option"
+                >
                     <span>- {{ activityProfiles }}</span>
                 </li>
                 <li v-else class="messenger-panel-company__option">
@@ -132,7 +135,10 @@
                     >
                 </li>
                 <template v-if="company.show_product_ranges">
-                    <li v-if="productRanges" class="messenger-panel-company__option">
+                    <li
+                        v-if="company.productRanges?.length"
+                        class="messenger-panel-company__option"
+                    >
                         <span>- {{ productRanges }}</span>
                     </li>
                     <li v-else class="messenger-panel-company__option">

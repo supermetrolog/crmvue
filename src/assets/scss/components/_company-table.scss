@@ -129,6 +129,38 @@
         font-size: 12px;
     }
 
+    &__comment {
+        width: 300px;
+        position: relative;
+
+        &:hover .company-table-item__comment-button {
+            opacity: 1;
+        }
+    }
+
+    &__comment-button {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: max-content;
+        transform: translate(-50%, -50%);
+        opacity: .1;
+    }
+
+    &__message {
+        align-items: flex-start!important;
+        cursor: pointer;
+        @include mixins.transition(background-color);
+
+        &:hover {
+            background-color: variables.$color_grey_light;
+        }
+
+        .messenger-dialog__last-message-text {
+            @include mixins.text-overflow(5)
+        }
+    }
+
     &__categories {
         text-align: center;
         width: 250px;

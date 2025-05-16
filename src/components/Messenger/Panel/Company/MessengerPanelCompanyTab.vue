@@ -10,8 +10,21 @@
                         <AccordionSimpleTrigger static />
                         <span class="messenger-aside-heading__title">
                             {{ title }}
-                            ({{ count }})
+                            <span>
+                                <span>(</span>
+                                <template v-if="hasActiveCount">
+                                    <span class="text-success">{{ activeCount }}</span>
+                                    <span>/</span>
+                                </template>
+                                <span :class="{ 'text-danger': hasActiveCount }">
+                                    {{ calculatedTotalCount }}
+                                </span>
+                                <span>)</span>
+                            </span>
                         </span>
+                    </div>
+                    <div v-if="$slots.actions" class="ml-auto d-flex gap-1 align-items-center">
+                        <slot name="actions"></slot>
                     </div>
                     <MessengerLoader :active="loading" />
                 </div>
@@ -26,23 +39,29 @@
 import AccordionSimple from '@/components/common/Accordion/AccordionSimple.vue';
 import MessengerLoader from '@/components/Messenger/MessengerLoader.vue';
 import AccordionSimpleTrigger from '@/components/common/Accordion/AccordionSimpleTrigger.vue';
+import { computed } from 'vue';
+import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
 
-defineProps({
+const props = defineProps({
     title: {
         type: String,
         required: true
     },
-    count: {
+    totalCount: {
         type: Number,
         default: 0
     },
-    loading: {
-        type: Boolean,
-        default: false
-    },
-    opened: {
-        type: Boolean,
-        default: false
-    }
+    activeCount: Number,
+    loading: Boolean,
+    opened: Boolean
+});
+
+const hasActiveCount = computed(
+    () => isNotNullish(props.activeCount) && props.activeCount + props.totalCount !== 0
+);
+
+const calculatedTotalCount = computed(() => {
+    if (hasActiveCount.value) return props.totalCount - props.activeCount;
+    return props.totalCount;
 });
 </script>

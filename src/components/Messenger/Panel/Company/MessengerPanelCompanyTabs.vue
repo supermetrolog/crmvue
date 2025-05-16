@@ -1,15 +1,23 @@
 <template>
     <div class="messenger-panel-company__tabs">
         <MessengerPanelCompanyTab
+            title="Контакты"
+            :total-count="company.contacts_count"
+            :active-count="company.active_contacts_count"
+        >
+            <MessengerPanelCompanyContacts :company-id="company.id" />
+        </MessengerPanelCompanyTab>
+        <MessengerPanelCompanyTab
             title="Объекты"
-            :count="company.objects_count"
+            :total-count="company.objects_count"
             :opened="isOpened.object"
         >
             <MessengerPanelCompanyObjects :companyID="company.id" />
         </MessengerPanelCompanyTab>
         <MessengerPanelCompanyTab
             title="Запросы"
-            :count="company.active_requests_count ?? company.requests_count"
+            :total-count="company.requests_count"
+            :active-count="company.active_requests_count"
             :opened="isOpened.request"
         >
             <MessengerPanelCompanyRequests :companyID="company.id" />
@@ -27,8 +35,9 @@ import InProgress from '@/components/common/InProgress.vue';
 import { useStore } from 'vuex';
 import MessengerPanelCompanyObjects from '@/components/Messenger/Panel/Company/MessengerPanelCompanyObjects.vue';
 import MessengerPanelCompanyRequests from '@/components/Messenger/Panel/Company/MessengerPanelCompanyRequests.vue';
-import { computed, onBeforeMount, provide, shallowReactive, shallowRef } from 'vue';
+import { computed, onBeforeMount, provide, ref, shallowReactive, useTemplateRef } from 'vue';
 import MessengerPanelCompanyTab from '@/components/Messenger/Panel/Company/MessengerPanelCompanyTab.vue';
+import MessengerPanelCompanyContacts from '@/components/Messenger/Panel/Company/MessengerPanelCompanyContacts.vue';
 
 const props = defineProps({
     company: {
@@ -39,7 +48,7 @@ const props = defineProps({
 
 const store = useStore();
 
-const lastRenderedObjectsCount = shallowRef(1);
+const lastRenderedObjectsCount = ref(1);
 const isOpened = shallowReactive({
     object: false,
     request: false

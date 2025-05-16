@@ -1,7 +1,7 @@
 <template>
     <tr class="table-object-row">
         <td></td>
-        <td colspan="4">
+        <td colspan="5">
             <CompanyTableObjectItem :object="object" class="col-12" />
         </td>
         <td>

@@ -3,7 +3,7 @@
         <div v-if="isLoading" class="messenger-panel-company__list">
             <MessengerDialogObjectSkeleton v-for="i in lastRenderedObjectCount()" :key="i" />
         </div>
-        <EmptyData v-else-if="!objects.length" no-rounded>Объекты не найдены..</EmptyData>
+        <EmptyData v-else-if="!objects.length" no-rounded>Активные объекты не найдены..</EmptyData>
         <VirtualDragList
             v-if="objects.length"
             v-show="!isLoading"

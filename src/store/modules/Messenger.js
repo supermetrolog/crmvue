@@ -11,6 +11,7 @@ import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
 import { isNumeric } from '@/utils/helpers/common/isNumeric.js';
 import { isNotEmptyString } from '@/utils/helpers/string/isNotEmptyString.js';
 import { isNullish } from '@/utils/helpers/common/isNullish.js';
+import { isPassiveContact } from '@/utils/helpers/models/contact.js';
 
 const needCacheMessage = (dialogID, asideID, panelID) => {
     return Boolean(
@@ -345,7 +346,15 @@ const Messenger = {
             );
             if (contactIndex === -1) return;
 
+            const statusIsChanged =
+                state.currentPanel.contacts[contactIndex].status !== contact.status;
+
             Object.assign(state.currentPanel.contacts[contactIndex], contact);
+
+            if (statusIsChanged) {
+                if (isPassiveContact(contact)) state.currentPanel.active_contacts_count--;
+                else state.currentPanel.active_contacts_count++;
+            }
         },
         onCompanyLogoUpdated(state, { id = null, logo = null }) {
             if (state.currentPanel?.id === id) state.currentPanel.logo = logo;
@@ -576,7 +585,7 @@ const Messenger = {
             return data ?? { data: [], pagination: null };
         },
         async sendMessage({ commit, state, getters }, options) {
-            const message = state.newMessage.replaceAll('\n', '<br />');
+            const message = state.newMessage;
 
             const response = await api.messenger.sendMessage(state.currentPanelDialogID, {
                 message: message.length ? message : null,
@@ -818,6 +827,29 @@ const Messenger = {
 
             if (dialog.id === state.currentDialog?.id) {
                 state.currentDialog.last_call = dialog.last_call;
+            }
+        },
+        async onPanelContactCreated({ state }) {
+            if (!state.currentPanel) return;
+
+            const currentCompanyId = state.currentPanel.id;
+
+            state.currentPanel.contacts_count++;
+            state.currentPanel.active_contacts_count++;
+
+            const companyIndex = state.chatMembersCompany.data.findIndex(
+                chatMember => Number(chatMember.model_id) === currentCompanyId
+            );
+
+            if (companyIndex !== -1) {
+                state.chatMembersCompany.data[companyIndex].model.active_contacts_count++;
+                state.chatMembersCompany.data[companyIndex].model.contacts_count++;
+            }
+
+            const response = await api.contacts.getByCompany(currentCompanyId);
+
+            if (state.currentPanel && state.currentPanel.id === currentCompanyId) {
+                state.currentPanel.contacts = response;
             }
         }
     },

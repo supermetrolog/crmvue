@@ -68,7 +68,10 @@
                         <component
                             :is="currentViewComponentName"
                             v-if="COMPANIES.length"
+                            @show-message="showPinnedMessage"
+                            @unpin-message="unpinMessage"
                             @deleted-from-folder="onDeletedFromFolder"
+                            @create-pinned-message="createPinnedMessage"
                             :companies="COMPANIES"
                             :loader="isLoading"
                         />
@@ -85,6 +88,30 @@
                 </div>
             </div>
         </div>
+        <teleport to="body">
+            <FormModalChatMemberMessage
+                v-if="messageFormIsVisible"
+                @close="closeMessageForm"
+                @created="onCreatedMessage"
+                :model-id="currentCompany.id"
+                model-type="company"
+            />
+            <UiModal
+                v-model:visible="pinnedMessageViewIsVisible"
+                title="Просмотр закрепленного сообщения"
+                width="800"
+            >
+                <UiCol :cols="12">
+                    <Spinner v-if="pinnedMessageIsLoading" label="Загрузка сообщения.." />
+                    <MessengerChatMessage
+                        v-else-if="pinnedMessage"
+                        :message="pinnedMessage"
+                        :editable="false"
+                        pinned
+                    />
+                </UiCol>
+            </UiModal>
+        </teleport>
     </section>
 </template>
 
@@ -98,7 +125,7 @@ import PaginationClassic from '@/components/common/Pagination/PaginationClassic.
 import Switch from '@/components/common/Forms/Switch.vue';
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
 import EmptyData from '@/components/common/EmptyData.vue';
-import { computed, ref, watch } from 'vue';
+import { computed, ref, shallowRef, watch } from 'vue';
 import { useTableContent } from '@/composables/useTableContent.js';
 import { useRoute, useRouter } from 'vue-router';
 import Spinner from '@/components/common/Spinner.vue';
@@ -110,12 +137,19 @@ import { useConsultantsOptions } from '@/composables/options/useConsultantsOptio
 import { isArray } from '@/utils/helpers/array/isArray.js';
 import { isEmptyArray } from '@/utils/helpers/array/isEmptyArray.js';
 import { companyOptions } from '@/const/options/company.options.js';
-import { toDateFormat } from '@/utils/formatters/date.js';
+import { dayjsFromMoscow, toDateFormat } from '@/utils/formatters/date.js';
 import UserFolders from '@/components/UserFolder/UserFolders.vue';
 import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
 import { useDebounceFn } from '@vueuse/core';
 import UiButton from '@/components/common/UI/UiButton.vue';
 import { useTimeoutFn } from '@vueuse/core';
+import FormModalChatMemberMessage from '@/components/Forms/FormModalChatMemberMessage.vue';
+import api from '@/api/api.js';
+import MessengerChatMessage from '@/components/Messenger/Chat/Message/MessengerChatMessage.vue';
+import UiModal from '@/components/common/UI/UiModal.vue';
+import UiCol from '@/components/common/UI/UiCol.vue';
+import { useConfirm } from '@/composables/useConfirm.js';
+import { useNotify } from '@/utils/use/useNotify.js';
 
 const route = useRoute();
 const router = useRouter();
@@ -219,6 +253,81 @@ function onDeletedFromFolder(companyId, folderId) {
         useTimeoutFn(() => {
             store.state.Companies.companies.splice(companyIndex, 1);
         }, 500);
+    }
+}
+
+// pinned message
+
+const currentCompany = shallowRef(null);
+const messageFormIsVisible = ref(false);
+
+function createPinnedMessage(company) {
+    currentCompany.value = company;
+    messageFormIsVisible.value = true;
+}
+
+function closeMessageForm() {
+    messageFormIsVisible.value = false;
+    currentCompany.value = null;
+}
+
+const isPinning = ref(false);
+
+async function onCreatedMessage(message) {
+    const companyId = currentCompany.value.id;
+
+    closeMessageForm();
+
+    isPinning.value = true;
+
+    try {
+        await api.messenger.pinMessage(message.to_chat_member_id, message.id);
+
+        const companyIndex = COMPANIES.value.findIndex(company => company.id === companyId);
+        if (companyIndex !== -1) COMPANIES.value[companyIndex].chat_member_pinned_message = message;
+    } finally {
+        isPinning.value = false;
+    }
+}
+
+const pinnedMessage = ref(null);
+const pinnedMessageViewIsVisible = ref(false);
+const pinnedMessageIsLoading = ref(false);
+
+async function showPinnedMessage(message) {
+    pinnedMessageIsLoading.value = true;
+    pinnedMessageViewIsVisible.value = true;
+
+    try {
+        pinnedMessage.value = await api.messenger.getPinned(message.to_chat_member_id);
+        pinnedMessage.value.dayjs_date = dayjsFromMoscow(pinnedMessage.value.created_at);
+    } finally {
+        pinnedMessageIsLoading.value = false;
+    }
+}
+
+const { confirm } = useConfirm();
+const notify = useNotify();
+
+async function unpinMessage(message, companyId) {
+    const confirmed = await confirm(
+        'Открепить сообщение',
+        'Вы уверены, что хотите открепить сообщение?'
+    );
+    if (!confirmed) return;
+
+    try {
+        const unpinned = await api.messenger.unpinMessage(message.to_chat_member_id);
+        if (unpinned) {
+            notify.success('Сообщение успешно откреплено');
+
+            const companyIndex = COMPANIES.value.findIndex(company => company.id === companyId);
+            if (companyIndex !== -1)
+                COMPANIES.value[companyIndex].chat_member_pinned_message = null;
+        }
+    } catch (error) {
+        notify.error('Произошла ошибка. Попробуйте позже');
+        // TODO: Log sentry
     }
 }
 </script>

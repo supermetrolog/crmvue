@@ -15,6 +15,7 @@
             <Avatar v-if="!self" :src="message.from.model.userProfile.avatar" size="55" />
             <div class="messenger-chat-message__content hover-actions-trigger">
                 <MessengerChatMessageActions
+                    v-if="editable"
                     @pin="pinMessage"
                     @edit="editMessage"
                     @pin-to-object="pinToObject"
@@ -117,11 +118,15 @@ const props = defineProps({
     },
     reply: {
         type: Boolean,
-        default: true
+        default: false
     },
     canBeViewed: {
         type: Boolean,
         default: false
+    },
+    editable: {
+        type: Boolean,
+        default: true
     }
 });
 
