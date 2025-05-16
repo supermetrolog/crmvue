@@ -5,11 +5,37 @@
     >
         <Td class="text-center company-table-item__id">
             <p class="mb-1">{{ company.id }}</p>
-            <UserFoldersDropdown
-                @deleted-from-folder="$emit('deleted-from-folder', $event)"
-                morph="company"
-                :entity="company.id"
-            />
+            <div class="d-flex flex-column gap-2 align-items-center">
+                <UserFoldersDropdown
+                    @deleted-from-folder="$emit('deleted-from-folder', $event)"
+                    morph="company"
+                    :entity="company.id"
+                />
+                <UiDropdownActions label="Действия над компанией" small>
+                    <template #menu>
+                        <UiDropdownActionsButton
+                            @handle="$emit('create-pinned-message')"
+                            icon="fa-solid fa-thumbtack"
+                            label="Добавить сообщение"
+                        />
+                        <UiDropdownActionsButton
+                            disabled
+                            icon="fa-solid fa-bolt"
+                            label="Создать задачу"
+                        />
+                        <UiDropdownActionsButton
+                            @handle="openInChat"
+                            icon="fa-solid fa-comment"
+                            label="Открыть в чате"
+                        />
+                        <UiDropdownActionsButton
+                            @handle="openInSurvey"
+                            icon="fa-solid fa-square-poll-horizontal"
+                            label="Открыть опрос"
+                        />
+                    </template>
+                </UiDropdownActions>
+            </div>
         </Td>
         <Td class="company-table-item__name" sort="nameRu">
             <div class="company-table-item__main">
@@ -55,6 +81,48 @@
                 </div>
             </div>
         </Td>
+        <Td class="company-table-item__comment">
+            <template v-if="company.chat_member_pinned_message">
+                <div class="d-flex gap-1"></div>
+                <MessengerDialogLastMessage
+                    @click="$emit('show-message', company.chat_member_pinned_message)"
+                    :last-message="company.chat_member_pinned_message"
+                    class="company-table-item__message w-100"
+                    column
+                >
+                    <template #after>
+                        <UiDropdownActions small label="Действия над сообщением" class="ml-auto">
+                            <template #menu>
+                                <UiDropdownActionsButton
+                                    @handle="$emit('create-pinned-message')"
+                                    label="Добавить новое сообщение"
+                                    icon="fa-solid fa-plus"
+                                />
+                                <UiDropdownActionsButton
+                                    @handle="
+                                        $emit('unpin-message', company.chat_member_pinned_message)
+                                    "
+                                    label="Открепить сообщение"
+                                    icon="fa-solid fa-trash"
+                                />
+                            </template>
+                        </UiDropdownActions>
+                    </template>
+                </MessengerDialogLastMessage>
+            </template>
+            <template v-else>
+                <p class="text-center">&#8212;</p>
+                <UiButton
+                    @click="$emit('create-pinned-message')"
+                    class="company-table-item__comment-button"
+                    color="light"
+                    small
+                    icon="fa-solid fa-plus"
+                >
+                    Добавить сообщение
+                </UiButton>
+            </template>
+        </Td>
         <Td class="company-table-item__categories">
             <div v-if="company.categories.length" class="company-table-item__list">
                 <DashboardChip
@@ -90,7 +158,7 @@
             <DashboardChip
                 v-if="isPassive"
                 ref="passiveWhyCommentEl"
-                class="dashboard-bg-danger offer-table-item__chip text-white"
+                class="dashboard-bg-danger-l offer-table-item__chip"
             >
                 Пассив
             </DashboardChip>
@@ -145,12 +213,17 @@ import CompanyTableItemCall from '@/components/Company/Table/CompanyTableItemCal
 import UiTooltipIcon from '@/components/common/UI/UiTooltipIcon.vue';
 import { useTippyText } from '@/composables/useTippyText.js';
 import UserFoldersDropdown from '@/components/UserFolder/UserFoldersDropdown.vue';
+import MessengerDialogLastMessage from '@/components/Messenger/Dialog/MessengerDialogLastMessage.vue';
+import UiDropdownActions from '@/components/common/UI/UiDropdownActions.vue';
+import UiDropdownActionsButton from '@/components/common/UI/UiDropdownActionsButton.vue';
+import UiButton from '@/components/common/UI/UiButton.vue';
+import HoverActions from '@/components/common/HoverActions/HoverActions.vue';
 
 const store = useStore();
 const router = useRouter();
 const { openChat, openSurvey } = useMessenger();
 
-defineEmits(['deleted-from-folder']);
+defineEmits(['deleted-from-folder', 'create-pinned-message', 'show-message', 'unpin-message']);
 const props = defineProps({
     company: { type: Object, required: true },
     odd: { type: Boolean, default: false }

@@ -1,7 +1,7 @@
 <template>
     <tr class="table-request-row">
         <td></td>
-        <td colspan="4">
+        <td colspan="5">
             <CompanyTableTimeline
                 v-for="timeline in timelines"
                 :key="timeline.id"

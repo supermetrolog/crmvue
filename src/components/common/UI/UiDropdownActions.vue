@@ -2,7 +2,7 @@
     <VDropdown ref="dropdownEl">
         <template #trigger>
             <slot name="trigger">
-                <UiButtonIcon :label :disabled :icon />
+                <UiButtonIcon :label :disabled :icon :small :color />
             </slot>
         </template>
         <DropdownContent class="ui-dropdown-actions" :class="menuClass" :z-index="4001">
@@ -23,12 +23,14 @@ import { DropdownContent } from 'v-dropdown';
 
 defineProps({
     disabled: Boolean,
+    small: Boolean,
     menuClass: String,
     label: String,
     icon: {
         type: String,
         default: 'fa-solid fa-ellipsis'
-    }
+    },
+    color: String
 });
 
 const dropdownEl = useTemplateRef('dropdownEl');
