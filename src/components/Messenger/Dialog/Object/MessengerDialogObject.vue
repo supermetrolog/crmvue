@@ -33,8 +33,20 @@
                 />
             </div>
             <div class="messenger-dialog-offer__description">
-                <p v-if="model.object.company" class="messenger-dialog-offer__company">
+                <p
+                    v-if="showCompany && model.object.company"
+                    class="messenger-dialog-offer__company"
+                >
                     {{ companyName }}
+                </p>
+                <p
+                    class="messenger-dialog-offer__area"
+                    :class="{ 'font-weight-semi': !showCompany }"
+                >
+                    <WithUnitType :unit-type="unitTypes.SQUARE_METERS" :value="currentArea" />
+                    <template v-if="!model.object.is_land && model.object.floors_count">
+                        | {{ floorsPluralLabel }}
+                    </template>
                 </p>
                 <MessengerDialogObjectDealType :type="model.type" :offers="model.object.offers" />
                 <p class="messenger-dialog-offer__address">
@@ -68,6 +80,10 @@ import OfferTableItemPreviewMotionSlider from '@/components/Offer/TableItem/Offe
 import Avatar from '@/components/common/Avatar.vue';
 import UiButtonIcon from '@/components/common/UI/UiButtonIcon.vue';
 import MessengerDialogLastMessage from '@/components/Messenger/Dialog/MessengerDialogLastMessage.vue';
+import WithUnitType from '@/components/common/WithUnitType.vue';
+import { unitTypes } from '@/const/unitTypes.js';
+import { toNumberFormat } from '@/utils/formatters/number.js';
+import { plural } from '@/utils/plural.js';
 
 defineEmits(['update-call', 'show-preview']);
 const props = defineProps({
@@ -82,7 +98,8 @@ const props = defineProps({
     allDealTypes: Boolean,
     motionSlider: Boolean,
     hasModalPreview: Boolean,
-    short: Boolean
+    short: Boolean,
+    showCompany: Boolean
 });
 
 const store = useStore();
@@ -93,5 +110,17 @@ const isDisabled = computed(
 const updatedAt = computed(() => props.model.object.updated_at * 1000);
 const companyName = computed(() =>
     getCompanyName(props.model.object.company, props.model.object.company.id)
+);
+
+const currentArea = computed(() => {
+    return toNumberFormat(
+        props.model.object.is_land
+            ? props.model.object.area_field_full
+            : props.model.object.area_building
+    );
+});
+
+const floorsPluralLabel = computed(() =>
+    plural(props.model.object.floors_count, '%d этаж', '%d этажа', '%d этажей')
 );
 </script>

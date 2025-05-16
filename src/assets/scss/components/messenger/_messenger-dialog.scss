@@ -228,7 +228,7 @@
 
     &__company {
         font-weight: 600;
-        @include mixins.text-overflow(2);
+        @include mixins.text-overflow(1);
     }
 
     &__category {

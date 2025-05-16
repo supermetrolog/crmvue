@@ -188,4 +188,6 @@ function showContact(contactId) {
     viewedContactId.value = contactId;
     contactModalIsVisible.value = true;
 }
+
+// TODO: Show call feature
 </script>

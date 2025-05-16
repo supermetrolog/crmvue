@@ -165,6 +165,19 @@
     &__consultant {
         @include mixins.flex-box($gap: 5px, $a: center);
     }
+
+    &__contact {
+        border-radius: 0!important;
+        border: none!important;
+
+        &:not(:hover) {
+            background-color: #fff;
+        }
+
+        &:not(:last-child) {
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1)!important;
+        }
+    }
 }
 
 .messenger-panel-consultant {

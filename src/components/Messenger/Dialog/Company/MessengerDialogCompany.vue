@@ -115,25 +115,16 @@ const hasUndefinedName = computed(() => {
 
 const companyName = computed(() => getCompanyName(props.model));
 
-const contactsCountLabel = plural(
-    props.model.contacts_count,
-    '%d контакт',
-    '%d контакта',
-    '%d контактов'
+const contactsCountLabel = computed(() =>
+    plural(props.model.active_contacts_count, '%d контакт', '%d контакта', '%d контактов')
 );
 
-const requestsCountLabel = plural(
-    props.model.requests_count,
-    '%d запрос',
-    '%d запроса',
-    '%d запросов'
+const requestsCountLabel = computed(() =>
+    plural(props.model.active_requests_count, '%d запрос', '%d запроса', '%d запросов')
 );
 
-const objectsCountLabel = plural(
-    props.model.objects_count,
-    '%d объект',
-    '%d объекта',
-    '%d объектов'
+const objectsCountLabel = computed(() =>
+    plural(props.model.objects_count, '%d объект', '%d объекта', '%d объектов')
 );
 
 const activityGroups = computed(() => {

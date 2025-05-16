@@ -6,6 +6,7 @@
         <p class="empty__text">
             <slot>Данные отсутствуют..</slot>
         </p>
+        <slot name="actions" />
     </div>
 </template>
 <script setup>
