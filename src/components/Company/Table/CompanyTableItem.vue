@@ -88,6 +88,7 @@
                     @click="$emit('show-message', company.chat_member_pinned_message)"
                     :last-message="company.chat_member_pinned_message"
                     class="company-table-item__message w-100"
+                    hide-avatar
                     column
                 >
                     <template #after>
