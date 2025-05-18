@@ -18,20 +18,11 @@
                             <UiCol :cols="calls.length ? 4 : 12" :xxl="calls.length ? 6 : 12">
                                 <div class="d-flex gap-2 flex-wrap justify-content-end">
                                     <UiButton
-                                        @click="fetchCalls"
-                                        color="light"
-                                        icon="fa-solid fa-refresh"
-                                        bolder
-                                        :loading="isLoading"
-                                    >
-                                        Обновить таблицу
-                                    </UiButton>
-                                    <UiButton
                                         @click="createCall"
-                                        color="success-light"
+                                        color="light"
                                         icon="fa-solid fa-plus"
                                         :disabled="isLoading"
-                                        bolder
+                                        small
                                     >
                                         Зафиксировать звонок
                                     </UiButton>

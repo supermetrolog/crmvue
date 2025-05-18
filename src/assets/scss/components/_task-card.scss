@@ -5,9 +5,12 @@
     background-color: #fff;
     min-height: 390px;
     width: 1100px;
+    display: flex;
+    flex-direction: column;
 
     &__content {
         @include mixins.flex-box();
+        flex-grow: 1;
     }
 
     &__header {
@@ -300,10 +303,6 @@
     .messenger-chat-message__body {
         max-height: 200px;
         overflow-y: auto;
-    }
-
-    &__empty {
-        height: 100%;
     }
 
     &__tabs {

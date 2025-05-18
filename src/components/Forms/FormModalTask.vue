@@ -151,6 +151,9 @@
                     />
                 </div>
             </template>
+            <template #5>
+                <InProgress />
+            </template>
         </Stepper>
     </UiModal>
 </template>
@@ -199,6 +202,7 @@ import { useValidation } from '@/composables/useValidation.js';
 import { isNullish } from '@/utils/helpers/common/isNullish.js';
 import { isString } from '@/utils/helpers/string/isString.js';
 import { dayjsFromMoscow } from '@/utils/formatters/date.js';
+import InProgress from '@/components/common/InProgress.vue';
 
 const store = useStore();
 const { getTagsOptions } = useTagsOptions();
@@ -224,6 +228,11 @@ const steps = [
         name: 'message',
         title: 'Параметры задачи',
         icon: 'fa-solid fa-pen'
+    },
+    {
+        name: 'relations',
+        title: 'Связи',
+        icon: 'fa-solid fa-link'
     }
 ];
 
@@ -249,7 +258,8 @@ const form = ref({
     status: 1,
     observers: [],
     files: [],
-    current_files: []
+    current_files: [],
+    relations: []
 });
 
 const consultantsForObservers = computed(() => {
@@ -278,7 +288,8 @@ const clearForm = () => {
         tags: [],
         observers: [],
         files: [],
-        current_files: []
+        current_files: [],
+        relations: []
     };
 
     v$.value.$reset();
@@ -331,7 +342,8 @@ onPopupShowed(() => {
                 ? props.value.observers.map(element => element.user_id)
                 : [],
             current_files: [],
-            files: []
+            files: [],
+            relations: props.value.relations ?? []
         };
 
         if (isEditing.value && props.value.files_count > 0) fetchFiles();
@@ -540,7 +552,8 @@ const formToPayload = () => {
         tag_ids: form.value.tags,
         observer_ids: form.value.observers,
         files: form.value.files,
-        current_files: form.value.current_files.map(element => element.id)
+        current_files: form.value.current_files.map(element => element.id),
+        relations: form.value.relations
     };
 };
 

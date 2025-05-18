@@ -19,7 +19,7 @@
                             label="Добавить сообщение"
                         />
                         <UiDropdownActionsButton
-                            disabled
+                            @handle="$emit('create-task')"
                             icon="fa-solid fa-bolt"
                             label="Создать задачу"
                         />
@@ -182,12 +182,17 @@
         </Td>
     </Tr>
     <CompanyTableDropdown
-        v-if="isThereDropdown"
+        v-if="dropdownMustBeShown"
         @open-timeline="openTimeline"
+        @show-tasks="$emit('show-tasks')"
+        @show-created-tasks="$emit('show-created-tasks')"
         :odd="odd"
-        :active-requests="activeRequests"
-        :archive-requests="archiveRequests"
+        :active-requests="requestsByGroups.active"
+        :archive-requests="requestsByGroups.passive"
+        :done-requests="requestsByGroups.done"
         :objects="company.objects"
+        :tasks-count="company.tasks_count"
+        :created-tasks-count="company.created_task_ids?.length ?? 0"
     />
 </template>
 
@@ -218,25 +223,42 @@ import MessengerDialogLastMessage from '@/components/Messenger/Dialog/MessengerD
 import UiDropdownActions from '@/components/common/UI/UiDropdownActions.vue';
 import UiDropdownActionsButton from '@/components/common/UI/UiDropdownActionsButton.vue';
 import UiButton from '@/components/common/UI/UiButton.vue';
-import HoverActions from '@/components/common/HoverActions/HoverActions.vue';
 
 const store = useStore();
 const router = useRouter();
 const { openChat, openSurvey } = useMessenger();
 
-defineEmits(['deleted-from-folder', 'create-pinned-message', 'show-message', 'unpin-message']);
+defineEmits([
+    'deleted-from-folder',
+    'create-pinned-message',
+    'show-message',
+    'unpin-message',
+    'create-task',
+    'show-tasks',
+    'show-created-tasks'
+]);
+
 const props = defineProps({
     company: { type: Object, required: true },
     odd: { type: Boolean, default: false }
 });
 
-const activeRequests = computed(() => props.company.requests.filter(({ status }) => status === 1));
+const requestsGroups = {
+    0: 'passive',
+    1: 'active',
+    2: 'done',
+    5: 'passive'
+};
 
-const archiveRequests = computed(() => props.company.requests.filter(({ status }) => status === 2));
+const requestsByGroups = computed(() =>
+    Object.groupBy(props.company.requests, ({ status }) => requestsGroups[status])
+);
 
-const isThereDropdown = computed(
+const dropdownMustBeShown = computed(
     () =>
-        activeRequests.value.length || archiveRequests.value.length || props.company.objects.length
+        props.company.objects.length ||
+        props.company.requests.length ||
+        props.company.tasks_count > 0
 );
 
 const activityProfile = computed(() =>

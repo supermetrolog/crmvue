@@ -10,6 +10,7 @@
             @assign="assignerFormIsVisible = !assignerFormIsVisible"
             @change-status="moveSettingsIsVisible = !moveSettingsIsVisible"
             @postpone="postponeFormIsVisible = !postponeFormIsVisible"
+            @link="relationFormIsVisible = !relationFormIsVisible"
             :disabled="moveSettingsIsVisible || assignerFormIsVisible"
             :viewable="canBeViewed"
             :task
@@ -34,7 +35,9 @@
                     :company-id="objectCompanyId"
                     :task
                 />
-                <EmptyData v-else class="task-card__empty">Задача не связана с чатом</EmptyData>
+                <EmptyData v-else class="task-card__empty mt-2">
+                    Задача не связана с чатом
+                </EmptyData>
             </div>
             <div class="task-card__column">
                 <Tabs nav-class="task-card__tabs" nav-item-link-class="task-card__tab-link">
@@ -53,6 +56,9 @@
                             @count-changed="$emit('files-count-changed', $event)"
                             :task
                         />
+                    </Tab>
+                    <Tab :name="`Связи (${task.relations_count})`">
+                        <InProgress />
                     </Tab>
                 </Tabs>
                 <AnimationTransition :speed="0.3">
@@ -83,7 +89,7 @@
                         :current-assigner="task.user_id"
                     />
                 </AnimationTransition>
-                <AnimationTransition :speed="0.3">
+                <AnimationTransition v-if="task.related_by.chat_member" :speed="0.3">
                     <TaskCardContacts
                         @close="contactsIsVisible = false"
                         :visible="contactsIsVisible"
@@ -129,6 +135,7 @@ import TaskCardModalPostpone from '@/components/TaskCard/TaskCardModalPostpone.v
 import { useAsync } from '@/composables/useAsync.js';
 import { dayjsFromMoscow } from '@/utils/formatters/date.js';
 import dayjs from 'dayjs';
+import InProgress from '@/components/common/InProgress.vue';
 
 const emit = defineEmits([
     'updated',
@@ -381,4 +388,10 @@ useLinkify(toRef(props.task, 'title'), titleElement);
 // contacts
 
 const contactsIsVisible = ref(false);
+
+// relations
+
+const relationFormIsVisible = ref(false);
+
+async function linkRelation() {}
 </script>

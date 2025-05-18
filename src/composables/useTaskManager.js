@@ -25,7 +25,8 @@ export function useTaskManager() {
             focusMessage = false,
             customDescription = false,
             additionalContent = {},
-            callPresets = false
+            callPresets = false,
+            relations = []
         } = template;
 
         return show({
@@ -40,7 +41,8 @@ export function useTaskManager() {
             focusMessage,
             customDescription,
             additionalContent,
-            callPresets
+            callPresets,
+            relations
         });
     }
 

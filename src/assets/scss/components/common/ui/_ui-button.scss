@@ -11,7 +11,7 @@
     width: auto;
     height: max-content;
     box-shadow: 0 0 1px 1px rgba(0, 0, 0, 0.1);
-    @include mixins.transition(background-color .2s, opacity .3s);
+    @include mixins.transition(background-color .2s, opacity .3s, color .3s);
 
     &:disabled, &[disabled] {
         pointer-events: none;
@@ -70,6 +70,7 @@
 
     @include mixins.bg-color-scheme(
                     cl-warning #f88f01 #a46104,
+                    cl-warning-light variables.$bg-warning-l rgba(variables.$bg-warning, .6) #000,
                     cl-success #10b981 #009665,
                     cl-success-light rgba(16, 185, 129, 0.3) rgba(16, 185, 129, 0.6) #000,
                     cl-danger #f93154 #cb1132,

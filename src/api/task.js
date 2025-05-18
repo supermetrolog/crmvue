@@ -49,6 +49,10 @@ export default {
         const response = await axios.postForm(`${URL}/${id}/comments`, payload);
         return responseToData(response);
     },
+    async createRelations(id, relations) {
+        const response = await axios.postForm(`${URL}/${id}/relations`, { relations });
+        return responseToData(response);
+    },
     async loadComments(id, lastCommentId) {
         const response = await axios.get(`/task-comments`, {
             params: {
