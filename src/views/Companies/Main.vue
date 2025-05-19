@@ -334,7 +334,7 @@ async function createTask(company) {
 
         notify.success('Задача успешно создана!');
 
-        if (isArray(company.created_task_ids)) {
+        if (isArray(company.created_task_ids) && company.created_task_ids.length) {
             company.created_task_ids.push(task.id);
         } else {
             company.created_task_ids = [task.id];
