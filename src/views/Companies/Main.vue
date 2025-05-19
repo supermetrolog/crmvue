@@ -112,6 +112,7 @@
             >
                 <DashboardTableTasks
                     @hide="close"
+                    @task-updated="onTaskUpdated"
                     :tasks="currentTasks"
                     :is-loading="tasksIsLoading"
                 />
@@ -401,7 +402,28 @@ async function fetchCompanyCreatedTasks() {
     }
 }
 
-// TODO: onTaskUpdated
+function onTaskUpdated(task) {
+    const taskIndex = currentTasks.value.findIndex(element => element.id === task.id);
+    if (taskIndex === -1) return;
+
+    if (task.status === taskOptions.statusTypes.COMPLETED) {
+        currentTasks.value.splice(taskIndex, 1);
+
+        if (
+            isArray(currentTasksCompany.value.created_task_ids) &&
+            currentTasksCompany.value.created_task_ids.includes(task.id)
+        ) {
+            currentTasksCompany.value.created_task_ids.splice(
+                currentTasksCompany.value.created_task_ids.indexOf(task.id),
+                1
+            );
+        } else {
+            currentTasksCompany.value.tasks_count--;
+        }
+    } else {
+        Object.assign(currentTasks.value[taskIndex], task);
+    }
+}
 
 const tasksModalTitle = computed(() => {
     if (isNotNullish(currentTasksCompany.value)) {
