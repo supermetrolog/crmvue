@@ -1,32 +1,58 @@
 <template>
     <UiForm>
         <UiFormGroup>
-            <div class="col-12 col-md-6">
-                <UiInput
-                    v-model="form.all"
-                    @keydown.enter="onSubmit"
-                    label="Поиск"
-                    placeholder="Название компании, ID компании, ФИО брокера, ФИО контакта, телефон"
-                />
-            </div>
-            <div class="col-12 col-md-4 align-self-end">
-                <div class="form-search__actions">
-                    <Button
-                        @click="extraIsVisible = !extraIsVisible"
-                        :badge="filtersCount || null"
-                        icon
-                    >
-                        <span>Фильтры</span>
-                        <i class="icon fa-solid fa-sliders"></i>
-                    </Button>
+            <UiCol :cols="12">
+                <div class="d-flex align-items-end flex-column flex-md-row">
+                    <UiInput
+                        v-model="form.all"
+                        @keydown.enter="onSubmit"
+                        label="Поиск"
+                        placeholder="Название компании, ID компании, ФИО брокера, ФИО контакта, телефон.."
+                        class="w-100"
+                    />
+                    <div class="ml-md-2 mt-2 mt-md-0 d-flex gap-2 w-100">
+                        <UiButton
+                            @click="extraIsVisible = !extraIsVisible"
+                            :badge="filtersCount || null"
+                            icon="fa-solid fa-sliders"
+                            color="light"
+                        >
+                            Фильтры
+                        </UiButton>
+                        <UiButton
+                            @click="resetForm"
+                            :disabled="!filtersCount"
+                            color="danger-light"
+                            icon="fa-solid fa-trash"
+                        >
+                            Очистить фильтры
+                        </UiButton>
+                        <AnimationTransition :speed="0.6">
+                            <UiButton
+                                v-if="hasSort"
+                                @click="clearSort"
+                                icon="fa-solid fa-trash"
+                                color="danger-light"
+                            >
+                                Очистить сортировку
+                            </UiButton>
+                        </AnimationTransition>
+                    </div>
                 </div>
-            </div>
-            <div class="col-12">
-                <Button @click="resetForm" :disabled="!filtersCount" danger small icon>
-                    <i class="fa-solid fa-xmark-circle"></i>
-                    <span>Сбросить фильтры</span>
-                </Button>
-            </div>
+            </UiCol>
+        </UiFormGroup>
+        <UiFormGroup>
+            <UiCol v-if="humanizedSelectedQueryFilters.length" :cols="12">
+                <div class="company-table__filters">
+                    <Chip
+                        v-for="item in humanizedSelectedQueryFilters"
+                        :key="item.value"
+                        @delete="removeFilter(item.value)"
+                        :value="item.value"
+                        :html="item.label"
+                    />
+                </div>
+            </UiCol>
         </UiFormGroup>
         <teleport to="body">
             <Modal
@@ -136,6 +162,28 @@
                                     class="text-success"
                                     tooltip="Новый фильтр"
                                 />
+                                Связь с задачами
+                            </p>
+                        </UiCol>
+                        <UiCol :cols="12">
+                            <UiCheckbox
+                                v-model="form.with_current_user_tasks"
+                                :true-value="1"
+                                :false-value="null"
+                            >
+                                Компании с активными задачами для меня
+                            </UiCheckbox>
+                        </UiCol>
+                    </UiFormGroup>
+                    <UiFormDivider />
+                    <UiFormGroup>
+                        <UiCol :cols="12">
+                            <p class="font-weight-semi fs-2">
+                                <UiTooltipIcon
+                                    icon="fa-solid fa-star"
+                                    class="text-success"
+                                    tooltip="Новый фильтр"
+                                />
                                 Связь с запросами
                             </p>
                         </UiCol>
@@ -221,8 +269,12 @@ import UiForm from '@/components/common/Forms/UiForm.vue';
 import UiFormGroup from '@/components/common/Forms/UiFormGroup.vue';
 import UiInput from '@/components/common/Forms/UiInput.vue';
 import MultiSelect from '@/components/common/Forms/MultiSelect.vue';
-import { ActivityGroupList, ActivityProfileList, CompanyCategories } from '@/const/const.js';
-import Button from '@/components/common/Button.vue';
+import {
+    ActivePassive,
+    ActivityGroupList,
+    ActivityProfileList,
+    CompanyCategories
+} from '@/const/const.js';
 import { maxDate } from '@//validators';
 import DoubleInput from '@/components/common/Forms/DoubleInput.vue';
 import { deleteEmptyFields } from '@/utils/helpers/object/deleteEmptyFields.js';
@@ -247,6 +299,11 @@ import UiTooltipIcon from '@/components/common/UI/UiTooltipIcon.vue';
 import RadioChip from '@/components/common/Forms/RadioChip.vue';
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
 import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
+import UiButton from '@/components/common/UI/UiButton.vue';
+import { isArray } from '@/utils/helpers/array/isArray.js';
+import { isEmptyArray } from '@/utils/helpers/array/isEmptyArray.js';
+import { companyOptions } from '@/const/options/company.options.js';
+import { toDateFormat } from '@/utils/formatters/date.js';
 
 const route = useRoute();
 const router = useRouter();
@@ -299,7 +356,9 @@ const { resetForm, form } = useSearchForm(
         activity_group_ids: [],
         requests_filter: null,
         requests_area_min: null,
-        requests_area_max: null
+        requests_area_max: null,
+        with_passive_consultant: null,
+        with_current_user_tasks: null
     },
     {
         submit: onSubmit,
@@ -307,8 +366,6 @@ const { resetForm, form } = useSearchForm(
         setQuery: setQueryFields
     }
 );
-
-const { filtersCount } = useSelectedFilters(form);
 
 watch(
     () => form.without_product_ranges,
@@ -359,5 +416,64 @@ function activityProfileMultipleLabelFn(elements) {
 
 function activityGroupMultipleLabelFn(elements) {
     return plural(elements.length, 'Выбрана %d группа', 'Выбрано %d группы', 'Выбрано %d групп');
+}
+
+// filters
+
+const { consultantsOptions } = useConsultantsOptions();
+
+const gettersForFilters = {
+    consultant_id: value => {
+        if (consultantsOptions.value.length)
+            return consultantsOptions.value.find(element => Number(element.value) === Number(value))
+                ?.label;
+        return null;
+    },
+    categories: value => {
+        if (isArray(value) && !isEmptyArray(value))
+            return value.map(category => CompanyCategories[category]).join(', ');
+        return null;
+    },
+    activityGroup: value => companyOptions.activityGroup[value],
+    activityProfile: value => companyOptions.activityProfile[value],
+    dateStart: value => toDateFormat(value, 'DD.MM.YYYY'),
+    dateEnd: value => toDateFormat(value, 'DD.MM.YYYY'),
+    status: value => {
+        if (!value) return null;
+        return ActivePassive[value];
+    },
+    productRanges: value => {
+        return value.join(', ');
+    },
+    activity_group_ids: value => {
+        if (isArray(value) && !isEmptyArray(value))
+            return value.map(group => companyOptions.activityGroup[group]).join(', ');
+        return null;
+    },
+    activity_profile_ids: value => {
+        if (isArray(value) && !isEmptyArray(value))
+            return value.map(profile => companyOptions.activityProfile[profile]).join(', ');
+        return null;
+    }
+};
+
+const { filtersCount, humanizedSelectedQueryFilters } = useSelectedFilters(
+    form,
+    gettersForFilters,
+    { ignore: new Set(['sort']) }
+);
+
+function removeFilter(filter) {
+    const query = { ...route.query };
+
+    delete query[filter];
+
+    router.replace({ query });
+}
+
+const hasSort = computed(() => isNotNullish(route.query?.sort));
+
+function clearSort() {
+    router.replace({ query: { ...route.query, sort: null } });
 }
 </script>

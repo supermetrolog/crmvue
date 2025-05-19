@@ -5,9 +5,12 @@
     background-color: #fff;
     min-height: 390px;
     width: 1100px;
+    display: flex;
+    flex-direction: column;
 
     &__content {
         @include mixins.flex-box();
+        flex-grow: 1;
     }
 
     &__header {
@@ -300,10 +303,6 @@
     .messenger-chat-message__body {
         max-height: 200px;
         overflow-y: auto;
-    }
-
-    &__empty {
-        height: 100%;
     }
 
     &__tabs {
@@ -626,4 +625,48 @@
         background-color: rgba(0, 0, 0, .1);
         text-align: center;
     }
+}
+
+.task-card-relations {
+    &__list {
+        @include mixins.flex-box($d: column, $gap: 10px);
+    }
+
+    &__company {
+        width: 100%;
+    }
+}
+
+.task-card-relations-row {
+    border-bottom: 1px solid rgba(0, 0, 0, .1);
+    padding-bottom: 5px;
+    @include mixins.flex-box($d: column, $gap: 5px);
+
+    &__header {
+        color: variables.$color_dark;
+        padding-bottom: 5px;
+        border-bottom: 1px solid rgba(0, 0, 0, .1);
+        @include mixins.flex-box($a: center);
+    }
+
+    &__list {
+        max-height: 200px;
+        overflow-y: auto;
+        padding-right: 5px;
+        @include mixins.flex-box($gap: 4px, $wrap: true);
+    }
+
+}
+
+.task-card-relation {
+    &__dropdown {
+        position: absolute;
+        top: 5px;
+        right: 5px;
+    }
+}
+
+.task-card-relation-company {
+    padding: 5px 7px;
+    background-color: variables.$color_grey_light;
 }

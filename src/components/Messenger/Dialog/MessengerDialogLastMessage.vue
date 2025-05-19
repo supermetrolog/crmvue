@@ -2,13 +2,14 @@
     <div class="messenger-dialog__last-message" :class="{ column }">
         <div class="messenger-dialog__last-message-header">
             <Avatar
+                v-if="!hideAvatar"
                 class="messenger-dialog__last-message-user"
                 :size="20"
                 :src="lastMessage.from.model.userProfile.avatar"
                 :label="lastMessage.from.model.userProfile.medium_name"
             />
             <template v-if="column">
-                <span>{{ lastMessage.from.model.userProfile.medium_name }}</span>
+                <span v-if="!hideAvatar">{{ lastMessage.from.model.userProfile.medium_name }}</span>
                 <span class="messenger-dialog__last-message-date">
                     {{ createdAt }}
                 </span>
@@ -33,7 +34,8 @@ const props = defineProps({
         type: Object,
         required: true
     },
-    column: Boolean
+    column: Boolean,
+    hideAvatar: Boolean
 });
 
 const messageByTemplateMap = {

@@ -1,23 +1,27 @@
 import api from '@/api/api';
 import { notify } from '@kyvg/vue3-notification';
+import { isNullish } from '@/utils/helpers/common/isNullish.js';
+import { plural } from '@/utils/plural.js';
 
 function viewNotify(data) {
-    let notifyOptions = {
+    const count = Number(data);
+
+    if (count === 0) return;
+
+    const notifyOptions = {
         group: 'app',
         type: 'success',
-        duration: 5000
+        duration: 5000,
+        title: 'Оповещение',
+        text: plural(
+            count,
+            'У вас %d новый звонок',
+            'У вас %d новых звонка',
+            'У вас %d новых звонков'
+        )
     };
-    const newCallCount = data;
-    if (newCallCount) {
-        if (newCallCount == 1) {
-            notifyOptions.text = `У вас ${newCallCount} новый звонок`;
-        } else {
-            notifyOptions.text = `У вас ${newCallCount} новых звонков`;
-        }
-        notifyOptions.title = `Звонки`;
 
-        notify(notifyOptions);
-    }
+    notify(notifyOptions);
 }
 
 const Call = {
@@ -57,6 +61,9 @@ const Call = {
     actions: {
         async FETCH_CALLS_COUNT(context) {
             const user = context.getters.THIS_USER;
+
+            if (isNullish(user)) return;
+
             const count = await api.calls.count(user.userProfile.caller_id);
             context.commit('updateCallsCount', count);
         },

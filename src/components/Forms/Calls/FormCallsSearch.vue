@@ -10,13 +10,17 @@
                         class="w-100"
                     />
                     <div class="ml-md-2 mt-2 mt-md-0 d-flex gap-2 w-100">
-                        <UiButton @click="filtersIsVisible = true" icon="fa-solid fa-sliders">
+                        <UiButton
+                            @click="filtersIsVisible = true"
+                            icon="fa-solid fa-sliders"
+                            color="light"
+                        >
                             Фильтры
                         </UiButton>
                         <UiButton
                             @click="resetForm"
                             :disabled="filtersCount === 0"
-                            color="danger"
+                            color="danger-light"
                             icon="fa-solid fa-trash"
                         >
                             Очистить
@@ -26,7 +30,7 @@
                                 v-if="hasSort"
                                 @click="clearSort"
                                 icon="fa-solid fa-trash"
-                                color="danger"
+                                color="danger-light"
                             >
                                 Очистить сортировку
                             </UiButton>
