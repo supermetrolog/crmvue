@@ -86,7 +86,7 @@
                                 />
                             </template>
                             <UiDropdownActionsButton
-                                v-if="task.related_by"
+                                v-if="task.related_by.chat_member"
                                 @handle="$emit('to-chat')"
                                 label="Перейти в чат"
                                 icon="fa-solid fa-comment-alt"
@@ -155,22 +155,10 @@ const props = defineProps({
         type: Object,
         required: true
     },
-    editable: {
-        type: Boolean,
-        default: false
-    },
-    draggable: {
-        type: Boolean,
-        default: false
-    },
-    viewable: {
-        type: Boolean,
-        default: false
-    },
-    disabled: {
-        type: Boolean,
-        default: false
-    }
+    editable: Boolean,
+    draggable: Boolean,
+    viewable: Boolean,
+    disabled: Boolean
 });
 
 const store = useStore();
@@ -234,4 +222,6 @@ const statusIcon = computed(() => taskOptions.statusIcon[props.task.status]);
 
 const endDate = computed(() => toDateFormat(props.task.end, 'D.MM.YY'));
 const startDate = computed(() => toDateFormat(props.task.start, 'D.MM.YY'));
+
+// TODO: "Изменить статус" поменять на "выполнить", пушто статус почти не меняют на другой
 </script>

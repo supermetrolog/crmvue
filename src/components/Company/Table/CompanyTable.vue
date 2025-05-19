@@ -20,6 +20,9 @@
                 @create-pinned-message="$emit('create-pinned-message', company)"
                 @unpin-message="$emit('unpin-message', $event, company.id)"
                 @deleted-from-folder="$emit('deleted-from-folder', company.id, $event)"
+                @create-task="$emit('create-task', company)"
+                @show-tasks="$emit('show-tasks', company)"
+                @show-created-tasks="$emit('show-created-tasks', company)"
                 :company="company"
                 :odd="!(idx % 2)"
             />
@@ -34,7 +37,14 @@ import Th from '@/components/common/Table/Th.vue';
 import Tr from '@/components/common/Table/Tr.vue';
 import Loader from '@/components/common/Loader.vue';
 
-defineEmits(['deleted-from-folder', 'create-pinned-message', 'show-message', 'unpin-message']);
+defineEmits([
+    'deleted-from-folder',
+    'create-pinned-message',
+    'show-message',
+    'unpin-message',
+    'create-task',
+    'show-tasks'
+]);
 defineProps({
     companies: {
         type: Array,

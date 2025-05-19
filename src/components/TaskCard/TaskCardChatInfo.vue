@@ -78,10 +78,7 @@ const props = defineProps({
         type: Object,
         required: true
     },
-    companyId: {
-        type: [Number, null],
-        required: true
-    }
+    companyId: Number
 });
 
 const chatMemberMessage = computed(() => {

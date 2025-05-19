@@ -29,12 +29,14 @@
                 <TaskCardChatInfo
                     v-if="task.related_by.chat_member"
                     @to-chat="toChat"
-                    @to-company="toCompany"
-                    @show-contacts="contactsIsVisible = true"
+                    @to-company="toCompany(objectCompanyId)"
+                    @show-contacts="showContacts(objectCompanyId)"
                     :company-id="objectCompanyId"
                     :task
                 />
-                <EmptyData v-else class="task-card__empty">Задача не связана с чатом</EmptyData>
+                <EmptyData v-else class="task-card__empty mt-2">
+                    Задача не связана с чатом
+                </EmptyData>
             </div>
             <div class="task-card__column">
                 <Tabs nav-class="task-card__tabs" nav-item-link-class="task-card__tab-link">
@@ -51,6 +53,14 @@
                     <Tab :name="`Файлы (${task.files_count ?? 0})`">
                         <TaskCardFiles
                             @count-changed="$emit('files-count-changed', $event)"
+                            :task
+                        />
+                    </Tab>
+                    <Tab :name="`Связи (${task.relations_count})`">
+                        <TaskCardRelations
+                            @count-changed="$emit('relations-count-changed', $event)"
+                            @show-contacts="showContacts"
+                            @to-company="toCompany"
                             :task
                         />
                     </Tab>
@@ -85,9 +95,9 @@
                 </AnimationTransition>
                 <AnimationTransition :speed="0.3">
                     <TaskCardContacts
+                        v-if="contactsIsVisible"
                         @close="contactsIsVisible = false"
-                        :visible="contactsIsVisible"
-                        :company-id="objectCompanyId"
+                        :company-id="currentContactsCompanyId"
                     />
                 </AnimationTransition>
             </div>
@@ -129,6 +139,7 @@ import TaskCardModalPostpone from '@/components/TaskCard/TaskCardModalPostpone.v
 import { useAsync } from '@/composables/useAsync.js';
 import { dayjsFromMoscow } from '@/utils/formatters/date.js';
 import dayjs from 'dayjs';
+import TaskCardRelations from '@/components/TaskCard/Relations/TaskCardRelations.vue';
 
 const emit = defineEmits([
     'updated',
@@ -137,7 +148,8 @@ const emit = defineEmits([
     'added-comment',
     'deleted-comment',
     'history-changed',
-    'files-count-changed'
+    'files-count-changed',
+    'relations-count-changed'
 ]);
 const props = defineProps({
     task: Object,
@@ -334,8 +346,8 @@ function toChat() {
     }
 }
 
-function toCompany() {
-    window.open(getLinkCompany(objectCompanyId.value), '_blank');
+function toCompany(companyId) {
+    window.open(getLinkCompany(companyId), '_blank');
 }
 
 // ASSIGN
@@ -381,4 +393,12 @@ useLinkify(toRef(props.task, 'title'), titleElement);
 // contacts
 
 const contactsIsVisible = ref(false);
+const currentContactsCompanyId = ref(null);
+
+function showContacts(companyId) {
+    alert(companyId);
+    currentContactsCompanyId.value = companyId;
+
+    contactsIsVisible.value = true;
+}
 </script>

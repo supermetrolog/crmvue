@@ -1,66 +1,51 @@
 <template>
     <section>
         <div class="container-fluid">
-            <div class="row mb-2 mb-md-4">
-                <FormCompany
-                    v-if="companyFormIsVisible"
-                    @close="companyFormIsVisible = false"
-                    @created="getCompanies"
-                />
-                <FormCompanySearch v-if="queryIsInitialized" class="col-12" />
-                <div class="col-12 my-2">
-                    <div class="company-table__filters">
-                        <Chip
-                            v-for="item in humanizedSelectedQueryFilters"
-                            :key="item.value"
-                            @delete="removeFilter(item.value)"
-                            :value="item.value"
-                            :html="item.label"
-                        />
-                    </div>
-                </div>
-            </div>
-            <div class="row mb-1">
-                <UserFolders
-                    v-model:selected="currentFolder"
-                    category="company"
-                    class="col-12"
-                    movable
-                    editable
-                    selectable
-                />
-            </div>
             <div class="row">
-                <div class="col-12">
-                    <div class="d-flex flex-column flex-md-row justify-content-between">
-                        <PaginationClassic
-                            ref="firstPagination"
-                            @next="next"
-                            :pagination="COMPANIES_PAGINATION"
-                            :loading="!COMPANIES_PAGINATION && isLoading"
-                        />
-                        <div
-                            class="company-table__actions justify-content-start align-items-center"
-                        >
-                            <Switch
-                                v-if="!isMobile"
-                                v-model="viewMode"
-                                false-title="Таблица"
-                                true-title="Карточки"
+                <UiCol :cols="12">
+                    <div class="white-block mb-3">
+                        <div class="row">
+                            <FormCompanySearch v-if="queryIsInitialized" class="col-12" />
+                            <UserFolders
+                                v-model:selected="currentFolder"
+                                category="company"
+                                class="col-12 mt-4"
+                                movable
+                                editable
+                                selectable
                             />
-                            |
-                            <UiButton
-                                @click="companyFormIsVisible = true"
-                                color="light"
-                                :disabled="isLoading"
-                                small
-                                icon="fa-solid fa-plus"
-                            >
-                                Создать компанию
-                            </UiButton>
+                            <PaginationClassic
+                                ref="firstPagination"
+                                @next="next"
+                                :pagination="COMPANIES_PAGINATION"
+                                :loading="!COMPANIES_PAGINATION && isLoading"
+                                class="col-xxl-6 col-lg-8 col-2"
+                            />
+                            <UiCol :cols="4" :xxl="6">
+                                <div
+                                    class="d-flex gap-2 flex-wrap justify-content-end align-items-center"
+                                >
+                                    <Switch
+                                        v-if="!isMobile"
+                                        v-model="viewMode"
+                                        false-title="Таблица"
+                                        true-title="Карточки"
+                                    />
+                                    |
+                                    <UiButton
+                                        @click="companyFormIsVisible = true"
+                                        color="light"
+                                        :disabled="isLoading"
+                                        small
+                                        icon="fa-solid fa-plus"
+                                    >
+                                        Создать компанию
+                                    </UiButton>
+                                </div>
+                            </UiCol>
                         </div>
                     </div>
-                </div>
+                </UiCol>
             </div>
             <div class="row">
                 <div class="col-12 offers-page__table">
@@ -72,8 +57,11 @@
                             @unpin-message="unpinMessage"
                             @deleted-from-folder="onDeletedFromFolder"
                             @create-pinned-message="createPinnedMessage"
+                            @create-task="createTask"
+                            @show-tasks="showTasks"
+                            @show-created-tasks="showCreatedTasks"
                             :companies="COMPANIES"
-                            :loader="isLoading"
+                            :loader="isLoading || taskIsCreating"
                         />
                         <Spinner v-else-if="isLoading" />
                         <EmptyData v-else>Ничего не найдено</EmptyData>
@@ -89,6 +77,11 @@
             </div>
         </div>
         <teleport to="body">
+            <FormCompany
+                v-if="companyFormIsVisible"
+                @close="companyFormIsVisible = false"
+                @created="getCompanies"
+            />
             <FormModalChatMemberMessage
                 v-if="messageFormIsVisible"
                 @close="closeMessageForm"
@@ -111,6 +104,19 @@
                     />
                 </UiCol>
             </UiModal>
+            <UiModal
+                v-slot="{ close }"
+                v-model:visible="tasksIsVisible"
+                :title="tasksModalTitle"
+                :width="900"
+            >
+                <DashboardTableTasks
+                    @hide="close"
+                    @task-updated="onTaskUpdated"
+                    :tasks="currentTasks"
+                    :is-loading="tasksIsLoading"
+                />
+            </UiModal>
         </teleport>
     </section>
 </template>
@@ -127,17 +133,11 @@ import AnimationTransition from '@/components/common/AnimationTransition.vue';
 import EmptyData from '@/components/common/EmptyData.vue';
 import { computed, ref, shallowRef, watch } from 'vue';
 import { useTableContent } from '@/composables/useTableContent.js';
-import { useRoute, useRouter } from 'vue-router';
+import { useRoute } from 'vue-router';
 import Spinner from '@/components/common/Spinner.vue';
 import { useMobile } from '@/composables/useMobile.js';
-import Chip from '@/components/common/Chip.vue';
-import { useSelectedFilters } from '@/composables/useSelectedFilters.js';
-import { ActivePassive, CompanyCategories } from '@/const/const.js';
-import { useConsultantsOptions } from '@/composables/options/useConsultantsOptions.js';
 import { isArray } from '@/utils/helpers/array/isArray.js';
-import { isEmptyArray } from '@/utils/helpers/array/isEmptyArray.js';
-import { companyOptions } from '@/const/options/company.options.js';
-import { dayjsFromMoscow, toDateFormat } from '@/utils/formatters/date.js';
+import { dayjsFromMoscow } from '@/utils/formatters/date.js';
 import UserFolders from '@/components/UserFolder/UserFolders.vue';
 import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
 import { useDebounceFn } from '@vueuse/core';
@@ -150,14 +150,17 @@ import UiModal from '@/components/common/UI/UiModal.vue';
 import UiCol from '@/components/common/UI/UiCol.vue';
 import { useConfirm } from '@/composables/useConfirm.js';
 import { useNotify } from '@/utils/use/useNotify.js';
+import { useTaskManager } from '@/composables/useTaskManager.js';
+import { getCompanyName, getCompanyShortName } from '@/utils/formatters/models/company.js';
+import DashboardTableTasks from '@/components/Dashboard/Table/DashboardTableTasks.vue';
+import { taskOptions } from '@/const/options/task.options.js';
+import { useAuth } from '@/composables/useAuth.js';
 
 const route = useRoute();
-const router = useRouter();
 const store = useStore();
 
 const COMPANIES = computed(() => store.getters.COMPANIES);
 const COMPANIES_PAGINATION = computed(() => store.getters.COMPANIES_PAGINATION);
-const { consultantsOptions } = useConsultantsOptions();
 
 const isMobile = useMobile();
 const isLoading = ref(true);
@@ -165,47 +168,10 @@ const viewMode = ref(false);
 const companyFormIsVisible = ref(false);
 const firstPagination = ref(null);
 
-const gettersForFilters = {
-    consultant_id: value => {
-        if (consultantsOptions.value.length)
-            return consultantsOptions.value.find(element => Number(element.value) === Number(value))
-                ?.label;
-        return null;
-    },
-    categories: value => {
-        if (isArray(value) && !isEmptyArray(value))
-            return value.map(category => CompanyCategories[category]).join(', ');
-        return null;
-    },
-    activityGroup: value => companyOptions.activityGroup[value],
-    activityProfile: value => companyOptions.activityProfile[value],
-    dateStart: value => toDateFormat(value, 'DD.MM.YYYY'),
-    dateEnd: value => toDateFormat(value, 'DD.MM.YYYY'),
-    status: value => {
-        if (!value) return null;
-        return ActivePassive[value];
-    },
-    productRanges: value => {
-        return value.join(', ');
-    },
-    activity_group_ids: value => {
-        if (isArray(value) && !isEmptyArray(value))
-            return value.map(group => companyOptions.activityGroup[group]).join(', ');
-        return null;
-    },
-    activity_profile_ids: value => {
-        if (isArray(value) && !isEmptyArray(value))
-            return value.map(profile => companyOptions.activityProfile[profile]).join(', ');
-        return null;
-    }
-};
-
-const { humanizedSelectedQueryFilters } = useSelectedFilters({}, gettersForFilters);
-
 const getCompanies = async () => {
     isLoading.value = true;
 
-    const query = { ...route.query };
+    const query = { ...route.query, current_user_id: currentUserId.value };
 
     if (isNotNullish(currentFolder.value)) {
         query.folder_ids = [currentFolder.value];
@@ -226,14 +192,6 @@ const currentViewComponentName = computed(() => {
     if (isMobile) return CompanyGrid;
     return viewMode.value ? CompanyGrid : CompanyTable;
 });
-
-function removeFilter(filter) {
-    const query = { ...route.query };
-
-    delete query[filter];
-
-    router.replace({ query });
-}
 
 // folders
 
@@ -330,4 +288,148 @@ async function unpinMessage(message, companyId) {
         // TODO: Log sentry
     }
 }
+
+// tasks
+
+const { createTaskWithTemplate } = useTaskManager();
+const taskIsCreating = ref(false);
+
+async function createTask(company) {
+    let message = `Компания ${getCompanyShortName(company)}`;
+    let title;
+    let userId;
+
+    if (message.length > 255) {
+        title = message.slice(0, 253) + '...';
+    } else {
+        title = message;
+        message = null;
+    }
+
+    if (company.consultant_id) {
+        userId = company.consultant_id;
+    }
+
+    const taskPayload = await createTaskWithTemplate({
+        title,
+        message,
+        customDescription: true,
+        user_id: userId,
+        additionalContent: {
+            modelType: 'company',
+            companyName: getCompanyName(company)
+        }
+    });
+
+    if (!taskPayload) return;
+
+    taskIsCreating.value = true;
+
+    try {
+        const task = await api.task.create(taskPayload);
+
+        await api.task.createRelations(task.id, [
+            { entity_type: 'company', entity_id: company.id }
+        ]);
+
+        notify.success('Задача успешно создана!');
+
+        if (isArray(company.created_task_ids) && company.created_task_ids.length) {
+            company.created_task_ids.push(task.id);
+        } else {
+            company.created_task_ids = [task.id];
+        }
+    } finally {
+        taskIsCreating.value = false;
+    }
+}
+
+const currentTasks = shallowRef([]);
+const currentTasksCompany = shallowRef(null);
+const tasksIsVisible = ref(false);
+const tasksIsLoading = ref(false);
+
+function showTasks(company) {
+    currentTasksCompany.value = company;
+
+    fetchCompanyTasks();
+
+    tasksIsVisible.value = true;
+}
+
+function showCreatedTasks(company) {
+    currentTasksCompany.value = company;
+
+    fetchCompanyCreatedTasks();
+
+    tasksIsVisible.value = true;
+}
+
+const { currentUserId } = useAuth();
+
+async function fetchCompanyTasks() {
+    tasksIsLoading.value = true;
+
+    try {
+        const response = await api.task.get({
+            user_id: currentUserId.value,
+            status: [
+                taskOptions.clearStatusTypes.NEW,
+                taskOptions.clearStatusTypes.IN_PROGRESS,
+                taskOptions.clearStatusTypes.CANCELED
+            ],
+            relation_entity_type: 'company',
+            relation_entity_id: currentTasksCompany.value.id
+        });
+
+        currentTasks.value = response.data;
+    } finally {
+        tasksIsLoading.value = false;
+    }
+}
+
+async function fetchCompanyCreatedTasks() {
+    tasksIsLoading.value = true;
+
+    try {
+        const response = await api.task.get({
+            ids: currentTasksCompany.value.created_task_ids ?? []
+        });
+
+        currentTasks.value = response.data;
+    } finally {
+        tasksIsLoading.value = false;
+    }
+}
+
+function onTaskUpdated(task) {
+    const taskIndex = currentTasks.value.findIndex(element => element.id === task.id);
+    if (taskIndex === -1) return;
+
+    if (task.status === taskOptions.statusTypes.COMPLETED) {
+        currentTasks.value.splice(taskIndex, 1);
+
+        if (
+            isArray(currentTasksCompany.value.created_task_ids) &&
+            currentTasksCompany.value.created_task_ids.includes(task.id)
+        ) {
+            currentTasksCompany.value.created_task_ids.splice(
+                currentTasksCompany.value.created_task_ids.indexOf(task.id),
+                1
+            );
+        } else {
+            currentTasksCompany.value.tasks_count--;
+        }
+    } else {
+        Object.assign(currentTasks.value[taskIndex], task);
+    }
+}
+
+const tasksModalTitle = computed(() => {
+    if (isNotNullish(currentTasksCompany.value)) {
+        return `Задачи | ${getCompanyShortName(currentTasksCompany.value)}`;
+    }
+
+    return 'Задачи';
+});
 </script>

@@ -60,7 +60,10 @@ export const filtersAliases = {
     haveCranes: 'Нужны краны',
     shelving: 'Стеллажи',
     sewerage: 'Канализация',
-    cian_regions: 'Регионы ЦИАН:'
+    cian_regions: 'Регионы ЦИАН:',
+    with_current_user_tasks: 'С активными задачами',
+    requests_filter: 'Связь с запросами',
+    categories: 'Категории'
 };
 
 const IGNORING_FILTERS = new Set([
