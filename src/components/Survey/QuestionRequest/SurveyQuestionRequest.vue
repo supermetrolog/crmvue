@@ -101,6 +101,7 @@ import { toNumberOrRangeFormat } from '@/utils/formatters/number.js';
 import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
 import UiButtonIcon from '@/components/common/UI/UiButtonIcon.vue';
 import { toDateFormat } from '@/utils/formatters/date.js';
+import { ucFirst } from '@/utils/formatters/string.js';
 
 defineEmits(['edit']);
 const props = defineProps({
@@ -165,7 +166,7 @@ const districts = computed(() => {
 const regionsText = computed(() => {
     if (!props.request.regions) return '';
 
-    return props.request.regions.map(element => locationOptions.region[element.region]).join(', ');
+    return props.request.regions.map(element => ucFirst(element.info.title)).join(', ');
 });
 
 const locationText = computed(() => {
