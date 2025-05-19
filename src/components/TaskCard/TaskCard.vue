@@ -10,7 +10,6 @@
             @assign="assignerFormIsVisible = !assignerFormIsVisible"
             @change-status="moveSettingsIsVisible = !moveSettingsIsVisible"
             @postpone="postponeFormIsVisible = !postponeFormIsVisible"
-            @link="relationFormIsVisible = !relationFormIsVisible"
             :disabled="moveSettingsIsVisible || assignerFormIsVisible"
             :viewable="canBeViewed"
             :task
@@ -30,8 +29,8 @@
                 <TaskCardChatInfo
                     v-if="task.related_by.chat_member"
                     @to-chat="toChat"
-                    @to-company="toCompany"
-                    @show-contacts="contactsIsVisible = true"
+                    @to-company="toCompany(objectCompanyId)"
+                    @show-contacts="showContacts(objectCompanyId)"
                     :company-id="objectCompanyId"
                     :task
                 />
@@ -58,7 +57,12 @@
                         />
                     </Tab>
                     <Tab :name="`Связи (${task.relations_count})`">
-                        <InProgress />
+                        <TaskCardRelations
+                            @count-changed="$emit('relations-count-changed', $event)"
+                            @show-contacts="showContacts"
+                            @to-company="toCompany"
+                            :task
+                        />
                     </Tab>
                 </Tabs>
                 <AnimationTransition :speed="0.3">
@@ -89,11 +93,11 @@
                         :current-assigner="task.user_id"
                     />
                 </AnimationTransition>
-                <AnimationTransition v-if="task.related_by.chat_member" :speed="0.3">
+                <AnimationTransition :speed="0.3">
                     <TaskCardContacts
+                        v-if="contactsIsVisible"
                         @close="contactsIsVisible = false"
-                        :visible="contactsIsVisible"
-                        :company-id="objectCompanyId"
+                        :company-id="currentContactsCompanyId"
                     />
                 </AnimationTransition>
             </div>
@@ -135,7 +139,7 @@ import TaskCardModalPostpone from '@/components/TaskCard/TaskCardModalPostpone.v
 import { useAsync } from '@/composables/useAsync.js';
 import { dayjsFromMoscow } from '@/utils/formatters/date.js';
 import dayjs from 'dayjs';
-import InProgress from '@/components/common/InProgress.vue';
+import TaskCardRelations from '@/components/TaskCard/Relations/TaskCardRelations.vue';
 
 const emit = defineEmits([
     'updated',
@@ -144,7 +148,8 @@ const emit = defineEmits([
     'added-comment',
     'deleted-comment',
     'history-changed',
-    'files-count-changed'
+    'files-count-changed',
+    'relations-count-changed'
 ]);
 const props = defineProps({
     task: Object,
@@ -341,8 +346,8 @@ function toChat() {
     }
 }
 
-function toCompany() {
-    window.open(getLinkCompany(objectCompanyId.value), '_blank');
+function toCompany(companyId) {
+    window.open(getLinkCompany(companyId), '_blank');
 }
 
 // ASSIGN
@@ -388,10 +393,12 @@ useLinkify(toRef(props.task, 'title'), titleElement);
 // contacts
 
 const contactsIsVisible = ref(false);
+const currentContactsCompanyId = ref(null);
 
-// relations
+function showContacts(companyId) {
+    alert(companyId);
+    currentContactsCompanyId.value = companyId;
 
-const relationFormIsVisible = ref(false);
-
-async function linkRelation() {}
+    contactsIsVisible.value = true;
+}
 </script>

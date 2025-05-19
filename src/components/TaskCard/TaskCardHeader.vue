@@ -86,12 +86,6 @@
                                 />
                             </template>
                             <UiDropdownActionsButton
-                                @handle="$emit('link')"
-                                icon="fa-solid fa-link"
-                                label="Добавить связь"
-                                disabled
-                            />
-                            <UiDropdownActionsButton
                                 v-if="task.related_by.chat_member"
                                 @handle="$emit('to-chat')"
                                 label="Перейти в чат"
@@ -153,8 +147,7 @@ defineEmits([
     'delete',
     'restore',
     'edit',
-    'toggle-favorite',
-    'link'
+    'toggle-favorite'
 ]);
 
 const props = defineProps({

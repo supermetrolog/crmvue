@@ -26,6 +26,7 @@
                     @added-comment="onAddedComment"
                     @history-changed="onChangedHistory"
                     @files-count-changed="onChangedFilesCount"
+                    @relations-count-changed="onChangedRelationsCount"
                     class="dashboard-tasks-table__card"
                     :task="currentTask"
                     :draggable="userCanDrag"
@@ -157,5 +158,9 @@ function onChangedHistory(count) {
 
 function onChangedFilesCount(count) {
     currentTask.value.files_count = count;
+}
+
+function onChangedRelationsCount(count) {
+    currentTask.value.relations_count = count;
 }
 </script>

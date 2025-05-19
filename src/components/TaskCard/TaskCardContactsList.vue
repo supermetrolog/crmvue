@@ -1,6 +1,5 @@
 <template>
     <UiModal
-        v-if="visible"
         @close="$emit('close')"
         custom-close
         show
@@ -30,7 +29,7 @@
 
 <script setup>
 import Spinner from '@/components/common/Spinner.vue';
-import { ref, shallowRef, watch } from 'vue';
+import { onBeforeMount, ref, shallowRef } from 'vue';
 import api from '@/api/api.js';
 import EmptyLabel from '@/components/common/EmptyLabel.vue';
 import ContactCard from '@/components/Contact/Card/ContactCard.vue';
@@ -41,10 +40,6 @@ const props = defineProps({
     companyId: {
         type: Number,
         required: true
-    },
-    visible: {
-        type: Boolean,
-        default: false
     }
 });
 
@@ -65,10 +60,5 @@ const fetchContacts = async () => {
     }
 };
 
-watch(
-    () => props.visible,
-    () => {
-        if (props.visible && !contacts.value.length) fetchContacts();
-    }
-);
+onBeforeMount(fetchContacts);
 </script>
