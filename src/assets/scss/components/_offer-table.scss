@@ -341,6 +341,11 @@
         cursor: pointer;
         font-size: 16px;
     }
+
+    &__complex {
+        position: relative;
+        z-index: 6;
+    }
 }
 
 .offer-table-item-price {

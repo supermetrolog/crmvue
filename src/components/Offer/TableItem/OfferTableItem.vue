@@ -29,6 +29,7 @@
                         @deleted-from-folder="$emit('deleted-from-folder', $event)"
                         :entity="offer.id"
                         morph="offer_mix"
+                        :small="false"
                     />
                 </div>
                 <OfferTableItemRelationSelect
@@ -41,7 +42,11 @@
             </div>
         </Td>
         <Td class="offer-table-item__preview">
-            <OfferTableItemPreview :is-passive="isPassive" :offer="offer" />
+            <OfferTableItemPreview
+                @show-complex-objects="$emit('show-complex-objects')"
+                :is-passive="isPassive"
+                :offer="offer"
+            />
         </Td>
         <Td class="offer-table-item__region text-center">
             <OfferTableItemAddress :offer="offer" />
@@ -198,7 +203,13 @@ import UiButton from '@/components/common/UI/UiButton.vue';
 import UiButtonIcon from '@/components/common/UI/UiButtonIcon.vue';
 import UserFoldersDropdown from '@/components/UserFolder/UserFoldersDropdown.vue';
 
-const emit = defineEmits(['favorite-deleted', 'open-survey', 'deleted-from-folder']);
+const emit = defineEmits([
+    'favorite-deleted',
+    'open-survey',
+    'deleted-from-folder',
+    'show-complex-objects'
+]);
+
 const props = defineProps({
     offer: {
         type: Object,
