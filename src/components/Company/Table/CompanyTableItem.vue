@@ -193,6 +193,7 @@
         :objects="company.objects"
         :tasks-count="company.tasks_count"
         :created-tasks-count="company.created_task_ids?.length ?? 0"
+        :company-id="company.id"
     />
 </template>
 

@@ -11,7 +11,7 @@
                     {{ object.id }}
                 </p>
                 <OfferTableItemRelationSelect
-                    v-if="object.offers.length"
+                    v-if="object.offers?.length"
                     @open="openRelations"
                     :offers="object.offers"
                     :current-tab="currentRelationTab"
