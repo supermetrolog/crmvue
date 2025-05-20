@@ -57,10 +57,18 @@
                 >
                     Инвестпроект
                 </span>
+                <UiButtonIcon
+                    v-if="showMap"
+                    @click.stop.prevent="$emit('show-map')"
+                    icon="fa-solid fa-map-location-dot"
+                    class="offer-table-item-preview__map-button ml-auto"
+                    label="Открыть на карте"
+                    color="light"
+                />
             </div>
             <div class="offer-table-item-preview__publishes">
                 <UiButton
-                    v-if="offer.complex_objects_count > 1"
+                    v-if="showComplex && offer.complex_objects_count > 1"
                     @click.stop.prevent="$emit('show-complex-objects')"
                     color="light"
                     class="offer-table-item-preview__complex align-self-end"
@@ -101,8 +109,9 @@ import NoImage from '@/components/common/NoImage.vue';
 import LazyImage from '@/components/common/LazyImage.vue';
 import UiField from '@/components/common/UI/UiField.vue';
 import UiButton from '@/components/common/UI/UiButton.vue';
+import UiButtonIcon from '@/components/common/UI/UiButtonIcon.vue';
 
-defineEmits(['click-preview', 'show-complex-objects']);
+defineEmits(['click-preview', 'show-complex-objects', 'show-map']);
 const props = defineProps({
     offer: {
         type: Object,
@@ -117,6 +126,14 @@ const props = defineProps({
         default: 'a'
     },
     withOldUrl: {
+        type: Boolean,
+        default: true
+    },
+    showMap: {
+        type: Boolean,
+        default: true
+    },
+    showComplex: {
         type: Boolean,
         default: true
     }

@@ -20,11 +20,18 @@
             :hint-content="offer.address"
             :balloon-content-body="getFooter(offer)"
         />
-        <OfferObject :offer-ids="offers" />
+        <OfferObject :search-type :offer-ids="offers" />
     </YandexMapView>
 </template>
+<script setup>
+import YandexMapView from '@/components/common/YandexMap/YandexMapView.vue';
+import YandexMapMarker from '@/components/common/YandexMap/YandexMapMarker.vue';
+import OfferObject from '@/components/Offer/OfferObject.vue';
+import { ref, watch } from 'vue';
+import { getLinkComplex } from '@/utils/url.js';
+import YandexMapLoader from '@/components/common/YandexMap/YandexMapLoader.vue';
+import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
 
-<script>
 const yandexMapOptions = {
     settings: {
         apiKey: import.meta.env.VITE_VUE_APP_YANDEX_MAP_KEY,
@@ -46,17 +53,9 @@ const yandexMapOptions = {
         'rulerControl'
     ]
 };
-</script>
-<script setup>
-import YandexMapView from '@/components/common/YandexMap/YandexMapView.vue';
-import YandexMapMarker from '@/components/common/YandexMap/YandexMapMarker.vue';
-import OfferObject from '@/components/Offer/OfferObject.vue';
-import { ref } from 'vue';
-import { getLinkComplex } from '@/utils/url.js';
-import YandexMapLoader from '@/components/common/YandexMap/YandexMapLoader.vue';
 
 defineEmits(['selection-done', 'removed-done', 'updated']);
-defineProps({
+const props = defineProps({
     list: {
         type: Array,
         required: true
@@ -77,7 +76,8 @@ defineProps({
     loading: {
         type: Boolean,
         default: false
-    }
+    },
+    selected: [Object, Number]
 });
 
 const offers = ref([]);
@@ -92,7 +92,33 @@ const getFooter = offer => {
             </a>`;
 };
 
-const selectOffers = objectId => {
+// TODO: Сделать лучше превью
+
+const searchType = ref('offers');
+
+function isOffer(object) {
+    return isNotNullish(object.object_id);
+}
+
+function selectOffers(objectId) {
+    const object = props.list.find(element => element.id === objectId);
+
+    if (!object) return;
+
+    if (isOffer(object)) {
+        searchType.value = 'offers';
+    } else {
+        searchType.value = 'objects';
+    }
+
     offers.value = [objectId];
-};
+}
+
+watch(
+    () => props.selected,
+    value => {
+        if (isNotNullish(value)) selectOffers(value);
+    },
+    { immediate: true }
+);
 </script>

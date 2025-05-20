@@ -39,17 +39,15 @@
                 <span v-if="object.test_only" class="offer-table-item-preview__chip">Тест</span>
             </div>
         </component>
-        <div class="offer-table-item-preview__types">
-            <template v-if="object.object_type?.length">
-                <UiField
-                    v-for="element in objectTypes"
-                    :key="element.id"
-                    :tooltip="element.name"
-                    color="gray-l"
-                >
-                    <i :class="element.icon" />
-                </UiField>
-            </template>
+        <div v-if="object.object_type?.length > 0" class="offer-table-item-preview__types">
+            <UiField
+                v-for="element in objectTypes"
+                :key="element.id"
+                :tooltip="element.name"
+                color="gray-l"
+            >
+                <i :class="element.icon" />
+            </UiField>
         </div>
     </div>
 </template>
@@ -63,6 +61,7 @@ import UiField from '@/components/common/UI/UiField.vue';
 import UiButton from '@/components/common/UI/UiButton.vue';
 import { useRouter } from 'vue-router';
 import { plural } from '@/utils/plural.js';
+import { isArray } from '@/utils/helpers/array/isArray.js';
 
 defineEmits(['click-preview', 'show-complex-objects']);
 const props = defineProps({
@@ -78,11 +77,15 @@ const props = defineProps({
 });
 
 const objectTypes = computed(() => {
-    return props.object.object_type.map((element, index) => ({
-        id: index,
-        name: objectOptions.typeGeneral[element - 1].name,
-        icon: objectOptions.typeGeneral[element - 1].icon
-    }));
+    if (isArray(props.object.object_type)) {
+        return props.object.object_type.map((element, index) => ({
+            id: index,
+            name: objectOptions.typeGeneral[element - 1].name,
+            icon: objectOptions.typeGeneral[element - 1].icon
+        }));
+    }
+
+    return [];
 });
 
 const router = useRouter();

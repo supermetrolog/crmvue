@@ -324,6 +324,21 @@
         @include mixins.flex-box($gap: 5px);
     }
 
+    &__parameters {
+        align-items: flex-start;
+        width: calc(100% - 10px);
+    }
+
+    &__map-button {
+        opacity: .25;
+        z-index: 6;
+        @include mixins.transition(opacity, background-color, color);
+    }
+
+    &:hover &__map-button {
+        opacity: 1;
+    }
+
     &__publishes {
         top: unset;
         bottom: 10px;

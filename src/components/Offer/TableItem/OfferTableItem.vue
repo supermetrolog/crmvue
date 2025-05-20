@@ -43,6 +43,7 @@
         </Td>
         <Td class="offer-table-item__preview">
             <OfferTableItemPreview
+                @show-map="$emit('show-map')"
                 @show-complex-objects="$emit('show-complex-objects')"
                 :is-passive="isPassive"
                 :offer="offer"
@@ -207,7 +208,8 @@ const emit = defineEmits([
     'favorite-deleted',
     'open-survey',
     'deleted-from-folder',
-    'show-complex-objects'
+    'show-complex-objects',
+    'show-map'
 ]);
 
 const props = defineProps({

@@ -73,6 +73,7 @@
                             :is="currentViewComponentName"
                             v-else
                             @show-complex-objects="showComplexObjects"
+                            @show-map="showOfferInMap"
                             @favorite-deleted="deleteFavoriteOffer"
                             @deleted-from-folder="onDeletedFromFolder"
                             :offers="offers"
@@ -137,7 +138,7 @@ import api from '@/api/api.js';
 import UiModal from '@/components/common/UI/UiModal.vue';
 import Spinner from '@/components/common/Spinner.vue';
 import ObjectTable from '@/components/ObjectTable/ObjectTable.vue';
-
+import { useMapPreviewer } from '@/composables/useMapPreviewer.js';
 const isMobile = useMobile();
 const store = useStore();
 const route = useRoute();
@@ -422,5 +423,16 @@ async function showComplexObjects(complexId) {
     } finally {
         complexIsLoading.value = false;
     }
+}
+
+// map
+
+const { previewInMap } = useMapPreviewer();
+
+function showOfferInMap(offer) {
+    previewInMap({
+        list: [offer],
+        selected: offer.id
+    });
 }
 </script>

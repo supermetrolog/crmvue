@@ -3,7 +3,7 @@
 
 .ui-button-icon {
     @include mixins.flex-box($a: center, $j: center);
-    @include mixins.transition(background-color .5s, color .5s);
+    @include mixins.transition(background-color .5s, color .5s, opacity);
     height: 35px;
     width: 35px;
     outline: none;
