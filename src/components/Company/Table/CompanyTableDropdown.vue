@@ -88,12 +88,13 @@
         </template>
     </template>
     <template v-if="objects.length && objectsIsOpen">
-        <CompanyTableObjectRow
-            v-for="object in objects"
-            :key="object.id"
-            :class="{ CompanyTableOdd: odd, CompanyTableEven: !odd }"
-            :object="object"
-        />
+        <tr class="table-object-row">
+            <td></td>
+            <td colspan="7">
+                <Spinner v-if="objectsIsLoading" class="my-4" />
+                <ObjectTable v-else :sortable="false" :objects="currentObjects" />
+            </td>
+        </tr>
     </template>
 </template>
 
@@ -101,12 +102,14 @@
 import Dropdown from '@/components/common/Dropdown/Dropdown.vue';
 import CompanyTableDropdownRow from '@/components/Company/Table/CompanyTableDropdownRow.vue';
 import CompanyTableRequestRow from '@/components/Company/Table/CompanyTableRequestRow.vue';
-import CompanyTableObjectRow from '@/components/Company/Table/CompanyTableObjectRow.vue';
-import { computed, ref } from 'vue';
+import { computed, ref, shallowRef, watch } from 'vue';
 import { Tippy } from 'vue-tippy';
 import { plural } from '@/utils/plural.js';
 import CompanyTableDropdownButton from '@/components/Company/Table/CompanyTableDropdownButton.vue';
 import UiButton from '@/components/common/UI/UiButton.vue';
+import api from '@/api/api.js';
+import Spinner from '@/components/common/Spinner.vue';
+import ObjectTable from '@/components/ObjectTable/ObjectTable.vue';
 
 defineEmits(['open-timeline', 'show-tasks', 'show-created-tasks']);
 const props = defineProps({
@@ -134,7 +137,8 @@ const props = defineProps({
     createdTasksCount: {
         type: Number,
         default: 0
-    }
+    },
+    companyId: Number
 });
 
 const requestsIsOpen = ref(false);
@@ -154,4 +158,28 @@ const archiveRequestsPluralLabel = computed(() =>
 const doneRequestsPluralLabel = computed(() =>
     plural(props.doneRequests.length, '%d завершен', '%d завершенных', '%d завершенных')
 );
+
+const currentObjects = shallowRef([]);
+const objectsIsLoading = ref(false);
+
+async function fetchObjects() {
+    objectsIsLoading.value = true;
+
+    try {
+        const response = await api.object.search({
+            company_id: props.companyId,
+            expand: 'offers,company.mainContact.phones,company.mainContact.emails,company.objects_count,company.active_requests_count,company.active_contacts_count'
+        });
+
+        currentObjects.value = response.data;
+    } finally {
+        objectsIsLoading.value = false;
+    }
+}
+
+watch(objectsIsOpen, value => {
+    if (value && !objectsIsLoading.value && !currentObjects.value.length) {
+        fetchObjects();
+    }
+});
 </script>

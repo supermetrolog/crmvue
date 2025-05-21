@@ -33,12 +33,14 @@
                             )
                         "
                         @show-preview="openPreview(record.model.object)"
+                        @show-map="showMap(record.model.object)"
                         :current="record.id === currentDialogID"
                         :statistic="record.statistic"
                         :model="record.model"
                         :last-call="record.last_call"
                         motion-slider
                         has-modal-preview
+                        show-map
                     />
                     <MessengerDialogPreview
                         :opened="
@@ -81,6 +83,7 @@ import MessengerDialogPreview from '@/components/Messenger/Dialog/Preview/Messen
 import { messenger } from '@/const/messenger.js';
 import { usePreviewer } from '@/composables/usePreviewer.js';
 import { getLinkFile } from '@/utils/url.js';
+import { useMapPreviewer } from '@/composables/useMapPreviewer.js';
 
 const lastRenderedObjectCount = inject('lastRenderedObjectCount');
 const setLastRendererObjectCount = inject('setLastRendererObjectCount');
@@ -141,5 +144,15 @@ const { preview } = usePreviewer();
 
 function openPreview(model) {
     preview(model.photos.map((photo, key) => ({ src: getLinkFile(photo), id: key })));
+}
+
+// map
+
+const { previewInMap } = useMapPreviewer();
+
+function showMap(object) {
+    previewInMap({
+        objectId: object.id
+    });
 }
 </script>

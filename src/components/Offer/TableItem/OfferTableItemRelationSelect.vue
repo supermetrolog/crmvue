@@ -54,14 +54,8 @@ const props = defineProps({
         type: Array,
         default: () => []
     },
-    current: {
-        type: Number,
-        required: true
-    },
-    currentTab: {
-        type: Number,
-        default: null
-    }
+    current: Number,
+    currentTab: Number
 });
 
 const offerExistByType = (offers, type) => {

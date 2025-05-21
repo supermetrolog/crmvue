@@ -2,7 +2,6 @@
     <UiDropdownActions>
         <template #trigger>
             <UiButtonIcon
-                small
                 label="Управление папками"
                 icon="fa-solid fa-folder-open"
                 class="mx-auto"
@@ -10,6 +9,7 @@
                 :badge="entityFoldersCount"
                 badge-color="dark"
                 :color="buttonColor"
+                :small
             />
         </template>
         <template #menu>
@@ -67,7 +67,11 @@ const props = defineProps({
     },
     creatable: Boolean,
     buttonClass: [String, Array, Object],
-    buttonColor: String
+    buttonColor: String,
+    small: {
+        type: Boolean,
+        default: true
+    }
 });
 
 const { isLoading, entityFoldersSet, entityFoldersCount, folders, addToFolder, removeFromFolder } =
