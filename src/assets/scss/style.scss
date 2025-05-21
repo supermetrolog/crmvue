@@ -97,14 +97,16 @@ tr.TableRequestRow {
 .table-object-row {
     height: 1px !important;
 
-    td {
-        padding: 0 0 10px 0 !important;
-        height: inherit;
+    > td {
+        padding: 0!important;
+    }
 
-        & > div {
-            border-top: variables.$grey_thin_border;
-            height: 100%;
-        }
+    thead tr {
+        background-color: transparent!important;
+    }
+
+    tbody tr td {
+        padding: 10px!important;
     }
 }
 

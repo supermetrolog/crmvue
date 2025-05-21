@@ -36,23 +36,26 @@
 </template>
 
 <script setup>
-import { useStore } from 'vuex';
 import CompanyObjectItemOfferOnly from '@/components/Company/Object/CompanyObjectItemOfferOnly.vue';
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
 import Spinner from '@/components/common/Spinner.vue';
 import { useDelayedLoader } from '@/composables/useDelayedLoader.js';
 import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
 import HoverActionsButton from '@/components/common/HoverActions/HoverActionsButton.vue';
-import { computed, ref, shallowRef, watch } from 'vue';
+import { computed, onMounted, ref, shallowRef, watch } from 'vue';
+import api from '@/api/api.js';
 
 const props = defineProps({
     offerIds: {
         type: Array,
         default: () => []
+    },
+    searchType: {
+        type: String,
+        default: 'offers'
     }
 });
 
-const store = useStore();
 const isLoadingOffers = shallowRef(false);
 const { isLoading: isLoadingObject } = useDelayedLoader();
 
@@ -69,6 +72,13 @@ watch(
     }
 );
 
+onMounted(() => {
+    if (props.offerIds?.length) {
+        isShowing.value = true;
+        fetchOffers();
+    }
+});
+
 const close = () => {
     isShowing.value = false;
     offers.value = [];
@@ -81,25 +91,35 @@ const spinnerLabel = computed(() => {
 });
 
 const fetchObjects = async () => {
-    const response = await store.dispatch('SEARCH_OFFERS', { query: { id: props.offerIds[0] } });
+    const response = await api.offers.search({ id: props.offerIds[0] });
     return response.data;
 };
 
 const fetchOffers = async () => {
-    isLoadingObject.value = true;
+    let objectIds;
 
-    const objects = await fetchObjects();
-    if (!objects) return;
+    if (props.searchType === 'offers') {
+        isLoadingObject.value = true;
+
+        const objects = await fetchObjects();
+
+        isLoadingObject.value = false;
+
+        if (!objects) return;
+
+        objectIds = objects.map(el => el.object_id);
+    } else {
+        objectIds = props.offerIds;
+    }
 
     isLoadingOffers.value = true;
-    isLoadingObject.value = false;
 
     const query = {
-        object_id: objects.map(el => el.object_id),
+        object_id: objectIds,
         expand: 'generalOffersMix,contact.emails,contact.phones,object,company.mainContact.phones,company.mainContact.emails,offer,consultant.userProfile'
     };
 
-    const response = await store.dispatch('SEARCH_OFFERS', { query });
+    const response = await api.offers.search(query);
     offers.value = response.data;
 
     isLoadingOffers.value = false;

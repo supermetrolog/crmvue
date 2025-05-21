@@ -57,11 +57,27 @@
                 >
                     Инвестпроект
                 </span>
+                <UiButtonIcon
+                    v-if="showMap"
+                    @click.stop.prevent="$emit('show-map')"
+                    icon="fa-solid fa-map-location-dot"
+                    class="offer-table-item-preview__map-button ml-auto"
+                    label="Открыть на карте"
+                    color="light"
+                />
             </div>
             <div class="offer-table-item-preview__publishes">
-                <span v-if="offer.test_only" class="offer-table-item-preview__chip">
-                    Тестовый лот
-                </span>
+                <UiButton
+                    v-if="showComplex && offer.complex_objects_count > 1"
+                    @click.stop.prevent="$emit('show-complex-objects')"
+                    color="light"
+                    class="offer-table-item-preview__complex align-self-end"
+                    icon="fa-solid fa-arrow-up-right-from-square"
+                    mini
+                >
+                    +{{ offer.complex_objects_count - 1 }} в комплексе
+                </UiButton>
+                <span v-if="offer.test_only" class="offer-table-item-preview__chip"> Тест </span>
                 <span v-if="offer.is_fake" class="offer-table-item-preview__chip">Фейк</span>
             </div>
         </component>
@@ -92,8 +108,10 @@ import { getLinkOfferByObject, getLinkOfferOldByObject } from '@/utils/url.js';
 import NoImage from '@/components/common/NoImage.vue';
 import LazyImage from '@/components/common/LazyImage.vue';
 import UiField from '@/components/common/UI/UiField.vue';
+import UiButton from '@/components/common/UI/UiButton.vue';
+import UiButtonIcon from '@/components/common/UI/UiButtonIcon.vue';
 
-defineEmits(['click-preview']);
+defineEmits(['click-preview', 'show-complex-objects', 'show-map']);
 const props = defineProps({
     offer: {
         type: Object,
@@ -108,6 +126,14 @@ const props = defineProps({
         default: 'a'
     },
     withOldUrl: {
+        type: Boolean,
+        default: true
+    },
+    showMap: {
+        type: Boolean,
+        default: true
+    },
+    showComplex: {
         type: Boolean,
         default: true
     }

@@ -15,6 +15,8 @@
                 :offer="offer"
                 as="div"
                 class="mb-1"
+                :show-complex="false"
+                :show-map="false"
             />
             <div
                 v-if="isSelected"

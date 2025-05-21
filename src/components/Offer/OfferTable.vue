@@ -22,8 +22,10 @@
             <OfferTableItem
                 v-for="offer in offers"
                 :key="offer.id"
+                @show-complex-objects="$emit('show-complex-objects', offer.complex_id)"
                 @favorite-deleted="$emit('favorite-deleted')"
                 @deleted-from-folder="$emit('deleted-from-folder', offer.id, $event)"
+                @show-map="$emit('show-map', offer)"
                 :offer="offer"
                 :loader="loader"
             />
@@ -39,15 +41,10 @@ import OfferTableItem from '@/components/Offer/TableItem/OfferTableItem.vue';
 import Loader from '@/components/common/Loader.vue';
 import OfferTableItemSkeleton from '@/components/Offer/TableItem/OfferTableItemSkeleton.vue';
 
-defineEmits(['favorite-deleted', 'deleted-from-folder']);
+defineEmits(['favorite-deleted', 'deleted-from-folder', 'show-complex-objects', 'show-map']);
 defineProps({
-    offers: {
-        type: Array
-    },
-    loader: {
-        type: Boolean,
-        default: false
-    },
+    offers: Array,
+    loader: Boolean,
     sortable: {
         type: Boolean,
         default: true

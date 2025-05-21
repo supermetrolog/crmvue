@@ -72,6 +72,8 @@
                         <component
                             :is="currentViewComponentName"
                             v-else
+                            @show-complex-objects="showComplexObjects"
+                            @show-map="showOfferInMap"
                             @favorite-deleted="deleteFavoriteOffer"
                             @deleted-from-folder="onDeletedFromFolder"
                             :offers="offers"
@@ -88,6 +90,18 @@
                 </div>
             </div>
         </div>
+        <teleport to="body">
+            <UiModal v-model:visible="complexIsVisible" :title="complexModalTitle" :width="1400">
+                <Spinner v-if="complexIsLoading" label="Загрузка комплекса.." />
+                <div v-else>
+                    <ObjectTable
+                        :loader="complexIsLoading"
+                        :objects="complexObjects"
+                        :sortable="false"
+                    />
+                </div>
+            </UiModal>
+        </teleport>
     </section>
 </template>
 
@@ -103,7 +117,7 @@ import EmptyData from '@/components/common/EmptyData.vue';
 import Switch from '@/components/common/Forms/Switch.vue';
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
 import { useMobile } from '@/composables/useMobile.js';
-import { computed, ref, useTemplateRef, watch } from 'vue';
+import { computed, ref, shallowRef, useTemplateRef, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useTableContent } from '@/composables/useTableContent.js';
 import { ActivePassiveFUCK, GateTypeList, YesNo } from '@/const/const.js';
@@ -120,7 +134,11 @@ import UserFolders from '@/components/UserFolder/UserFolders.vue';
 import UiButton from '@/components/common/UI/UiButton.vue';
 import { useDebounceFn, useTimeoutFn } from '@vueuse/core';
 import { isEmptyArray } from '@/utils/helpers/array/isEmptyArray.js';
-
+import api from '@/api/api.js';
+import UiModal from '@/components/common/UI/UiModal.vue';
+import Spinner from '@/components/common/Spinner.vue';
+import ObjectTable from '@/components/ObjectTable/ObjectTable.vue';
+import { useMapPreviewer } from '@/composables/useMapPreviewer.js';
 const isMobile = useMobile();
 const store = useStore();
 const route = useRoute();
@@ -377,5 +395,44 @@ function onDeletedFromFolder(offerId, folderId) {
             store.state.Offers.offers.splice(offerIndex, 1);
         }, 500);
     }
+}
+
+// complex
+
+const complexIsVisible = ref(false);
+const complexIsLoading = ref(false);
+const complexObjects = shallowRef([]);
+
+const complexModalTitle = computed(() => {
+    if (complexIsLoading.value) return 'Просмотр объектов в комплексе';
+
+    return `Просмотр объектов (${complexObjects.value.length}) в комплексе`;
+});
+
+async function showComplexObjects(complexId) {
+    complexIsLoading.value = true;
+    complexIsVisible.value = true;
+
+    try {
+        const response = await api.object.search({
+            complex_id: complexId,
+            expand: 'offers,company.mainContact.phones,company.mainContact.emails,company.objects_count,company.active_requests_count,company.active_contacts_count'
+        });
+
+        complexObjects.value = response.data;
+    } finally {
+        complexIsLoading.value = false;
+    }
+}
+
+// map
+
+const { previewInMap } = useMapPreviewer();
+
+function showOfferInMap(offer) {
+    previewInMap({
+        list: [offer],
+        selected: offer.id
+    });
 }
 </script>

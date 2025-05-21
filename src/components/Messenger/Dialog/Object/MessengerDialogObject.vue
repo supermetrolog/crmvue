@@ -20,8 +20,16 @@
                         @click.stop.prevent="$emit('show-preview')"
                         small
                         label="Открыть просмотр фото"
-                        class="bg-white"
+                        class="messenger-dialog-offer__preview-button bg-white ml-auto"
                         icon="fa-solid fa-image"
+                    />
+                    <UiButtonIcon
+                        v-if="showMap"
+                        @click.stop.prevent="$emit('show-map')"
+                        small
+                        label="Показать на карте"
+                        class="messenger-dialog-offer__preview-button bg-white"
+                        icon="fa-solid fa-map-location-dot"
                     />
                 </div>
                 <Avatar
@@ -85,7 +93,7 @@ import { unitTypes } from '@/const/unitTypes.js';
 import { toNumberFormat } from '@/utils/formatters/number.js';
 import { plural } from '@/utils/plural.js';
 
-defineEmits(['update-call', 'show-preview']);
+defineEmits(['update-call', 'show-preview', 'show-map']);
 const props = defineProps({
     model: {
         type: Object,
@@ -99,7 +107,8 @@ const props = defineProps({
     motionSlider: Boolean,
     hasModalPreview: Boolean,
     short: Boolean,
-    showCompany: Boolean
+    showCompany: Boolean,
+    showMap: Boolean
 });
 
 const store = useStore();
