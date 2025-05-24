@@ -49,7 +49,8 @@ const props = defineProps({
     toolbar: {
         type: Boolean,
         default: true
-    }
+    },
+    autofocus: Boolean
 });
 
 const defaultOptions = {
@@ -114,6 +115,8 @@ const focus = () => {
     if (state.quill) state.quill.focus();
 };
 
+defineExpose({ focus });
+
 const initialize = () => {
     if (!editor.value) return;
 
@@ -145,6 +148,10 @@ const initialize = () => {
     });
 
     emit('ready', state.quill);
+
+    if (props.autofocus) {
+        focus();
+    }
 };
 
 onMounted(() => {
