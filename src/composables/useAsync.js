@@ -61,6 +61,10 @@ export function useAsync(callable, config = {}) {
             if (!confirmed) return null;
         }
 
+        return await executeDangerously(...args);
+    }
+
+    async function executeDangerously(...args) {
         if (abortBeforeFetch) abort();
 
         setLoading(true);
@@ -113,6 +117,7 @@ export function useAsync(callable, config = {}) {
         abort,
         error,
         data,
-        execute
+        execute,
+        executeDangerously
     };
 }
