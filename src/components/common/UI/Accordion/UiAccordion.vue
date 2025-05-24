@@ -9,7 +9,7 @@
         >
             <UiAccordionButton
                 @click="toggle"
-                :class="{ active: isVisibleModelValue }"
+                :class="[{ active: isVisibleModelValue }, headerClass]"
                 :label="title"
                 :opened="isVisibleModelValue"
                 :icon
@@ -40,6 +40,7 @@ const props = defineProps({
     opened: Boolean,
     withoutRender: Boolean,
     bodyClass: [String, Array, Object],
+    headerClass: [String, Array, Object],
     icon: String
 });
 

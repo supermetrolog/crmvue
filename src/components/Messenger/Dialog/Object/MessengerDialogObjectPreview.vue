@@ -1,6 +1,6 @@
 <template>
-    <MessengerDialogObjectPreviewSkeleton v-if="isLoading" />
-    <div v-else class="messenger-dialog-object-preview">
+    <MessengerDialogObjectPreviewSkeleton v-if="isLoading && opened" />
+    <div v-else-if="opened" class="messenger-dialog-object-preview">
         <MessengerDialogPreviewTab title="Проверьте выбранный тип и назначение!">
             <EditableObjectPurposes
                 @update="updatePurposes"
@@ -20,16 +20,13 @@
                     <template v-if="targetObject.photo?.length >= 5" #default>
                         {{ pluralPhotoLength }}
                     </template>
-                    <template #warning
-                        >менее 5 фото (загружено {{ targetObject.photo.length }})</template
-                    >
+                    <template #warning>
+                        менее 5 фото (загружено {{ targetObject.photo.length }})
+                    </template>
                 </MessengerDialogPreviewRow>
                 <MessengerDialogPreviewRow label="полная площадь" editable>
-                    <WithUnitType
-                        v-if="targetObject.area_building"
-                        :unit-type="unitTypes.SQUARE_METERS"
-                    >
-                        {{ toNumberFormat(Number(targetObject.area_building)) }}
+                    <WithUnitType v-if="fullArea" :unit-type="unitTypes.SQUARE_METERS">
+                        {{ fullArea }}
                     </WithUnitType>
                 </MessengerDialogPreviewRow>
                 <MessengerDialogPreviewRow label="эл-во общее" editable>
@@ -117,7 +114,7 @@
                 </MessengerDialogPreviewRow>
             </div>
         </MessengerDialogPreviewTab>
-        <MessengerDialogPreviewTab title="Проверьте цену и параметры сделки!">
+        <MessengerDialogPreviewTab v-if="showOffers" title="Проверьте цену и параметры сделки!">
             <Tabs
                 ref="tabs"
                 nav-class="messenger-dialog-preview__tabs"
@@ -175,7 +172,7 @@
 </template>
 <script setup>
 import MessengerDialogPreviewTab from '@/components/Messenger/Dialog/Preview/MessengerDialogPreviewTab.vue';
-import { computed, onMounted, ref, shallowRef, toRef, useTemplateRef } from 'vue';
+import { computed, onMounted, ref, shallowRef, toRef, useTemplateRef, watch } from 'vue';
 import MessengerDialogPreviewRow from '@/components/Messenger/Dialog/Preview/MessengerDialogPreviewRow.vue';
 import api from '@/api/api.js';
 import { plural } from '@/utils/plural.js';
@@ -199,14 +196,18 @@ import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
 import { isNullish } from '@/utils/helpers/common/isNullish.js';
 import { usePlural } from '@/composables/usePlural.js';
 
-defineEmits(['update-call']);
+const emit = defineEmits(['changed-warnings']);
 const props = defineProps({
     objectId: Number,
     object: Object,
     objectChatMemberType: String,
     opened: {
         type: Boolean,
-        default: false
+        default: true
+    },
+    showOffers: {
+        type: Boolean,
+        default: true
     }
 });
 
@@ -223,6 +224,8 @@ const objectDescriptionTabLabel = computed(() => {
 });
 
 const objectHasWarnings = computed(() => {
+    if (isNullish(targetObject.value)) return false;
+
     return (
         targetObject.value.photo?.length < 5 ||
         !targetObject.value.power ||
@@ -235,12 +238,28 @@ const objectHasWarnings = computed(() => {
     );
 });
 
+watch(
+    objectHasWarnings,
+    value => {
+        emit('changed-warnings', value);
+    },
+    { immediate: true }
+);
+
 const pluralPhotoLength = usePlural(
     toRef(() => targetObject.value.photo.length),
     '%d фотография',
     '%d фотографии',
     '%d фотографий'
 );
+
+const fullArea = computed(() => {
+    return toNumberFormat(
+        targetObject.value.is_land
+            ? targetObject.value.area_field_full
+            : targetObject.value.area_building
+    );
+});
 
 const buildingLayoutsCount = computed(() => {
     if (Array.isArray(targetObject.value.building_layouts))

@@ -23,14 +23,14 @@
                     <LazyImage class="previewer__preview" :src="slide.src" />
                 </div>
                 <template #prevButton>
-                    <HoverActionsButton class="previewer__arrow">
+                    <UiButtonIcon class="previewer__arrow">
                         <i class="fas fa-chevron-left"></i>
-                    </HoverActionsButton>
+                    </UiButtonIcon>
                 </template>
                 <template #nextButton>
-                    <HoverActionsButton class="previewer__arrow">
+                    <UiButtonIcon class="previewer__arrow">
                         <i class="fas fa-chevron-right"></i>
-                    </HoverActionsButton>
+                    </UiButtonIcon>
                 </template>
             </VueAgile>
             <div v-else class="previewer__single">
@@ -57,7 +57,7 @@ import Modal from '@/components/common/Modal.vue';
 import { computed, ref, shallowRef, useTemplateRef, watch } from 'vue';
 import { VueAgile } from 'vue-agile';
 import LazyImage from '@/components/common/LazyImage.vue';
-import HoverActionsButton from '@/components/common/HoverActions/HoverActionsButton.vue';
+import UiButtonIcon from '@/components/common/UI/UiButtonIcon.vue';
 import Button from '@/components/common/Button.vue';
 
 const slider = useTemplateRef('slider');

@@ -45,6 +45,7 @@ defineEmits([
     'create-task',
     'show-tasks'
 ]);
+
 defineProps({
     companies: {
         type: Array,
