@@ -25,7 +25,9 @@
                         </p>
                         <slot name="header"></slot>
                         <div class="modal__close" :class="{ disabled: !canBeClosed }">
+                            <slot name="header-actions" />
                             <UiTooltipIcon
+                                v-if="canBeClosed"
                                 @click.prevent="close"
                                 icon="fa-solid fa-xmark"
                                 class="icon"
@@ -107,7 +109,11 @@ const props = defineProps({
     small: Boolean,
     bodyClass: [String, Object, Array],
     footerClass: [String, Object, Array],
-    actionsClass: [String, Object, Array]
+    actionsClass: [String, Object, Array],
+    escClose: {
+        type: Boolean,
+        default: true
+    }
 });
 
 if (props.show) {
@@ -133,6 +139,8 @@ function close() {
         emit('closed');
     }
 }
+
+defineExpose({ close });
 
 const localeCanBeClosed = ref(true);
 
@@ -162,14 +170,14 @@ watch(
     visibleModel,
     (value, oldValue) => {
         if (value) {
-            document.addEventListener('keydown', escapeHandler, true);
+            if (props.escClose) document.addEventListener('keydown', escapeHandler, true);
 
             if (!scrollIsLocked.value && props.lockScroll) {
                 makeScrollLIsLock();
                 scrollIsLocked.value = true;
             }
         } else if (oldValue) {
-            document.removeEventListener('keydown', escapeHandler, true);
+            if (props.escClose) document.removeEventListener('keydown', escapeHandler, true);
 
             if (scrollIsLocked.value) {
                 unlockScroll();
@@ -190,7 +198,7 @@ function escapeHandler(event) {
 }
 
 onBeforeUnmount(() => {
-    document.removeEventListener('keydown', escapeHandler, true);
+    if (props.escClose) document.removeEventListener('keydown', escapeHandler, true);
     if (scrollIsLocked.value) unlockScroll();
 });
 </script>

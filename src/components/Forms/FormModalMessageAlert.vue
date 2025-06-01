@@ -27,7 +27,7 @@
 import Spinner from '@/components/common/Spinner.vue';
 import Modal from '@/components/common/Modal.vue';
 import UserPicker from '@/components/common/Forms/UserPicker/UserPicker.vue';
-import Stepper from '@/components/common/Stepper.vue';
+import Stepper from '@/components/common/Stepper/Stepper.vue';
 import UiTextarea from '@/components/common/Forms/UiTextarea.vue';
 import useVuelidate from '@vuelidate/core';
 import { helpers, required } from '@vuelidate/validators';

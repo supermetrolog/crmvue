@@ -100,7 +100,7 @@ import UiFormGroup from '@/components/common/Forms/UiFormGroup.vue';
 import UiTextarea from '@/components/common/Forms/UiTextarea.vue';
 import MultiSelect from '@/components/common/Forms/MultiSelect.vue';
 import UserPicker from '@/components/common/Forms/UserPicker/UserPicker.vue';
-import Stepper from '@/components/common/Stepper.vue';
+import Stepper from '@/components/common/Stepper/Stepper.vue';
 import VueDatePicker from '@vuepic/vue-datepicker';
 import { ref } from 'vue';
 import { useStore } from 'vuex';

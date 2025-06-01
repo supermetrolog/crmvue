@@ -57,11 +57,11 @@
 </template>
 <script setup>
 import EmptyData from '@/components/common/EmptyData.vue';
-import MessengerQuizElement from '@/components/Messenger/Quiz/MessengerQuizElement.vue';
+import MessengerQuizElement from '@/components/MessengerQuiz/MessengerQuizElement.vue';
 import Modal from '@/components/common/Modal.vue';
 import SurveyCard from '@/components/SurveyCard/SurveyCard.vue';
 import UiInput from '@/components/common/Forms/UiInput.vue';
-import MessengerQuizElementSkeleton from '@/components/Messenger/Quiz/MessengerQuizElementSkeleton.vue';
+import MessengerQuizElementSkeleton from '@/components/MessengerQuiz/MessengerQuizElementSkeleton.vue';
 import { useDelayedLoader } from '@/composables/useDelayedLoader.js';
 import { useInfiniteLoading } from '@/composables/useInfiniteLoading.js';
 import { useDebouncedComputed } from '@/composables/useDebouncedComputed.js';

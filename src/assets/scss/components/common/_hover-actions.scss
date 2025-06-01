@@ -8,6 +8,7 @@
     right: 0;
     top: -55px;
     margin: 5px 0;
+    will-change: opacity, max-height;
     @include mixins.transition(opacity .5s, max-height .5s);
 
     &.small {

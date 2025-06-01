@@ -18,13 +18,17 @@
                 >
                     <i v-if="isActive" class="fa-solid fa-up-long"></i>
                     <span v-if="dealType" class="messenger-quiz-form-request-picker-element__type">
-                        {{ dealType }}
+                        {{ dealType }},
                     </span>
                     <span v-if="request.minArea || request.maxArea">
                         <with-unit-type :unit-type="unitTypes.SQUARE_METERS">
                             {{ areaRange }}
                         </with-unit-type>
                     </span>
+                </span>
+                <span v-if="request.name">
+                    <span class="mr-1">|</span>
+                    <span>{{ request.name }}</span>
                 </span>
                 <UiButtonIcon
                     v-if="editable"
@@ -74,8 +78,16 @@
                         </div>
                     </template>
                 </Tooltip>
-                <span>{{ locationText }}</span>
+                <span>
+                    <span>{{ locationText }},</span>
+                    <span v-if="request.distanceFromMKAD">
+                        до {{ request.distanceFromMKAD }} км до МКАД
+                    </span>
+                </span>
             </p>
+            <p class="text-grey">Описание:</p>
+            <div v-if="request.description" v-html="request.description"></div>
+            <p v-else>Не заполнено</p>
             <div class="d-flex justify-content-between align-items-end">
                 <span
                     v-if="hasActivity"

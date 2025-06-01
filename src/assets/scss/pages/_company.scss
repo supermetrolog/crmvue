@@ -428,3 +428,67 @@
         cursor: pointer;
     }
 }
+
+.company-short-card {
+    @include mixins.flex-box($gap: 10px);
+
+    &__name {
+        font-weight: 600;
+        font-size: 16px;
+        display: inline;
+        color: inherit;
+        text-decoration: underline;
+    }
+
+    &__rating {
+        font-size: 16px;
+    }
+
+    &__site {
+        color: #2f42b5;
+        font-weight: 400;
+        @include mixins.text-overflow(1);
+    }
+
+    &__option {
+        @include mixins.text-overflow(1);
+    }
+
+    &__logo {
+        position: relative;
+
+        &.editable {
+            cursor: pointer;
+        }
+
+        &.editable::before {
+            content: '';
+            display: block;
+            opacity: 0;
+            height: 100%;
+            width: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            background-color: variables.$bg-success-l;
+            @include mixins.transition(opacity);
+        }
+
+        &.editable:hover::before {
+            opacity: 1;
+        }
+    }
+
+    &__contact {
+        border-radius: 0!important;
+        border: none!important;
+
+        &:not(:hover) {
+            background-color: #fff;
+        }
+
+        &:not(:last-child) {
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1)!important;
+        }
+    }
+}

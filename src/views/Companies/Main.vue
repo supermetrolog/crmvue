@@ -318,7 +318,8 @@ async function createTask(company) {
         additionalContent: {
             modelType: 'company',
             companyName: getCompanyName(company)
-        }
+        },
+        relations: [{ entity_type: 'company', entity_id: company.id }]
     });
 
     if (!taskPayload) return;
@@ -327,10 +328,6 @@ async function createTask(company) {
 
     try {
         const task = await api.task.create(taskPayload);
-
-        await api.task.createRelations(task.id, [
-            { entity_type: 'company', entity_id: company.id }
-        ]);
 
         notify.success('Задача успешно создана!');
 

@@ -72,12 +72,11 @@ const defaultOptions = {
     theme: 'snow',
     modules: {
         toolbar: [
-            [{ header: [false, 1, 2, 3, 4, 5, 6] }],
             ['bold', 'italic', 'underline', 'strike'],
             [{ align: '' }, { align: 'center' }, { align: 'right' }, { align: 'justify' }],
             ['blockquote'],
             [{ list: 'ordered' }, { list: 'bullet' }, { list: 'check' }],
-            [{ color: [] }, { background: [] }],
+            [{ color: [] }],
             ['link'],
             ['clean']
         ]

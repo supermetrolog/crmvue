@@ -32,7 +32,6 @@ import taskComment from '@/api/taskComment.js';
 import taskFavorite from '@/api/taskFavorite.js';
 import contactComment from '@/api/contactComment.js';
 import folder from '@/api/folder.js';
-import surveyDraft from '@/api/surveyDraft.js';
 
 export default {
     user,
@@ -68,6 +67,5 @@ export default {
     taskComment,
     taskFavorite,
     contactComment,
-    folder,
-    surveyDraft
+    folder
 };

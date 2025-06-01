@@ -58,7 +58,7 @@ export function useAsync(callable, config = {}) {
     async function execute(...args) {
         if (confirmation) {
             const confirmed = await confirm(confirmationContent);
-            if (!confirmed) return null;
+            if (!confirmed) return false;
         }
 
         return await executeDangerously(...args);

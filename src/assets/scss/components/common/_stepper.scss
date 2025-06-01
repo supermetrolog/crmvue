@@ -20,7 +20,7 @@
     }
 
     &__navigation {
-        @include mixins.flex-box($gap: 10px, $wrap: true);
+        @include mixins.flex-box($gap: 10px, $wrap: true, $a: center);
         margin-bottom: 15px;
         padding: 15px;
         background-color: #fff;
@@ -32,7 +32,7 @@
         background-color: #F5F5F5;
         border-radius: 10px;
         padding: 5px 15px;
-        color: #7B7B7B;
+        color: #2c2c2c;
         @include mixins.light-border;
         @include mixins.transition(border-color, background-color);
         @include mixins.flex-box($a: center);
@@ -52,6 +52,15 @@
             border-color: #4B8AEB;
             background-color: rgba(75, 138, 235, 0.8);
             color: #fff;
+        }
+
+        &.disabled {
+            opacity: .7;
+            pointer-events: none;
+        }
+
+        &.skip {
+            opacity: .6;
         }
     }
 

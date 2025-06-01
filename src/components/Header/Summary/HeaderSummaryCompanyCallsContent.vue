@@ -47,7 +47,6 @@ import { onMounted, reactive } from 'vue';
 import api from '@/api/api.js';
 import { useAuth } from '@/composables/useAuth.js';
 import PaginationClassic from '@/components/common/Pagination/PaginationClassic.vue';
-import { useMessenger } from '@/components/Messenger/useMessenger.js';
 import MessengerDialogCompany from '@/components/Messenger/Dialog/Company/MessengerDialogCompany.vue';
 import { messenger } from '@/const/messenger.js';
 import { useSharedMessengerStatistic } from '@/components/Messenger/useSharedMessengerStatistic.js';
@@ -56,6 +55,7 @@ import HeaderSummaryDialogsGrid from '@/components/Header/Summary/Dialogs/Header
 import HeaderSummaryEmpty from '@/components/Header/Summary/HeaderSummaryEmpty.vue';
 import { useDelayedLoader } from '@/composables/useDelayedLoader.js';
 import UiButton from '@/components/common/UI/UiButton.vue';
+import { useSurveyForm } from '@/composables/useSurveyForm.js';
 
 const emit = defineEmits(['close']);
 const props = defineProps({
@@ -99,11 +99,10 @@ onMounted(() => {
 
 // chat
 
-const { openSurvey } = useMessenger();
+const { openSurvey } = useSurveyForm();
 
-async function toSurvey(chat) {
-    const opened = await openSurvey(messenger.dialogTypes.COMPANY, chat.model.id, chat.model.id);
-
-    if (opened) emit('close');
+function toSurvey(chat) {
+    openSurvey(chat.model.id);
+    emit('close');
 }
 </script>
