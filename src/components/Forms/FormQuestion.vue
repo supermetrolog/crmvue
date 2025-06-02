@@ -3,7 +3,7 @@
         @closed="emit('close')"
         show
         :width="600"
-        :title="isEditMode ? `Редактирование вопроса ${formData.id}` : 'Создание вопроса'"
+        :title="isEditMode ? `Редактирование вопроса #${formData.id}` : 'Создание вопроса'"
     >
         <Loader v-if="isLoading" :label="isDeleting ? 'Удаление вопроса' : 'Сохранение вопроса'" />
         <UiForm>
@@ -68,7 +68,8 @@ const notify = useNotify();
 const { form, isDeletedEntity, isEditMode } = useFormData(
     reactive({
         text: null,
-        group: null
+        group: null,
+        template: null
     }),
     props.formData
 );

@@ -143,7 +143,7 @@ const closeQuestionForm = () => {
     editingQuestion.value = null;
 };
 
-const editingQuestion = shallowRef(false);
+const editingQuestion = shallowRef(null);
 const questionFormIsVisible = shallowRef(false);
 
 const questions = ref([]);
