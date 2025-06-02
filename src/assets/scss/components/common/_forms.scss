@@ -1431,6 +1431,11 @@
         .ql-toolbar {
             display: none;
         }
+
+        .ql-container.ql-snow {
+            border-top: 1px solid #ccc;
+            border-radius: 4px;
+        }
     }
 }
 

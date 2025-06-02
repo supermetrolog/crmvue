@@ -4,12 +4,6 @@
         <Loader v-if="isUpdating" label="Изменение опроса.." small class="center" />
         <SurveyCardInfo :quiz="formData" :editable="false" />
         <hr />
-        <MessengerQuizFormTemplate
-            ref="quizForm"
-            :questions="formData.questions"
-            :company-id="companyId"
-            has-available-contact
-        />
         <UiFormGroup v-if="!isLoading" class="justify-content-center mt-3 gap-2">
             <UiButton @click="submit" color="success-light" icon="fa-solid fa-check">
                 Сохранить
@@ -20,7 +14,6 @@
 </template>
 <script setup>
 import { nextTick, onMounted, ref, useTemplateRef } from 'vue';
-import MessengerQuizFormTemplate from '@/components/Messenger/Quiz/Form/Template/MessengerQuizFormTemplate.vue';
 import Spinner from '@/components/common/Spinner.vue';
 import UiForm from '@/components/common/Forms/UiForm.vue';
 import UiFormGroup from '@/components/common/Forms/UiFormGroup.vue';

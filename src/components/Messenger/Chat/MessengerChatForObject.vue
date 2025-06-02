@@ -1,6 +1,6 @@
 <template>
     <div class="messenger-chat">
-        <MessengerTabs @switch="switchTab" :current="currentTab" :tabs="tabs">
+        <MessengerTabs @switch="switchTab" :current="messenger.chatTabs.CHAT" :tabs="tabs">
             <template #quiz>
                 <MessengerChatForObjectCallTab
                     :loading="isLoading"
@@ -12,18 +12,7 @@
         <MessengerChatLoader v-if="isLoading" />
         <div v-else-if="currentPanel && currentChat" class="messenger-chat__wrapper">
             <MessengerChatHeader />
-            <AnimationTransition :speed="0.4">
-                <MessengerChatContent
-                    v-if="currentTab === messenger.chatTabs.CHAT"
-                    :disabled="isWithoutActiveContacts"
-                />
-                <MessengerQuiz
-                    v-else
-                    @completed="switchTab(messenger.chatTabs.CHAT)"
-                    :disabled="!hasActiveContact"
-                />
-            </AnimationTransition>
-            <MessengerQuizHelper ref="quizHelper" />
+            <MessengerChatContent :disabled="isWithoutActiveContacts" />
             <MessengerChatSettings ref="chatSettings" />
         </div>
         <MessengerChatEmpty v-else />
@@ -37,8 +26,6 @@ import { useStore } from 'vuex';
 import MessengerChatLoader from '@/components/Messenger/Chat/MessengerChatLoader.vue';
 import MessengerChatContent from '@/components/Messenger/Chat/MessengerChatContent.vue';
 import MessengerChatEmpty from '@/components/Messenger/Chat/MessengerChatEmpty.vue';
-import MessengerQuiz from '@/components/Messenger/Quiz/MessengerQuiz.vue';
-import AnimationTransition from '@/components/common/AnimationTransition.vue';
 import MessengerChatSettings from '@/components/Messenger/Chat/Settings/MessengerChatSettings.vue';
 import FormModalMessageAlert from '@/components/Forms/FormModalMessageAlert.vue';
 import { computed, provide, useTemplateRef, watch } from 'vue';
@@ -47,12 +34,12 @@ import { useNotify } from '@/utils/use/useNotify.js';
 import { useDelayedLoader } from '@/composables/useDelayedLoader.js';
 import { useAsyncPopup } from '@/composables/useAsyncPopup.js';
 import MessengerTabs from '@/components/Messenger/MessengerTabs.vue';
-import MessengerQuizHelper from '@/components/Messenger/Quiz/MessengerQuizHelper.vue';
 import { messenger } from '@/const/messenger.js';
 import { isActiveContact, isPersonalContact } from '@/utils/helpers/models/contact.js';
 import MessengerChatForObjectCallTab from '@/components/Messenger/Chat/MessengerChatForObjectCallTab.vue';
-import { CALL_STATUSES } from '@/components/Messenger/Quiz/useMessengerQuiz.js';
+import { CALL_STATUSES } from '@/components/MessengerQuiz/useMessengerQuiz.js';
 import MessengerChatHeader from '@/components/Messenger/Chat/Header/MessengerChatHeader.vue';
+import { useSurveyForm } from '@/composables/useSurveyForm.js';
 
 const store = useStore();
 const notify = useNotify();
@@ -65,10 +52,8 @@ const creators = {
     alert: showAlertCreator
 };
 
-const quizHelper = useTemplateRef('quizHelper');
 const chatSettings = useTemplateRef('chatSettings');
 
-const currentTab = computed(() => store.state.Messenger.currentChatTab);
 const currentDialog = computed(() => store.state.Messenger.currentDialog);
 
 const quizTabClass = computed(() => {
@@ -103,7 +88,8 @@ const tabs = computed(() => [
         class:
             !isLoading.value && currentDialog.value && currentPanel.value
                 ? quizTabClass.value
-                : 'not-selectable'
+                : 'not-selectable',
+        disabled: true
     }
 ]);
 
@@ -143,7 +129,6 @@ const editAddition = async ({
 
 provide('$createAddition', createAddition);
 provide('$editAddition', editAddition);
-provide('$toggleQuizHelper', () => quizHelper.value.toggle());
 provide('$toggleSettings', () => chatSettings.value.toggle());
 
 const currentChat = computed(() => store.state.Messenger.currentChat);
@@ -157,12 +142,12 @@ watch(
     }
 );
 
-const switchTab = tabId => {
-    if (tabId === messenger.chatTabs.CHAT) {
-        store.dispatch('Messenger/refreshMessages');
-    }
+const { openSurvey } = useSurveyForm();
 
-    store.state.Messenger.currentChatTab = tabId;
+const switchTab = tabId => {
+    if (tabId === messenger.chatTabs.SURVEY) {
+        openSurvey(currentPanel.value.id);
+    }
 };
 
 // contacts

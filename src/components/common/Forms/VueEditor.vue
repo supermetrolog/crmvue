@@ -49,7 +49,8 @@ const props = defineProps({
     toolbar: {
         type: Boolean,
         default: true
-    }
+    },
+    autofocus: Boolean
 });
 
 const defaultOptions = {
@@ -71,12 +72,11 @@ const defaultOptions = {
     theme: 'snow',
     modules: {
         toolbar: [
-            [{ header: [false, 1, 2, 3, 4, 5, 6] }],
             ['bold', 'italic', 'underline', 'strike'],
             [{ align: '' }, { align: 'center' }, { align: 'right' }, { align: 'justify' }],
             ['blockquote'],
             [{ list: 'ordered' }, { list: 'bullet' }, { list: 'check' }],
-            [{ color: [] }, { background: [] }],
+            [{ color: [] }],
             ['link'],
             ['clean']
         ]
@@ -114,6 +114,8 @@ const focus = () => {
     if (state.quill) state.quill.focus();
 };
 
+defineExpose({ focus });
+
 const initialize = () => {
     if (!editor.value) return;
 
@@ -145,6 +147,10 @@ const initialize = () => {
     });
 
     emit('ready', state.quill);
+
+    if (props.autofocus) {
+        focus();
+    }
 };
 
 onMounted(() => {

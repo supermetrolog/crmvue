@@ -16,7 +16,7 @@
                 <div
                     class="modal__container animate__animated"
                     :class="{
-                        animate__headShake: !canBeClosed
+                        animate__headShake: !localeCanBeClosed
                     }"
                 >
                     <div v-if="!hideHeader" class="modal__header">
@@ -24,14 +24,18 @@
                             {{ title }}
                         </p>
                         <slot name="header"></slot>
-                        <div class="modal__close">
-                            <i
-                                v-tippy="'Закрыть окно'"
+                        <div class="modal__close" :class="{ disabled: !canBeClosed }">
+                            <slot name="header-actions" />
+                            <UiTooltipIcon
+                                v-if="canBeClosed"
                                 @click.prevent="close"
-                                class="icon fa-solid fa-xmark"
-                            ></i>
+                                icon="fa-solid fa-xmark"
+                                class="icon"
+                                tooltip="Закрыть окно"
+                            />
                         </div>
                     </div>
+                    <slot name="before-body" />
                     <div class="modal__body" :class="bodyClass">
                         <div class="container-fluid">
                             <slot :close="close"></slot>
@@ -60,14 +64,12 @@
 import { computed, onBeforeUnmount, ref, watch } from 'vue';
 import { useTimeoutFn } from '@vueuse/core';
 import { useModalScrollLock } from '@/composables/useModalScrollLock.js';
+import UiTooltipIcon from '@/components/common/UI/UiTooltipIcon.vue';
 
 const visibleModel = defineModel('visible');
 const emit = defineEmits(['close', 'closed']);
 const props = defineProps({
-    title: {
-        type: String,
-        required: true
-    },
+    title: String,
     hasTabs: Boolean,
     relative: Boolean,
     show: Boolean,
@@ -92,6 +94,10 @@ const props = defineProps({
         default: true
     },
     customClose: Boolean,
+    canBeClosed: {
+        type: Boolean,
+        default: true
+    },
     hideHeader: Boolean,
     lockScroll: {
         type: Boolean,
@@ -100,7 +106,11 @@ const props = defineProps({
     small: Boolean,
     bodyClass: [String, Object, Array],
     footerClass: [String, Object, Array],
-    actionsClass: [String, Object, Array]
+    actionsClass: [String, Object, Array],
+    escClose: {
+        type: Boolean,
+        default: true
+    }
 });
 
 if (props.show) {
@@ -112,6 +122,8 @@ const minHeightSize = computed(() => props.minHeight + 'px');
 // close logic
 
 function close() {
+    if (!props.canBeClosed) return;
+
     if (props.customClose) {
         emit('close');
 
@@ -125,10 +137,12 @@ function close() {
     }
 }
 
-const canBeClosed = ref(true);
+defineExpose({ close });
+
+const localeCanBeClosed = ref(true);
 
 const { start: showCloseErrorAnimation } = useTimeoutFn(() => {
-    canBeClosed.value = true;
+    localeCanBeClosed.value = true;
 }, 500);
 
 function onBlackoutClick() {
@@ -137,8 +151,8 @@ function onBlackoutClick() {
 }
 
 function tryShowCloseErrorAnimation() {
-    if (canBeClosed.value) {
-        canBeClosed.value = false;
+    if (localeCanBeClosed.value) {
+        localeCanBeClosed.value = false;
         showCloseErrorAnimation();
     }
 }
@@ -153,14 +167,14 @@ watch(
     visibleModel,
     (value, oldValue) => {
         if (value) {
-            document.addEventListener('keydown', escapeHandler, true);
+            if (props.escClose) document.addEventListener('keydown', escapeHandler, true);
 
             if (!scrollIsLocked.value && props.lockScroll) {
                 makeScrollLIsLock();
                 scrollIsLocked.value = true;
             }
         } else if (oldValue) {
-            document.removeEventListener('keydown', escapeHandler, true);
+            if (props.escClose) document.removeEventListener('keydown', escapeHandler, true);
 
             if (scrollIsLocked.value) {
                 unlockScroll();
@@ -181,7 +195,7 @@ function escapeHandler(event) {
 }
 
 onBeforeUnmount(() => {
-    document.removeEventListener('keydown', escapeHandler, true);
+    if (props.escClose) document.removeEventListener('keydown', escapeHandler, true);
     if (scrollIsLocked.value) unlockScroll();
 });
 </script>

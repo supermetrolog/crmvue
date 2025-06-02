@@ -326,8 +326,6 @@ const { isLoading: enableIsLoading, execute: enableCompany } = useAsync(api.comp
         notify.success('Компания успешно восстановлена.');
         COMPANY.value.status = 1;
         COMPANY.value.status.passive_why = null;
-
-        console.log(store.state.company);
     },
     confirmation: true,
     confirmationContent: {

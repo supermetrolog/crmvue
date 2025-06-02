@@ -8,11 +8,15 @@ const URL = '/surveys';
 
 export default {
     async create(options) {
-        const response = await axios.postForm(URL + '/with-survey-question-answer', options);
+        const response = await axios.postForm(URL, options);
         return responseToData(response);
     },
     async get(id) {
         const response = await axios.get(`${URL}/${id}/with-questions`);
+        return responseToData(response);
+    },
+    async findDraftByChatMemberId(chatMemberId) {
+        const response = await axios.get(`${URL}/draft-by-chat-member/${chatMemberId}`);
         return responseToData(response);
     },
     async list(params) {
@@ -29,6 +33,14 @@ export default {
     },
     async updateWithAnswers(id, payload) {
         const response = await axios.putForm(`${URL}/${id}/with-survey-question-answer`, payload);
+        return responseToData(response);
+    },
+    async complete(id) {
+        const response = await axios.post(`${URL}/${id}/complete`);
+        return responseToData(response);
+    },
+    async cancel(id) {
+        const response = await axios.post(`${URL}/${id}/cancel`);
         return responseToData(response);
     }
 };

@@ -197,12 +197,13 @@ import OfferTableItem from '@/components/Offer/TableItem/OfferTableItem.vue';
 import OfferTableItemCall from '@/components/Offer/TableItem/OfferTableItemCall.vue';
 import { useMessenger } from '@/components/Messenger/useMessenger.js';
 import { getLinkPDF } from '@/utils/url.js';
-import { messenger, objectChatMemberTypes } from '@/const/messenger.js';
+import { messenger } from '@/const/messenger.js';
 import OfferTableItemAdv from '@/components/Offer/TableItem/OfferTableItemAdv.vue';
 import UiTooltip from '@/components/common/UI/UiTooltip.vue';
 import UiButton from '@/components/common/UI/UiButton.vue';
 import UiButtonIcon from '@/components/common/UI/UiButtonIcon.vue';
 import UserFoldersDropdown from '@/components/UserFolder/UserFoldersDropdown.vue';
+import { useSurveyForm } from '@/composables/useSurveyForm.js';
 
 const emit = defineEmits([
     'favorite-deleted',
@@ -234,7 +235,7 @@ const props = defineProps({
 const { isLoading: blocksIsLoading } = useDelayedLoader();
 const { isLoading: relationsIsLoading } = useDelayedLoader();
 const store = useStore();
-const { openChat, openSurvey } = useMessenger();
+const { openChat } = useMessenger();
 
 const currentRelationTab = shallowRef(null);
 const relatedOffers = shallowRef([]);
@@ -324,31 +325,10 @@ const hideBlocks = () => {
 const openInChat = () =>
     openChat(props.offer.company_id, props.offer.object_id, messenger.dialogTypes.OBJECT);
 
+const { openSurvey } = useSurveyForm();
+
 const openInSurvey = () => {
-    let offerType;
-    const dealType = props.offer.deal_type ?? dealOptions.typeStatement.RENT;
-
-    switch (dealType) {
-        case dealOptions.typeStatement.RENT:
-            offerType = objectChatMemberTypes.RENT_OR_SALE;
-            break;
-        case dealOptions.typeStatement.SALE:
-            offerType = objectChatMemberTypes.RENT_OR_SALE;
-            break;
-        case dealOptions.typeStatement.STORAGE:
-            offerType = objectChatMemberTypes.STORAGE;
-            break;
-        case dealOptions.typeStatement.SUBLEASE:
-            offerType = objectChatMemberTypes.SUBLEASE;
-            break;
-    }
-
-    openSurvey(
-        messenger.dialogTypes.OBJECT,
-        props.offer.object_id,
-        props.offer.company_id,
-        offerType
-    );
+    openSurvey(props.offer.company_id);
 };
 
 const openPDF = () => {

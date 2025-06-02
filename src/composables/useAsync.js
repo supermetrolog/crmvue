@@ -58,9 +58,13 @@ export function useAsync(callable, config = {}) {
     async function execute(...args) {
         if (confirmation) {
             const confirmed = await confirm(confirmationContent);
-            if (!confirmed) return null;
+            if (!confirmed) return false;
         }
 
+        return await executeDangerously(...args);
+    }
+
+    async function executeDangerously(...args) {
         if (abortBeforeFetch) abort();
 
         setLoading(true);
@@ -113,6 +117,7 @@ export function useAsync(callable, config = {}) {
         abort,
         error,
         data,
-        execute
+        execute,
+        executeDangerously
     };
 }

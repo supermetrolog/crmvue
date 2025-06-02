@@ -5,16 +5,21 @@ import { useAuth } from '@/composables/useAuth.js';
 
 const editTimeLimit = 60 * 12;
 
-export function useSurveyEditing(survey) {
+export function useSurveyEditing(survey, options = {}) {
     const { currentUserIsAdmin, currentUserId } = useAuth();
+
+    const { adminCanEdit = true } = options;
 
     const remainingTimeInMinutes = computed(() => {
         if (!toValue(survey)) return 0;
-        return editTimeLimit - dayjs().diff(dayjsFromMoscow(toValue(survey).created_at), 'minute');
+        return (
+            editTimeLimit - dayjs().diff(dayjsFromMoscow(toValue(survey).completed_at), 'minute')
+        );
     });
 
     const remainingTimeLabel = computed(() => {
-        if (remainingTimeInMinutes.value <= 0 || currentUserIsAdmin.value) return null;
+        if (remainingTimeInMinutes.value <= 0 || (currentUserIsAdmin.value && adminCanEdit))
+            return null;
 
         if (remainingTimeInMinutes.value < 60) return `${remainingTimeInMinutes.value} мин.`;
 
@@ -28,7 +33,7 @@ export function useSurveyEditing(survey) {
             _survey &&
             !_survey.related_survey_id &&
             ((_survey.user_id === currentUserId.value && remainingTimeInMinutes.value > 0) ||
-                currentUserIsAdmin.value)
+                (currentUserIsAdmin.value && adminCanEdit))
         );
     });
 

@@ -88,7 +88,7 @@ import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
 import { computed } from 'vue';
 import { dayjsFromMoscow, toDateFormat } from '@/utils/formatters/date.js';
 import dayjs from 'dayjs';
-import { CALL_STATUSES } from '@/components/Messenger/Quiz/useMessengerQuiz.js';
+import { CALL_STATUSES } from '@/components/MessengerQuiz/useMessengerQuiz.js';
 
 defineEmits(['to-chat', 'to-survey']);
 const props = defineProps({

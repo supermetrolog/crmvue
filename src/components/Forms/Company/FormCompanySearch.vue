@@ -249,13 +249,19 @@
                             false-title="Только пассив"
                             vertical
                         />
-                        <DoubleInput
-                            v-model:first="form.dateStart"
-                            v-model:second="form.dateEnd"
-                            label="Дата внесения"
-                            class="col-6"
-                            type="date"
-                            :validators="formDateValidators"
+                        <UiDateInput
+                            v-model="form.dateStart"
+                            placeholder="Дата внесения"
+                            label="Внесено после"
+                            :max-date="new Date()"
+                            class="col-3"
+                        />
+                        <UiDateInput
+                            v-model="form.dateEnd"
+                            placeholder="Дата внесения"
+                            label="Внесено до"
+                            class="col-3"
+                            :min-date="form.dateStart"
                         />
                     </UiFormGroup>
                 </UiForm>
@@ -275,7 +281,6 @@ import {
     ActivityProfileList,
     CompanyCategories
 } from '@/const/const.js';
-import { maxDate } from '@//validators';
 import DoubleInput from '@/components/common/Forms/DoubleInput.vue';
 import { deleteEmptyFields } from '@/utils/helpers/object/deleteEmptyFields.js';
 import Modal from '@/components/common/Modal.vue';
@@ -304,6 +309,8 @@ import { isArray } from '@/utils/helpers/array/isArray.js';
 import { isEmptyArray } from '@/utils/helpers/array/isEmptyArray.js';
 import { companyOptions } from '@/const/options/company.options.js';
 import { toDateFormat } from '@/utils/formatters/date.js';
+import UiDateInput from '@/components/common/Forms/UiDateInput.vue';
+import dayjs from 'dayjs';
 
 const route = useRoute();
 const router = useRouter();
@@ -311,14 +318,6 @@ const router = useRouter();
 const emit = defineEmits(['search', 'reset']);
 
 const extraIsVisible = shallowRef(false);
-
-const formDateValidators = computed(() => [
-    {
-        func: maxDate(form.dateEnd),
-        message: 'Дата ОТ не может быть позже ДО',
-        property: 'first'
-    }
-]);
 
 const setQueryFields = async () => {
     Object.assign(form, route.query);
@@ -363,7 +362,18 @@ const { resetForm, form } = useSearchForm(
     {
         submit: onSubmit,
         syncWithQuery: true,
-        setQuery: setQueryFields
+        setQuery: setQueryFields,
+        transform: value => {
+            if (value.dateStart) {
+                value.dateStart = dayjs(value.dateStart).toJSON();
+            }
+
+            if (value.dateEnd) {
+                value.dateEnd = dayjs(value.dateEnd).toJSON();
+            }
+
+            return value;
+        }
     }
 );
 

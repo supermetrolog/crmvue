@@ -2,7 +2,7 @@
     <div class="messenger-quiz-question-template-offer" :class="{ disabled: disabled }">
         <div class="messenger-quiz-question-template-offer__body">
             <SurveyQuestionObjectPreview @show-preview="$emit('show-preview')" :object />
-            <SurveyQuestionObjectContent :object />
+            <SurveyFormObjectContent :object />
             <div class="messenger-quiz-question-template-offer__actions">
                 <UiButtonIcon
                     @click.stop="$emit('object-sold')"
@@ -24,7 +24,7 @@
 </template>
 <script setup>
 import SurveyQuestionObjectPreview from '@/components/Survey/QuestionOfferMix/SurveyQuestionObjectPreview.vue';
-import SurveyQuestionObjectContent from '@/components/Survey/QuestionOfferMix/SurveyQuestionObjectContent.vue';
+import SurveyFormObjectContent from '@/components/SurveyForm/Object/SurveyFormObjectContent.vue';
 import UiButtonIcon from '@/components/common/UI/UiButtonIcon.vue';
 
 defineEmits(['show-preview', 'object-sold', 'object-destroyed']);

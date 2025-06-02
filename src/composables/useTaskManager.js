@@ -3,9 +3,9 @@ import { useStore } from 'vuex';
 
 export const TASK_FORM_STEPS = {
     USER: 0,
-    DATE: 1,
-    MESSAGE: 2,
-    OBSERVERS: 3
+    OBSERVERS: 1,
+    DATE: 2,
+    MESSAGE: 3
 };
 
 export function useTaskManager() {
