@@ -303,16 +303,30 @@ const routes = [
         },
         component: () => import('../views/Calls.vue')
     },
-    // {
-    //     path: '/surveys',
-    //     name: 'surveys',
-    //     meta: {
-    //         layout: 'default',
-    //         auth: { isAuth: true },
-    //         title: 'Опросы'
-    //     },
-    //     component: () => import('../views/Surveys.vue')
-    // },
+    {
+        path: '/surveys',
+        name: 'surveys-main',
+        meta: {
+            layout: 'default',
+            auth: { isAuth: true },
+            title: 'Список опросов'
+        },
+        children: [
+            {
+                path: '',
+                name: 'surveys',
+                component: () => import('../views/Surveys/Surveys.vue')
+            },
+            {
+                path: 'drafts',
+                name: 'survey-drafts',
+                meta: {
+                    title: ['Черновики', 'Список опросов']
+                },
+                component: () => import('../views/Surveys/Drafts.vue')
+            }
+        ]
+    },
     {
         path: '/:catchAll(.*)',
         name: 'notfound',

@@ -1,4 +1,5 @@
 import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
+import { captureException } from '@sentry/vue';
 
 export const LOCALSTORAGE_PREFIX = 'plr:';
 export const LS_USER_KEY = 'user';
@@ -47,8 +48,7 @@ export function getUserFromLocalStorage() {
     try {
         return JSON.parse(json);
     } catch (e) {
-        // TODO: Create ConsoleLogger
-        console.log(e);
+        captureException(e);
     }
 
     return null;

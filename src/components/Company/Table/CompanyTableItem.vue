@@ -224,10 +224,11 @@ import MessengerDialogLastMessage from '@/components/Messenger/Dialog/MessengerD
 import UiDropdownActions from '@/components/common/UI/UiDropdownActions.vue';
 import UiDropdownActionsButton from '@/components/common/UI/UiDropdownActionsButton.vue';
 import UiButton from '@/components/common/UI/UiButton.vue';
+import { useSurveyForm } from '@/composables/useSurveyForm.js';
 
 const store = useStore();
 const router = useRouter();
-const { openChat, openSurvey } = useMessenger();
+const { openChat } = useMessenger();
 
 defineEmits([
     'deleted-from-folder',
@@ -303,8 +304,10 @@ const openInChat = () => {
     openChat(props.company.id, props.company.id, messenger.dialogTypes.COMPANY);
 };
 
+const { openSurvey } = useSurveyForm();
+
 const openInSurvey = () => {
-    openSurvey(messenger.dialogTypes.COMPANY, props.company.id, props.company.id);
+    openSurvey(props.company.id);
 };
 
 useTippyText(useTemplateRef('passiveWhyCommentEl'), passiveWhyComment);

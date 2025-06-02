@@ -97,7 +97,7 @@ import EmptyData from '@/components/common/EmptyData.vue';
 import Spinner from '@/components/common/Spinner.vue';
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
 import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
-import MessengerQuizEditableQuestion from '@/components/Messenger/Quiz/Question/MessengerQuizEditableQuestion.vue';
+import MessengerQuizEditableQuestion from '@/components/MessengerQuiz/Question/MessengerQuizEditableQuestion.vue';
 import { useStore } from 'vuex';
 import FormQuestion from '@/components/Forms/FormQuestion.vue';
 import { useAuth } from '@/composables/useAuth.js';

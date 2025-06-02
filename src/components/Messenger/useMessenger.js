@@ -1,4 +1,5 @@
 import { hasInjectionContext, inject, provide, shallowRef } from 'vue';
+import { captureException } from '@sentry/vue';
 
 const OPEN_MESSENGER_CHAT_INJECTION_KEY = '$openMessengerChat';
 const OPEN_CHAT_INJECTION_KEY = '$openChat';
@@ -19,7 +20,7 @@ export function createMessengerContext(element) {
             try {
                 isOpened = await handler(...props);
             } catch (e) {
-                console.log(e);
+                captureException(e);
             } finally {
                 isOpening.value = false;
             }

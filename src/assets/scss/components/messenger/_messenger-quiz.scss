@@ -109,22 +109,6 @@
     }
 
     &__disabled {
-        position: absolute;
-        top: 0;
-        left: 0;
-        height: 100%;
-        width: 100%;
-        background-color: variables.$bg-gray-l;
-        backdrop-filter: blur(2px);
-        z-index: 5;
-        color: #fff;
-        @include mixins.flex-box($a: center, $j: center, $d: column, $gap: 5px);
-    }
-
-    &__disabled-body {
-        background-color: variables.$color_danger;
-        color: #fff;
-
         .icon {
             font-size: 70px;
             opacity: .5;
@@ -506,17 +490,22 @@
 
 .messenger-quiz-contact {
     background-color: variables.$color_grey_light;
-    padding: 10px;
+    padding: 5px 10px;
     border-radius: 5px;
     flex-shrink: 0;
     cursor: pointer;
     border: 1px solid rgba(0, 0, 0, .2);
+    position: relative;
     @include mixins.flex-box($gap: 5px, $j: space-between);
     @include mixins.transition(background-color, color);
 
     &.disabled {
         opacity: .4;
         pointer-events: none;
+    }
+
+    &.main {
+        border: 2px solid variables.$color_warning;
     }
 
     &:hover, &.active {
@@ -534,11 +523,19 @@
                     background-color: variables.$bg-danger-m;
                 }
             }
+
+            &__calls, &__icon {
+                color: #fff!important;
+            }
+        }
+
+        &.main {
+            border-color: rgba(0, 0, 0, .2)!important;
         }
     }
 
     &__actions {
-        @include mixins.flex-box($gap: 3px, $d: column);
+        @include mixins.flex-box($gap: 5px);
     }
 
     &__username {
@@ -552,8 +549,17 @@
         @include mixins.transition(color);
     }
 
+    &__icon {
+        @include mixins.transition(color);
+    }
+
     &__staff {
         font-size: 13px;
+    }
+
+    &__calls {
+        font-size: 14px;
+        @include mixins.transition(color);
     }
 
     &__email {
@@ -757,6 +763,139 @@
 
     &__empty {
         @include mixins.flex-box($a: center, $j: center, $gap: 10px);
+    }
+}
+
+.survey-form {
+    & > .modal__container {
+        height: 100vh;
+
+        & > .modal__header {
+            background-color: #29333d;
+            color: #fff;
+            font-size: 18px;
+            font-weight: 400;
+
+            & > .modal__close {
+                color: #fff!important;
+            }
+        }
+
+        & > .modal__body {
+            flex-grow: 1;
+
+            & > .container-fluid {
+                height: 100%;
+            }
+        }
+    }
+
+    &__wrapper {
+        height: 100%;
+    }
+
+    &__header {
+        font-size: 13px;
+        padding: 10px 15px 5px;
+        border-bottom: 1px solid rgba(0, 0, 0, .1);
+        overflow-y: auto;
+        max-height: 140px;
+        flex-shrink: 0;
+    }
+
+    &__stepper {
+        height: 100%;
+        @include mixins.flex-box($d: column);
+
+        .stepper__body {
+            flex-grow: 1;
+            padding: 7px;
+            overflow-y: auto;
+        }
+
+        .stepper__item {
+            max-height: 100%;
+            height: 100%;
+        }
+
+        .stepper__navigation {
+            padding: 7px;
+        }
+
+        .stepper__footer {
+            padding: 7px;
+        }
+    }
+
+    &__footer {
+        justify-content: flex-start;
+    }
+
+    .splitpanes__splitter {
+        border: 1px solid #eee;
+        background-color: variables.$color_grey_light!important;
+        width: 14px!important;
+        margin: 0 3px!important;
+        @include mixins.transition(background-color);
+
+        &:hover {
+            background-color: variables.$bg-primary-l!important;
+        }
+
+        &:before, &:after {
+            background-color: #000!important;
+        }
+    }
+
+    .splitpanes__pane {
+        background-color: transparent!important;
+        overflow-x: visible;
+        overflow-y: auto;
+    }
+}
+
+.survey-form-header-company {
+    position: relative;
+
+    &__actions {
+        position: absolute;
+        top: 0;
+        right: 0;
+        @include mixins.flex-box($gap: 5px, $a: center);
+    }
+
+    &__tabs {
+        .tabs-component-tabs {
+            gap: 0 10px;
+        }
+
+        .tabs-component-panels {
+            padding: 10px 0!important;
+            max-height: 190px;
+            overflow-y: auto;
+        }
+
+        .company-preview-tab {
+            font-size: 14px;
+            padding: 5px 7px;
+        }
+    }
+}
+
+.survey-form-objects {
+    height: 100%;
+    overflow-y: auto;
+
+    &__list {
+        min-width: 515px;
+        overflow-y: auto;
+        height: calc(100% - 35px);
+        padding-right: 5px;
+        @include mixins.flex-box($gap: 5px, $d: column);
+    }
+
+    &__element {
+        flex-shrink: 0;
     }
 }
 
@@ -1110,12 +1249,6 @@
         border-radius: 4px 0 0 4px;
     }
 
-    .messenger-quiz-question-template-offer {
-        .ui-field {
-            font-weight: 400;
-        }
-    }
-
     &__address {
         @include mixins.text-overflow();
     }
@@ -1131,22 +1264,67 @@
     }
 }
 
-.messenger-quiz-question-template-offer {
-    font-size: 13px;
+.survey-form-object {
+    font-size: 14px;
     background-color: #fff;
     border: 1px solid rgba(0, 0, 0, .1);
     border-radius: 5px;
-    padding: 3px 5px;
 
     &.disabled {
         opacity: .5;
     }
 
-    &__body {
-        position: relative;
-        @include mixins.flex-box($gap: 5px);
+    &:first-child {
+        .hover-actions {
+            top: unset;
+            z-index: 10;
+            right: 40px;
+        }
     }
 
+    &__body {
+        padding: 3px 5px;
+        position: relative;
+        cursor: pointer;
+        will-change: background-color;
+        overflow: hidden;
+        @include mixins.flex-box($gap: 5px);
+        @include mixins.transition(background-color .3s, color .3s);
+
+        &.success {
+            background: -webkit-linear-gradient(90deg, #10B981, #ffffff);
+            background: linear-gradient(90deg, #10B981, #ffffff);
+        }
+
+        &.danger {
+            background: -webkit-linear-gradient(90deg, #F93154, #ffffff);
+            background: linear-gradient(90deg, #F93154, #ffffff);
+        }
+
+        &.warning {
+            background: -webkit-linear-gradient(90deg, #F88F01, #ffffff);
+            background: linear-gradient(90deg, #F88F01, #ffffff);
+        }
+
+        &.disabled {
+            opacity: .3;
+        }
+    }
+
+    &:hover &__body, &__body.active {
+        background: #76a3ea!important;
+        color: #fff;
+
+        .survey-form-object {
+            &__action {
+                background-color: variables.$color_grey_light;
+            }
+
+            &__offer {
+                color: #30f126;
+            }
+        }
+    }
     &__preview {
         width: 170px;
         min-width: 170px;
@@ -1156,6 +1334,26 @@
         .offer-table-item-motion-slider img {
             height: 100%;
         }
+
+        .offer-table-item-preview__button {
+            opacity: .5;
+            will-change: opacity;
+        }
+
+        .messenger-dialog-offer__id {
+            color: #000;
+            will-change: opacity;
+
+            &:hover {
+                opacity: 1;
+            }
+        }
+
+        &:hover {
+            .offer-table-item-preview__button {
+                opacity: 1;
+            }
+        }
     }
 
     &__preview-header {
@@ -1163,6 +1361,7 @@
         top: 1px;
         left: 1px;
         z-index: 5;
+        width: calc(100% - 2px);
         @include mixins.flex-box($gap: 3px, $a: center);
     }
 
@@ -1188,7 +1387,7 @@
     }
 
     &__address {
-        @include mixins.text-overflow(3, break-all);
+        @include mixins.text-overflow(2, break-all);
 
         .tooltip {
             margin-right: 5px;
@@ -1218,6 +1417,15 @@
         top: 5px;
         right: 5px;
         @include mixins.flex-box($d: column, $gap: 4px);
+    }
+
+    &__offer {
+        color: #05865f;
+        @include mixins.transition(color);
+    }
+
+    &__checkbox {
+        border-bottom: 1px solid rgba(0, 0, 0, .1);
     }
 }
 
@@ -1295,7 +1503,7 @@
     }
 }
 
-.messenger-quiz-question-call, .messenger-quiz-question-card {
+.messenger-quiz-question-card {
     background-color: #f8f8f8;
     border: 1px solid rgba(0, 0, 0, .1);
     border-left: 6px solid variables.$color_danger;
@@ -1312,14 +1520,6 @@
 }
 
 .messenger-quiz-question-call {
-    &:not(&.active):not(&.passive) {
-        background-color: #fde4d1;
-
-        .messenger-quiz-question__contact {
-            color: #248e33;
-        }
-    }
-
     &__radio {
         .form__row {
             gap: 0;
@@ -1350,9 +1550,12 @@
     }
 
     &__schedule {
-        border: 1px solid #a8a8a8;
+        border: 1px solid #d1d5db;
         box-shadow: none;
-        line-height: 1.1;
+        border-radius: 0;
+        height: 100%;
+        padding: 5px 15px;
+        min-height: 35px;
     }
 }
 
@@ -1451,5 +1654,272 @@
         width: calc(20% - 4px);
         border: 1px solid rgba(0, 0, 0, .1);
         border-radius: 5px;
+    }
+}
+
+.survey-form-object-preview {
+    padding-right: 5px;
+    padding-left: 5px;
+
+    &__header {
+        @include mixins.flex-box($a: center, $j: space-between);
+    }
+
+    &__address {
+        @include mixins.text-overflow(1);
+    }
+
+    &__slides {
+        overflow-x: auto;
+        @include mixins.flex-box($gap: 2px);
+    }
+
+    &__slide {
+        flex-shrink: 0;
+        height: 110px;
+        cursor: pointer;
+        will-change: opacity;
+        @include mixins.transition(opacity);
+        @include mixins.light-border;
+
+        &:hover {
+            opacity: .8;
+        }
+    }
+
+    &__image {
+        object-fit: cover;
+        height: 100%;
+        width: 100%;
+    }
+
+    &__tabs {
+        margin-bottom: 5px;
+        @include mixins.flex-box($gap: 10px, $a: center);
+    }
+
+    &__tab {
+        font-weight: 500;
+        color: #7c7c86;
+        display: inline-block;
+        background-color: transparent;
+        border: none;
+        width: auto;
+        cursor: pointer;
+        padding: 0;
+        @include mixins.transition(color);
+
+        &.active, &:hover {
+            color: rgb(0, 142, 57);
+        }
+    }
+
+    &__list {
+        @include mixins.flex-box($gap: 5px, $d: column);
+    }
+}
+
+.survey-form-object-preview-offer {
+    background-color: #F5F5F5;
+    border: 1px solid rgba(0, 0, 0, .1);
+    will-change: opacity;
+    @include mixins.flex-box($gap: 10px, $a: center);
+    @include mixins.transition(opacity, padding);
+
+    &.success {
+        padding: 5px;
+        background: -webkit-linear-gradient(90deg, #10B981, #ffffff);
+        background: linear-gradient(90deg, #10B981, #ffffff);
+    }
+
+    &--new {
+        padding: 5px;
+    }
+
+    &.fail {
+        padding: 5px;
+        background: -webkit-linear-gradient(90deg, #F93154, #ffffff);
+        background: linear-gradient(90deg, #F93154, #ffffff);
+    }
+
+    &.editing {
+        padding: 5px;
+        background: -webkit-linear-gradient(90deg, #F88F01, #ffffff);
+        background: linear-gradient(90deg, #F88F01, #ffffff);
+    }
+
+    &:hover {
+        opacity: 1;
+    }
+
+    &__wrapper {
+        flex-grow: 1;
+        max-width: calc(100% - 135px);
+    }
+
+    &__content {
+        display: grid;
+        grid-template-columns: 2fr 3fr 2fr 3fr;
+    }
+
+    &__block {
+        background-color: #F5F5F5;
+        padding: 5px;
+    }
+
+    &__block:nth-child(2n) {
+        background-color: #fff;
+    }
+
+    &__parameters {
+        padding: 0;
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        border-left: 1px solid rgba(0, 0, 0, .1);
+        border-top: 1px solid rgba(0, 0, 0, .1);
+    }
+
+    &__parameter {
+        padding: 5px;
+        border-right: 1px solid rgba(0, 0, 0, .1);
+        border-bottom: 1px solid rgba(0, 0, 0, .1);
+        @include mixins.flex-box($a: center, $j: center, $gap: 1px, $d: column);
+    }
+
+    &__editor {
+        .ql-container.ql-snow {
+            max-width: 100%;
+            background-color: #fff;
+            border-radius: 2px!important;
+        }
+    }
+
+    &__actions {
+        @include mixins.flex-box($gap: 5px);
+        padding: 5px;
+        width: 125px;
+    }
+}
+
+.survey-form-calls {
+    position: relative;
+
+    &__list {
+        @include mixins.flex-box($gap: 5px, $d: column);
+    }
+}
+
+.survey-form-contact {
+    z-index: 9;
+    @include mixins.flex-box($gap: 10px);
+
+
+    &__element {
+        width: 350px;
+
+        &.completed {
+            background-color: variables.$bg-success-l;
+        }
+
+        &.active, &:hover {
+            background-color: #76a3ea!important;
+            color: #fff!important;
+        }
+    }
+
+    &__form {
+        position: absolute;
+        left: 380px;
+        width: calc(100% - 380px);
+        z-index: 4010;
+    }
+
+    &__result {
+        height: 55px;
+        @include mixins.flex-box($a: center, $gap: 10px);
+    }
+
+    &__result-arrow {
+        font-size: 26px;
+    }
+
+    &__block {
+        background-color: variables.$color_grey_light;
+        padding: 5px 10px;
+        border-radius: 5px;
+        flex-shrink: 0;
+        border: 1px solid rgba(0, 0, 0, .2);
+        flex-grow: 0;
+    }
+}
+
+.survey-form-contact-form {
+    background-color: variables.$color_grey_light;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+
+    &__preview {
+        padding: 10px;
+        border-radius: 5px;
+        background-color: #fff;
+    }
+
+    &__phone {
+        background-color: variables.$color_light;
+        font-size: 14px;
+        padding: 2px 5px;
+        border-radius: 5px;
+        cursor: unset;
+    }
+}
+
+.survey-form-contact-form-card {
+    &__username {
+        font-size: 20px;
+        font-weight: 500;
+    }
+
+    &__staff {
+        font-size: 15px;
+    }
+
+    &__contacts {
+        font-size: 15px;
+    }
+
+    &__calls {
+        font-size: 15px;
+    }
+
+    &__icon {
+        background-color: #000;
+        border-radius: 50%;
+        color: #fff;
+        padding: 7px;
+        font-size: 14px;
+    }
+}
+
+.survey-form-contact-form-call {
+    &__question {
+        padding: 10px;
+        border-radius: 3px;
+        border: 2px solid variables.$cl-success;
+        display: inline-flex;
+        gap: 15px;
+        align-items: center;
+    }
+
+    &__question-text {
+        color: variables.$cl-success;
+        font-size: 26px;
+        font-weight: 500;
+    }
+}
+
+.survey-table-item {
+    &__id {
+      vertical-align: top;
     }
 }

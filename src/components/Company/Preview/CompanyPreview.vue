@@ -24,24 +24,7 @@
                 </div>
             </div>
             <div class="company-preview__tabs">
-                <Tabs nav-item-link-class="company-preview-tab dashboard-chip">
-                    <Tab name="Описание">
-                        <p v-if="company.description">{{ company.description }}</p>
-                        <p v-else>Описание не заполнено</p>
-                    </Tab>
-                    <Tab name="Адрес">
-                        <p v-if="company.officeAdress">
-                            {{ company.officeAdress }}
-                        </p>
-                        <p v-else>Не указан</p>
-                    </Tab>
-                    <Tab name="Ревизиты">
-                        <CompanyPreviewRequisites :company />
-                    </Tab>
-                    <Tab name="Документы">
-                        <CompanyPreviewDocuments :files="company.files" />
-                    </Tab>
-                </Tabs>
+                <CompanyTabs :company />
             </div>
         </div>
         <teleport to="body">
@@ -72,12 +55,9 @@ import CompanyLogo from '@/components/Company/CompanyLogo.vue';
 import FormCompanyLogo from '@/components/Forms/Company/FormCompanyLogo.vue';
 import Modal from '@/components/common/Modal.vue';
 import { useNotify } from '@/utils/use/useNotify.js';
-import Tab from '@/components/common/Tabs/Tab.vue';
-import Tabs from '@/components/common/Tabs/Tabs.vue';
 import { toCorrectUrl } from '@/utils/formatters/string.js';
-import CompanyPreviewRequisites from '@/components/Company/Preview/CompanyPreviewRequisites.vue';
-import CompanyPreviewDocuments from '@/components/Company/Preview/CompanyPreviewDocuments.vue';
 import CompanyPreviewHeader from '@/components/Company/Preview/CompanyPreviewHeader.vue';
+import CompanyTabs from '@/components/CompanyTabs/CompanyTabs.vue';
 
 const emit = defineEmits(['start-editing', 'logo-updated']);
 const props = defineProps({

@@ -158,7 +158,7 @@
     </UiModal>
 </template>
 <script setup>
-import Stepper from '@/components/common/Stepper.vue';
+import Stepper from '@/components/common/Stepper/Stepper.vue';
 import DatePicker from '@/components/common/Forms/DatePicker/DatePicker.vue';
 import Spinner from '@/components/common/Spinner.vue';
 import UserPicker from '@/components/common/Forms/UserPicker/UserPicker.vue';

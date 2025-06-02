@@ -24,7 +24,9 @@ export default {
         return responseToData(response);
     },
     async getWithAnswers() {
-        const response = await axios.get(`${URL}/with-question-answer`);
+        const response = await axios.get(`${URL}/with-question-answer`, {
+            params: { 'per-page': 40 }
+        });
         return responseToPaginatedData(response);
     },
     async getAnswers(page = 1) {

@@ -37,6 +37,7 @@
     "linkifyjs": "^4.2.0",
     "maska": "^1.4.2",
     "quill": "^2.0.2",
+    "splitpanes": "^4.0.4",
     "ua-parser-js": "^1.0.39",
     "v-dropdown": "^3.4.0",
     "v-lazy-image": "^2.1.1",

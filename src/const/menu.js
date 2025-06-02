@@ -79,6 +79,28 @@ export const menu = [
     //     key: 'equipments'
     // },
     {
+        id: 12,
+        name: 'Опросы',
+        icon: 'fa-solid fa-square-poll-horizontal',
+        url: '/surveys',
+        key: 'surveys',
+        internal: [
+            {
+                id: 0,
+                name: 'Список',
+                url: '/surveys',
+                icon: 'fa-solid fa-square-poll-horizontal',
+                exact: true
+            },
+            {
+                id: 1,
+                name: 'Черновики',
+                url: '/surveys/drafts',
+                icon: 'fa-solid fa-pen-ruler'
+            }
+        ]
+    },
+    {
         id: 10,
         name: 'Звонки',
         icon: 'fa-solid fa-phone-volume',
@@ -91,13 +113,6 @@ export const menu = [
     //     icon: 'fa-solid fa-calendar-days',
     //     url: '/calendar',
     //     key: 'calendar'
-    // },
-    // {
-    //     id: 10,
-    //     name: 'Опросы',
-    //     icon: 'fa-solid fa-square-poll-horizontal',
-    //     url: '/surveys',
-    //     key: 'surveys'
     // },
     {
         id: 11,

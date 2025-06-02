@@ -69,6 +69,7 @@ import Spinner from '@/components/common/Spinner.vue';
 import TaskCardRelationsRow from '@/components/TaskCard/Relations/TaskCardRelationsRow.vue';
 import TaskCardRelationsModalCompany from '@/components/TaskCard/Relations/TaskCardRelationsModalCompany.vue';
 import TaskCardRelationsPreviewCompany from '@/components/TaskCard/Relations/TaskCardRelationsPreviewCompany.vue';
+import { captureException } from '@sentry/vue';
 
 const emit = defineEmits(['count-changed', 'to-company', 'show-contacts']);
 const props = defineProps({
@@ -97,7 +98,9 @@ async function fetchTaskRelations() {
         relations.value = await api.task.getRelations(props.task.id);
     } catch (error) {
         isError.value;
-        // TODO: log sentry
+        captureException(error, {
+            task_id: props.task.id
+        });
     } finally {
         isLoading.value = false;
     }

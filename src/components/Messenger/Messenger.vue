@@ -179,11 +179,12 @@ const openChatByID = async chatMemberID => {
         }
         case 'user': {
             params.userID = dialog.model.id;
-            store.commit('Messenger/setCurrentAsidePanel', messenger.tabs.USERS);
             store.state['Messenger/currentContentPanel'] = messenger.tabs.USERS;
             break;
         }
     }
+
+    store.commit('Messenger/setCurrentAsidePanel', dialog.model_type);
 
     store.state['Messenger/currentPanel'] = null;
     currentAsideTab.name = dialog.model_type;

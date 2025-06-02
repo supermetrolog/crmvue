@@ -1,23 +1,22 @@
 <template>
-    <Modal
-        @close="closeView"
-        :show="viewIsVisible"
-        :title="`Просмотр опросника #${surveyId ?? survey?.id}`"
-        :width="900"
-    >
-        <div class="survey-preview">
-            <SurveyCard @edit="editSurvey" @hide="cancel" :quiz-id="surveyId" :quiz="survey" />
-        </div>
+    <Modal @close="closeView" :show="viewIsVisible" :title :width="1800" class="survey-form">
+        <SurveyCard
+            @edit="editSurvey"
+            @hide="closeView"
+            class="survey-preview"
+            :survey-id="surveyId"
+            :survey="survey"
+        />
     </Modal>
     <UiModal
         v-model:visible="formIsVisible"
-        title="Редактирование опросника"
+        title="Редактирование опроса"
         :width="1200"
         :min-height="300"
         :close-on-outside-click="false"
         :close-on-press-esc="false"
     >
-        <Spinner v-if="isLoading" label="Загрузка опросника.." small class="absolute-center" />
+        <Spinner v-if="isLoading" label="Загрузка опроса.." small class="absolute-center" />
         <FormSurvey
             v-else-if="currentEditingSurvey"
             @close="closeEditing"
@@ -41,6 +40,22 @@ import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
 
 const surveyId = ref(null);
 const survey = ref(null);
+
+const title = computed(() => {
+    if (isNotNullish(survey.value)) {
+        if (survey.value.status === 'draft') {
+            return `Черновик | Просмотр опроса #${survey.value?.id}`;
+        }
+
+        return `Просмотр опроса #${survey.value?.id}`;
+    }
+
+    if (isNotNullish(surveyId.value)) {
+        return `Просмотр опроса #${surveyId.value}`;
+    }
+
+    return 'Просмотр опроса';
+});
 
 const {
     onPopupShowed,

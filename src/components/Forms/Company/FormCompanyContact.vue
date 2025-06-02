@@ -5,7 +5,7 @@
         custom-close
         show
         :min-height="500"
-        :title="isEditMode ? `Редактирование контакта ${formdata.id}` : 'Создание нового контакта'"
+        :title="isEditMode ? `Редактирование контакта #${formdata.id}` : 'Создание нового контакта'"
     >
         <Loader v-if="isLoading" />
         <UiForm v-else>

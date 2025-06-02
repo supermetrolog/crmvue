@@ -60,7 +60,7 @@ import { toDateFormat } from '@/utils/formatters/date.js';
 import Spinner from '@/components/common/Spinner.vue';
 import { Tippy } from 'vue-tippy';
 import { isActiveContact, isPersonalContact } from '@/utils/helpers/models/contact.js';
-import { CALL_STATUSES, CALL_STATUSES_TEXT } from '@/components/Messenger/Quiz/useMessengerQuiz.js';
+import { CALL_STATUSES, CALL_STATUSES_TEXT } from '@/components/MessengerQuiz/useMessengerQuiz.js';
 import { getContactFullName } from '@/utils/formatters/models/contact.js';
 
 const props = defineProps({

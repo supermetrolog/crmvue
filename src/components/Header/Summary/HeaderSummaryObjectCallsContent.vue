@@ -49,8 +49,6 @@ import api from '@/api/api.js';
 import { useAuth } from '@/composables/useAuth.js';
 import { useDelayedLoader } from '@/composables/useDelayedLoader.js';
 import PaginationClassic from '@/components/common/Pagination/PaginationClassic.vue';
-import Button from '@/components/common/Button.vue';
-import { useMessenger } from '@/components/Messenger/useMessenger.js';
 import { messenger } from '@/const/messenger.js';
 import { useSharedMessengerStatistic } from '@/components/Messenger/useSharedMessengerStatistic.js';
 import HeaderSummaryDialogs from '@/components/Header/Summary/Dialogs/HeaderSummaryDialogs.vue';
@@ -58,6 +56,7 @@ import HeaderSummaryDialogsGrid from '@/components/Header/Summary/Dialogs/Header
 import MessengerDialogObject from '@/components/Messenger/Dialog/Object/MessengerDialogObject.vue';
 import HeaderSummaryEmpty from '@/components/Header/Summary/HeaderSummaryEmpty.vue';
 import UiButton from '@/components/common/UI/UiButton.vue';
+import { useSurveyForm } from '@/composables/useSurveyForm.js';
 
 const emit = defineEmits(['close']);
 const props = defineProps({
@@ -101,16 +100,11 @@ onMounted(() => {
 
 // chat
 
-const { openSurvey } = useMessenger();
+const { openSurvey } = useSurveyForm();
 
-async function toSurvey(chat) {
-    const opened = await openSurvey(
-        messenger.dialogTypes.OBJECT,
-        chat.model.object_id,
-        chat.model.object.company?.id,
-        chat.model.type
-    );
+function toSurvey(chat) {
+    openSurvey(chat.model.object.company?.id ?? chat.model.object.company_id);
 
-    if (opened) emit('close');
+    emit('close');
 }
 </script>
