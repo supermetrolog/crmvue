@@ -17,7 +17,7 @@
         <template #before-body>
             <slot name="before-body" />
         </template>
-        <template #header-actions>
+        <template v-if="canBeMinimized" #header-actions>
             <UiTooltipIcon
                 @click.prevent="minimize"
                 icon="fa-solid fa-minus"
@@ -56,6 +56,10 @@ const props = defineProps({
     minimizedTitle: {
         type: String,
         required: true
+    },
+    canBeMinimized: {
+        type: Boolean,
+        default: true
     }
 });
 
@@ -75,6 +79,8 @@ function closeModal() {
 const isMinimized = ref(false);
 
 function minimize() {
+    if (!props.canBeMinimized) return;
+
     isMinimized.value = true;
     minimizeModal(props.minimizedTitle, closeModal, expandModal);
 }
@@ -122,4 +128,6 @@ watch(isMinimized, value => {
         tryLockScroll();
     }
 });
+
+defineExpose({ minimize });
 </script>

@@ -61,7 +61,7 @@
                 </div>
             </div>
         </div>
-        <div class="messenger-dialog__footer">
+        <div v-if="!short" class="messenger-dialog__footer">
             <MessengerDialogPhone
                 @click.stop="$emit('update-call')"
                 :last-call="lastCall"
@@ -95,7 +95,8 @@ const props = defineProps({
     current: Boolean,
     lastCall: Object,
     statistic: Object,
-    lastMessage: Object
+    lastMessage: Object,
+    short: Boolean
 });
 
 const { currentUserId } = useAuth();

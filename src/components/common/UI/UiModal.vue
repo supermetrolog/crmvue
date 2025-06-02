@@ -69,10 +69,7 @@ import UiTooltipIcon from '@/components/common/UI/UiTooltipIcon.vue';
 const visibleModel = defineModel('visible');
 const emit = defineEmits(['close', 'closed']);
 const props = defineProps({
-    title: {
-        type: String,
-        required: true
-    },
+    title: String,
     hasTabs: Boolean,
     relative: Boolean,
     show: Boolean,

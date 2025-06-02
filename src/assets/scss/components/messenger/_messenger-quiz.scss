@@ -1917,3 +1917,9 @@
         font-weight: 500;
     }
 }
+
+.survey-table-item {
+    &__id {
+      vertical-align: top;
+    }
+}

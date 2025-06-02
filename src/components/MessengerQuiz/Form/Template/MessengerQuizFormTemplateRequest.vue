@@ -47,8 +47,6 @@
 </template>
 <script setup>
 import { computed } from 'vue';
-import { locationOptions } from '@/const/options/location.options.js';
-import { toNumberOrRangeFormat } from '@/utils/formatters/number.js';
 import SurveyQuestionRequest from '@/components/Survey/QuestionRequest/SurveyQuestionRequest.vue';
 import UiButtonIcon from '@/components/common/UI/UiButtonIcon.vue';
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
@@ -56,7 +54,7 @@ import VueEditor from '@/components/common/Forms/VueEditor.vue';
 
 defineEmits(['edit']);
 
-const props = defineProps({
+defineProps({
     request: {
         type: Object,
         required: true
@@ -66,46 +64,6 @@ const props = defineProps({
 });
 
 const form = defineModel({ type: Object });
-
-function generateLocation() {
-    const locations = [];
-
-    if (props.request.regions) {
-        locations.push(
-            props.request.regions.map(element => locationOptions.region[element.region]).join(', ')
-        );
-    }
-
-    if (props.request.directions) {
-        locations.push(
-            ...props.request.directions.map(
-                element => locationOptions.directionWithShort[element.direction].full
-            )
-        );
-    }
-
-    if (props.request.districts) {
-        locations.push(
-            ...props.request.districts.map(element => locationOptions.district[element.district])
-        );
-    }
-
-    return locations.join(', ').slice(0, 48) + '...';
-}
-
-function generateCalcArea() {
-    return toNumberOrRangeFormat(props.request.minArea, props.request.maxArea);
-}
-
-// function getForm() {
-//     return {
-//         id: props.request.id,
-//         answer: mainAnswer.value,
-//         location: generateLocation(),
-//         deal_type: props.request.dealType,
-//         calc_area: generateCalcArea()
-//     };
-// }
 
 // form
 

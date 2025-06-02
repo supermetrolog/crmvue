@@ -13,7 +13,7 @@
                 :number="index + 1"
                 :active="index === currentStep"
                 :error="stepHasError(step, index)"
-                :viewed="viewed[index]"
+                :viewed="!readOnly && viewed[index]"
                 :disabled="step.disabled"
                 :show-number="showStepNumber"
                 :class="step.class"
@@ -62,7 +62,7 @@
                 </div>
             </template>
         </div>
-        <div class="stepper__footer" :class="footerClass">
+        <div v-if="!readOnly" class="stepper__footer" :class="footerClass">
             <slot name="footer" :complete="complete">
                 <UiButton
                     @click="selectStep(currentStep - 1)"
@@ -113,7 +113,8 @@ const props = defineProps({
     showStepNumber: {
         type: Boolean,
         default: true
-    }
+    },
+    readOnly: Boolean
 });
 
 const viewed = ref({});
@@ -124,7 +125,7 @@ const stepErrors = computed(() => {
     return props.v[props.steps[currentStep.value].name].$errors;
 });
 
-const hasError = computed(() => props.v?.$error || props.v.$errors?.length > 0);
+const hasError = computed(() => props.v?.$error || props.v?.$errors?.length > 0);
 
 if (props.v) props.v.$reset();
 
@@ -167,6 +168,8 @@ const validate = async () => {
 };
 
 const stepHasError = (step = props.steps[currentStep.value], stepKey = currentStep.value) => {
+    if (props.readOnly) return false;
+
     if (isNotNullish(step.valid) && !toValue(step.valid)) return viewed.value[stepKey] === true;
     if (props.v && props.v[step.name]) return props.v[step.name].$error;
     return false;

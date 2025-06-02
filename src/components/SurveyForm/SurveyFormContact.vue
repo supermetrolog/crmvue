@@ -8,7 +8,8 @@
             :active
             :disabled
             :contact
-            editable
+            :editable
+            :full
             class="survey-form-contact__element"
         />
         <AnimationTransition :speed="0.5">
@@ -47,7 +48,9 @@ const props = defineProps({
     },
     loading: Boolean,
     active: Boolean,
-    disabled: Boolean
+    disabled: Boolean,
+    editable: Boolean,
+    full: Boolean
 });
 
 const form = defineModel({ type: Object });

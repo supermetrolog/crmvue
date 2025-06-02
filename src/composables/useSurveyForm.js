@@ -32,8 +32,20 @@ function openSurveyForm(companyId) {
     forms.push({ id: generateId(), companyId });
 }
 
-function showSurveyForm(surveyId) {
-    // TODO: Show
+function editSurvey(survey) {
+    if (forms.some(form => Number(form.companyId) === Number(survey.chatMember?.model_id))) {
+        notify({
+            group: 'app',
+            type: 'info',
+            duration: 3000,
+            title: 'Опрос клиента',
+            text: 'Опрос с этим клиентом уже запущен. Проверьте свернутые опросы.'
+        });
+
+        return;
+    }
+
+    forms.push({ id: generateId(), survey, companyId: survey.chatMember?.model_id });
 }
 
 export function getSurveyFormManager() {
@@ -46,6 +58,6 @@ export function getSurveyFormManager() {
 export function useSurveyForm() {
     return {
         openSurvey: openSurveyForm,
-        showSurvey: showSurveyForm
+        editSurvey
     };
 }

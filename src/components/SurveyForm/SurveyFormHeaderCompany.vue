@@ -3,16 +3,16 @@
         <div class="row">
             <UiCol :cols="4">
                 <CompanyShortCard
-                    @update-logo="logoFormIsVisible = true"
+                    @update-logo="updateLogo"
                     :company
                     :logo-size="100"
                     :avatar-size="25"
-                    editable-logo
+                    :editable-logo="editable"
                 />
             </UiCol>
             <UiCol :cols="7">
                 <CompanyTabs :company class="survey-form-header-company__tabs">
-                    <template #additional>
+                    <template v-if="surveysCount" #additional>
                         <Tab :name="`Опросы (${surveysCount})`">
                             <div class="d-flex flex-column gap-1">
                                 <MessengerQuizInlineElement
@@ -35,32 +35,34 @@
             />
             <UiDropdownActions label="Действия над компанией" icon="fa-solid fa-ellipsis-vertical">
                 <template #menu>
-                    <UiDropdownActionsButton
-                        @handle="companyFormIsVisible = true"
-                        label="Редактировать"
-                        icon="fa-solid fa-pen"
-                    />
-                    <UiDropdownActionsButton
-                        v-if="isPassive"
-                        @handle="enableCompany(company.id)"
-                        label="Восстановить компанию"
-                        icon="fa-solid fa-undo"
-                    />
-                    <UiDropdownActionsButton
-                        v-else
-                        @handle="disableCompanyFormIsVisible = true"
-                        label="Отправить в архив"
-                        icon="fa-solid fa-ban text-danger"
-                    />
+                    <template v-if="editable">
+                        <UiDropdownActionsButton
+                            @handle="companyFormIsVisible = true"
+                            label="Редактировать"
+                            icon="fa-solid fa-pen"
+                        />
+                        <UiDropdownActionsButton
+                            v-if="isPassive"
+                            @handle="enableCompany(company.id)"
+                            label="Восстановить компанию"
+                            icon="fa-solid fa-undo"
+                        />
+                        <UiDropdownActionsButton
+                            v-else
+                            @handle="disableCompanyFormIsVisible = true"
+                            label="Отправить в архив"
+                            icon="fa-solid fa-ban text-danger"
+                        />
+                        <UiDropdownActionsButton
+                            @handle="updateLogo"
+                            label="Изменить логотип"
+                            icon="fa-solid fa-image"
+                        />
+                    </template>
                     <UiDropdownActionsButton
                         @handle="toChat"
                         label="Перейти в чат компании"
                         icon="fa-solid fa-comment"
-                    />
-                    <UiDropdownActionsButton
-                        @handle="logoFormIsVisible = true"
-                        label="Изменить логотип"
-                        icon="fa-solid fa-image"
                     />
                 </template>
             </UiDropdownActions>
@@ -104,16 +106,16 @@
                 <div class="row">
                     <UiCol :cols="4">
                         <CompanyShortCard
-                            @update-logo="logoFormIsVisible = true"
+                            @update-logo="updateLogo"
                             :company
                             :logo-size="100"
                             :avatar-size="25"
-                            editable-logo
+                            :editable-logo="editable"
                         />
                     </UiCol>
                     <UiCol :cols="7">
                         <CompanyTabs :company class="survey-form-header-company__tabs">
-                            <template #additional>
+                            <template v-if="surveysCount" #additional>
                                 <Tab :name="`Опросы (${surveysCount})`">
                                     <div class="d-flex flex-column gap-1">
                                         <MessengerQuizInlineElement
@@ -150,12 +152,11 @@ import CompanyShortCard from '@/components/CompanyShortCard/CompanyShortCard.vue
 import Tab from '@/components/common/Tabs/Tab.vue';
 import UiCol from '@/components/common/UI/UiCol.vue';
 import CompanyTabs from '@/components/CompanyTabs/CompanyTabs.vue';
-import { toBeautifulDateFormat } from '@/utils/formatters/date.js';
 import { useAsyncPopup } from '@/composables/useAsyncPopup.js';
 import MessengerQuizInlineElement from '@/components/MessengerQuiz/MessengerQuizInlineElement.vue';
 import UiButtonIcon from '@/components/common/UI/UiButtonIcon.vue';
 
-const emit = defineEmits(['update-logo', 'update-company']);
+const emit = defineEmits(['update-logo', 'update-company', 'to-chat']);
 const props = defineProps({
     company: {
         type: Object,
@@ -168,7 +169,8 @@ const props = defineProps({
     surveysCount: {
         type: Number,
         default: 0
-    }
+    },
+    editable: Boolean
 });
 
 // logo form
@@ -182,6 +184,12 @@ function closeForm() {
 }
 
 const notify = useNotify();
+
+function updateLogo() {
+    if (!props.editable) return;
+
+    logoFormIsVisible.value = true;
+}
 
 function onUpdateLogo(logo) {
     closeForm();
@@ -223,15 +231,12 @@ const { openChat } = useMessenger();
 
 const toChat = () => {
     openChat(props.company.id, props.company.id, messenger.dialogTypes.COMPANY);
+    emit('to-chat');
 };
 
 // tippy
 
 useTippyText(useTemplateRef('companyLogoEl'), 'Нажмите, чтобы редактировать логотип');
-
-// surveys
-
-const lastSurveyCreatedAt = computed(() => toBeautifulDateFormat(props.surveys[0].created_at));
 
 // preview
 

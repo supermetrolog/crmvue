@@ -20,6 +20,7 @@
                         @object-sold="onObjectSold(object)"
                         :active="selectedObject?.id === object.id"
                         :object="object"
+                        editable
                         class="survey-form-objects__element"
                     />
                 </div>

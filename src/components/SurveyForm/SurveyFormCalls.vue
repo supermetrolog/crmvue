@@ -14,6 +14,8 @@
                 @schedule-call="createScheduleCallTask(contact)"
                 :contact="contact"
                 :active="currentContact?.id === contact.id"
+                editable
+                full
             />
         </div>
         <AnimationTransition :speed="0.5">
@@ -25,7 +27,6 @@
                 <SurveyFormContactForm
                     v-model="form[currentContact.id]"
                     @schedule-call="createScheduleCallTask(currentContact)"
-                    @next-step="$emit('next-step')"
                     :contact="currentContact"
                 />
             </div>
@@ -72,7 +73,7 @@ import { getCompanyShortName } from '@/utils/formatters/models/company.js';
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
 import SurveyFormContactForm from '@/components/SurveyForm/SurveyFormContactForm.vue';
 
-const emit = defineEmits(['contact-created', 'contact-updated', 'next-step']);
+const emit = defineEmits(['contact-created', 'contact-updated']);
 const props = defineProps({
     company: {
         type: Object,

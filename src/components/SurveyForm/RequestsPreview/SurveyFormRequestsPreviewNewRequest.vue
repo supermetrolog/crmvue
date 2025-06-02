@@ -38,11 +38,12 @@
                 :min-height="60"
                 :max-height="200"
                 :toolbar="false"
+                :disabled="!editable"
                 placeholder="Описание запроса"
                 class="survey-form-object-preview-offer__editor mt-2"
             />
         </div>
-        <div class="survey-form-object-preview-offer__actions">
+        <div v-if="editable" class="survey-form-object-preview-offer__actions">
             <UiButtonIcon @click="$emit('edit')" icon="fa-solid fa-pen" label="Редактировать" />
             <UiButtonIcon @click="$emit('delete')" icon="fa-solid fa-trash" label="Удалить" />
         </div>
@@ -50,15 +51,11 @@
 </template>
 <script setup>
 import { computed } from 'vue';
-import { locationOptions } from '@/const/options/location.options.js';
 import { toNumberOrRangeFormat } from '@/utils/formatters/number.js';
-import SurveyQuestionRequest from '@/components/Survey/QuestionRequest/SurveyQuestionRequest.vue';
 import UiButtonIcon from '@/components/common/UI/UiButtonIcon.vue';
-import AnimationTransition from '@/components/common/AnimationTransition.vue';
 import VueEditor from '@/components/common/Forms/VueEditor.vue';
 import { unitTypes } from '@/const/unitTypes.js';
 import WithUnitType from '@/components/common/WithUnitType.vue';
-import Tooltip from '@/components/common/Tooltip.vue';
 import UiField from '@/components/common/UI/UiField.vue';
 
 defineEmits(['edit', 'delete']);
@@ -67,7 +64,8 @@ const props = defineProps({
     request: {
         type: Object,
         required: true
-    }
+    },
+    editable: Boolean
 });
 
 const form = defineModel();

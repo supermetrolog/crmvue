@@ -155,6 +155,7 @@ import { getCompanyName, getCompanyShortName } from '@/utils/formatters/models/c
 import DashboardTableTasks from '@/components/Dashboard/Table/DashboardTableTasks.vue';
 import { taskOptions } from '@/const/options/task.options.js';
 import { useAuth } from '@/composables/useAuth.js';
+import { captureException } from '@sentry/vue';
 
 const route = useRoute();
 const store = useStore();
@@ -285,7 +286,7 @@ async function unpinMessage(message, companyId) {
         }
     } catch (error) {
         notify.error('Произошла ошибка. Попробуйте позже');
-        // TODO: Log sentry
+        captureException(error, { company_id: companyId });
     }
 }
 

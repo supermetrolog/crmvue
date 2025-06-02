@@ -70,11 +70,12 @@
                 :min-height="60"
                 :max-height="200"
                 :toolbar="false"
+                :disabled="!editable"
                 placeholder="Описание предложения"
                 class="survey-form-object-preview-offer__editor mt-2"
             />
         </div>
-        <div class="survey-form-object-preview-offer__actions">
+        <div v-if="editable" class="survey-form-object-preview-offer__actions">
             <UiButtonIcon @click="$emit('edit')" icon="fa-solid fa-pen" label="Редактировать" />
             <UiButtonIcon @click="$emit('delete')" icon="fa-solid fa-trash" label="Удалить" />
         </div>
@@ -97,7 +98,8 @@ const props = defineProps({
     offer: {
         type: Object,
         required: true
-    }
+    },
+    editable: Boolean
 });
 
 const form = defineModel();

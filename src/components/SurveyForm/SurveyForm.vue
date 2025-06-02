@@ -1,9 +1,11 @@
 <template>
     <UiMinimizeModal
+        ref="minimizeModal"
         @close="close"
-        @minimized="saveDraft"
+        @minimized="onMinimized"
         :title
         :minimized-title="title"
+        :can-be-minimized="!survey"
         :width="1800"
         :close-on-outside-click="false"
         :can-be-closed="!isLoading"
@@ -14,6 +16,7 @@
         <template #before-body>
             <SurveyFormHeader
                 v-if="!isLoading && company"
+                @to-chat="minimize"
                 @update-logo="onUpdateLogo"
                 @update-company="onUpdateCompany"
                 :company
@@ -30,7 +33,7 @@
                     label="Загрузка компании.."
                 />
                 <SurveyFormStepper
-                    v-else-if="canBeCreated"
+                    v-else-if="canBeCreated || isEditMode"
                     ref="stepper"
                     @completed="$emit('close')"
                     @close="close"
@@ -38,6 +41,7 @@
                     @draft-deleted="$emit('close')"
                     @draft-created="surveyDraft = $event"
                     @draft-updated="onUpdateDraft"
+                    @survey-updated="onUpdateSurvey"
                     @contact-created="onContactCreated"
                     @contact-updated="onContactUpdated"
                     :chat-member-id
@@ -73,11 +77,22 @@
                         hide-header
                     >
                         <div class="fs-4">
-                            <p class="font-weight-semi">Сохранить черновик опроса?</p>
+                            <p v-if="isEditMode" class="font-weight-semi">Сохранить опрос?</p>
+                            <p v-else class="font-weight-semi">Сохранить черновик опроса?</p>
                             <p>В противном случае прогресс заполнения будет утерян</p>
                         </div>
                         <template #actions="{ close }">
                             <UiButton
+                                v-if="isEditMode"
+                                @click="updateSurvey"
+                                icon="fa-solid fa-paper-plane"
+                                color="success-light"
+                                :loading="draftIsSaving"
+                            >
+                                Сохранить опрос
+                            </UiButton>
+                            <UiButton
+                                v-else
                                 @click="saveDraftAndClose"
                                 icon="fa-solid fa-paper-plane"
                                 color="success-light"
@@ -138,8 +153,8 @@ const props = defineProps({
 const { isEditMode } = useFormData(reactive({}), props.survey);
 
 const title = computed(() => {
-    if (isEditMode.value) {
-        return `Редактирование опроса | ${getCompanyShortName(company.value)} | Опрос #${props.formData?.id}`;
+    if (isEditMode.value && isNotNullish(company.value)) {
+        return `Редактирование опроса | ${getCompanyShortName(company.value)} | Опрос #${props.survey?.id}`;
     }
 
     if (isNotNullish(company.value)) {
@@ -235,6 +250,10 @@ function onUpdateDraft(draft) {
     surveyDraft.value.updated_at = draft.updated_at;
 }
 
+function onUpdateSurvey() {
+    emit('close');
+}
+
 const initialDataIsLoading = ref(false);
 
 async function fetchInitialData() {
@@ -244,7 +263,10 @@ async function fetchInitialData() {
     fetchContacts();
     await fetchChatMember();
     fetchLastSurveys();
-    await searchSurveyDraft();
+
+    if (!isEditMode.value) {
+        await searchSurveyDraft();
+    }
 
     initialDataIsLoading.value = false;
 }
@@ -286,6 +308,18 @@ async function saveDraft() {
 async function saveDraftAndClose() {
     await saveDraft();
     emit('close');
+}
+
+function onMinimized() {
+    if (isNotNullish(props.survey)) return;
+
+    if (isNotNullish(surveyDraft.value)) {
+        saveDraft();
+    }
+}
+
+function updateSurvey() {
+    stepper.value.updateSurvey();
 }
 
 // contacts
@@ -422,5 +456,13 @@ const isLoading = computed(
 
 if (isNotNullish(props.companyId)) {
     fetchInitialData();
+}
+
+// minimize
+
+const minimizeModal = useTemplateRef('minimizeModal');
+
+function minimize() {
+    minimizeModal.value.minimize();
 }
 </script>

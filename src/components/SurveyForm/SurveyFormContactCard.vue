@@ -25,20 +25,22 @@
                 />
                 <UiTooltip :tooltip="contact.full_name">{{ contact.full_name }}</UiTooltip>
             </p>
-            <p v-if="!isCompanyContact" class="messenger-quiz-contact__staff">
-                <span v-if="contact.position_unknown">Должность неизвестна..</span>
-                <span v-else-if="contact.position">
-                    {{ position }}
-                </span>
-                <span v-else class="color-error">Должность не заполнена!</span>
-            </p>
-            <p
-                class="messenger-quiz-contact__calls"
-                :class="contact.calls?.length > 0 ? 'text-primary' : 'color-danger'"
-            >
-                <span class="font-weight-semi">{{ callsPluralLabel }}</span>
-                <span v-if="contact.calls?.length">, последний {{ lastCallDate }}</span>
-            </p>
+            <template v-if="full">
+                <p v-if="!isCompanyContact" class="messenger-quiz-contact__staff">
+                    <span v-if="contact.position_unknown">Должность неизвестна..</span>
+                    <span v-else-if="contact.position">
+                        {{ position }}
+                    </span>
+                    <span v-else class="color-error">Должность не заполнена!</span>
+                </p>
+                <p
+                    class="messenger-quiz-contact__calls"
+                    :class="contact.calls?.length > 0 ? 'text-primary' : 'color-danger'"
+                >
+                    <span class="font-weight-semi">{{ callsPluralLabel }}</span>
+                    <span v-if="contact.calls?.length">, последний {{ lastCallDate }}</span>
+                </p>
+            </template>
         </div>
         <div
             v-if="!isCompanyContact && editable"
@@ -102,7 +104,8 @@ const props = defineProps({
     active: Boolean,
     disabled: Boolean,
     completed: Boolean,
-    editable: Boolean
+    editable: Boolean,
+    full: Boolean
 });
 
 // form
@@ -110,7 +113,7 @@ const props = defineProps({
 const position = computed(() => contactOptions.position[props.contact.position]);
 
 const isCompanyContact = computed(
-    () => props.contact.type === contactOptions.typeStatement.GENERAL
+    () => props.contact?.type === contactOptions.typeStatement.GENERAL
 );
 
 const callsPluralLabel = computed(() => {

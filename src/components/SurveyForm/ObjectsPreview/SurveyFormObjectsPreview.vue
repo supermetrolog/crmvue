@@ -67,6 +67,7 @@
                             @edit="editNewOffer(offer)"
                             @delete="deleteNewOffer(offer)"
                             :offer="offer"
+                            editable
                         />
                         <hr
                             v-if="modelValue.created?.length && activeTradeOffers.length"

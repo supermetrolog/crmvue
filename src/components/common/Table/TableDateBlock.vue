@@ -1,6 +1,6 @@
 <template>
     <DashboardChip ref="chipEl" class="table-date-block dashboard-bg-light" with-icon>
-        <i class="fa-solid fa-clock-rotate-left"></i>
+        <i :class="icon"></i>
         <span class="table-date-block__value">{{ day }}, {{ time }}</span>
     </DashboardChip>
 </template>
@@ -12,7 +12,11 @@ import { useTippy } from 'vue-tippy';
 
 const props = defineProps({
     label: { type: String, required: true },
-    date: { type: [Number, String, Date], required: true }
+    date: { type: [Number, String, Date], required: true },
+    icon: {
+        type: String,
+        default: 'fa-solid fa-clock-rotate-left'
+    }
 });
 
 const day = computed(() => {

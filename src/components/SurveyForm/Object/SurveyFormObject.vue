@@ -1,6 +1,6 @@
 <template>
     <div class="survey-form-object hover-actions-trigger">
-        <HoverActions>
+        <HoverActions v-if="editable">
             <HoverActionsButton
                 @click="modelValue.answer = 1"
                 :active="modelValue.answer == 1"
@@ -40,7 +40,7 @@
                 :object
             />
             <SurveyFormObjectContent :object />
-            <div class="survey-form-object__actions">
+            <div v-if="editable" class="survey-form-object__actions">
                 <UiButtonIcon
                     @click.stop="$emit('object-sold')"
                     icon="fa-solid fa-dollar-sign"
@@ -102,7 +102,8 @@ defineProps({
         required: true
     },
     disabled: Boolean,
-    active: Boolean
+    active: Boolean,
+    editable: Boolean
 });
 
 const parametersHasWarnings = ref(false);

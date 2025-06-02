@@ -30,6 +30,7 @@
                                 @edit="editNewRequest(request)"
                                 @delete="deleteNewRequest(request)"
                                 :request="request"
+                                editable
                             />
                             <hr
                                 v-if="activeRequests.length && form.created?.length"
