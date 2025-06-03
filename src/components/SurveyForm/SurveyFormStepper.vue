@@ -10,6 +10,7 @@
         class="survey-form__stepper"
         footer-class="survey-form__footer"
         :disabled="isCreating"
+        :show-actions="formIsValid || canBeCancelled"
     >
         <template #body>
             <Loader v-if="isCreating || surveyIsUpdating" label="Сохранение опроса.." />
