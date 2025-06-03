@@ -68,7 +68,7 @@ import MessengerQuizQuestionCallSchedule from '@/components/MessengerQuiz/Questi
 import { isString } from '@/utils/helpers/string/isString.js';
 import { toBool } from '@/utils/helpers/string/toBool.js';
 
-const emit = defineEmits(['schedule-call']);
+const emit = defineEmits(['schedule-call', 'change']);
 defineProps({
     contact: {
         type: Object,
@@ -110,6 +110,10 @@ const available = computed({
     set(value) {
         form.value.available = value;
     }
+});
+
+watch(available, value => {
+    if (isNotNullish(value)) emit('change');
 });
 
 watch(

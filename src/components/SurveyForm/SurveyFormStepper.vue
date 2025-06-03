@@ -41,6 +41,7 @@
         <template #1>
             <SurveyFormCalls
                 v-model="form.calls"
+                @change="onChangeCalls"
                 @contact-created="$emit('contact-created', $event)"
                 @contact-updated="$emit('contact-updated', $event)"
                 :company
@@ -144,7 +145,6 @@ const emit = defineEmits([
     'survey-updated',
     'draft-deleted',
     'draft-expired',
-    'close',
     'contact-created',
     'contact-updated',
     'completed'
@@ -216,6 +216,11 @@ const { isLoading: surveyIsUpdating, execute: updateSurvey } = useAsync(
         }
     }
 );
+
+function onChangeCalls() {
+    if (isNotNullish(props.survey)) return;
+    if (isNullish(props.draft)) createDraft();
+}
 
 async function saveDraft() {
     if (isNotNullish(props.draft)) {

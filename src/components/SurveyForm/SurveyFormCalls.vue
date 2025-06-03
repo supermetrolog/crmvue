@@ -26,6 +26,7 @@
             >
                 <SurveyFormContactForm
                     v-model="form[currentContact.id]"
+                    @change="$emit('change')"
                     @schedule-call="createScheduleCallTask(currentContact)"
                     :contact="currentContact"
                 />
@@ -73,7 +74,7 @@ import { getCompanyShortName } from '@/utils/formatters/models/company.js';
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
 import SurveyFormContactForm from '@/components/SurveyForm/SurveyFormContactForm.vue';
 
-const emit = defineEmits(['contact-created', 'contact-updated']);
+const emit = defineEmits(['contact-created', 'contact-updated', 'change']);
 const props = defineProps({
     company: {
         type: Object,
