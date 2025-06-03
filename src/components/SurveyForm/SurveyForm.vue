@@ -36,7 +36,6 @@
                     v-else-if="canBeCreated || isEditMode"
                     ref="stepper"
                     @completed="$emit('close')"
-                    @close="close"
                     @draft-expired="surveyDraft = null"
                     @draft-deleted="$emit('close')"
                     @draft-created="surveyDraft = $event"
@@ -71,47 +70,6 @@
                         @created="onContactCreated"
                         :company_id="company?.id"
                     />
-                    <UiModal
-                        v-model:visible="closeModalIsVisible"
-                        title="Закрыть опрос"
-                        hide-header
-                    >
-                        <div class="fs-4">
-                            <p v-if="isEditMode" class="font-weight-semi">Сохранить опрос?</p>
-                            <p v-else class="font-weight-semi">Сохранить черновик опроса?</p>
-                            <p>В противном случае прогресс заполнения будет утерян</p>
-                        </div>
-                        <template #actions="{ close }">
-                            <UiButton
-                                v-if="isEditMode"
-                                @click="updateSurvey"
-                                icon="fa-solid fa-paper-plane"
-                                color="success-light"
-                                :loading="draftIsSaving"
-                            >
-                                Сохранить опрос
-                            </UiButton>
-                            <UiButton
-                                v-else
-                                @click="saveDraftAndClose"
-                                icon="fa-solid fa-paper-plane"
-                                color="success-light"
-                                :loading="draftIsSaving"
-                            >
-                                Сохранить черновик
-                            </UiButton>
-                            <UiButton
-                                @click="$emit('close')"
-                                icon="fa-solid fa-xmark"
-                                color="danger-light"
-                            >
-                                Закрыть опрос
-                            </UiButton>
-                            <UiButton @click="close" icon="fa-solid fa-ban" color="light">
-                                Отмена
-                            </UiButton>
-                        </template>
-                    </UiModal>
                 </teleport>
             </div>
         </template>
@@ -119,7 +77,6 @@
 </template>
 <script setup>
 import { computed, reactive, ref, shallowRef, toRef, useTemplateRef } from 'vue';
-import UiModal from '@/components/common/UI/UiModal.vue';
 import { useFormData } from '@/utils/use/useFormData.js';
 import SurveyFormHeader from '@/components/SurveyForm/SurveyFormHeader.vue';
 import api from '@/api/api.js';
@@ -127,7 +84,6 @@ import Spinner from '@/components/common/Spinner.vue';
 import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
 import SurveyFormStepper from '@/components/SurveyForm/SurveyFormStepper.vue';
 import { useAsync } from '@/composables/useAsync.js';
-import UiButton from '@/components/common/UI/UiButton.vue';
 import { isNullish } from '@/utils/helpers/common/isNullish.js';
 import { getCompanyShortName } from '@/utils/formatters/models/company.js';
 import UiMinimizeModal from '@/components/common/UI/UiMinimizeModal.vue';
@@ -143,7 +99,7 @@ import FormCompanyContact from '@/components/Forms/Company/FormCompanyContact.vu
 import MessengerQuizFormWarningNoContacts from '@/components/Messenger/Quiz/Form/Warning/MessengerQuizFormWarningNoContacts.vue';
 import MessengerQuizFormWarningAlreadyCreated from '@/components/Messenger/Quiz/Form/Warning/MessengerQuizFormWarningAlreadyCreated.vue';
 
-const emit = defineEmits(['close']);
+const emit = defineEmits(['close', 'minimized']);
 const props = defineProps({
     survey: Object,
     initialStep: Number,
@@ -273,8 +229,6 @@ async function fetchInitialData() {
 
 // close
 
-const closeModalIsVisible = ref(false);
-
 const stepper = useTemplateRef('stepper');
 
 function close() {
@@ -283,7 +237,7 @@ function close() {
     }
 
     if (isNullish(surveyDraft.value)) {
-        closeModalIsVisible.value = true;
+        emit('close');
     } else {
         saveDraftAndClose();
     }
@@ -308,14 +262,6 @@ async function saveDraft() {
 async function saveDraftAndClose() {
     await saveDraft();
     emit('close');
-}
-
-function onMinimized() {
-    if (isNotNullish(props.survey)) return;
-
-    if (isNotNullish(surveyDraft.value)) {
-        saveDraft();
-    }
 }
 
 function updateSurvey() {
@@ -463,6 +409,22 @@ if (isNotNullish(props.companyId)) {
 const minimizeModal = useTemplateRef('minimizeModal');
 
 function minimize() {
-    minimizeModal.value.minimize();
+    if (minimizeModal.value) {
+        minimizeModal.value.minimize();
+    }
+}
+
+function expand() {
+    if (minimizeModal.value) {
+        minimizeModal.value.expand();
+    }
+}
+
+function onMinimized() {
+    emit('minimized', expand);
+
+    if (isNotNullish(props.survey)) return;
+
+    saveDraft();
 }
 </script>

@@ -1,6 +1,5 @@
 <template>
     <div class="survey-form-contact-form-call">
-        <p class="text-grey fs-2 mb-1">Новый звонок</p>
         <div class="survey-form-contact-form-call__question">
             <span class="survey-form-contact-form-call__question-text">Дозвонились?</span>
             <div class="d-flex gap-1">
@@ -26,7 +25,6 @@
                 v-model="reason"
                 :v="v$.reason"
                 required
-                unselect
                 :options="available ? availableReasonOptions : unavailableReasonOptions"
                 :rounded="false"
                 class="messenger-quiz-question-call__radio mb-2"
@@ -44,7 +42,7 @@
                 <div v-if="reason === 2 || reason === 3">
                     <UiTextarea
                         v-model="form.description"
-                        label="Описание"
+                        label="Коммментарий"
                         placeholder="Почему удалить или в какую компанию перенести?"
                         class="mb-2"
                         :min-height="50"
@@ -68,9 +66,8 @@ import { helpers, requiredIf } from '@vuelidate/validators';
 import MessengerQuizQuestionCallSchedule from '@/components/MessengerQuiz/Question/Call/MessengerQuizQuestionCallSchedule.vue';
 import { isString } from '@/utils/helpers/string/isString.js';
 import { toBool } from '@/utils/helpers/string/toBool.js';
-import SurveyFormContactFormCard from '@/components/SurveyForm/SurveyFormContactFormCard.vue';
 
-const emit = defineEmits(['schedule-call']);
+const emit = defineEmits(['schedule-call', 'change']);
 defineProps({
     contact: {
         type: Object,
@@ -114,6 +111,10 @@ const available = computed({
     }
 });
 
+watch(available, value => {
+    if (isNotNullish(value)) emit('change');
+});
+
 watch(
     () => form.value?.scheduled,
     value => {
@@ -124,10 +125,7 @@ watch(
 );
 
 function onClickSchedule() {
-    if (reason.value === 6) {
-        reason.value = null;
-        return;
-    }
+    if (reason.value === 6) return;
 
     if (isNotNullish(form.value?.scheduled)) {
         reason.value = 6;

@@ -77,6 +77,7 @@
                             v-for="tradeOffer in activeTradeOffers"
                             :key="tradeOffer.id"
                             v-model="modelValue.current[tradeOffer.id]"
+                            @change="markProgress"
                             :offer="tradeOffer"
                             :commercial-offer="commercialOffersByIdMap[tradeOffer.offer_id]"
                             :object
@@ -329,8 +330,6 @@ function onUpdatedOffer(offer) {
 // check progress before unmount
 
 function markProgress() {
-    if (isNotNullish(modelValue.value.answer)) return;
-
     const answers = Object.values(modelValue.value.current);
 
     if (answers.length === 0) return;
@@ -341,6 +340,8 @@ function markProgress() {
 
     if (allOffersAnswered) {
         modelValue.value.answer = 1;
+    } else {
+        modelValue.value.answer = null;
     }
 }
 

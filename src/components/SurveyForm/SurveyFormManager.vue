@@ -3,6 +3,7 @@
         v-for="form in manager.forms"
         :key="form.id"
         @close="closeForm(form.id)"
+        @minimized="markAsMinimized(form.id, $event)"
         :survey="form.survey"
         :company-id="form.companyId"
     />
@@ -15,5 +16,9 @@ const manager = getSurveyFormManager();
 
 function closeForm(id) {
     manager.closeSurvey(id);
+}
+
+function markAsMinimized(formId, handler) {
+    manager.markAsMinimized(formId, handler);
 }
 </script>

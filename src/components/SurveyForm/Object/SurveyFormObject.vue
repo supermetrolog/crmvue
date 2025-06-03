@@ -64,6 +64,7 @@
                     :class="parametersClass"
                     :label="parametersTitle"
                     :opened="opened"
+                    icon="fa-solid fa-warning"
                     expand-class="ml-auto"
                     class="w-100 br-0"
                 />
@@ -118,7 +119,7 @@ const parametersTitle = computed(() => {
 
 const parametersClass = computed(() => {
     if (parametersHasWarnings.value) {
-        return 'bg-danger text-white';
+        return 'text-danger bg-white survey-form-object__accordion';
     }
 
     return undefined;

@@ -69,20 +69,21 @@ const modal = useTemplateRef('modal');
 
 function expandModal() {
     isMinimized.value = false;
+    minimizedModalUid.value = null;
 }
 
 function closeModal() {
-    expandModal();
     if (modal.value) modal.value.close();
 }
 
 const isMinimized = ref(false);
+const minimizedModalUid = ref(null);
 
 function minimize() {
     if (!props.canBeMinimized) return;
 
+    minimizedModalUid.value = minimizeModal(props.minimizedTitle, closeModal, expandModal);
     isMinimized.value = true;
-    minimizeModal(props.minimizedTitle, closeModal, expandModal);
 }
 
 const { minimizeModal } = useMinimizedModalManager();
@@ -121,7 +122,7 @@ watch(
 
 watch(isMinimized, value => {
     if (value) {
-        emit('minimized');
+        emit('minimized', minimizedModalUid.value);
         tryUnlockScroll();
     } else {
         emit('expanded');
@@ -129,5 +130,5 @@ watch(isMinimized, value => {
     }
 });
 
-defineExpose({ minimize });
+defineExpose({ minimize, expand: expandModal, isMinimized });
 </script>
