@@ -17,14 +17,18 @@ function closeSurveyForm(formId) {
 }
 
 function openSurveyForm(companyId) {
-    if (forms.some(form => Number(form.companyId) === Number(companyId))) {
+    const openedSurvey = forms.find(form => Number(form.companyId) === Number(companyId));
+
+    if (openedSurvey) {
         notify({
             group: 'app',
             type: 'info',
             duration: 3000,
             title: 'Опрос клиента',
-            text: 'Опрос с этим клиентом уже запущен. Проверьте свернутые опросы.'
+            text: 'Опрос с этим клиентом уже запущен. Открыт из свернутого режима.'
         });
+
+        openedSurvey.expand();
 
         return;
     }
@@ -48,10 +52,22 @@ function editSurvey(survey) {
     forms.push({ id: generateId(), survey, companyId: survey.chatMember?.model_id });
 }
 
+function markAsMinimized(formId, onExpandHandler) {
+    const surveyForm = forms.find(form => Number(form.id) === Number(formId));
+    if (!surveyForm) return;
+
+    surveyForm.minimized = true;
+    surveyForm.expand = () => {
+        surveyForm.minimized = false;
+        if (typeof onExpandHandler === 'function') onExpandHandler();
+    };
+}
+
 export function getSurveyFormManager() {
     return {
         forms,
-        closeSurvey: closeSurveyForm
+        closeSurvey: closeSurveyForm,
+        markAsMinimized
     };
 }
 

@@ -490,7 +490,7 @@
 
 .messenger-quiz-contact {
     background-color: variables.$color_grey_light;
-    padding: 5px 10px;
+    padding: 15px;
     border-radius: 5px;
     flex-shrink: 0;
     cursor: pointer;
@@ -540,7 +540,12 @@
 
     &__username {
         font-weight: 500;
+        font-size: 15px;
         @include mixins.text-overflow();
+    }
+
+    &.active &__username {
+        font-size: 16px;
     }
 
     &__error {
@@ -567,13 +572,6 @@
     }
 
     &__warning {
-        font-size: 13px;
-        padding: 1px 5px;
-        margin: 5px 0 -5px -10px;
-        width: max-content;
-        max-width: 100%;
-        color: #fff;
-        background-color: variables.$color_danger_dark;
         @include mixins.text-overflow(2);
     }
 
@@ -626,6 +624,30 @@
 
     &__info {
         max-width: calc(100% - 30px);
+    }
+
+    &__badges {
+        @include mixins.flex-box($gap: 5px, $wrap: true);
+    }
+
+    &__badge {
+        font-size: 13px;
+        padding: 1px 3px;
+        font-weight: 500;
+        background-color: variables.$color_info;
+        color: #fff;
+
+        &--danger {
+            background-color: #cc1919;
+        }
+
+        &--warning {
+            background-color: #ce860c;
+        }
+
+        &--success {
+            background-color: #12b881;
+        }
     }
 }
 
@@ -799,8 +821,9 @@
         padding: 10px 15px 5px;
         border-bottom: 1px solid rgba(0, 0, 0, .1);
         overflow-y: auto;
-        max-height: 140px;
+        height: 140px;
         flex-shrink: 0;
+        scrollbar-gutter: stable;
     }
 
     &__stepper {
@@ -1325,6 +1348,12 @@
             }
         }
     }
+
+    &__accordion {
+        font-weight: 500;
+        border-top: 1px solid rgba(0, 0, 0, .1);
+    }
+
     &__preview {
         width: 170px;
         min-width: 170px;
@@ -1780,10 +1809,15 @@
     }
 
     &__parameter {
-        padding: 5px;
+        padding: 3px 5px 2px 5px;
         border-right: 1px solid rgba(0, 0, 0, .1);
         border-bottom: 1px solid rgba(0, 0, 0, .1);
         @include mixins.flex-box($a: center, $j: center, $gap: 1px, $d: column);
+
+        i {
+            font-size: 19px;
+            margin-bottom: 2px;
+        }
     }
 
     &__editor {
@@ -1810,12 +1844,13 @@
 }
 
 .survey-form-contact {
-    z-index: 9;
-    @include mixins.flex-box($gap: 10px);
-
+    &__row {
+        @include mixins.flex-box($gap: 20px, $a: center);
+    }
 
     &__element {
-        width: 350px;
+        width: 600px;
+        max-width: 100%;
 
         &.completed {
             background-color: variables.$bg-success-l;
@@ -1835,7 +1870,6 @@
     }
 
     &__result {
-        height: 55px;
         @include mixins.flex-box($a: center, $gap: 10px);
     }
 
@@ -1851,18 +1885,37 @@
         border: 1px solid rgba(0, 0, 0, .2);
         flex-grow: 0;
     }
+
+    &__description {
+        border: 2px solid rgb(182, 200, 232);
+        border-radius: 3px;
+        padding: 5px;
+        display: block;
+        width: 100%;
+        flex-grow: 1;
+        word-break: break-word;
+        height: 80px;
+        overflow-y: auto;
+    }
+
+    &__result {
+        width: 100%;
+    }
 }
 
 .survey-form-contact-form {
-    background-color: variables.$color_grey_light;
-    padding: 10px;
+    padding: 15px;
     border-radius: 5px;
-    border: 1px solid rgba(0, 0, 0, 0.2);
+    border: 2px solid rgb(182, 200, 232);
+    @include mixins.flex-box($gap: 10px, $a: start);
 
-    &__preview {
-        padding: 10px;
-        border-radius: 5px;
-        background-color: #fff;
+    &__card {
+        width: calc(600px - 15px);
+        flex-shrink: 0;
+    }
+
+    &__call {
+        width: 600px;
     }
 
     &__phone {
@@ -1892,6 +1945,11 @@
         font-size: 15px;
     }
 
+    &__phone {
+        font-size: 20px;
+        font-weight: 600;
+    }
+
     &__icon {
         background-color: #000;
         border-radius: 50%;
@@ -1912,8 +1970,7 @@
     }
 
     &__question-text {
-        color: variables.$cl-success;
-        font-size: 26px;
+        font-size: 22px;
         font-weight: 500;
     }
 }

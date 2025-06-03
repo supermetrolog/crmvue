@@ -1,35 +1,58 @@
 <template>
     <div class="survey-form-contact">
-        <SurveyFormContactCard
-            @click="$emit('select')"
-            @edit="$emit('edit')"
-            @show-comments="$emit('show-comments')"
-            :completed="isCompleted"
-            :active
-            :disabled
-            :contact
-            :editable
-            :full
-            class="survey-form-contact__element"
-        />
+        <div class="survey-form-contact__row">
+            <SurveyFormContactCard
+                @click="$emit('select')"
+                @edit="$emit('edit')"
+                @show-comments="$emit('show-comments')"
+                :completed="isCompleted"
+                :active
+                :disabled
+                :contact
+                :editable
+                :full
+                :most-callable
+                class="survey-form-contact__element"
+            />
+            <AnimationTransition :speed="0.5">
+                <div v-if="isCompleted" class="survey-form-contact__result">
+                    <i class="fa-solid fa-arrow-right-long survey-form-contact__result-arrow"></i>
+                    <div class="survey-form-contact__block dashboard-bg-success-l">
+                        <p>
+                            <i class="fa-solid fa-check mr-2" />
+                            <span>Обработан</span>
+                        </p>
+                    </div>
+                    <i class="fa-solid fa-arrow-right-long survey-form-contact__result-arrow"></i>
+                    <div class="survey-form-contact__block" :class="reasonClass">
+                        <p>
+                            <i :class="reasonOptionsIcons[form.reason]" class="mr-2" />
+                            <span>{{ reasonOptions[form.reason] }}</span>
+                            <span v-if="callScheduled" class="ml-1">
+                                на {{ callScheduledDate }}
+                            </span>
+                        </p>
+                    </div>
+                    <template v-if="descriptionShouldBeVisible">
+                        <i
+                            class="fa-solid fa-arrow-right-long survey-form-contact__result-arrow"
+                        ></i>
+                        <div class="survey-form-contact__description fs-2">
+                            <i>{{ form.description }}</i>
+                        </div>
+                    </template>
+                </div>
+            </AnimationTransition>
+        </div>
         <AnimationTransition :speed="0.5">
-            <div v-if="isCompleted && !active" class="survey-form-contact__result">
-                <i class="fa-solid fa-arrow-right-long survey-form-contact__result-arrow"></i>
-                <div class="survey-form-contact__block dashboard-bg-success-l">
-                    <p>
-                        <i class="fa-solid fa-check mr-2" />
-                        <span>Обработан</span>
-                    </p>
-                </div>
-                <i class="fa-solid fa-arrow-right-long survey-form-contact__result-arrow"></i>
-                <div class="survey-form-contact__block" :class="reasonClass">
-                    <p>
-                        <i :class="reasonOptionsIcons[form.reason]" class="mr-2" />
-                        <span>{{ reasonOptions[form.reason] }}</span>
-                        <span v-if="callScheduled" class="ml-1">на {{ callScheduledDate }}</span>
-                    </p>
-                </div>
-            </div>
+            <SurveyFormContactForm
+                v-if="active"
+                v-model="form"
+                @change="$emit('change')"
+                @schedule-call="$emit('schedule-call')"
+                :contact
+                class="mt-2 mb-4"
+            />
         </AnimationTransition>
     </div>
 </template>
@@ -39,8 +62,9 @@ import AnimationTransition from '@/components/common/AnimationTransition.vue';
 import SurveyFormContactCard from '@/components/SurveyForm/SurveyFormContactCard.vue';
 import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
 import dayjs from 'dayjs';
+import SurveyFormContactForm from '@/components/SurveyForm/SurveyFormContactForm.vue';
 
-defineEmits(['edit', 'delete', 'move', 'show-comments', 'select']);
+defineEmits(['edit', 'delete', 'move', 'show-comments', 'select', 'change', 'schedule-call']);
 const props = defineProps({
     contact: {
         type: Object,
@@ -50,7 +74,8 @@ const props = defineProps({
     active: Boolean,
     disabled: Boolean,
     editable: Boolean,
-    full: Boolean
+    full: Boolean,
+    mostCallable: Boolean
 });
 
 const form = defineModel({ type: Object });
@@ -99,4 +124,12 @@ const reasonClass = computed(() => {
     if (Number(form.value.reason) === 6) return 'dashboard-bg-primary-l';
     return 'dashboard-bg-danger-l';
 });
+
+const descriptionShouldBeVisible = computed(
+    () =>
+        isNotNullish(form.value.reason) &&
+        Number(form.value.reason) !== 1 &&
+        isNotNullish(form.value.description) &&
+        form.value.description?.length
+);
 </script>

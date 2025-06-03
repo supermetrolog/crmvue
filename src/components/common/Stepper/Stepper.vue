@@ -62,30 +62,32 @@
                 </div>
             </template>
         </div>
-        <div v-if="!readOnly" class="stepper__footer" :class="footerClass">
-            <slot name="footer" :complete="complete">
-                <UiButton
-                    @click="selectStep(currentStep - 1)"
-                    :disabled="currentStep === 0"
-                    color="white"
-                    bolder
-                >
-                    Назад
-                </UiButton>
-                <UiButton @click="complete" :disabled="hasError" color="success-light" bolder>
-                    Завершить
-                </UiButton>
-                <UiButton
-                    @click="selectStep(currentStep + 1)"
-                    :disabled="currentStep === steps.length - 1"
-                    color="white"
-                    bolder
-                >
-                    Далее
-                </UiButton>
-                <slot name="actions" />
-            </slot>
-        </div>
+        <AnimationTransition :speed="0.3">
+            <div v-if="!readOnly && showActions" class="stepper__footer" :class="footerClass">
+                <slot name="footer" :complete="complete">
+                    <UiButton
+                        @click="selectStep(currentStep - 1)"
+                        :disabled="currentStep === 0"
+                        color="white"
+                        bolder
+                    >
+                        Назад
+                    </UiButton>
+                    <UiButton @click="complete" :disabled="hasError" color="success-light" bolder>
+                        Завершить
+                    </UiButton>
+                    <UiButton
+                        @click="selectStep(currentStep + 1)"
+                        :disabled="currentStep === steps.length - 1"
+                        color="white"
+                        bolder
+                    >
+                        Далее
+                    </UiButton>
+                    <slot name="actions" />
+                </slot>
+            </div>
+        </AnimationTransition>
     </div>
 </template>
 <script setup>
@@ -114,7 +116,11 @@ const props = defineProps({
         type: Boolean,
         default: true
     },
-    readOnly: Boolean
+    readOnly: Boolean,
+    showActions: {
+        type: Boolean,
+        default: true
+    }
 });
 
 const viewed = ref({});

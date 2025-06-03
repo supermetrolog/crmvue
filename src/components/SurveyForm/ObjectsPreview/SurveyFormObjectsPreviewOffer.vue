@@ -8,7 +8,7 @@
                 <div class="survey-form-object-preview-offer__block">
                     <p class="fs-2 text-grey">{{ visualId }} {{ dealTypeName }}</p>
                     <WithUnitType
-                        class="font-weight-semi"
+                        class="font-weight-bold"
                         :value="calculatedArea"
                         :unit-type="unitTypes.SQUARE_METERS"
                     />
@@ -17,7 +17,7 @@
                 <div class="survey-form-object-preview-offer__block">
                     <p class="fs-2 text-grey">{{ priceTitle }}</p>
                     <WithUnitType
-                        class="font-weight-semi text-primary"
+                        class="font-weight-bold text-primary"
                         :value="calculatedPrice"
                         :unit-type="unitTypes.RUB"
                     />
@@ -105,6 +105,7 @@ import AnimationTransition from '@/components/common/AnimationTransition.vue';
 
 const modelValue = defineModel({ type: Object, default: () => ({}) });
 
+const emit = defineEmits(['change']);
 const props = defineProps({
     offer: {
         type: Object,
@@ -181,6 +182,8 @@ function selectAnswer(value) {
     } else {
         modelValue.value.answer = value;
     }
+
+    emit('change');
 }
 
 const hasSuccessStatus = computed(() => modelValue.value.answer === ANSWER.SUCCESS);

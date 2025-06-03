@@ -40,6 +40,7 @@ import { useAsyncPopup } from '@/composables/useAsyncPopup.js';
 import SurveyDraftTable from '@/components/SurveyTable/SurveyDraftTable.vue';
 import { useSurveyForm } from '@/composables/useSurveyForm.js';
 import { useAsync } from '@/composables/useAsync.js';
+import { useAuth } from '@/composables/useAuth.js';
 
 const route = useRoute();
 const router = useRouter();
@@ -67,11 +68,14 @@ const debouncedFetchSurveys = useDebounceFn(fetchSurveys, 200);
 
 watch(() => route.query?.sort, debouncedFetchSurveys);
 
+const { currentUserId } = useAuth();
+
 function createQuery() {
     return {
         sort: '-updated_at',
         ...route.query,
-        status: 'draft'
+        status: 'draft',
+        user_id: currentUserId.value
     };
 }
 
