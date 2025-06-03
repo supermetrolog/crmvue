@@ -799,8 +799,9 @@
         padding: 10px 15px 5px;
         border-bottom: 1px solid rgba(0, 0, 0, .1);
         overflow-y: auto;
-        max-height: 140px;
+        height: 140px;
         flex-shrink: 0;
+        scrollbar-gutter: stable;
     }
 
     &__stepper {

@@ -5,7 +5,7 @@
         </h3>
         <template #actions>
             <UiButton @click="$emit('create-contact')" color="light" bolder uppercase>
-                Заполнить контакта
+                Заполнить контакт
             </UiButton>
             <UiButton @click="$emit('create-task')" color="light" bolder uppercase>
                 Создать задачу
