@@ -291,19 +291,7 @@ watch(draftIsUpdating, value => {
 
 // form
 
-const stepsIsDisabled = computed(() => {
-    if (isLoading.value) return true;
-
-    return !props.contacts.some(contact => {
-        if (isNullish(form.value.calls[contact.id])) return false;
-
-        const isAvailable = form.value.calls[contact.id].available;
-
-        if (isNullish(isAvailable)) return false;
-
-        return toBool(isAvailable) && Number(form.value.calls[contact.id].reason) === 1;
-    });
-});
+const stepsIsDisabled = computed(() => isLoading.value);
 
 const steps = reactive([
     {

@@ -1,6 +1,5 @@
 <template>
     <div class="survey-form-contact-form-call">
-        <p class="text-grey fs-2 mb-1">Новый звонок</p>
         <div class="survey-form-contact-form-call__question">
             <span class="survey-form-contact-form-call__question-text">Дозвонились?</span>
             <div class="d-flex gap-1">

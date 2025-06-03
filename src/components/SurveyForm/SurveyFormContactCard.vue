@@ -4,27 +4,7 @@
         :class="{ active, disabled, completed, main: contact.isMain }"
     >
         <div class="messenger-quiz-contact__info">
-            <p class="messenger-quiz-contact__username">
-                <UiTooltipIcon
-                    v-if="contact.isMain"
-                    tooltip="Основной контакт"
-                    icon="fa-solid fa-crown"
-                    class="mr-1 text-warning"
-                />
-                <UiTooltipIcon
-                    v-if="contact.faceToFaceMeeting"
-                    tooltip="Была личная (очная) встреча"
-                    icon="fa-solid fa-street-view"
-                    class="mr-1 text-success_alt messenger-quiz-contact__icon"
-                />
-                <UiTooltipIcon
-                    v-if="contact.good"
-                    tooltip="Хорошие взаимоотношения"
-                    icon="fa-regular fa-face-smile-beam"
-                    class="mr-1 text-success_alt messenger-quiz-contact__icon"
-                />
-                <UiTooltip :tooltip="contact.full_name">{{ contact.full_name }}</UiTooltip>
-            </p>
+            <p class="messenger-quiz-contact__username">{{ contact.full_name }}</p>
             <template v-if="full">
                 <p v-if="!isCompanyContact" class="messenger-quiz-contact__staff">
                     <span v-if="contact.position_unknown">Должность неизвестна..</span>
@@ -33,13 +13,35 @@
                     </span>
                     <span v-else class="color-error">Должность не заполнена!</span>
                 </p>
-                <p
-                    class="messenger-quiz-contact__calls"
-                    :class="contact.calls?.length > 0 ? 'text-primary' : 'color-danger'"
-                >
-                    <span class="font-weight-semi">{{ callsPluralLabel }}</span>
-                    <span v-if="contact.calls?.length">, последний {{ lastCallDate }}</span>
-                </p>
+                <div class="messenger-quiz-contact__badges mt-2">
+                    <div
+                        v-if="mostCallable"
+                        class="messenger-quiz-contact__badge messenger-quiz-contact__badge--success"
+                    >
+                        Больше всего звонков
+                    </div>
+                    <div
+                        v-if="contact.isMain"
+                        class="messenger-quiz-contact__badge messenger-quiz-contact__badge--warning"
+                    >
+                        Главный контакт
+                    </div>
+                    <div v-if="contact.good" class="messenger-quiz-contact__badge">
+                        Хорошие взаимоотношения
+                    </div>
+                    <div v-if="contact.faceToFaceMeeting" class="messenger-quiz-contact__badge">
+                        Личная встреча
+                    </div>
+                    <div
+                        v-if="contact.warning"
+                        class="messenger-quiz-contact__warning messenger-quiz-contact__badge messenger-quiz-contact__badge--danger"
+                    >
+                        <span>Внимание!</span>
+                        <span v-if="contact.warning_why_comment?.length">
+                            {{ contact.warning_why_comment }}
+                        </span>
+                    </div>
+                </div>
             </template>
         </div>
         <div
@@ -69,11 +71,12 @@
                         icon="fa-solid fa-pen"
                         label="Редактировать"
                     />
-                    <UiDropdownActionsButton
-                        @handle="$emit('create-task')"
-                        icon="fa-solid fa-bolt"
-                        label="Создать задачу"
-                    />
+                    <!--                    <UiDropdownActionsButton-->
+                    <!--                        @handle="$emit('create-task')"-->
+                    <!--                        icon="fa-solid fa-bolt"-->
+                    <!--                        label="Создать задачу"-->
+                    <!--                        disabled-->
+                    <!--                    />-->
                     <UiDropdownActionsButton
                         @handle="$emit('show-comments')"
                         icon="fa-solid fa-comments"
@@ -88,10 +91,6 @@
 import { computed } from 'vue';
 import { contactOptions } from '@/const/options/contact.options.js';
 import UiButtonIcon from '@/components/common/UI/UiButtonIcon.vue';
-import UiTooltipIcon from '@/components/common/UI/UiTooltipIcon.vue';
-import UiTooltip from '@/components/common/UI/UiTooltip.vue';
-import { plural } from '@/utils/plural.js';
-import { toBeautifulDateFormat } from '@/utils/formatters/date.js';
 import UiDropdownActions from '@/components/common/UI/UiDropdownActions.vue';
 import UiDropdownActionsButton from '@/components/common/UI/UiDropdownActionsButton.vue';
 
@@ -105,7 +104,8 @@ const props = defineProps({
     disabled: Boolean,
     completed: Boolean,
     editable: Boolean,
-    full: Boolean
+    full: Boolean,
+    mostCallable: Boolean
 });
 
 // form
@@ -115,20 +115,4 @@ const position = computed(() => contactOptions.position[props.contact.position])
 const isCompanyContact = computed(
     () => props.contact?.type === contactOptions.typeStatement.GENERAL
 );
-
-const callsPluralLabel = computed(() => {
-    const count = props.contact.calls?.length ?? 0;
-
-    if (count > 0) {
-        return plural(count, '%d звонок', '%d звонка', '%d звонков');
-    }
-
-    return 'Нет звонков';
-});
-
-const lastCallDate = computed(() => {
-    const lastCall = props.contact.calls[0];
-
-    return toBeautifulDateFormat(lastCall.created_at);
-});
 </script>

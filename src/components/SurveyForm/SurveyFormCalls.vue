@@ -12,26 +12,14 @@
                 @edit="editContact(contact)"
                 @select="selectCurrentContact(contact, key)"
                 @schedule-call="createScheduleCallTask(contact)"
+                @change="$emit('change')"
                 :contact="contact"
                 :active="currentContact?.id === contact.id"
+                :most-callable="contact.id === mostCallableContactId"
                 editable
                 full
             />
         </div>
-        <AnimationTransition :speed="0.5">
-            <div
-                v-if="currentContact"
-                class="survey-form-contact__form"
-                :style="{ top: formTopMargin }"
-            >
-                <SurveyFormContactForm
-                    v-model="form[currentContact.id]"
-                    @change="$emit('change')"
-                    @schedule-call="createScheduleCallTask(currentContact)"
-                    :contact="currentContact"
-                />
-            </div>
-        </AnimationTransition>
         <teleport to="body">
             <FormCompanyContact
                 v-if="formIsVisible"
@@ -71,8 +59,6 @@ import api from '@/api/api.js';
 import dayjs from 'dayjs';
 import { useAuth } from '@/composables/useAuth.js';
 import { getCompanyShortName } from '@/utils/formatters/models/company.js';
-import AnimationTransition from '@/components/common/AnimationTransition.vue';
-import SurveyFormContactForm from '@/components/SurveyForm/SurveyFormContactForm.vue';
 
 const emit = defineEmits(['contact-created', 'contact-updated', 'change']);
 const props = defineProps({
@@ -88,6 +74,18 @@ const props = defineProps({
         type: Number,
         required: true
     }
+});
+
+const mostCallableContactId = computed(() => {
+    let currentMaxIndex = 0;
+
+    for (let i = 0; i < props.contacts.length; i++) {
+        if (props.contacts[i].calls.length > props.contacts[currentMaxIndex].calls.length) {
+            currentMaxIndex = i;
+        }
+    }
+
+    return props.contacts[currentMaxIndex].id;
 });
 
 const form = defineModel({ type: Object, default: () => ({}) });
@@ -121,14 +119,6 @@ function selectCurrentContact(contact, key) {
         currentContactKey.value = key;
     }
 }
-
-const formTopMargin = computed(() => {
-    if (currentContact.value) {
-        return `${30 + currentContactKey.value * 60}px`;
-    }
-
-    return `30px`;
-});
 
 // edit
 

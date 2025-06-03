@@ -1,16 +1,14 @@
 <template>
     <div class="survey-form-contact-form">
-        <div class="survey-form-contact-form__preview">
-            <SurveyFormContactFormCard :contact class="survey-form-contact-form__card" />
-            <SurveyFormContactFormCall
-                :key="contact.id"
-                v-model="form"
-                @change="$emit('change')"
-                @schedule-call="$emit('schedule-call')"
-                :contact
-                class="mt-2"
-            />
-        </div>
+        <SurveyFormContactFormCard :contact class="survey-form-contact-form__card" />
+        <SurveyFormContactFormCall
+            :key="contact.id"
+            v-model="form"
+            @change="$emit('change')"
+            @schedule-call="$emit('schedule-call')"
+            :contact
+            class="survey-form-contact-form__call"
+        />
     </div>
 </template>
 <script setup>
