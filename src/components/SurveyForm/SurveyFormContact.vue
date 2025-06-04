@@ -2,6 +2,7 @@
     <div class="survey-form-contact">
         <div class="survey-form-contact__row">
             <SurveyFormContactCard
+                ref="contactCard"
                 @click="$emit('select')"
                 @edit="$emit('edit')"
                 @show-comments="$emit('show-comments')"
@@ -47,7 +48,9 @@
         <AnimationTransition :speed="0.5">
             <SurveyFormContactForm
                 v-if="active"
+                ref="contactForm"
                 v-model="form"
+                @close="$emit('close')"
                 @change="$emit('change')"
                 @schedule-call="$emit('schedule-call')"
                 :contact
@@ -57,14 +60,24 @@
     </div>
 </template>
 <script setup>
-import { computed, ref, watch } from 'vue';
+import { computed, ref, useTemplateRef, watch } from 'vue';
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
 import SurveyFormContactCard from '@/components/SurveyForm/SurveyFormContactCard.vue';
 import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
 import dayjs from 'dayjs';
 import SurveyFormContactForm from '@/components/SurveyForm/SurveyFormContactForm.vue';
+import { onClickOutside } from '@vueuse/core';
 
-defineEmits(['edit', 'delete', 'move', 'show-comments', 'select', 'change', 'schedule-call']);
+const emit = defineEmits([
+    'edit',
+    'delete',
+    'move',
+    'show-comments',
+    'select',
+    'change',
+    'schedule-call',
+    'close'
+]);
 const props = defineProps({
     contact: {
         type: Object,
@@ -132,4 +145,8 @@ const descriptionShouldBeVisible = computed(
         isNotNullish(form.value.description) &&
         form.value.description?.length
 );
+
+onClickOutside(useTemplateRef('contactForm'), () => emit('close'), {
+    ignore: [useTemplateRef('contactCard')]
+});
 </script>
