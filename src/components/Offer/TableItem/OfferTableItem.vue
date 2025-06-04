@@ -31,6 +31,26 @@
                         morph="offer_mix"
                         :small="false"
                     />
+                    <UiDropdownActions label="Действия над предложением">
+                        <template #menu>
+                            <UiDropdownActionsButton
+                                @handle="$emit('create-task')"
+                                icon="fa-solid fa-bolt"
+                                label="Создать задачу"
+                            />
+                            <UiDropdownActionsButton
+                                @handle="openInChat"
+                                icon="fa-solid fa-comment"
+                                label="Открыть в чате"
+                            />
+                            <UiDropdownActionsButton
+                                @handle="openInSurvey"
+                                icon="fa-solid fa-square-poll-horizontal"
+                                label="Открыть опрос"
+                                :disabled="!offer.company_id"
+                            />
+                        </template>
+                    </UiDropdownActions>
                 </div>
                 <OfferTableItemRelationSelect
                     v-if="offer.type_id !== 3 && offer.object?.offers?.length && !withoutRelations"
@@ -204,13 +224,16 @@ import UiButton from '@/components/common/UI/UiButton.vue';
 import UiButtonIcon from '@/components/common/UI/UiButtonIcon.vue';
 import UserFoldersDropdown from '@/components/UserFolder/UserFoldersDropdown.vue';
 import { useSurveyForm } from '@/composables/useSurveyForm.js';
+import UiDropdownActionsButton from '@/components/common/UI/UiDropdownActionsButton.vue';
+import UiDropdownActions from '@/components/common/UI/UiDropdownActions.vue';
 
 const emit = defineEmits([
     'favorite-deleted',
     'open-survey',
     'deleted-from-folder',
     'show-complex-objects',
-    'show-map'
+    'show-map',
+    'create-task'
 ]);
 
 const props = defineProps({

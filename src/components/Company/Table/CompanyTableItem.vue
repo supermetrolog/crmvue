@@ -228,7 +228,6 @@ import { useSurveyForm } from '@/composables/useSurveyForm.js';
 
 const store = useStore();
 const router = useRouter();
-const { openChat } = useMessenger();
 
 defineEmits([
     'deleted-from-folder',
@@ -299,6 +298,8 @@ const openTimeline = requestID => {
 
     window.open(route.href);
 };
+
+const { openChat } = useMessenger();
 
 const openInChat = () => {
     openChat(props.company.id, props.company.id, messenger.dialogTypes.COMPANY);
