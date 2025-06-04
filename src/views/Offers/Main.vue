@@ -76,6 +76,7 @@
                             @show-map="showOfferInMap"
                             @favorite-deleted="deleteFavoriteOffer"
                             @deleted-from-folder="onDeletedFromFolder"
+                            @create-task="createTask"
                             :offers="offers"
                             :loader="isLoading"
                         />
@@ -139,6 +140,12 @@ import UiModal from '@/components/common/UI/UiModal.vue';
 import Spinner from '@/components/common/Spinner.vue';
 import ObjectTable from '@/components/ObjectTable/ObjectTable.vue';
 import { useMapPreviewer } from '@/composables/useMapPreviewer.js';
+import { useTaskManager } from '@/composables/useTaskManager.js';
+import { userOptions } from '@/const/options/user.options.js';
+import { useAuth } from '@/composables/useAuth.js';
+import { useNotify } from '@/utils/use/useNotify.js';
+import { isNotEmptyString } from '@/utils/helpers/string/isNotEmptyString.js';
+import { ucFirst } from '@/utils/formatters/string.js';
 const isMobile = useMobile();
 const store = useStore();
 const route = useRoute();
@@ -434,5 +441,81 @@ function showOfferInMap(offer) {
         list: [offer],
         selected: offer.id
     });
+}
+
+// task
+
+const { createTaskWithTemplate } = useTaskManager();
+const { currentUserId } = useAuth();
+const notify = useNotify();
+
+const taskIsCreating = ref(false);
+
+function getUserIdForTask(offer) {
+    if (
+        isNotNullish(offer.consultant) &&
+        offer.consultant.role !== userOptions.roleStatement.SYSTEM
+    ) {
+        return offer.consultant.id;
+    }
+
+    if (isNotNullish(store.getters.moderator)) {
+        return store.getters.moderator.id;
+    }
+
+    return currentUserId.value;
+}
+
+function getTaskRelations(offer) {
+    const relations = [];
+
+    if (isNotNullish(offer.company_id)) {
+        relations.push({ entity_type: 'company', entity_id: offer.company_id });
+    }
+
+    if (isNotNullish(offer.object_id)) {
+        relations.push({ entity_type: 'c_industry', entity_id: offer.object_id });
+    }
+
+    if (isNotNullish(offer.original_id)) {
+        relations.push({ entity_type: 'offer_mix', entity_id: offer.id });
+    }
+
+    return relations;
+}
+
+function getTitleForTask(offer) {
+    let parts = [`#${offer.visual_id}`];
+
+    if (isNotNullish(offer.town_name) && isNotEmptyString(offer.town_name)) {
+        parts.push(ucFirst(offer.town_name));
+    } else if (isNotNullish(offer.region_name) && isNotEmptyString(offer.region_name)) {
+        parts.push(ucFirst(offer.region_name));
+    }
+
+    if (isNotNullish(offer.company)) {
+        parts.push(offer.company.full_name);
+    }
+
+    return parts.join(', ');
+}
+
+async function createTask(offer) {
+    const taskPayload = await createTaskWithTemplate({
+        title: getTitleForTask(offer),
+        user_id: getUserIdForTask(offer),
+        relations: getTaskRelations(offer)
+    });
+
+    if (!taskPayload) return;
+
+    taskIsCreating.value = true;
+
+    try {
+        await api.task.create(taskPayload);
+        notify.success('Задача успешно создана!');
+    } finally {
+        taskIsCreating.value = false;
+    }
 }
 </script>

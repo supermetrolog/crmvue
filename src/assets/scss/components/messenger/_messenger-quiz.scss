@@ -1904,6 +1904,7 @@
 }
 
 .survey-form-contact-form {
+    position: relative;
     padding: 15px;
     border-radius: 5px;
     border: 2px solid rgb(182, 200, 232);
@@ -1924,6 +1925,12 @@
         padding: 2px 5px;
         border-radius: 5px;
         cursor: unset;
+    }
+
+    &__close {
+        position: absolute;
+        right: 10px;
+        top: 10px;
     }
 }
 

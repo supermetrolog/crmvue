@@ -1,5 +1,5 @@
 <template>
-    <VDropdown ref="dropdownEl">
+    <VDropdown>
         <template #trigger>
             <slot name="trigger">
                 <UiButtonIcon :label :disabled :icon :small :color :class="buttonClass" />
@@ -18,7 +18,6 @@
 <script setup>
 import UiButtonIcon from '@/components/common/UI/UiButtonIcon.vue';
 import VDropdown from '@/components/common/Dropdown/VDropdown.vue';
-import { provide, useTemplateRef } from 'vue';
 import { DropdownContent } from 'v-dropdown';
 
 defineProps({
@@ -33,12 +32,4 @@ defineProps({
     color: String,
     buttonClass: [String, Object, Array]
 });
-
-const dropdownEl = useTemplateRef('dropdownEl');
-
-function close() {
-    dropdownEl.value.close();
-}
-
-provide('close-dropdown', close);
 </script>
