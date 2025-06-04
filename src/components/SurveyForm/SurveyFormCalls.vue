@@ -5,14 +5,15 @@
         </div>
         <div class="survey-form-calls__list">
             <SurveyFormContact
-                v-for="(contact, key) in contacts"
+                v-for="contact in contacts"
                 :key="contact.id"
                 v-model="form[contact.id]"
                 @show-comments="showComments(contact)"
                 @edit="editContact(contact)"
-                @select="selectCurrentContact(contact, key)"
+                @select="selectCurrentContact(contact)"
                 @schedule-call="createScheduleCallTask(contact)"
                 @change="$emit('change')"
+                @close="currentContact = null"
                 :contact="contact"
                 :active="currentContact?.id === contact.id"
                 :most-callable="contact.id === mostCallableContactId"
@@ -108,15 +109,12 @@ watch(() => props.contacts.length, generateForm, { immediate: true });
 // select
 
 const currentContact = ref(null);
-const currentContactKey = ref(null);
 
-function selectCurrentContact(contact, key) {
+function selectCurrentContact(contact) {
     if (currentContact.value?.id === contact.id) {
         currentContact.value = null;
-        currentContactKey.value = null;
     } else {
         currentContact.value = contact;
-        currentContactKey.value = key;
     }
 }
 

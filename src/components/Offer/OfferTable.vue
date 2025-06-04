@@ -26,6 +26,7 @@
                 @favorite-deleted="$emit('favorite-deleted')"
                 @deleted-from-folder="$emit('deleted-from-folder', offer.id, $event)"
                 @show-map="$emit('show-map', offer)"
+                @create-task="$emit('create-task', offer)"
                 :offer="offer"
                 :loader="loader"
             />
@@ -41,7 +42,13 @@ import OfferTableItem from '@/components/Offer/TableItem/OfferTableItem.vue';
 import Loader from '@/components/common/Loader.vue';
 import OfferTableItemSkeleton from '@/components/Offer/TableItem/OfferTableItemSkeleton.vue';
 
-defineEmits(['favorite-deleted', 'deleted-from-folder', 'show-complex-objects', 'show-map']);
+defineEmits([
+    'favorite-deleted',
+    'deleted-from-folder',
+    'show-complex-objects',
+    'show-map',
+    'create-task'
+]);
 defineProps({
     offers: Array,
     loader: Boolean,

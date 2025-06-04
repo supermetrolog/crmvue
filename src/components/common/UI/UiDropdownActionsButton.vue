@@ -18,8 +18,8 @@
     </div>
 </template>
 <script setup>
-import { inject } from 'vue';
 import Spinner from '@/components/common/Spinner.vue';
+import { useDropdown } from 'v-dropdown';
 
 const emit = defineEmits(['handle']);
 const props = defineProps({
@@ -36,12 +36,12 @@ const props = defineProps({
 });
 
 function handle() {
-    if (props.closeOnClick && closeDropdown) {
-        closeDropdown();
+    if (props.closeOnClick) {
+        close();
     }
 
     emit('handle');
 }
 
-const closeDropdown = inject('close-dropdown');
+const { close } = useDropdown();
 </script>
