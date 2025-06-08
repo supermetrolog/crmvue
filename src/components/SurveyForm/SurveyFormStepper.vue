@@ -10,33 +10,9 @@
         class="survey-form__stepper"
         footer-class="survey-form__footer"
         :disabled="isCreating"
-        :show-actions="formIsValid || canBeCancelled"
     >
         <template #body>
             <Loader v-if="isCreating || surveyIsUpdating" label="Сохранение опроса.." />
-        </template>
-        <template v-if="draft" #after-navigation>
-            <SurveyFormStepperDraft class="ml-auto" :draft :disabled="!windowIsFocused" />
-            <UiButton
-                @click="updateDraft"
-                tooltip="Обновить черновик"
-                color="light"
-                :disabled="draftIsUpdating"
-                small
-                class="fs-2"
-            >
-                <i class="fa-solid fa-paper-plane" />
-            </UiButton>
-            <UiButton
-                @click="deleteDraft"
-                tooltip="Удалить черновик"
-                color="light"
-                :disabled="draftIsDeleting"
-                small
-                class="fs-2"
-            >
-                <i class="fa-solid fa-trash" />
-            </UiButton>
         </template>
         <template #1>
             <SurveyFormCalls
@@ -51,7 +27,13 @@
         </template>
         <template #2>
             <Spinner v-if="objectsIsLoading" class="absolute-center" label="Загрузка объектов.." />
-            <SurveyFormObjects v-else v-model="form.objects" :company :objects />
+            <SurveyFormObjects
+                v-else
+                v-model="form.objects"
+                :company
+                :objects
+                :survey="survey ?? draft"
+            />
         </template>
         <template #3>
             <Spinner v-if="requestsIsLoading" class="absolute-center" label="Загрузка запросов.." />
@@ -73,11 +55,12 @@
         </template>
         <template #footer="{ complete }">
             <UiButton
+                v-if="!canBeCancelled"
                 @click="complete"
                 :disabled="!formIsValid"
-                small
-                color="success-light"
+                :color="formIsValid ? 'success' : 'light'"
                 icon="fa-solid fa-check"
+                class="mx-auto"
             >
                 Сохранить опрос
             </UiButton>
@@ -86,9 +69,9 @@
                     v-if="canBeCancelled"
                     @click="cancelSurvey"
                     tooltip='Завершить опрос с отметкой "Не удалось дозвониться"'
-                    small
                     color="danger-light"
                     icon="fa-solid fa-thumbs-down"
+                    class="mx-auto"
                 >
                     Завершить опрос
                 </UiButton>
@@ -106,7 +89,6 @@ import { surveyConfig } from '@/configs/survey.config.js';
 import { useAuth } from '@/composables/useAuth.js';
 import { isNullish } from '@/utils/helpers/common/isNullish.js';
 import UiButton from '@/components/common/UI/UiButton.vue';
-import SurveyFormStepperDraft from '@/components/SurveyForm/SurveyFormStepperDraft.vue';
 import { useAsync } from '@/composables/useAsync.js';
 import { useSharedWindowFocus } from '@/composables/useSharedWindowFocus.js';
 import SurveyFormObjects from '@/components/SurveyForm/SurveyFormObjects.vue';
@@ -147,7 +129,8 @@ const emit = defineEmits([
     'draft-expired',
     'contact-created',
     'contact-updated',
-    'completed'
+    'completed',
+    'canceled'
 ]);
 
 const props = defineProps({
@@ -231,21 +214,6 @@ async function saveDraft() {
 }
 
 defineExpose({ createDraft, updateDraft, updateSurvey });
-
-const { isLoading: draftIsDeleting, execute: deleteDraft } = useAsync(api.survey.delete, {
-    payload: () => [props.draft.id],
-    onFetchResponse() {
-        emit('draft-deleted');
-    },
-    confirmation: true,
-    confirmationContent: {
-        title: 'Удалить черновик',
-        message:
-            'Вы уверены, что хотите безвозвратно удалить черновик? Весь прогресс заполнения будет утерян',
-        okButton: 'Удалить',
-        okIcon: 'fa-solid fa-trash'
-    }
-});
 
 const { pause, resume } = useIntervalFn(updateDraft, surveyConfig.DRAFT_UPDATE_INTERVAL, {
     immediate: isNotNullish(props.draft)
@@ -445,20 +413,19 @@ const formIsValid = computed(() => !v$.value.$invalid);
 const canBeCancelled = computed(() => {
     if (formIsValid.value) return false;
 
-    return (
-        props.contacts.some(contact => {
-            if (isNullish(form.value.calls[contact.id])) return false;
+    return props.contacts.some(contact => {
+        if (isNullish(form.value.calls[contact.id])) return false;
 
-            const isAvailable = form.value.calls[contact.id].available;
+        const isAvailable = form.value.calls[contact.id].available;
 
-            if (isNullish(isAvailable)) return false;
+        if (isNullish(isAvailable)) return false;
 
-            return (
-                (toBool(isAvailable) && Number(form.value.calls[contact.id].reason !== 1)) ||
-                (!toBool(isAvailable) && isNotNullish(form.value.calls[contact.id].reason))
-            );
-        }) && stepsIsDisabled.value
-    );
+        return (
+            isNotNullish(form.value.calls[contact.id].reason) &&
+            ((toBool(isAvailable) && Number(form.value.calls[contact.id].reason !== 1)) ||
+                !toBool(isAvailable))
+        );
+    });
 });
 
 function getQuestionByGroup(group) {
@@ -863,6 +830,8 @@ async function cancelSurvey() {
     );
     if (!confirmed) return;
 
+    isCreating.value = true;
+
     const { payload: callsPayload, questionAnswers: callsQuestionAnswers } =
         createSurveyCallsPayload();
 
@@ -896,6 +865,7 @@ async function cancelSurvey() {
             user_id: currentUserId.value,
             company_id: props.company.id
         });
+        isCreating.value = false;
 
         return;
     }
@@ -916,6 +886,8 @@ async function cancelSurvey() {
     }
 
     notify.success('Опрос успешно сохранен!');
+    isCreating.value = false;
+    emit('canceled');
 }
 
 // objects

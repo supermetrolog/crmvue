@@ -1,57 +1,65 @@
 <template>
     <div class="survey-form-object-preview">
-        <div class="survey-form-object-preview__header">
-            <p class="survey-form-object-preview__address">
-                <i class="fa-solid fa-map-location-dot mr-1" />
-                <span>{{ object.address }}</span>
-            </p>
-        </div>
-        <hr />
-        <SurveyFormObjectsPreviewSlider @show-preview="$emit('show-preview', $event)" :object />
-        <hr />
-        <div>
+        <UiAccordion v-if="parametersHasWarnings" class="survey-form-object-preview__panel">
+            <template #trigger="{ toggle, opened }">
+                <UiAccordionButton
+                    @click="toggle"
+                    :class="parametersClass"
+                    :label="parametersTitle"
+                    :opened="opened"
+                    icon="fa-solid fa-exclamation-circle survey-form-object-preview__accordion-icon"
+                    expand-class="ml-auto"
+                    class="w-100 br-0"
+                />
+            </template>
+            <template #body>
+                <MessengerDialogObjectPreview
+                    @changed-warnings="parametersHasWarnings = $event"
+                    :object
+                    :show-offers="false"
+                />
+            </template>
+        </UiAccordion>
+        <div class="pt-2">
             <div class="survey-form-object-preview__tabs">
+                <span class="font-weight-bold">Предложения</span>
                 <SurveyFormObjectsPreviewTab v-model="currenTab" :name="TABS.ACTIVE">
                     <i class="fa-solid fa-up-long mr-1" />
-                    <span>Актив ({{ activeTradeOffers.length }})</span>
+                    <span>Активные ({{ activeTradeOffers.length }})</span>
                 </SurveyFormObjectsPreviewTab>
-                <span>|</span>
                 <SurveyFormObjectsPreviewTab v-model="currenTab" :name="TABS.PASSIVE">
                     <i class="fa-solid fa-down-long mr-1" />
-                    <span>Пассив ({{ passiveTradeOffers.length }})</span>
+                    <span>Пассивные ({{ passiveTradeOffers.length }})</span>
                 </SurveyFormObjectsPreviewTab>
                 <template v-if="completedTradeOffers.length">
-                    <span>|</span>
                     <SurveyFormObjectsPreviewTab v-model="currenTab" :name="TABS.COMPLETED">
                         {{ completedTradeOffersTitle }}
                     </SurveyFormObjectsPreviewTab>
                 </template>
-                <span>|</span>
-                <UiButton @click="addNewOffer" mini color="light" icon="fa-solid fa-plus">
-                    Добавить предложение
-                </UiButton>
-                <div class="d-flex gap-1 ml-auto">
-                    <UiButtonIcon
-                        @click="modelValue.answer = 1"
-                        :active="modelValue.answer == 1"
-                        icon="fa-solid fa-check"
-                        label="Обработано"
-                        small
-                    />
-                    <UiButtonIcon
-                        @click="modelValue.answer = 2"
-                        :active="modelValue.answer == 2"
-                        icon="fa-solid fa-thumbs-up"
-                        label="Без изменений"
-                        small
-                    />
-                    <UiButtonIcon
-                        @click="modelValue.answer = 3"
-                        :active="modelValue.answer == 3"
-                        icon="fa-solid fa-phone-slash"
-                        label="Не опрашивал"
-                        small
-                    />
+                <span @click="addNewOffer" class="survey-form-objects__link"> + Добавить </span>
+                <div v-if="activeTradeOffers.length" class="d-flex gap-1 ml-auto">
+                    <UiDropdownActions>
+                        <template #trigger>
+                            <UiButton color="light" class="py-0 px-1" mini>
+                                <div class="d-flex align-items-center">
+                                    <span class="fs-2">Отметить все как</span>
+                                    <i class="fa-solid fa-ellipsis-h ml-2 fs-3" />
+                                </div>
+                            </UiButton>
+                        </template>
+                        <template #menu>
+                            <UiDropdownActionsButton
+                                @handle="markAll(1)"
+                                icon="fa-solid fa-thumbs-up"
+                                label="Актуально без изменений"
+                            />
+                            <UiDropdownActionsButton
+                                @handle="markAll(2)"
+                                icon="fa-solid fa-thumbs-down"
+                                label="Больше не актуально"
+                            />
+                        </template>
+                    </UiDropdownActions>
                 </div>
             </div>
             <div v-if="modelValue.current" class="survey-form-object-preview__content">
@@ -84,9 +92,24 @@
                             editable
                         />
                     </div>
-                    <EmptyData v-else class="mt-2">
-                        Список активных торговых предложений пуст..
-                    </EmptyData>
+                    <div v-else class="d-flex justify-content-center gap-2 mt-4">
+                        <UiButton
+                            @click="isOffersNotFound = !isOffersNotFound"
+                            :color="isOffersNotFound ? 'success' : 'success-light'"
+                        >
+                            <div class="d-flex gap-1">
+                                <UiCheckbox disabled :checked="isOffersNotFound" />
+                                <span>Нет новых предложений</span>
+                            </div>
+                        </UiButton>
+                        <UiButton
+                            @click="addNewOffer"
+                            color="success-light"
+                            icon="fa-solid fa-plus"
+                        >
+                            Добавить предложение
+                        </UiButton>
+                    </div>
                 </div>
                 <div v-show="currenTab === TABS.PASSIVE">
                     <div v-if="passiveTradeOffers.length" class="survey-form-object-preview__list">
@@ -138,20 +161,29 @@ import EmptyData from '@/components/common/EmptyData.vue';
 import { isNullish } from '@/utils/helpers/common/isNullish.js';
 import UiButton from '@/components/common/UI/UiButton.vue';
 import SurveyFormObjectsPreviewTab from '@/components/SurveyForm/ObjectsPreview/SurveyFormObjectsPreviewTab.vue';
-import SurveyFormObjectsPreviewSlider from '@/components/SurveyForm/ObjectsPreview/SurveyFormObjectsPreviewSlider.vue';
 import SurveyFormObjectsPreviewNewOffer from '@/components/SurveyForm/ObjectsPreview/SurveyFormObjectsPreviewNewOffer.vue';
 import SurveyFormObjectsPreviewOfferForm from '@/components/SurveyForm/ObjectsPreview/SurveyFormObjectsPreviewOfferForm.vue';
 import { spliceById } from '@/utils/helpers/array/spliceById.js';
-import UiButtonIcon from '@/components/common/UI/UiButtonIcon.vue';
 import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
 import { toNumberOrRangeFormat } from '@/utils/formatters/number.js';
 import { floorOptions } from '@/const/options/floor.options.js';
+import UiAccordion from '@/components/common/UI/Accordion/UiAccordion.vue';
+import UiAccordionButton from '@/components/common/UI/Accordion/UiAccordionButton.vue';
+import MessengerDialogObjectPreview from '@/components/Messenger/Dialog/Object/MessengerDialogObjectPreview.vue';
+import UiDropdownActions from '@/components/common/UI/DropdownActions/UiDropdownActions.vue';
+import UiDropdownActionsButton from '@/components/common/UI/DropdownActions/UiDropdownActionsButton.vue';
+import { useNotify } from '@/utils/use/useNotify.js';
+import UiCheckbox from '@/components/common/Forms/UiCheckbox.vue';
 
 const modelValue = defineModel({ type: Object });
 
 defineEmits(['show-preview']);
 const props = defineProps({
     object: {
+        type: Object,
+        required: true
+    },
+    company: {
         type: Object,
         required: true
     }
@@ -231,7 +263,11 @@ function extractTradeOffers() {
     }
 
     for (const offer of tradeOffers) {
-        if (!offer.deleted && !offer.deal_id) {
+        if (
+            !offer.deleted &&
+            !offer.deal_id &&
+            commercialOfferByIdMap[offer.offer_id].company_id == props.company?.id
+        ) {
             activeOffers.push(offer);
 
             if (isNullish(modelValue.value.current[offer.id])) {
@@ -241,16 +277,16 @@ function extractTradeOffers() {
                     offer_id: offer.id,
                     snapshot: markRaw({
                         deal_type: commercialOfferByIdMap[offer.offer_id].deal_type,
-                        is_land: props.object.is_land,
                         area: toNumberOrRangeFormat(offer.area_min, offer.area_max),
                         price: props.object.is_land
                             ? toNumberOrRangeFormat(offer.price_sale_min, offer.price_sale_max)
                             : toNumberOrRangeFormat(offer.price_floor_min, offer.price_floor_max),
-                        floors: new Set(offer.floor.filter(el => Number(el) > 0)).size,
                         ceiling: toNumberOrRangeFormat(
                             offer.ceiling_height_min,
                             offer.ceiling_height_max
                         ),
+                        load: toNumberOrRangeFormat(offer.load_floor_min, offer.load_floor_max),
+                        temperature: offer.temperature,
                         gates: getOfferGatesCount(offer),
                         power: Number(offer.power),
                         cranes: offer.cranes?.length ?? 0,
@@ -317,6 +353,7 @@ function closeForm() {
 
 function onCreatedOffer(offer) {
     modelValue.value.created.push(offer);
+    isOffersNotFound.value = false;
     formIsVisible.value = false;
 }
 
@@ -329,12 +366,17 @@ function onUpdatedOffer(offer) {
 
 // check progress before unmount
 
+const answers = computed(() => Object.values(modelValue.value.current));
+
 function markProgress() {
-    const answers = Object.values(modelValue.value.current);
+    if (answers.value.length === 0) {
+        modelValue.value.answer =
+            modelValue.value.created?.length || isOffersNotFound.value ? 1 : null;
 
-    if (answers.length === 0) return;
+        return;
+    }
 
-    const allOffersAnswered = answers.every(
+    const allOffersAnswered = answers.value.every(
         answer => isNotNullish(answer.answer) && Number(answer.answer) !== 0
     );
 
@@ -346,4 +388,40 @@ function markProgress() {
 }
 
 onBeforeUnmount(markProgress);
+
+const notify = useNotify();
+
+function markAll(value) {
+    for (const offer of activeTradeOffers.value) {
+        modelValue.value.current[offer.id].answer = value;
+    }
+
+    notify.success('Все предложения обработаны');
+    markProgress();
+}
+
+const parametersHasWarnings = ref(true);
+
+const parametersTitle = computed(() => {
+    if (parametersHasWarnings.value) {
+        return 'Строение имеет недочеты в заполнении!';
+    }
+
+    return 'Просмотреть параметры строения';
+});
+
+const parametersClass = computed(() => {
+    if (parametersHasWarnings.value) {
+        return 'text-danger bg-white survey-form-object__accordion';
+    }
+
+    return undefined;
+});
+
+const isOffersNotFound = ref(false);
+
+watch(isOffersNotFound, value => {
+    if (value) modelValue.value.answer = 1;
+    else modelValue.value.answer = null;
+});
 </script>

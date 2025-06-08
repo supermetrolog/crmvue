@@ -1,7 +1,7 @@
 <template>
     <span ref="fieldEl" class="fs-2">
         <i class="fa-solid fa-up-long mr-1"></i>
-        <span>{{ dealType }}</span>
+        <span class="font-weight-semi">{{ dealType }}</span>
     </span>
 </template>
 <script setup>

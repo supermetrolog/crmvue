@@ -1,7 +1,7 @@
 <template>
     <div class="survey-form-object-preview-offer__parameter">
         <i :class="icon" />
-        <p class="fs-1 text-dark font-weight-semi"><slot /></p>
+        <p class="fs-2"><slot /></p>
     </div>
 </template>
 <script setup>

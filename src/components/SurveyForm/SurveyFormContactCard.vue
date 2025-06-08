@@ -37,7 +37,7 @@
                         class="messenger-quiz-contact__warning messenger-quiz-contact__badge messenger-quiz-contact__badge--danger"
                     >
                         <span>Внимание!</span>
-                        <span v-if="contact.warning_why_comment?.length">
+                        <span v-if="contact.warning_why_comment?.length" class="ml-1">
                             {{ contact.warning_why_comment }}
                         </span>
                     </div>
@@ -91,8 +91,8 @@
 import { computed } from 'vue';
 import { contactOptions } from '@/const/options/contact.options.js';
 import UiButtonIcon from '@/components/common/UI/UiButtonIcon.vue';
-import UiDropdownActions from '@/components/common/UI/UiDropdownActions.vue';
-import UiDropdownActionsButton from '@/components/common/UI/UiDropdownActionsButton.vue';
+import UiDropdownActions from '@/components/common/UI/DropdownActions/UiDropdownActions.vue';
+import UiDropdownActionsButton from '@/components/common/UI/DropdownActions/UiDropdownActionsButton.vue';
 
 defineEmits(['edit', 'show-comments', 'create-task']);
 const props = defineProps({

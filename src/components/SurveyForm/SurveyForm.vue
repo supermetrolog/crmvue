@@ -19,6 +19,7 @@
                 @to-chat="minimize"
                 @update-logo="onUpdateLogo"
                 @update-company="onUpdateCompany"
+                @create-task="createCompanyTask"
                 :company
                 :last-surveys
                 :surveys-count
@@ -36,6 +37,7 @@
                     v-else-if="canBeCreated || isEditMode"
                     ref="stepper"
                     @completed="$emit('close')"
+                    @canceled="$emit('close')"
                     @draft-expired="surveyDraft = null"
                     @draft-deleted="$emit('close')"
                     @draft-created="surveyDraft = $event"
@@ -85,7 +87,7 @@ import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
 import SurveyFormStepper from '@/components/SurveyForm/SurveyFormStepper.vue';
 import { useAsync } from '@/composables/useAsync.js';
 import { isNullish } from '@/utils/helpers/common/isNullish.js';
-import { getCompanyShortName } from '@/utils/formatters/models/company.js';
+import { getCompanyName, getCompanyShortName } from '@/utils/formatters/models/company.js';
 import UiMinimizeModal from '@/components/common/UI/UiMinimizeModal.vue';
 import { contactOptions } from '@/const/options/contact.options.js';
 import { isPersonalContact } from '@/utils/helpers/models/contact.js';
@@ -110,15 +112,15 @@ const { isEditMode } = useFormData(reactive({}), props.survey);
 
 const title = computed(() => {
     if (isEditMode.value && isNotNullish(company.value)) {
-        return `Редактирование опроса | ${getCompanyShortName(company.value)} | Опрос #${props.survey?.id}`;
+        return `Редактирование опроса | ${getCompanyName(company.value)} | Опрос #${props.survey?.id}`;
     }
 
     if (isNotNullish(company.value)) {
         if (isNotNullish(surveyDraft.value)) {
-            return `Опрос #${surveyDraft.value.id} | ${getCompanyShortName(company.value)}`;
+            return `Опрос #${surveyDraft.value.id} | ${getCompanyName(company.value)}`;
         }
 
-        return `Новый опрос | ${getCompanyShortName(company.value)}`;
+        return `Новый опрос | ${getCompanyName(company.value)}`;
     }
 
     return 'Опрос клиента';
@@ -202,7 +204,6 @@ const { isLoading: surveyDraftIsSearching, execute: searchSurveyDraft } = useAsy
 );
 
 function onUpdateDraft(draft) {
-    surveyDraft.value.data = draft.data;
     surveyDraft.value.updated_at = draft.updated_at;
 }
 
@@ -313,7 +314,8 @@ const notify = useNotify();
 async function createContactTask() {
     const taskPayload = await createTaskWithTemplate({
         title: `Добавить новый контакт в компании ${getCompanyShortName(company.value)}`,
-        step: TASK_FORM_STEPS.MESSAGE
+        step: TASK_FORM_STEPS.MESSAGE,
+        relations: getTaskRelations()
     });
 
     if (!taskPayload) return;
@@ -338,6 +340,31 @@ async function createContactTask() {
     } else {
         notify.error('Произошла ошибка. Попробуйте еще раз..');
     }
+}
+
+function getTaskRelations() {
+    const relations = [{ entity_type: 'company', entity_id: company.value?.id ?? props.companyId }];
+
+    if (props.survey || surveyDraft.value) {
+        relations.push({
+            entity_type: 'survey',
+            entity_id: props.survey?.id ?? surveyDraft.value?.id
+        });
+    }
+
+    return relations;
+}
+
+async function createCompanyTask() {
+    const taskPayload = await createTaskWithTemplate({
+        title: `${getCompanyShortName(company.value)}, `,
+        relations: getTaskRelations()
+    });
+
+    if (!taskPayload) return;
+
+    await api.task.create(taskPayload);
+    notify.success('Задача успешно создана');
 }
 
 function suggestCreateContact() {

@@ -1,35 +1,45 @@
 <template>
     <div
         class="survey-form-object-preview-offer"
-        :class="{ success: hasSuccessStatus, fail: hasFailStatus, editing: needEditing }"
+        :class="{
+            success: hasSuccessStatus || needEditing,
+            danger: hasFailStatus,
+            warning: needEditing
+        }"
     >
         <div class="survey-form-object-preview-offer__wrapper">
-            <div
-                class="messenger-quiz-form-request-picker-element messenger-quiz-form-template-request__preview"
-            >
-                <div class="messenger-quiz-form-request-picker-element__body">
-                    <p class="messenger-quiz-form-request-picker-element__header">
-                        <span class="messenger-quiz-form-request-picker-element__id">
-                            #{{ request.snapshot.request_id }}
-                        </span>
-                        <span
-                            class="messenger-quiz-form-request-picker-element__description active"
+            <div class="request-row-card">
+                <div class="request-row-card__except">
+                    <div class="request-row-card__column">
+                        <p class="request-row-card__id">#{{ request.snapshot.request_id }}</p>
+                    </div>
+                    <div class="request-row-card__info">
+                        <p class="font-weight-bold">{{ request.snapshot.deal_type }}</p>
+                        <WithUnitType
+                            :value="request.snapshot.area"
+                            :unit-type="unitTypes.SQUARE_METERS"
+                            class="font-weight-bold mb-1"
+                        />
+                    </div>
+                </div>
+                <div class="request-row-card__body">
+                    <div class="request-row-card__header">
+                        <div class="request-row-card__description">
+                            <p>Комментарий доступен на странице запроса..</p>
+                        </div>
+                    </div>
+                    <div class="request-row-card__footer request-row-card__footer--empty">
+                        <div
+                            class="request-row-card__timeline align-items-center justify-content-center"
                         >
-                            <span class="messenger-quiz-form-request-picker-element__type">
-                                {{ request.snapshot.deal_type }},
-                            </span>
-                            <span>
-                                <with-unit-type :unit-type="unitTypes.SQUARE_METERS">
-                                    {{ request.snapshot.area }}
-                                </with-unit-type>
-                            </span>
-                        </span>
-                    </p>
+                            <UiField color="light">Таймлайн доступен на странице запроса..</UiField>
+                        </div>
+                    </div>
                 </div>
             </div>
             <AnimationTransition :speed="0.5">
                 <VueEditor
-                    v-if="needEditing"
+                    v-if="(needEditing || hasFailStatus) && request.description?.length"
                     :model-value="request.description"
                     autofocus
                     :min-height="60"
@@ -49,6 +59,7 @@ import AnimationTransition from '@/components/common/AnimationTransition.vue';
 import VueEditor from '@/components/common/Forms/VueEditor.vue';
 import { unitTypes } from '@/const/unitTypes.js';
 import WithUnitType from '@/components/common/WithUnitType.vue';
+import UiField from '@/components/common/UI/UiField.vue';
 
 const props = defineProps({
     request: {
@@ -58,12 +69,12 @@ const props = defineProps({
 });
 
 const ANSWER = {
-    SUCCESS: '1',
-    FAIL: '2',
-    EDIT: '3'
+    SUCCESS: 1,
+    FAIL: 2,
+    EDIT: 3
 };
 
-const hasSuccessStatus = computed(() => props.request.answer === ANSWER.SUCCESS);
-const hasFailStatus = computed(() => props.request.answer === ANSWER.FAIL);
-const needEditing = computed(() => props.request.answer === ANSWER.EDIT);
+const hasSuccessStatus = computed(() => Number(props.request.answer) === ANSWER.SUCCESS);
+const hasFailStatus = computed(() => Number(props.request.answer) === ANSWER.FAIL);
+const needEditing = computed(() => Number(props.request.answer) === ANSWER.EDIT);
 </script>

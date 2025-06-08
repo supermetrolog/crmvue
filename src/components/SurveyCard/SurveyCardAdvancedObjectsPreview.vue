@@ -1,15 +1,26 @@
 <template>
     <div class="survey-form-object-preview">
-        <div class="survey-form-object-preview__header">
-            <p class="survey-form-object-preview__address">
-                <i class="fa-solid fa-map-location-dot mr-1" />
-                <span>{{ object.address }}</span>
-            </p>
-        </div>
-        <hr />
-        <SurveyFormObjectsPreviewSlider @show-preview="$emit('show-preview', $event)" :object />
-        <hr />
-        <div>
+        <UiAccordion v-if="parametersHasWarnings" class="survey-form-object-preview__panel">
+            <template #trigger="{ toggle, opened }">
+                <UiAccordionButton
+                    @click="toggle"
+                    :class="parametersClass"
+                    :label="parametersTitle"
+                    :opened="opened"
+                    icon="fa-solid fa-exclamation-circle survey-form-object-preview__accordion-icon"
+                    expand-class="ml-auto"
+                    class="w-100 br-0"
+                />
+            </template>
+            <template #body>
+                <MessengerDialogObjectPreview
+                    @changed-warnings="parametersHasWarnings = $event"
+                    :object
+                    :show-offers="false"
+                />
+            </template>
+        </UiAccordion>
+        <div class="pt-2">
             <div class="survey-form-object-preview__tabs">
                 <SurveyFormObjectsPreviewTab v-model="currenTab" :name="TABS.ACTIVE">
                     <i class="fa-solid fa-up-long mr-1" />
@@ -46,10 +57,12 @@
 import { computed, ref } from 'vue';
 import EmptyData from '@/components/common/EmptyData.vue';
 import SurveyFormObjectsPreviewTab from '@/components/SurveyForm/ObjectsPreview/SurveyFormObjectsPreviewTab.vue';
-import SurveyFormObjectsPreviewSlider from '@/components/SurveyForm/ObjectsPreview/SurveyFormObjectsPreviewSlider.vue';
 import SurveyFormObjectsPreviewNewOffer from '@/components/SurveyForm/ObjectsPreview/SurveyFormObjectsPreviewNewOffer.vue';
 import { isObject } from '@/utils/helpers/object/isObject.js';
 import SurveyCardAdvancedObjectsPreviewOffer from '@/components/SurveyCard/SurveyCardAdvancedObjectsPreviewOffer.vue';
+import MessengerDialogObjectPreview from '@/components/Messenger/Dialog/Object/MessengerDialogObjectPreview.vue';
+import UiAccordionButton from '@/components/common/UI/Accordion/UiAccordionButton.vue';
+import UiAccordion from '@/components/common/UI/Accordion/UiAccordion.vue';
 
 defineEmits(['show-preview']);
 const props = defineProps({
@@ -71,4 +84,22 @@ const currenTab = ref(TABS.ACTIVE);
 const tradeOffers = computed(() =>
     isObject(props.answer.current) ? Object.values(props.answer.current) : []
 );
+
+const parametersHasWarnings = ref(true);
+
+const parametersTitle = computed(() => {
+    if (parametersHasWarnings.value) {
+        return 'Строение имеет недочеты в заполнении!';
+    }
+
+    return 'Просмотреть параметры строения';
+});
+
+const parametersClass = computed(() => {
+    if (parametersHasWarnings.value) {
+        return 'text-danger bg-white survey-form-object__accordion';
+    }
+
+    return undefined;
+});
 </script>
