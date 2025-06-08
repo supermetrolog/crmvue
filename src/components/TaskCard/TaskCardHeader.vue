@@ -135,8 +135,8 @@ import TaskCardHeaderTargets from '@/components/TaskCard/TaskCardHeaderTargets.v
 import { useFavoriteTasks } from '@/composables/useFavoriteTasks.js';
 import UiButtonIcon from '@/components/common/UI/UiButtonIcon.vue';
 import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
-import UiDropdownActions from '@/components/common/UI/UiDropdownActions.vue';
-import UiDropdownActionsButton from '@/components/common/UI/UiDropdownActionsButton.vue';
+import UiDropdownActions from '@/components/common/UI/DropdownActions/UiDropdownActions.vue';
+import UiDropdownActionsButton from '@/components/common/UI/DropdownActions/UiDropdownActionsButton.vue';
 
 defineEmits([
     'to-chat',

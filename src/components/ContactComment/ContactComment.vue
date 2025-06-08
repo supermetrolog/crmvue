@@ -45,8 +45,8 @@ import { toBeautifulDateFormat } from '@/utils/formatters/date.js';
 import Avatar from '@/components/common/Avatar.vue';
 import { useLinkify } from '@/composables/useLinkify.js';
 import { useAuth } from '@/composables/useAuth.js';
-import UiDropdownActions from '@/components/common/UI/UiDropdownActions.vue';
-import UiDropdownActionsButton from '@/components/common/UI/UiDropdownActionsButton.vue';
+import UiDropdownActions from '@/components/common/UI/DropdownActions/UiDropdownActions.vue';
+import UiDropdownActionsButton from '@/components/common/UI/DropdownActions/UiDropdownActionsButton.vue';
 import UiButton from '@/components/common/UI/UiButton.vue';
 
 defineEmits(['delete', 'edit']);

@@ -36,7 +36,7 @@
     </div>
 </template>
 <script setup>
-import UiDropdownActions from '@/components/common/UI/UiDropdownActions.vue';
+import UiDropdownActions from '@/components/common/UI/DropdownActions/UiDropdownActions.vue';
 import { computed } from 'vue';
 import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
 import UiButton from '@/components/common/UI/UiButton.vue';

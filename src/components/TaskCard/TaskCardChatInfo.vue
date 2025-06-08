@@ -68,8 +68,8 @@ import { dayjsFromMoscow } from '@/utils/formatters/date.js';
 import { messenger } from '@/const/messenger.js';
 import MessengerDialogCompany from '@/components/Messenger/Dialog/Company/MessengerDialogCompany.vue';
 import MessengerChatShortNotification from '@/components/Messenger/Chat/Notification/MessengerChatShortNotification.vue';
-import UiDropdownActions from '@/components/common/UI/UiDropdownActions.vue';
-import UiDropdownActionsButton from '@/components/common/UI/UiDropdownActionsButton.vue';
+import UiDropdownActions from '@/components/common/UI/DropdownActions/UiDropdownActions.vue';
+import UiDropdownActionsButton from '@/components/common/UI/DropdownActions/UiDropdownActionsButton.vue';
 import UiButtonIcon from '@/components/common/UI/UiButtonIcon.vue';
 
 defineEmits(['to-chat', 'to-company', 'show-contacts']);

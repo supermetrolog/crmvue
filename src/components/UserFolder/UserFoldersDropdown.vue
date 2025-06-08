@@ -50,9 +50,9 @@
     </UiDropdownActions>
 </template>
 <script setup>
-import UiDropdownActionsButton from '@/components/common/UI/UiDropdownActionsButton.vue';
+import UiDropdownActionsButton from '@/components/common/UI/DropdownActions/UiDropdownActionsButton.vue';
 import UiButtonIcon from '@/components/common/UI/UiButtonIcon.vue';
-import UiDropdownActions from '@/components/common/UI/UiDropdownActions.vue';
+import UiDropdownActions from '@/components/common/UI/DropdownActions/UiDropdownActions.vue';
 import { useUserFolderEntities } from '@/composables/useUserFolderEntities.js';
 
 const emit = defineEmits(['deleted-from-folder']);

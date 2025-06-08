@@ -6,7 +6,11 @@
     box-shadow: 0 1px 5px #0003,0 2px 2px #00000024,0 3px 1px -2px #0000001f!important;
 
     &__menu {
-        @include mixins.flex-box($d: column);
+        @include mixins.flex-box($d: column, $a: start);
+    }
+
+    &__element {
+        width: 100%;
     }
 
     &__button {
@@ -48,6 +52,38 @@
             width: 20px!important;
             border-width: 3px;
         }
+    }
+
+    &__trigger {
+        display: block;
+        border-radius: 5px;
+        padding-inline: 0;
+        padding: 1px 8px;
+        font-size: 20px;
+        background-color: #fff;
+        border: 1px solid rgba(0, 0, 0, .1);
+        @include mixins.transition(background-color, color);
+
+        i {
+            display: block;
+        }
+
+        &:not(:disabled) {
+            cursor: pointer;
+        }
+
+        @include mixins.bg-color-scheme(
+                        cl-warning #f88f01 #a46104,
+                        cl-warning-light variables.$bg-warning-l rgba(variables.$bg-warning, .6) #000,
+                        cl-success #10b981 #009665,
+                        cl-success-light rgba(16, 185, 129, 0.3) rgba(16, 185, 129, 0.6) #000,
+                        cl-danger #f93154 #cb1132,
+                        cl-danger-light rgba(#f93154, 0.3) rgba(#cb1132, 0.6) #000,
+                        cl-info #e7e7e7 #d3d3d3 #000,
+                        cl-dark #505050 #2a454c,
+                        cl-light variables.$color_grey_light #c8c8c8 #454545,
+                        cl-white #fff #ddd #000
+        );
     }
 
     &__element:not(:last-child) &__button {

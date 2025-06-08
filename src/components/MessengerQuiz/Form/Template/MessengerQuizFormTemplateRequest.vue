@@ -51,6 +51,7 @@ import SurveyQuestionRequest from '@/components/Survey/QuestionRequest/SurveyQue
 import UiButtonIcon from '@/components/common/UI/UiButtonIcon.vue';
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
 import VueEditor from '@/components/common/Forms/VueEditor.vue';
+import UiDropdownActionsButton from '@/components/common/UI/DropdownActions/UiDropdownActionsButton.vue';
 
 defineEmits(['edit']);
 
