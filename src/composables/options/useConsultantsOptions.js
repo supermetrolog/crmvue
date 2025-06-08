@@ -1,8 +1,9 @@
 import { useStore } from 'vuex';
 import { computed } from 'vue';
 import { createOptionsComposable } from '@/composables/options/createOptionsComposable.js';
+import { createSharedComposable } from '@vueuse/core';
 
-export function useConsultantsOptions() {
+export const useConsultantsOptions = createSharedComposable(() => {
     const store = useStore();
 
     const {
@@ -21,4 +22,4 @@ export function useConsultantsOptions() {
         getConsultantsOptions,
         isFetching
     };
-}
+});
