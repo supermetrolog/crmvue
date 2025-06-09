@@ -11,9 +11,12 @@ export function useSurveyEditing(survey, options = {}) {
     const { adminCanEdit = true } = options;
 
     const remainingTimeInMinutes = computed(() => {
-        if (!toValue(survey)) return 0;
+        const _survey = toValue(survey);
+        if (!_survey) return 0;
+
         return (
-            editTimeLimit - dayjs().diff(dayjsFromMoscow(toValue(survey).completed_at), 'minute')
+            editTimeLimit -
+            dayjs().diff(dayjsFromMoscow(_survey.completed_at ?? _survey.updated_at), 'minute')
         );
     });
 

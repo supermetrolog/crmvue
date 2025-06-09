@@ -1814,6 +1814,8 @@
     padding: 7px 0 7px 7px;
     background: -webkit-linear-gradient(90deg, #cecece, #ffffff 70%);
     background: linear-gradient(90deg, #cecece, #ffffff 70%);
+    position: relative;
+    overflow: hidden;
     @include mixins.flex-box($gap: 10px, $a: center);
     @include mixins.transition(opacity, padding);
 
@@ -2028,6 +2030,20 @@
         border-top: 1px solid #000;
         border-right: 1px solid #000;
         border-bottom: 1px solid #000;
+    }
+
+    &__badge {
+        background-color: variables.$bg-danger;
+        height: 20px;
+        width: 100px;
+        position: absolute;
+        top: 15px;
+        left: -25px;
+        font-size: 14px;
+        font-weight: 500;
+        color: #fff;
+        transform: rotate(-45deg);
+        text-align: center;
     }
 }
 

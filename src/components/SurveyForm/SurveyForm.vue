@@ -56,7 +56,7 @@
                     @suggest-create-contact="suggestCreateContact"
                 />
                 <MessengerQuizFormWarningAlreadyCreated
-                    v-else-if="lastSurveys.length || 1"
+                    v-else-if="lastSurveys.length"
                     @show="showLastSurvey"
                     :last-survey="lastSurveys[0]"
                 />
@@ -178,7 +178,7 @@ async function fetchLastSurveys() {
             chat_member_id: chatMemberId.value,
             sort: '-completed_at',
             'per-page': 5,
-            status: 'completed',
+            statuses: ['completed', 'canceled'],
             type: 'advanced'
         });
 
