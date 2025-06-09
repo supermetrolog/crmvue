@@ -18,6 +18,7 @@
                                 <UiDropdownActionsTrigger
                                     label="Действия над предложением"
                                     color="light"
+                                    class="op-7"
                                 />
                             </template>
                             <template #menu>
@@ -41,7 +42,7 @@
                         <!--                        </p>-->
                         <p
                             class="fs-2 survey-form-object-preview-offer__advs"
-                            :class="{ 'text-danger': advs.length === 0 }"
+                            :class="{ 'color-danger': advs.length === 0 }"
                         >
                             <i class="fa-solid fa-bullhorn mr-1"></i>
                             <span v-if="advs.length">{{ advsLabel }}</span>
@@ -53,7 +54,10 @@
                         >
                             Спецпредложение
                         </p>
-                        <p v-if="commercialOffer.built_to_suit === 1" class="fs-1 text-success">
+                        <p
+                            v-if="commercialOffer.built_to_suit === 1"
+                            class="fs-1 font-weight-semi mt-1"
+                        >
                             <span>{{ builtToSuitType }}</span>
                             <span v-if="commercialOffer.built_to_suit_time">
                                 / {{ commercialOffer.built_to_suit_time }} мес.

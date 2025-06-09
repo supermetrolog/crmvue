@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="p-2">
         <p class="mb-2 font-weight-semi">Дополнительные вопросы:</p>
         <div class="d-flex flex-column gap-2">
             <SurveyFormQuestion

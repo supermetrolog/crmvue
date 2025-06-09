@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="pt-3">
         <SurveyFormHeaderCompany
             @update-company="$emit('update-company')"
             @update-logo="$emit('update-logo', $event)"

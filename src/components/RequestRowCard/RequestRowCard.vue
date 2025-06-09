@@ -10,7 +10,11 @@
                 />
                 <UiDropdownActions v-if="$slots.menu">
                     <template #trigger>
-                        <UiDropdownActionsTrigger label="Действия над запросом" color="light" />
+                        <UiDropdownActionsTrigger
+                            label="Действия над запросом"
+                            color="light"
+                            class="op-7"
+                        />
                     </template>
                     <template #menu>
                         <slot name="menu" />

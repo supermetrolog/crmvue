@@ -31,7 +31,11 @@
         <div class="survey-form-header-company__actions">
             <UiDropdownActions label="Действия над компанией" icon="fa-solid fa-ellipsis-vertical">
                 <template #trigger>
-                    <UiDropdownActionsTrigger label="Действия над компанией" color="light" />
+                    <UiDropdownActionsTrigger
+                        label="Действия над компанией"
+                        color="light"
+                        class="op-7"
+                    />
                 </template>
                 <template #menu>
                     <template v-if="editable">

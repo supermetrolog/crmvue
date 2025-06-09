@@ -56,7 +56,7 @@
                     :max-height="200"
                     :toolbar="false"
                     placeholder="Что необходимо изменить или добавить?"
-                    class="survey-form-object-preview-offer__editor mt-2 font-weight-semi"
+                    class="survey-form-object-preview-offer__editor mt-2 font-weight-bold"
                 >
                     <template #after>
                         <p

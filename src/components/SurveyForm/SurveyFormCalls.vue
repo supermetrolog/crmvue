@@ -1,5 +1,5 @@
 <template>
-    <div class="survey-form-calls">
+    <div class="survey-form-calls p-2">
         <div class="survey-form-calls__header mb-1">
             <div class="survey-form-calls__title">Выберите контакт для разговора</div>
         </div>
