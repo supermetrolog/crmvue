@@ -14,6 +14,7 @@
                 :class="[itemClass, { invalid: hasValidationError }]"
                 :show-radio
                 :rounded
+                :icon="option.icon"
             />
             <slot name="after-options" />
         </div>
@@ -44,14 +45,17 @@ const props = defineProps({
     rounded: {
         type: Boolean,
         default: true
-    }
+    },
+    objectKey: String
 });
 
 const preparedOptions = computed(() => {
     if (Array.isArray(props.options)) return props.options;
+
     return Object.keys(props.options).map(key => ({
         value: Number(key),
-        label: props.options[key]
+        label: props.objectKey ? props.options[key][props.objectKey] : props.options[key],
+        icon: props.options[key]?.icon
     }));
 });
 

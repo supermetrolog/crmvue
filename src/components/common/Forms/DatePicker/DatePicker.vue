@@ -5,6 +5,8 @@
             ref="datePicker"
             @update:model-value="onInput"
             @update-month-year="onUpdateMonthAndYear"
+            @range-start="$emit('range-start', $event)"
+            @range-end="$emit('range-end', $event)"
             :model-value="modelValue"
             locale="ru"
             inline
@@ -22,6 +24,7 @@
             :start-date
             :focus-start-date
             :disabled
+            :range
         >
             <template v-if="presetsLabel" #presets-label>
                 <span class="ui-date-input__presets-label">{{ presetsLabel }}:</span>
@@ -61,7 +64,7 @@ import ValidationMessage from '@/components/common/Forms/VaildationMessage.vue';
 import { useFormControlValidation } from '@/composables/useFormControlValidation.js';
 
 const modelValue = defineModel();
-const emit = defineEmits(['change']);
+const emit = defineEmits(['change', 'range-start', 'range-end']);
 
 const props = defineProps({
     markers: {
@@ -78,6 +81,7 @@ const props = defineProps({
     maxDate: [Date, String],
     required: Boolean,
     disabled: Boolean,
+    range: Boolean,
     presets: Array,
     v$: Object,
     startDate: [Date, String],
