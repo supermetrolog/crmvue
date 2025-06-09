@@ -113,7 +113,7 @@ import AnimationTransition from '@/components/common/AnimationTransition.vue';
 import UserFolderSkeleton from '@/components/UserFolder/UserFolderSkeleton.vue';
 import { useNotify } from '@/utils/use/useNotify.js';
 import { Dropdown, DropdownContent } from 'v-dropdown';
-import UiDropdownActionsButton from '@/components/common/UI/UiDropdownActionsButton.vue';
+import UiDropdownActionsButton from '@/components/common/UI/DropdownActions/UiDropdownActionsButton.vue';
 import api from '@/api/api.js';
 import { useAsync } from '@/composables/useAsync.js';
 import { useConfirm } from '@/composables/useConfirm.js';

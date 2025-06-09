@@ -93,9 +93,9 @@ import CompanyLogo from '@/components/Company/CompanyLogo.vue';
 import { getCompanyName } from '@/utils/formatters/models/company.js';
 import { companyOptions } from '@/const/options/company.options.js';
 import Avatar from '@/components/common/Avatar.vue';
-import UiDropdownActionsButton from '@/components/common/UI/UiDropdownActionsButton.vue';
+import UiDropdownActionsButton from '@/components/common/UI/DropdownActions/UiDropdownActionsButton.vue';
 import UiButtonIcon from '@/components/common/UI/UiButtonIcon.vue';
-import UiDropdownActions from '@/components/common/UI/UiDropdownActions.vue';
+import UiDropdownActions from '@/components/common/UI/DropdownActions/UiDropdownActions.vue';
 
 defineEmits(['unlink', 'to-company', 'show-contacts']);
 const props = defineProps({

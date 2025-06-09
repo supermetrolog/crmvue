@@ -12,6 +12,7 @@
         />
         <div>
             <a
+                v-if="showName"
                 :href="companyUrl"
                 target="_blank"
                 class="company-short-card__name"
@@ -57,6 +58,25 @@
                     :size="avatarSize"
                     class="company-short-card__avatar"
                 />
+                <template v-if="!showName">
+                    <UiTooltipIcon
+                        v-if="isPassive"
+                        tooltip="Компания в архиве"
+                        icon="fa-solid fa-ban"
+                        class="mr-1"
+                    />
+                    <UiTooltipIcon
+                        v-if="isWithoutActiveContacts"
+                        tooltip="Компания без активных контактов"
+                        icon="fa-solid fa-users-slash"
+                        class="mr-1"
+                    />
+                    <UiTooltipIcon
+                        v-if="company.is_individual"
+                        tooltip="Физическое лицо"
+                        icon="fa-solid fa-user-tie"
+                    />
+                </template>
             </div>
             <div>
                 <p v-if="website" class="company-short-card__site">
@@ -69,13 +89,15 @@
                 </p>
                 <ul class="company-short-card__options">
                     <li class="company-short-card__option">
-                        <span v-if="company.activity_groups?.length">- {{ activityGroups }}</span>
+                        <span v-if="company.activity_groups?.length" class="font-weight-semi">
+                            - {{ activityGroups }}
+                        </span>
                         <span v-else class="company-short-card__warning">
                             - Группа деятельности не заполнена
                         </span>
                     </li>
                     <li class="company-short-card__option">
-                        <span v-if="company.activity_profiles?.length">
+                        <span v-if="company.activity_profiles?.length" class="font-weight-semi">
                             - {{ activityProfiles }}
                         </span>
                         <span v-else class="company-short-card__warning">
@@ -114,6 +136,10 @@ const props = defineProps({
     avatarSize: {
         type: Number,
         default: 30
+    },
+    showName: {
+        type: Boolean,
+        default: true
     }
 });
 

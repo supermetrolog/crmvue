@@ -3,7 +3,7 @@
         @close="$emit('close')"
         custom-close
         show
-        :width="700"
+        :width="900"
         :title="isEditMode ? 'Редактирование нового предложения' : 'Новое предложение'"
     >
         <UiForm>
@@ -63,23 +63,29 @@
             </UiFormGroup>
             <UiFormDivider />
             <UiFormGroup>
-                <UiInput v-model="form.floors" label="Этажи" type="number" class="col-4" />
-                <UiInput v-model="form.gates" label="Ворот" unit="шт" type="number" class="col-4" />
+                <UiInput v-model="form.ceiling" label="Потолки" unit="м" class="col-3" />
+                <UiInput
+                    v-model="form.load"
+                    label="Нагрузка на пол"
+                    unit="т/м<sup>2</sup>"
+                    class="col-3"
+                />
                 <UiInput
                     v-model="form.power"
                     label="Электричество"
                     unit="кВт"
                     type="number"
-                    class="col-4"
+                    class="col-3"
                 />
-                <UiInput v-model="form.ceiling" label="Потолки" unit="м" class="col-4" />
-                <UiInput v-model="form.floor_type" label="Тип пола" class="col-4" />
+                <UiInput v-model="form.temperature" label="Темп. режим" class="col-3" />
+                <UiInput v-model="form.floor_type" label="Тип пола" class="col-3" />
+                <UiInput v-model="form.gates" label="Ворот" unit="шт" type="number" class="col-3" />
                 <UiInput
                     v-model="form.cranes"
                     label="Краны"
                     type="number"
                     unit="шт"
-                    class="col-4"
+                    class="col-3"
                 />
             </UiFormGroup>
             <UiFormDivider />
@@ -90,6 +96,7 @@
                     class="mt-2 col-12"
                     :toolbar="false"
                     :min-height="80"
+                    :debounce="200"
                 />
             </UiFormGroup>
         </UiForm>
@@ -129,7 +136,8 @@ const { form, isEditMode } = useFormData(
         description: null,
         area: null,
         price: null,
-        floors: null,
+        load: null,
+        temperature: null,
         gates: null,
         division: null,
         power: null,

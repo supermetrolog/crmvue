@@ -4,6 +4,7 @@
             @update-company="$emit('update-company')"
             @update-logo="$emit('update-logo', $event)"
             @to-chat="$emit('to-chat')"
+            @create-task="$emit('create-task')"
             :company
             :last-surveys
             :surveys-count
@@ -14,7 +15,7 @@
 <script setup>
 import SurveyFormHeaderCompany from '@/components/SurveyForm/SurveyFormHeaderCompany.vue';
 
-defineEmits(['update-logo', 'update-company', 'to-chat']);
+defineEmits(['update-logo', 'update-company', 'to-chat', 'create-task']);
 defineProps({
     company: {
         type: Object,

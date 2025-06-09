@@ -2,11 +2,11 @@
     <div class="survey-form-object__content">
         <div class="survey-form-object__description">
             <p class="survey-form-object__address fs-2">
-                <span>{{ object.address }}</span>
+                <span class="fs-2">{{ object.address }}</span>
                 <span v-if="object.from_mkad">; {{ object.from_mkad }} км от мкад </span>
             </p>
         </div>
-        <div class="d-flex gap-1 flex-wrap mt-1 fs-2">
+        <div class="d-flex gap-1 flex-wrap fs-2 font-weight-semi">
             <span>{{ object.is_land ? 'Участок' : 'Строение' }}</span>
             <span>|</span>
             <WithUnitType :unit-type="unitTypes.SQUARE_METERS">
@@ -17,17 +17,17 @@
                 <span>{{ object.object_class_text }} класс</span>
             </template>
         </div>
-        <div v-if="object.offers" class="d-flex gap-1 flex-wrap mt-1">
+        <div v-if="object.offers" class="d-flex gap-1 flex-wrap mt-2">
             <SurveyFormObjectOffer
                 v-for="offer in preparedOffers"
                 :key="offer.id"
                 :offer="offer"
                 class="survey-form-object__offer mr-1"
             />
-            <UiField v-if="!preparedOffers.length" small color="light">
-                <i class="fa-solid fa-ban" />
+            <span v-if="!preparedOffers.length" class="d-flex gap-1 align-items-center">
+                <i class="fa-solid fa-ban mb-1" />
                 <span>Без активных предложений</span>
-            </UiField>
+            </span>
         </div>
     </div>
 </template>
@@ -36,7 +36,6 @@ import WithUnitType from '@/components/common/WithUnitType.vue';
 import { unitTypes } from '@/const/unitTypes.js';
 import { computed, useTemplateRef } from 'vue';
 import { toNumberFormat } from '@/utils/formatters/number.js';
-import UiField from '@/components/common/UI/UiField.vue';
 import SurveyFormObjectOffer from '@/components/SurveyForm/Object/SurveyFormObjectOffer.vue';
 import { useTippyText } from '@/composables/useTippyText.js';
 

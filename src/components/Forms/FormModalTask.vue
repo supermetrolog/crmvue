@@ -208,7 +208,7 @@ const store = useStore();
 const { getTagsOptions } = useTagsOptions();
 const { currentUser } = useAuth();
 
-const steps = [
+const steps = reactive([
     {
         name: 'user_id',
         title: 'Выбор исполнителя',
@@ -231,10 +231,10 @@ const steps = [
     },
     {
         name: 'relations',
-        title: 'Связи',
+        title: computed(() => `Связи (${form.value.relations?.length ?? 0})`),
         icon: 'fa-solid fa-link'
     }
-];
+]);
 
 const autofocusMessage = ref(false);
 

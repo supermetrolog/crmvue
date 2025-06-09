@@ -2,35 +2,75 @@
     <div class="survey-form-objects">
         <Splitpanes class="default-theme" vertical :maximize-panes="false">
             <Pane min-size="10" max-size="35" size="31">
-                <Progress
-                    v-if="formObjects.length"
-                    title="Обработка предложений"
-                    :percent="completedObjectProgress"
-                    class="mb-1"
-                />
-                <div v-if="objects.length" class="survey-form-objects__list">
-                    <SurveyFormObject
-                        v-for="object in objects"
-                        :key="object.id"
-                        v-model="form.current[object.id]"
-                        @select="selectObject(object)"
-                        @show-map="showObjectOnMap(object)"
-                        @show-preview="showObjectPreview(object)"
-                        @object-destroyed="onObjectDestroyed(object)"
-                        @object-sold="onObjectSold(object)"
-                        :active="selectedObject?.id === object.id"
-                        :object="object"
-                        editable
-                        class="survey-form-objects__element"
+                <div class="d-flex gap-1 pr-2 mb-1 align-items-center">
+                    <span class="font-weight-bold fs-3">Строения ({{ objects.length }})</span>
+                    <span
+                        @click="newObjectFormIsVisible = true"
+                        class="ml-1 survey-form-objects__link"
+                    >
+                        + Добавить
+                    </span>
+                    <UiDropdownActions v-if="objects.length" class="ml-auto">
+                        <template #trigger>
+                            <UiButton
+                                :color="hasCheckedObject ? 'success-light' : 'light'"
+                                class="py-0 px-1"
+                                mini
+                            >
+                                <div class="d-flex align-items-center">
+                                    <span class="fs-2 d-flex gap-1">
+                                        <span>Отметить выбранные</span>
+                                        <span v-if="hasCheckedObject">
+                                            ({{ checkedObjects.size }})
+                                        </span>
+                                        <span>как</span>
+                                    </span>
+                                    <i class="fa-solid fa-ellipsis-h ml-2 fs-3" />
+                                </div>
+                            </UiButton>
+                        </template>
+                        <template #menu>
+                            <UiDropdownActionsButton
+                                @handle="markChecked(1)"
+                                :disabled="!hasCheckedObject"
+                                icon="fa-solid fa-thumbs-up"
+                                label="Актуально без изменений"
+                            />
+                            <UiDropdownActionsButton
+                                @handle="markChecked(2)"
+                                :disabled="!hasCheckedObject"
+                                icon="fa-solid fa-thumbs-down"
+                                label="Больше не актуально"
+                            />
+                            <UiDropdownActionsButton
+                                @handle="markChecked(3)"
+                                :disabled="!hasCheckedObject"
+                                icon="fa-solid fa-phone-slash"
+                                label="Не опросил"
+                            />
+                        </template>
+                    </UiDropdownActions>
+                </div>
+                <div
+                    v-if="objects.length > 1"
+                    class="d-flex align-items-center justify-content-between mb-1"
+                >
+                    <UiCheckbox
+                        @change="toggleAllObjectsChecked"
+                        :checked="allObjectsToggled"
+                        label="Выбрать все"
+                        class="survey-form-objects__checkbox"
                     />
                 </div>
-                <div v-else-if="hasNewObject">
+                <div v-if="hasNewObject" class="pr-2">
+                    <hr class="my-2" />
                     <VueEditor
                         v-model="form.created"
-                        label="Описание предложения"
-                        placeholder="Опишите максимально характеристики объекта, условия предложения, цены и условие сотрудничества.."
+                        label="Описание новое строения"
+                        placeholder="Опишите максимально характеристики объекта..."
                         :toolbar="false"
-                        :min-height="100"
+                        :min-height="50"
+                        :max-height="200"
                     />
                     <UiButton
                         @click="deleteNewObject"
@@ -41,8 +81,28 @@
                     >
                         Удалить
                     </UiButton>
+                    <hr class="my-2" />
                 </div>
-                <EmptyData v-else no-rounded class="h-100">
+                <div v-if="objects.length" class="survey-form-objects__list">
+                    <SurveyFormObject
+                        v-for="object in objects"
+                        :key="object.id"
+                        v-model="form.current[object.id]"
+                        @select="selectObject(object)"
+                        @show-map="showObjectOnMap(object)"
+                        @show-preview="showObjectPreview(object)"
+                        @object-destroyed="onObjectDestroyed(object)"
+                        @object-sold="onObjectSold(object)"
+                        @create-task="createTask(object)"
+                        @toggle-checked="toggleCheckedObject(object, $event)"
+                        :active="selectedObject?.id === object.id"
+                        :object="object"
+                        :checked="checkedObjects.has(object.id)"
+                        editable
+                        class="survey-form-objects__element"
+                    />
+                </div>
+                <EmptyData v-else-if="!hasNewObject" no-rounded class="h-100">
                     <p>У клиента нет объектов и предложений..</p>
                     <template #actions>
                         <UiButton
@@ -62,6 +122,7 @@
                     v-model="form.current[selectedObject.id]"
                     @show-preview="showObjectPreview(selectedObject, $event)"
                     :object="selectedObject"
+                    :company
                 />
                 <div
                     v-else
@@ -123,7 +184,10 @@ import UiModal from '@/components/common/UI/UiModal.vue';
 import UiForm from '@/components/common/Forms/UiForm.vue';
 import VueEditor from '@/components/common/Forms/VueEditor.vue';
 import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
-import Progress from '@/components/common/Progress.vue';
+import dayjs from 'dayjs';
+import UiDropdownActions from '@/components/common/UI/DropdownActions/UiDropdownActions.vue';
+import UiDropdownActionsButton from '@/components/common/UI/DropdownActions/UiDropdownActionsButton.vue';
+import UiCheckbox from '@/components/common/Forms/UiCheckbox.vue';
 
 const props = defineProps({
     objects: {
@@ -133,7 +197,8 @@ const props = defineProps({
     company: {
         type: Object,
         required: true
-    }
+    },
+    survey: Object
 });
 
 const form = defineModel({ type: Object });
@@ -159,6 +224,8 @@ function generateForm() {
 watch(() => props.objects.length, generateForm, { immediate: true });
 
 const formObjects = computed(() => Object.values(form.value.current));
+
+// TODO: Добавить progress
 
 const completedObjectProgress = computed(() => {
     return (
@@ -230,12 +297,23 @@ async function createObjectMessageWithTask(object, messagePayload, taskPayload) 
     }
 }
 
+function getTaskRelationsByObject(object) {
+    return [
+        { entity_type: 'company', entity_id: props.company.id },
+        { entity_type: 'survey', entity_id: props.survey.id },
+        { entity_type: 'c_industry', entity_id: object.id }
+    ];
+}
+
 async function onObjectDestroyed(object) {
     const companyName = getCompanyShortName(props.company);
 
     const taskPayload = await createTaskWithTemplate({
         title: `Объект #${object.id} (комп. ${companyName}) снесен, отправить в пассив`,
-        step: TASK_FORM_STEPS.MESSAGE
+        step: TASK_FORM_STEPS.MESSAGE,
+        start: new Date(),
+        end: dayjs().add(7, 'day').toDate(),
+        relations: getTaskRelationsByObject(object)
     });
 
     if (!taskPayload) return;
@@ -253,7 +331,10 @@ async function onObjectSold(object) {
 
     const taskPayload = await createTaskWithTemplate({
         title: `Объект #${object.id} (комп. ${companyName}) продан`,
-        step: TASK_FORM_STEPS.MESSAGE
+        step: TASK_FORM_STEPS.MESSAGE,
+        start: new Date(),
+        end: dayjs().add(7, 'day').toDate(),
+        relations: getTaskRelationsByObject(object)
     });
 
     if (!taskPayload) return;
@@ -264,6 +345,30 @@ async function onObjectSold(object) {
     };
 
     await createObjectMessageWithTask(object, messagePayload, taskPayload);
+}
+
+const taskIsCreating = ref(false);
+
+async function createTask(object) {
+    const companyName = getCompanyShortName(props.company);
+
+    const taskPayload = await createTaskWithTemplate({
+        title: `Объект #${object.id} (комп. ${companyName}) `,
+        start: new Date(),
+        end: dayjs().add(7, 'day').toDate(),
+        relations: getTaskRelationsByObject(object)
+    });
+
+    if (!taskPayload) return;
+
+    taskIsCreating.value = true;
+
+    try {
+        await api.task.create(taskPayload);
+        notify.success('Задача успешно создана!');
+    } finally {
+        taskIsCreating.value = false;
+    }
 }
 
 // new objects
@@ -279,5 +384,46 @@ function confirmNewObject() {
 function deleteNewObject() {
     hasNewObject.value = false;
     form.value.created = null;
+}
+
+// select functions
+
+const checkedObjects = ref(new Set());
+
+function toggleCheckedObject(object, value) {
+    if (value && !checkedObjects.value.has(object.id)) {
+        checkedObjects.value.add(object.id);
+
+        allObjectsToggled.value = checkedObjects.value.size === props.objects.length;
+    } else if (!value && checkedObjects.value.has(object.id)) {
+        checkedObjects.value.delete(object.id);
+
+        allObjectsToggled.value = false;
+    }
+}
+
+const allObjectsToggled = ref(false);
+
+function toggleAllObjectsChecked() {
+    if (allObjectsToggled.value) {
+        checkedObjects.value.clear();
+        allObjectsToggled.value = false;
+    } else {
+        checkedObjects.value = new Set(props.objects.map(object => object.id));
+        allObjectsToggled.value = true;
+    }
+}
+
+const hasCheckedObject = computed(() => !!checkedObjects.value.size);
+
+function markChecked(value) {
+    for (const objectId of checkedObjects.value) {
+        form.value.current[objectId].answer = value;
+    }
+
+    checkedObjects.value.clear();
+    allObjectsToggled.value = false;
+
+    notify.success('Выбранные объекты успешно обработаны');
 }
 </script>

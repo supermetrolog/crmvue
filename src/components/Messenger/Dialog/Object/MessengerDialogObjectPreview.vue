@@ -219,8 +219,8 @@ const localeObject = shallowRef(null);
 const targetObject = computed(() => props.object ?? localeObject.value);
 
 const objectDescriptionTabLabel = computed(() => {
-    if (objectHasWarnings.value) return 'Объект имеет недочеты!';
-    return 'Проверьте информацию об объекте!';
+    if (objectHasWarnings.value) return 'Строение имеет недочеты!';
+    return 'Проверьте информацию о строении!';
 });
 
 const objectHasWarnings = computed(() => {
@@ -230,11 +230,8 @@ const objectHasWarnings = computed(() => {
         targetObject.value.photo?.length < 5 ||
         !targetObject.value.power ||
         !targetObject.value.water ||
-        (!targetObject.value.sewage && !targetObject.value.sewage_rain) ||
-        !targetObject.value.railway ||
-        (!targetObject.value.entry_territory_type && !targetObject.value.entry_territory) ||
-        !targetObject.value.building_layouts?.length ||
-        !targetObject.value.cadastral_number
+        !targetObject.value.sewage ||
+        !targetObject.value.railway
     );
 });
 

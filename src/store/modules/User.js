@@ -29,7 +29,8 @@ const User = {
                     role: userOptions.role[element.role],
                     email: element.email,
                     phones: element.userProfile.phones.map(element => element.phone).join(', '),
-                    emails: element.userProfile.emails.map(element => element.email).join(', ')
+                    emails: element.userProfile.emails.map(element => element.email).join(', '),
+                    user_id_old: element.user_id_old
                 };
             });
         },

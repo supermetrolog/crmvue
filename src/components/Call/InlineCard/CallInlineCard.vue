@@ -56,8 +56,8 @@ import { callStatus, callType } from '@/const/options/call.options.js';
 import { toBeautifulDateFormat } from '@/utils/formatters/date.js';
 import { contactOptions } from '@/const/options/contact.options.js';
 import UiButtonIcon from '@/components/common/UI/UiButtonIcon.vue';
-import UiDropdownActions from '@/components/common/UI/UiDropdownActions.vue';
-import UiDropdownActionsButton from '@/components/common/UI/UiDropdownActionsButton.vue';
+import UiDropdownActions from '@/components/common/UI/DropdownActions/UiDropdownActions.vue';
+import UiDropdownActionsButton from '@/components/common/UI/DropdownActions/UiDropdownActionsButton.vue';
 import { useRouter } from 'vue-router';
 
 defineEmits(['show-call', 'show-contact']);

@@ -9,6 +9,7 @@
             </p>
             <div ref="editor"></div>
             <ValidationMessage v-if="hasValidationError && !disabled" :message="error" />
+            <slot name="after" />
         </div>
     </div>
 </template>
@@ -27,6 +28,7 @@ import {
 } from 'vue';
 import { useFormControlValidation } from '@/composables/useFormControlValidation.js';
 import ValidationMessage from '@/components/common/Forms/VaildationMessage.vue';
+import { useDebounceFn } from '@vueuse/core';
 
 const emit = defineEmits(['ready', 'change', 'blur', 'focus']);
 
@@ -50,7 +52,8 @@ const props = defineProps({
         type: Boolean,
         default: true
     },
-    autofocus: Boolean
+    autofocus: Boolean,
+    debounce: Number
 });
 
 const defaultOptions = {
@@ -116,6 +119,14 @@ const focus = () => {
 
 defineExpose({ focus });
 
+watch(toRef(props, 'placeholder'), value => {
+    state.editorOption.placeholder = value;
+});
+
+watch(toRef(props, 'disabled'), value => {
+    state.editorOption.readOnly = value;
+});
+
 const initialize = () => {
     if (!editor.value) return;
 
@@ -132,19 +143,10 @@ const initialize = () => {
         else emit('blur', state.quill);
     });
 
-    state.quill.on('text-change', () => {
-        let html = state.quill.getSemanticHTML();
-        const text = state.quill.getText().trim();
-
-        if (text.length === 0 && !html.includes('img')) html = '';
-
-        content = html;
-        modelValue.value = content;
-
-        if (props.v) validate();
-
-        emit('change', { html, text });
-    });
+    state.quill.on(
+        'text-change',
+        props.debounce ? useDebounceFn(onTextChange, props.debounce) : onTextChange
+    );
 
     emit('ready', state.quill);
 
@@ -152,6 +154,20 @@ const initialize = () => {
         focus();
     }
 };
+
+function onTextChange() {
+    let html = state.quill.getSemanticHTML();
+    const text = state.quill.getText().trim();
+
+    if (text.length === 0 && !html.includes('img')) html = '';
+
+    content = html;
+    modelValue.value = content;
+
+    if (props.v) validate();
+
+    emit('change', { html, text });
+}
 
 onMounted(() => {
     initialize();
