@@ -40,7 +40,7 @@
                 <div v-if="activeTradeOffers.length" class="d-flex gap-1 ml-auto">
                     <UiDropdownActions>
                         <template #trigger>
-                            <UiButton color="light" class="py-0 px-1" mini>
+                            <UiButton color="light" class="py-0 px-1 op-7" mini>
                                 <div class="d-flex align-items-center">
                                     <span class="fs-2">Отметить все как</span>
                                     <i class="fa-solid fa-ellipsis-h ml-2 fs-3" />

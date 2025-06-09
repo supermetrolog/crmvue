@@ -545,7 +545,7 @@
     }
 
     &.active &__username {
-        font-size: 16px;
+        font-size: 20px;
     }
 
     &__error {
@@ -795,8 +795,8 @@
         & > .modal__header {
             background-color: #29333d;
             color: #fff;
-            font-size: 18px;
-            font-weight: 400;
+            font-size: 20px;
+            font-weight: 500;
 
             & > .modal__close {
                 color: #fff!important;
@@ -821,7 +821,7 @@
         padding: 10px 15px 5px;
         border-bottom: 1px solid rgba(0, 0, 0, .1);
         overflow-y: auto;
-        height: 140px;
+        height: 142px;
         flex-shrink: 0;
         scrollbar-gutter: stable;
     }
@@ -1823,7 +1823,7 @@
 
         .survey-form-object-preview-offer {
             &__main {
-                background-color: #4db693;
+                background-color: #438469;
                 color: #fff;
             }
 
@@ -1848,7 +1848,7 @@
 
         .survey-form-object-preview-offer {
             &__main {
-                background-color: #F93154;
+                background-color: #438469;
                 color: #fff;
             }
 
@@ -1895,7 +1895,7 @@
     }
 
     &__main {
-        background-color: #f7f7f7;
+        background-color: #badfce;
         border: 1px solid #bababa;
         border-radius: 1px;
         @include mixins.flex-box();
@@ -2123,10 +2123,11 @@
         cursor: unset;
     }
 
-    &__close {
+    &__actions {
         position: absolute;
         right: 10px;
         top: 10px;
+        @include mixins.flex-box($gap: 5px);
     }
 }
 
@@ -2182,10 +2183,6 @@
     &__id {
       vertical-align: top;
     }
-}
-
-.survey-form-requests {
-    padding: 5px 15px;
 }
 
 .request-row-card {

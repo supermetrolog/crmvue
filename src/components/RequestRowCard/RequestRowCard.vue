@@ -10,7 +10,11 @@
                 />
                 <UiDropdownActions v-if="$slots.menu">
                     <template #trigger>
-                        <UiDropdownActionsTrigger label="Действия над запросом" color="light" />
+                        <UiDropdownActionsTrigger
+                            label="Действия над запросом"
+                            color="light"
+                            class="op-7"
+                        />
                     </template>
                     <template #menu>
                         <slot name="menu" />
@@ -78,6 +82,7 @@ import api from '@/api/api.js';
 import Spinner from '@/components/common/Spinner.vue';
 import UiField from '@/components/common/UI/UiField.vue';
 import RequestRowCardTimelineStep from '@/components/RequestRowCard/RequestRowCardTimelineStep.vue';
+import { ucFirst } from '@/utils/formatters/string.js';
 
 const props = defineProps({
     request: {
@@ -237,10 +242,11 @@ const districts = computed(() => {
 const regionsText = computed(() => {
     if (!props.request.regions) return '';
 
-    return props.request.regions.map(element => locationOptions.region[element.region]).join(', ');
+    return props.request.regions.map(element => ucFirst(element.info.title)).join(', ');
 });
 
 const locationText = computed(() => {
+    console.log(props.request);
     const locations = [regionsText.value, ...directions.value, ...districts.value];
 
     if (props.request.distanceFromMKAD) {
