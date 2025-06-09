@@ -69,7 +69,11 @@ const modal = useTemplateRef('modal');
 
 function expandModal() {
     isMinimized.value = false;
-    minimizedModalUid.value = null;
+
+    if (minimizedModalUid.value) {
+        expandMinimizedModal({ id: minimizedModalUid.value });
+        minimizedModalUid.value = null;
+    }
 }
 
 function closeModal() {
@@ -86,7 +90,7 @@ function minimize() {
     isMinimized.value = true;
 }
 
-const { minimizeModal } = useMinimizedModalManager();
+const { minimizeModal, expandModal: expandMinimizedModal } = useMinimizedModalManager();
 
 const scrollIsLocked = ref(false);
 

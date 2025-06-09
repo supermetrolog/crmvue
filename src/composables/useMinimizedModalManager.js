@@ -41,6 +41,7 @@ export function getMinimizedModalManager() {
 
 export function useMinimizedModalManager() {
     return {
-        minimizeModal
+        minimizeModal,
+        expandModal
     };
 }
