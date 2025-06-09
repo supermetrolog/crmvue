@@ -17,7 +17,7 @@
                         карточке задачи.
                     </span>
                 </UiField>
-                <Spinner v-if="consultantsIsLoading" center />
+                <Spinner v-if="consultantsIsLoading" label="Загрузка сотрудников.." center />
                 <UserPicker
                     v-else
                     v-model="form.user_id"
@@ -54,30 +54,44 @@
                 <UserPicker v-else v-model="form.observers" :users="consultantsForObservers" />
             </template>
             <template #3>
-                <div class="task-form__dates">
-                    <DatePicker
-                        v-model="form.date.start"
-                        :presets="startPresets"
-                        :min-date="!isEditing ? new Date() : undefined"
-                        :v="v$.form.date.start"
-                        presets-label="Начать через"
-                        size="45px"
-                        label="Дата старта"
-                        required
-                    />
-                    <div class="task-form__dates-divider"></div>
-                    <DatePicker
-                        v-model="form.date.end"
-                        :presets="endPresets"
-                        :min-date="form.date.start"
-                        :v="v$.form.date.end"
-                        label="Дата окончания"
-                        presets-label="Выполнить за"
-                        size="45px"
-                        required
-                        :start-date="form.date.start"
-                        :focus-start-date="endDateIsFocusedToStart"
-                    />
+                <div class="row">
+                    <div class="col-7">
+                        <div class="row">
+                            <RadioOptions
+                                v-model="form.date.startOption"
+                                :v="v$.form.date.start"
+                                :options="startPresets"
+                                :rounded="false"
+                                required
+                                object-key="label"
+                                label="Начать выполнение"
+                                class="col-12"
+                            />
+                            <RadioOptions
+                                v-model="form.date.endOption"
+                                class="col-12 mt-3"
+                                label="Время на выполнение"
+                                :v="v$.form.date.end"
+                                :options="endPresets"
+                                :rounded="false"
+                                required
+                                object-key="label"
+                            />
+                        </div>
+                    </div>
+                    <div class="col-5 task-form__dates" :class="{ active: calendarIsActive }">
+                        <DatePicker
+                            v-model="calendarDate"
+                            @range-start="form.date.startOption = CUSTOM_START_OPTION"
+                            @range-end="form.date.endOption = CUSTOM_END_OPTION"
+                            :min-date="!isEditing ? new Date() : undefined"
+                            :v="v$.form.date.start"
+                            presets-label="Начать через"
+                            size="55px"
+                            label="Календарь"
+                            range
+                        />
+                    </div>
                 </div>
             </template>
             <template #4>
@@ -203,6 +217,7 @@ import { isNullish } from '@/utils/helpers/common/isNullish.js';
 import { isString } from '@/utils/helpers/string/isString.js';
 import { dayjsFromMoscow } from '@/utils/formatters/date.js';
 import InProgress from '@/components/common/InProgress.vue';
+import RadioOptions from '@/components/common/Forms/RadioOptions.vue';
 
 const store = useStore();
 const { getTagsOptions } = useTagsOptions();
@@ -238,7 +253,7 @@ const steps = reactive([
 
 const autofocusMessage = ref(false);
 
-const step = ref(0);
+const step = ref(2);
 const consultants = ref([]);
 const consultantsIsLoading = ref(false);
 const hasCustomDescription = ref(false);
@@ -251,7 +266,9 @@ const form = ref({
     message: null,
     date: {
         end: dayjs().add(7, 'day').toDate(),
-        start: new Date()
+        start: new Date(),
+        startOption: 1,
+        endOption: 4
     },
     tags: [],
     user_id: null,
@@ -281,7 +298,9 @@ const clearForm = () => {
         message: null,
         date: {
             end: dayjs().add(7, 'day').toDate(),
-            start: new Date()
+            start: new Date(),
+            startOption: 1,
+            endOption: 4
         },
         user_id: null,
         status: 1,
@@ -332,8 +351,13 @@ onPopupShowed(() => {
             title: props.value.title,
             message: props.value.message,
             date: {
-                end: parseDate(props.value.end),
-                start: parseDate(props.value.start)
+                start: parseDate(props.value.start, startPresets.value[1].date),
+                startOption: isNullish(props.value.start) ? 1 : null,
+                end: parseDate(
+                    props.value.end,
+                    endPresets.value.find(element => element.key === 7)?.value
+                ),
+                endOption: isNullish(props.value.end) ? 4 : null
             },
             user_id: props.value.user_id,
             status: props.value.status ?? taskOptions.statusTypes.NEW,
@@ -360,138 +384,149 @@ const externalPresets = reactive({
     call: false
 });
 
+function getPreparedStartDate(addCount, addUnit = 'day') {
+    return dayjs().add(addCount, addUnit).toDate();
+}
+
+const CUSTOM_START_OPTION = 8;
+
 function generateStartPresets() {
-    startPresets.value = [
-        {
-            value: new Date(),
-            label: 'Сегодня'
+    startPresets.value = {
+        1: {
+            label: 'Сегодня',
+            value: new Date()
         },
-        ...(externalPresets.call ? generateCallStartPresets() : []),
-        {
-            value: dayjs().add(1, 'day').toDate(),
-            label: '1 день'
+        ...(externalPresets.call ? generateCallStartPresets() : {}),
+        2: {
+            value: getPreparedStartDate(1),
+            label: 'Завтра'
         },
-        {
-            value: dayjs().add(3, 'day').toDate(),
-            label: '3 дня'
+        3: {
+            value: getPreparedStartDate(2),
+            label: 'Послезавтра'
         },
-        {
-            value: dayjs().add(5, 'day').toDate(),
-            label: '5 дней'
+        4: {
+            value: getPreparedStartDate(5),
+            label: 'Через 5 дней'
         },
-        {
-            value: dayjs().add(7, 'day').toDate(),
-            label: 'Неделя'
+        5: {
+            value: getPreparedStartDate(7),
+            label: 'Через неделю'
         },
-        {
-            value: dayjs().add(14, 'day').toDate(),
-            label: '2 недели'
+        6: {
+            value: getPreparedStartDate(1, 'month'),
+            label: 'Через месяц'
         },
-        {
-            value: dayjs().add(1, 'month').toDate(),
-            label: 'Месяц'
+        7: {
+            value: getPreparedStartDate(3, 'month'),
+            label: 'Через 3 месяца'
         },
-        {
-            value: dayjs().add(3, 'month').toDate(),
-            label: '3 месяца'
-        },
-        {
-            value: dayjs().add(6, 'month').toDate(),
-            label: 'Пол года'
-        },
-        {
-            value: dayjs().add(9, 'month').toDate(),
-            label: '9 месяцев'
+        8: {
+            value: null,
+            icon: 'fa-solid fa-calendar',
+            label: 'Выбрать вручную..'
         }
-    ];
+    };
 }
 
 function generateCallStartPresets() {
-    return [
-        {
+    return {
+        9: {
             value: dayjs().add(30, 'minute').toDate(),
-            label: '30 минут'
+            label: 'Через 30 минут'
         },
-        {
+        10: {
             value: dayjs().add(1, 'hour').toDate(),
-            label: '1 час'
+            label: 'Чеерз 1 час'
         },
-        {
+        11: {
             value: dayjs().add(2, 'hour').toDate(),
-            label: '2 часа'
+            label: 'Через 2 часа'
         },
-        {
+        12: {
             value: dayjs().add(3, 'hour').toDate(),
-            label: '3 часа'
+            label: 'Через 3 часа'
         }
-    ];
+    };
 }
 
 const startPresets = shallowRef([]);
 
 generateStartPresets();
 
+function getPreparedEndDate(addCount, addUnit = 'day') {
+    return dayjs(form.value.date.start).add(addCount, addUnit).toDate();
+}
+
+const CUSTOM_END_OPTION = 10;
+
 function generateEndPresets() {
-    endPresets.value = [
-        ...(externalPresets.call ? generateCallEndPresets() : []),
-        {
-            value: dayjs(form.value.date.start).add(1, 'day').toDate(),
+    endPresets.value = {
+        ...(externalPresets.call ? generateCallEndPresets() : {}),
+        1: {
+            value: getPreparedEndDate(1),
             label: '1 день'
         },
-        {
-            value: dayjs(form.value.date.start).add(3, 'day').toDate(),
+        2: {
+            value: getPreparedEndDate(3),
             label: '3 дня'
         },
-        {
-            value: dayjs(form.value.date.start).add(5, 'day').toDate(),
+        3: {
+            value: getPreparedEndDate(5),
             label: '5 дней'
         },
-        {
-            value: dayjs(form.value.date.start).add(7, 'day').toDate(),
+        4: {
+            key: 7,
+            value: getPreparedEndDate(7),
             label: 'Неделя'
         },
-        {
-            value: dayjs(form.value.date.start).add(14, 'day').toDate(),
+        5: {
+            value: getPreparedEndDate(14),
             label: '2 недели'
         },
-        {
-            value: dayjs(form.value.date.start).add(1, 'month').toDate(),
+        6: {
+            value: getPreparedEndDate(1, 'month'),
             label: 'Месяц'
         },
-        {
-            value: dayjs(form.value.date.start).add(3, 'month').toDate(),
+        7: {
+            value: getPreparedEndDate(3, 'month'),
             label: '3 месяца'
         },
-        {
-            value: dayjs(form.value.date.start).add(6, 'month').toDate(),
+        8: {
+            value: getPreparedEndDate(6, 'month'),
             label: 'Пол года'
         },
-        {
-            value: dayjs(form.value.date.start).add(9, 'month').toDate(),
+        9: {
+            value: getPreparedEndDate(9, 'month'),
             label: '9 месяцев'
+        },
+        10: {
+            value: null,
+            icon: 'fa-solid fa-calendar',
+            label: 'Выбрать вручную..'
         }
-    ];
+    };
 }
 
 function generateCallEndPresets() {
-    return [
-        {
-            value: dayjs(form.value.date.start).add(30, 'minute').toDate(),
+    return {
+        11: {
+            value: getPreparedEndDate(30, 'minute'),
             label: '30 минут'
         },
-        {
-            value: dayjs(form.value.date.start).add(1, 'hour').toDate(),
+        12: {
+            value: getPreparedEndDate(1, 'hour'),
             label: '1 час'
         },
-        {
-            value: dayjs(form.value.date.start).add(2, 'hour').toDate(),
+        13: {
+            value: getPreparedEndDate(2, 'hour'),
             label: '2 часа'
         },
-        {
-            value: dayjs(form.value.date.start).add(3, 'hour').toDate(),
+        14: {
+            value: getPreparedEndDate(3, 'hour'),
             label: '3 часа'
         }
-    ];
+    };
 }
 
 const endPresets = shallowRef([]);
@@ -604,9 +639,63 @@ function assignToModerator() {
     form.value.user_id = store.getters.moderator.id;
 }
 
-const endDateIsFocusedToStart = computed(
+// dates
+
+const calendarDate = computed({
+    get() {
+        return [form.value.date.start, form.value.date.end];
+    },
+    set(value) {
+        form.value.date.start = value[0];
+        form.value.date.end = value[1];
+    }
+});
+
+watch(
+    () => form.value.date.startOption,
+    value => {
+        if (isNullish(value)) {
+            form.value.date.start = null;
+            return;
+        }
+
+        const startDate = startPresets.value[value].value;
+
+        if (isNotNullish(startDate)) {
+            form.value.date.start = startDate;
+
+            if (isNotNullish(form.value.date.endOption)) {
+                debouncedGenerateEndPresets();
+
+                const endValue = endPresets.value[form.value.date.endOption].value;
+
+                if (isNotNullish(endValue)) {
+                    form.value.date.end = endValue;
+                }
+            }
+        }
+    }
+);
+
+watch(
+    () => form.value.date.endOption,
+    value => {
+        if (isNullish(value)) {
+            form.value.date.end = null;
+            return;
+        }
+
+        const endDate = endPresets.value[value].value;
+
+        if (isNotNullish(endDate)) {
+            form.value.date.end = endDate;
+        }
+    }
+);
+
+const calendarIsActive = computed(
     () =>
-        isNullish(form.value.date.end) ||
-        (form.value.date.start && dayjs(form.value.date.end).isBefore(dayjs(form.value.date.start)))
+        Number(form.value.date.endOption) === CUSTOM_END_OPTION ||
+        Number(form.value.date.startOption) === CUSTOM_START_OPTION
 );
 </script>

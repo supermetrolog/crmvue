@@ -610,20 +610,21 @@
 }
 
 .task-form {
-    &__dates {
-        position: relative;
-        @include mixins.flex-box($j: space-between);
+    align-items: unset;
+    padding-top: 30px;
+
+    & > .modal__container {
+        height: max-content;
     }
 
-    &__dates-divider {
-        position: absolute;
-        top: 0;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 2px;
-        height: 100%;
-        background-color: rgba(0, 0, 0, .1);
-        text-align: center;
+    &__dates {
+        border-left: 2px solid rgba(0, 0, 0, .1);
+        will-change: opacity;
+        @include mixins.transition(opacity);
+
+        &:not(.active):not(:hover) {
+            opacity: .3;
+        }
     }
 }
 

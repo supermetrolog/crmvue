@@ -98,7 +98,11 @@
                             :color="isOffersNotFound ? 'success' : 'success-light'"
                         >
                             <div class="d-flex gap-1">
-                                <UiCheckbox disabled :checked="isOffersNotFound" />
+                                <UiCheckbox
+                                    disabled
+                                    :checked="isOffersNotFound"
+                                    class="no-events"
+                                />
                                 <span>Нет новых предложений</span>
                             </div>
                         </UiButton>

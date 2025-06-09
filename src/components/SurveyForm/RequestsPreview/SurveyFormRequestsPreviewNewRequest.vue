@@ -4,8 +4,8 @@
             <div class="request-row-card">
                 <div class="request-row-card__except">
                     <div class="request-row-card__column">
-                        <p class="request-row-card__id text-primary font-weight-semi">Новый!</p>
-                        <Avatar :src="currentUser.userProfile.avatar" :size="40" />
+                        <Avatar class="mt-4" :src="currentUser.userProfile.avatar" :size="40" />
+                        <div class="survey-form-object-preview-offer__badge">Новое</div>
                     </div>
                     <div class="request-row-card__info">
                         <p class="font-weight-bold">{{ dealType }}</p>
@@ -25,8 +25,7 @@
                 <div class="request-row-card__body">
                     <div class="request-row-card__header">
                         <div class="request-row-card__description">
-                            <div v-if="form?.length" v-html="form"></div>
-                            <p v-else>Без комментария..</p>
+                            <p>Без описания..</p>
                         </div>
                         <div v-if="editable" class="survey-form-object-preview-offer__actions">
                             <UiButtonIcon

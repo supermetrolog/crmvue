@@ -72,7 +72,7 @@
                     <div class="survey-form-object-preview-offer__top">
                         <div class="survey-form-object-preview-offer__description">
                             <p v-if="offer.description?.length">{{ offer.description }}</p>
-                            <p v-else>Без комментария..</p>
+                            <p v-else>Без описания..</p>
                         </div>
                         <div v-if="editable" class="survey-form-object-preview-offer__actions">
                             <UiButtonIcon

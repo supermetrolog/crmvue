@@ -40,7 +40,7 @@
             <div class="request-row-card__header">
                 <div class="request-row-card__description">
                     <p v-if="request.description?.length">{{ request.description }}</p>
-                    <p v-else>Без комментария..</p>
+                    <p v-else>Без описания..</p>
                 </div>
                 <slot name="actions" />
             </div>

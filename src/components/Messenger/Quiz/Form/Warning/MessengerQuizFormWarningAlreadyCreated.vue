@@ -39,7 +39,9 @@ defineEmits(['show', 'schedule-call']);
 
 const props = defineProps({ lastSurvey: Object });
 
-const { remainingTimeLabel } = useSurveyEditing(toRef(props, 'lastSurvey'));
+const { remainingTimeLabel } = useSurveyEditing(toRef(props, 'lastSurvey'), {
+    adminCanEdit: false
+});
 
 // TODO: Запланировать звонок
 </script>
