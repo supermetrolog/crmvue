@@ -2,7 +2,7 @@
     <div class="survey-form-object__preview">
         <OfferTableItemPreviewMotionSlider :thumb="object.thumb" :photos="object.photo ?? []" />
         <div class="survey-form-object__preview-header">
-            <span class="messenger-dialog-offer__id">{{ object.id }}</span>
+            <span class="messenger-dialog-offer__id">ID {{ object.id }}</span>
             <UiButtonIcon
                 @click.stop.prevent="$emit('show-preview')"
                 small

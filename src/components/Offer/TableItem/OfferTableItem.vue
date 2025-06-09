@@ -224,8 +224,8 @@ import UiButton from '@/components/common/UI/UiButton.vue';
 import UiButtonIcon from '@/components/common/UI/UiButtonIcon.vue';
 import UserFoldersDropdown from '@/components/UserFolder/UserFoldersDropdown.vue';
 import { useSurveyForm } from '@/composables/useSurveyForm.js';
-import UiDropdownActionsButton from '@/components/common/UI/UiDropdownActionsButton.vue';
-import UiDropdownActions from '@/components/common/UI/UiDropdownActions.vue';
+import UiDropdownActionsButton from '@/components/common/UI/DropdownActions/UiDropdownActionsButton.vue';
+import UiDropdownActions from '@/components/common/UI/DropdownActions/UiDropdownActions.vue';
 
 const emit = defineEmits([
     'favorite-deleted',

@@ -2,6 +2,9 @@
     <div class="survey-form-objects">
         <Splitpanes v-if="hasData" class="default-theme" vertical :maximize-panes="false">
             <Pane min-size="10" max-size="35" size="31">
+                <div class="d-flex gap-1 pr-2 mb-1 align-items-center">
+                    <span class="font-weight-bold fs-3">Строения ({{ objects.length }})</span>
+                </div>
                 <Loader v-if="objectsIsLoading" label="Загрузка объектов.." />
                 <div v-if="created">
                     <VueEditor

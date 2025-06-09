@@ -858,7 +858,7 @@
         border: 1px solid #eee;
         background-color: variables.$color_grey_light!important;
         width: 14px!important;
-        margin: 0 3px!important;
+        margin: 0!important;
         @include mixins.transition(background-color);
 
         &:hover {
@@ -880,6 +880,15 @@
 .survey-form-header-company {
     position: relative;
 
+    .company-preview-tab__description {
+        opacity: .6;
+        @include mixins.transition(opacity);
+
+        &:hover {
+            opacity: 1;
+        }
+    }
+
     &__actions {
         position: absolute;
         top: 0;
@@ -890,6 +899,8 @@
     &__tabs {
         .tabs-component-tabs {
             gap: 0 10px;
+            padding: 0;
+            background-color: transparent;
         }
 
         .tabs-component-panels {
@@ -901,6 +912,10 @@
         .company-preview-tab {
             font-size: 14px;
             padding: 5px 7px;
+
+            &:hover, &.is-active {
+                background-color: #f1f1f1
+            }
         }
     }
 }
@@ -912,13 +927,37 @@
     &__list {
         min-width: 515px;
         overflow-y: auto;
-        height: calc(100% - 35px);
+        height: calc(100% - 55px);
         padding-right: 5px;
         @include mixins.flex-box($gap: 5px, $d: column);
     }
 
     &__element {
         flex-shrink: 0;
+    }
+
+    &__link {
+        color: #0a2cbe;
+        cursor: pointer;
+        font-size: 15px;
+        @include mixins.transition(color);
+
+        &:hover {
+            color: variables.$color_light_blue;
+        }
+    }
+
+    &__checkbox {
+        font-size: 14px;
+
+        .checkbox__row {
+            align-items: center;
+        }
+
+        input {
+            height: 15px;
+            width: 15px;
+        }
     }
 }
 
@@ -1289,75 +1328,85 @@
 
 .survey-form-object {
     font-size: 14px;
-    background-color: #fff;
-    border: 1px solid rgba(0, 0, 0, .1);
-    border-radius: 5px;
+    border-radius: 2px;
+    padding: 5px;
+    background: -webkit-linear-gradient(90deg, #cecece, #ffffff 80%);
+    background: linear-gradient(90deg, #cecece, #ffffff 80%);
+    width: 100%;
 
-    &.disabled {
+    @include mixins.flex-box();
+    @include mixins.transition(background-color .3s, color .3s);
+
+    &.disabled &__body {
         opacity: .5;
     }
 
-    &:first-child {
-        .hover-actions {
-            top: unset;
-            z-index: 10;
-            right: 40px;
-        }
+    &.success {
+        background: -webkit-linear-gradient(90deg, #10B981, #ffffff 80%);
+        background: linear-gradient(90deg, #10B981, #ffffff 80%);
+    }
+
+    &.danger {
+        background: -webkit-linear-gradient(90deg, #F93154, #ffffff 80%);
+        background: linear-gradient(90deg, #F93154, #ffffff 80%);
     }
 
     &__body {
-        padding: 3px 5px;
-        position: relative;
         cursor: pointer;
         will-change: background-color;
         overflow: hidden;
+        border: 2px solid #fff;
+        border-image: linear-gradient(to right, #fff 0%, #dadada 100%) 1;
+        background-color: #fff;
+        width: 100%;
         @include mixins.flex-box($gap: 5px);
         @include mixins.transition(background-color .3s, color .3s);
 
-        &.success {
-            background: -webkit-linear-gradient(90deg, #10B981, #ffffff);
-            background: linear-gradient(90deg, #10B981, #ffffff);
-        }
+        &:hover, &.active {
+            background: #76a3ea!important;
+            color: #fff;
 
-        &.danger {
-            background: -webkit-linear-gradient(90deg, #F93154, #ffffff);
-            background: linear-gradient(90deg, #F93154, #ffffff);
-        }
+            .survey-form-object {
+                &__action {
+                    background-color: variables.$color_grey_light;
+                }
 
-        &.warning {
-            background: -webkit-linear-gradient(90deg, #F88F01, #ffffff);
-            background: linear-gradient(90deg, #F88F01, #ffffff);
-        }
-
-        &.disabled {
-            opacity: .3;
+                &__offer {
+                    color: #fff;
+                }
+            }
         }
     }
 
-    &:hover &__body, &__body.active {
-        background: #76a3ea!important;
-        color: #fff;
+    &:has(&__aside) &__body {
+        border-right: none;
+    }
 
-        .survey-form-object {
-            &__action {
-                background-color: variables.$color_grey_light;
-            }
+    &__aside {
+        border: 2px solid rgb(182, 200, 232);
+        padding: 5px 10px;
+        @include mixins.flex-box($d: column, $a: center, $gap: 10px);
+    }
 
-            &__offer {
-                color: #30f126;
-            }
+    &__checkbox {
+        .checkbox__row input:not(:checked) {
+            opacity: .5;
         }
+    }
+
+    &__icon {
+        font-size: 26px;
     }
 
     &__accordion {
         font-weight: 500;
-        border-top: 1px solid rgba(0, 0, 0, .1);
+        background-color: transparent!important;
     }
 
     &__preview {
         width: 170px;
         min-width: 170px;
-        height: 90px;
+        height: 100px;
         position: relative;
 
         .offer-table-item-motion-slider img {
@@ -1372,6 +1421,7 @@
         .messenger-dialog-offer__id {
             color: #000;
             will-change: opacity;
+            opacity: .5;
 
             &:hover {
                 opacity: 1;
@@ -1387,10 +1437,10 @@
 
     &__preview-header {
         position: absolute;
-        top: 1px;
-        left: 1px;
+        top: 2px;
+        left: 3px;
         z-index: 5;
-        width: calc(100% - 2px);
+        width: calc(100% - 6px);
         @include mixins.flex-box($gap: 3px, $a: center);
     }
 
@@ -1451,10 +1501,6 @@
     &__offer {
         color: #05865f;
         @include mixins.transition(color);
-    }
-
-    &__checkbox {
-        border-bottom: 1px solid rgba(0, 0, 0, .1);
     }
 }
 
@@ -1687,8 +1733,9 @@
 }
 
 .survey-form-object-preview {
-    padding-right: 5px;
-    padding-left: 5px;
+    padding: 0 10px 10px 10px;
+    background: linear-gradient(90deg, #eaf1fd, #fff 60%);
+    min-height: 100%;
 
     &__header {
         @include mixins.flex-box($a: center, $j: space-between);
@@ -1746,35 +1793,92 @@
     &__list {
         @include mixins.flex-box($gap: 5px, $d: column);
     }
+
+    &__panel {
+        border-bottom: 1px solid rgba(0, 0, 0, .1);
+    }
+
+    &__accordion-icon {
+        font-size: 22px!important;
+        border: 1px solid #fff;
+        border-radius: 50%;
+    }
+
+    .messenger-dialog-object-preview {
+        background-color: #fff;
+    }
 }
 
 .survey-form-object-preview-offer {
-    background-color: #F5F5F5;
-    border: 1px solid rgba(0, 0, 0, .1);
     will-change: opacity;
+    padding: 7px 0 7px 7px;
+    background: -webkit-linear-gradient(90deg, #cecece, #ffffff 70%);
+    background: linear-gradient(90deg, #cecece, #ffffff 70%);
     @include mixins.flex-box($gap: 10px, $a: center);
     @include mixins.transition(opacity, padding);
 
     &.success {
-        padding: 5px;
-        background: -webkit-linear-gradient(90deg, #10B981, #ffffff);
-        background: linear-gradient(90deg, #10B981, #ffffff);
+        background: -webkit-linear-gradient(90deg, #10B981, #ffffff 70%);
+        background: linear-gradient(90deg, #10B981, #ffffff 70%);
+
+        .survey-form-object-preview-offer {
+            &__main {
+                background-color: #4db693;
+                color: #fff;
+            }
+
+            &__advs, &__date, &__special {
+                color: #ffffff !important;
+            }
+        }
+
+        .request-row-card__except {
+            background-color: #438469;
+            color: #fff;
+        }
+
+        .request-row-card__date {
+            color: #fff;
+        }
+    }
+
+    &.danger {
+        background: -webkit-linear-gradient(90deg, #F93154, #ffffff 70%);
+        background: linear-gradient(90deg, #F93154, #ffffff 70%);
+
+        .survey-form-object-preview-offer {
+            &__main {
+                background-color: #F93154;
+                color: #fff;
+            }
+
+            &__advs, &__date, &__special {
+                color: #ffffff !important;
+            }
+
+            &__editor .ql-container.ql-snow {
+                border-color: #F93154;
+                border-width: 2px;
+            }
+        }
+
+        .request-row-card__except {
+            background-color: #438469;
+            color: #fff;
+        }
+
+        .request-row-card__date {
+            color: #fff;
+        }
+    }
+
+    &.warning &__editor .ql-container.ql-snow {
+        border-color: #ffa800;
+        border-width: 2px;
     }
 
     &--new {
         padding: 5px;
-    }
-
-    &.fail {
-        padding: 5px;
-        background: -webkit-linear-gradient(90deg, #F93154, #ffffff);
-        background: linear-gradient(90deg, #F93154, #ffffff);
-    }
-
-    &.editing {
-        padding: 5px;
-        background: -webkit-linear-gradient(90deg, #F88F01, #ffffff);
-        background: linear-gradient(90deg, #F88F01, #ffffff);
     }
 
     &:hover {
@@ -1783,36 +1887,98 @@
 
     &__wrapper {
         flex-grow: 1;
-        max-width: calc(100% - 135px);
     }
 
     &__content {
-        display: grid;
-        grid-template-columns: 2fr 3fr 2fr 3fr;
+        @include mixins.flex-box();
+        border: 2px solid #fff;
+    }
+
+    &__main {
+        background-color: #f7f7f7;
+        border: 1px solid #bababa;
+        border-radius: 1px;
+        @include mixins.flex-box();
+        @include mixins.transition(background-color, color);
+    }
+
+    &__column {
+        padding: 10px 5px;
+        border-right: 1px solid #bababa;
+        @include mixins.flex-box($d: column, $gap: 10px, $a: center);
+    }
+
+    &__area {
+        padding: 10px;
+        position: relative;
+        width: 220px;
+    }
+
+    &__info {
+        background-color: #f7f7f7;
+        flex-grow: 1;
+    }
+
+    &__top {
+        padding: 3px 10px;
+        margin-left: 1px;
+        background-color: #fff;
+        border-top: 1px solid #000;
+        border-right: 1px solid #000;
+        border-top-right-radius: 2px;
+        @include mixins.flex-box();
+    }
+
+    &__description {
+        width: 100%;
+        font-style: italic;
+        font-size: 14px;
+        opacity: .5;
+    }
+
+    &__row {
+        background-color: #f7f7f7;
+        padding: 2px 0 0 2px;
+        @include mixins.flex-box($gap: 2px);
+    }
+
+    &__special {
+        text-decoration: underline;
+    }
+
+    &__date {
+        position: absolute;
+        bottom: 2px;
+        right: 2px;
+        font-size: 12px;
     }
 
     &__block {
-        background-color: #F5F5F5;
-        padding: 5px;
+        padding: 10px;
+        border: 2px solid #000;
+        border-left: none;
+        border-radius: 0 5px 5px 0;
     }
 
-    &__block:nth-child(2n) {
-        background-color: #fff;
+    &__price {
+        width: 250px;
+        height: 100px;
+    }
+
+    &__price-value {
+        color: #035a36;
     }
 
     &__parameters {
-        padding: 0;
         display: grid;
-        grid-template-columns: 1fr 1fr 1fr;
-        border-left: 1px solid rgba(0, 0, 0, .1);
-        border-top: 1px solid rgba(0, 0, 0, .1);
+        grid-template-columns: 1fr 1fr 1fr 1fr;
+        width: 100%;
+        padding: 10px 30px;
     }
 
     &__parameter {
-        padding: 3px 5px 2px 5px;
-        border-right: 1px solid rgba(0, 0, 0, .1);
-        border-bottom: 1px solid rgba(0, 0, 0, .1);
-        @include mixins.flex-box($a: center, $j: center, $gap: 1px, $d: column);
+        color: #484545;
+        @include mixins.flex-box($a: center, $gap: 10px);
 
         i {
             font-size: 19px;
@@ -1821,17 +1987,47 @@
     }
 
     &__editor {
+        position: relative;
+
         .ql-container.ql-snow {
             max-width: 100%;
             background-color: #fff;
             border-radius: 2px!important;
         }
+
+        .vue-editor .ql-editor {
+            font-size: 14px;
+            padding-top: 16px;
+        }
+    }
+
+    &__editor-helper {
+        position: absolute;
+        font-size: 13px;
+        top: 0;
+        left: 16px;
+        font-weight: 400;
+        font-style: italic;
     }
 
     &__actions {
-        @include mixins.flex-box($gap: 5px);
-        padding: 5px;
-        width: 125px;
+        padding: 10px 0 10px 10px;
+        background: linear-gradient(90deg, #4db69322, #fff);
+        @include mixins.flex-box($gap: 5px, $a: center);
+    }
+
+    &__action-negative.active {
+        background-color: #F93154;
+    }
+
+    &__action-warning.active {
+        background-color: #ffa800;
+    }
+
+    &__footer {
+        border-top: 1px solid #000;
+        border-right: 1px solid #000;
+        border-bottom: 1px solid #000;
     }
 }
 
@@ -1985,5 +2181,205 @@
 .survey-table-item {
     &__id {
       vertical-align: top;
+    }
+}
+
+.survey-form-requests {
+    padding: 5px 15px;
+}
+
+.request-row-card {
+    height: 150px;
+    @include mixins.flex-box();
+
+    &__except {
+        border: 2px solid #fff;
+        overflow: hidden;
+        background-color: #badfce;
+        z-index: 2;
+        position: relative;
+        @include mixins.flex-box();
+    }
+
+    &__column {
+        padding: 10px 5px;
+        border-right: 1px solid #bababa;
+        @include mixins.flex-box($d: column, $gap: 15px, $a: center);
+    }
+
+    &__id {
+        font-size: 14px;
+    }
+
+    &__info {
+        padding: 10px;
+        position: relative;
+        width: 300px;
+    }
+
+    &__body {
+        width: 100%;
+    }
+
+    &__header {
+        padding: 5px;
+        background-color: #fff;
+        width: 100%;
+        height: 70px;
+        border-top: 1px solid #000;
+        border-right: 1px solid #000;
+        @include mixins.flex-box();
+    }
+
+    &__description {
+        width: 100%;
+        font-style: italic;
+        font-size: 14px;
+        opacity: .7;
+        overflow-y: auto;
+    }
+
+    &__date {
+        position: absolute;
+        bottom: 2px;
+        right: 3px;
+        font-size: 12px;
+        color: variables.$color_grey;
+    }
+
+    &__location {
+        font-size: 13px;
+        @include mixins.text-overflow(3);
+    }
+
+    &__footer {
+        height: 80px;
+        background-color: #fff;
+        position: relative;
+
+        &--empty {
+            border-top: 1px solid #000;
+            border-right: 1px solid #000;
+            border-bottom: 1px solid #000;
+        }
+    }
+
+    &__timeline {
+        height: 80px;
+        position: relative;
+        z-index: 1;
+        overflow-x: hidden;
+        width: 100%;
+        @include mixins.flex-box($gap: 4px);
+    }
+}
+
+.request-row-card-timeline-step {
+    @include mixins.flex-box($d: column);
+    position: relative;
+    height: 80px;
+    width: calc(100% / 6);
+    opacity: .4;
+
+    &:first-child {
+        .request-row-card-timeline-step__arrow {
+            border-left: none!important;
+        }
+
+        &::before {
+            content: "";
+            height: 80px;
+            width: 40px;
+            background-color: #cbcbcb;
+            position: absolute;
+            z-index: 2;
+            left: 0;
+            border-top: 2px solid #000;
+            border-bottom: 2px solid #000;
+        }
+    }
+
+    &:last-child {
+        .request-row-card-timeline-step__arrow {
+            border-right: none !important;
+        }
+
+        &::after {
+            content: "";
+            height: 80px;
+            width: 40px;
+            background-color: #cbcbcb;
+            position: absolute;
+            z-index: 2;
+            right: 0;
+            border-top: 2px solid #000;
+            border-bottom: 2px solid #000;
+            border-right: 2px solid #000;
+        }
+    }
+
+    &__arrow {
+        width: 100%;
+        height: 50%;
+        background-color: #cbcbcb;
+        border-right: 2px solid #000;
+
+        &--top {
+            transform: skew(45deg, 0deg);
+            border-top: 2px solid #000;
+        }
+
+        &--bottom {
+            transform: skew(-45deg, 0deg);
+            border-bottom: 2px solid #000;
+        }
+    }
+
+    &.done {
+        opacity: 1;
+
+        .request-row-card-timeline-step__arrow {
+            background-color: #badfce;
+        }
+
+        &:first-child::before {
+            background-color: #badfce;
+        }
+
+        &:last-child::after {
+            background-color: #badfce;
+        }
+    }
+
+    &.in-process {
+        opacity: 1;
+        color: #fff;
+
+        .request-row-card-timeline-step__arrow {
+            background-color: #fe6a49;
+        }
+
+        &:first-child::before {
+            background-color: #fe6a49;
+        }
+
+        &:last-child::after {
+            background-color: #fe6a49;
+        }
+    }
+
+    &.attention {
+        opacity: 1;
+    }
+
+    &__name {
+        font-weight: 600;
+        font-size: 14px;
+    }
+
+    &__content {
+        position: absolute;
+        z-index: 5;
+        padding: 5px 5px 5px 30px;
     }
 }

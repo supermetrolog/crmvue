@@ -8,6 +8,7 @@
                     :logo-size="100"
                     :avatar-size="25"
                     :editable-logo="editable"
+                    :show-name="false"
                 />
             </UiCol>
             <UiCol :cols="7">
@@ -28,14 +29,17 @@
             </UiCol>
         </div>
         <div class="survey-form-header-company__actions">
-            <UiButtonIcon
-                @click="companyModalIsVisible = true"
-                icon="fa-solid fa-maximize"
-                label="Развернуть карточку компании"
-            />
             <UiDropdownActions label="Действия над компанией" icon="fa-solid fa-ellipsis-vertical">
+                <template #trigger>
+                    <UiDropdownActionsTrigger label="Действия над компанией" color="light" />
+                </template>
                 <template #menu>
                     <template v-if="editable">
+                        <UiDropdownActionsButton
+                            @handle="$emit('create-task')"
+                            label="Создать задачу"
+                            icon="fa-solid fa-bolt"
+                        />
                         <UiDropdownActionsButton
                             @handle="companyFormIsVisible = true"
                             label="Редактировать"
@@ -139,8 +143,8 @@ import FormCompanyLogo from '@/components/Forms/Company/FormCompanyLogo.vue';
 import UiModal from '@/components/common/UI/UiModal.vue';
 import { computed, ref, useTemplateRef } from 'vue';
 import { useNotify } from '@/utils/use/useNotify.js';
-import UiDropdownActions from '@/components/common/UI/UiDropdownActions.vue';
-import UiDropdownActionsButton from '@/components/common/UI/UiDropdownActionsButton.vue';
+import UiDropdownActions from '@/components/common/UI/DropdownActions/UiDropdownActions.vue';
+import UiDropdownActionsButton from '@/components/common/UI/DropdownActions/UiDropdownActionsButton.vue';
 import { messenger } from '@/const/messenger.js';
 import { useMessenger } from '@/components/Messenger/useMessenger.js';
 import FormCompanyDisable from '@/components/Forms/Company/FormCompanyDisable.vue';
@@ -154,9 +158,9 @@ import UiCol from '@/components/common/UI/UiCol.vue';
 import CompanyTabs from '@/components/CompanyTabs/CompanyTabs.vue';
 import { useAsyncPopup } from '@/composables/useAsyncPopup.js';
 import MessengerQuizInlineElement from '@/components/MessengerQuiz/MessengerQuizInlineElement.vue';
-import UiButtonIcon from '@/components/common/UI/UiButtonIcon.vue';
+import UiDropdownActionsTrigger from '@/components/common/UI/DropdownActions/UiDropdownActionsTrigger.vue';
 
-const emit = defineEmits(['update-logo', 'update-company', 'to-chat']);
+const emit = defineEmits(['update-logo', 'update-company', 'to-chat', 'create-task']);
 const props = defineProps({
     company: {
         type: Object,

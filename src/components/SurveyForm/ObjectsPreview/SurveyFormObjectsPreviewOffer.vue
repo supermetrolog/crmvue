@@ -1,36 +1,57 @@
 <template>
     <div
         class="survey-form-object-preview-offer"
-        :class="{ success: hasSuccessStatus, fail: hasFailStatus, editing: needEditing }"
+        :class="{
+            success: hasSuccessStatus || needEditing,
+            danger: hasFailStatus,
+            warning: needEditing
+        }"
     >
         <div class="survey-form-object-preview-offer__wrapper">
             <div class="survey-form-object-preview-offer__content">
-                <div class="survey-form-object-preview-offer__block">
-                    <p class="fs-2 text-grey">{{ visualId }} {{ dealTypeName }}</p>
-                    <WithUnitType
-                        class="font-weight-bold"
-                        :value="calculatedArea"
-                        :unit-type="unitTypes.SQUARE_METERS"
-                    />
-                    <p class="text-grey fs-1">Деление: [в разработке]</p>
-                </div>
-                <div class="survey-form-object-preview-offer__block">
-                    <p class="fs-2 text-grey">{{ priceTitle }}</p>
-                    <WithUnitType
-                        class="font-weight-bold text-primary"
-                        :value="calculatedPrice"
-                        :unit-type="unitTypes.RUB"
-                    />
-                    <template v-if="!passive">
-                        <p v-if="commercialOffer.sale_company === 1" class="fs-1 text-primary">
-                            Продажа юр.лица
+                <div class="survey-form-object-preview-offer__main">
+                    <div class="survey-form-object-preview-offer__column">
+                        <p class="fs-1 font-weight-semi">{{ visualId }}</p>
+                        <Avatar :src="avatar" :size="40" />
+                        <UiDropdownActions>
+                            <template #trigger>
+                                <UiDropdownActionsTrigger
+                                    label="Действия над предложением"
+                                    color="light"
+                                />
+                            </template>
+                            <template #menu>
+                                <UiDropdownActionsButton
+                                    @handle="$emit('create-task')"
+                                    label="Создать задачу"
+                                    icon="fa-solid fa-bolt"
+                                />
+                            </template>
+                        </UiDropdownActions>
+                    </div>
+                    <div class="survey-form-object-preview-offer__area">
+                        <p class="font-weight-bold fs-3">{{ dealTypeName }}</p>
+                        <WithUnitType
+                            class="font-weight-bold mb-1"
+                            :value="calculatedArea"
+                            :unit-type="unitTypes.SQUARE_METERS"
+                        />
+                        <!--                        <p class="fs-2">-->
+                        <!--                            Доступ: <span class="text-grey fs-2">[в разработке]</span>-->
+                        <!--                        </p>-->
+                        <p
+                            class="fs-2 survey-form-object-preview-offer__advs"
+                            :class="{ 'text-danger': advs.length === 0 }"
+                        >
+                            <i class="fa-solid fa-bullhorn mr-1"></i>
+                            <span v-if="advs.length">{{ advsLabel }}</span>
+                            <span v-else>Нет рекламы</span>
                         </p>
-                        <p class="fs-1 text-primary">
-                            <span v-if="commercialOffer.tax_form">{{ taxTitle }}</span>
-                            <span v-if="commercialOffer.price_opex"> | OPEX - {{ opex }}</span>
-                            <span v-if="commercialOffer.public_services">
-                                | КУ - {{ publicServices }}
-                            </span>
+                        <p
+                            v-if="offer.ad_special"
+                            class="fs-2 survey-form-object-preview-offer__special"
+                        >
+                            Спецпредложение
                         </p>
                         <p v-if="commercialOffer.built_to_suit === 1" class="fs-1 text-success">
                             <span>{{ builtToSuitType }}</span>
@@ -38,57 +59,102 @@
                                 / {{ commercialOffer.built_to_suit_time }} мес.
                             </span>
                         </p>
-                    </template>
+                        <div class="survey-form-object-preview-offer__date text-grey">
+                            Создан {{ createdAt }}
+                        </div>
+                    </div>
                 </div>
-                <div class="survey-form-object-preview-offer__block">
-                    <p class="fs-2 font-weight-semi">
-                        Доступ: <span class="text-grey fs-2">[в разработке]</span>
-                    </p>
-                    <p class="fs-2 font-weight-semi">
-                        В рекламе:
-                        <span :class="hasAdv ? 'text-success' : 'text-danger'">
-                            {{ hasAdv ? 'ДА' : 'НЕТ' }}
-                        </span>
-                    </p>
+                <div class="survey-form-object-preview-offer__info">
+                    <div class="survey-form-object-preview-offer__top">
+                        <div class="survey-form-object-preview-offer__description">
+                            <p v-if="offer.description?.length">{{ offer.description }}</p>
+                            <p v-else>Без комментария..</p>
+                        </div>
+                        <div v-if="editable" class="survey-form-object-preview-offer__actions">
+                            <UiButtonIcon
+                                @click="selectAnswer(ANSWER.SUCCESS)"
+                                :active="hasSuccessStatus"
+                                icon="fa-solid fa-thumbs-up"
+                                label="Актуально без изменений"
+                            />
+                            <UiButtonIcon
+                                @click="selectAnswer(ANSWER.FAIL)"
+                                :active="hasFailStatus"
+                                icon="fa-solid fa-thumbs-down"
+                                label="Больше не актуально"
+                                class="survey-form-object-preview-offer__action-negative"
+                            />
+                            <UiButtonIcon
+                                @click="selectAnswer(ANSWER.EDIT)"
+                                :active="needEditing"
+                                icon="fa-solid fa-pen"
+                                label="Внести изменения"
+                                class="survey-form-object-preview-offer__action-warning"
+                            />
+                        </div>
+                    </div>
+                    <div class="survey-form-object-preview-offer__row">
+                        <div
+                            class="survey-form-object-preview-offer__block survey-form-object-preview-offer__price"
+                        >
+                            <p class="fs-1">
+                                <span>{{ priceTitle }}</span>
+                                <span
+                                    v-if="commercialOffer.tax_form"
+                                    class="ml-1 text-success_alt font-weight-bold"
+                                >
+                                    {{ taxTitle }}
+                                </span>
+                            </p>
+                            <WithUnitType
+                                class="font-weight-bold survey-form-object-preview-offer__price-value"
+                                :value="calculatedPrice"
+                                :unit-type="unitTypes.RUB"
+                            />
+                            <template v-if="!passive">
+                                <p
+                                    v-if="commercialOffer.sale_company === 1"
+                                    class="fs-1 text-primary"
+                                >
+                                    Продажа юр.лица
+                                </p>
+                                <p v-if="publicServices.length" class="fs-1 text-primary">
+                                    Включая {{ publicServicesLabel }}
+                                </p>
+                                <p v-if="publicServices.length" class="fs-1 text-primary">
+                                    Включая {{ publicServicesLabel }}
+                                </p>
+                            </template>
+                        </div>
+                        <SurveyFormObjectsPreviewOfferParameters
+                            class="survey-form-object-preview-offer__block"
+                            :object
+                            :offer
+                        />
+                    </div>
                 </div>
-                <SurveyFormObjectsPreviewOfferParameters
-                    class="survey-form-object-preview-offer__block"
-                    :object
-                    :offer
-                />
             </div>
             <AnimationTransition v-if="editable" :speed="0.5">
                 <VueEditor
-                    v-if="needEditing"
+                    v-if="needEditing || hasFailStatus"
                     v-model="modelValue.description"
                     autofocus
                     :min-height="60"
                     :max-height="200"
                     :toolbar="false"
                     placeholder="Что необходимо изменить или добавить?"
-                    class="survey-form-object-preview-offer__editor mt-2"
-                />
+                    class="survey-form-object-preview-offer__editor mt-2 font-weight-bold"
+                >
+                    <template #after>
+                        <p
+                            :class="hasFailStatus ? 'text-danger' : 'text-warning'"
+                            class="survey-form-object-preview-offer__editor-helper"
+                        >
+                            {{ editorHelper }}
+                        </p>
+                    </template>
+                </VueEditor>
             </AnimationTransition>
-        </div>
-        <div v-if="editable" class="survey-form-object-preview-offer__actions">
-            <UiButtonIcon
-                @click="selectAnswer(ANSWER.SUCCESS)"
-                :active="modelValue.answer === ANSWER.SUCCESS"
-                icon="fa-solid fa-thumbs-up"
-                label="Актуально без изменений"
-            />
-            <UiButtonIcon
-                @click="selectAnswer(ANSWER.FAIL)"
-                :active="modelValue.answer === ANSWER.FAIL"
-                icon="fa-solid fa-thumbs-down"
-                label="Больше не актуально"
-            />
-            <UiButtonIcon
-                @click="selectAnswer(ANSWER.EDIT)"
-                :active="modelValue.answer === ANSWER.EDIT"
-                icon="fa-solid fa-pen"
-                label="Внести изменения"
-            />
         </div>
     </div>
 </template>
@@ -102,6 +168,16 @@ import SurveyFormObjectsPreviewOfferParameters from '@/components/SurveyForm/Obj
 import UiButtonIcon from '@/components/common/UI/UiButtonIcon.vue';
 import VueEditor from '@/components/common/Forms/VueEditor.vue';
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
+import UiDropdownActions from '@/components/common/UI/DropdownActions/UiDropdownActions.vue';
+import UiDropdownActionsButton from '@/components/common/UI/DropdownActions/UiDropdownActionsButton.vue';
+import UiDropdownActionsTrigger from '@/components/common/UI/DropdownActions/UiDropdownActionsTrigger.vue';
+import { isNullish } from '@/utils/helpers/common/isNullish.js';
+import { useConsultantsOptions } from '@/composables/options/useConsultantsOptions.js';
+import Avatar from '@/components/common/Avatar.vue';
+import { getApiFileNotFound } from '@/utils/url.js';
+import { toDateFormat } from '@/utils/formatters/date.js';
+import { useAuth } from '@/composables/useAuth.js';
+import { useStore } from 'vuex';
 
 const modelValue = defineModel({ type: Object, default: () => ({}) });
 
@@ -125,7 +201,7 @@ const props = defineProps({
 
 const dealTypeName = computed(() => dealOptions.type[props.commercialOffer.deal_type]);
 
-const visualId = computed(() => `ID ${props.object.id}-${dealTypeName.value[0]}`);
+const visualId = computed(() => `#${props.object.id}-${dealTypeName.value[0]}`);
 
 const calculatedArea = computed(() => {
     return toNumberOrRangeFormat(props.offer.area_min, props.offer.area_max);
@@ -147,18 +223,33 @@ const calculatedPrice = computed(() => {
     return toNumberOrRangeFormat(props.offer.price_floor_min, props.offer.price_floor_max);
 });
 
-const hasAdv = computed(() => {
-    return props.offer.ad_avito || props.offer.ad_cian || props.offer.ad_yandex;
+const advs = computed(() => {
+    const row = [];
+
+    if (props.offer.ad_avito) row.push('Avito');
+    if (props.offer.ad_cian) row.push('ЦИАН');
+    if (props.offer.ad_yandex) row.push('Яндекс');
+    if (props.offer.ad_realtor) row.push('Raysarma');
+
+    return row;
 });
+
+const advsLabel = computed(() => advs.value.join(', '));
+
 // prices
 
 const taxTitle = computed(() => dealOptions.tax[props.commercialOffer.tax_form]);
 
-const opex = computed(() => dealOptions.servicePrice[props.commercialOffer.price_opex]);
+const publicServices = computed(() => {
+    const services = [];
 
-const publicServices = computed(
-    () => dealOptions.servicePrice[props.commercialOffer.public_services]
-);
+    if (props.commercialOffer.price_opex === 1) services.push('OPEX');
+    if (props.commercialOffer.public_services === 1) services.push('КУ');
+
+    return services;
+});
+
+const publicServicesLabel = computed(() => publicServices.value.join(', '));
 
 const builtToSuitType = computed(() => {
     return props.commercialOffer.deal_type === dealOptions.typeStatement.SALE
@@ -171,22 +262,51 @@ const builtToSuitType = computed(() => {
 // form
 
 const ANSWER = {
-    SUCCESS: '1',
-    FAIL: '2',
-    EDIT: '3'
+    SUCCESS: 1,
+    FAIL: 2,
+    EDIT: 3
 };
 
 function selectAnswer(value) {
-    if (modelValue.value.answer === value) {
+    if (Number(modelValue.value.answer) === Number(value)) {
         modelValue.value.answer = 0;
     } else {
-        modelValue.value.answer = value;
+        modelValue.value.answer = Number(value);
     }
 
     emit('change');
 }
 
-const hasSuccessStatus = computed(() => modelValue.value.answer === ANSWER.SUCCESS);
-const hasFailStatus = computed(() => modelValue.value.answer === ANSWER.FAIL);
-const needEditing = computed(() => modelValue.value.answer === ANSWER.EDIT);
+const hasSuccessStatus = computed(() => Number(modelValue.value.answer) === ANSWER.SUCCESS);
+const hasFailStatus = computed(() => Number(modelValue.value.answer) === ANSWER.FAIL);
+const needEditing = computed(() => Number(modelValue.value.answer) === ANSWER.EDIT);
+
+const { consultantsOptions } = useConsultantsOptions();
+
+const consultant = computed(() => {
+    if (isNullish(props.commercialOffer.agent_id)) return null;
+
+    return consultantsOptions.value.find(
+        element => element.user_id_old === props.commercialOffer.agent_id
+    );
+});
+
+const avatar = computed(() => {
+    if (consultant.value) return 0;
+    return getApiFileNotFound();
+});
+
+const createdAt = computed(() => toDateFormat(props.offer.publ_time * 1000, 'DD.MM.YYг.'));
+
+const store = useStore();
+const { currentUser } = useAuth();
+
+const moderator = computed(() => store.getters.moderator);
+
+const editorHelper = computed(() => {
+    const postfix = `${currentUser.value.userProfile.short_name} > ${moderator.value?.short_name ?? 'Менеджер'}`;
+
+    if (Number(modelValue.value.answer) === ANSWER.EDIT) return `Редактирование: ${postfix}`;
+    return `Не актуально: ${postfix}`;
+});
 </script>

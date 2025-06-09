@@ -41,6 +41,7 @@ import SurveyDraftTable from '@/components/SurveyTable/SurveyDraftTable.vue';
 import { useSurveyForm } from '@/composables/useSurveyForm.js';
 import { useAsync } from '@/composables/useAsync.js';
 import { useAuth } from '@/composables/useAuth.js';
+import { spliceById } from '@/utils/helpers/array/spliceById.js';
 
 const route = useRoute();
 const router = useRouter();
@@ -106,8 +107,8 @@ function continueDraft(survey) {
 // delete
 
 const { isLoading: draftIsDeleting, execute: deleteDraft } = useAsync(api.survey.delete, {
-    onFetchResponse() {
-        debouncedFetchSurveys();
+    onFetchResponse({ args }) {
+        spliceById(surveys.value, args[0]);
     },
     confirmation: true,
     confirmationContent: {

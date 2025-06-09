@@ -137,8 +137,8 @@ import TableDateBlock from '@/components/common/Table/TableDateBlock.vue';
 import { messenger } from '@/const/messenger.js';
 import MessengerDialogCompany from '@/components/Messenger/Dialog/Company/MessengerDialogCompany.vue';
 import MessengerDialogObject from '@/components/Messenger/Dialog/Object/MessengerDialogObject.vue';
-import UiDropdownActionsButton from '@/components/common/UI/UiDropdownActionsButton.vue';
-import UiDropdownActions from '@/components/common/UI/UiDropdownActions.vue';
+import UiDropdownActionsButton from '@/components/common/UI/DropdownActions/UiDropdownActionsButton.vue';
+import UiDropdownActions from '@/components/common/UI/DropdownActions/UiDropdownActions.vue';
 import { useRouter } from 'vue-router';
 import { plural } from '@/utils/plural.js';
 

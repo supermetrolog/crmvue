@@ -1,24 +1,37 @@
 <template>
     <div class="survey-form-object-preview-offer__parameters">
-        <SurveyFormObjectsPreviewOfferParameter icon="fa-solid fa-stairs">
-            {{ calculatedFloorsCount }}
+        <SurveyFormObjectsPreviewOfferParameter
+            icon="fa-solid fa-arrows-down-to-line fa-rotate-180"
+        >
+            <span v-if="!object.is_land">{{ offer.ceiling }} м</span>
+            <p v-else>-</p>
         </SurveyFormObjectsPreviewOfferParameter>
-        <SurveyFormObjectsPreviewOfferParameter icon="fa-solid fa-archway">
-            <p v-if="offer.gates">{{ offer.gates }} ворот</p>
+        <SurveyFormObjectsPreviewOfferParameter icon="fa-solid fa-weight-hanging">
+            <WithUnitType
+                v-if="!object.is_land && offer.load"
+                :value="offer.load"
+                :unit-type="unitTypes.TON_PER_SQUARE_METER"
+            />
             <p v-else>-</p>
         </SurveyFormObjectsPreviewOfferParameter>
         <SurveyFormObjectsPreviewOfferParameter icon="fa-solid fa-bolt">
             <WithUnitType
-                v-if="offer.power"
+                v-if="offer.power && offer.power"
                 :value="Number(offer.power)"
                 :unit-type="unitTypes.KILOWATT"
             />
             <p v-else>-</p>
         </SurveyFormObjectsPreviewOfferParameter>
-        <SurveyFormObjectsPreviewOfferParameter
-            icon="fa-solid fa-arrows-down-to-line fa-rotate-180"
-        >
-            <span v-if="!object.is_land">{{ offer.ceiling }} м</span>
+        <SurveyFormObjectsPreviewOfferParameter icon="fa-solid fa-temperature-three-quarters">
+            <WithUnitType
+                v-if="!object.is_land && offer.temperature"
+                :value="offer.temperature"
+                :unit-type="unitTypes.CELCIUS"
+            />
+            <span v-else>-</span>
+        </SurveyFormObjectsPreviewOfferParameter>
+        <SurveyFormObjectsPreviewOfferParameter icon="fa-solid fa-archway">
+            <p v-if="offer.gates">{{ offer.gates }} ворот</p>
             <p v-else>-</p>
         </SurveyFormObjectsPreviewOfferParameter>
         <SurveyFormObjectsPreviewOfferParameter icon="fas fa-hashtag">
@@ -31,13 +44,11 @@
     </div>
 </template>
 <script setup>
-import { computed } from 'vue';
 import WithUnitType from '@/components/common/WithUnitType.vue';
 import { unitTypes } from '@/const/unitTypes.js';
 import SurveyFormObjectsPreviewOfferParameter from '@/components/SurveyForm/ObjectsPreview/SurveyFormObjectsPreviewOfferParameter.vue';
-import { plural } from '@/utils/plural.js';
 
-const props = defineProps({
+defineProps({
     offer: {
         type: Object,
         required: true
@@ -46,9 +57,5 @@ const props = defineProps({
         type: Object,
         required: true
     }
-});
-
-const calculatedFloorsCount = computed(() => {
-    return plural(props.offer.floors, '%d этаж', '%d этажа', '%d этажей');
 });
 </script>

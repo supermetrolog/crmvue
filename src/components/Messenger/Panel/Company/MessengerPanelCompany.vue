@@ -188,8 +188,8 @@ import { useNotify } from '@/utils/use/useNotify.js';
 import FormCompanyLogo from '@/components/Forms/Company/FormCompanyLogo.vue';
 import Avatar from '@/components/common/Avatar.vue';
 import UiButtonIcon from '@/components/common/UI/UiButtonIcon.vue';
-import UiDropdownActions from '@/components/common/UI/UiDropdownActions.vue';
-import UiDropdownActionsButton from '@/components/common/UI/UiDropdownActionsButton.vue';
+import UiDropdownActions from '@/components/common/UI/DropdownActions/UiDropdownActions.vue';
+import UiDropdownActionsButton from '@/components/common/UI/DropdownActions/UiDropdownActionsButton.vue';
 
 defineEmits(['edit', 'disable', 'enable']);
 const props = defineProps({
