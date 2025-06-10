@@ -253,7 +253,7 @@ const steps = reactive([
 
 const autofocusMessage = ref(false);
 
-const step = ref(2);
+const step = ref(0);
 const consultants = ref([]);
 const consultantsIsLoading = ref(false);
 const hasCustomDescription = ref(false);
@@ -346,17 +346,16 @@ onPopupShowed(() => {
 
     if (!consultants.value.length) fetchConsultants();
 
+    generateStartPresets();
+
     if (props.value) {
         form.value = {
             title: props.value.title,
             message: props.value.message,
             date: {
-                start: parseDate(props.value.start, startPresets.value[1].date),
+                start: parseDate(props.value.start, startPresets.value[1].value),
                 startOption: isNullish(props.value.start) ? 1 : null,
-                end: parseDate(
-                    props.value.end,
-                    endPresets.value.find(element => element.key === 7)?.value
-                ),
+                end: parseDate(props.value.end, endPresets.value[4].value),
                 endOption: isNullish(props.value.end) ? 4 : null
             },
             user_id: props.value.user_id,
@@ -374,8 +373,6 @@ onPopupShowed(() => {
     }
 
     if (props.value?.focusMessage) autofocusMessage.value = true;
-
-    generateStartPresets();
 });
 
 // presets
@@ -420,6 +417,14 @@ function generateStartPresets() {
         7: {
             value: getPreparedStartDate(3, 'month'),
             label: 'Через 3 месяца'
+        },
+        13: {
+            value: getPreparedStartDate(3, 'month'),
+            label: 'Через пол года'
+        },
+        14: {
+            value: getPreparedStartDate(3, 'month'),
+            label: 'Через год'
         },
         8: {
             value: null,
