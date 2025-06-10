@@ -50,9 +50,9 @@
             <div class="row">
                 <div class="col-12 offers-page__table">
                     <AnimationTransition :speed="0.2">
+                        <Spinner v-if="isInitialLoading" />
                         <component
                             :is="currentViewComponentName"
-                            v-if="COMPANIES.length"
                             @show-message="showPinnedMessage"
                             @unpin-message="unpinMessage"
                             @deleted-from-folder="onDeletedFromFolder"
@@ -63,8 +63,6 @@
                             :companies="COMPANIES"
                             :loader="isLoading || taskIsCreating"
                         />
-                        <Spinner v-else-if="isLoading" />
-                        <EmptyData v-else>Ничего не найдено</EmptyData>
                     </AnimationTransition>
                 </div>
                 <div class="col-12">
@@ -130,7 +128,6 @@ import CompanyGrid from '@/components/Company/CompanyGrid.vue';
 import PaginationClassic from '@/components/common/Pagination/PaginationClassic.vue';
 import Switch from '@/components/common/Forms/Switch.vue';
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
-import EmptyData from '@/components/common/EmptyData.vue';
 import { computed, ref, shallowRef, watch } from 'vue';
 import { useTableContent } from '@/composables/useTableContent.js';
 import { useRoute } from 'vue-router';
@@ -185,9 +182,12 @@ const getCompanies = async () => {
 
 const debouncedFetchCompanies = useDebounceFn(getCompanies, 300);
 
-const { next, nextWithScroll, queryIsInitialized } = useTableContent(getCompanies, {
-    scrollTo: firstPagination
-});
+const { next, nextWithScroll, queryIsInitialized, isInitialLoading } = useTableContent(
+    getCompanies,
+    {
+        scrollTo: firstPagination
+    }
+);
 
 const currentViewComponentName = computed(() => {
     if (isMobile) return CompanyGrid;
