@@ -28,5 +28,5 @@ export function getCompanyShortName(company) {
 
     if (company.noName) return `#${company.id}`;
 
-    return company.nameRu ?? company.nameEng;
+    return company.nameRu ?? company.nameEng ?? `#${company.id}`;
 }

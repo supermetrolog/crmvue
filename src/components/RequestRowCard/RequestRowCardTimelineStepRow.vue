@@ -39,10 +39,15 @@ const isPaused = computed(() => {
     return false;
 });
 
+function createLabel(labelDefinition) {
+    if (typeof labelDefinition === 'function') return labelDefinition(props.origin);
+    return labelDefinition;
+}
+
 const label = computed(() => {
-    if (props.completed || isCompleted.value) return props.definition.doneLabel;
-    if (inProcess.value || hasAttention.value) return props.definition.processLabel;
-    if (isPaused.value) return props.definition.pauseLabel ?? 'Шаг на паузе';
+    if (props.completed || isCompleted.value) return createLabel(props.definition.doneLabel);
+    if (inProcess.value || hasAttention.value) return createLabel(props.definition.processLabel);
+    if (isPaused.value) return createLabel(props.definition.pauseLabel) ?? 'Шаг на паузе';
     return 'Недоступно';
 });
 </script>

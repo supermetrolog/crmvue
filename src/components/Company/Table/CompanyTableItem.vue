@@ -124,18 +124,6 @@
                 </UiButton>
             </template>
         </Td>
-        <Td class="company-table-item__categories">
-            <div v-if="company.categories.length" class="company-table-item__list">
-                <DashboardChip
-                    v-for="(category, key) in categories"
-                    :key="key"
-                    class="dashboard-bg-light"
-                >
-                    {{ category }}
-                </DashboardChip>
-            </div>
-            <p v-else>&#8212;</p>
-        </Td>
         <Td class="company-table-item__contacts">
             <CompanyContact
                 v-if="company.mainContact"
@@ -156,16 +144,6 @@
             <p v-else class="text-center">&#8212;</p>
         </Td>
         <Td class="company-table-item__date" sort="created_at">
-            <DashboardChip
-                v-if="isPassive"
-                ref="passiveWhyCommentEl"
-                class="dashboard-bg-danger-l offer-table-item__chip"
-            >
-                Пассив
-            </DashboardChip>
-            <DashboardChip v-else class="dashboard-bg-success-l offer-table-item__chip">
-                Актив
-            </DashboardChip>
             <CompanyTableItemCall
                 @to-chat="openInChat"
                 @to-survey="openInSurvey"
@@ -174,6 +152,13 @@
                 :without-contacts="isWithoutActiveContacts"
                 class="my-1"
             />
+            <DashboardChip
+                v-if="isPassive || 1"
+                ref="passiveWhyCommentEl"
+                class="dashboard-bg-danger-l offer-table-item__chip"
+            >
+                Пассив
+            </DashboardChip>
             <TableDateBlock
                 class="mt-1"
                 :date="company.updated_at || company.created_at"
@@ -193,7 +178,7 @@
         :objects="company.objects"
         :tasks-count="company.tasks_count"
         :created-tasks-count="company.created_task_ids?.length ?? 0"
-        :company-id="company.id"
+        :company
     />
 </template>
 
@@ -204,7 +189,7 @@ import Td from '@/components/common/Table/Td.vue';
 import { useStore } from 'vuex';
 import { computed, useTemplateRef } from 'vue';
 import { useRouter } from 'vue-router';
-import { ActivityProfileList, CompanyCategories, PassiveWhy } from '@/const/const.js';
+import { ActivityProfileList, PassiveWhy } from '@/const/const.js';
 import Rating from '@/components/common/Rating.vue';
 import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
 import CompanyContact from '@/components/Company/CompanyContact.vue';
@@ -218,13 +203,13 @@ import CompanyLogo from '@/components/Company/CompanyLogo.vue';
 import { messenger } from '@/const/messenger.js';
 import CompanyTableItemCall from '@/components/Company/Table/CompanyTableItemCall.vue';
 import UiTooltipIcon from '@/components/common/UI/UiTooltipIcon.vue';
-import { useTippyText } from '@/composables/useTippyText.js';
 import UserFoldersDropdown from '@/components/UserFolder/UserFoldersDropdown.vue';
 import MessengerDialogLastMessage from '@/components/Messenger/Dialog/MessengerDialogLastMessage.vue';
 import UiDropdownActions from '@/components/common/UI/DropdownActions/UiDropdownActions.vue';
 import UiDropdownActionsButton from '@/components/common/UI/DropdownActions/UiDropdownActionsButton.vue';
 import UiButton from '@/components/common/UI/UiButton.vue';
 import { useSurveyForm } from '@/composables/useSurveyForm.js';
+import { useTippy } from 'vue-tippy';
 
 const store = useStore();
 const router = useRouter();
@@ -268,10 +253,6 @@ const activityProfile = computed(() =>
         .join(', ')
 );
 
-const categories = computed(() =>
-    props.company.categories.map(({ category }) => CompanyCategories[category])
-);
-
 const isPassive = computed(() => props.company.status === 0);
 
 const isWithoutActiveContacts = computed(() => props.company.active_contacts_count === 0);
@@ -311,5 +292,5 @@ const openInSurvey = () => {
     openSurvey(props.company.id);
 };
 
-useTippyText(useTemplateRef('passiveWhyCommentEl'), passiveWhyComment);
+useTippy(useTemplateRef('passiveWhyCommentEl'), { content: passiveWhyComment });
 </script>

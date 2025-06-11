@@ -24,10 +24,10 @@
                 />
             </div>
             <p v-else-if="isCompleted" class="fs-1">
-                {{ definition.doneLabel }}
+                {{ doneLabel }}
             </p>
             <p v-else-if="inProcess" class="fs-1">
-                {{ definition.processLabel }}
+                {{ processLabel }}
             </p>
             <p v-else class="fs-1">Недоступно</p>
         </div>
@@ -71,4 +71,12 @@ const isPaused = computed(() => {
 
     return false;
 });
+
+function createLabel(labelDefinition) {
+    if (typeof labelDefinition === 'function') return labelDefinition(props.origin);
+    return labelDefinition;
+}
+
+const doneLabel = computed(() => createLabel(props.definition.doneLabel));
+const processLabel = computed(() => createLabel(props.definition.processLabel));
 </script>

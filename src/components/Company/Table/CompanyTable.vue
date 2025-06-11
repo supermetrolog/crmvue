@@ -5,7 +5,6 @@
                 <Th>#</Th>
                 <Th class="text-left" sort="nameRu">название компании</Th>
                 <Th>закрепленное сообщение</Th>
-                <Th>категория</Th>
                 <Th>контакт</Th>
                 <Th v-model:filters="consultantFilters" @confirm-filter="confirmConsultantFilters">
                     <template #default>консультант</template>
@@ -67,7 +66,7 @@
                 />
             </template>
             <Tr v-else>
-                <Td colspan="7" class="p-0">
+                <Td colspan="6" class="p-0">
                     <Spinner v-if="loader" class="my-4" />
                     <EmptyData v-else no-rounded>Ничего не найдено...</EmptyData>
                 </Td>

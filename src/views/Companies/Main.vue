@@ -9,7 +9,7 @@
                             <UserFolders
                                 v-model:selected="currentFolder"
                                 category="company"
-                                class="col-12 mt-4"
+                                class="col-12"
                                 movable
                                 editable
                                 selectable
