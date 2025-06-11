@@ -153,7 +153,7 @@
                 class="my-1"
             />
             <DashboardChip
-                v-if="isPassive || 1"
+                v-if="isPassive"
                 ref="passiveWhyCommentEl"
                 class="dashboard-bg-danger-l offer-table-item__chip"
             >
