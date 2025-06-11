@@ -33,6 +33,7 @@
                             <CompanyTableDropdownRequest
                                 v-for="request in requestsByGroups.active"
                                 :key="request.id"
+                                @to-passive="disableRequest(request)"
                                 @open-timeline="$emit('open-timeline', request.id)"
                                 @create-task="$emit('create-task', request)"
                                 :request="request"
@@ -72,17 +73,26 @@
                 </template>
             </div>
         </td>
+        <teleport to="body">
+            <FormModalCompanyRequestDisable
+                @close="disableRequestFormIsVisible = false"
+                @disabled="onRequestDisabled"
+                :show="disableRequestFormIsVisible"
+                :request_id="disablingRequest?.id"
+            />
+        </teleport>
     </tr>
 </template>
 
 <script setup>
 import SurveyFormObjectsPreviewTab from '@/components/SurveyForm/ObjectsPreview/SurveyFormObjectsPreviewTab.vue';
-import { computed, onBeforeMount, ref, shallowRef } from 'vue';
+import { computed, onBeforeMount, ref, shallowRef, triggerRef } from 'vue';
 import api from '@/api/api.js';
 import Spinner from '@/components/common/Spinner.vue';
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
 import UiField from '@/components/common/UI/UiField.vue';
 import CompanyTableDropdownRequest from '@/components/Company/Table/CompanyTableDropdownRequest.vue';
+import FormModalCompanyRequestDisable from '@/components/Forms/Company/FormModalCompanyRequestDisable.vue';
 
 defineEmits(['open-timeline', 'create-task']);
 const props = defineProps({
@@ -122,4 +132,24 @@ const TABS = {
 };
 
 const currentTab = ref(TABS.ACTIVE);
+
+// disabled
+
+const disableRequestFormIsVisible = ref(false);
+const disablingRequest = shallowRef(null);
+
+function disableRequest(request) {
+    disablingRequest.value = request;
+    disableRequestFormIsVisible.value = true;
+}
+
+function onRequestDisabled(payload) {
+    disablingRequest.value.status = 0;
+    Object.assign(disablingRequest.value, payload);
+
+    triggerRef(requests);
+
+    disablingRequest.value = false;
+    disableRequestFormIsVisible.value = false;
+}
 </script>

@@ -1,6 +1,6 @@
 <template>
     <UiModal v-model:visible="isVisible" @close="$emit('close')" custom-close :width="550" :title>
-        <FormCompanyRequestDisable @disabled="$emit('disabled')" :request_id="request_id" />
+        <FormCompanyRequestDisable @disabled="$emit('disabled', $event)" :request_id="request_id" />
     </UiModal>
 </template>
 
