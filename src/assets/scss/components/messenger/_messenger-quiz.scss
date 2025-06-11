@@ -545,7 +545,7 @@
     }
 
     &.active &__username {
-        font-size: 16px;
+        font-size: 20px;
     }
 
     &__error {
@@ -795,8 +795,8 @@
         & > .modal__header {
             background-color: #29333d;
             color: #fff;
-            font-size: 18px;
-            font-weight: 400;
+            font-size: 20px;
+            font-weight: 500;
 
             & > .modal__close {
                 color: #fff!important;
@@ -821,7 +821,7 @@
         padding: 10px 15px 5px;
         border-bottom: 1px solid rgba(0, 0, 0, .1);
         overflow-y: auto;
-        height: 140px;
+        height: 142px;
         flex-shrink: 0;
         scrollbar-gutter: stable;
     }
@@ -1814,6 +1814,8 @@
     padding: 7px 0 7px 7px;
     background: -webkit-linear-gradient(90deg, #cecece, #ffffff 70%);
     background: linear-gradient(90deg, #cecece, #ffffff 70%);
+    position: relative;
+    overflow: hidden;
     @include mixins.flex-box($gap: 10px, $a: center);
     @include mixins.transition(opacity, padding);
 
@@ -1823,7 +1825,7 @@
 
         .survey-form-object-preview-offer {
             &__main {
-                background-color: #4db693;
+                background-color: #438469;
                 color: #fff;
             }
 
@@ -1848,7 +1850,7 @@
 
         .survey-form-object-preview-offer {
             &__main {
-                background-color: #F93154;
+                background-color: #438469;
                 color: #fff;
             }
 
@@ -1895,7 +1897,7 @@
     }
 
     &__main {
-        background-color: #f7f7f7;
+        background-color: #badfce;
         border: 1px solid #bababa;
         border-radius: 1px;
         @include mixins.flex-box();
@@ -2029,6 +2031,20 @@
         border-right: 1px solid #000;
         border-bottom: 1px solid #000;
     }
+
+    &__badge {
+        background-color: variables.$bg-danger;
+        height: 20px;
+        width: 100px;
+        position: absolute;
+        top: 15px;
+        left: -25px;
+        font-size: 14px;
+        font-weight: 500;
+        color: #fff;
+        transform: rotate(-45deg);
+        text-align: center;
+    }
 }
 
 .survey-form-calls {
@@ -2123,10 +2139,11 @@
         cursor: unset;
     }
 
-    &__close {
+    &__actions {
         position: absolute;
         right: 10px;
         top: 10px;
+        @include mixins.flex-box($gap: 5px);
     }
 }
 
@@ -2182,10 +2199,6 @@
     &__id {
       vertical-align: top;
     }
-}
-
-.survey-form-requests {
-    padding: 5px 15px;
 }
 
 .request-row-card {

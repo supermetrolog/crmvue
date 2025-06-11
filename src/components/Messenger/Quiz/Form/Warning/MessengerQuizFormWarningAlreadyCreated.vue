@@ -23,9 +23,9 @@
             >
                 Просмотреть опрос
             </UiButton>
-            <UiButton @click="$emit('schedule-call')" icon="fa-solid fa-phone" color="light">
-                Запланировать звонок
-            </UiButton>
+            <!--            <UiButton @click="$emit('schedule-call')" icon="fa-solid fa-phone" color="light">-->
+            <!--                Запланировать звонок-->
+            <!--            </UiButton>-->
         </template>
     </UiModal>
 </template>
@@ -39,5 +39,9 @@ defineEmits(['show', 'schedule-call']);
 
 const props = defineProps({ lastSurvey: Object });
 
-const { remainingTimeLabel } = useSurveyEditing(toRef(props, 'lastSurvey'));
+const { remainingTimeLabel } = useSurveyEditing(toRef(props, 'lastSurvey'), {
+    adminCanEdit: false
+});
+
+// TODO: Запланировать звонок
 </script>

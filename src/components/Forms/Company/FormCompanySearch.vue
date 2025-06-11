@@ -42,7 +42,7 @@
             </UiCol>
         </UiFormGroup>
         <UiFormGroup>
-            <UiCol v-if="humanizedSelectedQueryFilters.length" :cols="12">
+            <UiCol v-if="humanizedSelectedQueryFilters.length" :cols="12" class="mb-3">
                 <div class="company-table__filters">
                     <Chip
                         v-for="item in humanizedSelectedQueryFilters"

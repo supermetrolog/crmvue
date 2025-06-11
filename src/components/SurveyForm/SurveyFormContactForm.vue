@@ -9,14 +9,22 @@
             :contact
             class="survey-form-contact-form__call"
         />
-        <UiButtonIcon
-            @click="$emit('close')"
-            icon="fa-solid fa-close"
-            label="Закрыть"
-            small
-            color="light"
-            class="survey-form-contact-form__close"
-        />
+        <div class="survey-form-contact-form__actions">
+            <UiButtonIcon
+                @click="reset"
+                icon="fa-solid fa-rotate-left"
+                label="Сбросить ответы"
+                small
+                color="light"
+            />
+            <UiButtonIcon
+                @click="$emit('close')"
+                icon="fa-solid fa-close"
+                label="Закрыть"
+                small
+                color="light"
+            />
+        </div>
     </div>
 </template>
 <script setup>
@@ -33,4 +41,10 @@ defineProps({
 });
 
 const form = defineModel({ type: Object, default: () => ({}) });
+
+function reset() {
+    form.value.available = null;
+    form.value.reason = null;
+    form.value.description = null;
+}
 </script>

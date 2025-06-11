@@ -29,7 +29,11 @@
     cursor: pointer;
 
     &.current {
-        background-color: #c9bd62;
+        background-color: #fbf9e9;
+    }
+
+    &.moderator {
+        background-color: #e0e7ef;
     }
 
     &:hover {

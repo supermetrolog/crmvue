@@ -4,7 +4,8 @@
             <div class="survey-form-object-preview-offer__content">
                 <div class="survey-form-object-preview-offer__main">
                     <div class="survey-form-object-preview-offer__column">
-                        <p class="fs-1 font-weight-semi text-danger">Новое</p>
+                        <Avatar class="mt-4" :src="currentUser.userProfile.avatar" :size="40" />
+                        <div class="survey-form-object-preview-offer__badge">Новое</div>
                     </div>
                     <div class="survey-form-object-preview-offer__area">
                         <p class="font-weight-bold fs-3">{{ dealTypeName }}</p>
@@ -22,8 +23,7 @@
                 <div class="survey-form-object-preview-offer__info">
                     <div class="survey-form-object-preview-offer__top">
                         <div class="survey-form-object-preview-offer__description">
-                            <div v-if="offer.description?.length" v-html="offer.description"></div>
-                            <p v-else>Без комментария..</p>
+                            <p>Без описания..</p>
                         </div>
                         <div v-if="editable" class="survey-form-object-preview-offer__actions">
                             <UiButtonIcon
@@ -110,6 +110,17 @@
                     </div>
                 </div>
             </div>
+            <VueEditor
+                v-if="offer.description?.length"
+                :model-value="offer.description"
+                autofocus
+                :min-height="60"
+                :max-height="200"
+                :toolbar="false"
+                disabled
+                placeholder="Что необходимо изменить или добавить?"
+                class="survey-form-object-preview-offer__editor mt-2 font-weight-bold"
+            />
         </div>
     </div>
 </template>
@@ -119,9 +130,11 @@ import { dealOptions } from '@/const/options/deal.options.js';
 import UiButtonIcon from '@/components/common/UI/UiButtonIcon.vue';
 import { unitTypes } from '@/const/unitTypes.js';
 import WithUnitType from '@/components/common/WithUnitType.vue';
-import { toNumberFormat } from '@/utils/formatters/number.js';
 import { toDateFormat } from '@/utils/formatters/date.js';
 import SurveyFormObjectsPreviewOfferParameter from '@/components/SurveyForm/ObjectsPreview/SurveyFormObjectsPreviewOfferParameter.vue';
+import VueEditor from '@/components/common/Forms/VueEditor.vue';
+import Avatar from '@/components/common/Avatar.vue';
+import { useAuth } from '@/composables/useAuth.js';
 
 defineEmits(['edit', 'delete']);
 const props = defineProps({
@@ -148,4 +161,6 @@ const availabilityLabel = computed(() => {
         return `Свободен с ${toDateFormat(props.offer.availability_date, 'с DD.MM.YY')}`;
     return '-';
 });
+
+const { currentUser } = useAuth();
 </script>

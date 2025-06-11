@@ -1,119 +1,121 @@
 <template>
-    <div class="survey-form-objects">
+    <div class="survey-form-objects p-2">
         <Splitpanes class="default-theme" vertical :maximize-panes="false">
             <Pane min-size="10" max-size="35" size="31">
-                <div class="d-flex gap-1 pr-2 mb-1 align-items-center">
-                    <span class="font-weight-bold fs-3">Строения ({{ objects.length }})</span>
-                    <span
-                        @click="newObjectFormIsVisible = true"
-                        class="ml-1 survey-form-objects__link"
-                    >
-                        + Добавить
-                    </span>
-                    <UiDropdownActions v-if="objects.length" class="ml-auto">
-                        <template #trigger>
-                            <UiButton
-                                :color="hasCheckedObject ? 'success-light' : 'light'"
-                                class="py-0 px-1"
-                                mini
-                            >
-                                <div class="d-flex align-items-center">
-                                    <span class="fs-2 d-flex gap-1">
-                                        <span>Отметить выбранные</span>
-                                        <span v-if="hasCheckedObject">
-                                            ({{ checkedObjects.size }})
+                <div class="d-flex flex-column">
+                    <div class="d-flex gap-1 pr-2 mb-1 align-items-center">
+                        <span class="font-weight-bold fs-3">Строения ({{ objects.length }})</span>
+                        <span
+                            @click="newObjectFormIsVisible = true"
+                            class="ml-1 survey-form-objects__link"
+                        >
+                            + Добавить
+                        </span>
+                        <UiDropdownActions v-if="objects.length" class="ml-auto">
+                            <template #trigger>
+                                <UiButton
+                                    :color="hasCheckedObject ? 'success-light' : 'light'"
+                                    class="py-0 px-1 op-7"
+                                    mini
+                                >
+                                    <div class="d-flex align-items-center">
+                                        <span class="fs-2 d-flex gap-1">
+                                            <span>Отметить выбранные</span>
+                                            <span v-if="hasCheckedObject">
+                                                ({{ checkedObjects.size }})
+                                            </span>
+                                            <span>как</span>
                                         </span>
-                                        <span>как</span>
-                                    </span>
-                                    <i class="fa-solid fa-ellipsis-h ml-2 fs-3" />
-                                </div>
+                                        <i class="fa-solid fa-ellipsis-h ml-2 fs-3" />
+                                    </div>
+                                </UiButton>
+                            </template>
+                            <template #menu>
+                                <UiDropdownActionsButton
+                                    @handle="markChecked(1)"
+                                    :disabled="!hasCheckedObject"
+                                    icon="fa-solid fa-thumbs-up"
+                                    label="Актуально без изменений"
+                                />
+                                <UiDropdownActionsButton
+                                    @handle="markChecked(2)"
+                                    :disabled="!hasCheckedObject"
+                                    icon="fa-solid fa-thumbs-down"
+                                    label="Больше не актуально"
+                                />
+                                <UiDropdownActionsButton
+                                    @handle="markChecked(3)"
+                                    :disabled="!hasCheckedObject"
+                                    icon="fa-solid fa-phone-slash"
+                                    label="Не опросил"
+                                />
+                            </template>
+                        </UiDropdownActions>
+                    </div>
+                    <div
+                        v-if="objects.length > 1"
+                        class="d-flex align-items-center justify-content-between mb-1"
+                    >
+                        <UiCheckbox
+                            @change="toggleAllObjectsChecked"
+                            :checked="allObjectsToggled"
+                            label="Выбрать все"
+                            class="survey-form-objects__checkbox"
+                        />
+                    </div>
+                    <div v-if="hasNewObject" class="pr-2">
+                        <hr class="my-2" />
+                        <VueEditor
+                            v-model="form.created"
+                            label="Описание новое строения"
+                            placeholder="Опишите максимально характеристики объекта..."
+                            :toolbar="false"
+                            :min-height="50"
+                            :max-height="200"
+                        />
+                        <UiButton
+                            @click="deleteNewObject"
+                            small
+                            color="danger-light"
+                            icon="fa-solid fa-trash"
+                            class="mt-2"
+                        >
+                            Удалить
+                        </UiButton>
+                        <hr class="my-2" />
+                    </div>
+                    <div v-if="objects.length" class="survey-form-objects__list">
+                        <SurveyFormObject
+                            v-for="object in objects"
+                            :key="object.id"
+                            v-model="form.current[object.id]"
+                            @select="selectObject(object)"
+                            @show-map="showObjectOnMap(object)"
+                            @show-preview="showObjectPreview(object)"
+                            @object-destroyed="onObjectDestroyed(object)"
+                            @object-sold="onObjectSold(object)"
+                            @create-task="createTask(object)"
+                            @toggle-checked="toggleCheckedObject(object, $event)"
+                            :active="selectedObject?.id === object.id"
+                            :object="object"
+                            :checked="checkedObjects.has(object.id)"
+                            editable
+                            class="survey-form-objects__element"
+                        />
+                    </div>
+                    <EmptyData v-else-if="!hasNewObject" no-rounded class="h-100">
+                        <p>У клиента нет объектов и предложений..</p>
+                        <template #actions>
+                            <UiButton
+                                @click="newObjectFormIsVisible = true"
+                                color="success-light"
+                                icon="fa-solid fa-plus"
+                            >
+                                Добавить предложение
                             </UiButton>
                         </template>
-                        <template #menu>
-                            <UiDropdownActionsButton
-                                @handle="markChecked(1)"
-                                :disabled="!hasCheckedObject"
-                                icon="fa-solid fa-thumbs-up"
-                                label="Актуально без изменений"
-                            />
-                            <UiDropdownActionsButton
-                                @handle="markChecked(2)"
-                                :disabled="!hasCheckedObject"
-                                icon="fa-solid fa-thumbs-down"
-                                label="Больше не актуально"
-                            />
-                            <UiDropdownActionsButton
-                                @handle="markChecked(3)"
-                                :disabled="!hasCheckedObject"
-                                icon="fa-solid fa-phone-slash"
-                                label="Не опросил"
-                            />
-                        </template>
-                    </UiDropdownActions>
+                    </EmptyData>
                 </div>
-                <div
-                    v-if="objects.length > 1"
-                    class="d-flex align-items-center justify-content-between mb-1"
-                >
-                    <UiCheckbox
-                        @change="toggleAllObjectsChecked"
-                        :checked="allObjectsToggled"
-                        label="Выбрать все"
-                        class="survey-form-objects__checkbox"
-                    />
-                </div>
-                <div v-if="hasNewObject" class="pr-2">
-                    <hr class="my-2" />
-                    <VueEditor
-                        v-model="form.created"
-                        label="Описание новое строения"
-                        placeholder="Опишите максимально характеристики объекта..."
-                        :toolbar="false"
-                        :min-height="50"
-                        :max-height="200"
-                    />
-                    <UiButton
-                        @click="deleteNewObject"
-                        small
-                        color="danger-light"
-                        icon="fa-solid fa-trash"
-                        class="mt-2"
-                    >
-                        Удалить
-                    </UiButton>
-                    <hr class="my-2" />
-                </div>
-                <div v-if="objects.length" class="survey-form-objects__list">
-                    <SurveyFormObject
-                        v-for="object in objects"
-                        :key="object.id"
-                        v-model="form.current[object.id]"
-                        @select="selectObject(object)"
-                        @show-map="showObjectOnMap(object)"
-                        @show-preview="showObjectPreview(object)"
-                        @object-destroyed="onObjectDestroyed(object)"
-                        @object-sold="onObjectSold(object)"
-                        @create-task="createTask(object)"
-                        @toggle-checked="toggleCheckedObject(object, $event)"
-                        :active="selectedObject?.id === object.id"
-                        :object="object"
-                        :checked="checkedObjects.has(object.id)"
-                        editable
-                        class="survey-form-objects__element"
-                    />
-                </div>
-                <EmptyData v-else-if="!hasNewObject" no-rounded class="h-100">
-                    <p>У клиента нет объектов и предложений..</p>
-                    <template #actions>
-                        <UiButton
-                            @click="newObjectFormIsVisible = true"
-                            color="success-light"
-                            icon="fa-solid fa-plus"
-                        >
-                            Добавить предложение
-                        </UiButton>
-                    </template>
-                </EmptyData>
             </Pane>
             <Pane min-size="65" max-size="90" size="69">
                 <SurveyFormObjectsPreview

@@ -1,8 +1,15 @@
 <template>
-    <Modal @close="closeView" :show="viewIsVisible" :title :width="1800" class="survey-form">
+    <Modal
+        @close="closeView"
+        :show="viewIsVisible"
+        :title="formattedTitle"
+        :width="1800"
+        class="survey-form"
+    >
         <SurveyCard
             @edit="editSurvey"
             @hide="closeView"
+            @change-title="title = $event"
             class="survey-preview"
             :survey-id="surveyId"
             :survey="survey"
@@ -41,13 +48,17 @@ import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
 const surveyId = ref(null);
 const survey = ref(null);
 
-const title = computed(() => {
+const title = ref(null);
+
+const formattedTitle = computed(() => {
+    if (isNotNullish(title.value)) return title.value;
+
     if (isNotNullish(survey.value)) {
         if (survey.value.status === 'draft') {
             return `Черновик | Просмотр опроса #${survey.value?.id}`;
         }
 
-        return `Просмотр опроса #${survey.value?.id}`;
+        return `Просмотр опроса #${survey.value?.id} | ${survey.value?.chatMember?.model?.full_name}`;
     }
 
     if (isNotNullish(surveyId.value)) {
@@ -66,6 +77,7 @@ const {
 } = useAsyncPopup('surveyPreview');
 
 onPopupShowed(() => {
+    title.value = null;
     showOrEditSurvey(props.value);
 });
 

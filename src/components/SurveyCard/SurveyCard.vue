@@ -21,8 +21,10 @@ import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
 import SurveyCardBasic from '@/components/SurveyCard/SurveyCardBasic.vue';
 import SurveyCardAdvanced from '@/components/SurveyCard/SurveyCardAdvanced.vue';
+import { getCompanyName } from '@/utils/formatters/models/company.js';
+import { messenger } from '@/const/messenger.js';
 
-defineEmits(['hide', 'edit']);
+const emit = defineEmits(['hide', 'edit', 'change-title']);
 const props = defineProps({
     surveyId: Number,
     survey: Object
@@ -47,6 +49,13 @@ async function fetchSurvey() {
     isLoading.value = true;
 
     localSurvey.value = await api.survey.get(props.surveyId);
+
+    const postfix =
+        localSurvey.value.chatMember?.model_type === messenger.dialogTypes.COMPANY
+            ? getCompanyName(localSurvey.value.chatMember.model)
+            : `Без компании`;
+
+    emit('change-title', `Просмотр опроса #${localSurvey.value.id} | ${postfix}`);
 
     isLoading.value = false;
 }

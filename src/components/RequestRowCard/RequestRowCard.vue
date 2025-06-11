@@ -6,11 +6,16 @@
                 <Avatar
                     v-if="request.consultant"
                     :src="request.consultant.userProfile.avatar"
+                    :label="request.consultant.userProfile.short_name"
                     :size="40"
                 />
                 <UiDropdownActions v-if="$slots.menu">
                     <template #trigger>
-                        <UiDropdownActionsTrigger label="Действия над запросом" color="light" />
+                        <UiDropdownActionsTrigger
+                            label="Действия над запросом"
+                            color="light"
+                            class="op-7"
+                        />
                     </template>
                     <template #menu>
                         <slot name="menu" />
@@ -35,8 +40,8 @@
         <div class="request-row-card__body">
             <div class="request-row-card__header">
                 <div class="request-row-card__description">
-                    <p v-if="request.description?.length">{{ request.description }}</p>
-                    <p v-else>Без комментария..</p>
+                    <div v-if="request.description?.length" v-html="request.description"></div>
+                    <p v-else>Без описания..</p>
                 </div>
                 <slot name="actions" />
             </div>
@@ -45,7 +50,12 @@
                 :class="{ 'request-row-card__footer--empty': !fullRequest?.timeline }"
             >
                 <Spinner v-if="isLoading" class="absolute-center" small />
-                <div v-else-if="fullRequest?.timeline" class="request-row-card__timeline">
+                <div
+                    v-else-if="fullRequest?.timeline"
+                    @click="$emit('open-timeline')"
+                    class="request-row-card__timeline"
+                    :class="{ 'c-pointer': linkedTimeline }"
+                >
                     <RequestRowCardTimelineStep
                         v-for="step in timelineSteps"
                         :key="step.id"
@@ -78,12 +88,17 @@ import api from '@/api/api.js';
 import Spinner from '@/components/common/Spinner.vue';
 import UiField from '@/components/common/UI/UiField.vue';
 import RequestRowCardTimelineStep from '@/components/RequestRowCard/RequestRowCardTimelineStep.vue';
+import { ucFirst } from '@/utils/formatters/string.js';
+import { plural } from '@/utils/plural.js';
 
+defineEmits(['open-timeline']);
 const props = defineProps({
     request: {
         type: Object,
         required: true
-    }
+    },
+    full: Boolean,
+    linkedTimeline: Boolean
 });
 
 const timelineSteps = [
@@ -128,7 +143,13 @@ const timelineSteps = [
         name: 'Offers',
         label: 'Предложение',
         icon: 'fa-solid fa-city',
-        doneLabel: 'Предложения отправлены',
+        doneLabel: point =>
+            `Отправлено ${plural(
+                point.objects?.length ?? 0,
+                '%d предложение',
+                '%d предложения',
+                '%d предложений'
+            )}`,
         pauseLabel: 'Шаг на паузе',
         processLabel: 'Подберите предложение!'
     },
@@ -237,10 +258,11 @@ const districts = computed(() => {
 const regionsText = computed(() => {
     if (!props.request.regions) return '';
 
-    return props.request.regions.map(element => locationOptions.region[element.region]).join(', ');
+    return props.request.regions.map(element => ucFirst(element.info.title)).join(', ');
 });
 
 const locationText = computed(() => {
+    console.log(props.request);
     const locations = [regionsText.value, ...directions.value, ...districts.value];
 
     if (props.request.distanceFromMKAD) {
@@ -252,16 +274,25 @@ const locationText = computed(() => {
 
 const createdAt = computed(() => toDateFormat(props.request.created_at, 'D.MM.YYг.'));
 
-const fullRequest = shallowRef(null);
+// full version
+
+const localRequest = shallowRef(null);
+
+const fullRequest = computed(() => (props.full ? props.request : localRequest.value));
+
 const isLoading = ref(false);
 
 async function fetchFulLRequest() {
     isLoading.value = true;
 
-    fullRequest.value = await api.request.get(props.request.id);
+    localRequest.value = await api.request.get(props.request.id);
 
     isLoading.value = false;
 }
 
-onBeforeMount(fetchFulLRequest);
+onBeforeMount(() => {
+    if (!props.full) {
+        fetchFulLRequest();
+    }
+});
 </script>

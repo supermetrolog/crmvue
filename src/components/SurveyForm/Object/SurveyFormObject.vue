@@ -17,7 +17,11 @@
         <div v-if="editable" class="survey-form-object__aside">
             <UiDropdownActions>
                 <template #trigger>
-                    <UiDropdownActionsTrigger label="Действия над строением" color="light" />
+                    <UiDropdownActionsTrigger
+                        label="Действия над строением"
+                        color="light"
+                        class="op-7"
+                    />
                 </template>
                 <template #menu>
                     <UiDropdownActionsButton

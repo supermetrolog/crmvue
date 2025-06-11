@@ -99,6 +99,7 @@ import { getCompanyName } from '@/utils/formatters/models/company.js';
 import { toNumberOrRangeFormat } from '@/utils/formatters/number.js';
 import { useStore } from 'vuex';
 import Avatar from '@/components/common/Avatar.vue';
+import { ucFirst } from '@/utils/formatters/string.js';
 
 defineEmits(['update-call']);
 const props = defineProps({
@@ -154,7 +155,7 @@ const districts = computed(() => {
 const regionsText = computed(() => {
     if (!props.model.regions) return '';
 
-    return props.model.regions.map(element => locationOptions.region[element.region]).join(', ');
+    return props.model.regions.map(element => ucFirst(element.info.title)).join(', ');
 });
 const locationText = computed(() => {
     return [regionsText.value, ...directions.value, ...districts.value].join(', ');
