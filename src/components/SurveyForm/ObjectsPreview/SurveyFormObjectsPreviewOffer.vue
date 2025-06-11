@@ -125,9 +125,6 @@
                                 <p v-if="publicServices.length" class="fs-1 text-primary">
                                     Включая {{ publicServicesLabel }}
                                 </p>
-                                <p v-if="publicServices.length" class="fs-1 text-primary">
-                                    Включая {{ publicServicesLabel }}
-                                </p>
                             </template>
                         </div>
                         <SurveyFormObjectsPreviewOfferParameters
