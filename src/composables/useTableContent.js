@@ -52,6 +52,8 @@ export function useTableContent(fetch, options = {}) {
             await router.replace({ query });
         };
 
+    const isInitialLoading = ref(true);
+
     onMounted(async () => {
         await initQuery();
         queryIsInitialized.value = true;
@@ -65,10 +67,14 @@ export function useTableContent(fetch, options = {}) {
             }
         );
 
-        fetch();
+        isInitialLoading.value = true;
+
+        await fetch();
+
+        isInitialLoading.value = false;
     });
 
     onBeforeUnmount(() => stop());
 
-    return { next, nextWithScroll, queryIsInitialized };
+    return { next, nextWithScroll, queryIsInitialized, isInitialLoading };
 }

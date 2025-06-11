@@ -6,10 +6,11 @@
         <div class="d-flex gap-1 align-items-center">
             <Tippy>
                 <CompanyTableDropdownButton
-                    v-if="activeRequests.length"
+                    v-if="activeRequests.length || archiveRequests.length || doneRequests.length"
                     v-model="requestsIsOpen"
-                    :color="requestsIsOpen ? 'success' : 'success-light'"
+                    :color="requestsIsOpen ? 'success-light' : 'transparent'"
                     :count="activeRequests.length"
+                    :second-count="archiveRequests.length + doneRequests.length"
                     label="Запросы"
                 />
                 <template #content>
@@ -23,7 +24,7 @@
             <CompanyTableDropdownButton
                 v-if="objects.length"
                 v-model="objectsIsOpen"
-                :color="objectsIsOpen ? 'dark' : 'light'"
+                :color="objectsIsOpen ? 'success-light' : 'transparent'"
                 :count="objects.length"
                 label="Объекты"
             />
@@ -35,6 +36,7 @@
                 class="fs-2"
                 small
                 bolder
+                rect
             >
                 Задачи ({{ tasksCount }})
             </UiButton>
@@ -46,62 +48,31 @@
                 class="fs-2"
                 small
                 bolder
+                rect
             >
                 Созданы задачи ({{ createdTasksCount }})
             </UiButton>
         </div>
     </CompanyTableDropdownRow>
-    <template v-if="requestsIsOpen">
-        <CompanyTableRequestRow
-            v-for="activeRequest in activeRequests"
-            :key="activeRequest.id"
-            @open-timeline="openTimeline(activeRequest.id)"
-            :class="{ CompanyTableOdd: odd, CompanyTableEven: !odd }"
-            :timelines="activeRequest.timelines"
-            :request-name="activeRequest.format_name"
-            :date="activeRequest.updated_at || activeRequest.created_at"
-        />
-    </template>
-    <template v-if="requestsIsOpen && archiveRequests.length">
-        <CompanyTableDropdownRow
-            :class="{ CompanyTableOdd: odd, CompanyTableEven: !odd }"
-            :colspan="5"
-        >
-            <Dropdown
-                v-model="archiveRequestsIsOpen"
-                title="Архивные запросы"
-                :main-number="archiveRequests.length"
-                class="dashboard-bg-gray-l"
-            />
-        </CompanyTableDropdownRow>
-        <template v-if="requestsIsOpen && archiveRequestsIsOpen">
-            <CompanyTableRequestRow
-                v-for="archiveRequest in archiveRequests"
-                :key="archiveRequest.id"
-                @open-timeline="$emit('open-timeline', archiveRequest.id)"
-                class="content-archive"
-                :class="{ CompanyTableOdd: odd, CompanyTableEven: !odd }"
-                :timelines="archiveRequest.timelines"
-                :request-name="archiveRequest.format_name"
-                :date="archiveRequest.updated_at || archiveRequest.created_at"
-            />
-        </template>
-    </template>
-    <template v-if="objects.length && objectsIsOpen">
-        <tr class="table-object-row">
-            <td></td>
-            <td colspan="7">
-                <Spinner v-if="objectsIsLoading" class="my-4" />
-                <ObjectTable v-else :sortable="false" :objects="currentObjects" />
-            </td>
-        </tr>
-    </template>
+    <CompanyTableDropdownRequests
+        v-if="requestsIsOpen"
+        @open-timeline="$emit('open-timeline', $event)"
+        @create-task="createRequestTask"
+        :company-id="company.id"
+    />
+    <tr v-if="objects.length && objectsIsOpen" class="table-object-row">
+        <td colspan="6">
+            <Spinner v-if="objectsIsLoading" class="my-4" />
+            <div v-else class="px-3 py-4">
+                <p class="font-weight-semi mb-2">Объекты</p>
+                <ObjectTable :sortable="false" :objects="currentObjects" />
+            </div>
+        </td>
+    </tr>
 </template>
 
 <script setup>
-import Dropdown from '@/components/common/Dropdown/Dropdown.vue';
 import CompanyTableDropdownRow from '@/components/Company/Table/CompanyTableDropdownRow.vue';
-import CompanyTableRequestRow from '@/components/Company/Table/CompanyTableRequestRow.vue';
 import { computed, ref, shallowRef, watch } from 'vue';
 import { Tippy } from 'vue-tippy';
 import { plural } from '@/utils/plural.js';
@@ -110,6 +81,10 @@ import UiButton from '@/components/common/UI/UiButton.vue';
 import api from '@/api/api.js';
 import Spinner from '@/components/common/Spinner.vue';
 import ObjectTable from '@/components/ObjectTable/ObjectTable.vue';
+import CompanyTableDropdownRequests from '@/components/Company/Table/CompanyTableDropdownRequests.vue';
+import { getCompanyShortName } from '@/utils/formatters/models/company.js';
+import { useTaskManager } from '@/composables/useTaskManager.js';
+import { useNotify } from '@/utils/use/useNotify.js';
 
 defineEmits(['open-timeline', 'show-tasks', 'show-created-tasks']);
 const props = defineProps({
@@ -138,11 +113,13 @@ const props = defineProps({
         type: Number,
         default: 0
     },
-    companyId: Number
+    company: {
+        type: Object,
+        required: true
+    }
 });
 
 const requestsIsOpen = ref(false);
-const archiveRequestsIsOpen = ref(false);
 const objectsIsOpen = ref(false);
 
 // plurals
@@ -167,7 +144,7 @@ async function fetchObjects() {
 
     try {
         const response = await api.object.search({
-            company_id: props.companyId,
+            company_id: props.company.id,
             expand: 'offers,company.mainContact.phones,company.mainContact.emails,company.objects_count,company.active_requests_count,company.active_contacts_count'
         });
 
@@ -182,4 +159,34 @@ watch(objectsIsOpen, value => {
         fetchObjects();
     }
 });
+
+// tasks
+
+const { createTaskWithTemplate } = useTaskManager();
+const notify = useNotify();
+
+const taskIsCreating = ref(false);
+
+async function createRequestTask(request) {
+    const companyName = getCompanyShortName(props.company);
+
+    const taskPayload = await createTaskWithTemplate({
+        title: `Запрос #${request.id} (комп. ${companyName}) `,
+        relations: [
+            { entity_type: 'company', entity_id: props.company.id },
+            { entity_type: 'request', entity_id: request.id }
+        ]
+    });
+
+    if (!taskPayload) return;
+
+    taskIsCreating.value = true;
+
+    try {
+        await api.task.create(taskPayload);
+        notify.success('Задача успешно создана!');
+    } finally {
+        taskIsCreating.value = false;
+    }
+}
 </script>

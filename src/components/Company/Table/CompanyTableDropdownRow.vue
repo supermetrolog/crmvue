@@ -6,7 +6,7 @@
                 <slot />
             </div>
         </td>
-        <td v-for="key in 6 - colspan" :key="key"></td>
+        <td v-for="key in 5 - colspan" :key="key"></td>
     </tr>
 </template>
 

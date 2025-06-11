@@ -1,4 +1,5 @@
 @use '../../utils/variables';
+@use '../../utils/mixins';
 
 .table {
     border-collapse: collapse;
@@ -47,12 +48,47 @@
                         }
 
                         .sortable__icon {
-                            position: absolute;
-                            top: 4px;
-                            right: -20px;
                             color: variables.$color_light;
                         }
                     }
+                }
+
+                .th__wrapper {
+                    &:has(.th__filter) {
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                    }
+                }
+
+                .th__filter {
+                    margin-left: 3px;
+                    cursor: pointer;
+                    border-radius: 50%;
+                    padding: 8px;
+                    height: 30px;
+                    width: 30px;
+                    position: relative;
+                    display: inline-block;
+                    @include mixins.flex-box($a: center, $j: center);
+                    @include mixins.transition(color, background-color);
+
+                    &:hover {
+                        background-color: rgba(248, 250, 252, 0.2);
+                    }
+                }
+
+                .th__filter-badge {
+                    position: absolute;
+                    top: -5px;
+                    right: -5px;
+                    border-radius: 50%;
+                    font-size: 12px;
+                    background-color: variables.$color_danger;
+                    height: 18px;
+                    width: 18px;
+                    font-weight: 500;
+                    @include mixins.flex-box($a: center, $j: center)
                 }
             }
         }
@@ -104,4 +140,8 @@
             }
         }
     }
+}
+
+.th-dd-content {
+    overflow: visible!important;
 }

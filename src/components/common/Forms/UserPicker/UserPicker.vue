@@ -12,7 +12,8 @@
                 :class="{
                     selected: selectedUsers[user.id],
                     current: currentUser.id === user.id,
-                    disabled: disabled
+                    disabled: disabled,
+                    moderator: user.role === userOptions.roleStatement.MODERATOR
                 }"
             />
         </div>
@@ -34,6 +35,7 @@ import { debounce } from '@/utils/common/debounce.js';
 import MessengerButton from '@/components/Messenger/MessengerButton.vue';
 import { computed, ref, shallowRef, watch } from 'vue';
 import { useStore } from 'vuex';
+import { userOptions } from '@/const/options/user.options.js';
 
 const modelValue = defineModel({
     type: [Array, Number],

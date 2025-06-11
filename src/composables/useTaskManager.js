@@ -1,5 +1,6 @@
 import { useAsyncPopup } from '@/composables/useAsyncPopup.js';
 import { useStore } from 'vuex';
+import { createSharedComposable } from '@vueuse/core';
 
 export const TASK_FORM_STEPS = {
     USER: 0,
@@ -8,7 +9,7 @@ export const TASK_FORM_STEPS = {
     MESSAGE: 3
 };
 
-export function useTaskManager() {
+export const useTaskManager = createSharedComposable(() => {
     const { show } = useAsyncPopup('taskCreator');
     const store = useStore();
 
@@ -50,4 +51,4 @@ export function useTaskManager() {
         open: show,
         createTaskWithTemplate
     };
-}
+});
