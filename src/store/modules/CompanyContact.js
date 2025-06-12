@@ -11,9 +11,9 @@ const CompanyContact = {
         deleteContact(state, contact_id) {
             state.companyContacts = state.companyContacts.filter(item => item.id != contact_id);
         },
-        createComment(state, comment) {
+        createComment(state, { comment, contactId }) {
             const contactIndex = state.companyContacts.findIndex(
-                element => element.id === comment.contact_id
+                element => element.id === contactId
             );
 
             if (contactIndex !== -1) state.companyContacts[contactIndex].comments.push(comment);
@@ -36,11 +36,11 @@ const CompanyContact = {
         async CREATE_CONTACT_COMMENT({ getters, commit }, payload) {
             payload.author_id = getters.THIS_USER.id;
 
-            const newComment = await api.contacts.createComment(payload);
+            const comment = await api.contacts.createComment(payload);
 
-            if (newComment) commit('createComment', newComment);
+            if (comment) commit('createComment', { comment, contactId: payload.contact_id });
 
-            return !!newComment;
+            return !!comment;
         }
     },
 

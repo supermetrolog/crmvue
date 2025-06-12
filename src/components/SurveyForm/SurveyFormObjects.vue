@@ -35,7 +35,7 @@
                                     @handle="markChecked(1)"
                                     :disabled="!hasCheckedObject"
                                     icon="fa-solid fa-thumbs-up"
-                                    label="Актуально без изменений"
+                                    label="Без изменений"
                                 />
                                 <UiDropdownActionsButton
                                     @handle="markChecked(2)"

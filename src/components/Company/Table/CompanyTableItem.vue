@@ -14,25 +14,39 @@
                 <UiDropdownActions label="Действия над компанией" small>
                     <template #menu>
                         <UiDropdownActionsButton
-                            @handle="$emit('create-pinned-message')"
-                            icon="fa-solid fa-thumbtack"
-                            label="Добавить сообщение"
-                        />
-                        <UiDropdownActionsButton
                             @handle="$emit('create-task')"
                             icon="fa-solid fa-bolt"
                             label="Создать задачу"
+                        />
+                        <!--                        <UiDropdownActionsButton-->
+                        <!--                            @handle="$emit('create-pinned-message')"-->
+                        <!--                            icon="fa-solid fa-thumbtack"-->
+                        <!--                            label="Добавить сообщение"-->
+                        <!--                        />-->
+                        <UiDropdownActionsButton
+                            @handle="openInSurvey"
+                            icon="fa-solid fa-square-poll-horizontal"
+                            label="Открыть опрос"
                         />
                         <UiDropdownActionsButton
                             @handle="openInChat"
                             icon="fa-solid fa-comment"
                             label="Открыть в чате"
                         />
-                        <UiDropdownActionsButton
-                            @handle="openInSurvey"
-                            icon="fa-solid fa-square-poll-horizontal"
-                            label="Открыть опрос"
-                        />
+                        <template v-if="canDisable">
+                            <UiDropdownActionsButton
+                                v-if="isPassive"
+                                @handle="$emit('enable')"
+                                icon="fa-solid fa-undo"
+                                label="Восстановить из архива"
+                            />
+                            <UiDropdownActionsButton
+                                v-else
+                                @handle="$emit('disable')"
+                                icon="fa-solid fa-ban"
+                                label="Отправить в архив"
+                            />
+                        </template>
                     </template>
                 </UiDropdownActions>
             </div>
@@ -82,56 +96,7 @@
             </div>
         </Td>
         <Td class="company-table-item__comment">
-            <template v-if="company.chat_member_pinned_message">
-                <div class="d-flex gap-1"></div>
-                <MessengerDialogLastMessage
-                    @click="$emit('show-message', company.chat_member_pinned_message)"
-                    :last-message="company.chat_member_pinned_message"
-                    class="company-table-item__message w-100"
-                    hide-avatar
-                    column
-                >
-                    <template #after>
-                        <UiDropdownActions small label="Действия над сообщением" class="ml-auto">
-                            <template #menu>
-                                <UiDropdownActionsButton
-                                    @handle="$emit('create-pinned-message')"
-                                    label="Добавить новое сообщение"
-                                    icon="fa-solid fa-plus"
-                                />
-                                <UiDropdownActionsButton
-                                    @handle="
-                                        $emit('unpin-message', company.chat_member_pinned_message)
-                                    "
-                                    label="Открепить сообщение"
-                                    icon="fa-solid fa-trash"
-                                />
-                            </template>
-                        </UiDropdownActions>
-                    </template>
-                </MessengerDialogLastMessage>
-            </template>
-            <template v-else>
-                <p class="text-center">&#8212;</p>
-                <UiButton
-                    @click="$emit('create-pinned-message')"
-                    class="company-table-item__comment-button"
-                    color="light"
-                    small
-                    icon="fa-solid fa-plus"
-                >
-                    Добавить сообщение
-                </UiButton>
-            </template>
-        </Td>
-        <Td class="company-table-item__contacts">
-            <CompanyContact
-                v-if="company.mainContact"
-                @open-phone="openInSurvey"
-                hidden
-                :contact="company.mainContact"
-            />
-            <p v-else class="text-center">&#8212;</p>
+            <CompanyTableItemSurvey v-if="company.last_survey" :company />
         </Td>
         <Td class="company-table-item__consultant">
             <div v-if="company.consultant" class="company-table-item__consultant-wrapper">
@@ -157,7 +122,7 @@
                 ref="passiveWhyCommentEl"
                 class="dashboard-bg-danger-l offer-table-item__chip"
             >
-                Пассив
+                {{ passiveWhyLabel }}
             </DashboardChip>
             <TableDateBlock
                 class="mt-1"
@@ -187,12 +152,11 @@ import CompanyTableDropdown from '@/components/Company/Table/CompanyTableDropdow
 import Tr from '@/components/common/Table/Tr.vue';
 import Td from '@/components/common/Table/Td.vue';
 import { useStore } from 'vuex';
-import { computed, useTemplateRef } from 'vue';
+import { computed, toRef, useTemplateRef } from 'vue';
 import { useRouter } from 'vue-router';
 import { ActivityProfileList, PassiveWhy } from '@/const/const.js';
 import Rating from '@/components/common/Rating.vue';
 import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
-import CompanyContact from '@/components/Company/CompanyContact.vue';
 import Avatar from '@/components/common/Avatar.vue';
 import TableDateBlock from '@/components/common/Table/TableDateBlock.vue';
 import { useMessenger } from '@/components/Messenger/useMessenger.js';
@@ -204,12 +168,12 @@ import { messenger } from '@/const/messenger.js';
 import CompanyTableItemCall from '@/components/Company/Table/CompanyTableItemCall.vue';
 import UiTooltipIcon from '@/components/common/UI/UiTooltipIcon.vue';
 import UserFoldersDropdown from '@/components/UserFolder/UserFoldersDropdown.vue';
-import MessengerDialogLastMessage from '@/components/Messenger/Dialog/MessengerDialogLastMessage.vue';
 import UiDropdownActions from '@/components/common/UI/DropdownActions/UiDropdownActions.vue';
 import UiDropdownActionsButton from '@/components/common/UI/DropdownActions/UiDropdownActionsButton.vue';
-import UiButton from '@/components/common/UI/UiButton.vue';
 import { useSurveyForm } from '@/composables/useSurveyForm.js';
 import { useTippy } from 'vue-tippy';
+import CompanyTableItemSurvey from '@/components/Company/Table/CompanyTableItemSurvey.vue';
+import { useCompanyPermissions } from '@/components/Company/useCompanyPermissions.js';
 
 const store = useStore();
 const router = useRouter();
@@ -221,7 +185,9 @@ defineEmits([
     'unpin-message',
     'create-task',
     'show-tasks',
-    'show-created-tasks'
+    'show-created-tasks',
+    'disable',
+    'enable'
 ]);
 
 const props = defineProps({
@@ -254,6 +220,7 @@ const activityProfile = computed(() =>
 );
 
 const isPassive = computed(() => props.company.status === 0);
+const passiveWhyLabel = computed(() => PassiveWhy[props.company.passive_why].short ?? 'Пассив');
 
 const isWithoutActiveContacts = computed(() => props.company.active_contacts_count === 0);
 
@@ -293,4 +260,8 @@ const openInSurvey = () => {
 };
 
 useTippy(useTemplateRef('passiveWhyCommentEl'), { content: passiveWhyComment });
+
+// permissions
+
+const { canDisable } = useCompanyPermissions(toRef(props, 'company'));
 </script>

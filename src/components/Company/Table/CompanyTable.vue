@@ -4,8 +4,7 @@
             <Tr>
                 <Th>#</Th>
                 <Th class="text-left" sort="nameRu">название компании</Th>
-                <Th>закрепленное сообщение</Th>
-                <Th>контакт</Th>
+                <Th>работа с компанией</Th>
                 <Th v-model:filters="consultantFilters" @confirm-filter="confirmConsultantFilters">
                     <template #default>консультант</template>
                     <template #filter>
@@ -24,9 +23,9 @@
                 <Th
                     v-model:filters="dateFilters"
                     @confirm-filter="confirmDateFilters"
-                    sort="created_at"
+                    :sorting-options
                 >
-                    <template #default>обновление</template>
+                    <template #default>статус</template>
                     <template #filter>
                         <div class="row">
                             <UiDateInput
@@ -61,6 +60,8 @@
                     @create-task="$emit('create-task', company)"
                     @show-tasks="$emit('show-tasks', company)"
                     @show-created-tasks="$emit('show-created-tasks', company)"
+                    @disable="$emit('disable-company', company)"
+                    @enable="$emit('enable-company', company)"
                     :company="company"
                     :odd="!(idx % 2)"
                 />
@@ -98,7 +99,9 @@ defineEmits([
     'unpin-message',
     'create-task',
     'show-tasks',
-    'open-filter'
+    'open-filter',
+    'disable-company',
+    'enable-company'
 ]);
 
 defineProps({
@@ -185,4 +188,37 @@ watch(
         consultantFilters.consultant_id = value;
     }
 );
+
+// sort
+
+const sortingOptions = [
+    { value: 'updated_at', label: 'По дате модерации', icon: 'fa-solid fa-pen' },
+    { value: 'created_at', label: 'По дате внесения', icon: 'fa-solid fa-calendar-plus' },
+    {
+        value: 'last_survey_created_at',
+        label: 'По дате последнего опроса',
+        icon: 'fa-solid fa-square-poll-horizontal'
+    },
+    {
+        value: 'last_message_created_at',
+        label: 'По дате последнего сообщения',
+        icon: 'fa-solid fa-comment'
+    },
+    { value: 'last_task_created_at', label: 'По дате последней задачи', icon: 'fa-solid fa-bolt' },
+    {
+        value: 'last_request_created_at',
+        label: 'По дате последнего запроса',
+        icon: 'fa-solid fa-user-clock'
+    },
+    {
+        value: 'last_offer_updated_at',
+        label: 'По дате внесения предложения',
+        icon: 'fa-solid fa-industry'
+    },
+    {
+        value: 'last_object_created_at',
+        label: 'По дате внесения строения',
+        icon: 'fa-solid fa-warehouse'
+    }
+];
 </script>

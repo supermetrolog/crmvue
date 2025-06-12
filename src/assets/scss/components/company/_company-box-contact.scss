@@ -5,9 +5,8 @@
     position: relative;
     height: 180px;
     min-width: 250px;
-    padding: 10px;
     border: 2px solid variables.$color_light_grey;
-    @include mixins.flex-box($d: column, $a: center, $j: center);
+    @include mixins.flex-box($d: column);
 
     &--main {
         border: 4px solid variables.$color_success;
@@ -30,6 +29,23 @@
         right: 0;
         position: absolute;
         z-index: 0;
+    }
+
+    &.passive &__body {
+        opacity: .5;
+        will-change: opacity;
+        @include mixins.transition(opacity);
+
+        &:hover {
+            opacity: 1;
+        }
+    }
+
+    &__body {
+        position: relative;
+        padding: 10px;
+        height: 100%;
+        @include mixins.flex-box($d: column, $a: center, $j: center);
     }
 
     &__header {
@@ -73,5 +89,22 @@
 
     &__email-value {
         @include mixins.text-overflow();
+    }
+
+    &__settings {
+        position: absolute;
+        top: 8px;
+        right: 5px;
+        z-index: 2;
+        @include mixins.flex-box($gap: 5px, $a: center);
+    }
+
+    &__passive {
+        width: 100%;
+        padding: 3px 5px 5px;
+        font-size: 14px;
+        text-align: center;
+        background-color: variables.$color_warning_dark;
+        @include mixins.text-overflow(1);
     }
 }

@@ -25,7 +25,12 @@
                 v-for="contact in contacts"
                 :key="contact.id"
                 @click="show(contact)"
+                @edit="$emit('edit', contact)"
+                @disable="$emit('disable', contact)"
+                @enable="$emit('enable', contact)"
+                @delete="$emit('delete', contact)"
                 :contact="contact"
+                :editable
             />
         </div>
     </div>
@@ -38,13 +43,14 @@ import { useHorizontalScroll } from '@/composables/useHorizontalScroll.js';
 import CompanyBoxContactListItemSkeleton from '@/components/Company/Box/CompanyBoxContactListItemSkeleton.vue';
 import UiButton from '@/components/common/UI/UiButton.vue';
 
-const emit = defineEmits(['create', 'show']);
+const emit = defineEmits(['create', 'show', 'edit', 'disable', 'enable', 'delete']);
 defineProps({
     contacts: {
         type: Array,
         required: true
     },
-    loading: Boolean
+    loading: Boolean,
+    editable: Boolean
 });
 
 const openContact = inject('openContact');

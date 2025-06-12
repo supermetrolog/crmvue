@@ -60,6 +60,8 @@
                             @create-task="createTask"
                             @show-tasks="showTasks"
                             @show-created-tasks="showCreatedTasks"
+                            @disable-company="disableCompany"
+                            @enable-company="enableCompany"
                             :companies="COMPANIES"
                             :loader="isLoading || taskIsCreating"
                         />
@@ -115,6 +117,12 @@
                     :is-loading="tasksIsLoading"
                 />
             </UiModal>
+            <FormCompanyDisable
+                v-if="disableFormIsVisible"
+                @close="closeDisableForm"
+                @disabled="onDisabledCompany"
+                :company="disablingCompany"
+            />
         </teleport>
     </section>
 </template>
@@ -153,6 +161,8 @@ import DashboardTableTasks from '@/components/Dashboard/Table/DashboardTableTask
 import { taskOptions } from '@/const/options/task.options.js';
 import { useAuth } from '@/composables/useAuth.js';
 import { captureException } from '@sentry/vue';
+import FormCompanyDisable from '@/components/Forms/Company/FormCompanyDisable.vue';
+import { useCompanyDisable } from '@/components/Company/useCompanyDisable.js';
 
 const route = useRoute();
 const store = useStore();
@@ -193,6 +203,17 @@ const currentViewComponentName = computed(() => {
     if (isMobile) return CompanyGrid;
     return viewMode.value ? CompanyGrid : CompanyTable;
 });
+
+// disable
+
+const {
+    disableCompany,
+    disableFormIsVisible,
+    enableCompany,
+    disablingCompany,
+    onDisabledCompany,
+    closeDisableForm
+} = useCompanyDisable();
 
 // folders
 

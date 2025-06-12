@@ -47,7 +47,14 @@
                         :option="option"
                         :isSelected="isSelected"
                         :isPointed="isPointed"
-                    />
+                    >
+                        <i
+                            v-if="option.icon"
+                            :class="option.icon"
+                            class="mr-2 multiselect-option-icon"
+                        />
+                        <span>{{ option[optionLabelProp] }}</span>
+                    </slot>
                 </template>
                 <template #tag="{ option, disabled, handleTagRemove }">
                     <slot

@@ -396,7 +396,6 @@ const contactsIsVisible = ref(false);
 const currentContactsCompanyId = ref(null);
 
 function showContacts(companyId) {
-    alert(companyId);
     currentContactsCompanyId.value = companyId;
 
     contactsIsVisible.value = true;
