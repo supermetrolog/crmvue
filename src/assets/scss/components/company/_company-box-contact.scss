@@ -45,6 +45,7 @@
         position: relative;
         padding: 10px;
         height: 100%;
+        z-index: 1;
         @include mixins.flex-box($d: column, $a: center, $j: center);
     }
 
@@ -104,6 +105,7 @@
         padding: 3px 5px 5px;
         font-size: 14px;
         text-align: center;
+        z-index: 2;
         background-color: variables.$color_warning_dark;
         @include mixins.text-overflow(1);
     }

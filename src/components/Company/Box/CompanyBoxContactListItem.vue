@@ -7,6 +7,7 @@
             passive: isPassive
         }"
     >
+        <Loader v-if="contact.isLoading" small />
         <div v-if="isPassive" class="company-box-contact__passive">
             <i class="fa-solid fa-ban mr-1" />
             <span>{{ passiveLabel }}</span>
@@ -114,6 +115,7 @@ import { contactOptions } from '@/const/options/contact.options.js';
 import { useAuth } from '@/composables/useAuth.js';
 import { isPersonalContact } from '@/utils/helpers/models/contact.js';
 import UiButtonIcon from '@/components/common/UI/UiButtonIcon.vue';
+import Loader from '@/components/common/Loader.vue';
 
 defineEmits(['edit', 'disable', 'enable', 'delete']);
 const props = defineProps({
