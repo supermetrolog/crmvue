@@ -1,5 +1,5 @@
 <template>
-    <div ref="loader" class="messenger-loader" :class="{ load: active, finish: finishing }"></div>
+    <div class="messenger-loader" :class="{ load: active, finish: finishing }"></div>
 </template>
 <script setup>
 import { shallowRef, watch } from 'vue';

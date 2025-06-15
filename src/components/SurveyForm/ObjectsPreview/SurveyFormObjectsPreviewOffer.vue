@@ -79,7 +79,7 @@
                                 @click="selectAnswer(ANSWER.SUCCESS)"
                                 :active="hasSuccessStatus"
                                 icon="fa-solid fa-thumbs-up"
-                                label="Актуально без изменений"
+                                label="Без изменений"
                             />
                             <UiButtonIcon
                                 @click="selectAnswer(ANSWER.FAIL)"
@@ -121,9 +121,6 @@
                                     class="fs-1 text-primary"
                                 >
                                     Продажа юр.лица
-                                </p>
-                                <p v-if="publicServices.length" class="fs-1 text-primary">
-                                    Включая {{ publicServicesLabel }}
                                 </p>
                                 <p v-if="publicServices.length" class="fs-1 text-primary">
                                     Включая {{ publicServicesLabel }}

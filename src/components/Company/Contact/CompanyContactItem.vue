@@ -25,23 +25,39 @@
                 icon="fa-solid fa-street-view"
                 class="icon"
             />
-            <HoverActionsButton
-                v-if="!contact.type && !readOnly"
-                @click="editContact"
-                small
-                class="ml-auto"
-                label="Редактировать"
-            >
-                <i class="fa-solid fa-pen" />
-            </HoverActionsButton>
-            <HoverActionsButton
-                v-if="!contact.type && !readOnly"
-                @click="deleteContact"
-                small
-                label="Удалить"
-            >
-                <i class="fa-solid fa-trash" />
-            </HoverActionsButton>
+            <template v-if="!contact.type && !readOnly">
+                <UiButtonIcon
+                    @click="editContact"
+                    small
+                    color="light"
+                    label="Редактировать"
+                    icon="fa-solid fa-pen"
+                    class="ml-auto"
+                />
+                <UiButtonIcon
+                    v-if="isPassive"
+                    @click="$emit('enable')"
+                    small
+                    color="light"
+                    label="Восстановить"
+                    icon="fa-solid fa-undo"
+                />
+                <UiButtonIcon
+                    v-else
+                    @click="$emit('disable')"
+                    small
+                    color="light"
+                    label="В архив"
+                    icon="fa-solid fa-ban"
+                />
+                <UiButtonIcon
+                    @click="deleteContact"
+                    small
+                    color="light"
+                    label="Удалить"
+                    icon="fa-solid fa-trash"
+                />
+            </template>
         </div>
         <div v-if="!contact.status" class="company-contact-item__section">
             <UiField class="company-contact-item__chip dashboard-bg-danger dashboard-cl-white">
@@ -118,7 +134,6 @@
 
 <script setup>
 import { PassiveWhyContact } from '@/const/const.js';
-import HoverActionsButton from '@/components/common/HoverActions/HoverActionsButton.vue';
 import DashboardCard from '@/components/Dashboard/Card/DashboardCard.vue';
 import CompanyContactItemComments from '@/components/Company/Contact/CompanyContactItemComments.vue';
 import { computed } from 'vue';
@@ -128,7 +143,14 @@ import UiField from '@/components/common/UI/UiField.vue';
 import UiButtonIcon from '@/components/common/UI/UiButtonIcon.vue';
 import UiAccordion from '@/components/common/UI/Accordion/UiAccordion.vue';
 
-const emit = defineEmits(['start-editing', 'delete-contact', 'create-comment', 'comment-deleted']);
+const emit = defineEmits([
+    'start-editing',
+    'delete-contact',
+    'create-comment',
+    'comment-deleted',
+    'disable',
+    'enable'
+]);
 const props = defineProps({
     contact: {
         type: Object,
@@ -164,4 +186,6 @@ const mainPhone = computed(() => {
 
     return null;
 });
+
+const isPassive = computed(() => props.contact.status === contactOptions.statusStatement.PASSIVE);
 </script>

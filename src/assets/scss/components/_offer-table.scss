@@ -204,6 +204,10 @@
     &__chip {
         width: 100%!important;
         text-align: center;
+
+        &.danger {
+            background-color: #fd6a4a;
+        }
     }
 
     &__chat {
@@ -282,13 +286,15 @@
 }
 
 .table-date-block {
-    width: 100%!important;
-    padding: 5px 7px!important;
-    justify-content: center;
-    color: variables.$color_grey;
+    color: #7e7e7e;
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
+    @include mixins.flex-box($gap: 3px, $a: center);
 
     &__value {
         font-size: 12px;
+        font-weight: 500;
     }
 }
 

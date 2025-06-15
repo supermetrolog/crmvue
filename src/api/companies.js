@@ -64,5 +64,13 @@ export default {
     async disable(companyId, payload) {
         const response = await axios.post(`${URL}/${companyId}/disable`, payload);
         return responseHasStatus(response, STATUS_SUCCESS);
+    },
+    async pinMessage(id, payload) {
+        const response = await axios.post(`${URL}/${id}/pin-message`, payload);
+        return responseToData(response);
+    },
+    async unpinMessage(id) {
+        const response = await axios.delete(`entity-pinned-messages/${id}`);
+        return responseHasStatus(response);
     }
 };

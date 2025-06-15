@@ -209,7 +209,15 @@
                 </div>
             </div>
             <hr />
-            <CompanyBoxContactList @create="$emit('create-contact')" :contacts="contacts" />
+            <CompanyBoxContactList
+                @create="$emit('create-contact')"
+                @delete="$emit('delete-contact', $event)"
+                @enable="$emit('enable-contact', $event)"
+                @disable="$emit('disable-contact', $event)"
+                @edit="$emit('edit-contact', $event)"
+                :contacts="contacts"
+                editable
+            />
             <teleport to="body">
                 <Modal
                     @close="closeForm"
@@ -263,7 +271,16 @@ import { useTippyText } from '@/composables/useTippyText.js';
 import UiField from '@/components/common/UI/UiField.vue';
 import UiButton from '@/components/common/UI/UiButton.vue';
 
-defineEmits(['create-contact', 'edit-company', 'disable', 'enable']);
+defineEmits([
+    'create-contact',
+    'edit-company',
+    'disable',
+    'enable',
+    'enable-contact',
+    'disable-contact',
+    'edit-contact',
+    'delete-contact'
+]);
 
 const props = defineProps({
     company: {

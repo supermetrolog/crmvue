@@ -15,6 +15,13 @@
                 </p>
                 <div class="messenger-quiz-contact__badges mt-2">
                     <div
+                        v-if="scheduled"
+                        class="messenger-quiz-contact__badge messenger-quiz-contact__badge--danger"
+                    >
+                        <i class="fa-solid fa-phone mr-1" />
+                        <span>{{ scheduledDate }}</span>
+                    </div>
+                    <div
                         v-if="mostCallable"
                         class="messenger-quiz-contact__badge messenger-quiz-contact__badge--success"
                     >
@@ -64,6 +71,7 @@
                 button-class="messenger-quiz-contact__button"
                 icon="fa-solid fa-ellipsis-vertical"
                 color="light"
+                :title="contact.full_name"
             >
                 <template #menu>
                     <UiDropdownActionsButton
@@ -71,12 +79,12 @@
                         icon="fa-solid fa-pen"
                         label="Редактировать"
                     />
-                    <!--                    <UiDropdownActionsButton-->
-                    <!--                        @handle="$emit('create-task')"-->
-                    <!--                        icon="fa-solid fa-bolt"-->
-                    <!--                        label="Создать задачу"-->
-                    <!--                        disabled-->
-                    <!--                    />-->
+                    <UiDropdownActionsButton
+                        @handle="$emit('schedule-call')"
+                        :icon="scheduled ? 'fa-solid fa-check' : 'fa-solid fa-phone'"
+                        :label="scheduled ? 'Звонок запланирован' : 'Запланировать звонок'"
+                        :disabled="scheduled"
+                    />
                     <UiDropdownActionsButton
                         @handle="$emit('show-comments')"
                         icon="fa-solid fa-comments"
@@ -93,8 +101,9 @@ import { contactOptions } from '@/const/options/contact.options.js';
 import UiButtonIcon from '@/components/common/UI/UiButtonIcon.vue';
 import UiDropdownActions from '@/components/common/UI/DropdownActions/UiDropdownActions.vue';
 import UiDropdownActionsButton from '@/components/common/UI/DropdownActions/UiDropdownActionsButton.vue';
+import dayjs from 'dayjs';
 
-defineEmits(['edit', 'show-comments', 'create-task']);
+defineEmits(['edit', 'show-comments', 'schedule-call']);
 const props = defineProps({
     contact: {
         type: Object,
@@ -105,7 +114,8 @@ const props = defineProps({
     completed: Boolean,
     editable: Boolean,
     full: Boolean,
-    mostCallable: Boolean
+    mostCallable: Boolean,
+    scheduled: Object
 });
 
 // form
@@ -115,4 +125,6 @@ const position = computed(() => contactOptions.position[props.contact.position])
 const isCompanyContact = computed(
     () => props.contact?.type === contactOptions.typeStatement.GENERAL
 );
+
+const scheduledDate = computed(() => dayjs(props.scheduled).format('DD.MM.YYYY'));
 </script>

@@ -183,15 +183,17 @@ export const CompanyCategories = {
     5: 'Подрядчик'
 };
 export const PassiveWhy = [
-    { value: 0, label: 'Временно приостановлена' },
-    { value: 1, label: 'Заблокировано модератором' },
-    { value: 2, label: 'Иное' }
+    { value: 0, label: 'Временно приостановлена', short: 'Приостановлена' },
+    { value: 1, label: 'Заблокировано модератором', short: 'Заблокирована' },
+    { value: 2, label: 'Иное' },
+    { value: 3, label: 'Компания ликвидирована', short: 'Ликвидирована' }
 ];
 export const PassiveWhyContact = [
     { value: 0, label: 'Телефоны неактуальны' },
     { value: 1, label: 'Не работает в компании' },
     { value: 2, label: 'Заблокировано модератором' },
-    { value: 3, label: 'Иное' }
+    { value: 3, label: 'Иное' },
+    { value: 4, label: 'Компания архивирована' }
 ];
 export const PassiveWhyRequest = [
     { value: 0, label: 'Заблокировано модератором' },

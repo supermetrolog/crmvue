@@ -116,7 +116,7 @@ export default {
         location() {
             let direction =
                 typeof this.object.complex.location.direction === 'number'
-                    ? OldDbDirectionList[this.object.complex.location.direction].long
+                    ? OldDbDirectionList[this.object.complex.location.direction]?.long
                     : null;
             let highway = this.object.complex.location.highwayRel?.title
                 ? this.object.complex.location.highwayRel.title

@@ -33,30 +33,32 @@
                 {{ tag.name }}
             </DashboardTableTasksItemLabel>
         </div>
-        <div
-            v-if="isMyTask && isForMe"
-            v-tippy="'Назначена самому себе'"
-            class="dashboard-card-task__icon dashboard-card-task__way"
-        >
-            <i class="fa-solid fa-user-tag"></i>
-        </div>
-        <div
-            v-else-if="isMyTask"
-            v-tippy="'Назначена мной'"
-            class="dashboard-card-task__icon dashboard-card-task__way"
-        >
-            <i class="fa-solid fa-arrow-right-long"></i>
-        </div>
-        <div
-            v-else-if="isViewing"
-            v-tippy="'Вы являетесь наблюдателем'"
-            class="dashboard-card-task__icon dashboard-card-task__way"
-        >
-            <i
-                class="fa-solid fa-eye"
-                :class="{ 'dashboard-cl-success': isViewedByCurrentUser }"
-            ></i>
-        </div>
+        <template v-if="showDiligence">
+            <div
+                v-if="isMyTask && isForMe"
+                v-tippy="'Назначена самому себе'"
+                class="dashboard-card-task__icon dashboard-card-task__way"
+            >
+                <i class="fa-solid fa-user-tag"></i>
+            </div>
+            <div
+                v-else-if="isMyTask"
+                v-tippy="'Назначена мной'"
+                class="dashboard-card-task__icon dashboard-card-task__way"
+            >
+                <i class="fa-solid fa-arrow-right-long"></i>
+            </div>
+            <div
+                v-else-if="isViewing"
+                v-tippy="'Вы являетесь наблюдателем'"
+                class="dashboard-card-task__icon dashboard-card-task__way"
+            >
+                <i
+                    class="fa-solid fa-eye"
+                    :class="{ 'dashboard-cl-success': isViewedByCurrentUser }"
+                ></i>
+            </div>
+        </template>
         <div @click="$emit('view', $event)" class="dashboard-card-task__body">
             <div class="dashboard-card-task__content">
                 <UserFoldersDropdown
@@ -69,7 +71,7 @@
                     v-if="task.created_by_type === 'user'"
                     :label="`Создана сотрудником ${task.created_by.userProfile.medium_name}`"
                     :src="task.created_by.userProfile.avatar"
-                    :size="55"
+                    :size="avatarSize"
                 />
                 <DashboardTableTasksItemSystem v-else label="Системная задача" :size="45" />
                 <p
@@ -87,13 +89,14 @@
                             v-for="observer in observers"
                             :key="observer.user_id"
                             :observer="observer"
+                            :size="observerSize"
                         />
                     </div>
                     <Tippy v-if="!isForMe && task.user">
                         <template #default>
                             <Avatar
                                 :src="task.user.userProfile.avatar"
-                                :size="55"
+                                :size="avatarSize"
                                 rectangle
                                 class="dashboard-card-task__user"
                                 :class="{
@@ -139,6 +142,18 @@ const props = defineProps({
     task: {
         type: Object,
         required: true
+    },
+    avatarSize: {
+        type: Number,
+        default: 55
+    },
+    observerSize: {
+        type: Number,
+        default: 55
+    },
+    showDiligence: {
+        type: Boolean,
+        default: true
     }
 });
 

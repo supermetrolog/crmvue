@@ -9,6 +9,8 @@
             @start-editing="$emit('start-editing')"
             @create-comment="createContactComment"
             @delete-contact="$emit('delete-contact')"
+            @disable="$emit('disable')"
+            @enable="$emit('enable')"
             :contact="contact"
             :read-only="readOnly"
         />
@@ -20,7 +22,7 @@ import Modal from '@/components/common/Modal.vue';
 import CompanyContactItem from '@/components/Company/Contact/CompanyContactItem.vue';
 import { inject } from 'vue';
 
-defineEmits(['close', 'start-editing', 'delete-contact']);
+defineEmits(['close', 'start-editing', 'delete-contact', 'disable', 'enable']);
 const createContactComment = inject('createContactComment');
 
 defineProps({

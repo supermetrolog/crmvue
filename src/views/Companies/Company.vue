@@ -7,10 +7,12 @@
             />
             <CompanyContactModal
                 v-if="contactModalIsVisible"
-                @close="contactModalIsVisible = false"
-                @start-editing="showContactForm"
-                @delete-contact="deleteContact"
-                :contact="contact"
+                @close="closeContactModal"
+                @start-editing="editContact(viewingContact)"
+                @delete-contact="deleteContact(viewingContact)"
+                @disable="disableContact(viewingContact)"
+                @enable="enableContact(viewingContact)"
+                :contact="viewingContact"
             />
             <FormCompanyDeal
                 v-if="dealFormIsVisible"
@@ -32,7 +34,7 @@
                 @created="getCompanyContacts"
                 @updated="getCompanyContacts"
                 :company_id="COMPANY.id"
-                :formdata="contact"
+                :formdata="editingContact"
             />
             <FormCompany
                 v-if="companyFormIsVisible"
@@ -46,6 +48,12 @@
                 @disabled="onDisabledCompany"
                 :company="COMPANY"
             />
+            <FormContactDisable
+                v-if="disableContactFormIsVisible"
+                @close="closeDisableContactForm"
+                @disabled="onDisabledContact"
+                :contact="disablingContact"
+            />
         </teleport>
         <div class="company-page__wrapper">
             <Loader v-if="companyIsLoading || enableIsLoading" />
@@ -55,6 +63,10 @@
                 @create-contact="createContact"
                 @enable="enableCompany(COMPANY.id)"
                 @disable="disableCompany"
+                @enable-contact="enableContact"
+                @disable-contact="disableContact"
+                @edit-contact="editContact"
+                @delete-contact="deleteContact"
                 :company="COMPANY"
                 :contacts="COMPANY_CONTACTS"
                 class="mb-2"
@@ -122,16 +134,110 @@ import { useAsync } from '@/composables/useAsync.js';
 import api from '@/api/api.js';
 import { useNotify } from '@/utils/use/useNotify.js';
 import FormCompanyDisable from '@/components/Forms/Company/FormCompanyDisable.vue';
+import FormContactDisable from '@/components/Forms/FormContactDisable.vue';
+import { contactOptions } from '@/const/options/contact.options.js';
 
-provide('openContact', openContact);
+provide('openContact', showContact);
 provide('createContactComment', createContactComment);
 
 const store = useStore();
 const route = useRoute();
 const router = useRouter();
-const { confirm } = useConfirm();
 const { openChat } = useMessenger();
 const { setTitle } = useDocumentTitle();
+
+// contacts
+
+const { confirm } = useConfirm();
+
+const contactFormIsVisible = ref(false);
+const contactModalIsVisible = ref(false);
+const disableContactFormIsVisible = ref(false);
+
+const editingContact = shallowRef(null);
+const viewingContact = shallowRef(null);
+const disablingContact = shallowRef(null);
+
+function editContact(contact) {
+    editingContact.value = contact;
+    contactFormIsVisible.value = true;
+}
+
+function closeContactForm() {
+    contactFormIsVisible.value = false;
+    editingContact.value = null;
+}
+
+function showContact(contact) {
+    viewingContact.value = contact;
+    contactModalIsVisible.value = true;
+}
+
+function closeContactModal() {
+    contactModalIsVisible.value = false;
+    viewingContact.value = null;
+}
+
+function createContact() {
+    contactFormIsVisible.value = true;
+}
+
+function disableContact(contact) {
+    disablingContact.value = contact;
+    disableContactFormIsVisible.value = true;
+}
+
+function closeDisableContactForm() {
+    disableContactFormIsVisible.value = false;
+    disablingContact.value = null;
+}
+
+function onDisabledContact(payload) {
+    disableContactFormIsVisible.value = false;
+
+    disablingContact.value.status = 0;
+    Object.assign(disablingContact.value, payload);
+
+    disablingContact.value = null;
+}
+
+async function enableContact(contact) {
+    const confirmed = await confirm(
+        'Восстановить контакт',
+        'Вы уверены, что хотите восстановить контакт из архива?'
+    );
+    if (!confirmed) return;
+
+    contact.isLoading = true;
+
+    await api.contacts.enable(contact.id);
+
+    contact.status = contactOptions.statusStatement.ACTIVE;
+    contact.passive_why = null;
+    contact.passive_why_comment = null;
+
+    contact.isLoading = false;
+
+    notify.success('Контакт успешно восстановлен.');
+}
+
+async function deleteContact(contact) {
+    const confirmed = await confirm(
+        'Удалить контакт',
+        'Вы уверены, что хотите безвозвратно удалить контакт?'
+    );
+    if (!confirmed) return;
+
+    contact.isLoading = true;
+
+    await store.dispatch('DELETE_CONTACT', contact);
+
+    contact.isLoading = false;
+
+    notify.success('Контакт удален.');
+}
+
+//
 
 const companyIsLoading = shallowRef(false);
 const requestsIsLoading = shallowRef(false);
@@ -139,13 +245,10 @@ const objectsIsLoading = shallowRef(false);
 const contactsIsLoading = shallowRef(false);
 
 const requestFormIsVisible = shallowRef(false);
-const contactFormIsVisible = shallowRef(false);
 const companyFormIsVisible = shallowRef(false);
 const dealFormIsVisible = shallowRef(false);
-const contactModalIsVisible = shallowRef(false);
 
 const request = ref(null);
-const contact = ref(null);
 const company = ref(null);
 const deal = ref(null);
 
@@ -203,21 +306,6 @@ const loadObjects = async $state => {
     else $state.loaded();
 };
 
-function openContact(_contact) {
-    contact.value = _contact;
-    contactModalIsVisible.value = true;
-}
-
-const showContactForm = () => {
-    contactModalIsVisible.value = false;
-    contactFormIsVisible.value = true;
-};
-
-const createContact = () => {
-    contact.value = null;
-    showContactForm();
-};
-
 const updateDeal = _deal => {
     deal.value = _deal;
     dealFormIsVisible.value = true;
@@ -242,11 +330,6 @@ const closeRequestForm = () => {
     request.value = null;
 };
 
-const closeContactForm = () => {
-    contactFormIsVisible.value = false;
-    contact.value = null;
-};
-
 const closeCompanyForm = () => {
     company.value = null;
     companyFormIsVisible.value = false;
@@ -260,14 +343,6 @@ const onCompanyUpdated = () => {
 async function createContactComment(data) {
     await store.dispatch('CREATE_CONTACT_COMMENT', data);
 }
-
-const deleteContact = async () => {
-    const confirmed = await confirm(
-        'Удалить контакт',
-        'Вы уверены, что хотите безвозвратно удалить контакт?'
-    );
-    if (confirmed) await store.dispatch('DELETE_CONTACT', contact.value);
-};
 
 const openInChat = () => {
     openChat(COMPANY.value.id, COMPANY.value.id, messenger.dialogTypes.COMPANY);
@@ -347,6 +422,12 @@ function onDisabledCompany(payload) {
 
     disablingFormIsVisible.value = false;
 
-    fetchCompanyRequests(true);
+    if (payload.disable_requests) {
+        fetchCompanyRequests(false);
+    }
+
+    if (payload.disable_contacts) {
+        getCompanyContacts(false);
+    }
 }
 </script>

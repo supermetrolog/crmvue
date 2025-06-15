@@ -31,7 +31,7 @@
                             <UiButtonIcon
                                 :active="hasSuccessStatus"
                                 icon="fa-solid fa-thumbs-up"
-                                label="Актуально без изменений"
+                                label="Без изменений"
                                 disabled
                             />
                             <UiButtonIcon

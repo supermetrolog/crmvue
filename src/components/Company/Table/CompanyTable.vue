@@ -4,8 +4,7 @@
             <Tr>
                 <Th>#</Th>
                 <Th class="text-left" sort="nameRu">название компании</Th>
-                <Th>закрепленное сообщение</Th>
-                <Th>контакт</Th>
+                <Th>работа с компанией</Th>
                 <Th v-model:filters="consultantFilters" @confirm-filter="confirmConsultantFilters">
                     <template #default>консультант</template>
                     <template #filter>
@@ -24,9 +23,9 @@
                 <Th
                     v-model:filters="dateFilters"
                     @confirm-filter="confirmDateFilters"
-                    sort="created_at"
+                    :sorting-options
                 >
-                    <template #default>обновление</template>
+                    <template #default>статус</template>
                     <template #filter>
                         <div class="row">
                             <UiDateInput
@@ -56,11 +55,18 @@
                     :key="company.id"
                     @show-message="$emit('show-message', $event)"
                     @create-pinned-message="$emit('create-pinned-message', company)"
-                    @unpin-message="$emit('unpin-message', $event, company.id)"
+                    @unpin-message="$emit('unpin-message', $event)"
                     @deleted-from-folder="$emit('deleted-from-folder', company.id, $event)"
+                    @schedule-call="$emit('schedule-call', company)"
                     @create-task="$emit('create-task', company)"
                     @show-tasks="$emit('show-tasks', company)"
                     @show-created-tasks="$emit('show-created-tasks', company)"
+                    @disable="$emit('disable-company', company)"
+                    @enable="$emit('enable-company', company)"
+                    @create-request-task="$emit('create-request-task', $event, company)"
+                    @create-survey-task="$emit('create-survey-task', company)"
+                    @show-survey="showSurvey({ surveyId: company.last_survey.id })"
+                    @show-task="showTaskPreview"
                     :company="company"
                     :odd="!(idx % 2)"
                 />
@@ -71,6 +77,12 @@
                     <EmptyData v-else no-rounded>Ничего не найдено...</EmptyData>
                 </Td>
             </Tr>
+            <TaskPreview
+                v-model:visible="taskPreviewIsVisible"
+                @closed="currentTask = null"
+                @updated="onUpdatedTask"
+                :task-id="currentTask?.id"
+            />
         </template>
     </Table>
 </template>
@@ -82,7 +94,7 @@ import Th from '@/components/common/Table/Th.vue';
 import Tr from '@/components/common/Table/Tr.vue';
 import Loader from '@/components/common/Loader.vue';
 import UiDateInput from '@/components/common/Forms/UiDateInput.vue';
-import { onMounted, reactive, watch } from 'vue';
+import { onMounted, reactive, ref, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import dayjs from 'dayjs';
 import ConsultantPicker from '@/components/common/Forms/ConsultantPicker/ConsultantPicker.vue';
@@ -90,6 +102,8 @@ import { useConsultantsOptions } from '@/composables/options/useConsultantsOptio
 import Spinner from '@/components/common/Spinner.vue';
 import EmptyData from '@/components/common/EmptyData.vue';
 import Td from '@/components/common/Table/Td.vue';
+import { useAsyncPopup } from '@/composables/useAsyncPopup.js';
+import TaskPreview from '@/components/TaskPreview/TaskPreview.vue';
 
 defineEmits([
     'deleted-from-folder',
@@ -97,8 +111,13 @@ defineEmits([
     'show-message',
     'unpin-message',
     'create-task',
+    'create-request-task',
+    'create-survey-task',
     'show-tasks',
-    'open-filter'
+    'open-filter',
+    'disable-company',
+    'enable-company',
+    'schedule-call'
 ]);
 
 defineProps({
@@ -185,4 +204,56 @@ watch(
         consultantFilters.consultant_id = value;
     }
 );
+
+// sort
+
+const sortingOptions = [
+    { value: 'updated_at', label: 'По дате модерации', icon: 'fa-solid fa-pen' },
+    { value: 'created_at', label: 'По дате внесения', icon: 'fa-solid fa-calendar-plus' },
+    {
+        value: 'last_survey_created_at',
+        label: 'По дате последнего опроса',
+        icon: 'fa-solid fa-square-poll-horizontal'
+    },
+    {
+        value: 'last_message_created_at',
+        label: 'По дате последнего сообщения',
+        icon: 'fa-solid fa-comment'
+    },
+    { value: 'last_task_created_at', label: 'По дате последней задачи', icon: 'fa-solid fa-bolt' },
+    {
+        value: 'last_request_created_at',
+        label: 'По дате последнего запроса',
+        icon: 'fa-solid fa-user-clock'
+    },
+    {
+        value: 'last_offer_updated_at',
+        label: 'По дате внесения предложения',
+        icon: 'fa-solid fa-industry'
+    },
+    {
+        value: 'last_object_created_at',
+        label: 'По дате внесения строения',
+        icon: 'fa-solid fa-warehouse'
+    }
+];
+
+// show survey
+
+const { show: showSurvey } = useAsyncPopup('surveyPreview');
+
+// tasks
+
+const currentTask = ref(null);
+const taskPreviewIsVisible = ref(false);
+
+function showTaskPreview(task) {
+    currentTask.value = task;
+    taskPreviewIsVisible.value = true;
+}
+
+function onUpdatedTask(payload) {
+    Object.assign(currentTask.value, payload);
+    currentTask.value = null;
+}
 </script>

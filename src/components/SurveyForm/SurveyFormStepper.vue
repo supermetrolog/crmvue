@@ -23,6 +23,7 @@
                 :company
                 :contacts
                 :chat-member-id
+                :survey-id="currentSurveyId"
             />
         </template>
         <template #2>
@@ -52,6 +53,9 @@
                 :questions="otherQuestions"
                 :company
             />
+        </template>
+        <template #5>
+            <SurveyFormComment v-model="form.comment" :v="v$.form.comment" />
         </template>
         <template #footer="{ complete }">
             <UiButton
@@ -97,7 +101,7 @@ import { useStore } from 'vuex';
 import { useNotify } from '@/utils/use/useNotify.js';
 import SurveyFormQuestions from '@/components/SurveyForm/SurveyFormQuestions.vue';
 import SurveyFormRequests from '@/components/SurveyForm/SurveyFormRequests.vue';
-import { helpers } from '@vuelidate/validators';
+import { helpers, maxLength } from '@vuelidate/validators';
 import SurveyFormCalls from '@/components/SurveyForm/SurveyFormCalls.vue';
 import { useValidation } from '@/composables/useValidation.js';
 import { callTypeEnum } from '@/const/enums/call.js';
@@ -109,12 +113,10 @@ import { useConfirm } from '@/composables/useConfirm.js';
 import { messenger, messengerTemplates } from '@/const/messenger.js';
 import { captureException } from '@sentry/vue';
 import dayjs from 'dayjs';
-import { isNotEmptyString } from '@/utils/helpers/string/isNotEmptyString.js';
-import { capitalizeString } from '@/utils/helpers/string/capitalizeString.js';
-import { taskOptions } from '@/const/options/task.options.js';
 import { getCompanyShortName } from '@/utils/formatters/models/company.js';
 import Loader from '@/components/common/Loader.vue';
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
+import SurveyFormComment from '@/components/SurveyForm/SurveyFormComment.vue';
 
 function toBool(value) {
     if (typeof value === 'string') return value === 'true';
@@ -149,6 +151,13 @@ const props = defineProps({
         type: Number,
         required: true
     }
+});
+
+const currentSurveyId = computed(() => {
+    if (isNotNullish(props.survey)) return props.survey.id;
+    if (isNotNullish(props.draft)) return props.draft.id;
+
+    return null;
 });
 
 // draft
@@ -302,6 +311,11 @@ const steps = reactive([
             return `Прочее (${otherQuestions.value.length})`;
         }),
         disabled: stepsIsDisabled
+    },
+    {
+        name: 'comment',
+        title: 'Комментарий',
+        disabled: stepsIsDisabled
     }
 ]);
 
@@ -309,7 +323,8 @@ const form = ref({
     calls: {},
     objects: {},
     requests: {},
-    other: []
+    other: [],
+    comment: null
 });
 
 function requiredCallsValidationHandler(value) {
@@ -363,7 +378,13 @@ const { v$, validate } = useValidation(
                     requiredRequestsValidationHandler
                 )
             },
-            other: {}
+            other: {},
+            comment: {
+                maxLength: helpers.withMessage(
+                    'Комментарий не может быть больше 512 символов',
+                    maxLength(512)
+                )
+            }
         }
     },
     { form },
@@ -402,7 +423,8 @@ function createDraftPayload() {
             ...otherQuestionAnswers,
             ...callsQuestionAnswers
         ],
-        type: 'advanced'
+        type: 'advanced',
+        comment: form.value.comment
     };
 }
 
@@ -573,7 +595,8 @@ function createSurveyPayload() {
                 ...otherQuestionAnswers,
                 ...callsQuestionAnswers
             ],
-            type: 'advanced'
+            type: 'advanced',
+            comment: form.value.comment
         },
         contact: targetContact,
         calls: callsPayload.filter(form => isNotNullish(form.available))
@@ -657,20 +680,13 @@ async function createRelatedSurveys(payload, contactId, parentSurvey) {
     );
 }
 
-function generateTaskPayload(message, description = null, surveyId = null, userId = null) {
+function generateTaskPayload(title, additional = {}) {
     return {
         start: dayjs().toDate(),
         end: dayjs().add(7, 'day').toDate(),
-        user_id: userId ?? store.getters.moderator?.id,
-        title: message,
-        message:
-            isNotNullish(description) && isNotEmptyString(description)
-                ? capitalizeString(description)
-                : null,
-        status: taskOptions.statusTypes.NEW,
-        observer_ids: [],
-        tag_ids: [],
-        survey_id: surveyId
+        user_id: store.getters.moderator?.id,
+        title,
+        ...additional
     };
 }
 
@@ -682,24 +698,43 @@ function contactMustBeMoved(contact) {
     return Number(contact.reason) === CONTACT_CALL_REASONS.MOVE;
 }
 
+function createRelation(type, id) {
+    return {
+        entity_type: type,
+        entity_id: id
+    };
+}
+
 async function createPotentialTasks(contacts, messageId, surveyId = null) {
+    const relations = [createRelation('company', props.company.id)];
+
+    if (surveyId) {
+        relations.push(createRelation('survey', surveyId));
+    }
+
     const payloads = contacts.reduce((acc, element) => {
         if (contactMustBeDeleted(element)) {
             acc.push({
                 contactId: element.contact_id,
                 payload: generateTaskPayload(
-                    `Удалить контакт ${element.full_name} (компания ${getCompanyShortName(props.company)})`,
-                    element.description,
-                    surveyId
+                    `Удалить контакт ${element.full_name} (комп. ${getCompanyShortName(props.company)})`,
+                    {
+                        message: element.description,
+                        relations: [...relations, createRelation('contact', element.contact_id)],
+                        type: 'contact_handling'
+                    }
                 )
             });
         } else if (contactMustBeMoved(element)) {
             acc.push({
                 contactId: element.contact_id,
                 payload: generateTaskPayload(
-                    `Перенести контакт ${element.full_name} (компания ${getCompanyShortName(props.company)})`,
-                    element.description,
-                    surveyId
+                    `Перенести контакт ${element.full_name} (комп. ${getCompanyShortName(props.company)})`,
+                    {
+                        message: element.description,
+                        relations: [...relations, createRelation('contact', element.contact_id)],
+                        type: 'contact_handling'
+                    }
                 )
             });
         }
@@ -840,6 +875,7 @@ async function cancelSurvey() {
         chat_member_id: props.chatMemberId,
         calls: createCallsForm(callsPayload.filter(form => isNotNullish(form.available))),
         question_answers: callsQuestionAnswers,
+        comment: form.value.comment,
         type: 'advanced'
     };
 
@@ -988,6 +1024,7 @@ function draftToForm() {
     if (props.draft.type === 'advanced') {
         const questions = props.draft.questions;
         questionsToForm(questions);
+        form.value.comment = props.draft.comment;
     } else {
         notify.warning(
             'Данные в черновике устарели. Пожалуйста, создайте новый черновик.',
@@ -1001,6 +1038,7 @@ function draftToForm() {
 function surveyToForm() {
     const questions = props.survey.questions;
     questionsToForm(questions);
+    form.value.comment = props.survey.comment;
 }
 
 if (isNotNullish(props.draft)) {

@@ -6,12 +6,14 @@
                 @click="$emit('select')"
                 @edit="$emit('edit')"
                 @show-comments="$emit('show-comments')"
+                @schedule-call="$emit('schedule-call')"
                 :completed="isCompleted"
                 :active
                 :disabled
                 :contact
                 :editable
                 :full
+                :scheduled="form.scheduled"
                 :most-callable
                 class="survey-form-contact__element"
             />
