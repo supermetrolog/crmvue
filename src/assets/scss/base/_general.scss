@@ -184,6 +184,17 @@ main {
     .dp--preset-range {
         font-size: 16px;
     }
+
+    .dp--menu-header {
+        position: relative;
+        overflow: hidden;
+        height: 2px;
+    }
+
+    .dp__tooltip_content {
+        overflow-y: auto;
+        max-height: 150px;
+    }
 }
 
 .date-picker-tooltip {
@@ -361,4 +372,15 @@ body:has(.modal.active) {
 
 .text-inherit {
     color: inherit;
+}
+
+.dp__marker_dot {
+    position: absolute;
+    top: 0;
+    right: 0;
+    height: 10px;
+    width: 10px;
+    border-radius: 100%;
+    left: unset;
+    transform: none;
 }

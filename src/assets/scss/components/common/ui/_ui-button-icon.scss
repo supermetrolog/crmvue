@@ -51,6 +51,10 @@
         border-radius: 4px;
     }
 
+    &.transparent {
+        background-color: transparent;
+    }
+
     @include mixins.bg-color-scheme(
                     cl-warning #f88f01 #a46104 #fff,
                     cl-success #10b981 #009665 #fff,

@@ -354,9 +354,9 @@ onPopupShowed(() => {
             message: props.value.message,
             date: {
                 start: parseDate(props.value.start, startPresets.value[1].value),
-                startOption: isNullish(props.value.start) ? 1 : null,
+                startOption: isNullish(props.value.start) ? 1 : 100,
                 end: parseDate(props.value.end, endPresets.value[4].value),
-                endOption: isNullish(props.value.end) ? 4 : null
+                endOption: isNullish(props.value.end) ? 4 : 100
             },
             user_id: props.value.user_id,
             status: props.value.status ?? taskOptions.statusTypes.NEW,
@@ -385,7 +385,7 @@ function getPreparedStartDate(addCount, addUnit = 'day') {
     return dayjs().add(addCount, addUnit).toDate();
 }
 
-const CUSTOM_START_OPTION = 8;
+const CUSTOM_START_OPTION = 100;
 
 function generateStartPresets() {
     startPresets.value = {
@@ -393,7 +393,6 @@ function generateStartPresets() {
             label: 'Сегодня',
             value: new Date()
         },
-        ...(externalPresets.call ? generateCallStartPresets() : {}),
         2: {
             value: getPreparedStartDate(1),
             label: 'Завтра'
@@ -419,38 +418,17 @@ function generateStartPresets() {
             label: 'Через 3 месяца'
         },
         13: {
-            value: getPreparedStartDate(3, 'month'),
+            value: getPreparedStartDate(6, 'month'),
             label: 'Через пол года'
         },
         14: {
-            value: getPreparedStartDate(3, 'month'),
+            value: getPreparedStartDate(12, 'month'),
             label: 'Через год'
         },
-        8: {
+        100: {
             value: null,
             icon: 'fa-solid fa-calendar',
             label: 'Выбрать вручную..'
-        }
-    };
-}
-
-function generateCallStartPresets() {
-    return {
-        9: {
-            value: dayjs().add(30, 'minute').toDate(),
-            label: 'Через 30 минут'
-        },
-        10: {
-            value: dayjs().add(1, 'hour').toDate(),
-            label: 'Чеерз 1 час'
-        },
-        11: {
-            value: dayjs().add(2, 'hour').toDate(),
-            label: 'Через 2 часа'
-        },
-        12: {
-            value: dayjs().add(3, 'hour').toDate(),
-            label: 'Через 3 часа'
         }
     };
 }
@@ -463,11 +441,10 @@ function getPreparedEndDate(addCount, addUnit = 'day') {
     return dayjs(form.value.date.start).add(addCount, addUnit).toDate();
 }
 
-const CUSTOM_END_OPTION = 10;
+const CUSTOM_END_OPTION = 100;
 
 function generateEndPresets() {
     endPresets.value = {
-        ...(externalPresets.call ? generateCallEndPresets() : {}),
         1: {
             value: getPreparedEndDate(1),
             label: '1 день'
@@ -505,31 +482,10 @@ function generateEndPresets() {
             value: getPreparedEndDate(9, 'month'),
             label: '9 месяцев'
         },
-        10: {
+        100: {
             value: null,
             icon: 'fa-solid fa-calendar',
             label: 'Выбрать вручную..'
-        }
-    };
-}
-
-function generateCallEndPresets() {
-    return {
-        11: {
-            value: getPreparedEndDate(30, 'minute'),
-            label: '30 минут'
-        },
-        12: {
-            value: getPreparedEndDate(1, 'hour'),
-            label: '1 час'
-        },
-        13: {
-            value: getPreparedEndDate(2, 'hour'),
-            label: '2 часа'
-        },
-        14: {
-            value: getPreparedEndDate(3, 'hour'),
-            label: '3 часа'
         }
     };
 }

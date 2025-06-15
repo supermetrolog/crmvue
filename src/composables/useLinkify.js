@@ -4,6 +4,7 @@ import { useNotify } from '@/utils/use/useNotify.js';
 import linkifyHtml from 'linkify-html';
 import { find as linkifyFind } from 'linkifyjs';
 import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
+import { isNullish } from '@/utils/helpers/common/isNullish.js';
 
 let lastCopiedNode = null;
 
@@ -58,6 +59,8 @@ export function useLinkify(text, target, options = {}) {
     const stop = watch(
         () => [_target.value, textWithLinks.value],
         ([targetValue, textValue]) => {
+            if (isNullish(targetValue)) return;
+
             targetValue.innerHTML = textValue;
 
             if (localeOptions.findLinks) {

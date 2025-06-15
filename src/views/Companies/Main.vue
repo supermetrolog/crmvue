@@ -57,13 +57,16 @@
                             @unpin-message="unpinMessage"
                             @deleted-from-folder="onDeletedFromFolder"
                             @create-pinned-message="createPinnedMessage"
-                            @create-task="createTask"
+                            @create-task="createCompanyTask"
                             @show-tasks="showTasks"
                             @show-created-tasks="showCreatedTasks"
                             @disable-company="disableCompany"
                             @enable-company="enableCompany"
+                            @create-request-task="createRequestTask"
+                            @create-survey-task="createSurveyTask"
+                            @schedule-call="scheduleCall"
                             :companies="COMPANIES"
-                            :loader="isLoading || taskIsCreating"
+                            :loader="isLoading"
                         />
                     </AnimationTransition>
                 </div>
@@ -123,6 +126,11 @@
                 @disabled="onDisabledCompany"
                 :company="disablingCompany"
             />
+            <CallScheduler
+                v-if="scheduleCallModalIsVisible"
+                @close="closeScheduleCallModal"
+                :company="scheduleCallCompany"
+            />
         </teleport>
     </section>
 </template>
@@ -156,13 +164,15 @@ import UiCol from '@/components/common/UI/UiCol.vue';
 import { useConfirm } from '@/composables/useConfirm.js';
 import { useNotify } from '@/utils/use/useNotify.js';
 import { useTaskManager } from '@/composables/useTaskManager.js';
-import { getCompanyName, getCompanyShortName } from '@/utils/formatters/models/company.js';
+import { getCompanyShortName } from '@/utils/formatters/models/company.js';
 import DashboardTableTasks from '@/components/Dashboard/Table/DashboardTableTasks.vue';
 import { taskOptions } from '@/const/options/task.options.js';
 import { useAuth } from '@/composables/useAuth.js';
 import { captureException } from '@sentry/vue';
 import FormCompanyDisable from '@/components/Forms/Company/FormCompanyDisable.vue';
 import { useCompanyDisable } from '@/components/Company/useCompanyDisable.js';
+import { spliceById } from '@/utils/helpers/array/spliceById.js';
+import CallScheduler from '@/components/CallScheduler/CallScheduler.vue';
 
 const route = useRoute();
 const store = useStore();
@@ -261,10 +271,12 @@ async function onCreatedMessage(message) {
     isPinning.value = true;
 
     try {
-        await api.messenger.pinMessage(message.to_chat_member_id, message.id);
+        const pinnedMessage = await api.companies.pinMessage(companyId, { message_id: message.id });
 
-        const companyIndex = COMPANIES.value.findIndex(company => company.id === companyId);
-        if (companyIndex !== -1) COMPANIES.value[companyIndex].chat_member_pinned_message = message;
+        const companyIndex = COMPANIES.value.findIndex(
+            company => company.id === pinnedMessage.company_id
+        );
+        if (companyIndex !== -1) COMPANIES.value[companyIndex].pinned_messages.push(pinnedMessage);
     } finally {
         isPinning.value = false;
     }
@@ -279,7 +291,7 @@ async function showPinnedMessage(message) {
     pinnedMessageViewIsVisible.value = true;
 
     try {
-        pinnedMessage.value = await api.messenger.getPinned(message.to_chat_member_id);
+        pinnedMessage.value = await api.messenger.getMessagesByQuery({ id: message.id });
         pinnedMessage.value.dayjs_date = dayjsFromMoscow(pinnedMessage.value.created_at);
     } finally {
         pinnedMessageIsLoading.value = false;
@@ -289,7 +301,7 @@ async function showPinnedMessage(message) {
 const { confirm } = useConfirm();
 const notify = useNotify();
 
-async function unpinMessage(message, companyId) {
+async function unpinMessage(message) {
     const confirmed = await confirm(
         'Открепить сообщение',
         'Вы уверены, что хотите открепить сообщение?'
@@ -297,58 +309,42 @@ async function unpinMessage(message, companyId) {
     if (!confirmed) return;
 
     try {
-        const unpinned = await api.messenger.unpinMessage(message.to_chat_member_id);
-        if (unpinned) {
-            notify.success('Сообщение успешно откреплено');
+        await api.companies.unpinMessage(message.id);
 
-            const companyIndex = COMPANIES.value.findIndex(company => company.id === companyId);
-            if (companyIndex !== -1)
-                COMPANIES.value[companyIndex].chat_member_pinned_message = null;
+        const companyIndex = COMPANIES.value.findIndex(
+            company => company.id === message.company_id
+        );
+        if (companyIndex !== -1) {
+            spliceById(COMPANIES.value[companyIndex].pinned_messages, message.id);
         }
     } catch (error) {
         notify.error('Произошла ошибка. Попробуйте позже');
-        captureException(error, { company_id: companyId });
+        captureException(error, { company_id: message.company_id });
     }
 }
 
 // tasks
 
 const { createTaskWithTemplate } = useTaskManager();
-const taskIsCreating = ref(false);
 
-async function createTask(company) {
-    let message = `Компания ${getCompanyShortName(company)}`;
-    let title;
+async function createCompanyTask(company) {
     let userId;
-
-    if (message.length > 255) {
-        title = message.slice(0, 253) + '...';
-    } else {
-        title = message;
-        message = null;
-    }
 
     if (company.consultant_id) {
         userId = company.consultant_id;
     }
 
     const taskPayload = await createTaskWithTemplate({
-        title,
-        message,
-        customDescription: true,
+        title: `Компания ${getCompanyShortName(company)}`,
         user_id: userId,
-        additionalContent: {
-            modelType: 'company',
-            companyName: getCompanyName(company)
-        },
-        relations: [{ entity_type: 'company', entity_id: company.id }]
+        relations: [createTaskRelation('company', company.id)]
     });
 
     if (!taskPayload) return;
 
-    taskIsCreating.value = true;
-
     try {
+        company.isLoading = true;
+
         const task = await api.task.create(taskPayload);
 
         notify.success('Задача успешно создана!');
@@ -359,8 +355,77 @@ async function createTask(company) {
             company.created_task_ids = [task.id];
         }
     } finally {
-        taskIsCreating.value = false;
+        company.isLoading = false;
     }
+}
+
+async function createTask(payload) {
+    const task = await api.task.create(payload);
+    notify.success('Задача успешно создана!');
+
+    return task;
+}
+
+function createTaskRelation(type, id) {
+    return { entity_type: type, entity_id: id };
+}
+
+async function createRequestTask(request, company) {
+    const companyName = getCompanyShortName(company);
+
+    const taskPayload = await createTaskWithTemplate({
+        title: `Запрос #${request.id} (комп. ${companyName}) `,
+        user_id: request.consultant_id ?? currentUserId.value,
+        relations: [
+            createTaskRelation('company', company.id),
+            createTaskRelation('request', request.id)
+        ]
+    });
+
+    if (!taskPayload) return;
+
+    try {
+        request.isLoading = true;
+        await createTask(taskPayload);
+    } finally {
+        request.isLoading = false;
+    }
+}
+
+async function createSurveyTask(company) {
+    const companyName = getCompanyShortName(company);
+
+    const taskPayload = await createTaskWithTemplate({
+        title: `Опрос #${company.last_survey.id} (комп. ${companyName}) `,
+        user_id: company.last_survey.user_id ?? currentUserId.value,
+        relations: [
+            createTaskRelation('company', company.id),
+            createTaskRelation('survey', company.last_survey.id)
+        ]
+    });
+
+    if (!taskPayload) return;
+
+    try {
+        company.last_survey.isLoading = true;
+        const task = await createTask(taskPayload);
+        company.last_survey.tasks.push(task);
+    } finally {
+        company.last_survey.isLoading = false;
+    }
+}
+
+const scheduleCallModalIsVisible = ref(false);
+const scheduleCallCompany = shallowRef(null);
+
+function scheduleCall(company) {
+    scheduleCallCompany.value = company;
+    scheduleCallModalIsVisible.value = true;
+}
+
+function closeScheduleCallModal() {
+    scheduleCallModalIsVisible.value = false;
+    scheduleCallCompany.value = null;
 }
 
 const currentTasks = shallowRef([]);

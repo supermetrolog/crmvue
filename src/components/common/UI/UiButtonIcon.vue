@@ -28,6 +28,7 @@ const props = defineProps({
     color: String,
     disabled: Boolean,
     loading: Boolean,
+    transparent: Boolean,
     rect: Boolean,
     badge: [Number, String],
     badgeColor: String
@@ -39,6 +40,7 @@ const classes = computed(() => {
         small: props.small,
         mini: props.mini,
         rect: props.rect,
+        transparent: props.transparent,
         [`ui-button-icon--cl-${props.color}`]: isNotNullish(props.color)
     };
 });

@@ -11,18 +11,23 @@
                     morph="company"
                     :entity="company.id"
                 />
-                <UiDropdownActions label="Действия над компанией" small>
+                <UiDropdownActions label="Действия над компанией" :title="companyShortName" small>
                     <template #menu>
                         <UiDropdownActionsButton
                             @handle="$emit('create-task')"
                             icon="fa-solid fa-bolt"
                             label="Создать задачу"
                         />
-                        <!--                        <UiDropdownActionsButton-->
-                        <!--                            @handle="$emit('create-pinned-message')"-->
-                        <!--                            icon="fa-solid fa-thumbtack"-->
-                        <!--                            label="Добавить сообщение"-->
-                        <!--                        />-->
+                        <UiDropdownActionsButton
+                            @handle="$emit('schedule-call')"
+                            icon="fa-solid fa-phone"
+                            label="Запланировать звонок"
+                        />
+                        <UiDropdownActionsButton
+                            @handle="$emit('create-pinned-message')"
+                            icon="fa-solid fa-thumbtack"
+                            label="Добавить сообщение"
+                        />
                         <UiDropdownActionsButton
                             @handle="openInSurvey"
                             icon="fa-solid fa-square-poll-horizontal"
@@ -58,45 +63,59 @@
                     :company-name="companyName"
                     :src="company.logo"
                 />
-                <div>
-                    <a class="company-table-item__title" :href="companyUrl" target="_blank">
-                        <h4 :class="{ 'text-warning': isPassive }">
-                            <UiTooltipIcon
-                                v-if="company.is_individual"
-                                tooltip="Физ.лицо"
-                                icon="fa-solid fa-user-tie"
-                                class="mr-1"
-                            />
-                            <span>{{ companyName }}</span>
-                        </h4>
-                    </a>
-                    <p v-if="company.companyGroup" class="company-table-item__company-group">
-                        {{ company.companyGroup.full_name }}
-                    </p>
-                    <span
-                        v-if="company.activity_profiles?.length"
-                        class="company-table-item__profile"
-                    >
-                        {{ activityProfile }}
-                    </span>
-                    <div
-                        v-if="company.productRanges?.length"
-                        class="company-table-item__product-ranges my-1"
-                    >
-                        <DashboardChip
-                            v-for="productRange in company.productRanges"
-                            :key="productRange.id"
-                            class="dashboard-bg-light company-table-item__product-range"
-                        >
-                            {{ ucFirst(productRange.product) }}
-                        </DashboardChip>
-                    </div>
-                    <Rating v-if="company.rating" :rating="company.rating" color="yellow" />
-                </div>
+                <CompanyTableItemInfo :company />
             </div>
+            <CompanyTableDropdown
+                v-if="dropdownMustBeShown"
+                v-model:objects-visible="objectsIsOpen"
+                v-model:requests-visible="requestsIsOpen"
+                @show-tasks="$emit('show-tasks')"
+                @show-created-tasks="$emit('show-tasks')"
+                :company
+                class="mt-2"
+            />
         </Td>
         <Td class="company-table-item__comment">
-            <CompanyTableItemSurvey v-if="company.last_survey" :company />
+            <CompanyTableItemSurvey
+                v-if="company.last_survey"
+                @open-preview="$emit('show-survey')"
+                @create-task="$emit('create-survey-task')"
+                @edit-comment="$emit('edit-survey-comment')"
+                @show-task="$emit('show-task', $event)"
+                :company
+            />
+            <CompanyTableItemPinnedMessages
+                v-if="company.pinned_messages.length"
+                @show-message="$emit('show-message', $event)"
+                @unpin-message="$emit('unpin-message', $event)"
+                @create-pinned-message="$emit('create-pinned-message')"
+                :company
+            />
+            <div
+                v-if="!company.last_survey"
+                class="company-table-item__comment-buttons"
+                :class="{ absolute: company.pinned_messages.length === 0 }"
+            >
+                <UiButton
+                    v-if="company.pinned_messages.length === 0"
+                    @click="$emit('create-pinned-message')"
+                    class="company-table-item__comment-button"
+                    color="light"
+                    small
+                    icon="fa-solid fa-plus"
+                >
+                    Добавить сообщение
+                </UiButton>
+                <UiButton
+                    @click="openInSurvey"
+                    class="company-table-item__comment-button"
+                    color="light"
+                    small
+                    icon="fa-solid fa-play"
+                >
+                    Пройти опрос
+                </UiButton>
+            </div>
         </Td>
         <Td class="company-table-item__consultant">
             <div v-if="company.consultant" class="company-table-item__consultant-wrapper">
@@ -108,7 +127,14 @@
             </div>
             <p v-else class="text-center">&#8212;</p>
         </Td>
-        <Td class="company-table-item__date" sort="created_at">
+        <Td class="company-table-item__date position-relative" sort="created_at">
+            <DashboardChip
+                v-if="isPassive"
+                ref="passiveWhyCommentEl"
+                class="offer-table-item__chip text-white danger"
+            >
+                {{ passiveWhyLabel }}
+            </DashboardChip>
             <CompanyTableItemCall
                 @to-chat="openInChat"
                 @to-survey="openInSurvey"
@@ -117,56 +143,41 @@
                 :without-contacts="isWithoutActiveContacts"
                 class="my-1"
             />
-            <DashboardChip
-                v-if="isPassive"
-                ref="passiveWhyCommentEl"
-                class="dashboard-bg-danger-l offer-table-item__chip"
-            >
-                {{ passiveWhyLabel }}
-            </DashboardChip>
             <TableDateBlock
-                class="mt-1"
                 :date="company.updated_at || company.created_at"
                 label="Дата обновления"
+                class="mt-1"
             />
         </Td>
     </Tr>
-    <CompanyTableDropdown
-        v-if="dropdownMustBeShown"
-        @open-timeline="openTimeline"
-        @show-tasks="$emit('show-tasks')"
-        @show-created-tasks="$emit('show-created-tasks')"
-        :odd="odd"
-        :active-requests="requestsByGroups.active"
-        :archive-requests="requestsByGroups.passive"
-        :done-requests="requestsByGroups.done"
-        :objects="company.objects"
-        :tasks-count="company.tasks_count"
-        :created-tasks-count="company.created_task_ids?.length ?? 0"
+    <CompanyTableItemObjects
+        v-if="company.objects?.length"
+        v-model:visible="objectsIsOpen"
         :company
+    />
+    <CompanyTableItemRequests
+        v-if="requestsIsOpen"
+        @open-timeline="openTimeline"
+        @create-task="$emit('create-request-task', $event)"
+        :company-id="company.id"
     />
 </template>
 
 <script setup>
-import CompanyTableDropdown from '@/components/Company/Table/CompanyTableDropdown.vue';
 import Tr from '@/components/common/Table/Tr.vue';
 import Td from '@/components/common/Table/Td.vue';
 import { useStore } from 'vuex';
-import { computed, toRef, useTemplateRef } from 'vue';
+import { computed, ref, toRef, useTemplateRef } from 'vue';
 import { useRouter } from 'vue-router';
-import { ActivityProfileList, PassiveWhy } from '@/const/const.js';
-import Rating from '@/components/common/Rating.vue';
+import { PassiveWhy } from '@/const/const.js';
 import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
 import Avatar from '@/components/common/Avatar.vue';
 import TableDateBlock from '@/components/common/Table/TableDateBlock.vue';
 import { useMessenger } from '@/components/Messenger/useMessenger.js';
-import { getLinkCompany } from '@/utils/url.js';
-import { getCompanyName } from '@/utils/formatters/models/company.js';
-import { ucFirst } from '@/utils/formatters/string.js';
+import { getCompanyName, getCompanyShortName } from '@/utils/formatters/models/company.js';
 import CompanyLogo from '@/components/Company/CompanyLogo.vue';
 import { messenger } from '@/const/messenger.js';
 import CompanyTableItemCall from '@/components/Company/Table/CompanyTableItemCall.vue';
-import UiTooltipIcon from '@/components/common/UI/UiTooltipIcon.vue';
 import UserFoldersDropdown from '@/components/UserFolder/UserFoldersDropdown.vue';
 import UiDropdownActions from '@/components/common/UI/DropdownActions/UiDropdownActions.vue';
 import UiDropdownActionsButton from '@/components/common/UI/DropdownActions/UiDropdownActionsButton.vue';
@@ -174,6 +185,12 @@ import { useSurveyForm } from '@/composables/useSurveyForm.js';
 import { useTippy } from 'vue-tippy';
 import CompanyTableItemSurvey from '@/components/Company/Table/CompanyTableItemSurvey.vue';
 import { useCompanyPermissions } from '@/components/Company/useCompanyPermissions.js';
+import CompanyTableItemObjects from '@/components/Company/Table/CompanyTableItemObjects.vue';
+import CompanyTableItemRequests from '@/components/Company/Table/CompanyTableItemRequests.vue';
+import CompanyTableDropdown from '@/components/Company/Table/CompanyTableDropdown.vue';
+import CompanyTableItemInfo from '@/components/Company/Table/CompanyTableItemInfo.vue';
+import UiButton from '@/components/common/UI/UiButton.vue';
+import CompanyTableItemPinnedMessages from '@/components/Company/Table/CompanyTableItemPinnedMessages.vue';
 
 const store = useStore();
 const router = useRouter();
@@ -184,10 +201,16 @@ defineEmits([
     'show-message',
     'unpin-message',
     'create-task',
+    'create-request-task',
+    'create-survey-task',
     'show-tasks',
     'show-created-tasks',
     'disable',
-    'enable'
+    'enable',
+    'show-survey',
+    'show-task',
+    'edit-survey-comment',
+    'schedule-call'
 ]);
 
 const props = defineProps({
@@ -195,28 +218,11 @@ const props = defineProps({
     odd: { type: Boolean, default: false }
 });
 
-const requestsGroups = {
-    0: 'passive',
-    1: 'active',
-    2: 'done',
-    5: 'passive'
-};
-
-const requestsByGroups = computed(() =>
-    Object.groupBy(props.company.requests, ({ status }) => requestsGroups[status])
-);
-
 const dropdownMustBeShown = computed(
     () =>
         props.company.objects.length ||
         props.company.requests.length ||
         props.company.tasks_count > 0
-);
-
-const activityProfile = computed(() =>
-    props.company.activity_profiles
-        .map(el => ActivityProfileList[el.activity_profile_id].label)
-        .join(', ')
 );
 
 const isPassive = computed(() => props.company.status === 0);
@@ -231,8 +237,8 @@ const passiveWhyComment = computed(() => {
     return text;
 });
 
-const companyUrl = computed(() => getLinkCompany(props.company.id));
 const companyName = computed(() => getCompanyName(props.company));
+const companyShortName = computed(() => getCompanyShortName(props.company));
 
 const openTimeline = requestID => {
     const route = router.resolve({
@@ -264,4 +270,9 @@ useTippy(useTemplateRef('passiveWhyCommentEl'), { content: passiveWhyComment });
 // permissions
 
 const { canDisable } = useCompanyPermissions(toRef(props, 'company'));
+
+// dropdown
+
+const objectsIsOpen = ref(false);
+const requestsIsOpen = ref(false);
 </script>

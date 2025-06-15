@@ -1,13 +1,12 @@
 <template>
-    <DashboardChip ref="chipEl" class="table-date-block dashboard-bg-light" with-icon>
+    <span ref="chipEl" class="table-date-block">
         <i :class="icon"></i>
         <span class="table-date-block__value">{{ day }}, {{ time }}</span>
-    </DashboardChip>
+    </span>
 </template>
 <script setup>
 import dayjs from 'dayjs';
 import { computed, toRef, useTemplateRef } from 'vue';
-import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
 import { useTippy } from 'vue-tippy';
 
 const props = defineProps({

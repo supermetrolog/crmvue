@@ -1,5 +1,5 @@
 <template>
-    <UiDropdownActions>
+    <UiDropdownActions title="Управление папками">
         <template #trigger>
             <UiButtonIcon
                 label="Управление папками"
@@ -39,14 +39,15 @@
                 </template>
             </UiDropdownActionsButton>
         </template>
-        <!--        <template #footer>-->
-        <!--            <UiDropdownActionsButton-->
-        <!--                @handle="createFolder"-->
-        <!--                label="Создать папку"-->
-        <!--                icon="fa-solid fa-plus"-->
-        <!--                :close-on-click="false"-->
-        <!--            />-->
-        <!--        </template>-->
+        <template v-if="creatable" #footer>
+            <UiDropdownActionsButton
+                @handle="$emit('create')"
+                label="Добавить папку"
+                icon="fa-solid fa-plus"
+                :close-on-click="false"
+                button-class="fs-2"
+            />
+        </template>
     </UiDropdownActions>
 </template>
 <script setup>
@@ -55,7 +56,7 @@ import UiButtonIcon from '@/components/common/UI/UiButtonIcon.vue';
 import UiDropdownActions from '@/components/common/UI/DropdownActions/UiDropdownActions.vue';
 import { useUserFolderEntities } from '@/composables/useUserFolderEntities.js';
 
-const emit = defineEmits(['deleted-from-folder']);
+const emit = defineEmits(['deleted-from-folder', 'create']);
 const props = defineProps({
     morph: {
         type: String,

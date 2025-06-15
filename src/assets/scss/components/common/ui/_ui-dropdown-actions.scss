@@ -9,6 +9,15 @@
         @include mixins.flex-box($d: column, $a: start);
     }
 
+    &__title {
+        width: 100%;
+        padding: 3px 10px 3px 7px;
+        background-color: #ddd;
+        font-size: 14px;
+        color: #616161;
+        @include mixins.text-overflow(1);
+    }
+
     &__element {
         width: 100%;
     }

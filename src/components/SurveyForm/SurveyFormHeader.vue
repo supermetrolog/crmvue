@@ -5,17 +5,34 @@
             @update-logo="$emit('update-logo', $event)"
             @to-chat="$emit('to-chat')"
             @create-task="$emit('create-task')"
+            @schedule-call="scheduleCallModalIsVisible = true"
             :company
             :last-surveys
             :surveys-count
             editable
         />
+        <teleport to="body">
+            <CallScheduler
+                v-if="scheduleCallModalIsVisible"
+                @created="onCreatedScheduledCall"
+                @close="closeScheduleCallModal"
+                :company
+            />
+        </teleport>
     </div>
 </template>
 <script setup>
 import SurveyFormHeaderCompany from '@/components/SurveyForm/SurveyFormHeaderCompany.vue';
+import CallScheduler from '@/components/CallScheduler/CallScheduler.vue';
+import { ref } from 'vue';
 
-defineEmits(['update-logo', 'update-company', 'to-chat', 'create-task']);
+const emit = defineEmits([
+    'update-logo',
+    'update-company',
+    'to-chat',
+    'create-task',
+    'call-scheduled'
+]);
 defineProps({
     company: {
         type: Object,
@@ -30,4 +47,15 @@ defineProps({
         default: 0
     }
 });
+
+const scheduleCallModalIsVisible = ref(false);
+
+function closeScheduleCallModal() {
+    scheduleCallModalIsVisible.value = false;
+}
+
+function onCreatedScheduledCall(_, payload) {
+    emit('call-scheduled', payload.start);
+    closeScheduleCallModal();
+}
 </script>

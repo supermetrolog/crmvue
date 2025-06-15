@@ -20,6 +20,7 @@
                 @update-logo="onUpdateLogo"
                 @update-company="onUpdateCompany"
                 @create-task="createCompanyTask"
+                @call-scheduled="onCompanyCallScheduled"
                 :company
                 :last-surveys
                 :surveys-count
@@ -389,6 +390,10 @@ function confirmTaskSuggestion() {
 
 function closeContactForm() {
     contactFormIsVisible.value = false;
+}
+
+function onCompanyCallScheduled(date) {
+    company.value.scheduled = date;
 }
 
 // surveys

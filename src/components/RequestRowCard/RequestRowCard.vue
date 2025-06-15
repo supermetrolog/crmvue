@@ -262,7 +262,6 @@ const regionsText = computed(() => {
 });
 
 const locationText = computed(() => {
-    console.log(props.request);
     const locations = [regionsText.value, ...directions.value, ...districts.value];
 
     if (props.request.distanceFromMKAD) {

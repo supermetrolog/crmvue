@@ -48,6 +48,9 @@
                     </div>
                 </AnimationTransition>
             </template>
+            <template #menu-header>
+                <MessengerLoader class="schedule__loader" :active="eventsLoading" />
+            </template>
         </VueDatePicker>
         <ValidationMessage v-if="hasValidationError && !disabled" :message="error" />
     </div>
@@ -62,9 +65,10 @@ import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
 import ValidationMessage from '@/components/common/Forms/VaildationMessage.vue';
 import { useFormControlValidation } from '@/composables/useFormControlValidation.js';
+import MessengerLoader from '@/components/Messenger/MessengerLoader.vue';
 
 const modelValue = defineModel();
-const emit = defineEmits(['change', 'range-start', 'range-end']);
+const emit = defineEmits(['change', 'range-start', 'range-end', 'update-month-year']);
 
 const props = defineProps({
     markers: {
@@ -85,7 +89,8 @@ const props = defineProps({
     presets: Array,
     v$: Object,
     startDate: [Date, String],
-    focusStartDate: Boolean
+    focusStartDate: Boolean,
+    eventsLoading: Boolean
 });
 
 const formattedDate = computed(() => {
@@ -136,6 +141,8 @@ const currentYear = ref(null);
 function onUpdateMonthAndYear({ month, year }) {
     currentMonth.value = month;
     currentYear.value = year;
+
+    emit('update-month-year', { month, year });
 }
 
 function setMonthAndYearInPicker(month, year) {
