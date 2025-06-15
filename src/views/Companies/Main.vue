@@ -383,7 +383,8 @@ async function createRequestTask(request, company) {
         relations: [
             createTaskRelation('company', company.id),
             createTaskRelation('request', request.id)
-        ]
+        ],
+        type: 'request_handling'
     });
 
     if (!taskPayload) return;

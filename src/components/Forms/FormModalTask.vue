@@ -276,7 +276,8 @@ const form = ref({
     observers: [],
     files: [],
     current_files: [],
-    relations: []
+    relations: [],
+    type: 'base'
 });
 
 const consultantsForObservers = computed(() => {
@@ -308,7 +309,8 @@ const clearForm = () => {
         observers: [],
         files: [],
         current_files: [],
-        relations: []
+        relations: [],
+        type: 'base'
     };
 
     v$.value.$reset();
@@ -366,7 +368,8 @@ onPopupShowed(() => {
                 : [],
             current_files: [],
             files: [],
-            relations: props.value.relations ?? []
+            relations: props.value.relations ?? [],
+            type: props.value.type
         };
 
         if (isEditing.value && props.value.files_count > 0) fetchFiles();
@@ -549,7 +552,8 @@ const formToPayload = () => {
         observer_ids: form.value.observers,
         files: form.value.files,
         current_files: form.value.current_files.map(element => element.id),
-        relations: form.value.relations
+        relations: form.value.relations,
+        type: form.value.type
     };
 };
 

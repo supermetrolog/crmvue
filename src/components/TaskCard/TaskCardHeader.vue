@@ -39,6 +39,13 @@
                         </template>
                         <template #menu>
                             <UiDropdownActionsButton
+                                v-if="!isDeleted && draggable && canBeDragged && !isCompleted"
+                                @handle="$emit('complete')"
+                                icon="fa-solid fa-check"
+                                label="Выполнить"
+                                :disabled
+                            />
+                            <UiDropdownActionsButton
                                 v-if="editable && canBeEdit"
                                 @handle="$emit('edit')"
                                 icon="fa-solid fa-pen"
@@ -147,7 +154,8 @@ defineEmits([
     'delete',
     'restore',
     'edit',
-    'toggle-favorite'
+    'toggle-favorite',
+    'complete'
 ]);
 
 const props = defineProps({
