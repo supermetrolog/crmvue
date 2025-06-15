@@ -70,7 +70,7 @@ export default {
         return responseToData(response);
     },
     async unpinMessage(id) {
-        const response = await axios.delete(`company-pinned-messages/${id}`);
+        const response = await axios.delete(`entity-pinned-messages/${id}`);
         return responseHasStatus(response);
     }
 };

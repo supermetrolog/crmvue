@@ -26,7 +26,7 @@
             </template>
         </MessengerDialogLastMessage>
         <UiButton
-            v-if="company.pinned_messages.length > 1 || !company.last_survey?.comment"
+            v-if="messagesCountButtonShouldBeVisible"
             @click="modalIsVisible = true"
             small
             class="mt-2 fs-2"
@@ -94,4 +94,11 @@ const messagesCountLabel = computed(() =>
         '+ еще %d закрепленных сообщений'
     )
 );
+
+const messagesCountButtonShouldBeVisible = computed(() => {
+    return (
+        props.company.pinned_messages.length > 1 ||
+        (!props.company.last_survey?.comment && !props.company.pinned_messages.length)
+    );
+});
 </script>

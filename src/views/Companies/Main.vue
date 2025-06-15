@@ -274,9 +274,10 @@ async function onCreatedMessage(message) {
         const pinnedMessage = await api.companies.pinMessage(companyId, { message_id: message.id });
 
         const companyIndex = COMPANIES.value.findIndex(
-            company => company.id === pinnedMessage.company_id
+            company => company.id === pinnedMessage.entity_id
         );
-        if (companyIndex !== -1) COMPANIES.value[companyIndex].pinned_messages.push(pinnedMessage);
+        if (companyIndex !== -1)
+            COMPANIES.value[companyIndex].pinned_messages.unshift(pinnedMessage);
     } finally {
         isPinning.value = false;
     }
@@ -311,15 +312,13 @@ async function unpinMessage(message) {
     try {
         await api.companies.unpinMessage(message.id);
 
-        const companyIndex = COMPANIES.value.findIndex(
-            company => company.id === message.company_id
-        );
+        const companyIndex = COMPANIES.value.findIndex(company => company.id === message.entity_id);
         if (companyIndex !== -1) {
             spliceById(COMPANIES.value[companyIndex].pinned_messages, message.id);
         }
     } catch (error) {
         notify.error('Произошла ошибка. Попробуйте позже');
-        captureException(error, { company_id: message.company_id });
+        captureException(error, { company_id: message.entity_id });
     }
 }
 
