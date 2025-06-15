@@ -129,6 +129,7 @@
             <CallScheduler
                 v-if="scheduleCallModalIsVisible"
                 @close="closeScheduleCallModal"
+                @created="onCreatedScheduledCall"
                 :company="scheduleCallCompany"
             />
         </teleport>
@@ -324,6 +325,14 @@ async function unpinMessage(message) {
 
 // tasks
 
+function addCreatedTaskInCompany(company, task) {
+    if (isArray(company.created_task_ids) && company.created_task_ids.length) {
+        company.created_task_ids.push(task.id);
+    } else {
+        company.created_task_ids = [task.id];
+    }
+}
+
 const { createTaskWithTemplate } = useTaskManager();
 
 async function createCompanyTask(company) {
@@ -348,11 +357,7 @@ async function createCompanyTask(company) {
 
         notify.success('Задача успешно создана!');
 
-        if (isArray(company.created_task_ids) && company.created_task_ids.length) {
-            company.created_task_ids.push(task.id);
-        } else {
-            company.created_task_ids = [task.id];
-        }
+        addCreatedTaskInCompany(company, task);
     } finally {
         company.isLoading = false;
     }
@@ -425,6 +430,11 @@ function scheduleCall(company) {
 function closeScheduleCallModal() {
     scheduleCallModalIsVisible.value = false;
     scheduleCallCompany.value = null;
+}
+
+function onCreatedScheduledCall(payload) {
+    addCreatedTaskInCompany(scheduleCallCompany.value, payload);
+    closeScheduleCallModal();
 }
 
 const currentTasks = shallowRef([]);
