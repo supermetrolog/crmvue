@@ -21,9 +21,7 @@
                 class="offer-table-item-call__chip expired"
                 with-icon
             >
-                <i v-if="lastCallHasCompleteStatus" class="fa-solid fa-phone" />
-                <i v-else class="fa-solid fa-phone-slash" />
-                <span>Прозвонить!</span>
+                <span>Требуется звонок!</span>
             </DashboardChip>
             <DashboardChip
                 v-else-if="!lastCallHasCompleteStatus"
@@ -35,7 +33,7 @@
                 with-icon
             >
                 <i class="fa-solid fa-phone-slash" />
-                <span>{{ lastCallDate }}</span>
+                <span>Требуется звонок!</span>
             </DashboardChip>
             <DashboardChip
                 v-else
@@ -43,11 +41,11 @@
                     `Дата последнего звонка - ${lastCallDate}. Нажмите, чтобы перейти в чат компании.`
                 "
                 @click="$emit('to-chat')"
-                class="offer-table-item-call__chip"
+                class="offer-table-item-call__chip font-weight-normal"
                 with-icon
             >
                 <i class="fa-solid fa-comments" />
-                <span>{{ lastCallDate }}</span>
+                <span>Перейти в чат</span>
             </DashboardChip>
         </template>
         <DashboardChip
@@ -72,14 +70,13 @@
         <DashboardChip
             v-else
             v-tippy="
-                'Дата последнего звонка неизвестна. По компании еще не было зафиксированных звонков. Нажмите, чтобы перейти к опроснику и обновить информацию.'
+                'По компании еще не было зафиксированных звонков. Нажмите, чтобы перейти к опроснику и обновить информацию.'
             "
             @click="$emit('to-survey')"
-            class="offer-table-item-call__chip expired"
+            class="offer-table-item-call__chip expired fs-2"
             with-icon
         >
-            <i class="fa-solid fa-phone" />
-            <span>Прозвонить!</span>
+            <span>Требуется звонок!</span>
         </DashboardChip>
     </div>
 </template>

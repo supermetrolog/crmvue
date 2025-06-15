@@ -44,5 +44,13 @@ export default {
 
         const response = await axios.post(`${URL}/create-comment`, payload, { params: { expand } });
         return responseToData(response);
+    },
+    async disable(id, payload) {
+        const response = await axios.post(`${URL}/${id}/disable`, payload);
+        return responseToData(response);
+    },
+    async enable(id) {
+        const response = await axios.post(`${URL}/${id}/enable`);
+        return responseToData(response);
     }
 };

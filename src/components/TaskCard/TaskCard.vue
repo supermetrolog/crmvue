@@ -10,6 +10,7 @@
             @assign="assignerFormIsVisible = !assignerFormIsVisible"
             @change-status="moveSettingsIsVisible = !moveSettingsIsVisible"
             @postpone="postponeFormIsVisible = !postponeFormIsVisible"
+            @complete="completeTask"
             :disabled="moveSettingsIsVisible || assignerFormIsVisible"
             :viewable="canBeViewed"
             :task
@@ -159,7 +160,7 @@ const props = defineProps({
 
 const notify = useNotify();
 const store = useStore();
-const { currentUserId } = useAuth();
+const { currentUserId, currentUserIsModeratorOrHigher } = useAuth();
 
 const { isLoading } = useDelayedLoader();
 
@@ -237,6 +238,25 @@ async function changeStatus(payload) {
         }
     } finally {
         statusIsChanging.value = false;
+    }
+}
+
+async function completeTask() {
+    isUpdating.value = true;
+
+    try {
+        await api.task.changeStatus(props.task.id, taskOptions.clearStatusTypes.COMPLETED);
+
+        notify.success('Статус задачи успешно изменен');
+
+        if (props.task.user_id === currentUserId.value) {
+            taskCompleteEvent.emit();
+        }
+
+        const task = await api.task.getOne(props.task.id);
+        if (task) emit('updated', task);
+    } finally {
+        isUpdating.value = false;
     }
 }
 
@@ -396,7 +416,6 @@ const contactsIsVisible = ref(false);
 const currentContactsCompanyId = ref(null);
 
 function showContacts(companyId) {
-    alert(companyId);
     currentContactsCompanyId.value = companyId;
 
     contactsIsVisible.value = true;

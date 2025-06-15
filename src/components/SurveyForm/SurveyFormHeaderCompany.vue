@@ -29,7 +29,19 @@
             </UiCol>
         </div>
         <div class="survey-form-header-company__actions">
-            <UiDropdownActions label="Действия над компанией" icon="fa-solid fa-ellipsis-vertical">
+            <UserFoldersDropdown
+                @create="folderModalIsVisible = true"
+                :entity="company.id"
+                morph="company"
+                button-color="light"
+                creatable
+                class="mr-1"
+            />
+            <UiDropdownActions
+                :title="company.full_name"
+                label="Действия над компанией"
+                icon="fa-solid fa-ellipsis-vertical"
+            >
                 <template #trigger>
                     <UiDropdownActionsTrigger
                         label="Действия над компанией"
@@ -45,22 +57,32 @@
                             icon="fa-solid fa-bolt"
                         />
                         <UiDropdownActionsButton
+                            @handle="$emit('schedule-call')"
+                            :icon="company.scheduled ? 'fa-solid fa-check' : 'fa-solid fa-phone'"
+                            :label="
+                                company.scheduled ? 'Звонок запланирован' : 'Запланировать звонок'
+                            "
+                            :disabled="company.scheduled"
+                        />
+                        <UiDropdownActionsButton
                             @handle="companyFormIsVisible = true"
                             label="Редактировать"
                             icon="fa-solid fa-pen"
                         />
-                        <UiDropdownActionsButton
-                            v-if="isPassive"
-                            @handle="enableCompany(company.id)"
-                            label="Восстановить компанию"
-                            icon="fa-solid fa-undo"
-                        />
-                        <UiDropdownActionsButton
-                            v-else
-                            @handle="disableCompanyFormIsVisible = true"
-                            label="Отправить в архив"
-                            icon="fa-solid fa-ban text-danger"
-                        />
+                        <template v-if="canBeArchived">
+                            <UiDropdownActionsButton
+                                v-if="isPassive"
+                                @handle="enableCompany(company.id)"
+                                label="Восстановить компанию"
+                                icon="fa-solid fa-undo"
+                            />
+                            <UiDropdownActionsButton
+                                v-else
+                                @handle="disableCompanyFormIsVisible = true"
+                                label="Отправить в архив"
+                                icon="fa-solid fa-ban text-danger"
+                            />
+                        </template>
                         <UiDropdownActionsButton
                             @handle="updateLogo"
                             label="Изменить логотип"
@@ -139,6 +161,12 @@
                     </UiCol>
                 </div>
             </UiModal>
+            <FormUserFolder
+                v-if="folderModalIsVisible"
+                @close="closeFolderForm"
+                @created="onCreatedFolder"
+                category="company"
+            />
         </teleport>
     </div>
 </template>
@@ -163,8 +191,18 @@ import CompanyTabs from '@/components/CompanyTabs/CompanyTabs.vue';
 import { useAsyncPopup } from '@/composables/useAsyncPopup.js';
 import MessengerQuizInlineElement from '@/components/MessengerQuiz/MessengerQuizInlineElement.vue';
 import UiDropdownActionsTrigger from '@/components/common/UI/DropdownActions/UiDropdownActionsTrigger.vue';
+import UserFoldersDropdown from '@/components/UserFolder/UserFoldersDropdown.vue';
+import FormUserFolder from '@/components/Forms/FormUserFolder.vue';
+import { useUserFolders } from '@/composables/useUserFolders.js';
+import { useAuth } from '@/composables/useAuth.js';
 
-const emit = defineEmits(['update-logo', 'update-company', 'to-chat', 'create-task']);
+const emit = defineEmits([
+    'update-logo',
+    'update-company',
+    'to-chat',
+    'create-task',
+    'schedule-call'
+]);
 const props = defineProps({
     company: {
         type: Object,
@@ -211,6 +249,12 @@ function onDeleteLogo() {
     emit('update-logo', null);
 }
 
+const { currentUserId, currentUserIsModeratorOrHigher } = useAuth();
+const canBeArchived = computed(
+    () =>
+        props.company.consultant_id === currentUserId.value || currentUserIsModeratorOrHigher.value
+);
+
 const companyFormIsVisible = ref(false);
 const disableCompanyFormIsVisible = ref(false);
 
@@ -245,6 +289,21 @@ const toChat = () => {
 // tippy
 
 useTippyText(useTemplateRef('companyLogoEl'), 'Нажмите, чтобы редактировать логотип');
+
+// folders
+
+const { folders } = useUserFolders('company');
+
+const folderModalIsVisible = ref(false);
+
+function closeFolderForm() {
+    folderModalIsVisible.value = false;
+}
+
+function onCreatedFolder(folder) {
+    folderModalIsVisible.value = false;
+    folders.value.unshift(folder);
+}
 
 // preview
 

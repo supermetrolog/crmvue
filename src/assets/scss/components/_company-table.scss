@@ -130,21 +130,33 @@
     }
 
     &__comment {
-        width: 400px;
+        min-width: 500px;
+        max-width: 1200px;
+        width: 40%;
         position: relative;
 
-        &:hover .company-table-item__comment-button {
+        &:hover .company-table-item__comment-buttons {
             opacity: 1;
         }
     }
 
-    &__comment-button {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        width: max-content;
-        transform: translate(-50%, -50%);
+    &__comment-buttons {
         opacity: .1;
+        height: 100%;
+        will-change: opacity;
+        @include mixins.flex-box($a: center, $j: center, $gap: 10px);
+        @include mixins.transition(opacity);
+
+        &.absolute {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 100%;
+        }
+
+        &:not(.absolute) {
+            margin-top: 16px;
+        }
     }
 
     &__message {
@@ -345,5 +357,93 @@ tr.CompanyTableEven {
         width: 100%;
         height: 100%;
         object-fit: cover;
+    }
+}
+
+.company-table-item-survey {
+    border: 1px solid rgba(0, 0, 0, .1);
+    border-radius: 4px;
+    height: 100%;
+    @include mixins.flex-box($d: column);
+
+    &__tab {
+        height: 30px;
+
+        &.danger {
+            color: #c93a19
+        }
+    }
+
+    &__header {
+        padding: 5px;
+        background-color: #efefef;
+        border-radius: 4px 4px 0 0;
+        font-size: 13px;
+        border-bottom: 1px solid rgba(0, 0, 0, .1);
+        @include mixins.flex-box($a: center, $gap: 10px);
+    }
+
+    &__title {
+        width: 100%;
+        color: #7c7c7c;
+        @include mixins.flex-box($gap: 10px, $j: space-between);
+    }
+
+    &__name {
+        @include mixins.text-overflow();
+    }
+
+    &__contact {
+        color: #8486b0;
+        text-decoration: underline;
+    }
+
+    &__calls {
+        flex-shrink: 0;
+        text-decoration: underline;
+    }
+
+    &__tabs {
+        margin-bottom: 5px;
+        @include mixins.flex-box($gap: 8px);
+    }
+
+    &__content {
+        height: 100%;
+        padding: 5px;
+        flex-grow: 1;
+        max-height: 140px;
+        overflow: auto;
+        scrollbar-gutter: stable;
+        @include mixins.transition(max-height, height);
+
+        &.expanded {
+            max-height: 400px;
+        }
+    }
+
+    &__comment {
+        font-style: italic;
+        font-size: 15px;
+        color: variables.$color_dark;
+    }
+
+    &__tasks {
+        @include mixins.flex-box($d: column, $gap: 5px);
+    }
+
+    &__task {
+        font-size: 14px;
+        border: 1px solid rgba(0, 0, 0, .1);
+    }
+
+    &__button {
+        opacity: .1;
+        will-change: opacity;
+        @include mixins.transition(opacity, background-color, color);
+    }
+
+    &__content:hover &__button {
+        opacity: 1;
     }
 }

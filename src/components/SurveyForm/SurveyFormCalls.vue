@@ -43,23 +43,26 @@
                     :contact="viewedCommentsContact"
                 />
             </UiModal>
+            <CallScheduler
+                v-if="scheduleCallModalIsVisible"
+                @created="onCreatedScheduledCall"
+                @close="closeScheduleCallModal"
+                :company="company"
+                :contact="scheduleCallContact"
+                :chat-member-id
+                :relations="schedulerRelations"
+            />
         </teleport>
     </div>
 </template>
 <script setup>
 import { computed, ref, shallowRef, watch } from 'vue';
-import { TASK_FORM_STEPS, useTaskManager } from '@/composables/useTaskManager.js';
-import { useNotify } from '@/utils/use/useNotify.js';
 import SurveyFormContact from '@/components/SurveyForm/SurveyFormContact.vue';
 import FormCompanyContact from '@/components/Forms/Company/FormCompanyContact.vue';
 import UiModal from '@/components/common/UI/UiModal.vue';
 import MessengerQuizContactsComments from '@/components/MessengerQuiz/MessengerQuizContactsComments.vue';
 import { spliceById } from '@/utils/helpers/array/spliceById.js';
-import { getContactFullName } from '@/utils/formatters/models/contact.js';
-import api from '@/api/api.js';
-import dayjs from 'dayjs';
-import { useAuth } from '@/composables/useAuth.js';
-import { getCompanyShortName } from '@/utils/formatters/models/company.js';
+import CallScheduler from '@/components/CallScheduler/CallScheduler.vue';
 
 const emit = defineEmits(['contact-created', 'contact-updated', 'change']);
 const props = defineProps({
@@ -74,14 +77,15 @@ const props = defineProps({
     chatMemberId: {
         type: Number,
         required: true
-    }
+    },
+    surveyId: Number
 });
 
 const mostCallableContactId = computed(() => {
     let currentMaxIndex = 0;
 
     for (let i = 0; i < props.contacts.length; i++) {
-        if (props.contacts[i].calls.length > props.contacts[currentMaxIndex].calls.length) {
+        if (props.contacts[i].calls?.length > props.contacts[currentMaxIndex].calls.length) {
             currentMaxIndex = i;
         }
     }
@@ -164,47 +168,28 @@ function onCreatedComment(comment) {
 }
 
 // scheduled calls
-
-const { currentUserId } = useAuth();
-const { createTaskWithTemplate } = useTaskManager();
-const notify = useNotify();
+const scheduleCallModalIsVisible = ref(false);
+const scheduleCallContact = shallowRef(null);
 
 async function createScheduleCallTask(contact) {
-    const contactFullName = getContactFullName(contact);
-    const companyName = getCompanyShortName(props.company);
+    scheduleCallContact.value = contact;
+    scheduleCallModalIsVisible.value = true;
+}
 
-    const message = `Прозвонить ${contactFullName} (${companyName}, #${contact.company_id})`;
+function closeScheduleCallModal() {
+    scheduleCallModalIsVisible.value = false;
+    scheduleCallContact.value = null;
+}
 
-    const taskPayload = await createTaskWithTemplate({
-        title: message.slice(0, 255),
-        message: message.length > 255 ? message : null,
-        step: TASK_FORM_STEPS.DATE,
-        user_id: currentUserId.value,
-        callPresets: true
-    });
+function onCreatedScheduledCall(_, payload) {
+    form.value[scheduleCallContact.value.id].scheduled = payload.start;
+}
 
-    if (!taskPayload) return;
-
-    // TODO: Добавить шаблон сообщения для schedule-call
-
-    const messagePayload = {
-        message: `Запланировал звонок с ${contactFullName} на ${dayjs(taskPayload.end).format('D.MM.YYYY, HH:mm')}!`,
-        contact_ids: [contact.id],
-        template: 'schedule-call'
-    };
-
-    try {
-        const createdMessage = await api.messenger.sendMessageWithTask(
-            props.chatMemberId,
-            messagePayload,
-            taskPayload
-        );
-
-        if (createdMessage) notify.success('Звонок контакту успешно запланирован');
-    } catch (error) {
-        notify.error('Не удалось запланировать звонок. Попробуйте еще раз');
+const schedulerRelations = computed(() => {
+    if (props.surveyId) {
+        return [{ entity_type: 'survey', entity_id: props.surveyId }];
     }
 
-    form.value[contact.id].scheduled = taskPayload.end;
-}
+    return [];
+});
 </script>

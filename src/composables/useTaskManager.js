@@ -27,7 +27,8 @@ export const useTaskManager = createSharedComposable(() => {
             customDescription = false,
             additionalContent = {},
             callPresets = false,
-            relations = []
+            relations = [],
+            type = 'base'
         } = template;
 
         return show({
@@ -43,7 +44,8 @@ export const useTaskManager = createSharedComposable(() => {
             customDescription,
             additionalContent,
             callPresets,
-            relations
+            relations,
+            type
         });
     }
 

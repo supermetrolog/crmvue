@@ -11,8 +11,10 @@
         <div class="messenger-quiz-inline-element__description">
             <span class="font-weight-semi">{{ createdAt }}, </span>
             <span>{{ quiz.user.userProfile.medium_name }}</span>
-            <i class="fa-solid fa-arrow-right-long mx-2"></i>
-            <span>{{ contactName }}</span>
+            <template v-if="quiz.contact">
+                <i class="fa-solid fa-arrow-right-long mx-2"></i>
+                <span>{{ contactName }}</span>
+            </template>
         </div>
         <UiChip class="ml-auto">{{ fromNow }}</UiChip>
     </div>

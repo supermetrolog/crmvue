@@ -2,31 +2,46 @@
     <UiModal
         @close="$emit('close')"
         custom-close
-        :title="`Архивация компании #${company.id}`"
+        :title="`Архивация компании #${company.id} | ${shortName}`"
         :close-on-outside-click="false"
-        :width="700"
+        :width="900"
         show
     >
         <UiForm>
             <Loader v-if="isLoading" />
             <UiFormGroup>
-                <MultiSelect
-                    v-model="form.passive_why"
-                    :v="v$.form.passive_why"
-                    required
-                    label="Причина"
-                    class="col-12"
-                    :options="PassiveWhy"
-                />
-                <UiTextarea
-                    v-model="form.passive_why_comment"
-                    :v="v$.form.passive_why_comment"
-                    label="Комментарий"
-                    class="col-12 mt-1"
-                    auto-height
-                    :min-height="100"
-                    :max-height="300"
-                />
+                <UiCol :cols="8">
+                    <MultiSelect
+                        v-model="form.passive_why"
+                        :v="v$.form.passive_why"
+                        required
+                        label="Причина"
+                        :options="companyOptions.passiveWhyList"
+                    />
+                    <UiTextarea
+                        v-model="form.passive_why_comment"
+                        :v="v$.form.passive_why_comment"
+                        label="Комментарий"
+                        auto-height
+                        :min-height="100"
+                        :max-height="300"
+                        class="mt-2"
+                    />
+                </UiCol>
+                <UiCol :cols="4" class="modal-aside">
+                    <p class="font-weight-semi mb-2">События при архивации</p>
+                    <Switch
+                        v-model="form.disable_requests"
+                        true-title="Архивировать запросы"
+                        :transform="Number"
+                        class="mb-3"
+                    />
+                    <Switch
+                        v-model="form.disable_contacts"
+                        true-title="Архивировать контакты"
+                        :transform="Number"
+                    />
+                </UiCol>
             </UiFormGroup>
         </UiForm>
         <template #actions="{ close }">
@@ -42,15 +57,18 @@
 import UiForm from '@/components/common/Forms/UiForm.vue';
 import UiTextarea from '@/components/common/Forms/UiTextarea.vue';
 import MultiSelect from '@/components/common/Forms/MultiSelect.vue';
-import { PassiveWhy } from '@/const/const.js';
 import Loader from '@/components/common/Loader.vue';
-import { reactive, ref } from 'vue';
+import { computed, reactive, ref } from 'vue';
 import api from '@/api/api.js';
 import UiFormGroup from '@/components/common/Forms/UiFormGroup.vue';
 import UiButton from '@/components/common/UI/UiButton.vue';
 import { useValidation } from '@/composables/useValidation.js';
 import { helpers, required } from '@vuelidate/validators';
 import UiModal from '@/components/common/UI/UiModal.vue';
+import { getCompanyShortName } from '@/utils/formatters/models/company.js';
+import { companyOptions } from '@/const/options/company.options.js';
+import UiCol from '@/components/common/UI/UiCol.vue';
+import Switch from '@/components/common/Forms/Switch.vue';
 
 const emit = defineEmits(['disabled', 'close']);
 const props = defineProps({
@@ -64,7 +82,9 @@ const isLoading = ref(false);
 
 const form = reactive({
     passive_why: null,
-    passive_why_comment: null
+    passive_why_comment: null,
+    disable_requests: 1,
+    disable_contacts: 1
 });
 
 const { v$, validate } = useValidation(
@@ -91,4 +111,6 @@ async function submit() {
         isLoading.value = false;
     }
 }
+
+const shortName = computed(() => getCompanyShortName(props.company));
 </script>

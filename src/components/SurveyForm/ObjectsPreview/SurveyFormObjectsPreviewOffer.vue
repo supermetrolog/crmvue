@@ -79,7 +79,7 @@
                                 @click="selectAnswer(ANSWER.SUCCESS)"
                                 :active="hasSuccessStatus"
                                 icon="fa-solid fa-thumbs-up"
-                                label="Актуально без изменений"
+                                label="Без изменений"
                             />
                             <UiButtonIcon
                                 @click="selectAnswer(ANSWER.FAIL)"

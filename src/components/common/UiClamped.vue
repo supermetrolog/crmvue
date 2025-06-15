@@ -1,7 +1,7 @@
 <template>
     <div class="clamped">
         <p ref="content" class="content"><slot /></p>
-        <button v-if="isClamped" @click="toggleExpand">
+        <button v-if="isClamped" @click="toggleExpand" :class="buttonClass">
             {{ isExpanded ? hideText : expandText }}..
         </button>
     </div>
@@ -10,6 +10,7 @@
 import { computed, ref, useTemplateRef } from 'vue';
 import { isNullish } from '@/utils/helpers/common/isNullish.js';
 
+const emit = defineEmits(['expanded', 'hidden']);
 const props = defineProps({
     expandText: {
         type: String,
@@ -26,7 +27,8 @@ const props = defineProps({
     rows: {
         type: Number,
         default: 3
-    }
+    },
+    buttonClass: [Array, Object, String]
 });
 
 const isExpanded = ref(false);
@@ -34,6 +36,8 @@ const isExpanded = ref(false);
 function toggleExpand() {
     if (props.mode === 'expand') {
         isExpanded.value = !isExpanded.value;
+
+        emit(isExpanded.value ? 'expanded' : 'hidden');
     }
 }
 

@@ -23,10 +23,13 @@ const props = defineProps({
     label: String,
     active: Boolean,
     small: Boolean,
+    mini: Boolean,
     icon: String,
     color: String,
     disabled: Boolean,
     loading: Boolean,
+    transparent: Boolean,
+    rect: Boolean,
     badge: [Number, String],
     badgeColor: String
 });
@@ -35,6 +38,9 @@ const classes = computed(() => {
     return {
         active: props.active,
         small: props.small,
+        mini: props.mini,
+        rect: props.rect,
+        transparent: props.transparent,
         [`ui-button-icon--cl-${props.color}`]: isNotNullish(props.color)
     };
 });

@@ -51,7 +51,7 @@
                             <UiDropdownActionsButton
                                 @handle="markAll(1)"
                                 icon="fa-solid fa-thumbs-up"
-                                label="Актуально без изменений"
+                                label="Без изменений"
                             />
                             <UiDropdownActionsButton
                                 @handle="markAll(2)"
