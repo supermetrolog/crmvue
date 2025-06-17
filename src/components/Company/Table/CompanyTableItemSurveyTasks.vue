@@ -9,6 +9,7 @@
             :avatar-size="35"
             :observer-size="25"
             :show-diligence="false"
+            :show-tags="false"
         />
     </div>
 </template>

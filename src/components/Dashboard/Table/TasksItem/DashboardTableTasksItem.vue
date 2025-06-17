@@ -11,7 +11,11 @@
             canceled: isCanceled
         }"
     >
-        <div class="dashboard-card-task__labels" :class="{ moved: isMyTask || isViewing }">
+        <div
+            v-if="showTags"
+            class="dashboard-card-task__labels"
+            :class="{ moved: isMyTask || isViewing }"
+        >
             <DashboardTableTasksItemLabel
                 v-if="isFavorite"
                 v-tippy="'В избранном'"
@@ -152,6 +156,10 @@ const props = defineProps({
         default: 55
     },
     showDiligence: {
+        type: Boolean,
+        default: true
+    },
+    showTags: {
         type: Boolean,
         default: true
     }
