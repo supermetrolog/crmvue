@@ -9,6 +9,9 @@
                 :size="30"
                 buttons-class="small"
             />
+            <template #after>
+                <slot name="actions" />
+            </template>
         </MessengerDialogPreviewTab>
         <MessengerDialogPreviewTab
             :title="objectDescriptionTabLabel"

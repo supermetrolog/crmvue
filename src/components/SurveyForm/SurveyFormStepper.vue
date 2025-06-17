@@ -284,6 +284,10 @@ const steps = reactive([
                 return 'Предложения (загрузка..)';
             }
 
+            if (form.value.objects?.created?.length) {
+                return `Предложения (${objects.value.length}) + ${form.value.objects.created.length} новых`;
+            }
+
             return `Предложения (${objects.value.length})`;
         }),
         disabled: stepsIsDisabled,
@@ -294,6 +298,10 @@ const steps = reactive([
         title: computed(() => {
             if (requestsIsLoading.value) {
                 return 'Запросы (загрузка..)';
+            }
+
+            if (form.value.requests?.created?.length) {
+                return `Запросы (${requests.value.length}) + ${form.value.requests.created.length} новых`;
             }
 
             return `Запросы (${requests.value.length})`;
@@ -961,7 +969,7 @@ async function fetchObjects() {
 async function fetchRequests() {
     requestsIsLoading.value = true;
 
-    const response = await api.request.search({ company_id: props.company.id, status: 1 });
+    const response = await api.request.search({ company_id: props.company.id });
 
     requests.value = response.data;
 

@@ -68,6 +68,7 @@ onBeforeMount(fetchSurveys);
 const debouncedFetchSurveys = useDebounceFn(fetchSurveys, 200);
 
 watch(() => route.query?.sort, debouncedFetchSurveys);
+watch(() => route.query?.page, debouncedFetchSurveys);
 
 const { currentUserId } = useAuth();
 

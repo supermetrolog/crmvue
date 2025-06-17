@@ -6,9 +6,11 @@
             @to-chat="$emit('to-chat')"
             @create-task="$emit('create-task')"
             @schedule-call="scheduleCallModalIsVisible = true"
+            @show-task="showTaskPreview"
             :company
             :last-surveys
             :surveys-count
+            :survey
             editable
         />
         <teleport to="body">
@@ -18,6 +20,12 @@
                 @close="closeScheduleCallModal"
                 :company
             />
+            <TaskPreview
+                v-model:visible="taskPreviewIsVisible"
+                @closed="currentTask = null"
+                @updated="onUpdatedTask"
+                :task-id="currentTask?.id"
+            />
         </teleport>
     </div>
 </template>
@@ -25,6 +33,7 @@
 import SurveyFormHeaderCompany from '@/components/SurveyForm/SurveyFormHeaderCompany.vue';
 import CallScheduler from '@/components/CallScheduler/CallScheduler.vue';
 import { ref } from 'vue';
+import TaskPreview from '@/components/TaskPreview/TaskPreview.vue';
 
 const emit = defineEmits([
     'update-logo',
@@ -33,7 +42,8 @@ const emit = defineEmits([
     'create-task',
     'call-scheduled'
 ]);
-defineProps({
+
+const props = defineProps({
     company: {
         type: Object,
         required: true
@@ -45,7 +55,8 @@ defineProps({
     surveysCount: {
         type: Number,
         default: 0
-    }
+    },
+    survey: Object
 });
 
 const scheduleCallModalIsVisible = ref(false);
@@ -54,8 +65,32 @@ function closeScheduleCallModal() {
     scheduleCallModalIsVisible.value = false;
 }
 
-function onCreatedScheduledCall(_, payload) {
+function onCreatedScheduledCall(task, payload) {
     emit('call-scheduled', payload.start);
+
+    if (props.survey.tasks) {
+        // eslint-disable-next-line vue/no-mutating-props
+        props.survey.tasks.push(task);
+    } else {
+        // eslint-disable-next-line vue/no-mutating-props
+        props.survey.tasks = [task];
+    }
+
     closeScheduleCallModal();
+}
+
+// task preview
+
+const currentTask = ref(null);
+const taskPreviewIsVisible = ref(false);
+
+function showTaskPreview(task) {
+    currentTask.value = task;
+    taskPreviewIsVisible.value = true;
+}
+
+function onUpdatedTask(payload) {
+    Object.assign(currentTask.value, payload);
+    currentTask.value = null;
 }
 </script>

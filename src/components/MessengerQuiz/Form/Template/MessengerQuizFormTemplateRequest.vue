@@ -23,7 +23,7 @@
                     />
                 </template>
                 <template #actions>
-                    <div v-if="editable" class="survey-form-object-preview-offer__actions">
+                    <div v-if="editable" class="survey-form-object-preview-offer__actions ml-1">
                         <UiButtonIcon
                             @click="selectAnswer(ANSWER.SUCCESS)"
                             :active="hasSuccessStatus"
@@ -83,7 +83,7 @@ import { useStore } from 'vuex';
 
 defineEmits(['edit']);
 
-defineProps({
+const props = defineProps({
     request: {
         type: Object,
         required: true
@@ -110,9 +110,11 @@ function selectAnswer(value) {
     }
 }
 
-const hasSuccessStatus = computed(() => Number(form.value.answer) === ANSWER.SUCCESS);
-const hasFailStatus = computed(() => Number(form.value.answer) === ANSWER.FAIL);
-const needEditing = computed(() => Number(form.value.answer) === ANSWER.EDIT);
+const hasSuccessStatus = computed(
+    () => props.editable && Number(form.value.answer) === ANSWER.SUCCESS
+);
+const hasFailStatus = computed(() => props.editable && Number(form.value.answer) === ANSWER.FAIL);
+const needEditing = computed(() => props.editable && Number(form.value.answer) === ANSWER.EDIT);
 
 const { currentUser } = useAuth();
 const store = useStore();

@@ -3,15 +3,15 @@
         ref="minimizeModal"
         @close="close"
         @minimized="onMinimized"
-        :title
-        :minimized-title="title"
-        :can-be-minimized="!survey"
-        :width="1800"
-        :close-on-outside-click="false"
         :can-be-closed="!isLoading"
+        :can-be-minimized="!survey"
+        :close-on-outside-click="false"
+        :minimized-title="title"
+        :title
+        :width="1800"
+        class="survey-form"
         custom-close
         show
-        class="survey-form"
     >
         <template #before-body>
             <SurveyFormHeader
@@ -23,6 +23,7 @@
                 @call-scheduled="onCompanyCallScheduled"
                 :company
                 :last-surveys
+                :survey="surveyDraft ?? survey"
                 :surveys-count
                 class="survey-form__header"
             />
@@ -37,8 +38,8 @@
                 <SurveyFormStepper
                     v-else-if="canBeCreated || isEditMode"
                     ref="stepper"
-                    @completed="$emit('close')"
                     @canceled="$emit('close')"
+                    @completed="$emit('close')"
                     @draft-expired="surveyDraft = null"
                     @draft-deleted="$emit('close')"
                     @draft-created="surveyDraft = $event"
@@ -48,9 +49,9 @@
                     @contact-updated="onContactUpdated"
                     :chat-member-id
                     :company
-                    :survey
                     :contacts
                     :draft="surveyDraft"
+                    :survey
                 />
                 <MessengerQuizFormWarningNoContacts
                     v-else-if="contacts.length === 0"
@@ -316,7 +317,8 @@ async function createContactTask() {
     const taskPayload = await createTaskWithTemplate({
         title: `Добавить новый контакт в компании ${getCompanyShortName(company.value)}`,
         step: TASK_FORM_STEPS.MESSAGE,
-        relations: getTaskRelations()
+        relations: getTaskRelations(),
+        type: 'contact_handling'
     });
 
     if (!taskPayload) return;
@@ -356,6 +358,18 @@ function getTaskRelations() {
     return relations;
 }
 
+const targetSurvey = computed(() => props.survey ?? surveyDraft.value);
+
+function tryAddSurveyTask(task) {
+    if (targetSurvey.value) {
+        if (targetSurvey.value.tasks) {
+            targetSurvey.value.tasks.push(task);
+        } else {
+            targetSurvey.value.tasks = [task];
+        }
+    }
+}
+
 async function createCompanyTask() {
     const taskPayload = await createTaskWithTemplate({
         title: `${getCompanyShortName(company.value)}, `,
@@ -364,8 +378,10 @@ async function createCompanyTask() {
 
     if (!taskPayload) return;
 
-    await api.task.create(taskPayload);
+    const task = await api.task.create(taskPayload);
     notify.success('Задача успешно создана');
+
+    tryAddSurveyTask(task);
 }
 
 function suggestCreateContact() {

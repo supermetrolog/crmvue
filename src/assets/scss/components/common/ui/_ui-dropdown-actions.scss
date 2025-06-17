@@ -100,7 +100,8 @@
     }
 
     &__footer {
-        border-top: 1px solid rgba(0, 0, 0, .4);
+        border-top: 1px solid variables.$color_grey_light;
         background-color: variables.$bg-gray-l;
+        color: variables.$color_dark_grey;
     }
 }
