@@ -25,7 +25,7 @@
                             </div>
                         </Tab>
                         <Tab
-                            v-if="survey && survey.tasks.length"
+                            v-if="survey && survey.tasks?.length"
                             :name="`Поставленные задачи (${survey.tasks.length})`"
                         >
                             <div class="survey-form-header-company__tasks">
@@ -42,7 +42,7 @@
                             </div>
                         </Tab>
                         <Tab
-                            v-if="survey && callTasks.length"
+                            v-if="survey && survey.tasks?.length && callTasks.length"
                             :name="`Запланирован звонок (${callTasks.length})`"
                         >
                             <div class="survey-form-header-company__tasks">

@@ -58,28 +58,28 @@
             <SurveyFormComment v-model="form.comment" :v="v$.form.comment" />
         </template>
         <template #footer="{ complete }">
-            <UiButton
-                v-if="!canBeCancelled"
-                @click="complete"
-                :disabled="!formIsValid"
-                :color="formIsValid ? 'success' : 'light'"
-                icon="fa-solid fa-check"
-                class="mx-auto"
-            >
-                Сохранить опрос
-            </UiButton>
-            <AnimationTransition :speed="0.5">
-                <UiButton
-                    v-if="canBeCancelled"
-                    @click="cancelSurvey"
-                    tooltip='Завершить опрос с отметкой "Не удалось дозвониться"'
-                    color="danger-light"
-                    icon="fa-solid fa-thumbs-down"
-                    class="mx-auto"
-                >
-                    Завершить опрос
-                </UiButton>
-            </AnimationTransition>
+            <div class="mx-auto d-flex gap-1">
+                <AnimationTransition :speed="0.5">
+                    <UiButton
+                        v-if="canBeCancelled"
+                        @click="cancelSurvey"
+                        tooltip='Завершить опрос с отметкой "Не удалось дозвониться"'
+                        color="danger-light"
+                        icon="fa-solid fa-phone-slash"
+                    >
+                        Завершить опрос
+                    </UiButton>
+                    <UiButton
+                        v-else
+                        @click="complete"
+                        :disabled="!formIsValid"
+                        :color="formIsValid ? 'success' : 'light'"
+                        icon="fa-solid fa-check"
+                    >
+                        {{ formIsValid ? 'Можно сохранить опрос' : 'Нельзя сохранить опрос' }}
+                    </UiButton>
+                </AnimationTransition>
+            </div>
         </template>
     </Stepper>
 </template>
@@ -87,7 +87,7 @@
 import { computed, onBeforeMount, reactive, ref, shallowRef, useTemplateRef, watch } from 'vue';
 import Stepper from '@/components/common/Stepper/Stepper.vue';
 import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
-import { useIntervalFn } from '@vueuse/core';
+import { useEventBus, useIntervalFn } from '@vueuse/core';
 import api from '@/api/api.js';
 import { surveyConfig } from '@/configs/survey.config.js';
 import { useAuth } from '@/composables/useAuth.js';
@@ -452,7 +452,7 @@ const canBeCancelled = computed(() => {
 
         return (
             isNotNullish(form.value.calls[contact.id].reason) &&
-            ((toBool(isAvailable) && Number(form.value.calls[contact.id].reason !== 1)) ||
+            ((toBool(isAvailable) && Number(form.value.calls[contact.id].reason) !== 1) ||
                 !toBool(isAvailable))
         );
     });
@@ -761,6 +761,8 @@ async function createPotentialTasks(contacts, messageId, surveyId = null) {
 const isCreating = ref(false);
 const { confirm } = useConfirm();
 
+const bus = useEventBus('survey');
+
 async function submit() {
     if (!formIsValid.value) return;
 
@@ -834,6 +836,7 @@ async function submit() {
     isCreating.value = false;
 
     emit('completed');
+    bus.emit('completed', { companyId: props.company.id });
 }
 
 async function cancelSurvey() {
@@ -904,6 +907,7 @@ async function cancelSurvey() {
     notify.success('Опрос успешно сохранен!');
     isCreating.value = false;
     emit('canceled');
+    bus.emit('canceled', { companyId: props.company.id });
 }
 
 // objects

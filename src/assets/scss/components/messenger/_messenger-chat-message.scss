@@ -46,7 +46,7 @@
     }
 
     &--new .messenger-chat-message__content {
-        background-color: rgba(variables.$bg-success-l, .1);
+        background-color: rgb(231, 245, 253);
     }
 
     &--not-viewed {
@@ -88,6 +88,7 @@
 
     &__attachments {
         padding: 5px 10px;
+
         &:has(.file__image):has(.file__icon) {
             .messenger-chat-message__attachment {
                 flex-basis: unset;
@@ -174,7 +175,7 @@
     }
 
     &__files {
-        padding: 3px!important;
+        padding: 3px !important;
         margin: 7px 7px 0;
 
         .accordion-simple-trigger-button {
@@ -236,7 +237,7 @@
     }
 
     &.completed {
-        background-color: transparent!important;
+        background-color: transparent !important;
     }
 
     &.completed &__content {
@@ -440,7 +441,7 @@
             margin-right: 0;
             font-size: 14px;
             font-weight: 500;
-            
+
             &.dashed {
                 text-decoration: line-through;
             }
@@ -466,7 +467,7 @@
     }
 
     .messenger-chat-message-addition {
-        border-radius: 0!important;
+        border-radius: 0 !important;
     }
 }
 

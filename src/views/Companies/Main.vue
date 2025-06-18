@@ -154,9 +154,8 @@ import { isArray } from '@/utils/helpers/array/isArray.js';
 import { dayjsFromMoscow } from '@/utils/formatters/date.js';
 import UserFolders from '@/components/UserFolder/UserFolders.vue';
 import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
-import { useDebounceFn } from '@vueuse/core';
+import { useDebounceFn, useEventBus, useTimeoutFn } from '@vueuse/core';
 import UiButton from '@/components/common/UI/UiButton.vue';
-import { useTimeoutFn } from '@vueuse/core';
 import FormModalChatMemberMessage from '@/components/Forms/FormModalChatMemberMessage.vue';
 import api from '@/api/api.js';
 import MessengerChatMessage from '@/components/Messenger/Chat/Message/MessengerChatMessage.vue';
@@ -526,4 +525,17 @@ const tasksModalTitle = computed(() => {
 
     return 'Задачи';
 });
+
+// survey bus
+
+const bus = useEventBus('survey');
+
+function onCompleteSurvey(payload) {
+    const company = COMPANIES.value.find(company => company.id === payload.companyId);
+    if (company) {
+        company.has_survey_draft = false;
+    }
+}
+
+bus.on((_, payload) => onCompleteSurvey(payload));
 </script>

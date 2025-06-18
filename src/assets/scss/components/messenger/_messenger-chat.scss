@@ -48,7 +48,7 @@
         margin-top: auto;
 
         &.scroll-lock {
-            overflow: hidden hidden!important;
+            overflow: hidden hidden !important;
         }
     }
 
@@ -88,11 +88,12 @@
         opacity: .7;
 
         @include mixins.flex-box($j: center, $a: center);
+
         &:hover {
             opacity: 1;
         }
     }
-    
+
     &__scroll-button {
         position: fixed;
         right: 10px;
@@ -192,9 +193,9 @@
     }
 
     &__category {
-        font-size: 13px!important;
-        padding: 3px 7px!important;
-        font-weight: 400!important;
+        font-size: 13px !important;
+        padding: 3px 7px !important;
+        font-weight: 400 !important;
     }
 
     &__id {
@@ -216,6 +217,7 @@
     &--row {
         width: 100%;
         text-align: center;
+        background-color: rgb(231, 245, 253);
     }
 }
 
@@ -252,7 +254,7 @@
 
     &__button {
         height: 50px;
-        width: 50px!important;
+        width: 50px !important;
         font-size: 25px;
         border-radius: 50%;
         @include mixins.flex-box($a: center, $j: center);
@@ -666,7 +668,7 @@
 }
 
 .messenger-chat-form-recipient-dropdown {
-    z-index: 4000!important;
+    z-index: 4000 !important;
 }
 
 .messenger-chat-header-user {
