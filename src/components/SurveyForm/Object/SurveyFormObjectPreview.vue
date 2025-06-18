@@ -44,12 +44,14 @@ const props = defineProps({
 const answerLabel = computed(() => {
     if (Number(props.answer) === 1) return 'Без изменений';
     if (Number(props.answer) === 2) return 'Не актуально';
-    return 'Не опросил';
+    if (Number(props.answer) === 3) return 'Не опросил';
+    return 'Обработан';
 });
 
 const icon = computed(() => {
     if (Number(props.answer) === 1) return 'fa-solid fa-thumbs-up';
     if (Number(props.answer) === 2) return 'fa-solid fa-thumbs-down';
-    return 'fa-solid fa-phone-slash';
+    if (Number(props.answer) === 3) return 'fa-solid fa-phone-slash';
+    return 'fa-solid fa-check';
 });
 </script>

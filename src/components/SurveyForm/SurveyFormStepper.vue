@@ -110,7 +110,7 @@ import {
     CONTACT_CALL_REASONS
 } from '@/components/MessengerQuiz/useMessengerQuiz.js';
 import { useConfirm } from '@/composables/useConfirm.js';
-import { messenger, messengerTemplates } from '@/const/messenger.js';
+import { messenger } from '@/const/messenger.js';
 import { captureException } from '@sentry/vue';
 import dayjs from 'dayjs';
 import { getCompanyShortName } from '@/utils/formatters/models/company.js';
@@ -778,7 +778,7 @@ async function submit() {
         return;
     }
 
-    const { survey: surveyPayload, contact: targetContact, calls } = createSurveyPayload();
+    const { survey: surveyPayload, calls } = createSurveyPayload();
 
     try {
         isCreating.value = true;
@@ -797,26 +797,6 @@ async function submit() {
 
         return;
     }
-
-    // TODO: Нужно ли вообще создавать это?
-
-    // if (objectsPayload.length) {
-    //     try {
-    //         await createRelatedSurveys(
-    //             objectsPayload.current,
-    //             targetContact.contact_id,
-    //             createdSurvey
-    //         );
-    //     } catch (error) {
-    //         captureException(error, {
-    //             survey_id: createdSurvey.id,
-    //             user_id: currentUserId.value,
-    //             company_id: props.company.id
-    //         });
-    //     }
-    //
-    //     return;
-    // }
 
     let surveyMessage;
 
@@ -856,20 +836,10 @@ async function submit() {
     emit('completed');
 }
 
-async function sendMessageAboutSurveyIsUnavailable(chatMemberId, contacts) {
-    const messagePayload = {
-        message: 'Не удалось дозвониться до контактов опросника',
-        template: messengerTemplates.UNAVAILABLE_SURVEY,
-        contact_ids: contacts.map(element => element.contact_id)
-    };
-
-    return await api.messenger.sendMessage(chatMemberId, messagePayload);
-}
-
 async function cancelSurvey() {
     const confirmed = await confirm(
         'Завершение опроса',
-        'Вы закончили заполнение информации? Будут созданы задачи, звонки и опросы для заполненных предложений и запросов.'
+        'Вы попробовали связаться со всеми контактами компании? Опрос будет отмечен как неудавшийся.'
     );
     if (!confirmed) return;
 
@@ -899,23 +869,25 @@ async function cancelSurvey() {
 
     const calls = callsPayload.filter(form => isNotNullish(form.available));
 
-    let createdMessage;
+    let surveyMessage;
 
     try {
-        createdMessage = await sendMessageAboutSurveyIsUnavailable(props.chatMemberId, calls);
+        surveyMessage = await findSurveyMessage(surveyId, props.chatMemberId);
     } catch (error) {
+        notify.info('Не удалось установить связь с чатом, создайте задачи по контактам вручную..');
+        isCreating.value = false;
+
         captureException(error, {
             survey_id: surveyId,
             user_id: currentUserId.value,
             company_id: props.company.id
         });
-        isCreating.value = false;
 
         return;
     }
 
     try {
-        await createPotentialTasks(calls, createdMessage.id, surveyId);
+        await createPotentialTasks(calls, surveyMessage.id, surveyId);
     } catch (error) {
         notify.info('Не удалось создать задачи по контактам, создайте задачи вручную..');
         isCreating.value = false;

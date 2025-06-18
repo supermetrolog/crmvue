@@ -433,7 +433,7 @@ const answers = computed(() => Object.values(modelValue.value.current));
 function markProgress() {
     if (answers.value.length === 0) {
         modelValue.value.answer =
-            modelValue.value.created?.length || isOffersNotFound.value ? 1 : null;
+            modelValue.value.created?.length || isOffersNotFound.value ? 4 : null;
 
         return;
     }
@@ -443,7 +443,7 @@ function markProgress() {
     );
 
     if (allOffersAnswered) {
-        modelValue.value.answer = 1;
+        modelValue.value.answer = 4;
     } else {
         modelValue.value.answer = null;
     }
@@ -483,7 +483,7 @@ const parametersClass = computed(() => {
 const isOffersNotFound = ref(false);
 
 watch(isOffersNotFound, value => {
-    if (value) modelValue.value.answer = 1;
+    if (value) modelValue.value.answer = 4;
     else modelValue.value.answer = null;
 });
 
