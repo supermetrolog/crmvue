@@ -8,7 +8,6 @@
                 <Th>Звонки</Th>
                 <Th sort="user_id">Сотрудник</Th>
                 <Th>Статус</Th>
-                <Th sort="completed_at">Дата создания</Th>
             </Tr>
         </template>
         <template #tbody>
@@ -18,6 +17,7 @@
                 :key="survey.id"
                 @to-chat="$emit('to-chat', survey)"
                 @open-survey="$emit('open-survey', survey)"
+                @edit-survey="$emit('edit-survey', survey)"
                 :survey="survey"
             />
         </template>
@@ -31,7 +31,7 @@ import Tr from '@/components/common/Table/Tr.vue';
 import Loader from '@/components/common/Loader.vue';
 import SurveyTableItem from '@/components/SurveyTable/SurveyTableItem.vue';
 
-defineEmits(['to-chat', 'open-survey']);
+defineEmits(['to-chat', 'open-survey', 'edit-survey']);
 defineProps({
     surveys: {
         type: Array,

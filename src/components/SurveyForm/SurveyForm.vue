@@ -29,7 +29,7 @@
             />
         </template>
         <template #default="{ minimized }">
-            <div v-if="!minimized" class="survey-form__wrapper position-relative">
+            <div class="survey-form__wrapper position-relative">
                 <Spinner
                     v-if="isLoading || initialDataIsLoading"
                     class="absolute-center"
@@ -74,6 +74,48 @@
                         @created="onContactCreated"
                         :company_id="company?.id"
                     />
+                    <UiModal
+                        v-model:visible="closeModalIsVisible"
+                        @close="closeModalIsVisible = false"
+                        :close-on-press-esc="!draftIsSaving && !isDeleting && !minimized"
+                        :close-on-outside-click="!draftIsSaving && !isDeleting && !minimized"
+                        :width="550"
+                        custom-close
+                        class="confirm"
+                        title="Подтверждение действия"
+                        hide-header
+                    >
+                        <div class="confirm__content">
+                            <div class="confirm__description">
+                                <p class="confirm__title">Сохранить опрос?</p>
+                                <p class="confirm__message">
+                                    Сохранить заполненные данные из опроса для продолжения позже?
+                                </p>
+                            </div>
+                        </div>
+                        <template #actions>
+                            <UiButton
+                                @click="saveDraftAndClose"
+                                color="success"
+                                icon="fa-solid fa-check"
+                                bolder
+                                :disabled="isDeleting"
+                                :loading="draftIsSaving"
+                            >
+                                Сохранить
+                            </UiButton>
+                            <UiButton
+                                @click="deleteDraftAndClose"
+                                color="danger"
+                                icon="fa-solid fa-trash"
+                                bolder
+                                :loading="isDeleting"
+                                :disabled="draftIsSaving"
+                            >
+                                Удалить
+                            </UiButton>
+                        </template>
+                    </UiModal>
                 </teleport>
             </div>
         </template>
@@ -102,6 +144,8 @@ import MessengerQuizContactTaskSuggestModal from '@/components/MessengerQuiz/Mes
 import FormCompanyContact from '@/components/Forms/Company/FormCompanyContact.vue';
 import MessengerQuizFormWarningNoContacts from '@/components/Messenger/Quiz/Form/Warning/MessengerQuizFormWarningNoContacts.vue';
 import MessengerQuizFormWarningAlreadyCreated from '@/components/Messenger/Quiz/Form/Warning/MessengerQuizFormWarningAlreadyCreated.vue';
+import UiModal from '@/components/common/UI/UiModal.vue';
+import UiButton from '@/components/common/UI/UiButton.vue';
 
 const emit = defineEmits(['close', 'minimized']);
 const props = defineProps({
@@ -235,15 +279,17 @@ async function fetchInitialData() {
 const stepper = useTemplateRef('stepper');
 
 function close() {
-    if (!canBeCreated.value) {
-        return emit('close');
-    }
-
-    if (isNullish(surveyDraft.value)) {
-        emit('close');
+    if (surveyDraft.value) {
+        showCloseModal();
     } else {
-        saveDraftAndClose();
+        emit('close');
     }
+}
+
+const closeModalIsVisible = ref(false);
+
+async function showCloseModal() {
+    closeModalIsVisible.value = true;
 }
 
 const draftIsSaving = ref(false);
@@ -264,6 +310,23 @@ async function saveDraft() {
 
 async function saveDraftAndClose() {
     await saveDraft();
+    emit('close');
+}
+
+const isDeleting = ref(false);
+
+async function deleteDraftAndClose() {
+    if (!surveyDraft.value) {
+        emit('close');
+        return;
+    }
+
+    isDeleting.value = true;
+
+    await api.survey.delete(surveyDraft.value.id);
+
+    isDeleting.value = false;
+
     emit('close');
 }
 
