@@ -38,7 +38,7 @@
                             icon="fa-solid fa-comment"
                             label="Открыть в чате"
                         />
-                        <template v-if="canDisable">
+                        <template v-if="canDisable || true">
                             <UiDropdownActionsButton
                                 v-if="isPassive"
                                 @handle="$emit('enable')"
@@ -277,6 +277,8 @@ const openInSurvey = () => {
 useTippy(useTemplateRef('passiveWhyCommentEl'), { content: passiveWhyComment });
 
 // permissions
+
+// TODO: Permissions
 
 const { canDisable } = useCompanyPermissions(toRef(props, 'company'));
 

@@ -286,10 +286,14 @@ function onDeleteLogo() {
     emit('update-logo', null);
 }
 
+// TODO: Archive permissions
+
 const { currentUserId, currentUserIsModeratorOrHigher } = useAuth();
 const canBeArchived = computed(
     () =>
-        props.company.consultant_id === currentUserId.value || currentUserIsModeratorOrHigher.value
+        props.company.consultant_id === currentUserId.value ||
+        currentUserIsModeratorOrHigher.value ||
+        true
 );
 
 const companyFormIsVisible = ref(false);

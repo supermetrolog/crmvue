@@ -143,10 +143,10 @@
                     </UiFormGroup>
                     <UiFormGroup>
                         <ConsultantPicker
-                            v-if="!isEditMode || currentUserIsModeratorOrHigher"
                             v-model="form.consultant_id"
                             :v="v$.form.consultant_id"
                             :options="getConsultantsOptions"
+                            :disabled="isEditMode && !currentUserIsModeratorOrHigher"
                             class="col-6"
                             required
                         />
