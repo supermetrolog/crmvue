@@ -126,7 +126,7 @@ import {
 } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useMessenger } from '@/components/Messenger/useMessenger.js';
-import { useDocumentTitle } from '@/composables/useDocumentTitle.js';
+import { useDocumentTitle } from '@/composables/useDocumentTitle.ts';
 import { messenger } from '@/const/messenger.js';
 import { useTippyText } from '@/composables/useTippyText.js';
 import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';

@@ -2,7 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router';
 import { useAuth } from '@/composables/useAuth.js';
 import { useNotify } from '@/utils/use/useNotify.js';
 import { getAccessTokenFromLocalStorage } from '@/services/localStorage.js';
-import { useDocumentTitle } from '@/composables/useDocumentTitle.js';
+import { useDocumentTitle } from '@/composables/useDocumentTitle.ts';
 import OffersView from '@/views/Offers/Offers.vue';
 import OffersMain from '@/views/Offers/Main.vue';
 import CompaniesMain from '@/views/Companies/Companies.vue';
