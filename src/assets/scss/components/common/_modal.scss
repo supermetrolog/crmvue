@@ -234,6 +234,136 @@
     &__buttons {
         @include mixins.flex-box($a: center, $gap: 8px, $wrap: true);
     }
+
+    &--minimize {
+        &.minimized:not(.minimizing):not(.expanding) {
+            display: none;
+        }
+
+        &.minimized, &.expanding, &.minimizing {
+            .modal__container {
+                position: absolute;
+            }
+        }
+
+        &.minimizing, &.expanding {
+            .modal__close {
+                display: none;
+            }
+
+            .modal__container {
+                border-radius: 5px;
+                bottom: 0;
+
+                > div:not(.modal__header) {
+                    display: none;
+                }
+            }
+
+            .modal__header {
+                @include mixins.text-overflow(1);
+                height: 36px !important;
+                background-color: #e8e8e8 !important;
+                font-size: 16px !important;
+                font-weight: 400 !important;
+                color: #000 !important;
+            }
+        }
+
+        --animation-time: .75s;
+
+        &.minimizing {
+            animation: var(--animation-time) move-modal var(--animation-time) ease forwards;
+
+            .modal__container {
+                animation: minimize var(--animation-time) ease forwards, var(--animation-time) move var(--animation-time) ease forwards;
+            }
+
+            .modal__blackout {
+                animation: blackout var(--animation-time) ease forwards;
+            }
+        }
+
+        &.expanding {
+            animation: move-modal var(--animation-time) ease reverse;
+
+            .modal__container {
+                height: 36px;
+                width: 375px;
+                bottom: 60px;
+                right: 40px;
+
+                animation: var(--animation-time) expand var(--animation-time) ease forwards, move var(--animation-time) ease reverse;
+            }
+
+            .modal__blackout {
+                opacity: 0;
+                animation: blackout var(--animation-time) ease reverse forwards;
+            }
+        }
+    }
+}
+
+@keyframes minimize {
+    from {
+        height: 100%;
+        width: 100%;
+    }
+    to {
+        height: 36px;
+        width: 375px;
+    }
+}
+
+@keyframes expand {
+    from {
+        height: 36px;
+        width: 375px;
+        right: calc(50vw - 187px);
+    }
+    to {
+        height: 100%;
+        width: 100%;
+        right: 0;
+        bottom: 0;
+    }
+}
+
+@keyframes move {
+    from {
+        right: calc(50vw - 187px);
+    }
+    to {
+        bottom: 60px;
+        right: 40px;
+    }
+}
+
+@keyframes move-modal {
+    from {
+        z-index: 1;
+    }
+    to {
+        z-index: 1;
+    }
+}
+
+@keyframes blackout {
+    from {
+        opacity: 1;
+    }
+    to {
+        opacity: 0;
+    }
+}
+
+@keyframes content {
+    from {
+        opacity: 1;
+    }
+    to {
+        opacity: 0;
+    }
 }
 
 @include mixins.modal-width(messenger-chat-settings-window, 800px);
