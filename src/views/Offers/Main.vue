@@ -146,6 +146,7 @@ import { useAuth } from '@/composables/useAuth.js';
 import { useNotify } from '@/utils/use/useNotify.js';
 import { isNotEmptyString } from '@/utils/helpers/string/isNotEmptyString.js';
 import { ucFirst } from '@/utils/formatters/string.js';
+
 const isMobile = useMobile();
 const store = useStore();
 const route = useRoute();
@@ -346,6 +347,10 @@ function createPayload() {
 
     if (isNotNullish(currentFolder.value)) {
         query.folder_ids = [currentFolder.value];
+    }
+
+    if (query.polygon) {
+        query.polygon = query.polygon.join(',');
     }
 
     return query;
