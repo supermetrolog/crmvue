@@ -334,8 +334,20 @@ const form = ref({
     comment: null
 });
 
+const hasCompletedContact = computed(() => {
+    return props.contacts.some(contact => {
+        if (isNullish(form.value.calls[contact.id])) return false;
+
+        const isAvailable = form.value.calls[contact.id].available;
+
+        if (isNullish(isAvailable)) return false;
+
+        return toBool(isAvailable) && Number(form.value.calls[contact.id].reason) === 1;
+    });
+});
+
 function requiredCallsValidationHandler(value) {
-    const hasCompletedContact = props.contacts.some(contact => {
+    return props.contacts.some(contact => {
         if (isNullish(value[contact.id])) return false;
 
         const isAvailable = value[contact.id].available;
@@ -344,8 +356,6 @@ function requiredCallsValidationHandler(value) {
 
         return toBool(isAvailable) && Number(value[contact.id].reason) === 1;
     });
-
-    return hasCompletedContact;
 }
 
 function requiredObjectsValidationHandler(value) {
@@ -441,6 +451,7 @@ const formIsValid = computed(() => !v$.value.$invalid);
 
 const canBeCancelled = computed(() => {
     if (formIsValid.value) return false;
+    if (hasCompletedContact.value) return false;
 
     return props.contacts.some(contact => {
         if (isNullish(form.value.calls[contact.id])) return false;
