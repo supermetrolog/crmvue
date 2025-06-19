@@ -7,14 +7,14 @@
                         <Avatar class="mt-4" :src="currentUser.userProfile.avatar" :size="40" />
                         <div class="survey-form-object-preview-offer__badge">Новое</div>
                     </div>
-                    <div class="survey-form-object-preview-offer__area">
+                    <div class="survey-form-object-preview-offer__area text-white">
                         <p class="font-weight-bold fs-3">{{ dealTypeName }}</p>
                         <WithUnitType
                             class="font-weight-bold mb-1"
                             :value="offer.area"
-                            :unit-type="unitTypes.SQUARE_METERS"
+                            :unit-type="areaUnitType"
                         />
-                        <p class="fs-2 text-green">
+                        <p class="fs-2 text-white">
                             <i class="fa-solid fa-key mr-1"></i>
                             <span>{{ availabilityLabel }}</span>
                         </p>
@@ -152,15 +152,24 @@ const priceTitle = computed(() => {
         return 'СТАВКА ЗА М2';
     }
 
+    if (props.offer.deal_type === dealOptions.typeStatement.STORAGE) {
+        return 'СТАВКА ЗА П.М';
+    }
+
     return 'СТАВКА ЗА М2/ГОД';
 });
 
 const availabilityLabel = computed(() => {
     if (props.offer.availability) return 'Свободен сейчас';
     if (props.offer.availability_date)
-        return `Свободен с ${toDateFormat(props.offer.availability_date, 'с DD.MM.YY')}`;
+        return `Свободен с ${toDateFormat(props.offer.availability_date, 'DD.MM.YY')}`;
     return '-';
 });
 
 const { currentUser } = useAuth();
+
+const areaUnitType = computed(() => {
+    if (props.offer.deal_type === dealOptions.typeStatement.STORAGE) return unitTypes.PALLET_PLACE;
+    return unitTypes.SQUARE_METERS;
+});
 </script>

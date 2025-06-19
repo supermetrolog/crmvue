@@ -58,28 +58,28 @@
             <SurveyFormComment v-model="form.comment" :v="v$.form.comment" />
         </template>
         <template #footer="{ complete }">
-            <UiButton
-                v-if="!canBeCancelled"
-                @click="complete"
-                :disabled="!formIsValid"
-                :color="formIsValid ? 'success' : 'light'"
-                icon="fa-solid fa-check"
-                class="mx-auto"
-            >
-                Сохранить опрос
-            </UiButton>
-            <AnimationTransition :speed="0.5">
-                <UiButton
-                    v-if="canBeCancelled"
-                    @click="cancelSurvey"
-                    tooltip='Завершить опрос с отметкой "Не удалось дозвониться"'
-                    color="danger-light"
-                    icon="fa-solid fa-thumbs-down"
-                    class="mx-auto"
-                >
-                    Завершить опрос
-                </UiButton>
-            </AnimationTransition>
+            <div class="mx-auto d-flex gap-1">
+                <AnimationTransition :speed="0.5">
+                    <UiButton
+                        v-if="canBeCancelled"
+                        @click="cancelSurvey"
+                        tooltip='Завершить опрос с отметкой "Не удалось дозвониться"'
+                        color="danger-light"
+                        icon="fa-solid fa-phone-slash"
+                    >
+                        Завершить опрос
+                    </UiButton>
+                    <UiButton
+                        v-else
+                        @click="complete"
+                        :disabled="!formIsValid"
+                        :color="formIsValid ? 'success' : 'light'"
+                        icon="fa-solid fa-check"
+                    >
+                        {{ formIsValid ? 'Можно сохранить опрос' : 'Нельзя сохранить опрос' }}
+                    </UiButton>
+                </AnimationTransition>
+            </div>
         </template>
     </Stepper>
 </template>
@@ -87,7 +87,7 @@
 import { computed, onBeforeMount, reactive, ref, shallowRef, useTemplateRef, watch } from 'vue';
 import Stepper from '@/components/common/Stepper/Stepper.vue';
 import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
-import { useIntervalFn } from '@vueuse/core';
+import { useEventBus, useIntervalFn } from '@vueuse/core';
 import api from '@/api/api.js';
 import { surveyConfig } from '@/configs/survey.config.js';
 import { useAuth } from '@/composables/useAuth.js';
@@ -110,7 +110,7 @@ import {
     CONTACT_CALL_REASONS
 } from '@/components/MessengerQuiz/useMessengerQuiz.js';
 import { useConfirm } from '@/composables/useConfirm.js';
-import { messenger, messengerTemplates } from '@/const/messenger.js';
+import { messenger } from '@/const/messenger.js';
 import { captureException } from '@sentry/vue';
 import dayjs from 'dayjs';
 import { getCompanyShortName } from '@/utils/formatters/models/company.js';
@@ -284,6 +284,10 @@ const steps = reactive([
                 return 'Предложения (загрузка..)';
             }
 
+            if (form.value.objects?.created?.length) {
+                return `Предложения (${objects.value.length}) + ${form.value.objects.created.length} новых`;
+            }
+
             return `Предложения (${objects.value.length})`;
         }),
         disabled: stepsIsDisabled,
@@ -294,6 +298,10 @@ const steps = reactive([
         title: computed(() => {
             if (requestsIsLoading.value) {
                 return 'Запросы (загрузка..)';
+            }
+
+            if (form.value.requests?.created?.length) {
+                return `Запросы (${requests.value.length}) + ${form.value.requests.created.length} новых`;
             }
 
             return `Запросы (${requests.value.length})`;
@@ -444,7 +452,7 @@ const canBeCancelled = computed(() => {
 
         return (
             isNotNullish(form.value.calls[contact.id].reason) &&
-            ((toBool(isAvailable) && Number(form.value.calls[contact.id].reason !== 1)) ||
+            ((toBool(isAvailable) && Number(form.value.calls[contact.id].reason) !== 1) ||
                 !toBool(isAvailable))
         );
     });
@@ -753,6 +761,8 @@ async function createPotentialTasks(contacts, messageId, surveyId = null) {
 const isCreating = ref(false);
 const { confirm } = useConfirm();
 
+const bus = useEventBus('survey');
+
 async function submit() {
     if (!formIsValid.value) return;
 
@@ -770,7 +780,7 @@ async function submit() {
         return;
     }
 
-    const { survey: surveyPayload, contact: targetContact, calls } = createSurveyPayload();
+    const { survey: surveyPayload, calls } = createSurveyPayload();
 
     try {
         isCreating.value = true;
@@ -789,26 +799,6 @@ async function submit() {
 
         return;
     }
-
-    // TODO: Нужно ли вообще создавать это?
-
-    // if (objectsPayload.length) {
-    //     try {
-    //         await createRelatedSurveys(
-    //             objectsPayload.current,
-    //             targetContact.contact_id,
-    //             createdSurvey
-    //         );
-    //     } catch (error) {
-    //         captureException(error, {
-    //             survey_id: createdSurvey.id,
-    //             user_id: currentUserId.value,
-    //             company_id: props.company.id
-    //         });
-    //     }
-    //
-    //     return;
-    // }
 
     let surveyMessage;
 
@@ -846,22 +836,13 @@ async function submit() {
     isCreating.value = false;
 
     emit('completed');
-}
-
-async function sendMessageAboutSurveyIsUnavailable(chatMemberId, contacts) {
-    const messagePayload = {
-        message: 'Не удалось дозвониться до контактов опросника',
-        template: messengerTemplates.UNAVAILABLE_SURVEY,
-        contact_ids: contacts.map(element => element.contact_id)
-    };
-
-    return await api.messenger.sendMessage(chatMemberId, messagePayload);
+    bus.emit('completed', { companyId: props.company.id });
 }
 
 async function cancelSurvey() {
     const confirmed = await confirm(
         'Завершение опроса',
-        'Вы закончили заполнение информации? Будут созданы задачи, звонки и опросы для заполненных предложений и запросов.'
+        'Вы попробовали связаться со всеми контактами компании? Опрос будет отмечен как неудавшийся.'
     );
     if (!confirmed) return;
 
@@ -891,23 +872,25 @@ async function cancelSurvey() {
 
     const calls = callsPayload.filter(form => isNotNullish(form.available));
 
-    let createdMessage;
+    let surveyMessage;
 
     try {
-        createdMessage = await sendMessageAboutSurveyIsUnavailable(props.chatMemberId, calls);
+        surveyMessage = await findSurveyMessage(surveyId, props.chatMemberId);
     } catch (error) {
+        notify.info('Не удалось установить связь с чатом, создайте задачи по контактам вручную..');
+        isCreating.value = false;
+
         captureException(error, {
             survey_id: surveyId,
             user_id: currentUserId.value,
             company_id: props.company.id
         });
-        isCreating.value = false;
 
         return;
     }
 
     try {
-        await createPotentialTasks(calls, createdMessage.id, surveyId);
+        await createPotentialTasks(calls, surveyMessage.id, surveyId);
     } catch (error) {
         notify.info('Не удалось создать задачи по контактам, создайте задачи вручную..');
         isCreating.value = false;
@@ -924,6 +907,7 @@ async function cancelSurvey() {
     notify.success('Опрос успешно сохранен!');
     isCreating.value = false;
     emit('canceled');
+    bus.emit('canceled', { companyId: props.company.id });
 }
 
 // objects
@@ -961,7 +945,7 @@ async function fetchObjects() {
 async function fetchRequests() {
     requestsIsLoading.value = true;
 
-    const response = await api.request.search({ company_id: props.company.id, status: 1 });
+    const response = await api.request.search({ company_id: props.company.id });
 
     requests.value = response.data;
 

@@ -54,6 +54,14 @@
                         </template>
                     </template>
                 </UiDropdownActions>
+                <UiButtonIcon
+                    v-if="company.has_survey_draft"
+                    @click="openInSurvey"
+                    small
+                    icon="fa-solid fa-play"
+                    label="Продолжить заполнение опроса"
+                    color="success-light"
+                />
             </div>
         </Td>
         <Td class="company-table-item__name" sort="nameRu">
@@ -191,6 +199,7 @@ import CompanyTableDropdown from '@/components/Company/Table/CompanyTableDropdow
 import CompanyTableItemInfo from '@/components/Company/Table/CompanyTableItemInfo.vue';
 import UiButton from '@/components/common/UI/UiButton.vue';
 import CompanyTableItemPinnedMessages from '@/components/Company/Table/CompanyTableItemPinnedMessages.vue';
+import UiButtonIcon from '@/components/common/UI/UiButtonIcon.vue';
 
 const store = useStore();
 const router = useRouter();

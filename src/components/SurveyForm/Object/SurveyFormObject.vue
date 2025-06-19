@@ -11,6 +11,7 @@
                 @show-preview="$emit('show-preview')"
                 @show-map="$emit('show-map')"
                 :object
+                :answer="form?.answer"
             />
             <SurveyFormObjectContent :object />
         </div>

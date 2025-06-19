@@ -88,7 +88,7 @@
     }
 
     &__icon {
-        font-size: 14px!important;
+        font-size: 14px !important;
     }
 
     &__recipient-form {
@@ -195,7 +195,7 @@
 
         .radio-options .form__row {
             gap: 0;
-            margin-top: 0!important;
+            margin-top: 0 !important;
         }
     }
 
@@ -273,7 +273,7 @@
         background-color: variables.$color_warning_dark;
 
         &:hover {
-            background-color: variables.$color_warning!important;
+            background-color: variables.$color_warning !important;
             color: #fff;
         }
     }
@@ -285,7 +285,7 @@
     }
 
     .messenger-chat-message-addition {
-        border-radius: 0!important;
+        border-radius: 0 !important;
     }
 
     &__offers {
@@ -525,12 +525,12 @@
             }
 
             &__calls, &__icon {
-                color: #fff!important;
+                color: #fff !important;
             }
         }
 
         &.main {
-            border-color: rgba(0, 0, 0, .2)!important;
+            border-color: rgba(0, 0, 0, .2) !important;
         }
     }
 
@@ -674,7 +674,7 @@
     &__warning {
         font-size: 13px;
         padding: 1px 5px;
-        margin: 5px  auto;
+        margin: 5px auto;
         width: max-content;
         max-width: 100%;
         background-color: variables.$color_danger_dark;
@@ -715,7 +715,7 @@
         border: 1px solid rgba(0, 0, 0, .1);
 
         &:hover {
-            background-color: variables.$bg-success!important;
+            background-color: variables.$bg-success !important;
         }
     }
 }
@@ -799,7 +799,7 @@
             font-weight: 500;
 
             & > .modal__close {
-                color: #fff!important;
+                color: #fff !important;
             }
         }
 
@@ -856,22 +856,22 @@
 
     .splitpanes__splitter {
         border: 1px solid #eee;
-        background-color: variables.$color_grey_light!important;
-        width: 14px!important;
-        margin: 0!important;
+        background-color: variables.$color_grey_light !important;
+        width: 14px !important;
+        margin: 0 !important;
         @include mixins.transition(background-color);
 
         &:hover {
-            background-color: variables.$bg-primary-l!important;
+            background-color: variables.$bg-primary-l !important;
         }
 
         &:before, &:after {
-            background-color: #000!important;
+            background-color: #000 !important;
         }
     }
 
     .splitpanes__pane {
-        background-color: transparent!important;
+        background-color: transparent !important;
         overflow-x: visible;
         overflow-y: auto;
     }
@@ -904,7 +904,7 @@
         }
 
         .tabs-component-panels {
-            padding: 10px 0!important;
+            padding: 10px 0 !important;
             max-height: 190px;
             overflow-y: auto;
         }
@@ -917,6 +917,17 @@
                 background-color: #f1f1f1
             }
         }
+    }
+
+    &__tasks {
+        overflow-y: auto;
+        max-height: 75px;
+        @include mixins.flex-box($d: column, $gap: 3px);
+    }
+
+    &__task {
+        font-size: 14px;
+        border: 1px solid rgba(0, 0, 0, .1);
     }
 }
 
@@ -1005,14 +1016,14 @@
     }
 
     &__accordion {
-        width: max-content!important;
-        border-radius: 5px 5px 0 0!important;
+        width: max-content !important;
+        border-radius: 5px 5px 0 0 !important;
     }
 
     &__accordion-body {
         border: 2px solid variables.$color_grey_alt;
         padding: 5px 5px 10px;
-        border-radius: 0 4px 4px 4px!important;
+        border-radius: 0 4px 4px 4px !important;
     }
 
     &__groups {
@@ -1084,7 +1095,7 @@
 
     &__offers {
         .tabs-component-panels {
-            padding: 5px 0 0 0!important;
+            padding: 5px 0 0 0 !important;
         }
     }
 
@@ -1363,7 +1374,7 @@
         @include mixins.transition(background-color .3s, color .3s);
 
         &:hover, &.active {
-            background: #76a3ea!important;
+            background: #76a3ea !important;
             color: #fff;
 
             .survey-form-object {
@@ -1377,6 +1388,16 @@
             }
         }
     }
+
+    &--new {
+        background: -webkit-linear-gradient(90deg, #fd8422, #ffffff 80%);
+        background: linear-gradient(90deg, #fd8422, #ffffff 80%);
+
+        .survey-form-object__body {
+            background-color: #fd8422;
+        }
+    }
+
 
     &:has(&__aside) &__body {
         border-right: none;
@@ -1400,7 +1421,7 @@
 
     &__accordion {
         font-weight: 500;
-        background-color: transparent!important;
+        background-color: transparent !important;
     }
 
     &__preview {
@@ -1438,6 +1459,15 @@
     &__preview-header {
         position: absolute;
         top: 2px;
+        left: 3px;
+        z-index: 5;
+        width: calc(100% - 6px);
+        @include mixins.flex-box($gap: 3px, $a: center);
+    }
+
+    &__preview-footer {
+        position: absolute;
+        bottom: 2px;
         left: 3px;
         z-index: 5;
         width: calc(100% - 6px);
@@ -1501,6 +1531,15 @@
     &__offer {
         color: #05865f;
         @include mixins.transition(color);
+    }
+
+    &__new-label {
+        font-weight: 500;
+        font-size: 15px;
+        text-transform: uppercase;
+        color: #fff;
+        margin-bottom: 5px;
+        margin-top: 3px;
     }
 }
 
@@ -1799,7 +1838,7 @@
     }
 
     &__accordion-icon {
-        font-size: 22px!important;
+        font-size: 22px !important;
         border: 1px solid #fff;
         border-radius: 50%;
     }
@@ -1871,6 +1910,15 @@
 
         .request-row-card__date {
             color: #fff;
+        }
+    }
+
+    &--new {
+        background: -webkit-linear-gradient(90deg, #fd8422, #ffffff 80%);
+        background: linear-gradient(90deg, #fd8422, #ffffff 80%);
+
+        .request-row-card__except, .survey-form-object-preview-offer__main {
+            background-color: #fd8422;
         }
     }
 
@@ -1994,7 +2042,7 @@
         .ql-container.ql-snow {
             max-width: 100%;
             background-color: #fff;
-            border-radius: 2px!important;
+            border-radius: 2px !important;
         }
 
         .vue-editor .ql-editor {
@@ -2069,8 +2117,8 @@
         }
 
         &.active, &:hover {
-            background-color: #76a3ea!important;
-            color: #fff!important;
+            background-color: #76a3ea !important;
+            color: #fff !important;
         }
     }
 
@@ -2197,7 +2245,7 @@
 
 .survey-table-item {
     &__id {
-      vertical-align: top;
+        vertical-align: top;
     }
 }
 
@@ -2296,7 +2344,7 @@
 
     &:first-child {
         .request-row-card-timeline-step__arrow {
-            border-left: none!important;
+            border-left: none !important;
         }
 
         &::before {

@@ -21,7 +21,18 @@
             </UiFormGroup>
             <UiFormDivider />
             <UiFormGroup>
-                <UiInput v-model="form.area" label="Площадь" unit="м<sup>2" class="col-6" />
+                <UiInput
+                    v-if="Number(form.deal_type) === 3"
+                    v-model="form.area"
+                    label="Вместимость"
+                    unit="п.м"
+                    class="col-6"
+                />
+                <UiInput v-else
+v-model="form.area"
+label="Площадь"
+unit="м<sup>2"
+class="col-6" />
                 <UiInput v-model="form.price" label="Ставка" :unit="priceUnit" class="col-6" />
                 <UiCheckbox
                     v-if="canBeDivided"
@@ -79,7 +90,11 @@
                 />
                 <UiInput v-model="form.temperature" label="Темп. режим" class="col-3" />
                 <UiInput v-model="form.floor_type" label="Тип пола" class="col-3" />
-                <UiInput v-model="form.gates" label="Ворот" unit="шт" type="number" class="col-3" />
+                <UiInput v-model="form.gates"
+label="Ворот"
+unit="шт"
+type="number"
+class="col-3" />
                 <UiInput
                     v-model="form.cranes"
                     label="Краны"
@@ -179,6 +194,7 @@ const priceUnit = computed(() => {
     if (!form.deal_type) return undefined;
 
     if (Number(form.deal_type) === 2) return '₽ за м<sup>2</sup>';
+    if (Number(form.deal_type) === 3) return '₽ за п.м';
     return '₽ за м<sup>2</sup>/год';
 });
 

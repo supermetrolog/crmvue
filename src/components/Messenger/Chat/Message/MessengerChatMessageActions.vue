@@ -4,6 +4,9 @@
             <HoverActionsButton @click="$emit('reply')" label="Ответить">
                 <i class="fa-solid fa-reply"></i>
             </HoverActionsButton>
+            <HoverActionsButton @click="$emit('create-task')" label="Добавить задачу">
+                <i class="fa-solid fa-bolt"></i>
+            </HoverActionsButton>
             <HoverActionsButton
                 @click="
                     $createAddition({
@@ -16,20 +19,17 @@
             >
                 <i class="fa-solid fa-exclamation"></i>
             </HoverActionsButton>
-            <HoverActionsButton @click="$emit('create-task')" label="Добавить задачу">
-                <i class="fa-solid fa-bolt"></i>
-            </HoverActionsButton>
             <HoverActionsButton
                 @click="$emit('pin-to-object')"
                 disabled
                 :active="message.pinnedToObject"
-                :label="message.pinnedToObject ? 'Открепить от объекта' : 'Закрепить за объектом'"
+                :label="message.pinnedToObject ? 'Открепить в таблице' : 'Закрепить в таблице'"
             >
-                <i class="fa-solid fa-warehouse"></i>
+                <i class="fa-solid fa-table"></i>
             </HoverActionsButton>
             <HoverActionsButton
                 @click="$emit('pin')"
-                :label="pinned ? 'Открепить' : 'Закрепить'"
+                :label="pinned ? 'Открепить в чате' : 'Закрепить в чате'"
                 :active="pinned"
             >
                 <i class="fa-solid fa-thumbtack"></i>

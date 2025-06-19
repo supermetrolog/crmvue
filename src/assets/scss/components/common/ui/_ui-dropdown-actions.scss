@@ -100,7 +100,21 @@
     }
 
     &__footer {
-        border-top: 1px solid rgba(0, 0, 0, .4);
+        border-top: 1px solid variables.$color_grey_light;
         background-color: variables.$bg-gray-l;
+        color: variables.$color_dark_grey;
+    }
+
+    &__group {
+        width: 100%;
+
+        &:not(:last-child) {
+            border-bottom: 2px solid rgb(197, 197, 197)
+        }
+    }
+
+    &__divider {
+        height: 5px;
+        background-color: variables.$color_grey_light;
     }
 }

@@ -17,7 +17,19 @@
                     @changed-warnings="parametersHasWarnings = $event"
                     :object
                     :show-offers="false"
-                />
+                >
+                    <template #actions>
+                        <UiButton
+                            @click="parametersFormIsVisible = true"
+                            mini
+                            icon="fa-solid fa-pen"
+                            color="light"
+                            class="ml-auto"
+                        >
+                            Редактировать
+                        </UiButton>
+                    </template>
+                </MessengerDialogObjectPreview>
             </template>
         </UiAccordion>
         <div class="pt-2">
@@ -154,6 +166,38 @@
                 @updated="onUpdatedOffer"
                 :form-data="editingNewOffer"
             />
+            <UiModal
+                v-model:visible="parametersFormIsVisible"
+                :width="800"
+                title="Параметры объекта"
+                :close-on-outside-click="false"
+                :close-on-press-esc="false"
+            >
+                <UiTextarea
+                    v-model="parametersDescription"
+                    :min-height="150"
+                    :max-height="400"
+                    label="Комментарий"
+                    placeholder="Укажите параметры для внесения.."
+                    required
+                />
+                <template #actions>
+                    <UiButton
+                        @click="saveParameters"
+                        icon="fa-solid fa-check"
+                        color="success-light"
+                        :loading="parametersIsLoading"
+                        >Сохранить
+                    </UiButton>
+                    <UiButton
+                        @click="parametersFormIsVisible = false"
+                        icon="fa-solid fa-ban"
+                        color="light"
+                    >
+                        Отмена
+                    </UiButton>
+                </template>
+            </UiModal>
         </teleport>
     </div>
 </template>
@@ -178,6 +222,14 @@ import UiDropdownActions from '@/components/common/UI/DropdownActions/UiDropdown
 import UiDropdownActionsButton from '@/components/common/UI/DropdownActions/UiDropdownActionsButton.vue';
 import { useNotify } from '@/utils/use/useNotify.js';
 import UiCheckbox from '@/components/common/Forms/UiCheckbox.vue';
+import UiModal from '@/components/common/UI/UiModal.vue';
+import UiTextarea from '@/components/common/Forms/UiTextarea.vue';
+import api from '@/api/api.js';
+import { getCompanyShortName } from '@/utils/formatters/models/company.js';
+import { useStore } from 'vuex';
+import dayjs from 'dayjs';
+import { isArray } from '@/utils/helpers/array/isArray.js';
+import { useAuth } from '@/composables/useAuth.js';
 
 const modelValue = defineModel({ type: Object });
 
@@ -188,6 +240,10 @@ const props = defineProps({
         required: true
     },
     company: {
+        type: Object,
+        required: true
+    },
+    survey: {
         type: Object,
         required: true
     }
@@ -359,6 +415,8 @@ function onCreatedOffer(offer) {
     modelValue.value.created.push(offer);
     isOffersNotFound.value = false;
     formIsVisible.value = false;
+
+    markProgress();
 }
 
 function onUpdatedOffer(offer) {
@@ -375,7 +433,7 @@ const answers = computed(() => Object.values(modelValue.value.current));
 function markProgress() {
     if (answers.value.length === 0) {
         modelValue.value.answer =
-            modelValue.value.created?.length || isOffersNotFound.value ? 1 : null;
+            modelValue.value.created?.length || isOffersNotFound.value ? 4 : null;
 
         return;
     }
@@ -385,7 +443,7 @@ function markProgress() {
     );
 
     if (allOffersAnswered) {
-        modelValue.value.answer = 1;
+        modelValue.value.answer = 4;
     } else {
         modelValue.value.answer = null;
     }
@@ -425,7 +483,59 @@ const parametersClass = computed(() => {
 const isOffersNotFound = ref(false);
 
 watch(isOffersNotFound, value => {
-    if (value) modelValue.value.answer = 1;
+    if (value) modelValue.value.answer = 4;
     else modelValue.value.answer = null;
 });
+
+// parameters
+
+const parametersFormIsVisible = ref(false);
+const parametersIsLoading = ref(false);
+const parametersDescription = ref(null);
+
+watch(parametersFormIsVisible, () => {
+    parametersDescription.value = null;
+});
+
+const store = useStore();
+const { currentUserId } = useAuth();
+
+async function saveParameters() {
+    if (isNullish(parametersDescription.value) || parametersDescription.value.length === 0) {
+        notify.info('Пожалуйста, укажите параметры для внесения');
+        return;
+    }
+
+    parametersIsLoading.value = true;
+
+    try {
+        const task = await api.task.create({
+            title: `Внести данные о строении #${props.object.id} (комп. ${getCompanyShortName(props.company)})`,
+            message: parametersDescription.value,
+            user_id: store.getters.moderator?.id ?? currentUserId.value,
+            relations: [
+                { entity_type: 'survey', entity_id: props.survey.id },
+                {
+                    entity_type: 'company',
+                    entity_id: props.company.id
+                }
+            ],
+            start: dayjs().toDate(),
+            end: dayjs().add(5, 'day').toDate()
+        });
+
+        notify.success('Задача на изменения создана');
+
+        if (isArray(props.survey?.tasks)) {
+            // eslint-disable-next-line vue/no-mutating-props
+            props.survey.tasks.push(task);
+        } else {
+            // eslint-disable-next-line vue/no-mutating-props
+            props.survey.tasks = [task];
+        }
+    } finally {
+        parametersIsLoading.value = false;
+        parametersFormIsVisible.value = false;
+    }
+}
 </script>

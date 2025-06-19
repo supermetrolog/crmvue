@@ -13,14 +13,48 @@
             </UiCol>
             <UiCol :cols="7">
                 <CompanyTabs :company class="survey-form-header-company__tabs">
-                    <template v-if="surveysCount" #additional>
-                        <Tab :name="`Опросы (${surveysCount})`">
+                    <template #additional>
+                        <Tab v-if="surveysCount" :name="`Опросы (${surveysCount})`">
                             <div class="d-flex flex-column gap-1">
                                 <MessengerQuizInlineElement
                                     v-for="survey in lastSurveys"
                                     :key="survey.id"
                                     @show="showSurvey({ surveyId: survey.id })"
                                     :quiz="survey"
+                                />
+                            </div>
+                        </Tab>
+                        <Tab
+                            v-if="survey && survey.tasks?.length"
+                            :name="`Поставленные задачи (${survey.tasks.length})`"
+                        >
+                            <div class="survey-form-header-company__tasks">
+                                <DashboardTableTasksItem
+                                    v-for="task in survey.tasks"
+                                    :key="task.id"
+                                    @view="$emit('show-task', task)"
+                                    :task="task"
+                                    class="survey-form-header-company__task"
+                                    :avatar-size="35"
+                                    :observer-size="25"
+                                    :show-diligence="false"
+                                />
+                            </div>
+                        </Tab>
+                        <Tab
+                            v-if="survey && survey.tasks?.length && callTasks.length"
+                            :name="`Запланирован звонок (${callTasks.length})`"
+                        >
+                            <div class="survey-form-header-company__tasks">
+                                <DashboardTableTasksItem
+                                    v-for="task in callTasks"
+                                    :key="task.id"
+                                    @view="$emit('show-task', task)"
+                                    :task="task"
+                                    class="survey-form-header-company__task"
+                                    :avatar-size="35"
+                                    :observer-size="25"
+                                    :show-diligence="false"
                                 />
                             </div>
                         </Tab>
@@ -195,13 +229,15 @@ import UserFoldersDropdown from '@/components/UserFolder/UserFoldersDropdown.vue
 import FormUserFolder from '@/components/Forms/FormUserFolder.vue';
 import { useUserFolders } from '@/composables/useUserFolders.js';
 import { useAuth } from '@/composables/useAuth.js';
+import DashboardTableTasksItem from '@/components/Dashboard/Table/TasksItem/DashboardTableTasksItem.vue';
 
 const emit = defineEmits([
     'update-logo',
     'update-company',
     'to-chat',
     'create-task',
-    'schedule-call'
+    'schedule-call',
+    'show-task'
 ]);
 const props = defineProps({
     company: {
@@ -216,7 +252,8 @@ const props = defineProps({
         type: Number,
         default: 0
     },
-    editable: Boolean
+    editable: Boolean,
+    survey: Object
 });
 
 // logo form
@@ -304,6 +341,12 @@ function onCreatedFolder(folder) {
     folderModalIsVisible.value = false;
     folders.value.unshift(folder);
 }
+
+// tasks
+
+const callTasks = computed(() => {
+    return props.survey.tasks.filter(task => task.type === 'scheduled_call');
+});
 
 // preview
 

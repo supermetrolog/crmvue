@@ -191,7 +191,13 @@ const props = defineProps({
     }
 });
 
-const updatedAt = computed(() => toDateFormat(props.company.last_survey.updated_at));
+const updatedAt = computed(() => {
+    if (props.company.last_survey.completed_at) {
+        return toDateFormat(props.company.last_survey.completed_at);
+    }
+
+    return toDateFormat(props.company.last_survey.created_at);
+});
 
 const contactName = computed(() => {
     return getContactFullName(props.company.last_survey.contact);
