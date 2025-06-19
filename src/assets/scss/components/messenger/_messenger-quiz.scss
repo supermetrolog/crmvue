@@ -850,6 +850,16 @@
         }
     }
 
+    &__stepper-action {
+        &.disabled {
+            opacity: .2;
+
+            &:hover {
+                opacity: .5;
+            }
+        }
+    }
+
     &__footer {
         justify-content: flex-start;
     }

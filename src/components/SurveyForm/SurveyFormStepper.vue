@@ -58,28 +58,27 @@
             <SurveyFormComment v-model="form.comment" :v="v$.form.comment" />
         </template>
         <template #footer="{ complete }">
-            <div class="mx-auto d-flex gap-1">
-                <AnimationTransition :speed="0.5">
-                    <UiButton
-                        v-if="canBeCancelled"
-                        @click="cancelSurvey"
-                        tooltip='Завершить опрос с отметкой "Не удалось дозвониться"'
-                        color="danger-light"
-                        icon="fa-solid fa-phone-slash"
-                    >
-                        Завершить опрос
-                    </UiButton>
-                    <UiButton
-                        v-else
-                        @click="complete"
-                        :disabled="!formIsValid"
-                        :color="formIsValid ? 'success' : 'light'"
-                        icon="fa-solid fa-check"
-                    >
-                        {{ formIsValid ? 'Можно сохранить опрос' : 'Нельзя сохранить опрос' }}
-                    </UiButton>
-                </AnimationTransition>
-            </div>
+            <AnimationTransition :speed="0.5">
+                <UiButton
+                    v-if="canBeCancelled"
+                    @click="cancelSurvey"
+                    tooltip='Завершить опрос с отметкой "Не удалось дозвониться"'
+                    color="success"
+                    icon="fa-solid fa-phone-slash"
+                >
+                    Можно сохранить опрос
+                </UiButton>
+                <UiButton
+                    v-else
+                    @click="complete"
+                    :color="formIsValid ? 'success' : 'danger'"
+                    icon="fa-solid fa-check"
+                    class="survey-form__stepper-action"
+                    :class="{ disabled: !formIsValid }"
+                >
+                    {{ formIsValid ? 'Можно сохранить опрос' : 'Нельзя сохранить опрос' }}
+                </UiButton>
+            </AnimationTransition>
         </template>
     </Stepper>
 </template>
