@@ -4,12 +4,12 @@
             <div class="survey-form-object-preview__tabs">
                 <SurveyFormObjectsPreviewTab v-model="currenTab" :name="TABS.ACTIVE">
                     <i class="fa-solid fa-up-long mr-1" />
-                    <span>Актив ({{ activeRequests.length }})</span>
+                    <span>Активные ({{ activeRequests.length }})</span>
                 </SurveyFormObjectsPreviewTab>
                 <span>|</span>
                 <SurveyFormObjectsPreviewTab v-model="currenTab" :name="TABS.PASSIVE">
                     <i class="fa-solid fa-down-long mr-1" />
-                    <span>Пассив ({{ passiveRequests.length }})</span>
+                    <span>Пассивные ({{ passiveRequests.length }})</span>
                 </SurveyFormObjectsPreviewTab>
                 <span>|</span>
                 <span @click="addNewRequest" class="survey-form-objects__link"> + Добавить </span>
@@ -63,7 +63,7 @@
                             editable
                         />
                     </div>
-                    <EmptyData v-else class="mt-2"> Список активных запросов пуст.. </EmptyData>
+                    <EmptyData v-else class="mt-2"> Список активных запросов пуст..</EmptyData>
                 </div>
                 <div v-show="currenTab === TABS.PASSIVE">
                     <div v-if="passiveRequests.length" class="survey-form-object-preview__list">
@@ -73,7 +73,7 @@
                             :request="request"
                         />
                     </div>
-                    <EmptyData v-else class="mt-2"> Список архивных запросов пуст.. </EmptyData>
+                    <EmptyData v-else class="mt-2"> Список архивных запросов пуст..</EmptyData>
                 </div>
             </div>
         </div>

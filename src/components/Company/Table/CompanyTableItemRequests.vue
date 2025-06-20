@@ -9,7 +9,7 @@
                         <span>|</span>
                         <SurveyFormObjectsPreviewTab v-model="currentTab" :name="TABS.ACTIVE">
                             <i class="fa-solid fa-up-long mr-1" />
-                            <span>Актив {{ requestsByGroups.active?.length }}</span>
+                            <span>Активные {{ requestsByGroups.active?.length }}</span>
                         </SurveyFormObjectsPreviewTab>
                         <SurveyFormObjectsPreviewTab
                             v-if="requestsByGroups.passive?.length"
@@ -17,7 +17,7 @@
                             :name="TABS.PASSIVE"
                         >
                             <i class="fa-solid fa-down-long mr-1 text-danger" />
-                            <span>Пассив {{ requestsByGroups.passive?.length }}</span>
+                            <span>Пассивные {{ requestsByGroups.passive?.length }}</span>
                         </SurveyFormObjectsPreviewTab>
                         <SurveyFormObjectsPreviewTab
                             v-if="requestsByGroups.done?.length"
