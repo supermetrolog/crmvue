@@ -134,7 +134,6 @@ import {
     CALL_STATUSES,
     CONTACT_CALL_REASONS
 } from '@/components/MessengerQuiz/useMessengerQuiz.js';
-import { useConfirm } from '@/composables/useConfirm.js';
 import { captureException } from '@sentry/vue';
 import dayjs from 'dayjs';
 import { getCompanyShortName } from '@/utils/formatters/models/company.js';
@@ -733,7 +732,6 @@ async function createPotentialTasks(contacts, messageId, surveyId = null) {
 }
 
 const isCreating = ref(false);
-const { confirm } = useConfirm();
 
 const bus = useEventBus('survey');
 
@@ -742,12 +740,6 @@ async function submit() {
 
     const isValid = await validate();
     if (!isValid) return;
-
-    const confirmed = await confirm(
-        'Сохранение опроса',
-        'Вы закончили заполнение информации? Будут созданы задачи, звонки и опросы для заполненных предложений и запросов.'
-    );
-    if (!confirmed) return;
 
     if (isNotNullish(props.survey)) {
         await updateSurvey();
@@ -821,12 +813,6 @@ function cancelSurvey() {
 }
 
 async function cancel() {
-    const confirmed = await confirm(
-        'Завершение опроса',
-        'Вы попробовали связаться со всеми контактами компании? Опрос будет отмечен как неудавшийся.'
-    );
-    if (!confirmed) return;
-
     isCreating.value = true;
 
     const { survey: surveyPayload, calls } = createSurveyPayload();
