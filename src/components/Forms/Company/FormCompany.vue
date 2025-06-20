@@ -146,7 +146,7 @@
                             v-model="form.consultant_id"
                             :v="v$.form.consultant_id"
                             :options="getConsultantsOptions"
-                            :disabled="isEditMode && !currentUserIsModeratorOrHigher"
+                            :disabled="isEditMode && !canEdit"
                             class="col-6"
                             required
                         />
@@ -446,7 +446,7 @@ import Loader from '@/components/common/Loader.vue';
 import RadioChip from '@/components/common/Forms/RadioChip.vue';
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
 import { validateEmail, validateUrl } from '@//validators';
-import { computed, reactive, shallowRef } from 'vue';
+import { computed, reactive, shallowRef, toRef } from 'vue';
 import { normalizeDataForCompanyForm } from '@/utils/normalizeForm.js';
 import { validationRulesForCompany } from '@/validators/rules.js';
 import api from '@/api/api.js';
@@ -468,6 +468,7 @@ import UiButton from '@/components/common/UI/UiButton.vue';
 import { useValidation } from '@/composables/useValidation.js';
 import Switch from '@/components/common/Forms/Switch.vue';
 import { useAuth } from '@/composables/useAuth.js';
+import { useCompanyPermissions } from '@/components/Company/useCompanyPermissions.js';
 
 const emit = defineEmits(['updated', 'created', 'close']);
 const props = defineProps({
@@ -622,4 +623,8 @@ function activityProfileMultipleLabelFn(elements) {
 function activityGroupMultipleLabelFn(elements) {
     return plural(elements.length, 'Выбрана %d группа', 'Выбрано %d группы', 'Выбрано %d групп');
 }
+
+// permissions
+
+const { canEdit } = useCompanyPermissions(toRef(props, 'formData'));
 </script>
