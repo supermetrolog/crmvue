@@ -206,7 +206,7 @@ import { computed, markRaw, onBeforeUnmount, ref, shallowRef, watch } from 'vue'
 import SurveyFormObjectsPreviewOffer from '@/components/SurveyForm/ObjectsPreview/SurveyFormObjectsPreviewOffer.vue';
 import { extractDeepProperty } from '@/utils/helpers/object/extractDeepProperty.js';
 import EmptyData from '@/components/common/EmptyData.vue';
-import { isNullish } from '@/utils/helpers/common/isNullish.js';
+import { isNullish } from '@/utils/helpers/common/isNullish.ts';
 import UiButton from '@/components/common/UI/UiButton.vue';
 import SurveyFormObjectsPreviewTab from '@/components/SurveyForm/ObjectsPreview/SurveyFormObjectsPreviewTab.vue';
 import SurveyFormObjectsPreviewNewOffer from '@/components/SurveyForm/ObjectsPreview/SurveyFormObjectsPreviewNewOffer.vue';
@@ -228,7 +228,7 @@ import api from '@/api/api.js';
 import { getCompanyShortName } from '@/utils/formatters/models/company.js';
 import { useStore } from 'vuex';
 import dayjs from 'dayjs';
-import { isArray } from '@/utils/helpers/array/isArray.js';
+import { isArray } from '@/utils/helpers/array/isArray.ts';
 import { useAuth } from '@/composables/useAuth.js';
 
 const modelValue = defineModel({ type: Object });

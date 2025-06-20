@@ -1,16 +1,19 @@
 import api from '@/api/api.js';
-import { computed, ref, shallowRef } from 'vue';
+import { computed, ref, shallowRef, toValue } from 'vue';
 import { contactOptions } from '@/const/options/contact.options.js';
+import { MaybeRefOrGetter } from '@vueuse/core';
+import { isNullish } from '@/utils/helpers/common/isNullish';
+import { CompanyContact } from '@/api/contacts';
 
-export function useSearchContacts(companyID) {
-    const contacts = shallowRef([]);
+export function useSearchContacts(companyId: MaybeRefOrGetter<number>) {
+    const contacts = shallowRef<CompanyContact[]>([]);
     const isLoading = ref(false);
 
-    async function searchContacts(_companyID) {
+    async function searchContacts(_companyId: number | null = null) {
         isLoading.value = true;
 
         const response = await api.contacts.getByCompany(
-            _companyID == null ? companyID.value : _companyID
+            isNullish(_companyId) ? toValue(companyId) : _companyId
         );
 
         contacts.value = response.map(contact => ({

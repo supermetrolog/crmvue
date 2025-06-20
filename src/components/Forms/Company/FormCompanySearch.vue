@@ -305,7 +305,7 @@ import RadioChip from '@/components/common/Forms/RadioChip.vue';
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
 import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
 import UiButton from '@/components/common/UI/UiButton.vue';
-import { isArray } from '@/utils/helpers/array/isArray.js';
+import { isArray } from '@/utils/helpers/array/isArray.ts';
 import { isEmptyArray } from '@/utils/helpers/array/isEmptyArray.js';
 import { companyOptions } from '@/const/options/company.options.js';
 import { toDateFormat } from '@/utils/formatters/date.js';

@@ -2,24 +2,72 @@
     <CompanyBoxLayout class="company-box-main">
         <template #before>
             <div class="d-flex gap-2 justify-content-end mb-2 align-items-center">
-                <UiButton
-                    v-if="isPassive"
-                    @click="$emit('enable')"
-                    small
-                    color="light"
-                    icon="fa-solid fa-undo"
-                >
-                    Восстановить
-                </UiButton>
-                <UiButton
-                    v-else
-                    @click="$emit('disable')"
-                    small
-                    color="light"
-                    icon="fa-solid fa-ban"
-                >
-                    В пассив
-                </UiButton>
+                <UiDropdownActions label="Действия над компанией" :title="companyShortName" small>
+                    <template #trigger>
+                        <UiButton small color="light" icon="fa-solid fa-gear">Действия</UiButton>
+                    </template>
+                    <template #menu>
+                        <UiDropdownActionsGroup>
+                            <UiDropdownActionsButton
+                                @handle="$emit('create-task')"
+                                icon="fa-solid fa-bolt"
+                                label="Создать задачу"
+                            />
+                            <UiDropdownActionsButton
+                                @handle="$emit('schedule-call')"
+                                icon="fa-solid fa-phone"
+                                label="Запланировать звонок"
+                            />
+                            <UiDropdownActionsButton
+                                @handle="$emit('schedule-visit')"
+                                icon="fa-solid fa-people-arrows"
+                                label="Запланировать встречу"
+                            />
+                        </UiDropdownActionsGroup>
+                        <UiDropdownActionsGroup>
+                            <!--                            <UiDropdownActionsButton-->
+                            <!--                                @handle="$emit('create-pinned-message')"-->
+                            <!--                                icon="fa-solid fa-thumbtack"-->
+                            <!--                                label="Добавить сообщение"-->
+                            <!--                            />-->
+                            <UiDropdownActionsButton
+                                @handle="openInSurvey"
+                                :icon="
+                                    company.has_survey_draft
+                                        ? 'fa-solid fa-play'
+                                        : 'fa-solid fa-square-poll-horizontal'
+                                "
+                                :label="
+                                    company.has_survey_draft ? 'Продолжить опрос' : 'Начать опрос'
+                                "
+                            />
+                            <UiDropdownActionsButton
+                                @handle="$emit('open-in-chat')"
+                                icon="fa-solid fa-comment"
+                                label="Открыть в чате"
+                            />
+                        </UiDropdownActionsGroup>
+                        <UiDropdownActionsGroup>
+                            <UiDropdownActionsButton
+                                v-if="isPassive"
+                                @handle="$emit('enable')"
+                                icon="fa-solid fa-undo"
+                                label="Восстановить из архива"
+                            />
+                            <UiDropdownActionsButton
+                                v-else
+                                @handle="$emit('disable')"
+                                icon="fa-solid fa-ban"
+                                label="Отправить в архив"
+                            />
+                            <UiDropdownActionsButton
+                                @handle="logoFormIsVisible = true"
+                                label="Изменить логотип"
+                                icon="fa-solid fa-image"
+                            />
+                        </UiDropdownActionsGroup>
+                    </template>
+                </UiDropdownActions>
                 <span>|</span>
                 <UiButton @click="$emit('edit-company')" small color="light" icon="fa-solid fa-pen">
                     Редактировать
@@ -262,7 +310,7 @@ import FormCompanyLogo from '@/components/Forms/Company/FormCompanyLogo.vue';
 import Modal from '@/components/common/Modal.vue';
 import { useNotify } from '@/utils/use/useNotify.js';
 import { useStore } from 'vuex';
-import { getCompanyName } from '@/utils/formatters/models/company.js';
+import { getCompanyName, getCompanyShortName } from '@/utils/formatters/models/company.js';
 import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
 import { toDateFormat } from '@/utils/formatters/date.js';
 import { toCorrectUrl } from '@/utils/formatters/string.js';
@@ -270,6 +318,10 @@ import UiTooltipIcon from '@/components/common/UI/UiTooltipIcon.vue';
 import { useTippyText } from '@/composables/useTippyText.js';
 import UiField from '@/components/common/UI/UiField.vue';
 import UiButton from '@/components/common/UI/UiButton.vue';
+import UiDropdownActionsButton from '@/components/common/UI/DropdownActions/UiDropdownActionsButton.vue';
+import UiDropdownActions from '@/components/common/UI/DropdownActions/UiDropdownActions.vue';
+import UiDropdownActionsGroup from '@/components/common/UI/DropdownActions/UiDropdownActionsGroup.vue';
+import { useSurveyForm } from '@/composables/useSurveyForm.js';
 
 defineEmits([
     'create-contact',
@@ -279,7 +331,11 @@ defineEmits([
     'enable-contact',
     'disable-contact',
     'edit-contact',
-    'delete-contact'
+    'delete-contact',
+    'open-in-chat',
+    'create-task',
+    'schedule-call',
+    'schedule-visit'
 ]);
 
 const props = defineProps({
@@ -337,6 +393,7 @@ const activityProfiles = computed(() => {
 });
 
 const companyName = computed(() => getCompanyName(props.company));
+const companyShortName = computed(() => getCompanyShortName(props.company));
 
 function closeForm() {
     logoFormIsVisible.value = false;
@@ -370,4 +427,12 @@ const passiveWhyComment = computed(() => {
 // tippy
 
 useTippyText(useTemplateRef('companyLogoEl'), 'Нажмите, чтобы редактировать логотип');
+
+// survey
+
+const { openSurvey } = useSurveyForm();
+
+const openInSurvey = () => {
+    openSurvey(props.company.id);
+};
 </script>

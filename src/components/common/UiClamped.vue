@@ -1,6 +1,8 @@
 <template>
     <div class="clamped">
-        <p ref="content" class="content"><slot /></p>
+        <p ref="content" class="content">
+            <slot />
+        </p>
         <button v-if="isClamped" @click="toggleExpand" :class="buttonClass">
             {{ isExpanded ? hideText : expandText }}..
         </button>
@@ -8,7 +10,7 @@
 </template>
 <script setup>
 import { computed, ref, useTemplateRef } from 'vue';
-import { isNullish } from '@/utils/helpers/common/isNullish.js';
+import { isNullish } from '@/utils/helpers/common/isNullish.ts';
 
 const emit = defineEmits(['expanded', 'hidden']);
 const props = defineProps({

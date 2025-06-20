@@ -67,6 +67,10 @@
                 @disable-contact="disableContact"
                 @edit-contact="editContact"
                 @delete-contact="deleteContact"
+                @open-in-chat="openInChat"
+                @create-task="createCompanyTask"
+                @schedule-visit="scheduleVisitModalIsVisible = true"
+                @schedule-call="scheduleCallModalIsVisible = true"
                 :company="COMPANY"
                 :contacts="COMPANY_CONTACTS"
                 class="mb-2"
@@ -97,6 +101,20 @@
         <button ref="chatButtonEl" @click="openInChat" class="company-page__chat">
             <i class="fa-solid fa-comment" />
         </button>
+        <teleport to="body">
+            <CallScheduler
+                v-if="scheduleCallModalIsVisible"
+                @close="scheduleCallModalIsVisible = false"
+                @created="scheduleCallModalIsVisible = false"
+                :company="COMPANY"
+            />
+            <VisitScheduler
+                v-if="scheduleVisitModalIsVisible"
+                @close="scheduleVisitModalIsVisible = false"
+                @created="scheduleVisitModalIsVisible = false"
+                :company="COMPANY"
+            />
+        </teleport>
     </div>
 </template>
 
@@ -126,7 +144,7 @@ import {
 } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useMessenger } from '@/components/Messenger/useMessenger.js';
-import { useDocumentTitle } from '@/composables/useDocumentTitle.js';
+import { useDocumentTitle } from '@/composables/useDocumentTitle.ts';
 import { messenger } from '@/const/messenger.js';
 import { useTippyText } from '@/composables/useTippyText.js';
 import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
@@ -136,6 +154,10 @@ import { useNotify } from '@/utils/use/useNotify.js';
 import FormCompanyDisable from '@/components/Forms/Company/FormCompanyDisable.vue';
 import FormContactDisable from '@/components/Forms/FormContactDisable.vue';
 import { contactOptions } from '@/const/options/contact.options.js';
+import { useTaskManager } from '@/composables/useTaskManager.js';
+import { getCompanyShortName } from '@/utils/formatters/models/company.js';
+import VisitScheduler from '@/components/VisitScheduler/VisitScheduler.vue';
+import CallScheduler from '@/components/CallScheduler/CallScheduler.vue';
 
 provide('openContact', showContact);
 provide('createContactComment', createContactComment);
@@ -430,4 +452,39 @@ function onDisabledCompany(payload) {
         getCompanyContacts(false);
     }
 }
+
+// tasks
+
+const isLoading = ref(false);
+
+const { createTaskWithTemplate, createTaskRelation } = useTaskManager();
+
+async function createCompanyTask() {
+    let userId;
+
+    if (COMPANY.value.consultant_id) {
+        userId = COMPANY.value.consultant_id;
+    }
+
+    const taskPayload = await createTaskWithTemplate({
+        title: `Компания ${getCompanyShortName(COMPANY.value)}`,
+        user_id: userId,
+        relations: [createTaskRelation('company', COMPANY.value.id)]
+    });
+
+    if (!taskPayload) return;
+
+    try {
+        isLoading.value = true;
+
+        const task = await api.task.create(taskPayload);
+
+        notify.success('Задача успешно создана!');
+    } finally {
+        isLoading.value = false;
+    }
+}
+
+const scheduleCallModalIsVisible = ref(false);
+const scheduleVisitModalIsVisible = ref(false);
 </script>

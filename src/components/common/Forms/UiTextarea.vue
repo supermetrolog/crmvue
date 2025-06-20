@@ -25,7 +25,7 @@
 import ValidationMessage from '@/components/common/Forms/VaildationMessage.vue';
 import { computed, onMounted, toRef, useTemplateRef, watch } from 'vue';
 import { useFormControlValidation } from '@/composables/useFormControlValidation.js';
-import { isNullish } from '@/utils/helpers/common/isNullish.js';
+import { isNullish } from '@/utils/helpers/common/isNullish.ts';
 import { isNotEmptyString } from '@/utils/helpers/string/isNotEmptyString.js';
 import UiField from '@/components/common/UI/UiField.vue';
 

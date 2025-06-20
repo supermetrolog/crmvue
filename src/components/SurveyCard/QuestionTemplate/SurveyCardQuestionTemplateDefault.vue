@@ -79,7 +79,7 @@ import { computed } from 'vue';
 import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
 import MessengerChatMessageAdditionsTask from '@/components/Messenger/Chat/Message/Additions/MessengerChatMessageAdditionsTask.vue';
 import File from '@/components/common/Forms/File.vue';
-import { isNullish } from '@/utils/helpers/common/isNullish.js';
+import { isNullish } from '@/utils/helpers/common/isNullish.ts';
 import SurveyCardCustom from '@/components/SurveyCard/SurveyCardCustom.vue';
 
 const props = defineProps({

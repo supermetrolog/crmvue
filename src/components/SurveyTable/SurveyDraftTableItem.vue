@@ -116,10 +116,14 @@
             <p v-if="survey.calls.length">{{ callsLabel }}</p>
             <p v-else class="text-grey">без звонка</p>
         </Td>
-        <Td sort="updated_at" :width="100">
-            <TableDateBlock :date="survey.updated_at" label="Дата обновления" />
+        <Td sort="updated_at" :width="100" class="position-relative">
+            <TableDateBlock
+                :date="survey.updated_at"
+                label="Дата обновления"
+                icon="fa-solid fa-pen"
+            />
         </Td>
-        <Td sort="created_at" :width="100">
+        <Td sort="created_at" :width="100" class="position-relative">
             <TableDateBlock :date="survey.created_at" label="Дата создания" />
         </Td>
     </Tr>

@@ -20,7 +20,7 @@
                             :rounded="false"
                             required
                             object-key="label"
-                            label="Дата планируемого звонка"
+                            label="Дата планируемой встречи"
                             class="col-12"
                         />
                         <UiFormDivider class="w-100" />
@@ -71,7 +71,7 @@
                         <UiTextarea
                             v-model="form.comment"
                             label="Комментарий"
-                            placeholder="Комментарий к запланированному звонку.."
+                            placeholder="Комментарий к запланированной встрече.."
                             auto-height
                             :min-height="60"
                             :max-height="200"
@@ -83,11 +83,8 @@
                     <DatePicker
                         v-model="form.start"
                         @change="form.startOption = CUSTOM_START_OPTION"
-                        @update-month-year="onUpdateMonthYear"
                         :min-date="new Date()"
                         :v="v$.form.start"
-                        :markers="events"
-                        :events-loading="eventsIsLoading"
                         size="40px"
                         label="Календарь"
                     />
@@ -114,7 +111,7 @@ import UiForm from '@/components/common/Forms/UiForm.vue';
 import UiFormGroup from '@/components/common/Forms/UiFormGroup.vue';
 import DatePicker from '@/components/common/Forms/DatePicker/DatePicker.vue';
 import RadioOptions from '@/components/common/Forms/RadioOptions.vue';
-import { computed, onBeforeMount, reactive, ref, watch } from 'vue';
+import { computed, onBeforeMount, reactive, ref, toRef, watch } from 'vue';
 import { useValidation } from '@/composables/useValidation.js';
 import { helpers, maxLength, minLength, required } from '@vuelidate/validators';
 import dayjs from 'dayjs';
@@ -133,8 +130,7 @@ import { useSearchContacts } from '@/composables/useSearchContacts.ts';
 import UiField from '@/components/common/UI/UiField.vue';
 import Loader from '@/components/common/Loader.vue';
 import { useNotify } from '@/utils/use/useNotify.js';
-import { useCalendarEvents } from '@/composables/useCalendarEvents.js';
-import { useDebounceFn } from '@vueuse/core';
+import { fromUtcToServer } from '@/utils/formatters/date.js';
 
 const emit = defineEmits(['close', 'created']);
 const props = defineProps({
@@ -149,28 +145,22 @@ const props = defineProps({
 });
 
 const title = computed(() => {
-    if (props.contact) {
-        return `Запланировать звонок | ${props.contact.full_name}`;
-    }
-
     if (props.company) {
-        return `Запланировать звонок | ${props.company.full_name}`;
+        return `Запланировать встречу | ${props.company.full_name}`;
     }
 
-    return 'Запланировать звонок';
+    return 'Запланировать встречу';
 });
-
-const currentCompanyId = computed(() => props.company?.id ?? props.contact?.company_id);
 
 const {
     searchContacts,
     filteredContacts: contacts,
     isLoading: contactsIsLoading
-} = useSearchContacts(currentCompanyId);
+} = useSearchContacts(toRef(() => props.company?.id));
 
 const form = reactive({
-    start: getPreparedStartDate(1, 'month'),
-    startOption: 6,
+    start: null,
+    startOption: null,
     title: generateTaskTitle(),
     comment: null,
     contact_id: props.contact?.id
@@ -272,11 +262,11 @@ const calendarIsActive = computed(() => Number(form.startOption) === CUSTOM_STAR
 
 function generateTaskTitle() {
     if (props.contact) {
-        return `Созвониться с ${props.contact.full_name} (комп. "${props.company.full_name}")`;
+        return `Встреча с ${props.contact.full_name} (комп. "${props.company.full_name}")`;
     }
 
     if (props.company) {
-        return `Созвониться c компанией "${props.company.full_name}"`;
+        return `Встреча с представителями комп. "${props.company.full_name}"`;
     }
 }
 
@@ -306,11 +296,11 @@ function formToPayload() {
     return {
         title: form.title,
         message: form.comment,
-        start: form.start,
-        end: dayjs(form.start).add(5, 'days').toDate(),
+        start: fromUtcToServer(form.start).toDate(),
+        end: fromUtcToServer(form.start).add(3, 'days').toDate(),
         user_id: currentUserId.value,
         relations: generateTaskRelations(),
-        type: 'scheduled_call'
+        type: 'scheduled_visit'
     };
 }
 
@@ -331,7 +321,7 @@ async function submit() {
         if (props.withMessage) response = await createTaskWithMessage(payload);
         else response = await createTask(payload);
 
-        notify.success('Звонок успешно запланирован');
+        notify.success('Встреча успешно запланирована');
 
         emit('created', response, payload);
         emit('close');
@@ -346,8 +336,8 @@ async function createTask(payload) {
 
 function generateMessagePayload() {
     const payload = {
-        message: `Запланировал звонок на ${dayjs(form.start).format('D.MM.YYYY')}`,
-        template: 'schedule-call'
+        message: `Запланирована встреча на ${dayjs(form.start).format('D.MM.YYYY')}`,
+        template: 'schedule-visit'
     };
 
     if (form.contact_id) payload.contact_ids = [form.contact_id];
@@ -369,24 +359,26 @@ onBeforeMount(() => {
     searchContacts();
 });
 
-// scheduled events
+// TODO: События на календаре
 
-const { loadEventsAround, events, isLoading: eventsIsLoading } = useCalendarEvents();
-
-const onUpdateMonthYear = useDebounceFn(({ month, year }) => {
-    loadEventsAround(dayjs().month(month).year(year));
-}, 400);
-
-const debouncedLoadEventsAround = useDebounceFn(loadEventsAround, 400);
-
-onBeforeMount(() => loadEventsAround(dayjs()));
-
-watch(
-    () => form.startOption,
-    value => {
-        if (value) {
-            debouncedLoadEventsAround(form.start);
-        }
-    }
-);
+// // scheduled events
+//
+// const { loadEventsAround, events, isLoading: eventsIsLoading } = useCalendarEvents();
+//
+// const onUpdateMonthYear = useDebounceFn(({ month, year }) => {
+//     loadEventsAround(dayjs().month(month).year(year));
+// }, 400);
+//
+// const debouncedLoadEventsAround = useDebounceFn(loadEventsAround, 400);
+//
+// onBeforeMount(() => loadEventsAround(dayjs()));
+//
+// watch(
+//     () => form.startOption,
+//     value => {
+//         if (value) {
+//             debouncedLoadEventsAround(form.start);
+//         }
+//     }
+// );
 </script>

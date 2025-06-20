@@ -1,4 +1,4 @@
-import { isArray } from '@/utils/helpers/array/isArray.js';
+import { isArray } from '@/utils/helpers/array/isArray.ts';
 import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
 
 export function isObject(value) {

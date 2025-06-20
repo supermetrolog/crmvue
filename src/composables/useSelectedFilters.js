@@ -3,10 +3,10 @@ import { toValue } from '@vueuse/core';
 import { useRoute, useRouter } from 'vue-router';
 import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
 import { isEmpty } from '@/utils/helpers/common/isEmpty.js';
-import { isArray } from '@/utils/helpers/array/isArray.js';
+import { isArray } from '@/utils/helpers/array/isArray.ts';
 import { isEmptyArray } from '@/utils/helpers/array/isEmptyArray.js';
 import { isEmptyObject } from '@/utils/helpers/object/isEmptyObject.js';
-import { isNullish } from '@/utils/helpers/common/isNullish.js';
+import { isNullish } from '@/utils/helpers/common/isNullish.ts';
 import { joinWithFilter } from '@/utils/helpers/array/joinWithFilter.js';
 import { useStore } from 'vuex';
 

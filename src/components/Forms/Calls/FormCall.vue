@@ -116,7 +116,7 @@ import UiFormDivider from '@/components/common/Forms/UiFormDivider.vue';
 import UiModal from '@/components/common/UI/UiModal.vue';
 import UiButton from '@/components/common/UI/UiButton.vue';
 import { useValidation } from '@/composables/useValidation.js';
-import { isNullish } from '@/utils/helpers/common/isNullish.js';
+import { isNullish } from '@/utils/helpers/common/isNullish.ts';
 import { useAuth } from '@/composables/useAuth.js';
 import { helpers, required } from '@vuelidate/validators';
 import { callStatus, callType } from '@/const/options/call.options.js';

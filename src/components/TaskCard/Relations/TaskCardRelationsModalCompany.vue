@@ -50,7 +50,7 @@ import Loader from '@/components/common/Loader.vue';
 import CompanyPicker from '@/components/common/Forms/CompanyPicker/CompanyPicker.vue';
 import { useSearchCompany } from '@/composables/useSearchCompany.js';
 import UiTextarea from '@/components/common/Forms/UiTextarea.vue';
-import { isNullish } from '@/utils/helpers/common/isNullish.js';
+import { isNullish } from '@/utils/helpers/common/isNullish.ts';
 import { useFormData } from '@/utils/use/useFormData.js';
 
 const emit = defineEmits(['create', 'close']);

@@ -9,7 +9,7 @@
                     :label="request.consultant.userProfile.short_name"
                     :size="40"
                 />
-                <UiDropdownActions v-if="$slots.menu">
+                <UiDropdownActions v-if="$slots.menu" :title="`Запрос #${request.id}`">
                     <template #trigger>
                         <UiDropdownActionsTrigger
                             label="Действия над запросом"

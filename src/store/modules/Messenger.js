@@ -10,7 +10,7 @@ import { taskOptions } from '@/const/options/task.options.js';
 import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
 import { isNumeric } from '@/utils/helpers/common/isNumeric.js';
 import { isNotEmptyString } from '@/utils/helpers/string/isNotEmptyString.js';
-import { isNullish } from '@/utils/helpers/common/isNullish.js';
+import { isNullish } from '@/utils/helpers/common/isNullish.ts';
 import { isPassiveContact } from '@/utils/helpers/models/contact.js';
 
 const needCacheMessage = (dialogID, asideID, panelID) => {

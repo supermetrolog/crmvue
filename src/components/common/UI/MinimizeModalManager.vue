@@ -50,7 +50,7 @@ import api from '@/api/api.js';
 import { useAuth } from '@/composables/useAuth.js';
 import { useDebounceFn, useDocumentVisibility, useIntervalFn, useLocalStorage } from '@vueuse/core';
 import { LOCALSTORAGE_PREFIX } from '@/services/localStorage.js';
-import { isNullish } from '@/utils/helpers/common/isNullish.js';
+import { isNullish } from '@/utils/helpers/common/isNullish.ts';
 import dayjs from 'dayjs';
 import { plural } from '@/utils/plural.js';
 import UiButton from '@/components/common/UI/UiButton.vue';

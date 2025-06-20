@@ -1,6 +1,5 @@
 <template>
     <UiModal
-        v-show="!isMinimized"
         ref="modal"
         v-model:visible="visibleModel"
         @close="$emit('close')"
@@ -10,6 +9,12 @@
         :can-be-closed="!isMinimized"
         :lock-scroll="false"
         :esc-close="false"
+        :class="{
+            minimized: isMinimized,
+            minimizing: isMinimizing,
+            expanding: isExpanding
+        }"
+        class="modal--minimize"
     >
         <template #header>
             <slot name="header" />
@@ -20,13 +25,13 @@
         <template v-if="canBeMinimized" #header-actions>
             <UiTooltipIcon
                 @click.prevent="minimize"
-                icon="fa-solid fa-minus"
+                icon="fa-solid fa-window-minimize"
                 class="icon"
                 tooltip="Свернуть окно"
             />
         </template>
         <template #default>
-            <slot />
+            <slot :minimized="isMinimized" />
         </template>
         <template v-if="$slots.footer" #footer>
             <slot name="footer" :close="close" />
@@ -43,16 +48,14 @@ import UiTooltipIcon from '@/components/common/UI/UiTooltipIcon.vue';
 import UiModal from '@/components/common/UI/UiModal.vue';
 import { useMinimizedModalManager } from '@/composables/useMinimizedModalManager.js';
 import { useModalScrollLock } from '@/composables/useModalScrollLock.js';
+import { useDebounceFn } from '@vueuse/core';
 
 const visibleModel = defineModel('visible');
 
 const emit = defineEmits(['close', 'closed', 'minimized', 'expanded']);
 
 const props = defineProps({
-    title: {
-        type: String,
-        required: true
-    },
+    title: String,
     minimizedTitle: {
         type: String,
         required: true
@@ -135,4 +138,25 @@ watch(isMinimized, value => {
 });
 
 defineExpose({ minimize, expand: expandModal, isMinimized });
+
+const isMinimizing = ref(false);
+const isExpanding = ref(false);
+
+const setMinimizing = useDebounceFn(value => {
+    isMinimizing.value = value;
+}, 1500);
+
+const setExpanding = useDebounceFn(value => {
+    isExpanding.value = value;
+}, 1500);
+
+watch(isMinimized, value => {
+    if (value) {
+        isMinimizing.value = true;
+        setMinimizing(false);
+    } else {
+        isExpanding.value = true;
+        setExpanding(false);
+    }
+});
 </script>

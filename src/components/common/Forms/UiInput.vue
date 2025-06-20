@@ -52,8 +52,8 @@ import { computed, onMounted, ref, shallowRef, toRef, watch } from 'vue';
 import { onClickOutside } from '@vueuse/core';
 import { useFormControlValidation } from '@/composables/useFormControlValidation.js';
 import { isNotEmptyString } from '@/utils/helpers/string/isNotEmptyString.js';
-import { isNullish } from '@/utils/helpers/common/isNullish.js';
-import { isArray } from '@/utils/helpers/array/isArray.js';
+import { isNullish } from '@/utils/helpers/common/isNullish.ts';
+import { isArray } from '@/utils/helpers/array/isArray.ts';
 import { isString } from '@/utils/helpers/string/isString.js';
 import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
 

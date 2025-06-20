@@ -65,6 +65,7 @@
                             @create-request-task="createRequestTask"
                             @create-survey-task="createSurveyTask"
                             @schedule-call="scheduleCall"
+                            @schedule-visit="scheduleVisit"
                             :companies="COMPANIES"
                             :loader="isLoading"
                         />
@@ -132,6 +133,12 @@
                 @created="onCreatedScheduledCall"
                 :company="scheduleCallCompany"
             />
+            <VisitScheduler
+                v-if="scheduleVisitModalIsVisible"
+                @close="closeScheduleVisitModal"
+                @created="onCreatedScheduledVisit"
+                :company="scheduleVisitCompany"
+            />
         </teleport>
     </section>
 </template>
@@ -150,7 +157,7 @@ import { useTableContent } from '@/composables/useTableContent.js';
 import { useRoute } from 'vue-router';
 import Spinner from '@/components/common/Spinner.vue';
 import { useMobile } from '@/composables/useMobile.js';
-import { isArray } from '@/utils/helpers/array/isArray.js';
+import { isArray } from '@/utils/helpers/array/isArray.ts';
 import { dayjsFromMoscow } from '@/utils/formatters/date.js';
 import UserFolders from '@/components/UserFolder/UserFolders.vue';
 import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
@@ -173,6 +180,7 @@ import FormCompanyDisable from '@/components/Forms/Company/FormCompanyDisable.vu
 import { useCompanyDisable } from '@/components/Company/useCompanyDisable.js';
 import { spliceById } from '@/utils/helpers/array/spliceById.js';
 import CallScheduler from '@/components/CallScheduler/CallScheduler.vue';
+import VisitScheduler from '@/components/VisitScheduler/VisitScheduler.vue';
 
 const route = useRoute();
 const store = useStore();
@@ -538,4 +546,23 @@ function onCompleteSurvey(payload) {
 }
 
 bus.on((_, payload) => onCompleteSurvey(payload));
+
+// visit
+
+const scheduleVisitModalIsVisible = ref(false);
+const scheduleVisitCompany = shallowRef(null);
+
+function scheduleVisit(company) {
+    scheduleVisitCompany.value = company;
+    scheduleVisitModalIsVisible.value = true;
+}
+
+function closeScheduleVisitModal() {
+    scheduleVisitModalIsVisible.value = false;
+}
+
+function onCreatedScheduledVisit(task) {
+    addCreatedTaskInCompany(scheduleVisitCompany.value, task);
+    closeScheduleVisitModal();
+}
 </script>

@@ -7,12 +7,25 @@
         :can-be-minimized="!survey"
         :close-on-outside-click="false"
         :minimized-title="title"
-        :title
         :width="1800"
         class="survey-form"
         custom-close
         show
     >
+        <template #header>
+            <template v-if="isEditMode">
+                <span>Редактирование</span>
+                <span>|</span>
+            </template>
+            <span>{{ companyName }}</span>
+            <span class="text-grey fs-3">
+                <span class="mr-1">|</span>
+                <span v-if="targetSurvey"
+                    >Опрос #{{ targetSurvey.id }} от {{ targetSurveyDate }}</span
+                >
+                <span v-else>Новый опрос</span>
+            </span>
+        </template>
         <template #before-body>
             <SurveyFormHeader
                 v-if="!isLoading && company"
@@ -130,7 +143,7 @@ import Spinner from '@/components/common/Spinner.vue';
 import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
 import SurveyFormStepper from '@/components/SurveyForm/SurveyFormStepper.vue';
 import { useAsync } from '@/composables/useAsync.js';
-import { isNullish } from '@/utils/helpers/common/isNullish.js';
+import { isNullish } from '@/utils/helpers/common/isNullish.ts';
 import { getCompanyName, getCompanyShortName } from '@/utils/formatters/models/company.js';
 import UiMinimizeModal from '@/components/common/UI/UiMinimizeModal.vue';
 import { contactOptions } from '@/const/options/contact.options.js';
@@ -146,6 +159,7 @@ import MessengerQuizFormWarningNoContacts from '@/components/Messenger/Quiz/Form
 import MessengerQuizFormWarningAlreadyCreated from '@/components/Messenger/Quiz/Form/Warning/MessengerQuizFormWarningAlreadyCreated.vue';
 import UiModal from '@/components/common/UI/UiModal.vue';
 import UiButton from '@/components/common/UI/UiButton.vue';
+import { toDateFormat } from '@/utils/formatters/date.js';
 
 const emit = defineEmits(['close', 'minimized']);
 const props = defineProps({
@@ -170,6 +184,14 @@ const title = computed(() => {
     }
 
     return 'Опрос клиента';
+});
+
+const companyName = computed(() => {
+    if (isNotNullish(company.value)) {
+        return getCompanyName(company.value);
+    }
+
+    return null;
 });
 
 // company
@@ -422,6 +444,14 @@ function getTaskRelations() {
 }
 
 const targetSurvey = computed(() => props.survey ?? surveyDraft.value);
+
+const targetSurveyDate = computed(() => {
+    if (!targetSurvey.value) return null;
+    return toDateFormat(
+        targetSurvey.value.completed_at ?? targetSurvey.value.created_at,
+        'D.MM.YY'
+    );
+});
 
 function tryAddSurveyTask(task) {
     if (targetSurvey.value) {

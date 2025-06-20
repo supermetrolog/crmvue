@@ -523,7 +523,7 @@ import { objectPurposesWithSectionsOptions } from '@/const/options/object.option
 import { validationRulesForRequest } from '@/validators/rules/request.js';
 import { computed, onBeforeMount, reactive, ref, shallowRef, watch } from 'vue';
 import { useSearchCompany } from '@/composables/useSearchCompany.js';
-import { useSearchContacts } from '@/composables/useSearchContacts.js';
+import { useSearchContacts } from '@/composables/useSearchContacts.ts';
 import Switch from '@/components/common/Forms/Switch.vue';
 import RadioOptions from '@/components/common/Forms/RadioOptions.vue';
 import CheckboxOptions from '@/components/common/Forms/CheckboxOptions.vue';
@@ -533,7 +533,7 @@ import Tab from '@/components/common/Tabs/Tab.vue';
 import VueEditor from '@/components/common/Forms/VueEditor.vue';
 import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
 import api from '@/api/api.js';
-import { isNullish } from '@/utils/helpers/common/isNullish.js';
+import { isNullish } from '@/utils/helpers/common/isNullish.ts';
 import CompanyPicker from '@/components/common/Forms/CompanyPicker/CompanyPicker.vue';
 import ConsultantPicker from '@/components/common/Forms/ConsultantPicker/ConsultantPicker.vue';
 import { useConsultantsOptions } from '@/composables/options/useConsultantsOptions.js';

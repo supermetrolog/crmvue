@@ -11,7 +11,7 @@ import { menu } from '@/const/menu.js';
 import SideBarMenuItem from '@/components/SideBar/SideBarMenuItem.vue';
 import { computed } from 'vue';
 import { useAuth } from '@/composables/useAuth.js';
-import { isNullish } from '@/utils/helpers/common/isNullish.js';
+import { isNullish } from '@/utils/helpers/common/isNullish.ts';
 
 const { currentUser } = useAuth();
 

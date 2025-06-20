@@ -33,7 +33,7 @@
                 with-icon
             >
                 <i class="fa-solid fa-phone-slash" />
-                <span>Требуется звонок!</span>
+                <span>Не дозвонились!</span>
             </DashboardChip>
             <DashboardChip
                 v-else

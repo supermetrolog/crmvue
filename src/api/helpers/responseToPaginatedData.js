@@ -1,4 +1,4 @@
-import { responseToData } from '@/api/helpers/responseToData.js';
+import { responseToData } from '@/api/helpers/responseToData.ts';
 
 /**
  * @typedef PaginationData

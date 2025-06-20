@@ -4,6 +4,25 @@ import { responseToPaginatedData } from '@/api/helpers/responseToPaginatedData.j
 
 const URL = '/contacts';
 
+interface CompanyContactPhone {
+    phone: string;
+}
+
+interface CompanyContactCall {
+    id: number;
+}
+
+export interface CompanyContact {
+    id: number;
+    type: number;
+    full_name: string;
+    isMain: number;
+    position_unknown: number;
+    position: number | null;
+    phones: CompanyContactPhone[];
+    calls: CompanyContactCall[];
+}
+
 export default {
     async getByCompany(companyId) {
         const expand =
@@ -15,7 +34,8 @@ export default {
         const response = await axios.get(`${URL}/company-contacts/${companyId}`, {
             params: { expand, sort }
         });
-        return responseToData(response);
+
+        return responseToData<CompanyContact[]>(response);
     },
     async get(id) {
         const response = await axios.get(`${URL}/${id}`);

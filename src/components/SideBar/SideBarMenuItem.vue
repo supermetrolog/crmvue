@@ -49,7 +49,7 @@
 <script setup>
 import { Tippy } from 'vue-tippy';
 import { computed } from 'vue';
-import { isNullish } from '@/utils/helpers/common/isNullish.js';
+import { isNullish } from '@/utils/helpers/common/isNullish.ts';
 import { useAuth } from '@/composables/useAuth.js';
 import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
 

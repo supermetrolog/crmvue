@@ -16,7 +16,7 @@ import MultiSelect from '@/components/common/Forms/MultiSelect.vue';
 import { plural } from '@/utils/plural.js';
 import { computed } from 'vue';
 import { isObject } from '@/utils/helpers/object/isObject.js';
-import { isArray } from '@/utils/helpers/array/isArray.js';
+import { isArray } from '@/utils/helpers/array/isArray.ts';
 
 const modelValue = defineModel();
 
