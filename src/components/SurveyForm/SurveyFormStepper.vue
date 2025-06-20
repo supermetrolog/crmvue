@@ -622,11 +622,6 @@ function createSurveyPayload() {
         );
     });
 
-    if (isNullish(targetContact)) {
-        notify.info('Свяжитесь с представителем компании!', 'Создание опроса');
-        throw new Error('No completed call in Survey');
-    }
-
     const { questionAnswers: objectsQuestionAnswers } = createSurveyObjectsPayload();
     const { questionAnswers: requestQuestionAnswers } = createSurveyRequestsPayload();
     const { questionAnswers: otherQuestionAnswers } = createSurveyQuestionsPayload();
@@ -634,7 +629,7 @@ function createSurveyPayload() {
     return {
         survey: {
             user_id: currentUserId.value,
-            contact_id: targetContact.contact_id,
+            contact_id: targetContact?.contact_id,
             chat_member_id: props.chatMemberId,
             calls: createCallsForm(callsPayload.filter(form => isNotNullish(form.available))),
             question_answers: [
