@@ -16,6 +16,7 @@
                                 icon="fa-solid fa-eye"
                             />
                             <UiDropdownActionsButton
+                                v-if="canBeEdit"
                                 @handle="$emit('edit-survey')"
                                 label="Редактировать"
                                 icon="fa-solid fa-pen"
@@ -153,6 +154,9 @@ import UiDropdownActions from '@/components/common/UI/DropdownActions/UiDropdown
 import { useRouter } from 'vue-router';
 import { plural } from '@/utils/plural.js';
 import UiDropdownActionsGroup from '@/components/common/UI/DropdownActions/UiDropdownActionsGroup.vue';
+import { useAuth } from '@/composables/useAuth.js';
+import { dayjsFromMoscow } from '@/utils/formatters/date.js';
+import dayjs from 'dayjs';
 
 defineEmits(['to-chat', 'open-survey', 'edit-survey']);
 const props = defineProps({
@@ -209,4 +213,15 @@ const companyUrl = computed(() => {
 const callsLabel = computed(() =>
     plural(props.survey.calls.length, '%d звонок', '%d звонка', '%d звонков')
 );
+
+const { currentUserId } = useAuth();
+
+const canBeEdit = computed(() => {
+    if (props.survey.user_id !== currentUserId.value) return false;
+    if (props.survey.status === 'draft') return true;
+    return (
+        dayjs().diff(dayjsFromMoscow(props.survey.completed_at ?? props.survey.updated_at), 'day') <
+        31
+    );
+});
 </script>
