@@ -370,7 +370,7 @@ async function onObjectSold(object) {
     if (!taskPayload) return;
 
     const messagePayload = {
-        message: `<b>Объект продан!</b> Компания ${object.company_name} больше не владелец`,
+        message: `<b>Объект продан!</b> Комп. "${companyName}" больше не владелец`,
         template: 'object-sold'
     };
 
