@@ -6,7 +6,7 @@
             @to-chat="$emit('to-chat')"
             @create-task="$emit('create-task')"
             @schedule-call="scheduleCallModalIsVisible = true"
-            @show-task="showTaskPreview"
+            @schedule-visit="scheduleVisitModalIsVisible = true"
             :company
             :last-surveys
             :surveys-count
@@ -19,12 +19,14 @@
                 @created="onCreatedScheduledCall"
                 @close="closeScheduleCallModal"
                 :company
+                :relations="schedulerRelations"
             />
-            <TaskPreview
-                v-model:visible="taskPreviewIsVisible"
-                @closed="currentTask = null"
-                @updated="onUpdatedTask"
-                :task-id="currentTask?.id"
+            <VisitScheduler
+                v-if="scheduleVisitModalIsVisible"
+                @created="onCreatedScheduledVisit"
+                @close="closeScheduleVisitModal"
+                :company
+                :relations="schedulerRelations"
             />
         </teleport>
     </div>
@@ -32,8 +34,9 @@
 <script setup>
 import SurveyFormHeaderCompany from '@/components/SurveyForm/SurveyFormHeaderCompany.vue';
 import CallScheduler from '@/components/CallScheduler/CallScheduler.vue';
-import { ref } from 'vue';
-import TaskPreview from '@/components/TaskPreview/TaskPreview.vue';
+import { computed, ref } from 'vue';
+import VisitScheduler from '@/components/VisitScheduler/VisitScheduler.vue';
+import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
 
 const emit = defineEmits([
     'update-logo',
@@ -59,6 +62,28 @@ const props = defineProps({
     survey: Object
 });
 
+const schedulerRelations = computed(() => {
+    if (isNotNullish(props.survey)) {
+        return [{ entity_type: 'survey', entity_id: props.survey.id }];
+    }
+
+    return [];
+});
+
+function tryAddTaskToSurvey(task) {
+    if (!props.survey) return;
+
+    if (props.survey.tasks) {
+        // eslint-disable-next-line vue/no-mutating-props
+        props.survey.tasks.push(task);
+    } else {
+        // eslint-disable-next-line vue/no-mutating-props
+        props.survey.tasks = [task];
+    }
+}
+
+// call
+
 const scheduleCallModalIsVisible = ref(false);
 
 function closeScheduleCallModal() {
@@ -68,29 +93,21 @@ function closeScheduleCallModal() {
 function onCreatedScheduledCall(task, payload) {
     emit('call-scheduled', payload.start);
 
-    if (props.survey.tasks) {
-        // eslint-disable-next-line vue/no-mutating-props
-        props.survey.tasks.push(task);
-    } else {
-        // eslint-disable-next-line vue/no-mutating-props
-        props.survey.tasks = [task];
-    }
+    tryAddTaskToSurvey(task);
 
     closeScheduleCallModal();
 }
 
-// task preview
+// visit
 
-const currentTask = ref(null);
-const taskPreviewIsVisible = ref(false);
+const scheduleVisitModalIsVisible = ref(false);
 
-function showTaskPreview(task) {
-    currentTask.value = task;
-    taskPreviewIsVisible.value = true;
+function closeScheduleVisitModal() {
+    scheduleVisitModalIsVisible.value = false;
 }
 
-function onUpdatedTask(payload) {
-    Object.assign(currentTask.value, payload);
-    currentTask.value = null;
+function onCreatedScheduledVisit(task) {
+    tryAddTaskToSurvey(task);
+    closeScheduleVisitModal();
 }
 </script>

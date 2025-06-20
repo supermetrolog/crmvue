@@ -1,4 +1,4 @@
-import { isNullish } from '@/utils/helpers/common/isNullish.js';
+import { isNullish } from '@/utils/helpers/common/isNullish.ts';
 import { isEmptyArray } from '@/utils/helpers/array/isEmptyArray.js';
 import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
 

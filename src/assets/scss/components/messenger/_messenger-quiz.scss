@@ -799,6 +799,8 @@
             font-weight: 500;
 
             & > .modal__close {
+                top: 10px;
+                right: 10px;
                 color: #fff !important;
             }
         }
@@ -821,7 +823,7 @@
         padding: 10px 15px 5px;
         border-bottom: 1px solid rgba(0, 0, 0, .1);
         overflow-y: auto;
-        height: 142px;
+        height: 157px;
         flex-shrink: 0;
         scrollbar-gutter: stable;
     }
@@ -885,13 +887,30 @@
         overflow-x: visible;
         overflow-y: auto;
     }
+
+    &__button {
+        background-color: #F5F5F5;
+        color: #2c2c2c;
+        box-shadow: none;
+        font-size: 15px;
+
+        &.danger {
+            background-color: #f93154;
+            color: #fff;
+        }
+    }
 }
 
 .survey-form-header-company {
     position: relative;
 
+    .company-short-card {
+        gap: 20px;
+    }
+
     .company-preview-tab__description {
         opacity: .6;
+        font-style: italic;
         @include mixins.transition(opacity);
 
         &:hover {

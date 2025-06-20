@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { responseToPaginatedData } from '@/api/helpers/responseToPaginatedData.js';
-import { responseToData } from '@/api/helpers/responseToData.js';
+import { responseToData } from '@/api/helpers/responseToData.ts';
 
 const URL = '/company-events-log';
 

@@ -23,8 +23,8 @@ import api from '@/api/api.js';
 import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
 import SurveyQuestionCompany from '@/components/Survey/QuestionCompany/SurveyQuestionCompany.vue';
 import { getCompanyName } from '@/utils/formatters/models/company.js';
-import { isNullish } from '@/utils/helpers/common/isNullish.js';
-import { isArray } from '@/utils/helpers/array/isArray.js';
+import { isNullish } from '@/utils/helpers/common/isNullish.ts';
+import { isArray } from '@/utils/helpers/array/isArray.ts';
 import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
 
 const props = defineProps({

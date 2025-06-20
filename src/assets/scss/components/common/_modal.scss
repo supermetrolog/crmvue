@@ -285,7 +285,7 @@
         }
 
         &.expanding {
-            animation: move-modal var(--animation-time) ease reverse;
+            z-index: 4000;
 
             .modal__container {
                 height: 36px;

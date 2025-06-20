@@ -1,6 +1,6 @@
 import api from '@/api/api';
 import { notify } from '@kyvg/vue3-notification';
-import { isNullish } from '@/utils/helpers/common/isNullish.js';
+import { isNullish } from '@/utils/helpers/common/isNullish.ts';
 import { plural } from '@/utils/plural.js';
 
 function viewNotify(data) {

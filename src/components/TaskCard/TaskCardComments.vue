@@ -98,7 +98,7 @@ import { useNotify } from '@/utils/use/useNotify.js';
 import Loader from '@/components/common/Loader.vue';
 import Spinner from '@/components/common/Spinner.vue';
 import InfiniteLoading from 'v3-infinite-loading';
-import { isNullish } from '@/utils/helpers/common/isNullish.js';
+import { isNullish } from '@/utils/helpers/common/isNullish.ts';
 import { spliceById } from '@/utils/helpers/array/spliceById.js';
 import File from '@/components/common/Forms/File.vue';
 import FileInput from '@/components/common/Forms/FileInput.vue';

@@ -1,7 +1,7 @@
 <template>
     <Stepper
         v-model:step="step"
-        @complete="submit"
+        @complete="completeSurvey"
         @update:step="onUpdateStep"
         :v="v$.form"
         :show-progress="false"
@@ -11,8 +11,8 @@
         footer-class="survey-form__footer"
         :disabled="isCreating"
     >
-        <template #body>
-            <Loader v-if="isCreating || surveyIsUpdating" label="Сохранение опроса.." />
+        <template #after-navigation>
+            <SurveyFormStepperSummary :company :survey="currentSurvey" />
         </template>
         <template #1>
             <SurveyFormCalls
@@ -54,9 +54,6 @@
                 :company
             />
         </template>
-        <template #5>
-            <SurveyFormComment v-model="form.comment" :v="v$.form.comment" />
-        </template>
         <template #footer="{ complete }">
             <AnimationTransition :speed="0.5">
                 <UiButton
@@ -80,6 +77,35 @@
                 </UiButton>
             </AnimationTransition>
         </template>
+        <template #after>
+            <Loader v-if="isCreating || surveyIsUpdating" label="Сохранение опроса.." />
+            <UiModal
+                v-model:visible="commentModalIsVisible"
+                @closed="isCancelling = false"
+                title="Комментарий по результатам"
+                :width="600"
+            >
+                <UiForm>
+                    <UiFormGroup>
+                        <VueEditor
+                            v-model="form.comment"
+                            :v="v$.form.comment"
+                            :min-height="150"
+                            :max-height="400"
+                            :toolbar="false"
+                            placeholder="Что выяснили? Какое положение по компании? Опишите ситуацию.."
+                            class="col-12"
+                        />
+                    </UiFormGroup>
+                </UiForm>
+                <template #actions="{ close }">
+                    <UiButton @click="completeOrCancel" icon="fa-solid fa-check" color="success">
+                        Сохранить опрос
+                    </UiButton>
+                    <UiButton @click="close" icon="fa-solid fa-ban" color="light">Отмена</UiButton>
+                </template>
+            </UiModal>
+        </template>
     </Stepper>
 </template>
 <script setup>
@@ -90,7 +116,7 @@ import { useEventBus, useIntervalFn } from '@vueuse/core';
 import api from '@/api/api.js';
 import { surveyConfig } from '@/configs/survey.config.js';
 import { useAuth } from '@/composables/useAuth.js';
-import { isNullish } from '@/utils/helpers/common/isNullish.js';
+import { isNullish } from '@/utils/helpers/common/isNullish.ts';
 import UiButton from '@/components/common/UI/UiButton.vue';
 import { useAsync } from '@/composables/useAsync.js';
 import { useSharedWindowFocus } from '@/composables/useSharedWindowFocus.js';
@@ -109,13 +135,16 @@ import {
     CONTACT_CALL_REASONS
 } from '@/components/MessengerQuiz/useMessengerQuiz.js';
 import { useConfirm } from '@/composables/useConfirm.js';
-import { messenger } from '@/const/messenger.js';
 import { captureException } from '@sentry/vue';
 import dayjs from 'dayjs';
 import { getCompanyShortName } from '@/utils/formatters/models/company.js';
 import Loader from '@/components/common/Loader.vue';
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
-import SurveyFormComment from '@/components/SurveyForm/SurveyFormComment.vue';
+import UiModal from '@/components/common/UI/UiModal.vue';
+import UiForm from '@/components/common/Forms/UiForm.vue';
+import UiFormGroup from '@/components/common/Forms/UiFormGroup.vue';
+import VueEditor from '@/components/common/Forms/VueEditor.vue';
+import SurveyFormStepperSummary from '@/components/SurveyForm/SurveyFormStepperSummary.vue';
 
 function toBool(value) {
     if (typeof value === 'string') return value === 'true';
@@ -153,9 +182,14 @@ const props = defineProps({
 });
 
 const currentSurveyId = computed(() => {
-    if (isNotNullish(props.survey)) return props.survey.id;
-    if (isNotNullish(props.draft)) return props.draft.id;
+    if (isNotNullish(currentSurvey.value)) return currentSurvey.value.id;
 
+    return null;
+});
+
+const currentSurvey = computed(() => {
+    if (isNotNullish(props.survey)) return props.survey;
+    if (isNotNullish(props.draft)) return props.draft;
     return null;
 });
 
@@ -318,11 +352,6 @@ const steps = reactive([
             return `Прочее (${otherQuestions.value.length})`;
         }),
         disabled: stepsIsDisabled
-    },
-    {
-        name: 'comment',
-        title: 'Комментарий',
-        disabled: stepsIsDisabled
     }
 ]);
 
@@ -366,8 +395,10 @@ function requiredObjectsValidationHandler(value) {
     });
 }
 
+const activeRequests = computed(() => requests.value.filter(request => request.status === 1));
+
 function requiredRequestsValidationHandler(value) {
-    if (requests.value.length === 0) return true;
+    if (activeRequests.value.length === 0) return true;
 
     return Object.values(value.current).every(requestForm => {
         return isNotNullish(requestForm.answer) && Number(requestForm.answer) !== 0;
@@ -631,73 +662,6 @@ async function findSurveyMessage(surveyId, toChatMemberId) {
     return null;
 }
 
-async function createRelatedSurveys(payload, contactId, parentSurvey) {
-    const payloadWithAnswers = payload.filter(offer => Number(offer.answer) === 1);
-    const payloadWithoutUpdates = payload.filter(offer => Number(offer.answer) === 2);
-
-    const chatMembers = await api.messenger.getChats({
-        object_ids: payload.map(element => element.object_id),
-        model_type: messenger.dialogTypes.OBJECT,
-        company_id: props.company.id
-    });
-
-    const chatMembersMap = chatMembers.data.reduce((acc, element) => {
-        if (acc[element.model.object_id]) acc[element.model.object_id].push(element.id);
-        else acc[element.model.object_id] = [element.id];
-
-        return acc;
-    }, {});
-
-    const payloadWithAnswersForm = payloadWithAnswers.reduce((acc, element) => {
-        if (chatMembersMap[element.object_id]) {
-            acc.push(
-                ...chatMembersMap[element.object_id].map(chatMemberId => ({
-                    chat_member_id: chatMemberId,
-                    answers: element.offers.map(form => ({
-                        question_answer_id: form.question_answer_id,
-                        value: form.value
-                    }))
-                }))
-            );
-        }
-
-        return acc;
-    }, []);
-
-    const payloadWithoutUpdatesForm = payloadWithoutUpdates.reduce((acc, element) => {
-        if (chatMembersMap[element.object_id]) {
-            acc.push(...chatMembersMap[element.object_id]);
-        }
-
-        return acc;
-    }, []);
-
-    await Promise.allSettled(
-        payloadWithAnswersForm.map(element =>
-            api.survey.create({
-                contact_id: contactId,
-                user_id: currentUserId.value,
-                chat_member_id: element.chat_member_id,
-                question_answers: element.answers,
-                related_survey_id: parentSurvey.id,
-                call_ids: parentSurvey.calls.map(call => call.id)
-            })
-        )
-    );
-
-    await Promise.allSettled(
-        payloadWithoutUpdatesForm.map(element =>
-            api.survey.create({
-                contact_id: contactId,
-                user_id: currentUserId.value,
-                chat_member_id: element.chat_member_id,
-                related_survey_id: parentSurvey.id,
-                call_ids: parentSurvey.calls.map(call => call.id)
-            })
-        )
-    );
-}
-
 function generateTaskPayload(title, additional = {}) {
     return {
         start: dayjs().toDate(),
@@ -849,7 +813,14 @@ async function submit() {
     bus.emit('completed', { companyId: props.company.id });
 }
 
-async function cancelSurvey() {
+const isCancelling = ref(false);
+
+function cancelSurvey() {
+    isCancelling.value = true;
+    commentModalIsVisible.value = true;
+}
+
+async function cancel() {
     const confirmed = await confirm(
         'Завершение опроса',
         'Вы попробовали связаться со всеми контактами компании? Опрос будет отмечен как неудавшийся.'
@@ -858,17 +829,7 @@ async function cancelSurvey() {
 
     isCreating.value = true;
 
-    const { payload: callsPayload, questionAnswers: callsQuestionAnswers } =
-        createSurveyCallsPayload();
-
-    const payload = {
-        user_id: currentUserId.value,
-        chat_member_id: props.chatMemberId,
-        calls: createCallsForm(callsPayload.filter(form => isNotNullish(form.available))),
-        question_answers: callsQuestionAnswers,
-        comment: form.value.comment,
-        type: 'advanced'
-    };
+    const { survey: surveyPayload, calls } = createSurveyPayload();
 
     let surveyId = props.draft?.id;
 
@@ -877,10 +838,8 @@ async function cancelSurvey() {
         surveyId = response.id;
     }
 
-    await api.survey.updateWithAnswers(surveyId, payload);
+    await api.survey.updateWithAnswers(surveyId, surveyPayload);
     await api.survey.cancel(surveyId);
-
-    const calls = callsPayload.filter(form => isNotNullish(form.available));
 
     let surveyMessage;
 
@@ -918,6 +877,11 @@ async function cancelSurvey() {
     isCreating.value = false;
     emit('canceled');
     bus.emit('canceled', { companyId: props.company.id });
+}
+
+function completeOrCancel() {
+    if (isCancelling.value) cancel();
+    else submit();
 }
 
 // objects
@@ -1068,4 +1032,18 @@ async function fetchQuestions() {
 
     questionsIsLoading.value = false;
 }
+
+// complete
+
+const commentModalIsVisible = ref(false);
+
+function completeSurvey() {
+    commentModalIsVisible.value = true;
+}
+
+// calls
+
+const callTasks = computed(() => {
+    return currentSurvey.value.tasks.filter(task => task.type === 'scheduled_call');
+});
 </script>

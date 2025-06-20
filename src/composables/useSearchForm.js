@@ -2,7 +2,7 @@ import { onBeforeMount, onScopeDispose, reactive, ref, unref, watch } from 'vue'
 import { noop } from '@vueuse/core';
 import { useRoute, useRouter } from 'vue-router';
 import { toCleanObject } from '@/utils/helpers/object/toCleanObjects.js';
-import { isArray } from '@/utils/helpers/array/isArray.js';
+import { isArray } from '@/utils/helpers/array/isArray.ts';
 import { isObject } from '@/utils/helpers/object/isObject.js';
 import { cloneObject } from '@/utils/helpers/object/cloneObject.js';
 import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';

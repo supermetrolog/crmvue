@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { responseToData } from '@/api/helpers/responseToData.js';
+import { responseToData } from '@/api/helpers/responseToData.ts';
 import { responseToPaginatedData } from '@/api/helpers/responseToPaginatedData.js';
 
 const URL = '/notifications';

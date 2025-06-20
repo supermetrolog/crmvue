@@ -3,7 +3,7 @@ import { computed, ref } from 'vue';
 import api from '@/api/api.js';
 import { useAuth } from '@/composables/useAuth.js';
 import { spliceById } from '@/utils/helpers/array/spliceById.js';
-import { isNullish } from '@/utils/helpers/common/isNullish.js';
+import { isNullish } from '@/utils/helpers/common/isNullish.ts';
 import { useCachedAsyncFunction } from '@/utils/use/useCachedAsyncFunction.js';
 import { useNotify } from '@/utils/use/useNotify.js';
 

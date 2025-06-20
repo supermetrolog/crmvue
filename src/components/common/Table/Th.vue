@@ -125,7 +125,7 @@ import { DropdownContent } from 'v-dropdown';
 import VDropdown from '@/components/common/Dropdown/VDropdown.vue';
 import UiButton from '@/components/common/UI/UiButton.vue';
 import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
-import { isNullish } from '@/utils/helpers/common/isNullish.js';
+import { isNullish } from '@/utils/helpers/common/isNullish.ts';
 import MultiSelect from '@/components/common/Forms/MultiSelect.vue';
 import { isString } from '@/utils/helpers/string/isString.js';
 import RadioChip from '@/components/common/Forms/RadioChip.vue';

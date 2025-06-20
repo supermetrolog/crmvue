@@ -17,7 +17,7 @@ import { computed } from 'vue';
 import { isNotEmptyString } from '@/utils/helpers/string/isNotEmptyString.js';
 import { isString } from '@/utils/helpers/string/isString.js';
 import { isNumber } from '@/utils/helpers/number/isNumber.js';
-import { isNullish } from '@/utils/helpers/common/isNullish.js';
+import { isNullish } from '@/utils/helpers/common/isNullish.ts';
 
 defineEmits(['click']);
 const props = defineProps({

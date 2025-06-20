@@ -240,7 +240,7 @@ import { validationRulesForEquipment } from '@/validators/rules/equipment.js';
 import { computed, reactive, shallowRef, toRef } from 'vue';
 import { useSearchAddress } from '@/composables/useSearchAddress.js';
 import { useSearchCompany } from '@/composables/useSearchCompany.js';
-import { useSearchContacts } from '@/composables/useSearchContacts.js';
+import { useSearchContacts } from '@/composables/useSearchContacts.ts';
 import Switch from '@/components/common/Forms/Switch.vue';
 import VueEditor from '@/components/common/Forms/VueEditor.vue';
 import { useNotification } from '@kyvg/vue3-notification';

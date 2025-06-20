@@ -30,7 +30,7 @@ import AnimationTransition from '@/components/common/AnimationTransition.vue';
 import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
 import { useRoute } from 'vue-router';
 import { useAuth } from '@/composables/useAuth.js';
-import { isArray } from '@/utils/helpers/array/isArray.js';
+import { isArray } from '@/utils/helpers/array/isArray.ts';
 
 const { currentUser } = useAuth();
 const route = useRoute();

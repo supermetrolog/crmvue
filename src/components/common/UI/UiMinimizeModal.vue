@@ -25,7 +25,7 @@
         <template v-if="canBeMinimized" #header-actions>
             <UiTooltipIcon
                 @click.prevent="minimize"
-                icon="fa-solid fa-minus"
+                icon="fa-solid fa-window-minimize"
                 class="icon"
                 tooltip="Свернуть окно"
             />
@@ -55,10 +55,7 @@ const visibleModel = defineModel('visible');
 const emit = defineEmits(['close', 'closed', 'minimized', 'expanded']);
 
 const props = defineProps({
-    title: {
-        type: String,
-        required: true
-    },
+    title: String,
     minimizedTitle: {
         type: String,
         required: true

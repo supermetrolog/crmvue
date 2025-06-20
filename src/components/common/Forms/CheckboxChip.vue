@@ -35,7 +35,7 @@
 <script setup>
 import { useFormControlValidation } from '@/composables/useFormControlValidation.js';
 import { computed, toRef } from 'vue';
-import { isNullish } from '@/utils/helpers/common/isNullish.js';
+import { isNullish } from '@/utils/helpers/common/isNullish.ts';
 
 const modelValue = defineModel({ type: [Array, Number, String, Boolean] });
 const emit = defineEmits(['change', 'icon-clicked']);

@@ -103,7 +103,7 @@ import UiButton from '@/components/common/UI/UiButton.vue';
 import { computed, onMounted, ref, watch } from 'vue';
 import { useFileDialog } from '@vueuse/core';
 import { getApiObjects } from '@/utils/url.js';
-import { isArray } from '@/utils/helpers/array/isArray.js';
+import { isArray } from '@/utils/helpers/array/isArray.ts';
 import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
 
 const compressionOptions = {
@@ -334,6 +334,7 @@ defineExpose({ clear, clearAll, open });
 .flip-list-move {
     transition: transform 0.5s;
 }
+
 .no-move {
     transition: transform 0s;
 }

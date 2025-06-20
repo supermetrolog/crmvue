@@ -91,7 +91,7 @@
     vertical-align: top;
 
     td {
-        padding: 10px!important;
+        padding: 10px !important;
     }
 
     &__id {
@@ -160,7 +160,7 @@
     }
 
     &__message {
-        align-items: flex-start!important;
+        align-items: flex-start !important;
         cursor: pointer;
         @include mixins.transition(background-color);
 
@@ -204,7 +204,7 @@
     }
 
     &__date {
-        width: 170px;
+        width: 180px;
         min-width: 170px;
     }
 
@@ -248,7 +248,7 @@
     @include mixins.transition(opacity);
 
     &__side {
-        color: gray!important;
+        color: gray !important;
     }
 
     &:hover {
@@ -368,6 +368,7 @@ tr.CompanyTableEven {
 
     &__tab {
         height: 30px;
+        flex-shrink: 0;
 
         &.danger {
             color: #c93a19
@@ -405,7 +406,14 @@ tr.CompanyTableEven {
 
     &__tabs {
         margin-bottom: 5px;
+        overflow-x: auto;
+        padding: 3px;
         @include mixins.flex-box($gap: 8px);
+
+        &::-webkit-scrollbar {
+            height: 3px;
+            background-color: lighten(variables.$color_grey, 30);
+        }
     }
 
     &__content {

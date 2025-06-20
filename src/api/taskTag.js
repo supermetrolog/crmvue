@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { responseToData } from '@/api/helpers/responseToData.js';
+import { responseToData } from '@/api/helpers/responseToData.ts';
 import { responseHasStatus } from '@/api/helpers/responseHasStatus.js';
 import { STATUS_SUCCESS } from '@/api/helpers/statuses.js';
 

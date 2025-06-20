@@ -13,6 +13,10 @@ export const useTaskManager = createSharedComposable(() => {
     const { show } = useAsyncPopup('taskCreator');
     const store = useStore();
 
+    function createTaskRelation(type, id) {
+        return { entity_type: type, entity_id: id };
+    }
+
     async function createTaskWithTemplate(template = {}) {
         const {
             tags = [],
@@ -51,6 +55,7 @@ export const useTaskManager = createSharedComposable(() => {
 
     return {
         open: show,
-        createTaskWithTemplate
+        createTaskWithTemplate,
+        createTaskRelation
     };
 });

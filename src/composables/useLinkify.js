@@ -4,7 +4,7 @@ import { useNotify } from '@/utils/use/useNotify.js';
 import linkifyHtml from 'linkify-html';
 import { find as linkifyFind } from 'linkifyjs';
 import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
-import { isNullish } from '@/utils/helpers/common/isNullish.js';
+import { isNullish } from '@/utils/helpers/common/isNullish.ts';
 
 let lastCopiedNode = null;
 

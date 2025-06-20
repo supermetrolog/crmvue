@@ -1,6 +1,6 @@
-import { isArray } from '@/utils/helpers/array/isArray.js';
+import { isArray } from '@/utils/helpers/array/isArray.ts';
 import { isEmptyArray } from '@/utils/helpers/array/isEmptyArray.js';
-import { isNullish } from '@/utils/helpers/common/isNullish.js';
+import { isNullish } from '@/utils/helpers/common/isNullish.ts';
 import { isString } from '@/utils/helpers/string/isString.js';
 import { isEmptyString } from '@/utils/helpers/string/isEmptyString.js';
 
