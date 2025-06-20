@@ -2,8 +2,8 @@
 @use "../../../utils/variables";
 
 .ui-dropdown-actions {
-    border: none!important;
-    box-shadow: 0 1px 5px #0003,0 2px 2px #00000024,0 3px 1px -2px #0000001f!important;
+    border: none !important;
+    box-shadow: 0 1px 5px #0003, 0 2px 2px #00000024, 0 3px 1px -2px #0000001f !important;
 
     &__menu {
         @include mixins.flex-box($d: column, $a: start);
@@ -57,8 +57,8 @@
         }
 
         .spinner__clip {
-            height: 20px!important;
-            width: 20px!important;
+            height: 20px !important;
+            width: 20px !important;
             border-width: 3px;
         }
     }
@@ -100,7 +100,21 @@
     }
 
     &__footer {
-        border-top: 1px solid rgba(0, 0, 0, .4);
+        border-top: 1px solid variables.$color_grey_light;
         background-color: variables.$bg-gray-l;
+        color: variables.$color_dark_grey;
+    }
+
+    &__group {
+        width: 100%;
+
+        &:not(:last-child) {
+            border-bottom: 2px solid rgb(197, 197, 197)
+        }
+    }
+
+    &__divider {
+        height: 5px;
+        background-color: variables.$color_grey_light;
     }
 }

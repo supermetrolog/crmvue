@@ -140,7 +140,7 @@ import CheckboxChip from '@/components/common/Forms/CheckboxChip.vue';
 import UiTextarea from '@/components/common/Forms/UiTextarea.vue';
 import { computed, reactive, ref, watch } from 'vue';
 import RadioChip from '@/components/common/Forms/RadioChip.vue';
-import { isNullish } from '@/utils/helpers/common/isNullish.js';
+import { isNullish } from '@/utils/helpers/common/isNullish.ts';
 import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
 import { useNotify } from '@/utils/use/useNotify.js';
 import FileInput from '@/components/common/Forms/FileInput.vue';

@@ -76,7 +76,7 @@ import Chip from '@/components/common/Chip.vue';
 import { computed } from 'vue';
 import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
 import MessengerChatMessageAdditionsTask from '@/components/Messenger/Chat/Message/Additions/MessengerChatMessageAdditionsTask.vue';
-import { isNullish } from '@/utils/helpers/common/isNullish.js';
+import { isNullish } from '@/utils/helpers/common/isNullish.ts';
 import File from '@/components/common/Forms/File.vue';
 import SurveyCardCustom from '@/components/SurveyCard/SurveyCardCustom.vue';
 

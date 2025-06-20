@@ -1,11 +1,11 @@
 <template>
-    <div class="survey-form-object-preview-offer">
+    <div class="survey-form-object-preview-offer survey-form-object-preview-offer--new">
         <div class="survey-form-object-preview-offer__wrapper">
             <div class="request-row-card">
                 <div class="request-row-card__except">
                     <div class="request-row-card__column">
                         <Avatar class="mt-4" :src="currentUser.userProfile.avatar" :size="40" />
-                        <div class="survey-form-object-preview-offer__badge">Новое</div>
+                        <div class="survey-form-object-preview-offer__badge">Новый</div>
                     </div>
                     <div class="request-row-card__info">
                         <p class="font-weight-bold">{{ dealType }}</p>
@@ -19,7 +19,6 @@
                             <span v-if="request.location?.length">{{ request.location }}</span>
                             <span v-else>Неизвестно</span>
                         </p>
-                        <div class="request-row-card__date">Новый запрос</div>
                     </div>
                 </div>
                 <div class="request-row-card__body">

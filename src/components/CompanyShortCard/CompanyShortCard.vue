@@ -89,19 +89,17 @@
                 </p>
                 <ul class="company-short-card__options">
                     <li class="company-short-card__option">
-                        <span v-if="company.activity_groups?.length" class="font-weight-semi">
-                            - {{ activityGroups }}
-                        </span>
+                        <span v-if="company.activity_groups?.length">{{ activityGroups }} </span>
                         <span v-else class="company-short-card__warning">
-                            - Группа деятельности не заполнена
+                            Группа деятельности не заполнена
                         </span>
                     </li>
                     <li class="company-short-card__option">
-                        <span v-if="company.activity_profiles?.length" class="font-weight-semi">
-                            - {{ activityProfiles }}
+                        <span v-if="company.activity_profiles?.length">
+                            {{ activityProfiles }}
                         </span>
                         <span v-else class="company-short-card__warning">
-                            - Профиль деятельности не заполнен
+                            Профиль деятельности не заполнен
                         </span>
                     </li>
                 </ul>

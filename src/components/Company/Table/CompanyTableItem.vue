@@ -13,47 +13,72 @@
                 />
                 <UiDropdownActions label="Действия над компанией" :title="companyShortName" small>
                     <template #menu>
-                        <UiDropdownActionsButton
-                            @handle="$emit('create-task')"
-                            icon="fa-solid fa-bolt"
-                            label="Создать задачу"
-                        />
-                        <UiDropdownActionsButton
-                            @handle="$emit('schedule-call')"
-                            icon="fa-solid fa-phone"
-                            label="Запланировать звонок"
-                        />
-                        <UiDropdownActionsButton
-                            @handle="$emit('create-pinned-message')"
-                            icon="fa-solid fa-thumbtack"
-                            label="Добавить сообщение"
-                        />
-                        <UiDropdownActionsButton
-                            @handle="openInSurvey"
-                            icon="fa-solid fa-square-poll-horizontal"
-                            label="Открыть опрос"
-                        />
-                        <UiDropdownActionsButton
-                            @handle="openInChat"
-                            icon="fa-solid fa-comment"
-                            label="Открыть в чате"
-                        />
-                        <template v-if="canDisable">
+                        <UiDropdownActionsGroup>
                             <UiDropdownActionsButton
-                                v-if="isPassive"
-                                @handle="$emit('enable')"
-                                icon="fa-solid fa-undo"
-                                label="Восстановить из архива"
+                                @handle="$emit('create-task')"
+                                icon="fa-solid fa-bolt"
+                                label="Создать задачу"
                             />
                             <UiDropdownActionsButton
-                                v-else
-                                @handle="$emit('disable')"
-                                icon="fa-solid fa-ban"
-                                label="Отправить в архив"
+                                @handle="$emit('schedule-call')"
+                                icon="fa-solid fa-phone"
+                                label="Запланировать звонок"
                             />
-                        </template>
+                            <UiDropdownActionsButton
+                                @handle="$emit('schedule-visit')"
+                                icon="fa-solid fa-people-arrows"
+                                label="Запланировать встречу"
+                            />
+                        </UiDropdownActionsGroup>
+                        <UiDropdownActionsGroup>
+                            <UiDropdownActionsButton
+                                @handle="$emit('create-pinned-message')"
+                                icon="fa-solid fa-thumbtack"
+                                label="Добавить сообщение"
+                            />
+                            <UiDropdownActionsButton
+                                @handle="openInSurvey"
+                                :icon="
+                                    company.has_survey_draft
+                                        ? 'fa-solid fa-play'
+                                        : 'fa-solid fa-square-poll-horizontal'
+                                "
+                                :label="
+                                    company.has_survey_draft ? 'Продолжить опрос' : 'Начать опрос'
+                                "
+                            />
+                            <UiDropdownActionsButton
+                                @handle="openInChat"
+                                icon="fa-solid fa-comment"
+                                label="Открыть в чате"
+                            />
+                        </UiDropdownActionsGroup>
+                        <UiDropdownActionsGroup>
+                            <template v-if="canDisable || true">
+                                <UiDropdownActionsButton
+                                    v-if="isPassive"
+                                    @handle="$emit('enable')"
+                                    icon="fa-solid fa-undo"
+                                    label="Восстановить из архива"
+                                />
+                                <UiDropdownActionsButton
+                                    v-else
+                                    @handle="$emit('disable')"
+                                    icon="fa-solid fa-ban"
+                                    label="Отправить в архив"
+                                />
+                            </template>
+                        </UiDropdownActionsGroup>
                     </template>
                 </UiDropdownActions>
+                <UiButtonIcon
+                    v-if="company.has_survey_draft"
+                    @click="openInSurvey"
+                    small
+                    icon="fa-solid fa-play"
+                    label="Продолжить заполнение опроса"
+                    color="success-light"
+                />
             </div>
         </Td>
         <Td class="company-table-item__name" sort="nameRu">
@@ -191,6 +216,8 @@ import CompanyTableDropdown from '@/components/Company/Table/CompanyTableDropdow
 import CompanyTableItemInfo from '@/components/Company/Table/CompanyTableItemInfo.vue';
 import UiButton from '@/components/common/UI/UiButton.vue';
 import CompanyTableItemPinnedMessages from '@/components/Company/Table/CompanyTableItemPinnedMessages.vue';
+import UiButtonIcon from '@/components/common/UI/UiButtonIcon.vue';
+import UiDropdownActionsGroup from '@/components/common/UI/DropdownActions/UiDropdownActionsGroup.vue';
 
 const store = useStore();
 const router = useRouter();
@@ -210,7 +237,8 @@ defineEmits([
     'show-survey',
     'show-task',
     'edit-survey-comment',
-    'schedule-call'
+    'schedule-call',
+    'schedule-visit'
 ]);
 
 const props = defineProps({
@@ -268,6 +296,8 @@ const openInSurvey = () => {
 useTippy(useTemplateRef('passiveWhyCommentEl'), { content: passiveWhyComment });
 
 // permissions
+
+// TODO: Permissions
 
 const { canDisable } = useCompanyPermissions(toRef(props, 'company'));
 

@@ -28,30 +28,34 @@
             </div>
             <UiDropdownActions label="Действия" :title="`Опрос #${company.last_survey.id}`" small>
                 <template #menu>
-                    <UiDropdownActionsButton
-                        @handle="$emit('open-preview')"
-                        label="Посмотреть опрос"
-                        icon="fa-solid fa-eye"
-                    />
-                    <UiDropdownActionsButton
-                        @handle="$emit('create-task')"
-                        label="Поставить задачу"
-                        icon="fa-solid fa-bolt"
-                    />
-                    <template v-if="surveyCommentCanBeEdit">
+                    <UiDropdownActionsGroup>
                         <UiDropdownActionsButton
-                            v-if="company.last_survey.comment"
-                            @handle="editComment"
-                            label="Изменить комментарий"
-                            icon="fa-solid fa-pen"
+                            @handle="$emit('open-preview')"
+                            label="Посмотреть опрос"
+                            icon="fa-solid fa-eye"
                         />
+                    </UiDropdownActionsGroup>
+                    <UiDropdownActionsGroup>
                         <UiDropdownActionsButton
-                            v-else
-                            @handle="editComment"
-                            label="Добавить комментарий"
-                            icon="fa-solid fa-thumbtack"
+                            @handle="$emit('create-task')"
+                            label="Поставить задачу"
+                            icon="fa-solid fa-bolt"
                         />
-                    </template>
+                        <template v-if="surveyCommentCanBeEdit">
+                            <UiDropdownActionsButton
+                                v-if="company.last_survey.comment"
+                                @handle="editComment"
+                                label="Изменить комментарий"
+                                icon="fa-solid fa-pen"
+                            />
+                            <UiDropdownActionsButton
+                                v-else
+                                @handle="editComment"
+                                label="Добавить комментарий"
+                                icon="fa-solid fa-thumbtack"
+                            />
+                        </template>
+                    </UiDropdownActionsGroup>
                 </template>
             </UiDropdownActions>
         </div>
@@ -181,6 +185,7 @@ import api from '@/api/api.js';
 import { useNotify } from '@/utils/use/useNotify.js';
 import { useConfirm } from '@/composables/useConfirm.js';
 import { taskOptions } from '@/const/options/task.options.js';
+import UiDropdownActionsGroup from '@/components/common/UI/DropdownActions/UiDropdownActionsGroup.vue';
 
 defineEmits(['create-task', 'open-preview', 'edit-comment', 'show-task']);
 
@@ -191,7 +196,13 @@ const props = defineProps({
     }
 });
 
-const updatedAt = computed(() => toDateFormat(props.company.last_survey.updated_at));
+const updatedAt = computed(() => {
+    if (props.company.last_survey.completed_at) {
+        return toDateFormat(props.company.last_survey.completed_at);
+    }
+
+    return toDateFormat(props.company.last_survey.created_at);
+});
 
 const contactName = computed(() => {
     return getContactFullName(props.company.last_survey.contact);

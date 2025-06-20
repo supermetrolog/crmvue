@@ -6,7 +6,7 @@
                 class="messenger-dialog__last-message-user"
                 :size="20"
                 :src="lastMessage.from.model.userProfile.avatar"
-                :label="lastMessage.from.model.userProfile.medium_name"
+                :label="onlyAvatar ? undefined : lastMessage.from.model.userProfile.medium_name"
             />
             <template v-if="column">
                 <span v-if="!hideAvatar">{{ lastMessage.from.model.userProfile.medium_name }}</span>
@@ -35,7 +35,8 @@ const props = defineProps({
         required: true
     },
     column: Boolean,
-    hideAvatar: Boolean
+    hideAvatar: Boolean,
+    onlyAvatar: Boolean
 });
 
 const messageByTemplateMap = {

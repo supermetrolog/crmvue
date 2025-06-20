@@ -61,7 +61,7 @@ import UiField from '@/components/common/UI/UiField.vue';
 import UiButton from '@/components/common/UI/UiButton.vue';
 import { useRouter } from 'vue-router';
 import { plural } from '@/utils/plural.js';
-import { isArray } from '@/utils/helpers/array/isArray.js';
+import { isArray } from '@/utils/helpers/array/isArray.ts';
 
 defineEmits(['click-preview', 'show-complex-objects']);
 const props = defineProps({

@@ -32,7 +32,7 @@
             </div>
         </AnimationTransition>
         <div class="stepper__body">
-            <slot name="body" />
+            <slot name="body" :complete="complete" />
             <template v-if="keepAlive">
                 <div
                     v-for="(step, index) in steps"
@@ -88,6 +88,7 @@
                 </slot>
             </div>
         </AnimationTransition>
+        <slot name="after" :complete="complete" />
     </div>
 </template>
 <script setup>

@@ -14,6 +14,7 @@
                             {{ title }}
                         </p>
                     </slot>
+                    <slot name="after" />
                 </div>
             </slot>
         </div>

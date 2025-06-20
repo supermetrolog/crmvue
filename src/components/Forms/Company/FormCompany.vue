@@ -146,6 +146,7 @@
                             v-model="form.consultant_id"
                             :v="v$.form.consultant_id"
                             :options="getConsultantsOptions"
+                            :disabled="isEditMode && !currentUserIsModeratorOrHigher"
                             class="col-6"
                             required
                         />
@@ -466,6 +467,7 @@ import UiModal from '@/components/common/UI/UiModal.vue';
 import UiButton from '@/components/common/UI/UiButton.vue';
 import { useValidation } from '@/composables/useValidation.js';
 import Switch from '@/components/common/Forms/Switch.vue';
+import { useAuth } from '@/composables/useAuth.js';
 
 const emit = defineEmits(['updated', 'created', 'close']);
 const props = defineProps({
@@ -474,6 +476,8 @@ const props = defineProps({
         default: null
     }
 });
+
+const { currentUserIsModeratorOrHigher } = useAuth();
 
 const { getConsultantsOptions } = useConsultantsOptions();
 const { getCompanyGroupsOptions } = useCompanyGroupsOptions();

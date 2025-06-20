@@ -24,7 +24,7 @@
             <div class="survey-form-object-preview__tabs">
                 <SurveyFormObjectsPreviewTab v-model="currenTab" :name="TABS.ACTIVE">
                     <i class="fa-solid fa-up-long mr-1" />
-                    <span>Актив ({{ tradeOffers.length }})</span>
+                    <span>Активные ({{ tradeOffers.length }})</span>
                 </SurveyFormObjectsPreviewTab>
             </div>
             <div class="survey-form-object-preview__content">

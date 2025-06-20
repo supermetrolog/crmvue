@@ -374,7 +374,7 @@ import { floorOptions, realFloorTypeOptions } from '@/const/options/floor.option
 import CheckboxOptions from '@/components/common/Forms/CheckboxOptions.vue';
 import SwitchSlider from '@/components/common/Forms/SwitchSlider.vue';
 import { useDebounceFn } from '@vueuse/core';
-import { isArray } from '@/utils/helpers/array/isArray.js';
+import { isArray } from '@/utils/helpers/array/isArray.ts';
 import { cloneObject } from '@/utils/helpers/object/cloneObject.js';
 import Chip from '@/components/common/Chip.vue';
 import { useSelectedFilters } from '@/composables/useSelectedFilters.js';
@@ -385,7 +385,7 @@ import { useStore } from 'vuex';
 import Switch from '@/components/common/Forms/Switch.vue';
 import RadioOptions from '@/components/common/Forms/RadioOptions.vue';
 import { isEmptyArray } from '@/utils/helpers/array/isEmptyArray.js';
-import { isNullish } from '@/utils/helpers/common/isNullish.js';
+import { isNullish } from '@/utils/helpers/common/isNullish.ts';
 import { isEmptyString } from '@/utils/helpers/string/isEmptyString.js';
 import { deepToRaw } from '@/utils/common/deepToRaw.js';
 

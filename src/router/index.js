@@ -2,14 +2,14 @@ import { createRouter, createWebHistory } from 'vue-router';
 import { useAuth } from '@/composables/useAuth.js';
 import { useNotify } from '@/utils/use/useNotify.js';
 import { getAccessTokenFromLocalStorage } from '@/services/localStorage.js';
-import { useDocumentTitle } from '@/composables/useDocumentTitle.js';
+import { useDocumentTitle } from '@/composables/useDocumentTitle.ts';
 import OffersView from '@/views/Offers/Offers.vue';
 import OffersMain from '@/views/Offers/Main.vue';
 import CompaniesMain from '@/views/Companies/Companies.vue';
 import CompaniesView from '@/views/Companies/Company.vue';
 import CompaniesList from '@/views/Companies/Main.vue';
 import { AUTH_ROLE } from '@/const/role.js';
-import { isNullish } from '@/utils/helpers/common/isNullish.js';
+import { isNullish } from '@/utils/helpers/common/isNullish.ts';
 import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
 
 const routes = [

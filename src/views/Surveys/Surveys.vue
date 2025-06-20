@@ -23,6 +23,7 @@
                         v-if="surveys.length"
                         @to-chat="toChat"
                         @open-survey="openSurvey"
+                        @edit-survey="editSurvey"
                         :loading="isLoading"
                         :surveys
                     />
@@ -48,6 +49,7 @@ import SurveyTable from '@/components/SurveyTable/SurveyTable.vue';
 import FormSurveySearch from '@/components/Forms/Survey/FormSurveySearch.vue';
 import { useMessenger } from '@/components/Messenger/useMessenger.js';
 import { useAsyncPopup } from '@/composables/useAsyncPopup.js';
+import { useSurveyForm } from '@/composables/useSurveyForm.js';
 
 const route = useRoute();
 const router = useRouter();
@@ -98,5 +100,19 @@ const { show: showSurvey } = useAsyncPopup('surveyPreview');
 
 function openSurvey(survey) {
     showSurvey({ surveyId: survey.id });
+}
+
+const { editSurvey: showEditingSurveyForm } = useSurveyForm();
+
+const surveyIsLoading = ref(false);
+
+async function editSurvey(survey) {
+    surveyIsLoading.value = true;
+
+    const response = await api.survey.get(survey.id);
+
+    surveyIsLoading.value = false;
+
+    showEditingSurveyForm(response);
 }
 </script>

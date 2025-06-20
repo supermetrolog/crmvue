@@ -5,7 +5,7 @@
                 <CompanyShortCard
                     @update-logo="updateLogo"
                     :company
-                    :logo-size="100"
+                    :logo-size="120"
                     :avatar-size="25"
                     :editable-logo="editable"
                     :show-name="false"
@@ -13,8 +13,8 @@
             </UiCol>
             <UiCol :cols="7">
                 <CompanyTabs :company class="survey-form-header-company__tabs">
-                    <template v-if="surveysCount" #additional>
-                        <Tab :name="`Опросы (${surveysCount})`">
+                    <template #additional>
+                        <Tab v-if="surveysCount" :name="`Опросы (${surveysCount})`">
                             <div class="d-flex flex-column gap-1">
                                 <MessengerQuizInlineElement
                                     v-for="survey in lastSurveys"
@@ -51,49 +51,64 @@
                 </template>
                 <template #menu>
                     <template v-if="editable">
-                        <UiDropdownActionsButton
-                            @handle="$emit('create-task')"
-                            label="Создать задачу"
-                            icon="fa-solid fa-bolt"
-                        />
-                        <UiDropdownActionsButton
-                            @handle="$emit('schedule-call')"
-                            :icon="company.scheduled ? 'fa-solid fa-check' : 'fa-solid fa-phone'"
-                            :label="
-                                company.scheduled ? 'Звонок запланирован' : 'Запланировать звонок'
-                            "
-                            :disabled="company.scheduled"
-                        />
-                        <UiDropdownActionsButton
-                            @handle="companyFormIsVisible = true"
-                            label="Редактировать"
-                            icon="fa-solid fa-pen"
-                        />
-                        <template v-if="canBeArchived">
+                        <UiDropdownActionsGroup>
                             <UiDropdownActionsButton
-                                v-if="isPassive"
-                                @handle="enableCompany(company.id)"
-                                label="Восстановить компанию"
-                                icon="fa-solid fa-undo"
+                                @handle="$emit('create-task')"
+                                label="Создать задачу"
+                                icon="fa-solid fa-bolt"
                             />
                             <UiDropdownActionsButton
-                                v-else
-                                @handle="disableCompanyFormIsVisible = true"
-                                label="Отправить в архив"
-                                icon="fa-solid fa-ban text-danger"
+                                @handle="$emit('schedule-call')"
+                                :icon="
+                                    company.scheduled ? 'fa-solid fa-check' : 'fa-solid fa-phone'
+                                "
+                                :label="
+                                    company.scheduled
+                                        ? 'Звонок запланирован'
+                                        : 'Запланировать звонок'
+                                "
+                                :disabled="company.scheduled"
                             />
-                        </template>
-                        <UiDropdownActionsButton
-                            @handle="updateLogo"
-                            label="Изменить логотип"
-                            icon="fa-solid fa-image"
-                        />
+                            <UiDropdownActionsButton
+                                @handle="$emit('schedule-visit')"
+                                icon="fa-solid fa-people-arrows"
+                                label="Запланировать встречу"
+                            />
+                        </UiDropdownActionsGroup>
+                        <UiDropdownActionsGroup>
+                            <UiDropdownActionsButton
+                                @handle="companyFormIsVisible = true"
+                                label="Редактировать"
+                                icon="fa-solid fa-pen"
+                            />
+                            <template v-if="canBeArchived">
+                                <UiDropdownActionsButton
+                                    v-if="isPassive"
+                                    @handle="enableCompany(company.id)"
+                                    label="Восстановить компанию"
+                                    icon="fa-solid fa-undo"
+                                />
+                                <UiDropdownActionsButton
+                                    v-else
+                                    @handle="disableCompanyFormIsVisible = true"
+                                    label="Отправить в архив"
+                                    icon="fa-solid fa-ban text-danger"
+                                />
+                            </template>
+                            <UiDropdownActionsButton
+                                @handle="updateLogo"
+                                label="Изменить логотип"
+                                icon="fa-solid fa-image"
+                            />
+                        </UiDropdownActionsGroup>
                     </template>
-                    <UiDropdownActionsButton
-                        @handle="toChat"
-                        label="Перейти в чат компании"
-                        icon="fa-solid fa-comment"
-                    />
+                    <UiDropdownActionsGroup>
+                        <UiDropdownActionsButton
+                            @handle="toChat"
+                            label="Перейти в чат компании"
+                            icon="fa-solid fa-comment"
+                        />
+                    </UiDropdownActionsGroup>
                 </template>
             </UiDropdownActions>
         </div>
@@ -127,40 +142,6 @@
                 @disabled="onDisabledCompany"
                 :company
             />
-            <UiModal
-                v-model:visible="companyModalIsVisible"
-                title="Карточка компании"
-                :width="1400"
-                :min-height="300"
-            >
-                <div class="row">
-                    <UiCol :cols="4">
-                        <CompanyShortCard
-                            @update-logo="updateLogo"
-                            :company
-                            :logo-size="100"
-                            :avatar-size="25"
-                            :editable-logo="editable"
-                        />
-                    </UiCol>
-                    <UiCol :cols="7">
-                        <CompanyTabs :company class="survey-form-header-company__tabs">
-                            <template v-if="surveysCount" #additional>
-                                <Tab :name="`Опросы (${surveysCount})`">
-                                    <div class="d-flex flex-column gap-1">
-                                        <MessengerQuizInlineElement
-                                            v-for="survey in lastSurveys"
-                                            :key="survey.id"
-                                            @show="showSurvey({ surveyId: survey.id })"
-                                            :quiz="survey"
-                                        />
-                                    </div>
-                                </Tab>
-                            </template>
-                        </CompanyTabs>
-                    </UiCol>
-                </div>
-            </UiModal>
             <FormUserFolder
                 v-if="folderModalIsVisible"
                 @close="closeFolderForm"
@@ -195,14 +176,18 @@ import UserFoldersDropdown from '@/components/UserFolder/UserFoldersDropdown.vue
 import FormUserFolder from '@/components/Forms/FormUserFolder.vue';
 import { useUserFolders } from '@/composables/useUserFolders.js';
 import { useAuth } from '@/composables/useAuth.js';
+import UiDropdownActionsGroup from '@/components/common/UI/DropdownActions/UiDropdownActionsGroup.vue';
 
 const emit = defineEmits([
     'update-logo',
     'update-company',
     'to-chat',
     'create-task',
-    'schedule-call'
+    'schedule-call',
+    'schedule-visit',
+    'show-task'
 ]);
+
 const props = defineProps({
     company: {
         type: Object,
@@ -216,7 +201,8 @@ const props = defineProps({
         type: Number,
         default: 0
     },
-    editable: Boolean
+    editable: Boolean,
+    survey: Object
 });
 
 // logo form
@@ -249,10 +235,14 @@ function onDeleteLogo() {
     emit('update-logo', null);
 }
 
+// TODO: Archive permissions
+
 const { currentUserId, currentUserIsModeratorOrHigher } = useAuth();
 const canBeArchived = computed(
     () =>
-        props.company.consultant_id === currentUserId.value || currentUserIsModeratorOrHigher.value
+        props.company.consultant_id === currentUserId.value ||
+        currentUserIsModeratorOrHigher.value ||
+        true
 );
 
 const companyFormIsVisible = ref(false);
@@ -306,8 +296,6 @@ function onCreatedFolder(folder) {
 }
 
 // preview
-
-const companyModalIsVisible = ref(false);
 
 const { show: showSurvey } = useAsyncPopup('surveyPreview');
 

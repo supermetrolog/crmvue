@@ -11,6 +11,7 @@
                 @show-preview="$emit('show-preview')"
                 @show-map="$emit('show-map')"
                 :object
+                :answer="form?.answer"
             />
             <SurveyFormObjectContent :object />
         </div>
@@ -68,7 +69,7 @@ import SurveyFormObjectContent from '@/components/SurveyForm/Object/SurveyFormOb
 import SurveyFormObjectPreview from '@/components/SurveyForm/Object/SurveyFormObjectPreview.vue';
 import { computed, ref, watch } from 'vue';
 import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
-import { isNullish } from '@/utils/helpers/common/isNullish.js';
+import { isNullish } from '@/utils/helpers/common/isNullish.ts';
 import UiDropdownActions from '@/components/common/UI/DropdownActions/UiDropdownActions.vue';
 import UiDropdownActionsButton from '@/components/common/UI/DropdownActions/UiDropdownActionsButton.vue';
 import UiDropdownActionsTrigger from '@/components/common/UI/DropdownActions/UiDropdownActionsTrigger.vue';

@@ -63,28 +63,21 @@
                             class="survey-form-objects__checkbox"
                         />
                     </div>
-                    <div v-if="hasNewObject" class="pr-2">
-                        <hr class="my-2" />
-                        <VueEditor
-                            v-model="form.created"
-                            label="Описание новое строения"
-                            placeholder="Опишите максимально характеристики объекта..."
-                            :toolbar="false"
-                            :min-height="50"
-                            :max-height="200"
+                    <div
+                        v-if="objects.length || createdObjects.length"
+                        class="survey-form-objects__list"
+                    >
+                        <SurveyFormNewObject
+                            v-for="(object, key) in createdObjects"
+                            :key="object.id"
+                            @select="selectNewObject(object)"
+                            @edit="editNewObjectByKey(key)"
+                            @delete="deleteNewObjectByKey(key)"
+                            :active="selectedNewObject === object"
+                            :object="object"
+                            editable
+                            class="survey-form-objects__element"
                         />
-                        <UiButton
-                            @click="deleteNewObject"
-                            small
-                            color="danger-light"
-                            icon="fa-solid fa-trash"
-                            class="mt-2"
-                        >
-                            Удалить
-                        </UiButton>
-                        <hr class="my-2" />
-                    </div>
-                    <div v-if="objects.length" class="survey-form-objects__list">
                         <SurveyFormObject
                             v-for="object in objects"
                             :key="object.id"
@@ -103,7 +96,7 @@
                             class="survey-form-objects__element"
                         />
                     </div>
-                    <EmptyData v-else-if="!hasNewObject" no-rounded class="h-100">
+                    <EmptyData v-else-if="createdObjects.length === 0" no-rounded class="h-100">
                         <p>У клиента нет объектов и предложений..</p>
                         <template #actions>
                             <UiButton
@@ -125,7 +118,53 @@
                     @show-preview="showObjectPreview(selectedObject, $event)"
                     :object="selectedObject"
                     :company
+                    :survey
                 />
+                <div v-else-if="selectedNewObject" class="pl-2">
+                    <p class="form__subtitle">Тип объекта</p>
+                    <div class="d-flex gap-1 mt-1">
+                        <RadioChip
+                            v-model="selectedNewObject.is_land"
+                            label="Строение"
+                            :value="0"
+                        />
+                        <RadioChip v-model="selectedNewObject.is_land" label="Участок" :value="1" />
+                    </div>
+                    <div class="d-flex gap-1 mt-2">
+                        <UiInput
+                            v-model="selectedNewObject.area"
+                            label="Площадь"
+                            unit="м<sup>2"
+                            class="w-50 position-relative"
+                            required
+                        />
+                        <MultiSelect
+                            v-model="selectedNewObject.class"
+                            :disabled="selectedNewObject.is_land"
+                            label="Класс объекта"
+                            class="w-50"
+                            :options="objectOptions.class"
+                        />
+                    </div>
+                    <UiTextarea
+                        v-model="selectedNewObject.address"
+                        label="Адрес"
+                        class="w-100 mt-2"
+                        auto-height
+                        :min-height="50"
+                        :max-height="150"
+                        required
+                    />
+                    <VueEditor
+                        v-model="selectedNewObject.description"
+                        label="Опишите параметры, характеристики и имеющиеся предложения"
+                        class="mt-2 w-100"
+                        :toolbar="false"
+                        :min-height="80"
+                        :debounce="200"
+                        required
+                    />
+                </div>
                 <div
                     v-else
                     class="d-flex flex-column h-100 align-items-center justify-content-center"
@@ -135,34 +174,13 @@
             </Pane>
         </Splitpanes>
         <teleport to="body">
-            <UiModal
-                v-model:visible="newObjectFormIsVisible"
-                :width="900"
-                title="Новое предложение"
-            >
-                <UiForm>
-                    <VueEditor
-                        v-model="form.created"
-                        label="Описание предложения"
-                        placeholder="Опишите максимально характеристики объекта, условия предложения, цены и условие сотрудничества.."
-                        :toolbar="false"
-                        :min-height="150"
-                    />
-                </UiForm>
-                <template #actions="{ close }">
-                    <UiButton
-                        @click="confirmNewObject"
-                        color="success-light"
-                        small
-                        icon="fa-solid fa-check"
-                    >
-                        Сохранить
-                    </UiButton>
-                    <UiButton @click="close" color="light" small icon="fa-solid fa-ban">
-                        Отмена
-                    </UiButton>
-                </template>
-            </UiModal>
+            <SurveyFormNewObjectForm
+                v-if="newObjectFormIsVisible"
+                @close="closeNewObjectForm"
+                @created="addNewObject"
+                @updated="updateNewObject"
+                :form-data="editedNewObject"
+            />
         </teleport>
     </div>
 </template>
@@ -182,14 +200,22 @@ import SurveyFormObjectsPreview from '@/components/SurveyForm/ObjectsPreview/Sur
 import EmptyData from '@/components/common/EmptyData.vue';
 import UiButton from '@/components/common/UI/UiButton.vue';
 import UiField from '@/components/common/UI/UiField.vue';
-import UiModal from '@/components/common/UI/UiModal.vue';
-import UiForm from '@/components/common/Forms/UiForm.vue';
-import VueEditor from '@/components/common/Forms/VueEditor.vue';
 import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
 import dayjs from 'dayjs';
 import UiDropdownActions from '@/components/common/UI/DropdownActions/UiDropdownActions.vue';
 import UiDropdownActionsButton from '@/components/common/UI/DropdownActions/UiDropdownActionsButton.vue';
 import UiCheckbox from '@/components/common/Forms/UiCheckbox.vue';
+import { isNullish } from '@/utils/helpers/common/isNullish.ts';
+import { isArray } from '@/utils/helpers/array/isArray.ts';
+import { isString } from '@/utils/helpers/string/isString.js';
+import SurveyFormNewObject from '@/components/SurveyForm/Object/SurveyFormNewObject.vue';
+import SurveyFormNewObjectForm from '@/components/SurveyForm/Object/SurveyFormNewObjectForm.vue';
+import UiTextarea from '@/components/common/Forms/UiTextarea.vue';
+import VueEditor from '@/components/common/Forms/VueEditor.vue';
+import { objectOptions } from '@/const/options/object.options.js';
+import MultiSelect from '@/components/common/Forms/MultiSelect.vue';
+import UiInput from '@/components/common/Forms/UiInput.vue';
+import RadioChip from '@/components/common/Forms/RadioChip.vue';
 
 const props = defineProps({
     objects: {
@@ -211,7 +237,7 @@ function generateForm() {
     }
 
     if (!('created' in form.value)) {
-        form.value.created = null;
+        form.value.created = [];
     }
 
     for (const object of props.objects) {
@@ -268,6 +294,8 @@ function selectObject(object) {
     } else {
         selectedObject.value = object;
     }
+
+    selectedNewObject.value = null;
 }
 
 // tasks
@@ -375,17 +403,53 @@ async function createTask(object) {
 
 // new objects
 
-const hasNewObject = ref(isNotNullish(form.value?.created));
 const newObjectFormIsVisible = ref(false);
 
-function confirmNewObject() {
-    hasNewObject.value = true;
+const createdObjects = computed(() => {
+    if (isNullish(form.value.created)) return [];
+    if (isArray(form.value.created)) return form.value.created;
+    if (isString(form.value.created)) return { description: form.value.created };
+    return [];
+});
+
+function addNewObject(payload) {
+    if (isArray(form.value.created)) {
+        form.value.created.push(payload);
+    } else {
+        form.value.created = [payload];
+    }
+
     newObjectFormIsVisible.value = false;
 }
 
-function deleteNewObject() {
-    hasNewObject.value = false;
-    form.value.created = null;
+function updateNewObject(payload) {
+    Object.assign(editedNewObject.value, payload);
+    editedNewObject.value = false;
+
+    newObjectFormIsVisible.value = false;
+}
+
+function closeNewObjectForm() {
+    newObjectFormIsVisible.value = false;
+    editedNewObject.value = null;
+}
+
+const editedNewObject = shallowRef(null);
+
+function editNewObjectByKey(key) {
+    editedNewObject.value = form.value.created[key];
+    newObjectFormIsVisible.value = true;
+}
+
+function deleteNewObjectByKey(key) {
+    form.value.created.splice(key, 1);
+}
+
+const selectedNewObject = ref(null);
+
+function selectNewObject(object) {
+    selectedNewObject.value = object;
+    selectedObject.value = null;
 }
 
 // select functions

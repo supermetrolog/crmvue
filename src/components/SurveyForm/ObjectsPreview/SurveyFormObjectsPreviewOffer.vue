@@ -172,7 +172,7 @@ import AnimationTransition from '@/components/common/AnimationTransition.vue';
 import UiDropdownActions from '@/components/common/UI/DropdownActions/UiDropdownActions.vue';
 import UiDropdownActionsButton from '@/components/common/UI/DropdownActions/UiDropdownActionsButton.vue';
 import UiDropdownActionsTrigger from '@/components/common/UI/DropdownActions/UiDropdownActionsTrigger.vue';
-import { isNullish } from '@/utils/helpers/common/isNullish.js';
+import { isNullish } from '@/utils/helpers/common/isNullish.ts';
 import { useConsultantsOptions } from '@/composables/options/useConsultantsOptions.js';
 import Avatar from '@/components/common/Avatar.vue';
 import { getApiFileNotFound } from '@/utils/url.js';

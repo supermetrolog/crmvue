@@ -1,7 +1,7 @@
 <template>
     <Stepper
         v-model:step="step"
-        @complete="submit"
+        @complete="completeSurvey"
         @update:step="onUpdateStep"
         :v="v$.form"
         :show-progress="false"
@@ -11,8 +11,8 @@
         footer-class="survey-form__footer"
         :disabled="isCreating"
     >
-        <template #body>
-            <Loader v-if="isCreating || surveyIsUpdating" label="Сохранение опроса.." />
+        <template #after-navigation>
+            <SurveyFormStepperSummary :company :survey="currentSurvey" />
         </template>
         <template #1>
             <SurveyFormCalls
@@ -54,32 +54,57 @@
                 :company
             />
         </template>
-        <template #5>
-            <SurveyFormComment v-model="form.comment" :v="v$.form.comment" />
-        </template>
         <template #footer="{ complete }">
-            <UiButton
-                v-if="!canBeCancelled"
-                @click="complete"
-                :disabled="!formIsValid"
-                :color="formIsValid ? 'success' : 'light'"
-                icon="fa-solid fa-check"
-                class="mx-auto"
-            >
-                Сохранить опрос
-            </UiButton>
             <AnimationTransition :speed="0.5">
                 <UiButton
                     v-if="canBeCancelled"
                     @click="cancelSurvey"
                     tooltip='Завершить опрос с отметкой "Не удалось дозвониться"'
-                    color="danger-light"
-                    icon="fa-solid fa-thumbs-down"
-                    class="mx-auto"
+                    color="success"
+                    icon="fa-solid fa-phone-slash"
                 >
-                    Завершить опрос
+                    Можно сохранить опрос
+                </UiButton>
+                <UiButton
+                    v-else
+                    @click="complete"
+                    :color="formIsValid ? 'success' : 'danger'"
+                    icon="fa-solid fa-check"
+                    class="survey-form__stepper-action"
+                    :class="{ disabled: !formIsValid }"
+                >
+                    {{ formIsValid ? 'Можно сохранить опрос' : 'Нельзя сохранить опрос' }}
                 </UiButton>
             </AnimationTransition>
+        </template>
+        <template #after>
+            <Loader v-if="isCreating || surveyIsUpdating" label="Сохранение опроса.." />
+            <UiModal
+                v-model:visible="commentModalIsVisible"
+                @closed="isCancelling = false"
+                title="Комментарий по результатам"
+                :width="600"
+            >
+                <UiForm>
+                    <UiFormGroup>
+                        <VueEditor
+                            v-model="form.comment"
+                            :v="v$.form.comment"
+                            :min-height="150"
+                            :max-height="400"
+                            :toolbar="false"
+                            placeholder="Что выяснили? Какое положение по компании? Опишите ситуацию.."
+                            class="col-12"
+                        />
+                    </UiFormGroup>
+                </UiForm>
+                <template #actions="{ close }">
+                    <UiButton @click="completeOrCancel" icon="fa-solid fa-check" color="success">
+                        Сохранить опрос
+                    </UiButton>
+                    <UiButton @click="close" icon="fa-solid fa-ban" color="light">Отмена</UiButton>
+                </template>
+            </UiModal>
         </template>
     </Stepper>
 </template>
@@ -87,11 +112,11 @@
 import { computed, onBeforeMount, reactive, ref, shallowRef, useTemplateRef, watch } from 'vue';
 import Stepper from '@/components/common/Stepper/Stepper.vue';
 import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
-import { useIntervalFn } from '@vueuse/core';
+import { useEventBus, useIntervalFn } from '@vueuse/core';
 import api from '@/api/api.js';
 import { surveyConfig } from '@/configs/survey.config.js';
 import { useAuth } from '@/composables/useAuth.js';
-import { isNullish } from '@/utils/helpers/common/isNullish.js';
+import { isNullish } from '@/utils/helpers/common/isNullish.ts';
 import UiButton from '@/components/common/UI/UiButton.vue';
 import { useAsync } from '@/composables/useAsync.js';
 import { useSharedWindowFocus } from '@/composables/useSharedWindowFocus.js';
@@ -110,13 +135,16 @@ import {
     CONTACT_CALL_REASONS
 } from '@/components/MessengerQuiz/useMessengerQuiz.js';
 import { useConfirm } from '@/composables/useConfirm.js';
-import { messenger, messengerTemplates } from '@/const/messenger.js';
 import { captureException } from '@sentry/vue';
 import dayjs from 'dayjs';
 import { getCompanyShortName } from '@/utils/formatters/models/company.js';
 import Loader from '@/components/common/Loader.vue';
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
-import SurveyFormComment from '@/components/SurveyForm/SurveyFormComment.vue';
+import UiModal from '@/components/common/UI/UiModal.vue';
+import UiForm from '@/components/common/Forms/UiForm.vue';
+import UiFormGroup from '@/components/common/Forms/UiFormGroup.vue';
+import VueEditor from '@/components/common/Forms/VueEditor.vue';
+import SurveyFormStepperSummary from '@/components/SurveyForm/SurveyFormStepperSummary.vue';
 
 function toBool(value) {
     if (typeof value === 'string') return value === 'true';
@@ -154,9 +182,14 @@ const props = defineProps({
 });
 
 const currentSurveyId = computed(() => {
-    if (isNotNullish(props.survey)) return props.survey.id;
-    if (isNotNullish(props.draft)) return props.draft.id;
+    if (isNotNullish(currentSurvey.value)) return currentSurvey.value.id;
 
+    return null;
+});
+
+const currentSurvey = computed(() => {
+    if (isNotNullish(props.survey)) return props.survey;
+    if (isNotNullish(props.draft)) return props.draft;
     return null;
 });
 
@@ -284,6 +317,10 @@ const steps = reactive([
                 return 'Предложения (загрузка..)';
             }
 
+            if (form.value.objects?.created?.length) {
+                return `Предложения (${objects.value.length}) + ${form.value.objects.created.length} новых`;
+            }
+
             return `Предложения (${objects.value.length})`;
         }),
         disabled: stepsIsDisabled,
@@ -294,6 +331,10 @@ const steps = reactive([
         title: computed(() => {
             if (requestsIsLoading.value) {
                 return 'Запросы (загрузка..)';
+            }
+
+            if (form.value.requests?.created?.length) {
+                return `Запросы (${requests.value.length}) + ${form.value.requests.created.length} новых`;
             }
 
             return `Запросы (${requests.value.length})`;
@@ -311,11 +352,6 @@ const steps = reactive([
             return `Прочее (${otherQuestions.value.length})`;
         }),
         disabled: stepsIsDisabled
-    },
-    {
-        name: 'comment',
-        title: 'Комментарий',
-        disabled: stepsIsDisabled
     }
 ]);
 
@@ -327,8 +363,20 @@ const form = ref({
     comment: null
 });
 
+const hasCompletedContact = computed(() => {
+    return props.contacts.some(contact => {
+        if (isNullish(form.value.calls[contact.id])) return false;
+
+        const isAvailable = form.value.calls[contact.id].available;
+
+        if (isNullish(isAvailable)) return false;
+
+        return toBool(isAvailable) && Number(form.value.calls[contact.id].reason) === 1;
+    });
+});
+
 function requiredCallsValidationHandler(value) {
-    const hasCompletedContact = props.contacts.some(contact => {
+    return props.contacts.some(contact => {
         if (isNullish(value[contact.id])) return false;
 
         const isAvailable = value[contact.id].available;
@@ -337,8 +385,6 @@ function requiredCallsValidationHandler(value) {
 
         return toBool(isAvailable) && Number(value[contact.id].reason) === 1;
     });
-
-    return hasCompletedContact;
 }
 
 function requiredObjectsValidationHandler(value) {
@@ -349,8 +395,10 @@ function requiredObjectsValidationHandler(value) {
     });
 }
 
+const activeRequests = computed(() => requests.value.filter(request => request.status === 1));
+
 function requiredRequestsValidationHandler(value) {
-    if (requests.value.length === 0) return true;
+    if (activeRequests.value.length === 0) return true;
 
     return Object.values(value.current).every(requestForm => {
         return isNotNullish(requestForm.answer) && Number(requestForm.answer) !== 0;
@@ -434,6 +482,7 @@ const formIsValid = computed(() => !v$.value.$invalid);
 
 const canBeCancelled = computed(() => {
     if (formIsValid.value) return false;
+    if (hasCompletedContact.value) return false;
 
     return props.contacts.some(contact => {
         if (isNullish(form.value.calls[contact.id])) return false;
@@ -444,7 +493,7 @@ const canBeCancelled = computed(() => {
 
         return (
             isNotNullish(form.value.calls[contact.id].reason) &&
-            ((toBool(isAvailable) && Number(form.value.calls[contact.id].reason !== 1)) ||
+            ((toBool(isAvailable) && Number(form.value.calls[contact.id].reason) !== 1) ||
                 !toBool(isAvailable))
         );
     });
@@ -613,73 +662,6 @@ async function findSurveyMessage(surveyId, toChatMemberId) {
     return null;
 }
 
-async function createRelatedSurveys(payload, contactId, parentSurvey) {
-    const payloadWithAnswers = payload.filter(offer => Number(offer.answer) === 1);
-    const payloadWithoutUpdates = payload.filter(offer => Number(offer.answer) === 2);
-
-    const chatMembers = await api.messenger.getChats({
-        object_ids: payload.map(element => element.object_id),
-        model_type: messenger.dialogTypes.OBJECT,
-        company_id: props.company.id
-    });
-
-    const chatMembersMap = chatMembers.data.reduce((acc, element) => {
-        if (acc[element.model.object_id]) acc[element.model.object_id].push(element.id);
-        else acc[element.model.object_id] = [element.id];
-
-        return acc;
-    }, {});
-
-    const payloadWithAnswersForm = payloadWithAnswers.reduce((acc, element) => {
-        if (chatMembersMap[element.object_id]) {
-            acc.push(
-                ...chatMembersMap[element.object_id].map(chatMemberId => ({
-                    chat_member_id: chatMemberId,
-                    answers: element.offers.map(form => ({
-                        question_answer_id: form.question_answer_id,
-                        value: form.value
-                    }))
-                }))
-            );
-        }
-
-        return acc;
-    }, []);
-
-    const payloadWithoutUpdatesForm = payloadWithoutUpdates.reduce((acc, element) => {
-        if (chatMembersMap[element.object_id]) {
-            acc.push(...chatMembersMap[element.object_id]);
-        }
-
-        return acc;
-    }, []);
-
-    await Promise.allSettled(
-        payloadWithAnswersForm.map(element =>
-            api.survey.create({
-                contact_id: contactId,
-                user_id: currentUserId.value,
-                chat_member_id: element.chat_member_id,
-                question_answers: element.answers,
-                related_survey_id: parentSurvey.id,
-                call_ids: parentSurvey.calls.map(call => call.id)
-            })
-        )
-    );
-
-    await Promise.allSettled(
-        payloadWithoutUpdatesForm.map(element =>
-            api.survey.create({
-                contact_id: contactId,
-                user_id: currentUserId.value,
-                chat_member_id: element.chat_member_id,
-                related_survey_id: parentSurvey.id,
-                call_ids: parentSurvey.calls.map(call => call.id)
-            })
-        )
-    );
-}
-
 function generateTaskPayload(title, additional = {}) {
     return {
         start: dayjs().toDate(),
@@ -753,6 +735,8 @@ async function createPotentialTasks(contacts, messageId, surveyId = null) {
 const isCreating = ref(false);
 const { confirm } = useConfirm();
 
+const bus = useEventBus('survey');
+
 async function submit() {
     if (!formIsValid.value) return;
 
@@ -770,7 +754,7 @@ async function submit() {
         return;
     }
 
-    const { survey: surveyPayload, contact: targetContact, calls } = createSurveyPayload();
+    const { survey: surveyPayload, calls } = createSurveyPayload();
 
     try {
         isCreating.value = true;
@@ -789,26 +773,6 @@ async function submit() {
 
         return;
     }
-
-    // TODO: Нужно ли вообще создавать это?
-
-    // if (objectsPayload.length) {
-    //     try {
-    //         await createRelatedSurveys(
-    //             objectsPayload.current,
-    //             targetContact.contact_id,
-    //             createdSurvey
-    //         );
-    //     } catch (error) {
-    //         captureException(error, {
-    //             survey_id: createdSurvey.id,
-    //             user_id: currentUserId.value,
-    //             company_id: props.company.id
-    //         });
-    //     }
-    //
-    //     return;
-    // }
 
     let surveyMessage;
 
@@ -846,38 +810,26 @@ async function submit() {
     isCreating.value = false;
 
     emit('completed');
+    bus.emit('completed', { companyId: props.company.id });
 }
 
-async function sendMessageAboutSurveyIsUnavailable(chatMemberId, contacts) {
-    const messagePayload = {
-        message: 'Не удалось дозвониться до контактов опросника',
-        template: messengerTemplates.UNAVAILABLE_SURVEY,
-        contact_ids: contacts.map(element => element.contact_id)
-    };
+const isCancelling = ref(false);
 
-    return await api.messenger.sendMessage(chatMemberId, messagePayload);
+function cancelSurvey() {
+    isCancelling.value = true;
+    commentModalIsVisible.value = true;
 }
 
-async function cancelSurvey() {
+async function cancel() {
     const confirmed = await confirm(
         'Завершение опроса',
-        'Вы закончили заполнение информации? Будут созданы задачи, звонки и опросы для заполненных предложений и запросов.'
+        'Вы попробовали связаться со всеми контактами компании? Опрос будет отмечен как неудавшийся.'
     );
     if (!confirmed) return;
 
     isCreating.value = true;
 
-    const { payload: callsPayload, questionAnswers: callsQuestionAnswers } =
-        createSurveyCallsPayload();
-
-    const payload = {
-        user_id: currentUserId.value,
-        chat_member_id: props.chatMemberId,
-        calls: createCallsForm(callsPayload.filter(form => isNotNullish(form.available))),
-        question_answers: callsQuestionAnswers,
-        comment: form.value.comment,
-        type: 'advanced'
-    };
+    const { survey: surveyPayload, calls } = createSurveyPayload();
 
     let surveyId = props.draft?.id;
 
@@ -886,28 +838,28 @@ async function cancelSurvey() {
         surveyId = response.id;
     }
 
-    await api.survey.updateWithAnswers(surveyId, payload);
+    await api.survey.updateWithAnswers(surveyId, surveyPayload);
     await api.survey.cancel(surveyId);
 
-    const calls = callsPayload.filter(form => isNotNullish(form.available));
-
-    let createdMessage;
+    let surveyMessage;
 
     try {
-        createdMessage = await sendMessageAboutSurveyIsUnavailable(props.chatMemberId, calls);
+        surveyMessage = await findSurveyMessage(surveyId, props.chatMemberId);
     } catch (error) {
+        notify.info('Не удалось установить связь с чатом, создайте задачи по контактам вручную..');
+        isCreating.value = false;
+
         captureException(error, {
             survey_id: surveyId,
             user_id: currentUserId.value,
             company_id: props.company.id
         });
-        isCreating.value = false;
 
         return;
     }
 
     try {
-        await createPotentialTasks(calls, createdMessage.id, surveyId);
+        await createPotentialTasks(calls, surveyMessage.id, surveyId);
     } catch (error) {
         notify.info('Не удалось создать задачи по контактам, создайте задачи вручную..');
         isCreating.value = false;
@@ -924,6 +876,12 @@ async function cancelSurvey() {
     notify.success('Опрос успешно сохранен!');
     isCreating.value = false;
     emit('canceled');
+    bus.emit('canceled', { companyId: props.company.id });
+}
+
+function completeOrCancel() {
+    if (isCancelling.value) cancel();
+    else submit();
 }
 
 // objects
@@ -961,7 +919,7 @@ async function fetchObjects() {
 async function fetchRequests() {
     requestsIsLoading.value = true;
 
-    const response = await api.request.search({ company_id: props.company.id, status: 1 });
+    const response = await api.request.search({ company_id: props.company.id });
 
     requests.value = response.data;
 
@@ -1074,4 +1032,18 @@ async function fetchQuestions() {
 
     questionsIsLoading.value = false;
 }
+
+// complete
+
+const commentModalIsVisible = ref(false);
+
+function completeSurvey() {
+    commentModalIsVisible.value = true;
+}
+
+// calls
+
+const callTasks = computed(() => {
+    return currentSurvey.value.tasks.filter(task => task.type === 'scheduled_call');
+});
 </script>

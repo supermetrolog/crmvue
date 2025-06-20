@@ -20,7 +20,7 @@ import MessengerQuizFormCompanyPicker from '@/components/MessengerQuiz/Form/Mess
 import { ref, useTemplateRef } from 'vue';
 import { quizEffectKinds } from '@/const/quiz.js';
 import MessengerQuizQuestionTemplateDefault from '@/components/MessengerQuiz/Question/Template/MessengerQuizQuestionTemplateDefault.vue';
-import { isArray } from '@/utils/helpers/array/isArray.js';
+import { isArray } from '@/utils/helpers/array/isArray.ts';
 
 defineProps({
     question: {

@@ -8,7 +8,11 @@
         custom-close
         class="task-form"
     >
-        <Stepper v-model:step="step" @complete="submit" :steps="steps" :v="v$.form" keep-alive>
+        <Stepper v-model:step="step"
+@complete="submit"
+:steps="steps"
+:v="v$.form"
+keep-alive>
             <template #1>
                 <UiField v-if="isEditing" color="light" class="task-form__warning mb-2 mx-auto">
                     <i class="fa-solid fa-warning" />
@@ -192,12 +196,12 @@ import {
     computed,
     nextTick,
     onUnmounted,
+    reactive,
     ref,
     shallowRef,
+    toRef,
     useTemplateRef,
-    watch,
-    reactive,
-    toRef
+    watch
 } from 'vue';
 import dayjs from 'dayjs';
 import { useTagsOptions } from '@/composables/options/useTagsOptions.js';
@@ -213,7 +217,7 @@ import UiModal from '@/components/common/UI/UiModal.vue';
 import UiField from '@/components/common/UI/UiField.vue';
 import UiButton from '@/components/common/UI/UiButton.vue';
 import { useValidation } from '@/composables/useValidation.js';
-import { isNullish } from '@/utils/helpers/common/isNullish.js';
+import { isNullish } from '@/utils/helpers/common/isNullish.ts';
 import { isString } from '@/utils/helpers/string/isString.js';
 import { dayjsFromMoscow } from '@/utils/formatters/date.js';
 import InProgress from '@/components/common/InProgress.vue';

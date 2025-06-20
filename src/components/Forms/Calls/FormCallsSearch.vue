@@ -154,7 +154,7 @@ import UiFormDivider from '@/components/common/Forms/UiFormDivider.vue';
 import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
 import { useSelectedFilters } from '@/composables/useSelectedFilters.js';
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
-import { isArray } from '@/utils/helpers/array/isArray.js';
+import { isArray } from '@/utils/helpers/array/isArray.ts';
 import UiDateInput from '@/components/common/Forms/UiDateInput.vue';
 import dayjs from 'dayjs';
 

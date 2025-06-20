@@ -18,7 +18,7 @@
                 <Loader v-if="isLoading" class="small" />
                 <InfiniteLoading v-if="messages.length && scrolled" @infinite="loadMessages">
                     <template #complete>
-                        <EmptyLabel>Больше сообщений нет..</EmptyLabel>
+                        <EmptyLabel class="mb-2">Больше сообщений нет..</EmptyLabel>
                     </template>
                     <template #spinner><span></span></template>
                 </InfiniteLoading>

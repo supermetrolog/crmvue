@@ -3,16 +3,29 @@
         ref="minimizeModal"
         @close="close"
         @minimized="onMinimized"
-        :title
-        :minimized-title="title"
-        :can-be-minimized="!survey"
-        :width="1800"
-        :close-on-outside-click="false"
         :can-be-closed="!isLoading"
+        :can-be-minimized="!survey"
+        :close-on-outside-click="false"
+        :minimized-title="title"
+        :width="1800"
+        class="survey-form"
         custom-close
         show
-        class="survey-form"
     >
+        <template #header>
+            <template v-if="isEditMode">
+                <span>Редактирование</span>
+                <span>|</span>
+            </template>
+            <span>{{ companyName }}</span>
+            <span class="text-grey fs-3">
+                <span class="mr-1">|</span>
+                <span v-if="targetSurvey"
+                    >Опрос #{{ targetSurvey.id }} от {{ targetSurveyDate }}</span
+                >
+                <span v-else>Новый опрос</span>
+            </span>
+        </template>
         <template #before-body>
             <SurveyFormHeader
                 v-if="!isLoading && company"
@@ -23,12 +36,13 @@
                 @call-scheduled="onCompanyCallScheduled"
                 :company
                 :last-surveys
+                :survey="surveyDraft ?? survey"
                 :surveys-count
                 class="survey-form__header"
             />
         </template>
         <template #default="{ minimized }">
-            <div v-if="!minimized" class="survey-form__wrapper position-relative">
+            <div class="survey-form__wrapper position-relative">
                 <Spinner
                     v-if="isLoading || initialDataIsLoading"
                     class="absolute-center"
@@ -37,8 +51,8 @@
                 <SurveyFormStepper
                     v-else-if="canBeCreated || isEditMode"
                     ref="stepper"
-                    @completed="$emit('close')"
                     @canceled="$emit('close')"
+                    @completed="$emit('close')"
                     @draft-expired="surveyDraft = null"
                     @draft-deleted="$emit('close')"
                     @draft-created="surveyDraft = $event"
@@ -48,9 +62,9 @@
                     @contact-updated="onContactUpdated"
                     :chat-member-id
                     :company
-                    :survey
                     :contacts
                     :draft="surveyDraft"
+                    :survey
                 />
                 <MessengerQuizFormWarningNoContacts
                     v-else-if="contacts.length === 0"
@@ -73,6 +87,48 @@
                         @created="onContactCreated"
                         :company_id="company?.id"
                     />
+                    <UiModal
+                        v-model:visible="closeModalIsVisible"
+                        @close="closeModalIsVisible = false"
+                        :close-on-press-esc="!draftIsSaving && !isDeleting && !minimized"
+                        :close-on-outside-click="!draftIsSaving && !isDeleting && !minimized"
+                        :width="550"
+                        custom-close
+                        class="confirm"
+                        title="Подтверждение действия"
+                        hide-header
+                    >
+                        <div class="confirm__content">
+                            <div class="confirm__description">
+                                <p class="confirm__title">Сохранить опрос?</p>
+                                <p class="confirm__message">
+                                    Сохранить заполненные данные из опроса для продолжения позже?
+                                </p>
+                            </div>
+                        </div>
+                        <template #actions>
+                            <UiButton
+                                @click="saveDraftAndClose"
+                                color="success"
+                                icon="fa-solid fa-check"
+                                bolder
+                                :disabled="isDeleting"
+                                :loading="draftIsSaving"
+                            >
+                                Сохранить
+                            </UiButton>
+                            <UiButton
+                                @click="deleteDraftAndClose"
+                                color="danger"
+                                icon="fa-solid fa-trash"
+                                bolder
+                                :loading="isDeleting"
+                                :disabled="draftIsSaving"
+                            >
+                                Удалить
+                            </UiButton>
+                        </template>
+                    </UiModal>
                 </teleport>
             </div>
         </template>
@@ -87,7 +143,7 @@ import Spinner from '@/components/common/Spinner.vue';
 import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
 import SurveyFormStepper from '@/components/SurveyForm/SurveyFormStepper.vue';
 import { useAsync } from '@/composables/useAsync.js';
-import { isNullish } from '@/utils/helpers/common/isNullish.js';
+import { isNullish } from '@/utils/helpers/common/isNullish.ts';
 import { getCompanyName, getCompanyShortName } from '@/utils/formatters/models/company.js';
 import UiMinimizeModal from '@/components/common/UI/UiMinimizeModal.vue';
 import { contactOptions } from '@/const/options/contact.options.js';
@@ -101,6 +157,9 @@ import MessengerQuizContactTaskSuggestModal from '@/components/MessengerQuiz/Mes
 import FormCompanyContact from '@/components/Forms/Company/FormCompanyContact.vue';
 import MessengerQuizFormWarningNoContacts from '@/components/Messenger/Quiz/Form/Warning/MessengerQuizFormWarningNoContacts.vue';
 import MessengerQuizFormWarningAlreadyCreated from '@/components/Messenger/Quiz/Form/Warning/MessengerQuizFormWarningAlreadyCreated.vue';
+import UiModal from '@/components/common/UI/UiModal.vue';
+import UiButton from '@/components/common/UI/UiButton.vue';
+import { toDateFormat } from '@/utils/formatters/date.js';
 
 const emit = defineEmits(['close', 'minimized']);
 const props = defineProps({
@@ -125,6 +184,14 @@ const title = computed(() => {
     }
 
     return 'Опрос клиента';
+});
+
+const companyName = computed(() => {
+    if (isNotNullish(company.value)) {
+        return getCompanyName(company.value);
+    }
+
+    return null;
 });
 
 // company
@@ -234,15 +301,17 @@ async function fetchInitialData() {
 const stepper = useTemplateRef('stepper');
 
 function close() {
-    if (!canBeCreated.value) {
-        return emit('close');
-    }
-
-    if (isNullish(surveyDraft.value)) {
-        emit('close');
+    if (surveyDraft.value) {
+        showCloseModal();
     } else {
-        saveDraftAndClose();
+        emit('close');
     }
+}
+
+const closeModalIsVisible = ref(false);
+
+async function showCloseModal() {
+    closeModalIsVisible.value = true;
 }
 
 const draftIsSaving = ref(false);
@@ -263,6 +332,23 @@ async function saveDraft() {
 
 async function saveDraftAndClose() {
     await saveDraft();
+    emit('close');
+}
+
+const isDeleting = ref(false);
+
+async function deleteDraftAndClose() {
+    if (!surveyDraft.value) {
+        emit('close');
+        return;
+    }
+
+    isDeleting.value = true;
+
+    await api.survey.delete(surveyDraft.value.id);
+
+    isDeleting.value = false;
+
     emit('close');
 }
 
@@ -316,7 +402,8 @@ async function createContactTask() {
     const taskPayload = await createTaskWithTemplate({
         title: `Добавить новый контакт в компании ${getCompanyShortName(company.value)}`,
         step: TASK_FORM_STEPS.MESSAGE,
-        relations: getTaskRelations()
+        relations: getTaskRelations(),
+        type: 'contact_handling'
     });
 
     if (!taskPayload) return;
@@ -356,6 +443,26 @@ function getTaskRelations() {
     return relations;
 }
 
+const targetSurvey = computed(() => props.survey ?? surveyDraft.value);
+
+const targetSurveyDate = computed(() => {
+    if (!targetSurvey.value) return null;
+    return toDateFormat(
+        targetSurvey.value.completed_at ?? targetSurvey.value.created_at,
+        'D.MM.YY'
+    );
+});
+
+function tryAddSurveyTask(task) {
+    if (targetSurvey.value) {
+        if (targetSurvey.value.tasks) {
+            targetSurvey.value.tasks.push(task);
+        } else {
+            targetSurvey.value.tasks = [task];
+        }
+    }
+}
+
 async function createCompanyTask() {
     const taskPayload = await createTaskWithTemplate({
         title: `${getCompanyShortName(company.value)}, `,
@@ -364,8 +471,10 @@ async function createCompanyTask() {
 
     if (!taskPayload) return;
 
-    await api.task.create(taskPayload);
+    const task = await api.task.create(taskPayload);
     notify.success('Задача успешно создана');
+
+    tryAddSurveyTask(task);
 }
 
 function suggestCreateContact() {

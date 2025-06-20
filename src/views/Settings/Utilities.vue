@@ -137,7 +137,7 @@ import MultiSelect from '@/components/common/Forms/MultiSelect.vue';
 import LazyImage from '@/components/common/LazyImage.vue';
 import ObjectTypePicker from '@/components/common/Forms/ObjectTypePicker.vue';
 import { objectPurposesWithSectionsOptions } from '@/const/options/object.options.js';
-import { isNullish } from '@/utils/helpers/common/isNullish.js';
+import { isNullish } from '@/utils/helpers/common/isNullish.ts';
 
 const notify = useNotify();
 const { confirm } = useConfirm();

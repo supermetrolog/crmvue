@@ -1,5 +1,5 @@
-import { isNullish } from '@/utils/helpers/common/isNullish.js';
-import { isArray } from '@/utils/helpers/array/isArray.js';
+import { isNullish } from '@/utils/helpers/common/isNullish.ts';
+import { isArray } from '@/utils/helpers/array/isArray.ts';
 import { isEmptyArray } from '@/utils/helpers/array/isEmptyArray.js';
 import { strictMin as strictMinHelper } from '@/utils/helpers/common/strictMin.js';
 

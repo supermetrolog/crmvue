@@ -38,3 +38,8 @@ export function toBeautifulDateFormat(date, format = 'D.MM.YY, HH:mm') {
 export function isSameYear(date1, date2 = dayjs()) {
     return date1.isSame(date2, 'year');
 }
+
+export function fromUtcToServer(date) {
+    // TODO: Сделать норм время
+    return dayjs.utc(date).tz('Europe/Moscow');
+}

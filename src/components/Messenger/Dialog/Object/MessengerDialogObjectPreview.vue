@@ -9,6 +9,9 @@
                 :size="30"
                 buttons-class="small"
             />
+            <template #after>
+                <slot name="actions" />
+            </template>
         </MessengerDialogPreviewTab>
         <MessengerDialogPreviewTab
             :title="objectDescriptionTabLabel"
@@ -193,7 +196,7 @@ import MessengerDialogPreviewTippy from '@/components/Messenger/Dialog/Preview/M
 import MessengerDialogObjectPreviewSublease from '@/components/Messenger/Dialog/Object/MessengerDialogObjectPreviewSublease.vue';
 import { objectChatMemberTypes } from '@/const/messenger.js';
 import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
-import { isNullish } from '@/utils/helpers/common/isNullish.js';
+import { isNullish } from '@/utils/helpers/common/isNullish.ts';
 import { usePlural } from '@/composables/usePlural.js';
 
 const emit = defineEmits(['changed-warnings']);

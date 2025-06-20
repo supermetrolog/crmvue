@@ -3,24 +3,37 @@
         <Td :width="60" class="survey-table-item__id py-2">
             <p class="text-center">{{ survey.id }}</p>
             <div class="justify-content-center d-flex mt-1">
-                <UiDropdownActions small label="Действия над опросом">
+                <UiDropdownActions
+                    small
+                    label="Действия над опросом"
+                    :title="`Опрос #${survey.id}`"
+                >
                     <template #menu>
-                        <UiDropdownActionsButton
-                            @handle="$emit('open-survey')"
-                            label="Открыть опрос"
-                            icon="fa-solid fa-eye"
-                        />
-                        <UiDropdownActionsButton
-                            @handle="$emit('to-chat')"
-                            label="Перейти в чат"
-                            icon="fa-solid fa-comment"
-                        />
-                        <a :href="companyUrl" target="_blank" class="text-inherit">
+                        <UiDropdownActionsGroup>
                             <UiDropdownActionsButton
-                                label="Перейти к компании"
-                                icon="fa-solid fa-arrow-up-right-from-square"
+                                @handle="$emit('open-survey')"
+                                label="Открыть опрос"
+                                icon="fa-solid fa-eye"
                             />
-                        </a>
+                            <UiDropdownActionsButton
+                                @handle="$emit('edit-survey')"
+                                label="Редактировать"
+                                icon="fa-solid fa-pen"
+                            />
+                        </UiDropdownActionsGroup>
+                        <UiDropdownActionsGroup>
+                            <UiDropdownActionsButton
+                                @handle="$emit('to-chat')"
+                                label="Перейти в чат"
+                                icon="fa-solid fa-comment"
+                            />
+                            <a :href="companyUrl" target="_blank" class="text-inherit">
+                                <UiDropdownActionsButton
+                                    label="Перейти к компании"
+                                    icon="fa-solid fa-arrow-up-right-from-square"
+                                />
+                            </a>
+                        </UiDropdownActionsGroup>
                     </template>
                 </UiDropdownActions>
             </div>
@@ -109,11 +122,8 @@
                 <span>{{ survey.user.userProfile.medium_name }}</span>
             </div>
         </Td>
-        <Td :width="80" class="text-center">
+        <Td :width="80" class="text-center position-relative">
             <p :class="statusColor" class="font-weight-semi">{{ statusLabel }}</p>
-        </Td>
-        <Td sort="created_at" :width="100">
-            <TableDateBlock :date="survey.created_at" label="Дата создания" />
             <TableDateBlock
                 v-if="isCompleted"
                 :date="survey.completed_at ?? survey.updated_at"
@@ -121,6 +131,7 @@
                 label="Дата завершения"
                 class="mt-1"
             />
+            <TableDateBlock v-else :date="survey.created_at" label="Дата создания" />
         </Td>
     </Tr>
 </template>
@@ -141,8 +152,9 @@ import UiDropdownActionsButton from '@/components/common/UI/DropdownActions/UiDr
 import UiDropdownActions from '@/components/common/UI/DropdownActions/UiDropdownActions.vue';
 import { useRouter } from 'vue-router';
 import { plural } from '@/utils/plural.js';
+import UiDropdownActionsGroup from '@/components/common/UI/DropdownActions/UiDropdownActionsGroup.vue';
 
-defineEmits(['to-chat', 'open-survey']);
+defineEmits(['to-chat', 'open-survey', 'edit-survey']);
 const props = defineProps({
     survey: {
         type: Object,
