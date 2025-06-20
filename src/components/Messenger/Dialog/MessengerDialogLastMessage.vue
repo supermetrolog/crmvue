@@ -22,7 +22,6 @@
 </template>
 <script setup>
 import { computed } from 'vue';
-import { messengerTemplates } from '@/const/messenger.js';
 import Avatar from '@/components/common/Avatar.vue';
 import { dayjsFromMoscow } from '@/utils/formatters/date.js';
 import dayjs from 'dayjs';
@@ -39,17 +38,7 @@ const props = defineProps({
     onlyAvatar: Boolean
 });
 
-const messageByTemplateMap = {
-    [messengerTemplates.UNAVAILABLE_SURVEY]: 'Не удалось заполнить опросник..',
-    [messengerTemplates.UNAVAILABLE_CONTACT]: 'Не удалось дозвониться до клиента..',
-    [messengerTemplates.SURVEY]: 'Заполнил новый опрос с клиентом..'
-};
-
 const preparedMessage = computed(() => {
-    if (props.lastMessage.template) {
-        return messageByTemplateMap[props.lastMessage.template];
-    }
-
     if (isNotNullish(props.lastMessage.message)) return props.lastMessage.message;
 
     return pluralFileLength.value;
