@@ -1,7 +1,9 @@
 <template>
-    <div class="h-100 d-flex flex-column gap-2">
-        <Spinner v-if="companyIsLoading" label="Загрузка компании" small />
-        <SurveyFormHeaderCompany v-else-if="company" :company />
+    <div class="h-100 d-flex flex-column gap-2 survey-card-advanced">
+        <div class="survey-card-advanced__header">
+            <Spinner v-if="companyIsLoading" label="Загрузка компании" small />
+            <SurveyFormHeaderCompany v-else-if="company" :company editable />
+        </div>
         <Stepper
             :show-progress="false"
             :steps="steps"
@@ -11,13 +13,11 @@
             read-only
         >
             <template v-if="canBeEdit" #after-navigation>
-                <UiButton
-                    @click="onEditSurvey"
-                    class="ml-auto"
-                    icon="fa-solid fa-pen"
-                    color="light"
-                    small
-                >
+                <template v-if="company">
+                    <SurveyFormStepperSummary :company :survey />
+                    <span>|</span>
+                </template>
+                <UiButton @click="onEditSurvey" icon="fa-solid fa-pen" color="light" small>
                     {{ editButtonLabel }}
                 </UiButton>
             </template>
@@ -82,15 +82,16 @@ import api from '@/api/api.js';
 import Stepper from '@/components/common/Stepper/Stepper.vue';
 import SurveyCardAdvancedQuestions from '@/components/SurveyCard/SurveyCardAdvancedQuestions.vue';
 import SurveyCardAdvancedCalls from '@/components/SurveyCard/SurveyCardAdvancedCalls.vue';
-import SurveyCardAdvancedObjects from '@/components/SurveyCard/SurveyCardAdvancedObjects.vue';
 import Spinner from '@/components/common/Spinner.vue';
-import SurveyCardAdvancedRequests from '@/components/SurveyCard/SurveyCardAdvancedRequests.vue';
 import SurveyFormHeaderCompany from '@/components/SurveyForm/SurveyFormHeaderCompany.vue';
 import UiModal from '@/components/common/UI/UiModal.vue';
 import UiButton from '@/components/common/UI/UiButton.vue';
 import SurveyCardContactPreview from '@/components/SurveyCard/SurveyCardContactPreview.vue';
 import { useSurveyEditing } from '@/components/Survey/useSurveyEditing.js';
 import { useSurveyForm } from '@/composables/useSurveyForm.js';
+import SurveyFormStepperSummary from '@/components/SurveyForm/SurveyFormStepperSummary.vue';
+import SurveyCardAdvancedRequests from '@/components/SurveyCard/SurveyCardAdvancedRequests.vue';
+import SurveyCardAdvancedObjects from '@/components/SurveyCard/SurveyCardAdvancedObjects.vue';
 
 const emit = defineEmits(['hide']);
 const props = defineProps({

@@ -14,6 +14,9 @@
         <template #after-navigation>
             <SurveyFormStepperSummary :company :survey="currentSurvey" />
         </template>
+        <template #before-body>
+            <SurveyFormStepperHelper />
+        </template>
         <template #1>
             <SurveyFormCalls
                 v-model="form.calls"
@@ -144,6 +147,7 @@ import UiForm from '@/components/common/Forms/UiForm.vue';
 import UiFormGroup from '@/components/common/Forms/UiFormGroup.vue';
 import VueEditor from '@/components/common/Forms/VueEditor.vue';
 import SurveyFormStepperSummary from '@/components/SurveyForm/SurveyFormStepperSummary.vue';
+import SurveyFormStepperHelper from '@/components/SurveyForm/SurveyFormStepperHelper.vue';
 
 function toBool(value) {
     if (typeof value === 'string') return value === 'true';

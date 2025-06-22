@@ -20,6 +20,7 @@
             />
             <slot name="after-navigation" />
         </div>
+        <slot name="before-body" />
         <AnimationTransition>
             <div v-if="stepHasError()" class="stepper__validation">
                 <span

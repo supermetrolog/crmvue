@@ -27,20 +27,37 @@
                         </p>
                     </div>
                     <i class="fa-solid fa-arrow-right-long survey-form-contact__result-arrow"></i>
-                    <div class="survey-form-contact__block" :class="reasonClass">
-                        <p>
-                            <i :class="reasonOptionsIcons[form.reason]" class="mr-2" />
-                            <span>{{ reasonOptions[form.reason] }}</span>
-                            <span v-if="callScheduled" class="ml-1">
-                                на {{ callScheduledDate }}
-                            </span>
-                        </p>
+                    <div class="d-flex flex-column gap-1 flex-shrink-0">
+                        <div class="survey-form-contact__block" :class="reasonClass">
+                            <p>
+                                <i :class="reasonOptionsIcons[form.reason]" class="mr-2" />
+                                <span>{{ reasonOptions[form.reason] }}</span>
+                                <span v-if="callScheduled" class="ml-1">
+                                    на {{ callScheduledDate }}
+                                </span>
+                            </p>
+                        </div>
+                        <div
+                            v-if="form.scheduled"
+                            class="survey-form-contact__block dashboard-bg-success-l"
+                        >
+                            <p>
+                                <i class="mr-2 fa-solid fa-phone" />
+                                <span>Звонок</span>
+                                <span v-if="form.scheduled" class="ml-1">
+                                    {{ callScheduledDate }}
+                                </span>
+                            </p>
+                        </div>
                     </div>
                     <template v-if="descriptionShouldBeVisible">
                         <i
                             class="fa-solid fa-arrow-right-long survey-form-contact__result-arrow"
                         ></i>
                         <div class="survey-form-contact__description fs-2">
+                            <p class="fs-1 text-grey">
+                                <i>Задача {{ currentUser.userProfile.middle_name }} => Еськова</i>
+                            </p>
                             <i>{{ form.description }}</i>
                         </div>
                     </template>
@@ -69,6 +86,7 @@ import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
 import dayjs from 'dayjs';
 import SurveyFormContactForm from '@/components/SurveyForm/SurveyFormContactForm.vue';
 import { onClickOutside } from '@vueuse/core';
+import { useAuth } from '@/composables/useAuth.js';
 
 const emit = defineEmits([
     'edit',
@@ -94,6 +112,8 @@ const props = defineProps({
 });
 
 const form = defineModel({ type: Object });
+
+const { currentUser } = useAuth();
 
 const isCompleted = computed(() => {
     return isNotNullish(form.value?.available) && isNotNullish(form.value?.reason);

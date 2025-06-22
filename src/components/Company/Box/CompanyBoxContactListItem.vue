@@ -29,28 +29,30 @@
                         <UiDropdownActionsTrigger label="Действия над контактом" color="light" />
                     </template>
                     <template #menu>
-                        <UiDropdownActionsButton
-                            @handle="$emit('edit')"
-                            icon="fa-solid fa-pen"
-                            label="Редактировать"
-                        />
-                        <UiDropdownActionsButton
-                            v-if="isPassive"
-                            @handle="$emit('enable')"
-                            icon="fa-solid fa-undo"
-                            label="Восстановить"
-                        />
-                        <UiDropdownActionsButton
-                            v-else
-                            @handle="$emit('disable')"
-                            icon="fa-solid fa-ban"
-                            label="Отправить в пассив"
-                        />
-                        <UiDropdownActionsButton
-                            @handle="$emit('delete')"
-                            icon="fa-solid fa-trash"
-                            label="Удалить"
-                        />
+                        <slot name="menu" :contact="contact" :passive="isPassive">
+                            <UiDropdownActionsButton
+                                @handle="$emit('edit')"
+                                icon="fa-solid fa-pen"
+                                label="Редактировать"
+                            />
+                            <UiDropdownActionsButton
+                                v-if="isPassive"
+                                @handle="$emit('enable')"
+                                icon="fa-solid fa-undo"
+                                label="Восстановить"
+                            />
+                            <UiDropdownActionsButton
+                                v-else
+                                @handle="$emit('disable')"
+                                icon="fa-solid fa-ban"
+                                label="Отправить в пассив"
+                            />
+                            <UiDropdownActionsButton
+                                @handle="$emit('delete')"
+                                icon="fa-solid fa-trash"
+                                label="Удалить"
+                            />
+                        </slot>
                     </template>
                 </UiDropdownActions>
             </div>

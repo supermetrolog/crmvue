@@ -4,9 +4,13 @@
             <p class="survey-form-contact-form-card__calls">
                 <i class="fa-solid fa-phone survey-form-contact-form-card__icon mr-1" />
                 <span class="font-weight-semi">{{ callsPluralLabel }}</span>
-                <span v-if="contact.calls?.length" class="text-danger">
-                    Последнее общение {{ lastCallDate }}
+                <span
+                    v-if="contact.calls?.length"
+                    :class="lastCallHasCompletedStatus ? 'text-success' : 'text-danger'"
+                >
+                    Последней звонок {{ lastCallDate }}. {{ lastCallStatus }}.
                 </span>
+                <span></span>
             </p>
             <p v-if="lastThreeCallsIsUnavailable" class="text-danger mt-1">
                 <i>Не удалось дозвониться уже более 3х раз подряд!</i>
@@ -43,6 +47,8 @@ import { computed } from 'vue';
 import PhoneNumber from '@/components/common/PhoneNumber.vue';
 import { plural } from '@/utils/plural.js';
 import { toBeautifulDateFormat } from '@/utils/formatters/date.js';
+import { callStatusEnum } from '@/const/enums/call.js';
+import { callStatus } from '@/const/options/call.options.js';
 
 defineEmits(['schedule-call']);
 const props = defineProps({
@@ -75,4 +81,10 @@ const lastThreeCallsIsUnavailable = computed(() => {
 
     return false;
 });
+
+const lastCallHasCompletedStatus = computed(
+    () => props.contact.calls[0].status === callStatusEnum.COMPLETED
+);
+
+const lastCallStatus = computed(() => callStatus[props.contact.calls[0].status]);
 </script>
