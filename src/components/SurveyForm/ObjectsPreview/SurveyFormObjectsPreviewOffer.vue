@@ -2,6 +2,7 @@
     <div
         class="survey-form-object-preview-offer"
         :class="{
+            completed: hasStatus,
             success: hasSuccessStatus || needEditing,
             danger: hasFailStatus,
             warning: needEditing
@@ -281,6 +282,10 @@ function selectAnswer(value) {
 const hasSuccessStatus = computed(() => Number(modelValue.value.answer) === ANSWER.SUCCESS);
 const hasFailStatus = computed(() => Number(modelValue.value.answer) === ANSWER.FAIL);
 const needEditing = computed(() => Number(modelValue.value.answer) === ANSWER.EDIT);
+
+const hasStatus = computed(
+    () => hasSuccessStatus.value || hasFailStatus.value || needEditing.value
+);
 
 const { consultantsOptions } = useConsultantsOptions();
 

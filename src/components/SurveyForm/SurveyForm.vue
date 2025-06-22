@@ -68,7 +68,9 @@
                 />
                 <MessengerQuizFormWarningNoContacts
                     v-else-if="contacts.length === 0"
+                    @enabled="fetchContacts"
                     @suggest-create-contact="suggestCreateContact"
+                    :passive-contacts="passiveContacts"
                 />
                 <MessengerQuizFormWarningAlreadyCreated
                     v-else-if="lastSurveys.length"
@@ -147,7 +149,7 @@ import { isNullish } from '@/utils/helpers/common/isNullish.ts';
 import { getCompanyName, getCompanyShortName } from '@/utils/formatters/models/company.js';
 import UiMinimizeModal from '@/components/common/UI/UiMinimizeModal.vue';
 import { contactOptions } from '@/const/options/contact.options.js';
-import { isPersonalContact } from '@/utils/helpers/models/contact.js';
+import { isPassiveContact, isPersonalContact } from '@/utils/helpers/models/contact.js';
 import { useSurveyEditing } from '@/components/Survey/useSurveyEditing.js';
 import { useAsyncPopup } from '@/composables/useAsyncPopup.js';
 import { TASK_FORM_STEPS, useTaskManager } from '@/composables/useTaskManager.js';
@@ -360,6 +362,7 @@ function updateSurvey() {
 
 const contactsIsLoading = ref(false);
 const contacts = ref([]);
+const passiveContacts = ref([]);
 
 async function fetchContacts() {
     contactsIsLoading.value = true;
@@ -374,6 +377,10 @@ async function fetchContacts() {
                     isPersonalContact(contact)
             )
             .sort((first, second) => second.isMain - first.isMain);
+
+        passiveContacts.value = response.filter(
+            contact => isPassiveContact(contact) && isPersonalContact(contact)
+        );
     } finally {
         contactsIsLoading.value = false;
     }

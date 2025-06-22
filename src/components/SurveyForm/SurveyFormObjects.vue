@@ -1,7 +1,7 @@
 <template>
     <div class="survey-form-objects p-2">
         <Splitpanes class="default-theme" vertical :maximize-panes="false">
-            <Pane min-size="10" max-size="35" size="31">
+            <Pane min-size="10" max-size="35" size="31" class="position-relative">
                 <div class="d-flex flex-column">
                     <div class="d-flex gap-1 pr-2 mb-1 align-items-center">
                         <span class="font-weight-bold fs-3">Строения ({{ objects.length }})</span>
@@ -81,6 +81,7 @@
                         <SurveyFormObject
                             v-for="object in objects"
                             :key="object.id"
+                            ref="objectsEls"
                             v-model="form.current[object.id]"
                             @select="selectObject(object)"
                             @show-map="showObjectOnMap(object)"
@@ -109,6 +110,15 @@
                         </template>
                     </EmptyData>
                 </div>
+                <AnimationTransition :speed="0.4">
+                    <UiButtonIcon
+                        v-show="scrollButtonShouldBeVisible"
+                        @click="scrollToSelected"
+                        icon="fa-solid fa-rotate-left"
+                        label="Вернуться к выбранному"
+                        class="survey-form-objects__scroll"
+                    />
+                </AnimationTransition>
             </Pane>
             <Pane min-size="65" max-size="90" size="69">
                 <SurveyFormObjectsPreview
@@ -186,7 +196,7 @@
 </template>
 <script setup>
 import SurveyFormObject from '@/components/SurveyForm/Object/SurveyFormObject.vue';
-import { computed, ref, shallowRef, watch } from 'vue';
+import { computed, ref, shallowRef, useTemplateRef, watch } from 'vue';
 import { useMapPreviewer } from '@/composables/useMapPreviewer.js';
 import { usePreviewer } from '@/composables/usePreviewer.js';
 import { getLinkFile } from '@/utils/url.js';
@@ -216,6 +226,9 @@ import { objectOptions } from '@/const/options/object.options.js';
 import MultiSelect from '@/components/common/Forms/MultiSelect.vue';
 import UiInput from '@/components/common/Forms/UiInput.vue';
 import RadioChip from '@/components/common/Forms/RadioChip.vue';
+import { unrefElement, useElementVisibility } from '@vueuse/core';
+import UiButtonIcon from '@/components/common/UI/UiButtonIcon.vue';
+import AnimationTransition from '@/components/common/AnimationTransition.vue';
 
 const props = defineProps({
     objects: {
@@ -287,12 +300,15 @@ function showObjectPreview(object, key) {
 // select
 
 const selectedObject = shallowRef(null);
+const selectedObjectKey = ref(null);
 
 function selectObject(object) {
     if (selectedObject.value === object) {
         selectedObject.value = null;
+        selectedObjectKey.value = null;
     } else {
         selectedObject.value = object;
+        selectedObjectKey.value = props.objects.findIndex(obj => obj.id === object.id);
     }
 
     selectedNewObject.value = null;
@@ -370,7 +386,7 @@ async function onObjectSold(object) {
     if (!taskPayload) return;
 
     const messagePayload = {
-        message: `<b>Объект продан!</b> Компания ${object.company_name} больше не владелец`,
+        message: `<b>Объект продан!</b> Комп. "${companyName}" больше не владелец`,
         template: 'object-sold'
     };
 
@@ -491,5 +507,30 @@ function markChecked(value) {
     allObjectsToggled.value = false;
 
     notify.success('Выбранные объекты успешно обработаны');
+}
+
+// visibility
+
+const objectsEls = useTemplateRef('objectsEls');
+
+const selectedElement = computed(() => {
+    if (isNullish(selectedObjectKey.value)) return null;
+    return objectsEls.value[selectedObjectKey.value];
+});
+
+const selectedElementIsVisible = useElementVisibility(selectedElement);
+
+const scrollButtonShouldBeVisible = computed(
+    () => isNotNullish(selectedObjectKey.value) && !selectedElementIsVisible.value
+);
+
+function scrollToSelected() {
+    if (isNullish(selectedObjectKey.value)) return;
+
+    const el = unrefElement(objectsEls.value[selectedObjectKey.value]);
+    el?.scrollIntoView({
+        behavior: 'smooth',
+        block: 'center'
+    });
 }
 </script>

@@ -2,7 +2,8 @@
     <div
         class="survey-form-object-preview-offer"
         :class="{
-            success: hasSuccessStatus || needEditing,
+            completed: hasSuccessStatus || needEditing || hasFailStatus,
+            success: hasSuccessStatus,
             danger: hasFailStatus,
             warning: needEditing
         }"
@@ -76,7 +77,7 @@
             </div>
             <AnimationTransition :speed="0.5">
                 <VueEditor
-                    v-if="needEditing"
+                    v-if="(needEditing || hasFailStatus) && offer.description?.length"
                     :model-value="offer.description"
                     autofocus
                     :min-height="60"

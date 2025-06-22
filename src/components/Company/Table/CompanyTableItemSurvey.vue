@@ -87,7 +87,7 @@
                     icon="fa-solid fa-bolt"
                 >
                     <div class="d-flex gap-2 align-items-center">
-                        <span>Поставленные задачи</span>
+                        <span>Задачи</span>
                         <UiButtonIcon :color="currentTab === TABS.TASKS ? 'light' : 'primary'" mini>
                             {{ company.last_survey.tasks.length }}
                         </UiButtonIcon>

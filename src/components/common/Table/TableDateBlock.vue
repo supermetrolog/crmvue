@@ -1,13 +1,13 @@
 <template>
     <span ref="chipEl" class="table-date-block">
         <i :class="icon"></i>
-        <span class="table-date-block__value">{{ day }}, {{ time }}</span>
+        <span class="table-date-block__value">{{ day }}</span>
     </span>
 </template>
 <script setup>
-import dayjs from 'dayjs';
 import { computed, toRef, useTemplateRef } from 'vue';
 import { useTippy } from 'vue-tippy';
+import { toBeautifulDateFormat } from '@/utils/formatters/date.js';
 
 const props = defineProps({
     label: { type: String, required: true },
@@ -19,11 +19,8 @@ const props = defineProps({
 });
 
 const day = computed(() => {
-    const date = dayjs(props.date);
-    return date.isToday() ? 'Сегодня' : date.format('D.MM.YY');
+    return toBeautifulDateFormat(props.date);
 });
-
-const time = computed(() => dayjs(props.date).format('HH:mm'));
 
 // tippy
 

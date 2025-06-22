@@ -14,6 +14,9 @@
         <template #after-navigation>
             <SurveyFormStepperSummary :company :survey="currentSurvey" />
         </template>
+        <template #before-body>
+            <SurveyFormStepperHelper />
+        </template>
         <template #1>
             <SurveyFormCalls
                 v-model="form.calls"
@@ -134,7 +137,6 @@ import {
     CALL_STATUSES,
     CONTACT_CALL_REASONS
 } from '@/components/MessengerQuiz/useMessengerQuiz.js';
-import { useConfirm } from '@/composables/useConfirm.js';
 import { captureException } from '@sentry/vue';
 import dayjs from 'dayjs';
 import { getCompanyShortName } from '@/utils/formatters/models/company.js';
@@ -145,6 +147,7 @@ import UiForm from '@/components/common/Forms/UiForm.vue';
 import UiFormGroup from '@/components/common/Forms/UiFormGroup.vue';
 import VueEditor from '@/components/common/Forms/VueEditor.vue';
 import SurveyFormStepperSummary from '@/components/SurveyForm/SurveyFormStepperSummary.vue';
+import SurveyFormStepperHelper from '@/components/SurveyForm/SurveyFormStepperHelper.vue';
 
 function toBool(value) {
     if (typeof value === 'string') return value === 'true';
@@ -623,11 +626,6 @@ function createSurveyPayload() {
         );
     });
 
-    if (isNullish(targetContact)) {
-        notify.info('Свяжитесь с представителем компании!', 'Создание опроса');
-        throw new Error('No completed call in Survey');
-    }
-
     const { questionAnswers: objectsQuestionAnswers } = createSurveyObjectsPayload();
     const { questionAnswers: requestQuestionAnswers } = createSurveyRequestsPayload();
     const { questionAnswers: otherQuestionAnswers } = createSurveyQuestionsPayload();
@@ -635,7 +633,7 @@ function createSurveyPayload() {
     return {
         survey: {
             user_id: currentUserId.value,
-            contact_id: targetContact.contact_id,
+            contact_id: targetContact?.contact_id,
             chat_member_id: props.chatMemberId,
             calls: createCallsForm(callsPayload.filter(form => isNotNullish(form.available))),
             question_answers: [
@@ -733,7 +731,6 @@ async function createPotentialTasks(contacts, messageId, surveyId = null) {
 }
 
 const isCreating = ref(false);
-const { confirm } = useConfirm();
 
 const bus = useEventBus('survey');
 
@@ -742,12 +739,6 @@ async function submit() {
 
     const isValid = await validate();
     if (!isValid) return;
-
-    const confirmed = await confirm(
-        'Сохранение опроса',
-        'Вы закончили заполнение информации? Будут созданы задачи, звонки и опросы для заполненных предложений и запросов.'
-    );
-    if (!confirmed) return;
 
     if (isNotNullish(props.survey)) {
         await updateSurvey();
@@ -821,12 +812,6 @@ function cancelSurvey() {
 }
 
 async function cancel() {
-    const confirmed = await confirm(
-        'Завершение опроса',
-        'Вы попробовали связаться со всеми контактами компании? Опрос будет отмечен как неудавшийся.'
-    );
-    if (!confirmed) return;
-
     isCreating.value = true;
 
     const { survey: surveyPayload, calls } = createSurveyPayload();

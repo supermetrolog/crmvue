@@ -2,7 +2,8 @@
     <div
         class="survey-form-object-preview-offer"
         :class="{
-            success: hasSuccessStatus || needEditing,
+            completed: hasSuccessStatus || needEditing || hasFailStatus,
+            success: hasSuccessStatus,
             danger: hasFailStatus,
             warning: needEditing
         }"

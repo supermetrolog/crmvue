@@ -1,22 +1,31 @@
 <template>
     <div class="survey-form-contact-form-call">
         <div class="survey-form-contact-form-call__question">
-            <span class="survey-form-contact-form-call__question-text">Дозвонились?</span>
-            <div class="d-flex gap-1">
-                <MessengerQuizFormRadioChip
-                    v-model="available"
-                    :value="true"
-                    unselect
-                    label="Да"
-                    class="survey-form-contact-form-call__answer"
-                />
-                <MessengerQuizFormRadioChip
+            <p class="survey-form-contact-form-call__question-text mb-2">Дозвонились?</p>
+            <div class="d-flex gap-1 align-items-center">
+                <RadioChip v-model="available"
+:value="true"
+unselect
+label="Да"
+:rounded="false" />
+                <RadioChip
                     v-model="available"
                     :value="false"
                     unselect
                     label="Нет"
-                    class="survey-form-contact-form-call__answer"
+                    :rounded="false"
                 />
+                <UiButton
+                    @click="$emit('schedule-call')"
+                    :icon="form.scheduled ? 'fa-solid fa-check' : 'fa-solid fa-phone'"
+                    :disabled="!!form.scheduled"
+                    small
+                    :color="form.scheduled ? 'success' : 'transparent'"
+                    class="survey-form-contact-form-call__schedule ml-2"
+                    :class="{ scheduled: !!form.scheduled }"
+                >
+                    {{ form.scheduled ? 'Звонок запланирован' : 'Запланировать звонок' }}
+                </UiButton>
             </div>
         </div>
         <div v-if="hasAnyAnswer" class="mt-2">
@@ -29,22 +38,13 @@
                 :rounded="false"
                 class="messenger-quiz-question-call__radio mb-2"
                 :disabled="!hasAnyAnswer"
-            >
-                <template #after-options>
-                    <MessengerQuizQuestionCallSchedule
-                        @click="onClickSchedule"
-                        :active="callOptionIsActive"
-                        class="messenger-quiz-question-call__schedule"
-                    />
-                </template>
-            </RadioOptions>
+            />
             <AnimationTransition :speed="0.3">
                 <div v-if="reason === 2 || reason === 3">
                     <UiTextarea
                         v-model="form.description"
-                        label="Коммментарий"
                         placeholder="Почему удалить или в какую компанию перенести?"
-                        class="mb-2"
+                        class="mb-2 survey-form-contact-form-call__editor"
                         :min-height="50"
                         :max-height="120"
                         auto-height
@@ -56,16 +56,16 @@
 </template>
 <script setup>
 import { computed, watch } from 'vue';
-import MessengerQuizFormRadioChip from '@/components/MessengerQuiz/Form/MessengerQuizFormRadioChip.vue';
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
 import RadioOptions from '@/components/common/Forms/RadioOptions.vue';
 import UiTextarea from '@/components/common/Forms/UiTextarea.vue';
 import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
 import useVuelidate from '@vuelidate/core';
 import { helpers, requiredIf } from '@vuelidate/validators';
-import MessengerQuizQuestionCallSchedule from '@/components/MessengerQuiz/Question/Call/MessengerQuizQuestionCallSchedule.vue';
 import { isString } from '@/utils/helpers/string/isString.js';
 import { toBool } from '@/utils/helpers/string/toBool.js';
+import RadioChip from '@/components/common/Forms/RadioChip.vue';
+import UiButton from '@/components/common/UI/UiButton.vue';
 
 const emit = defineEmits(['schedule-call', 'change']);
 defineProps({
@@ -113,28 +113,8 @@ const available = computed({
 
 watch(available, value => {
     if (isNotNullish(value)) emit('change');
+    reason.value = null;
 });
-
-watch(
-    () => form.value?.scheduled,
-    value => {
-        if (isNotNullish(value)) {
-            reason.value = 6;
-        }
-    }
-);
-
-function onClickSchedule() {
-    if (reason.value === 6) return;
-
-    if (isNotNullish(form.value?.scheduled)) {
-        reason.value = 6;
-    } else {
-        emit('schedule-call');
-    }
-}
-
-const callOptionIsActive = computed(() => reason.value === 6);
 
 const hasAnyAnswer = computed(() => isNotNullish(available.value));
 
