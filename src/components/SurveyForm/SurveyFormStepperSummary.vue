@@ -14,7 +14,13 @@
             icon="fa-solid fa-bolt"
         >
             <span>Задачи</span>
-            <span class="ml-1">({{ survey.tasks.length }})</span>
+            <span class="ml-1">(</span>
+            <template v-if="completedTasksLength">
+                <span class="text-success">{{ completedTasksLength }}</span>
+                <span>/</span>
+            </template>
+            <span>{{ survey.tasks.length }}</span>
+            <span>)</span>
         </SurveyFormStepperSummaryButton>
         <SurveyFormStepperSummaryButton
             v-if="survey && survey.tasks?.length && scheduledCalls.length"
@@ -124,6 +130,7 @@ import { spliceById } from '@/utils/helpers/array/spliceById.js';
 import { captureException } from '@sentry/vue';
 import TaskPreview from '@/components/TaskPreview/TaskPreview.vue';
 import SurveyFormStepperSummaryButton from '@/components/SurveyForm/SurveyFormStepperSummaryButton.vue';
+import { taskOptions } from '@/const/options/task.options.js';
 
 const props = defineProps({
     survey: Object,
@@ -213,4 +220,11 @@ function onUpdatedTask(payload) {
     Object.assign(currentTask.value, payload);
     currentTask.value = null;
 }
+
+const completedTasksLength = computed(() =>
+    props.survey.tasks.reduce(
+        (acc, task) => acc + Number(task.status === taskOptions.clearStatusTypes.COMPLETED),
+        0
+    )
+);
 </script>

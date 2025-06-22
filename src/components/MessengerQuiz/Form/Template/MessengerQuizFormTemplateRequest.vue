@@ -2,6 +2,7 @@
     <div
         class="survey-form-object-preview-offer"
         :class="{
+            completed: hasStatus,
             success: hasSuccessStatus || needEditing,
             danger: hasFailStatus,
             warning: needEditing
@@ -80,6 +81,7 @@ import UiDropdownActionsButton from '@/components/common/UI/DropdownActions/UiDr
 import RequestRowCard from '@/components/RequestRowCard/RequestRowCard.vue';
 import { useAuth } from '@/composables/useAuth.js';
 import { useStore } from 'vuex';
+import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
 
 defineEmits(['edit']);
 
@@ -109,6 +111,8 @@ function selectAnswer(value) {
         form.value.answer = value;
     }
 }
+
+const hasStatus = computed(() => props.editable && isNotNullish(form.value.answer));
 
 const hasSuccessStatus = computed(
     () => props.editable && Number(form.value.answer) === ANSWER.SUCCESS

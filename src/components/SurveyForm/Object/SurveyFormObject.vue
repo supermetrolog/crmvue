@@ -2,8 +2,7 @@
     <div
         class="survey-form-object"
         :class="{
-            success,
-            danger: hasWarnings && !success
+            success
         }"
     >
         <div @click="$emit('select')" class="survey-form-object__body" :class="{ active }">

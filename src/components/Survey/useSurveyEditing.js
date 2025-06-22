@@ -3,7 +3,7 @@ import dayjs from 'dayjs';
 import { dayjsFromMoscow } from '@/utils/formatters/date.js';
 import { useAuth } from '@/composables/useAuth.js';
 
-const editTimeLimit = 60 * 12;
+const editTimeLimit = 60 * 24 * 30;
 
 export function useSurveyEditing(survey, options = {}) {
     const { currentUserIsAdmin, currentUserId } = useAuth();
@@ -14,10 +14,7 @@ export function useSurveyEditing(survey, options = {}) {
         const _survey = toValue(survey);
         if (!_survey) return 0;
 
-        return (
-            editTimeLimit -
-            dayjs().diff(dayjsFromMoscow(_survey.completed_at ?? _survey.updated_at), 'minute')
-        );
+        return editTimeLimit - dayjs().diff(dayjsFromMoscow(_survey.created_at), 'minute');
     });
 
     const remainingTimeLabel = computed(() => {
@@ -26,7 +23,13 @@ export function useSurveyEditing(survey, options = {}) {
 
         if (remainingTimeInMinutes.value < 60) return `${remainingTimeInMinutes.value} мин.`;
 
-        return `${Math.ceil(remainingTimeInMinutes.value / 60)} ч.`;
+        const hours = Math.ceil(remainingTimeInMinutes.value / 60);
+
+        if (hours < 36) {
+            return `${hours} ч.`;
+        }
+
+        return `${Math.ceil(hours / 24)} дн.`;
     });
 
     const canBeEdit = computed(() => {

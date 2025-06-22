@@ -135,7 +135,9 @@ function generateForm() {
         form.value.created = [];
     }
 
-    for (const request of props.requests) {
+    const requests = props.requests.filter(request => request.status === 1);
+
+    for (const request of requests) {
         if (!(request.id in form.value.current)) {
             form.value.current[request.id] = {
                 answer: null,
