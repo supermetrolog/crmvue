@@ -3,7 +3,7 @@ import dayjs from 'dayjs';
 import { dayjsFromMoscow } from '@/utils/formatters/date.js';
 import { useAuth } from '@/composables/useAuth.js';
 
-const editTimeLimit = 60 * 24 * 30;
+const editTimeLimit = import.meta.env.PROD ? 60 * 24 * 30 : 60;
 
 export function useSurveyEditing(survey, options = {}) {
     const { currentUserIsAdmin, currentUserId } = useAuth();

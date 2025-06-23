@@ -41,7 +41,7 @@
     </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { computed, toRef, useTemplateRef } from 'vue';
 import { toBeautifulDateFormat } from '@/utils/formatters/date.js';
 import Avatar from '@/components/common/Avatar.vue';
@@ -49,18 +49,20 @@ import TaskCardButton from '@/components/TaskCard/TaskCardButton.vue';
 import { useAuth } from '@/composables/useAuth.js';
 import File from '@/components/common/Forms/File.vue';
 import { useLinkify } from '@/composables/useLinkify.js';
+import { TaskComment } from '@/types/task';
 
-defineEmits(['delete', 'edit', 'preview']);
-const props = defineProps({
-    comment: {
-        type: Object,
-        required: true
-    },
-    editable: {
-        type: Boolean,
-        default: false
-    }
-});
+defineEmits<{
+    (e: 'edit'): void;
+    (e: 'delete'): void;
+    (e: 'preview', id: number): void;
+}>();
+
+interface Props {
+    comment: TaskComment;
+    editable?: boolean;
+}
+
+const props = defineProps<Props>();
 
 const { currentUserIsAdmin, currentUserId, currentUserIsModeratorOrHigher } = useAuth();
 
