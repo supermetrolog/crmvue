@@ -1025,10 +1025,4 @@ const commentModalIsVisible = ref(false);
 function completeSurvey() {
     commentModalIsVisible.value = true;
 }
-
-// calls
-
-const callTasks = computed(() => {
-    return currentSurvey.value.tasks.filter(task => task.type === 'scheduled_call');
-});
 </script>

@@ -524,11 +524,17 @@ const canBeCreated = computed(() => {
         return false;
     }
 
-    if (lastSurveys.value.length > 0) {
-        return remainingTimeInMinutes.value <= 0;
+    if (lastSurveys.value.length === 0) {
+        return true;
     }
 
-    return true;
+    const lastSurvey = lastSurveys.value[0];
+
+    if (lastSurvey.status === 'canceled') {
+        return true;
+    }
+
+    return remainingTimeInMinutes.value <= 0;
 });
 
 const { show: showSurvey } = useAsyncPopup('surveyPreview');
