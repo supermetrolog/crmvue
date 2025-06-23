@@ -202,7 +202,7 @@ function createAvailableReasonOptionActualized() {
     };
 
     if (completedCallsCount.value > 0) {
-        option.after = `(${plural(completedCallsCount.value, '%d разговор', '%d разговора', '%в разговоров')})`;
+        option.after = `(${plural(completedCallsCount.value, '%d разговор', '%d разговора', '%d разговоров')})`;
         option.afterClass = 'text-success';
     }
 
