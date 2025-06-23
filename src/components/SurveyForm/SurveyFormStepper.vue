@@ -337,10 +337,10 @@ const steps = reactive([
             }
 
             if (form.value.requests?.created?.length) {
-                return `Запросы (${requests.value.length}) + ${form.value.requests.created.length} новых`;
+                return `Запросы (${activeRequests.value.length}) + ${form.value.requests.created.length} новых`;
             }
 
-            return `Запросы (${requests.value.length})`;
+            return `Запросы (${activeRequests.value.length})`;
         }),
         disabled: stepsIsDisabled,
         class: computed(() => requests.value.length === 0 && 'skip')
@@ -872,7 +872,7 @@ function completeOrCancel() {
 // objects
 
 const objects = shallowRef([]);
-const requests = shallowRef([]);
+const requests = ref([]);
 
 const isLoading = ref(false);
 

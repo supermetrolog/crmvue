@@ -9,7 +9,7 @@
             <span class="ml-1">({{ company.pinned_messages?.length }})</span>
         </SurveyFormStepperSummaryButton>
         <SurveyFormStepperSummaryButton
-            v-if="survey && survey.tasks?.length"
+            v-if="survey && baseTasks.length"
             @click="tasksModalIsVisible = true"
             icon="fa-solid fa-bolt"
         >
@@ -19,32 +19,33 @@
                 <span class="text-success">{{ completedTasksLength }}</span>
                 <span>/</span>
             </template>
-            <span>{{ survey.tasks.length }}</span>
+            <span>{{ baseTasks.length }}</span>
             <span>)</span>
         </SurveyFormStepperSummaryButton>
         <SurveyFormStepperSummaryButton
-            v-if="survey && survey.tasks?.length && scheduledCalls.length"
+            v-if="survey && survey.tasks?.length && scheduledCallTasks.length"
             @click="showCalls"
             icon="fa-solid fa-phone-volume"
             color="danger"
             class="danger"
             label="Нажмите, чтобы посмотреть подробнее"
         >
-            <span>Звонок {{ scheduledCallDate }}!</span>
-            <span v-if="scheduledCalls.length > 1" class="ml-1">
-                (+{{ scheduledCalls.length - 1 }})
+            <span>Звонок {{ lastScheduledCallDate }}!</span>
+            <span v-if="scheduledCallTasks.length > 1" class="ml-1">
+                (+{{ scheduledCallTasks.length - 1 }})
             </span>
         </SurveyFormStepperSummaryButton>
         <SurveyFormStepperSummaryButton
-            v-if="survey && survey.tasks?.length && scheduledVisits.length"
+            v-if="survey && survey.tasks?.length && scheduledVisitTasks.length"
             @click="showVisits"
             icon="fa-solid fa-phone-volume"
+            color="danger"
             class="danger"
             label="Нажмите, чтобы посмотреть подробнее"
         >
-            <span>Встреча {{ scheduledVisitDate }}!</span>
-            <span v-if="scheduledVisits.length > 1" class="ml-1">
-                (+{{ scheduledVisits.length - 1 }})
+            <span>Встреча {{ lastScheduledVisitDate }}!</span>
+            <span v-if="scheduledVisitTasks.length > 1" class="ml-1">
+                (+{{ scheduledVisitTasks.length - 1 }})
             </span>
         </SurveyFormStepperSummaryButton>
     </div>
@@ -79,7 +80,7 @@
     <UiModal v-model:visible="tasksModalIsVisible" title="Задачи по опросу" :width="800">
         <div class="d-flex flex-column gap-2">
             <DashboardTableTasksItem
-                v-for="task in survey.tasks"
+                v-for="task in baseTasks"
                 :key="task.id"
                 @view="showTaskPreview(task)"
                 :task="task"
@@ -89,7 +90,7 @@
     <UiModal v-model:visible="callsModalIsVisible" title="Запланированные звонки" :width="800">
         <div class="d-flex flex-column gap-2">
             <DashboardTableTasksItem
-                v-for="task in scheduledCalls"
+                v-for="task in scheduledCallTasks"
                 :key="task.id"
                 @view="showTaskPreview(task)"
                 :task="task"
@@ -99,7 +100,7 @@
     <UiModal v-model:visible="visitsModalIsVisible" title="Запланированные встречи" :width="800">
         <div class="d-flex flex-column gap-2">
             <DashboardTableTasksItem
-                v-for="task in scheduledVisits"
+                v-for="task in scheduledVisitTasks"
                 :key="task.id"
                 @view="showTaskPreview(task)"
                 :task="task"
@@ -116,10 +117,9 @@
     </teleport>
 </template>
 <script setup>
-import { computed, ref } from 'vue';
+import { computed, ref, toRef } from 'vue';
 import UiModal from '@/components/common/UI/UiModal.vue';
 import DashboardTableTasksItem from '@/components/Dashboard/Table/TasksItem/DashboardTableTasksItem.vue';
-import { toDateFormat } from '@/utils/formatters/date.js';
 import MessengerDialogLastMessage from '@/components/Messenger/Dialog/MessengerDialogLastMessage.vue';
 import UiDropdownActionsButton from '@/components/common/UI/DropdownActions/UiDropdownActionsButton.vue';
 import UiDropdownActions from '@/components/common/UI/DropdownActions/UiDropdownActions.vue';
@@ -131,6 +131,7 @@ import { captureException } from '@sentry/vue';
 import TaskPreview from '@/components/TaskPreview/TaskPreview.vue';
 import SurveyFormStepperSummaryButton from '@/components/SurveyForm/SurveyFormStepperSummaryButton.vue';
 import { taskOptions } from '@/const/options/task.options.js';
+import { useTypedTasks } from '@/composables/task/useTypedTasks.ts';
 
 const props = defineProps({
     survey: Object,
@@ -140,43 +141,35 @@ const props = defineProps({
     }
 });
 
+const {
+    scheduledCallTasks,
+    scheduledVisitTasks,
+    lastScheduledCallDate,
+    lastScheduledVisitDate,
+    baseTasks
+} = useTypedTasks(toRef(() => props.survey?.tasks ?? []));
+
 // calls
-
-const scheduledCalls = computed(() => {
-    return props.survey.tasks.filter(task => task.type === 'scheduled_call');
-});
-
-const scheduledCallDate = computed(() =>
-    toDateFormat(scheduledCalls.value[0].start, 'D.MM.YYYY в HH:mm')
-);
 
 const callsModalIsVisible = ref(false);
 
 function showCalls() {
-    if (scheduledCalls.value.length > 1) {
+    if (scheduledCallTasks.value.length > 1) {
         callsModalIsVisible.value = true;
     } else {
-        showTaskPreview(scheduledCalls.value[0]);
+        showTaskPreview(scheduledCallTasks.value[0]);
     }
 }
 
 // visits
 
-const scheduledVisits = computed(() => {
-    return props.survey.tasks.filter(task => task.type === 'scheduled_visit');
-});
-
-const scheduledVisitDate = computed(() =>
-    toDateFormat(scheduledVisits.value[0].start, 'D.MM.YYYY в HH:mm')
-);
-
 const visitsModalIsVisible = ref(false);
 
 function showVisits() {
-    if (scheduledVisits.value.length > 1) {
+    if (scheduledVisitTasks.value.length > 1) {
         visitsModalIsVisible.value = true;
     } else {
-        showTaskPreview(scheduledVisits.value[0]);
+        showTaskPreview(scheduledVisitTasks.value[0]);
     }
 }
 
@@ -222,7 +215,7 @@ function onUpdatedTask(payload) {
 }
 
 const completedTasksLength = computed(() =>
-    props.survey.tasks.reduce(
+    baseTasks.value.reduce(
         (acc, task) => acc + Number(task.status === taskOptions.clearStatusTypes.COMPLETED),
         0
     )

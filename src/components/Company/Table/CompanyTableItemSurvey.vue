@@ -81,7 +81,7 @@
                     </div>
                 </CompanyTableItemSurveyTab>
                 <CompanyTableItemSurveyTab
-                    v-if="company.last_survey.tasks.length"
+                    v-if="baseTasks.length"
                     v-model="currentTab"
                     :name="TABS.TASKS"
                     icon="fa-solid fa-bolt"
@@ -89,20 +89,37 @@
                     <div class="d-flex gap-2 align-items-center">
                         <span>Задачи</span>
                         <UiButtonIcon :color="currentTab === TABS.TASKS ? 'light' : 'primary'" mini>
-                            {{ company.last_survey.tasks.length }}
+                            {{ baseTasks.length }}
                         </UiButtonIcon>
                     </div>
                 </CompanyTableItemSurveyTab>
                 <UiButton
-                    v-if="scheduledCallTask"
-                    @click="$emit('show-task', scheduledCallTask)"
+                    v-if="scheduledCallTasks.length"
+                    @click="showScheduledCallTasks"
                     class="fs-2 company-table-item-survey__tab danger"
                     color="transparent"
                     icon="fa-solid fa-phone"
                     small
                     bolder
                 >
-                    Запланирован звонок {{ scheduledCallDate }}
+                    <span>Звонок {{ lastScheduledCallDate }}</span>
+                    <span v-if="scheduledCallTasks.length > 1" class="ml-1">
+                        (+{{ scheduledCallTasks.length - 1 }})
+                    </span>
+                </UiButton>
+                <UiButton
+                    v-if="scheduledVisitTasks.length"
+                    @click="showScheduledVisitTasks"
+                    class="fs-2 company-table-item-survey__tab danger"
+                    color="transparent"
+                    icon="fa-solid fa-phone-volume"
+                    small
+                    bolder
+                >
+                    <span>Встреча {{ lastScheduledVisitDate }}</span>
+                    <span v-if="scheduledVisitTasks.length > 1" class="ml-1">
+                        (+{{ scheduledVisitTasks.length - 1 }})
+                    </span>
                 </UiButton>
             </div>
             <div class="company-table-item-survey__body">
@@ -120,7 +137,7 @@
                 <CompanyTableItemSurveyTasks
                     v-else-if="currentTab === TABS.TASKS"
                     @show-task="$emit('show-task', $event)"
-                    :tasks="company.last_survey.tasks"
+                    :tasks="baseTasks"
                     class="mt-2"
                 />
                 <div
@@ -153,18 +170,46 @@
             </div>
         </div>
         <UiDropdownActionsTrigger
-            v-if="company.last_survey.tasks.length > 2"
+            v-if="baseTasks.length > 2"
             @click="isExpanded = !isExpanded"
             :icon="isExpanded ? 'fa-solid fa-angle-up' : 'fa-solid fa-angle-down'"
             class="ml-1 mr-auto w-auto fs-2 my-1"
             color="light"
             :label="isExpanded ? 'Скрыть' : 'Показать больше'"
         />
+        <UiModal
+            v-model:visible="scheduledCallTasksIsVisible"
+            title="Запланированные звонки"
+            :width="800"
+        >
+            <div class="d-flex flex-column gap-2">
+                <DashboardTableTasksItem
+                    v-for="task in scheduledCallTasks"
+                    :key="task.id"
+                    @view="$emit('show-task', task)"
+                    :task="task"
+                />
+            </div>
+        </UiModal>
+        <UiModal
+            v-model:visible="scheduledVisitTasksIsVisible"
+            title="Запланированные встречи"
+            :width="800"
+        >
+            <div class="d-flex flex-column gap-2">
+                <DashboardTableTasksItem
+                    v-for="task in scheduledVisitTasks"
+                    :key="task.id"
+                    @view="$emit('show-task', task)"
+                    :task="task"
+                />
+            </div>
+        </UiModal>
     </div>
 </template>
 
 <script setup>
-import { computed, onBeforeMount, ref, watch } from 'vue';
+import { computed, onBeforeMount, ref, toRef, watch } from 'vue';
 import { toDateFormat } from '@/utils/formatters/date.js';
 import { getContactFullName } from '@/utils/formatters/models/contact.js';
 import { contactOptions } from '@/const/options/contact.options.js';
@@ -184,10 +229,12 @@ import Loader from '@/components/common/Loader.vue';
 import api from '@/api/api.js';
 import { useNotify } from '@/utils/use/useNotify.js';
 import { useConfirm } from '@/composables/useConfirm.js';
-import { taskOptions } from '@/const/options/task.options.js';
 import UiDropdownActionsGroup from '@/components/common/UI/DropdownActions/UiDropdownActionsGroup.vue';
+import UiModal from '@/components/common/UI/UiModal.vue';
+import DashboardTableTasksItem from '@/components/Dashboard/Table/TasksItem/DashboardTableTasksItem.vue';
+import { useTypedTasks } from '@/composables/task/useTypedTasks.ts';
 
-defineEmits(['create-task', 'open-preview', 'edit-comment', 'show-task']);
+const emit = defineEmits(['create-task', 'open-preview', 'edit-comment', 'show-task']);
 
 const props = defineProps({
     company: {
@@ -195,6 +242,14 @@ const props = defineProps({
         required: true
     }
 });
+
+const {
+    scheduledCallTasks,
+    scheduledVisitTasks,
+    lastScheduledCallDate,
+    lastScheduledVisitDate,
+    baseTasks
+} = useTypedTasks(toRef(() => props.company.last_survey?.tasks));
 
 const updatedAt = computed(() => {
     if (props.company.last_survey.completed_at) {
@@ -244,7 +299,7 @@ function initCurrentTab() {
         return (currentTab.value = TABS.COMMENT);
     }
 
-    if (props.company.last_survey.tasks.length) {
+    if (baseTasks.value.length) {
         return (currentTab.value = TABS.TASKS);
     }
 }
@@ -310,25 +365,32 @@ async function deleteComment() {
     }
 }
 
+// tasks
+
 watch(
-    () => props.company.last_survey.tasks.length,
+    () => baseTasks.value.length,
     (value, oldValue) => {
         if (oldValue === 0) currentTab.value = TABS.TASKS;
     }
 );
 
-const scheduledCallTask = computed(() =>
-    props.company.last_survey.tasks.find(
-        task =>
-            task.type === 'scheduled_call' && task.status !== taskOptions.clearStatusTypes.COMPLETED
-    )
-);
+const scheduledCallTasksIsVisible = ref(false);
 
-const scheduledCallDate = computed(() => {
-    if (scheduledCallTask.value) {
-        return toDateFormat(scheduledCallTask.value.start, 'D.MM.YY');
+function showScheduledCallTasks() {
+    if (scheduledCallTasks.value.length > 1) {
+        scheduledCallTasksIsVisible.value = true;
+    } else {
+        emit('show-task', scheduledCallTasks.value[0]);
     }
+}
 
-    return null;
-});
+const scheduledVisitTasksIsVisible = ref(false);
+
+function showScheduledVisitTasks() {
+    if (scheduledVisitTasks.value.length > 1) {
+        scheduledVisitTasksIsVisible.value = true;
+    } else {
+        emit('show-task', scheduledVisitTasks.value[0]);
+    }
+}
 </script>

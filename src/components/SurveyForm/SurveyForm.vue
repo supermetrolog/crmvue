@@ -127,7 +127,7 @@
                                 :loading="isDeleting"
                                 :disabled="draftIsSaving"
                             >
-                                Удалить
+                                Не сохранять
                             </UiButton>
                         </template>
                     </UiModal>
