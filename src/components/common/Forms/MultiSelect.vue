@@ -54,6 +54,9 @@
                             class="mr-2 multiselect-option-icon"
                         />
                         <span>{{ option[optionLabelProp] }}</span>
+                        <span v-if="option.after" :class="option.afterClass" class="ml-1">
+                            {{ option.after }}
+                        </span>
                     </slot>
                 </template>
                 <template #tag="{ option, disabled, handleTagRemove }">

@@ -2,7 +2,6 @@
     <div class="survey-form-contact">
         <div class="survey-form-contact__row">
             <SurveyFormContactCard
-                ref="contactCard"
                 @click="$emit('select')"
                 @edit="$emit('edit')"
                 @show-comments="$emit('show-comments')"
@@ -32,9 +31,6 @@
                             <p>
                                 <i :class="reasonOptionsIcons[form.reason]" class="mr-2" />
                                 <span>{{ reasonOptions[form.reason] }}</span>
-                                <span v-if="callScheduled" class="ml-1">
-                                    на {{ callScheduledDate }}
-                                </span>
                             </p>
                         </div>
                         <div
@@ -67,7 +63,6 @@
         <AnimationTransition :speed="0.5">
             <SurveyFormContactForm
                 v-if="active"
-                ref="contactForm"
                 v-model="form"
                 @close="$emit('close')"
                 @change="$emit('change')"
@@ -79,16 +74,17 @@
     </div>
 </template>
 <script setup>
-import { computed, ref, useTemplateRef, watch } from 'vue';
+import { computed, ref, watch } from 'vue';
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
 import SurveyFormContactCard from '@/components/SurveyForm/SurveyFormContactCard.vue';
 import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
 import dayjs from 'dayjs';
 import SurveyFormContactForm from '@/components/SurveyForm/SurveyFormContactForm.vue';
-import { onClickOutside } from '@vueuse/core';
 import { useAuth } from '@/composables/useAuth.js';
+import { isString } from '@/utils/helpers/string/isString.js';
+import { toBool } from '@/utils/helpers/string/toBool.js';
 
-const emit = defineEmits([
+defineEmits([
     'edit',
     'delete',
     'move',
@@ -113,13 +109,25 @@ const props = defineProps({
 
 const form = defineModel({ type: Object });
 
+const available = computed(() => {
+    if (isNotNullish(form.value?.available)) {
+        if (isString(form.value.available)) {
+            return toBool(form.value.available);
+        }
+
+        return form.value.available;
+    }
+
+    return null;
+});
+
 const { currentUser } = useAuth();
 
 const isCompleted = computed(() => {
     return isNotNullish(form.value?.available) && isNotNullish(form.value?.reason);
 });
 
-const callScheduled = computed(() => Number(form.value?.reason) === 6);
+const callScheduled = computed(() => isNotNullish(form.value.scheduled));
 const callScheduledDate = computed(() => dayjs(form.value.scheduled).format('DD.MM.YY, HH:mm'));
 
 // form
@@ -138,37 +146,32 @@ const stopActiveWatch = watch(
 
 const reasonOptions = {
     1: 'Актуален',
-    2: 'Будет удален',
+    2: 'Больше не актуален',
     3: 'Будет перенесен',
-    4: 'Не поднимает трубку',
+    4: 'Не поднимает',
     5: 'Телефон недоступен',
-    6: 'Запланирован звонок'
+    6: 'Абонент занят',
+    7: 'Не существует',
+    8: 'Заблокирован'
 };
 
 const reasonOptionsIcons = {
-    1: 'fa-solid fa-check',
-    2: 'fa-solid fa-trash',
-    3: 'fa-solid fa-pen',
-    4: 'fa-solid fa-phone-slash',
+    1: 'fa-solid fa-thumbs-up',
+    2: 'fa-solid fa-thumbs-down',
+    3: 'fa-solid fa-rotate',
+    4: 'fa-solid fa-phone',
     5: 'fa-solid fa-phone-slash',
-    6: 'fa-solid fa-phone'
+    6: 'fa-solid fa-user-clock',
+    7: 'fa-solid fa-ban',
+    8: 'fa-solid fa-user-slash'
 };
 
 const reasonClass = computed(() => {
     if (Number(form.value.reason) === 1) return 'dashboard-bg-success-l';
-    if (Number(form.value.reason) === 6) return 'dashboard-bg-primary-l';
     return 'dashboard-bg-danger-l';
 });
 
 const descriptionShouldBeVisible = computed(
-    () =>
-        isNotNullish(form.value.reason) &&
-        Number(form.value.reason) !== 1 &&
-        isNotNullish(form.value.description) &&
-        form.value.description?.length
+    () => available.value && isNotNullish(form.value.description) && form.value.description?.length
 );
-
-onClickOutside(useTemplateRef('contactForm'), () => emit('close'), {
-    ignore: [useTemplateRef('contactCard')]
-});
 </script>

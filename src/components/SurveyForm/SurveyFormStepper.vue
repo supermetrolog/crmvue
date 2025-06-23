@@ -132,11 +132,8 @@ import SurveyFormRequests from '@/components/SurveyForm/SurveyFormRequests.vue';
 import { helpers, maxLength } from '@vuelidate/validators';
 import SurveyFormCalls from '@/components/SurveyForm/SurveyFormCalls.vue';
 import { useValidation } from '@/composables/useValidation.js';
-import { callTypeEnum } from '@/const/enums/call.js';
-import {
-    CALL_STATUSES,
-    CONTACT_CALL_REASONS
-} from '@/components/MessengerQuiz/useMessengerQuiz.js';
+import { callStatusEnum, callTypeEnum } from '@/const/enums/call.js';
+import { CALL_STATUSES } from '@/components/MessengerQuiz/useMessengerQuiz.js';
 import { captureException } from '@sentry/vue';
 import dayjs from 'dayjs';
 import { getCompanyShortName } from '@/utils/formatters/models/company.js';
@@ -336,11 +333,19 @@ const steps = reactive([
                 return 'Запросы (загрузка..)';
             }
 
+            const activeCount = activeRequests.value.length;
+            const passiveCount = requests.value.length - activeCount;
+
+            const title = [
+                `Запросы (${activeCount}`,
+                passiveCount !== 0 ? `/${passiveCount})` : ')'
+            ];
+
             if (form.value.requests?.created?.length) {
-                return `Запросы (${activeRequests.value.length}) + ${form.value.requests.created.length} новых`;
+                title.push(` + ${form.value.requests.created.length} новых`);
             }
 
-            return `Запросы (${activeRequests.value.length})`;
+            return title.join('');
         }),
         disabled: stepsIsDisabled,
         class: computed(() => requests.value.length === 0 && 'skip')
@@ -595,12 +600,19 @@ function createSurveyQuestionsPayload() {
     };
 }
 
+const callReasonToStatus = {
+    4: callStatusEnum.MISSED,
+    5: callStatusEnum.NOT_AVAILABLE,
+    6: callStatusEnum.BUSY,
+    7: callStatusEnum.NOT_EXISTS,
+    8: callStatusEnum.BLOCKED
+};
+
 function getCallStatusByForm(form) {
     if (toBool(form.available)) {
         return CALL_STATUSES.COMPLETED;
     } else {
-        if (Number(form.reason) === 5) return CALL_STATUSES.BLOCKED;
-        return CALL_STATUSES.MISSED;
+        return callReasonToStatus[Number(form.reason)];
     }
 }
 
@@ -671,11 +683,11 @@ function generateTaskPayload(title, additional = {}) {
 }
 
 function contactMustBeDeleted(contact) {
-    return Number(contact.reason) === CONTACT_CALL_REASONS.DELETE;
+    return toBool(contact.delete);
 }
 
 function contactMustBeMoved(contact) {
-    return Number(contact.reason) === CONTACT_CALL_REASONS.MOVE;
+    return Number(contact.reason) === 3;
 }
 
 function createRelation(type, id) {
@@ -697,7 +709,7 @@ async function createPotentialTasks(contacts, messageId, surveyId = null) {
             acc.push({
                 contactId: element.contact_id,
                 payload: generateTaskPayload(
-                    `Удалить контакт ${element.full_name} (комп. ${getCompanyShortName(props.company)})`,
+                    `Архивировать контакт ${element.full_name} (комп. ${getCompanyShortName(props.company)})`,
                     {
                         message: element.description,
                         relations: [...relations, createRelation('contact', element.contact_id)],
