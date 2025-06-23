@@ -89,7 +89,7 @@
     </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import api from '@/api/api.js';
 import TaskCardComment from '@/components/TaskCard/TaskCardComment.vue';
 import { ref, shallowRef, useTemplateRef, watch } from 'vue';
@@ -109,16 +109,21 @@ import { isImageMedia } from '@/utils/helpers/models/media.js';
 import { usePasteFiles } from '@/composables/usePasteFiles.js';
 import { useAsync } from '@/composables/useAsync.js';
 import UiButton from '@/components/common/UI/UiButton.vue';
+import { captureException } from '@sentry/vue';
+import { Task, TaskComment } from '@/types/task';
 
-const emit = defineEmits(['created', 'deleted']);
-const props = defineProps({
-    task: {
-        type: Object,
-        required: true
-    }
-});
+const emit = defineEmits<{
+    (e: 'created', comment: TaskComment): void;
+    (e: 'deleted', commentId: number): void;
+}>();
 
-const comments = shallowRef([...props.task.last_comments]);
+interface Props {
+    task: Task;
+}
+
+const props = defineProps<Props>();
+
+const comments = shallowRef<TaskComment[]>([...props.task.last_comments]);
 
 watch(
     () => props.task.last_comments[0]?.id,
@@ -153,6 +158,7 @@ async function loadComments($state) {
             infiniteIsActive.value = false;
         }
     } catch (error) {
+        captureException(error);
         infiniteIsActive.value = false;
         $state.complete();
     }
@@ -161,9 +167,9 @@ async function loadComments($state) {
 // EDIT
 
 const editFormIsVisible = ref(false);
-const editingComment = ref(null);
+const editingComment = ref<TaskComment | null>(null);
 
-function editComment(comment) {
+function editComment(comment: TaskComment) {
     editingComment.value = comment;
     editFormIsVisible.value = true;
 }
@@ -233,7 +239,7 @@ function openFileDialog() {
     fileInputElement.value.open();
 }
 
-function deleteFile(fileIndex) {
+function deleteFile(fileIndex: number) {
     files.value.splice(fileIndex, 1);
 }
 

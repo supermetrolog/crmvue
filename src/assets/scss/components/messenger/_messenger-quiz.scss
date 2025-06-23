@@ -988,6 +988,7 @@
     border-radius: 10px;
     position: relative;
     flex-shrink: 0;
+    animation: helperPulse 9s infinite ease-in-out alternate;
     @include mixins.flex-box($a: center, $gap: 30px, $j: center);
 
     &::-webkit-scrollbar {
@@ -1015,6 +1016,37 @@
         opacity: .6;
         font-weight: 600;
         flex-shrink: 0;
+        animation: helperQuestionPulse 9s infinite ease-in-out alternate;
+    }
+}
+
+@keyframes helperPulse {
+    from {
+        background-color: #e9eefa;
+    }
+    40% {
+        background-color: #e9eefa;
+    }
+    60% {
+        background-color: #c0d5fa;
+    }
+    to {
+        background-color: #c0d5fa;
+    }
+}
+
+@keyframes helperQuestionPulse {
+    from {
+        opacity: .6;
+    }
+    40% {
+        opacity: .6;
+    }
+    60% {
+        opacity: 1;
+    }
+    to {
+        opacity: 1;
     }
 }
 

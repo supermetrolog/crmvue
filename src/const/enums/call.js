@@ -4,7 +4,8 @@ export const callStatusEnum = {
     BUSY: 2,
     NOT_AVAILABLE: 3,
     REJECTED: 4,
-    BLOCKED: 6
+    BLOCKED: 6,
+    NOT_EXISTS: 7
 };
 
 export const callTypeEnum = {
