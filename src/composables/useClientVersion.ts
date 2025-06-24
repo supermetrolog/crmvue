@@ -28,7 +28,7 @@ interface ClientMeta {
 }
 
 const STORAGE_KEY = 'app_version';
-const CHECK_INTERVAL_MS = 1000 * 60 * 15;
+const CHECK_INTERVAL_MS = 1000 * 60 * 10;
 
 interface StoredData {
     lastCheck: number | null;
@@ -70,7 +70,7 @@ export const useClientVersion = createSharedComposable(() => {
             return;
         }
 
-        if (now - storage.value.lastCheck! < CHECK_INTERVAL_MS) {
+        if (now - storage.value.lastCheck! > CHECK_INTERVAL_MS) {
             await updateVersion();
         }
     }
@@ -108,8 +108,9 @@ export const useClientVersion = createSharedComposable(() => {
         }
     });
 
-    router.afterEach(() => {
-        void checkVersion();
+    router.beforeEach(async () => {
+        await checkVersion();
+        if (isOutdated.value) return false;
     });
 
     void checkVersion();
