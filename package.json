@@ -1,11 +1,12 @@
 {
   "name": "crm",
-  "version": "0.1.0",
+  "version": "1.0.1",
   "private": true,
   "type": "module",
   "scripts": {
+    "generate:meta": "node scripts/generate-meta.js",
     "serve": "vite --open --mode server --port 8081",
-    "build": "vite build",
+    "build": "npm run generate:meta && vite build",
     "stage": "vite build --mode stage",
     "lint": "eslint src",
     "dev": "vite",
