@@ -2,6 +2,7 @@
 node_modules
 /dist
 /github-production
+/public/meta.json
 
 
 # local env files
