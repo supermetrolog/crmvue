@@ -74,6 +74,8 @@ import UiModal from '@/components/common/UI/UiModal.vue';
 import { computed, ref } from 'vue';
 import UiButton from '@/components/common/UI/UiButton.vue';
 import { plural } from '@/utils/plural.js';
+import { isNullish } from '@/utils/helpers/common/isNullish.ts';
+import { isEmptyString } from '@/utils/helpers/string/isEmptyString.js';
 
 defineEmits(['create-pinned-message', 'show-message', 'unpin-message']);
 
@@ -98,7 +100,9 @@ const messagesCountLabel = computed(() =>
 const messagesCountButtonShouldBeVisible = computed(() => {
     return (
         props.company.pinned_messages.length > 1 ||
-        (!props.company.last_survey?.comment && !props.company.pinned_messages.length)
+        (props.company.last_survey &&
+            (isNullish(props.company.last_survey.comment) ||
+                isEmptyString(props.company.last_survey.comment)))
     );
 });
 </script>

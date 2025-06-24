@@ -329,7 +329,10 @@ const notify = useNotify();
 async function updateComment(comment) {
     try {
         isUpdating.value = true;
-        await api.survey.update(props.company.last_survey.id, { comment });
+        await api.survey.update(props.company.last_survey.id, {
+            comment,
+            contact_id: props.company.last_survey.contact_id
+        });
 
         Object.assign(props.company.last_survey, { comment });
         commentIsEditing.value = false;

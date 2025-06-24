@@ -71,9 +71,6 @@ export const useClientVersion = createSharedComposable(() => {
         }
 
         if (now - storage.value.lastCheck! < CHECK_INTERVAL_MS) {
-            isOutdated.value = storage.value.isOutdated;
-            return;
-        } else {
             await updateVersion();
         }
     }

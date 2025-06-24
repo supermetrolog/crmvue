@@ -15,25 +15,24 @@
 </template>
 
 <script setup>
-import { Notifications, notify } from '@kyvg/vue3-notification';
-import { watch } from 'vue';
+import { Notifications } from '@kyvg/vue3-notification';
 import { useClientVersion } from '@/composables/useClientVersion.ts';
 import UiButton from '@/components/common/UI/UiButton.vue';
 
 const { isOutdated, stopAutoChecking } = useClientVersion();
 
-watch(isOutdated, value => {
-    if (value) {
-        notify({
-            group: 'version',
-            title: 'Версия клиента устарела',
-            type: 'warn',
-            duration: 60000
-        });
-
-        stopAutoChecking();
-    }
-});
+// watch(isOutdated, value => {
+//     if (value) {
+//         notify({
+//             group: 'version',
+//             title: 'Версия клиента устарела',
+//             type: 'warn',
+//             duration: 60000
+//         });
+//
+//         stopAutoChecking();
+//     }
+// });
 
 function reload() {
     window.location.reload(true);
