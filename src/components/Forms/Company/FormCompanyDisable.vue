@@ -14,13 +14,14 @@
                     <MultiSelect
                         v-model="form.passive_why"
                         :v="v$.form.passive_why"
+                        :options="passiveWhyOptions"
                         required
                         label="Причина"
-                        :options="companyOptions.passiveWhyList"
                     />
                     <UiTextarea
                         v-model="form.passive_why_comment"
                         :v="v$.form.passive_why_comment"
+                        :required="passiveWhyCommentIsRequired"
                         label="Комментарий"
                         auto-height
                         :min-height="100"
@@ -63,12 +64,12 @@ import api from '@/api/api.js';
 import UiFormGroup from '@/components/common/Forms/UiFormGroup.vue';
 import UiButton from '@/components/common/UI/UiButton.vue';
 import { useValidation } from '@/composables/useValidation.js';
-import { helpers, required } from '@vuelidate/validators';
+import { helpers, required, requiredIf } from '@vuelidate/validators';
 import UiModal from '@/components/common/UI/UiModal.vue';
 import { getCompanyShortName } from '@/utils/formatters/models/company.js';
-import { companyOptions } from '@/const/options/company.options.js';
 import UiCol from '@/components/common/UI/UiCol.vue';
 import Switch from '@/components/common/Forms/Switch.vue';
+import { CompanyPassiveWhyEnum } from '@/types/company.ts';
 
 const emit = defineEmits(['disabled', 'close']);
 const props = defineProps({
@@ -87,11 +88,21 @@ const form = reactive({
     disable_contacts: 1
 });
 
+const passiveWhyCommentIsRequired = computed(
+    () => form.passive_why === CompanyPassiveWhyEnum.OTHER
+);
+
 const { v$, validate } = useValidation(
     {
         form: {
             passive_why: {
                 required: helpers.withMessage('Выберите причину', required)
+            },
+            passive_why_comment: {
+                required: helpers.withMessage(
+                    'Введите комментарий',
+                    requiredIf(passiveWhyCommentIsRequired)
+                )
             }
         }
     },
@@ -113,4 +124,10 @@ async function submit() {
 }
 
 const shortName = computed(() => getCompanyShortName(props.company));
+
+const passiveWhyOptions = [
+    { value: 3, label: 'Компания ликвидирована' },
+    { value: 4, label: 'Идентификация невозможна' },
+    { value: 2, label: 'Иное' }
+];
 </script>
