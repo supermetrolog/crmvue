@@ -2,6 +2,7 @@ import { fileURLToPath, URL } from 'node:url';
 import { defineConfig } from 'vite';
 import vue from '@vitejs/plugin-vue';
 import { htmlInjectionPlugin } from 'vite-plugin-html-injection';
+import pkg from './package.json';
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -36,5 +37,8 @@ export default defineConfig({
     test: {
         globals: true,
         environment: 'jsdom'
+    },
+    define: {
+        __APP_VERSION__: JSON.stringify(pkg.version)
     }
 });

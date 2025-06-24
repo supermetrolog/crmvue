@@ -79,6 +79,24 @@
         border-radius: 5px;
         overflow: hidden;
     }
+
+    &__version {
+        position: absolute;
+        bottom: 3px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: max-content;
+        color: #bababa;
+        font-size: 12px;
+        opacity: .4;
+
+        @include mixins.transition(opacity, color);
+
+        &:hover {
+            opacity: 1;
+            color: #fff;
+        }
+    }
 }
 
 .avatar {

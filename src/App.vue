@@ -1,4 +1,5 @@
 <template>
+    <AppVersionChecker />
     <notifications position="bottom right" group="app" pause-on-hover />
     <component :is="layoutComponent" v-if="isInitialized" />
 </template>
@@ -14,6 +15,7 @@ import { initializeDevice } from '@/composables/useMobile.js';
 import { useRoute, useRouter } from 'vue-router';
 import { useStore } from 'vuex';
 import { useTimeoutFn } from '@vueuse/core';
+import AppVersionChecker from '@/components/common/AppVersionChecker.vue';
 
 const LAYOUTS = {
     login: Login,
