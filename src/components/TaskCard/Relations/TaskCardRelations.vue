@@ -97,7 +97,8 @@ async function fetchTaskRelations() {
     try {
         relations.value = await api.task.getRelations(props.task.id);
     } catch (error) {
-        isError.value;
+        isError.value = true;
+
         captureException(error, {
             task_id: props.task.id
         });

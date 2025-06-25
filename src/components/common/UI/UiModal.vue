@@ -12,6 +12,11 @@
             }"
         >
             <div @click="onBlackoutClick" class="modal__blackout"></div>
+            <AnimationTransition :speed="0.4">
+                <div v-if="pinnedTask && !pinnedTaskIsHidden" class="modal__pinned-task">
+                    <UiModalPinnedTask @hide="pinnedTaskIsHidden = true" :task="pinnedTask" />
+                </div>
+            </AnimationTransition>
             <slot name="container" :close="close">
                 <div
                     class="modal__container animate__animated"
@@ -65,6 +70,8 @@ import { computed, onBeforeUnmount, ref, watch } from 'vue';
 import { useTimeoutFn } from '@vueuse/core';
 import { useModalScrollLock } from '@/composables/useModalScrollLock.js';
 import UiTooltipIcon from '@/components/common/UI/UiTooltipIcon.vue';
+import UiModalPinnedTask from '@/components/common/UI/UiModalPinnedTask.vue';
+import AnimationTransition from '@/components/common/AnimationTransition.vue';
 
 const visibleModel = defineModel('visible');
 const emit = defineEmits(['close', 'closed']);
@@ -110,7 +117,8 @@ const props = defineProps({
     escClose: {
         type: Boolean,
         default: true
-    }
+    },
+    pinnedTask: Object
 });
 
 if (props.show) {
@@ -157,6 +165,10 @@ function tryShowCloseErrorAnimation() {
     }
 }
 
+// pinned
+
+const pinnedTaskIsHidden = ref(false);
+
 // visibility
 
 const { lockScroll: makeScrollLIsLock, unlockScroll } = useModalScrollLock();
@@ -181,6 +193,8 @@ watch(
                 scrollIsLocked.value = false;
             }
         }
+
+        pinnedTaskIsHidden.value = false;
     },
     { immediate: true }
 );
@@ -208,9 +222,17 @@ onBeforeUnmount(() => {
     opacity: 0;
 }
 
-.modal-enter-from .modal__container,
-.modal-leave-to .modal__container {
+.modal-enter-from .modal__container {
     transform: scale(1.1);
+}
+
+.modal-leave-to .modal__container,
+.modal-leave-to .modal__pinned-task {
+    transform: scale(0.9);
+}
+
+.modal-enter-from .modal__pinned-task {
+    transform: scale(1.1) translateY(-10px);
 }
 
 .modal {

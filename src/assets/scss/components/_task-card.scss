@@ -84,7 +84,7 @@
 
     &__message {
         word-break: break-word;
-        max-height: 300px;
+        max-height: 200px;
         font-size: 15px;
         overflow-y: auto;
         overscroll-behavior-y: contain;
@@ -104,8 +104,8 @@
 
     &__tag {
         color: #fff;
-        font-weight: 400!important;
-        padding: 3px 10px!important;
+        font-weight: 400 !important;
+        padding: 3px 10px !important;
     }
 
     &__chips {
@@ -215,7 +215,7 @@
     }
 
     .tabs-component-panels {
-        padding: 20px 0 0 0!important;
+        padding: 20px 0 0 0 !important;
     }
 
     &__list {
@@ -223,7 +223,7 @@
     }
 
     &__chat-message {
-        color: #000!important;
+        color: #000 !important;
 
         .messenger-chat-message__wrapper {
             max-width: 100%;
@@ -332,7 +332,7 @@
         border-bottom: 2px solid variables.$bg-success;
     }
 
-    &__tab-link:hover  {
+    &__tab-link:hover {
         color: variables.$color_success-dark;
     }
 
@@ -346,7 +346,7 @@
     }
 
     &__dropdown {
-        z-index: 4001!important;
+        z-index: 4001 !important;
     }
 
     &__relations-dropdown {
@@ -372,7 +372,7 @@
 
     &__button {
         height: 50px;
-        width: 50px!important;
+        width: 50px !important;
         font-size: 25px;
         border-radius: 50%;
         @include mixins.flex-box($a: center, $j: center);
@@ -536,7 +536,7 @@
     }
 
     &__element {
-        max-width: none!important;
+        max-width: none !important;
         color: #000;
 
         .contact-card {
@@ -670,4 +670,15 @@
 .task-card-relation-company {
     padding: 5px 7px;
     background-color: variables.$color_grey_light;
+}
+
+.task-card-process {
+    border-top: 1px solid rgba(0, 0, 0, .2);
+    padding-top: 5px;
+
+    &__title {
+        font-size: 13px;
+        color: variables.$color_grey;
+        margin-bottom: 5px;
+    }
 }

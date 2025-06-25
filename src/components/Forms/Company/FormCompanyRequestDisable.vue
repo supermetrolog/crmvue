@@ -22,7 +22,12 @@
             <UiCol :cols="12">
                 <div class="d-flex gap-1">
                     <UiButton color="danger" icon="fa-solid fa-check" bolder>Завершить</UiButton>
-                    <UiButton @click="$emit('cancel')" color="light" icon="fa-solid fa-ban" bolder>
+                    <UiButton
+                        @click.prevent="$emit('cancel')"
+                        color="light"
+                        icon="fa-solid fa-ban"
+                        bolder
+                    >
                         Отмена
                     </UiButton>
                 </div>
@@ -50,11 +55,8 @@ const props = defineProps({
     request_id: {
         type: Number,
         required: true
-    },
-    customClose: Boolean
+    }
 });
-
-// TODO: Убрать customClose, вынести все в модалки
 
 const isLoading = shallowRef(false);
 const form = reactive({
