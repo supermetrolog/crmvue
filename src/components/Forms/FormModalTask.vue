@@ -151,7 +151,7 @@ keep-alive>
                         :toolbar="false"
                         label="Описание задачи"
                         placeholder="Дайте дополнительные комментарии, опишите алгоритмы выполнения.."
-                        class="col-12"
+                        :class="{ 'col-7': hasCustomDescription, 'col-12': !hasCustomDescription }"
                     />
                     <FormModalTaskDescription
                         v-if="hasCustomDescription"
