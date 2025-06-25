@@ -12,7 +12,7 @@
         :disabled="isCreating"
     >
         <template #after-navigation>
-            <SurveyFormStepperSummary :company :survey="currentSurvey" />
+            <SurveyFormStepperRelations :company :survey="currentSurvey" />
         </template>
         <template #before-body>
             <SurveyFormStepperHelper />
@@ -143,7 +143,7 @@ import UiModal from '@/components/common/UI/UiModal.vue';
 import UiForm from '@/components/common/Forms/UiForm.vue';
 import UiFormGroup from '@/components/common/Forms/UiFormGroup.vue';
 import VueEditor from '@/components/common/Forms/VueEditor.vue';
-import SurveyFormStepperSummary from '@/components/SurveyForm/SurveyFormStepperSummary.vue';
+import SurveyFormStepperRelations from '@/components/SurveyForm/SurveyFormStepperRelations.vue';
 import SurveyFormStepperHelper from '@/components/SurveyForm/SurveyFormStepperHelper.vue';
 
 function toBool(value) {

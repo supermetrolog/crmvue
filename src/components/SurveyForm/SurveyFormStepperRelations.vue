@@ -1,14 +1,14 @@
 <template>
     <div class="d-flex ml-auto gap-2">
-        <SurveyFormStepperSummaryButton
+        <SurveyFormStepperRelationsButton
             v-if="company.pinned_messages?.length"
             @click="pinnedMessagesModalIsVisible = true"
             icon="fa-regular fa-message"
         >
             <span>Комментарии</span>
             <span class="ml-1">({{ company.pinned_messages?.length }})</span>
-        </SurveyFormStepperSummaryButton>
-        <SurveyFormStepperSummaryButton
+        </SurveyFormStepperRelationsButton>
+        <SurveyFormStepperRelationsButton
             v-if="survey && baseTasks.length"
             @click="tasksModalIsVisible = true"
             icon="fa-solid fa-bolt"
@@ -21,8 +21,8 @@
             </template>
             <span>{{ baseTasks.length }}</span>
             <span>)</span>
-        </SurveyFormStepperSummaryButton>
-        <SurveyFormStepperSummaryButton
+        </SurveyFormStepperRelationsButton>
+        <SurveyFormStepperRelationsButton
             v-if="survey && survey.tasks?.length && scheduledCallTasks.length"
             @click="showCalls"
             icon="fa-solid fa-phone-volume"
@@ -34,8 +34,8 @@
             <span v-if="scheduledCallTasks.length > 1" class="ml-1">
                 (+{{ scheduledCallTasks.length - 1 }})
             </span>
-        </SurveyFormStepperSummaryButton>
-        <SurveyFormStepperSummaryButton
+        </SurveyFormStepperRelationsButton>
+        <SurveyFormStepperRelationsButton
             v-if="survey && survey.tasks?.length && scheduledVisitTasks.length"
             @click="showVisits"
             icon="fa-solid fa-phone-volume"
@@ -47,7 +47,7 @@
             <span v-if="scheduledVisitTasks.length > 1" class="ml-1">
                 (+{{ scheduledVisitTasks.length - 1 }})
             </span>
-        </SurveyFormStepperSummaryButton>
+        </SurveyFormStepperRelationsButton>
     </div>
     <UiModal
         v-model:visible="pinnedMessagesModalIsVisible"
@@ -129,7 +129,7 @@ import api from '@/api/api.js';
 import { spliceById } from '@/utils/helpers/array/spliceById.js';
 import { captureException } from '@sentry/vue';
 import TaskPreview from '@/components/TaskPreview/TaskPreview.vue';
-import SurveyFormStepperSummaryButton from '@/components/SurveyForm/SurveyFormStepperSummaryButton.vue';
+import SurveyFormStepperRelationsButton from '@/components/SurveyForm/SurveyFormStepperRelationsButton.vue';
 import { taskOptions } from '@/const/options/task.options.js';
 import { useTypedTasks } from '@/composables/task/useTypedTasks.ts';
 
