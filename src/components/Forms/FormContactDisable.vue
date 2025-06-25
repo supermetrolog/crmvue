@@ -13,14 +13,15 @@
                 <MultiSelect
                     v-model="form.passive_why"
                     :v="v$.form.passive_why"
+                    :options="passiveWhyOptions"
                     required
                     label="Причина"
                     class="col-12"
-                    :options="contactOptions.passiveWhy"
                 />
                 <UiTextarea
                     v-model="form.passive_why_comment"
                     :v="v$.form.passive_why_comment"
+                    :required="passiveWhyCommentIsRequired"
                     label="Комментарий"
                     auto-height
                     :min-height="100"
@@ -43,14 +44,14 @@ import UiForm from '@/components/common/Forms/UiForm.vue';
 import UiTextarea from '@/components/common/Forms/UiTextarea.vue';
 import MultiSelect from '@/components/common/Forms/MultiSelect.vue';
 import Loader from '@/components/common/Loader.vue';
-import { reactive, ref } from 'vue';
+import { computed, reactive, ref } from 'vue';
 import api from '@/api/api.js';
 import UiFormGroup from '@/components/common/Forms/UiFormGroup.vue';
 import UiButton from '@/components/common/UI/UiButton.vue';
 import { useValidation } from '@/composables/useValidation.js';
-import { helpers, required } from '@vuelidate/validators';
+import { helpers, required, requiredIf } from '@vuelidate/validators';
 import UiModal from '@/components/common/UI/UiModal.vue';
-import { contactOptions } from '@/const/options/contact.options.js';
+import { ContactPassiveWhyEnum } from '@/types/contact.ts';
 
 const emit = defineEmits(['disabled', 'close']);
 const props = defineProps({
@@ -67,11 +68,21 @@ const form = reactive({
     passive_why_comment: null
 });
 
+const passiveWhyCommentIsRequired = computed(
+    () => form.passive_why === ContactPassiveWhyEnum.OTHER
+);
+
 const { v$, validate } = useValidation(
     {
         form: {
             passive_why: {
                 required: helpers.withMessage('Выберите причину', required)
+            },
+            passive_why_comment: {
+                required: helpers.withMessage(
+                    'Укажите комментарий',
+                    requiredIf(passiveWhyCommentIsRequired)
+                )
             }
         }
     },
@@ -91,4 +102,11 @@ async function submit() {
         isLoading.value = false;
     }
 }
+
+const passiveWhyOptions = {
+    0: 'Телефоны неактуальны',
+    1: 'Не работает в компании',
+    3: 'Иное',
+    5: 'Номер не существует'
+};
 </script>
