@@ -34,6 +34,7 @@ interface StoredData {
     lastCheck: number | null;
     isOutdated: boolean;
     version: string | null;
+    lastBuildDate: string | null;
 }
 
 export const useClientVersion = createSharedComposable(() => {
@@ -47,8 +48,11 @@ export const useClientVersion = createSharedComposable(() => {
     const storage = useLocalStorage<StoredData>(`${LOCALSTORAGE_PREFIX}${STORAGE_KEY}`, {
         lastCheck: null,
         isOutdated: true,
-        version: null
+        version: null,
+        lastBuildDate: null
     });
+
+    const lastBuildDate = ref<string | null>(storage.value.lastBuildDate);
 
     async function checkVersion() {
         if (isLoading.value || !autoChecking.value) return;
@@ -59,14 +63,28 @@ export const useClientVersion = createSharedComposable(() => {
             storage.value = {
                 lastCheck: now,
                 isOutdated: false,
-                version: currentVersion
+                version: currentVersion,
+                lastBuildDate: null
             };
 
             return;
         }
 
-        if (compareVersions(storage.value.version, currentVersion) > 0) {
+        const comparedVersionResult = compareVersions(storage.value.version, currentVersion);
+
+        if (comparedVersionResult > 0) {
             await updateVersion();
+            return;
+        }
+
+        if (comparedVersionResult < 0) {
+            storage.value = {
+                lastCheck: now,
+                isOutdated: false,
+                version: currentVersion,
+                lastBuildDate: new Date().toISOString()
+            };
+
             return;
         }
 
@@ -91,7 +109,8 @@ export const useClientVersion = createSharedComposable(() => {
             storage.value = {
                 lastCheck: now,
                 isOutdated: isVersionMismatch,
-                version: meta.data.version
+                version: meta.data.version,
+                lastBuildDate: meta.data.buildDate
             };
 
             isLoading.value = false;
@@ -129,6 +148,7 @@ export const useClientVersion = createSharedComposable(() => {
         currentVersion,
         isLoading,
         stopAutoChecking,
-        resumeAutoChecking
+        resumeAutoChecking,
+        lastBuildDate
     };
 });

@@ -7,7 +7,13 @@
         </div>
         <hr />
         <SideBarMenu />
-        <p ref="versionEl" class="sidebar__version">ver. {{ currentVersion }}</p>
+        <Tippy class="sidebar__version" tag="p">
+            ver. {{ currentVersion }}
+            <template #content>
+                <p class="mb-1">Версия приложения - {{ currentVersion }}</p>
+                <p>Дата публикации - {{ formattedLastBuildDate }}</p>
+            </template>
+        </Tippy>
     </div>
 </template>
 
@@ -15,15 +21,16 @@
 import SideBarMenu from '@/components/SideBar/SideBarMenu.vue';
 import Avatar from '@/components/common/Avatar.vue';
 import { useAuth } from '@/composables/useAuth.js';
-import { useClientVersion } from '@/composables/useClientVersion.ts';
-import { useTippy } from 'vue-tippy';
-import { computed, useTemplateRef } from 'vue';
+import { useClientVersion } from '@/composables/useClientVersion';
+import { Tippy } from 'vue-tippy';
+import { toDateFormat } from '@/utils/formatters/date';
+import { computed } from 'vue';
 
 const { currentUser } = useAuth();
 
-const { currentVersion } = useClientVersion();
+const { currentVersion, lastBuildDate } = useClientVersion();
 
-useTippy(useTemplateRef('versionEl'), {
-    content: computed(() => `Версия приложения - ${currentVersion}`)
+const formattedLastBuildDate = computed(() => {
+    return toDateFormat(lastBuildDate.value);
 });
 </script>
