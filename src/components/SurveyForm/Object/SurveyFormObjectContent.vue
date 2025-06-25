@@ -1,10 +1,40 @@
 <template>
     <div class="survey-form-object__content">
         <div class="survey-form-object__description">
-            <p class="survey-form-object__address fs-2">
-                <span class="fs-2">{{ object.address }}</span>
-                <span v-if="object.from_mkad">; {{ object.from_mkad }} км от мкад </span>
-            </p>
+            <Tippy interactive :interactive-border="10" :delay="400">
+                <template #default>
+                    <p ref="address" class="survey-form-object__address fs-2">
+                        <span>{{ object.address }}</span>
+                        <span v-if="object.from_mkad">; {{ object.from_mkad }} км от мкад </span>
+                    </p>
+                </template>
+                <template #content>
+                    <p class="fs-2 color-light mb-1">Адрес строения:</p>
+                    <p class="fs-2 mb-2">
+                        <span>{{ object.address }}</span>
+                        <span v-if="object.from_mkad">; {{ object.from_mkad }} км от мкад </span>
+                    </p>
+                    <div class="d-flex gap-2">
+                        <UiButton
+                            @click.stop="copyAddress"
+                            mini
+                            color="light"
+                            :icon="alreadyCopied ? 'fa-solid fa-check' : 'fa-solid fa-copy'"
+                            :disabled="alreadyCopied"
+                        >
+                            {{ alreadyCopied ? 'Скопировано' : 'Копировать' }}
+                        </UiButton>
+                        <UiButton
+                            @click.stop="$emit('show-map')"
+                            mini
+                            color="light"
+                            icon="fa-solid fa-map"
+                        >
+                            Открыть на карте
+                        </UiButton>
+                    </div>
+                </template>
+            </Tippy>
         </div>
         <div class="d-flex gap-1 flex-wrap fs-2 font-weight-semi">
             <span>{{ object.is_land ? 'Участок' : 'Строение' }}</span>
@@ -38,6 +68,12 @@ import { computed, useTemplateRef } from 'vue';
 import { toNumberFormat } from '@/utils/formatters/number.js';
 import SurveyFormObjectOffer from '@/components/SurveyForm/Object/SurveyFormObjectOffer.vue';
 import { useTippyText } from '@/composables/useTippyText.js';
+import { Tippy } from 'vue-tippy';
+import UiButton from '@/components/common/UI/UiButton.vue';
+import { useClipboard } from '@vueuse/core';
+import { useNotify } from '@/utils/use/useNotify.js';
+
+defineEmits(['show-map']);
 
 const props = defineProps({
     object: {
@@ -57,4 +93,16 @@ useTippyText(useTemplateRef('fullAreaField'), 'Общая площадь');
 const preparedOffers = computed(() => {
     return props.object.offers.filter(offer => !offer.isDeleted && offer.status === 1);
 });
+
+// copy
+
+const { copy, text: clipboardText } = useClipboard();
+const notify = useNotify();
+
+const alreadyCopied = computed(() => props.object.address === clipboardText.value);
+
+function copyAddress() {
+    copy(props.object.address);
+    notify.info('Адрес скопирован в буфер обмена');
+}
 </script>
