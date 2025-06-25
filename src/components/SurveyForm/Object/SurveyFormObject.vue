@@ -12,7 +12,7 @@
                 :object
                 :answer="form?.answer"
             />
-            <SurveyFormObjectContent :object />
+            <SurveyFormObjectContent @show-map="$emit('show-map')" :object />
         </div>
         <div v-if="editable" class="survey-form-object__aside">
             <UiDropdownActions>
