@@ -43,6 +43,17 @@ export type TaskRelationEntityType =
 
 export type TaskRelationEntityModel = User | Task;
 
+export const TaskRelationEntityModelTypeEnum = {
+    REQUEST: 'request',
+    CONTACT: 'contact',
+    USER: 'user',
+    COMPANY: 'company',
+    OBJECT: 'c_industry'
+};
+
+export type TaskRelationEntityModelType =
+    (typeof TaskRelationEntityModelTypeEnum)[keyof typeof TaskRelationEntityModelTypeEnum];
+
 export interface TaskRelationEntity extends Timestamps, SoftDelete {
     id: number;
     comment: string | null;

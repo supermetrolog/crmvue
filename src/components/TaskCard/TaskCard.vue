@@ -35,6 +35,7 @@
                     :company-id="objectCompanyId"
                     :task
                 />
+                <TaskCardProcess v-else-if="canBeProcessed" :task />
                 <EmptyData v-else class="task-card__empty mt-2">
                     Задача не связана с чатом
                 </EmptyData>
@@ -141,6 +142,7 @@ import { useAsync } from '@/composables/useAsync.js';
 import { dayjsFromMoscow } from '@/utils/formatters/date.js';
 import dayjs from 'dayjs';
 import TaskCardRelations from '@/components/TaskCard/Relations/TaskCardRelations.vue';
+import TaskCardProcess from '@/components/TaskCard/Process/TaskCardProcess.vue';
 
 const emit = defineEmits([
     'updated',
@@ -420,4 +422,11 @@ function showContacts(companyId) {
 
     contactsIsVisible.value = true;
 }
+
+const canBeProcessed = computed(() => {
+    return (
+        (currentUserIsModeratorOrHigher.value || props.task.user_id === currentUserId.value) &&
+        props.task.type !== 'base'
+    );
+});
 </script>

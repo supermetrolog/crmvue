@@ -143,15 +143,15 @@ keep-alive>
                         placeholder="Укажите основную суть задачи.."
                         required
                     />
-                    <UiTextarea
+                    <VueEditor
                         v-model="form.message"
                         :autofocus="autofocusMessage"
                         :min-height="90"
                         :max-height="200"
-                        auto-height
-                        :class="{ 'col-7': hasCustomDescription, 'col-12': !hasCustomDescription }"
+                        :toolbar="false"
                         label="Описание задачи"
                         placeholder="Дайте дополнительные комментарии, опишите алгоритмы выполнения.."
+                        class="col-12"
                     />
                     <FormModalTaskDescription
                         v-if="hasCustomDescription"
@@ -222,6 +222,7 @@ import { isString } from '@/utils/helpers/string/isString.js';
 import { dayjsFromMoscow } from '@/utils/formatters/date.js';
 import InProgress from '@/components/common/InProgress.vue';
 import RadioOptions from '@/components/common/Forms/RadioOptions.vue';
+import VueEditor from '@/components/common/Forms/VueEditor.vue';
 
 const store = useStore();
 const { getTagsOptions } = useTagsOptions();

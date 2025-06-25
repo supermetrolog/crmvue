@@ -11,6 +11,11 @@
     z-index: 4000;
     transition: opacity 0.4s ease;
 
+    &:has(&__pinned-task) {
+        flex-direction: column;
+        align-items: center;
+    }
+
     .v-dropdown-container {
         z-index: 4003;
     }
@@ -137,7 +142,6 @@
     }
 
     &--with-tabs {
-        align-items: unset;
         padding-top: 100px;
 
         .modal {
@@ -199,6 +203,16 @@
                 padding: 0 20px;
             }
         }
+    }
+
+    &--with-tabs {
+        align-items: unset;
+    }
+
+    &--with-tabs:has(&__pinned-task) {
+        align-items: center;
+        justify-content: unset;
+        padding-top: 30px;
     }
 
     &--relative {
@@ -301,6 +315,23 @@
                 animation: blackout var(--animation-time) ease reverse forwards;
             }
         }
+    }
+
+    &__pinned-task {
+        background-color: #fff;
+        max-height: 215px;
+        position: relative;
+        color: variables.$color_dark;
+        min-width: 300px;
+        max-width: 100%;
+        margin: 20px 20px 0;
+        padding: 10px 15px 5px;
+        z-index: 4002;
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.12);
+        border-radius: 15px;
+        transition: all 0.5s ease;
+
+        width: var(--modal-width);
     }
 }
 
@@ -447,4 +478,22 @@
 
 .modal-aside {
     border-left: 2px solid variables.$color_grey_light;
+}
+
+.ui-modal-pinned-task {
+    &__label {
+        font-size: 14px;
+        font-weight: 500;
+        color: variables.$color_grey;
+    }
+
+    &__message {
+        max-height: 32px;
+        overflow-y: auto;
+        @include mixins.transition(max-height);
+
+        &.expanded {
+            max-height: 80px;
+        }
+    }
 }
