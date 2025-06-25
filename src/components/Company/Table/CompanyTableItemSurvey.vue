@@ -13,9 +13,16 @@
                     <span class="ml-1">Опрос #{{ company.last_survey.id }} от {{ updatedAt }}</span>
                     <span v-if="company.last_survey.contact" class="ml-1">
                         <span>с</span>
-                        <span class="company-table-item-survey__contact mx-1">
-                            {{ contactName }}
-                        </span>
+                        <Tippy interactive :interactive-border="40">
+                            <template #default>
+                                <span class="company-table-item-survey__contact mx-1">
+                                    {{ contactName }}
+                                </span>
+                            </template>
+                            <template #content>
+                                <ContactCard :contact="company.last_survey.contact" />
+                            </template>
+                        </Tippy>
                         <span>({{ contactPosition }})</span>
                     </span>
                 </span>
@@ -233,6 +240,8 @@ import UiDropdownActionsGroup from '@/components/common/UI/DropdownActions/UiDro
 import UiModal from '@/components/common/UI/UiModal.vue';
 import DashboardTableTasksItem from '@/components/Dashboard/Table/TasksItem/DashboardTableTasksItem.vue';
 import { useTypedTasks } from '@/composables/task/useTypedTasks.ts';
+import { Tippy } from 'vue-tippy';
+import ContactCard from '@/components/Contact/Card/ContactCard.vue';
 
 const emit = defineEmits(['create-task', 'open-preview', 'edit-comment', 'show-task']);
 

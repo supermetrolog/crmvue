@@ -2484,7 +2484,7 @@
     position: relative;
     height: 80px;
     width: calc(100% / 6);
-    opacity: .4;
+    opacity: .25;
 
     &:first-child {
         .request-row-card-timeline-step__arrow {
@@ -2558,18 +2558,31 @@
 
     &.in-process {
         opacity: 1;
-        color: #fff;
+        color: #fe6a49;
 
         .request-row-card-timeline-step__arrow {
-            background-color: #fe6a49;
+            background-color: #fff;
+            border-color: #fe6a49;
         }
 
         &:first-child::before {
-            background-color: #fe6a49;
+            background-color: #fff;
         }
 
         &:last-child::after {
-            background-color: #fe6a49;
+            background-color: #fff;
+        }
+
+        &:first-child {
+            &::before {
+                border-color: #fe6a49;
+            }
+        }
+
+        &:last-child {
+            &::after {
+                border-color: #fe6a49;
+            }
         }
     }
 

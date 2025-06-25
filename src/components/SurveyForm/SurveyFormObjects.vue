@@ -101,14 +101,14 @@
                         />
                     </div>
                     <EmptyData v-else-if="createdObjects.length === 0" no-rounded class="h-100">
-                        <p>У клиента нет объектов и предложений..</p>
+                        <p>У клиента нет объектов..</p>
                         <template #actions>
                             <UiButton
                                 @click="newObjectFormIsVisible = true"
                                 color="success-light"
                                 icon="fa-solid fa-plus"
                             >
-                                Добавить предложение
+                                Добавить объект
                             </UiButton>
                         </template>
                     </EmptyData>
