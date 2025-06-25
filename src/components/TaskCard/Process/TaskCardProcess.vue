@@ -4,7 +4,12 @@
             <i class="fa-solid fa-gear mr-1" />
             <span>{{ title }}</span>
         </p>
-        <ProcessComponent :task :relations />
+        <UiButton v-if="isLoading"
+small
+loading
+disabled
+color="white">Загрузка </UiButton>
+        <ProcessComponent v-else :task :relations />
     </div>
 </template>
 
@@ -15,6 +20,7 @@ import { computed, onBeforeMount, ref } from 'vue';
 import { TaskRelationEntity, TaskTypeEnum, TaskView } from '@/types/task';
 import api from '@/api/api';
 import { captureException } from '@sentry/vue';
+import UiButton from '@/components/common/UI/UiButton.vue';
 
 const props = defineProps<{ task: TaskView }>();
 
