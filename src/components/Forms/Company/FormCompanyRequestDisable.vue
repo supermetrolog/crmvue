@@ -5,15 +5,15 @@
             <MultiSelect
                 v-model="form.passive_why"
                 :v="v$.form.passive_why"
+                :options="passiveWhyOptions"
                 required
                 label="Причина"
                 class="col-12"
-                :options="PassiveWhyRequest"
             />
             <UiTextarea
                 v-model="form.passive_why_comment"
                 :v="v$.form.passive_why_comment"
-                required
+                :required="passiveWhyCommentIsRequired"
                 label="Комментарий"
                 class="col-12 mt-1"
             />
@@ -41,14 +41,14 @@ import UiForm from '@/components/common/Forms/UiForm.vue';
 import UiFormGroup from '@/components/common/Forms/UiFormGroup.vue';
 import UiTextarea from '@/components/common/Forms/UiTextarea.vue';
 import MultiSelect from '@/components/common/Forms/MultiSelect.vue';
-import { PassiveWhyRequest } from '@/const/const.js';
-import { helpers, required } from '@vuelidate/validators';
+import { helpers, required, requiredIf } from '@vuelidate/validators';
 import api from '@//api/api.js';
 import Loader from '@/components/common/Loader.vue';
-import { reactive, shallowRef } from 'vue';
+import { computed, reactive, ref } from 'vue';
 import UiButton from '@/components/common/UI/UiButton.vue';
 import { useValidation } from '@/composables/useValidation.js';
 import UiCol from '@/components/common/UI/UiCol.vue';
+import { RequestPassiveWhyEnum } from '@/types/request.ts';
 
 const emit = defineEmits(['disabled', 'cancel']);
 const props = defineProps({
@@ -58,11 +58,16 @@ const props = defineProps({
     }
 });
 
-const isLoading = shallowRef(false);
+const isLoading = ref(false);
+
 const form = reactive({
     passive_why: null,
     passive_why_comment: null
 });
+
+const passiveWhyCommentIsRequired = computed(
+    () => form.passive_why === RequestPassiveWhyEnum.OTHER
+);
 
 const { v$, validate } = useValidation(
     {
@@ -71,7 +76,10 @@ const { v$, validate } = useValidation(
                 required: helpers.withMessage('Выберите причину', required)
             },
             passive_why_comment: {
-                required: helpers.withMessage('Укажите комментарий', required)
+                required: helpers.withMessage(
+                    'Укажите комментарий',
+                    requiredIf(passiveWhyCommentIsRequired)
+                )
             }
         }
     },
@@ -91,4 +99,12 @@ async function onSubmit() {
         isLoading.value = false;
     }
 }
+
+const passiveWhyOptions = [
+    { value: 1, label: 'Сняли' },
+    { value: 2, label: 'Купили' },
+    { value: 3, label: 'Запрос устарел' },
+    { value: 4, label: 'Отложил поиск' },
+    { value: 5, label: 'Иное' }
+];
 </script>
