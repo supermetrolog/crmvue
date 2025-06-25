@@ -40,7 +40,10 @@
                                 </UiButton>
                             </AnimationTransition>
                             <UiButton
-                                v-if="requestConsultant"
+                                v-if="
+                                    requestConsultant &&
+                                    requestConsultant?.id !== companyConsultant?.id
+                                "
                                 @click.prevent="assignOldRequestConsultant"
                                 small
                                 color="light"
