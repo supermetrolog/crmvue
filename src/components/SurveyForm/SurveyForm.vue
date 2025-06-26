@@ -75,6 +75,7 @@
                 <MessengerQuizFormWarningAlreadyCreated
                     v-else-if="lastSurveys.length"
                     @show="showLastSurvey"
+                    @edit="$emit('close')"
                     :last-survey="lastSurveys[0]"
                 />
                 <teleport to="body">
@@ -541,6 +542,7 @@ const { show: showSurvey } = useAsyncPopup('surveyPreview');
 
 function showLastSurvey() {
     showSurvey({ surveyId: lastSurveys.value[0].id });
+    emit('close');
 }
 
 // initialization

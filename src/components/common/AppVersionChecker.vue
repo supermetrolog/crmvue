@@ -1,5 +1,10 @@
 <template>
-    <notifications position="top right" group="version" pause-on-hover>
+    <notifications
+        @destroy="onNotificationDestroyed"
+        position="top right"
+        group="version"
+        pause-on-hover
+    >
         <template #body="{ item }">
             <div class="vue-notification-template vue-notification info">
                 <div class="notification-title">{{ item.title }}</div>
@@ -20,7 +25,7 @@ import { useClientVersion } from '@/composables/useClientVersion.ts';
 import UiButton from '@/components/common/UI/UiButton.vue';
 import { watch } from 'vue';
 
-const { isOutdated, stopAutoChecking } = useClientVersion();
+const { isOutdated, stopAutoChecking, resumeAutoChecking } = useClientVersion();
 
 watch(isOutdated, value => {
     if (value) {
@@ -37,5 +42,9 @@ watch(isOutdated, value => {
 
 function reload() {
     window.location.reload(true);
+}
+
+function onNotificationDestroyed() {
+    resumeAutoChecking();
 }
 </script>

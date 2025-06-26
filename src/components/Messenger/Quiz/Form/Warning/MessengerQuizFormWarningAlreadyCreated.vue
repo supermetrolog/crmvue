@@ -21,21 +21,29 @@
                 icon="fa-solid fa-arrow-up-right-from-square"
                 color="light"
             >
-                Просмотреть опрос
+                Просмотреть
             </UiButton>
-            <!--            <UiButton @click="$emit('schedule-call')" icon="fa-solid fa-phone" color="light">-->
-            <!--                Запланировать звонок-->
-            <!--            </UiButton>-->
+            <UiButton
+                @click="onEditSurvey"
+                icon="fa-solid fa-pen"
+                color="light"
+                :loading="editingSurveyIsLoading"
+            >
+                Редактировать
+            </UiButton>
         </template>
     </UiModal>
 </template>
 <script setup>
 import UiButton from '@/components/common/UI/UiButton.vue';
 import { useSurveyEditing } from '@/components/Survey/useSurveyEditing.js';
-import { toRef } from 'vue';
+import { ref, toRef } from 'vue';
 import UiModal from '@/components/common/UI/UiModal.vue';
+import api from '@/api/api.js';
+import { useSurveyForm } from '@/composables/useSurveyForm.js';
+import { captureException } from '@sentry/vue';
 
-defineEmits(['show', 'schedule-call']);
+const emit = defineEmits(['show', 'edit']);
 
 const props = defineProps({ lastSurvey: Object });
 
@@ -43,5 +51,23 @@ const { remainingTimeLabel } = useSurveyEditing(toRef(props, 'lastSurvey'), {
     adminCanEdit: false
 });
 
-// TODO: Запланировать звонок
+const editingSurveyIsLoading = ref(false);
+
+const { editSurvey } = useSurveyForm();
+
+async function onEditSurvey() {
+    editingSurveyIsLoading.value = true;
+
+    try {
+        const survey = await api.survey.get(props.lastSurvey.id);
+
+        emit('edit');
+        
+        editSurvey(survey);
+    } catch (e) {
+        captureException(e, { data: { survey_id: props.lastSurvey.id } });
+    } finally {
+        editingSurveyIsLoading.value = false;
+    }
+}
 </script>

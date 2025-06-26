@@ -28,7 +28,7 @@
                             @click.stop="$emit('show-map')"
                             mini
                             color="light"
-                            icon="fa-solid fa-map"
+                            icon="fa-solid fa-map-location-dot"
                         >
                             Открыть на карте
                         </UiButton>
