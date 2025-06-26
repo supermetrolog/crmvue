@@ -74,7 +74,7 @@ label="Да"
 import { computed, watch } from 'vue';
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
 import UiTextarea from '@/components/common/Forms/UiTextarea.vue';
-import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
+import { isNotNullish } from '@/utils/helpers/common/isNotNullish.ts';
 import useVuelidate from '@vuelidate/core';
 import { helpers, requiredIf } from '@vuelidate/validators';
 import { isString } from '@/utils/helpers/string/isString.js';

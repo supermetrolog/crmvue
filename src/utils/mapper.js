@@ -3,7 +3,7 @@ import { deleteObjectsWithEmptyProperties } from '@/utils/deleteObjectsWithEmpty
 
 import { dayjsFromMoscow } from '@/utils/formatters/date.js';
 import { chunk } from '@/utils/helpers/array/chunk.js';
-import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
+import { isNotNullish } from '@/utils/helpers/common/isNotNullish.ts';
 
 const propertiesToTableFormat = (object, props) => {
     return Object.keys(props).reduce((acc, property) => {

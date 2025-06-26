@@ -97,7 +97,7 @@ import AnimationTransition from '@/components/common/AnimationTransition.vue';
 import { computed, ref, toValue, watch } from 'vue';
 import UiButton from '@/components/common/UI/UiButton.vue';
 import StepperStep from '@/components/common/Stepper/StepperStep.vue';
-import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
+import { isNotNullish } from '@/utils/helpers/common/isNotNullish.ts';
 import { useNotify } from '@/utils/use/useNotify.js';
 
 const currentStep = defineModel('step', { type: Number, default: 0 });

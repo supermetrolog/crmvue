@@ -195,7 +195,7 @@ import MessengerDialogObjectPreviewStorage from '@/components/Messenger/Dialog/O
 import MessengerDialogPreviewTippy from '@/components/Messenger/Dialog/Preview/MessengerDialogPreviewTippy.vue';
 import MessengerDialogObjectPreviewSublease from '@/components/Messenger/Dialog/Object/MessengerDialogObjectPreviewSublease.vue';
 import { objectChatMemberTypes } from '@/const/messenger.js';
-import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
+import { isNotNullish } from '@/utils/helpers/common/isNotNullish.ts';
 import { isNullish } from '@/utils/helpers/common/isNullish.ts';
 import { usePlural } from '@/composables/usePlural.js';
 

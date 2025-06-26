@@ -160,7 +160,7 @@ import { useMobile } from '@/composables/useMobile.js';
 import { isArray } from '@/utils/helpers/array/isArray.ts';
 import { dayjsFromMoscow } from '@/utils/formatters/date.js';
 import UserFolders from '@/components/UserFolder/UserFolders.vue';
-import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
+import { isNotNullish } from '@/utils/helpers/common/isNotNullish.ts';
 import { useDebounceFn, useEventBus, useTimeoutFn } from '@vueuse/core';
 import UiButton from '@/components/common/UI/UiButton.vue';
 import FormModalChatMemberMessage from '@/components/Forms/FormModalChatMemberMessage.vue';

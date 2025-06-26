@@ -1,223 +1,208 @@
 <template>
-    <div class="d-flex ml-auto gap-2">
-        <SurveyFormStepperSummaryButton
-            v-if="company.pinned_messages?.length"
-            @click="pinnedMessagesModalIsVisible = true"
-            icon="fa-regular fa-message"
-        >
-            <span>Комментарии</span>
-            <span class="ml-1">({{ company.pinned_messages?.length }})</span>
-        </SurveyFormStepperSummaryButton>
-        <SurveyFormStepperSummaryButton
-            v-if="survey && baseTasks.length"
-            @click="tasksModalIsVisible = true"
-            icon="fa-solid fa-bolt"
-        >
-            <span>Задачи</span>
-            <span class="ml-1">(</span>
-            <template v-if="completedTasksLength">
-                <span class="text-success">{{ completedTasksLength }}</span>
-                <span>/</span>
-            </template>
-            <span>{{ baseTasks.length }}</span>
-            <span>)</span>
-        </SurveyFormStepperSummaryButton>
-        <SurveyFormStepperSummaryButton
-            v-if="survey && survey.tasks?.length && scheduledCallTasks.length"
-            @click="showCalls"
-            icon="fa-solid fa-phone-volume"
-            color="danger"
-            class="danger"
-            label="Нажмите, чтобы посмотреть подробнее"
-        >
-            <span>Звонок {{ lastScheduledCallDate }}!</span>
-            <span v-if="scheduledCallTasks.length > 1" class="ml-1">
-                (+{{ scheduledCallTasks.length - 1 }})
-            </span>
-        </SurveyFormStepperSummaryButton>
-        <SurveyFormStepperSummaryButton
-            v-if="survey && survey.tasks?.length && scheduledVisitTasks.length"
-            @click="showVisits"
-            icon="fa-solid fa-phone-volume"
-            color="danger"
-            class="danger"
-            label="Нажмите, чтобы посмотреть подробнее"
-        >
-            <span>Встреча {{ lastScheduledVisitDate }}!</span>
-            <span v-if="scheduledVisitTasks.length > 1" class="ml-1">
-                (+{{ scheduledVisitTasks.length - 1 }})
-            </span>
-        </SurveyFormStepperSummaryButton>
-    </div>
     <UiModal
-        v-model:visible="pinnedMessagesModalIsVisible"
-        title="Закрепленные комментарии"
-        :width="600"
+        v-model:visible="visibleModel"
+        @closed="$emit('closed')"
+        class="survey-form-stepper-summary"
+        :title
+        :width="900"
     >
-        <div class="d-flex flex-column gap-2">
-            <MessengerDialogLastMessage
-                v-for="message in company.pinned_messages"
-                :key="message.id"
-                :last-message="message.message"
-                class="company-table-item__message w-100"
-                only-avatar
-                column
-            >
-                <template #after>
-                    <UiDropdownActions small label="Действия над сообщением" class="ml-auto">
-                        <template #menu>
-                            <UiDropdownActionsButton
-                                @handle="unpinMessage(message)"
-                                label="Открепить сообщение"
-                                icon="fa-solid fa-trash"
-                            />
-                        </template>
-                    </UiDropdownActions>
-                </template>
-            </MessengerDialogLastMessage>
-        </div>
+        <UiForm>
+            <UiFormGroup>
+                <UiCol :cols="7" class="survey-form-stepper-summary__grid">
+                    <SurveyFormStepperSummaryCard
+                        name="Контакты"
+                        :current="completedContactsLength"
+                        :total="contacts.length"
+                        :success-count="0"
+                    />
+                    <SurveyFormStepperSummaryCard
+                        name="Запросы"
+                        :current="completedRequestsLength"
+                        :total="requests.length"
+                    />
+                    <SurveyFormStepperSummaryCard
+                        name="Предложения"
+                        :current="completedObjectsLength"
+                        :total="objects.length"
+                    />
+                    <SurveyFormStepperSummaryCard
+                        name="Прочее"
+                        :current="completedOtherLength"
+                        :total="otherQuestions.length"
+                    />
+                </UiCol>
+                <VueEditor
+                    v-model="form.comment"
+                    :v="v$.comment"
+                    :toolbar="false"
+                    label="Комментарий"
+                    placeholder="Оставьте комментарий к опросу.."
+                    class="col-5"
+                    :min-height="250"
+                    :max-height="250"
+                />
+            </UiFormGroup>
+        </UiForm>
+        <template #actions="{ close }">
+            <UiButton @click="complete" icon="fa-solid fa-check" color="success">
+                Сохранить опрос
+            </UiButton>
+            <UiButton @click="close" icon="fa-solid fa-ban" color="light">
+                Вернуться к опросу
+            </UiButton>
+        </template>
     </UiModal>
-    <UiModal v-model:visible="tasksModalIsVisible" title="Задачи по опросу" :width="800">
-        <div class="d-flex flex-column gap-2">
-            <DashboardTableTasksItem
-                v-for="task in baseTasks"
-                :key="task.id"
-                @view="showTaskPreview(task)"
-                :task="task"
-            />
-        </div>
-    </UiModal>
-    <UiModal v-model:visible="callsModalIsVisible" title="Запланированные звонки" :width="800">
-        <div class="d-flex flex-column gap-2">
-            <DashboardTableTasksItem
-                v-for="task in scheduledCallTasks"
-                :key="task.id"
-                @view="showTaskPreview(task)"
-                :task="task"
-            />
-        </div>
-    </UiModal>
-    <UiModal v-model:visible="visitsModalIsVisible" title="Запланированные встречи" :width="800">
-        <div class="d-flex flex-column gap-2">
-            <DashboardTableTasksItem
-                v-for="task in scheduledVisitTasks"
-                :key="task.id"
-                @view="showTaskPreview(task)"
-                :task="task"
-            />
-        </div>
-    </UiModal>
-    <teleport to="body">
-        <TaskPreview
-            v-model:visible="taskPreviewIsVisible"
-            @closed="currentTask = null"
-            @updated="onUpdatedTask"
-            :task-id="currentTask?.id"
-        />
-    </teleport>
 </template>
-<script setup>
-import { computed, ref, toRef } from 'vue';
+<script setup lang="ts">
+import UiButton from '@/components/common/UI/UiButton.vue';
 import UiModal from '@/components/common/UI/UiModal.vue';
-import DashboardTableTasksItem from '@/components/Dashboard/Table/TasksItem/DashboardTableTasksItem.vue';
-import MessengerDialogLastMessage from '@/components/Messenger/Dialog/MessengerDialogLastMessage.vue';
-import UiDropdownActionsButton from '@/components/common/UI/DropdownActions/UiDropdownActionsButton.vue';
-import UiDropdownActions from '@/components/common/UI/DropdownActions/UiDropdownActions.vue';
-import { useConfirm } from '@/composables/useConfirm.js';
-import { useNotify } from '@/utils/use/useNotify.js';
-import api from '@/api/api.js';
-import { spliceById } from '@/utils/helpers/array/spliceById.js';
-import { captureException } from '@sentry/vue';
-import TaskPreview from '@/components/TaskPreview/TaskPreview.vue';
-import SurveyFormStepperSummaryButton from '@/components/SurveyForm/SurveyFormStepperSummaryButton.vue';
-import { taskOptions } from '@/const/options/task.options.js';
-import { useTypedTasks } from '@/composables/task/useTypedTasks.ts';
+import UiForm from '@/components/common/Forms/UiForm.vue';
+import UiFormGroup from '@/components/common/Forms/UiFormGroup.vue';
+import VueEditor from '@/components/common/Forms/VueEditor.vue';
+import { computed } from 'vue';
+import { isNullish } from '@/utils/helpers/common/isNullish';
+import { useValidation } from '@/composables/useValidation';
+import { helpers, maxLength, minLength } from '@vuelidate/validators';
+import UiCol from '@/components/common/UI/UiCol.vue';
+import SurveyFormStepperSummaryCard from '@/components/SurveyForm/SurveyFormStepperSummaryCard.vue';
+import { isNotNullish } from '@/utils/helpers/common/isNotNullish';
 
-const props = defineProps({
-    survey: Object,
-    company: {
-        type: Object,
-        required: true
-    }
+const emit = defineEmits<{
+    (e: 'complete'): void;
+    (e: 'closed'): void;
+}>();
+
+interface SurveyFormCall {
+    available?: boolean | null;
+    scheduled?: string | null;
+    full_name?: string;
+    reason?: number | null;
+    delete?: boolean;
+    description?: string | null;
+}
+
+interface SurveyFormCurrentObject {
+    answer?: boolean | null;
+    created?: object[];
+    arendators?: object[];
+    current?: object;
+}
+
+interface SurveyFormObjects {
+    current: SurveyFormProperty<SurveyFormCurrentObject>;
+}
+
+interface SurveyFormCurrentRequest {
+    answer?: boolean | null;
+    description?: string | null;
+    snapshot?: object;
+}
+
+interface SurveyFormRequests {
+    current: SurveyFormProperty<SurveyFormCurrentRequest>;
+}
+
+type SurveyFormProperty<T> = Record<string, T>;
+
+interface SurveyForm {
+    calls: SurveyFormProperty<SurveyFormCall>;
+    objects: SurveyFormObjects;
+    requests: SurveyFormRequests;
+    other: object[];
+    comment: string | null;
+}
+
+const visibleModel = defineModel<boolean>('visible');
+const form = defineModel<SurveyForm>('form');
+
+interface Props {
+    editMode: boolean;
+    objects: object[];
+    requests: object[];
+    other: object[];
+    contacts: object[];
+}
+
+const props = defineProps<Props>();
+
+const { v$, validate } = useValidation(
+    {
+        comment: {
+            maxLength: helpers.withMessage(
+                'Комментарий не может быть больше 512 символов',
+                maxLength(512)
+            ),
+            minLength: helpers.withMessage(
+                'Комментарий не может быть меньше 8 символов',
+                minLength(8)
+            )
+        }
+    },
+    form,
+    { notification: true }
+);
+
+async function complete() {
+    const isValid = await validate();
+    console.log(isValid);
+    if (!isValid) return;
+
+    emit('complete');
+}
+
+const completedContactsLength = computed(() => {
+    if (isNullish(form.value)) return 0;
+
+    return Object.values(form.value.calls).filter(
+        call => isNotNullish(call.available) && isNotNullish(call.reason)
+    ).length;
 });
 
-const {
-    scheduledCallTasks,
-    scheduledVisitTasks,
-    lastScheduledCallDate,
-    lastScheduledVisitDate,
-    baseTasks
-} = useTypedTasks(toRef(() => props.survey?.tasks ?? []));
+const completedObjectsLength = computed(() => {
+    if (isNullish(form.value)) return 0;
 
-// calls
+    return Object.values(form.value.objects.current).filter(object => isNotNullish(object.answer))
+        .length;
+});
 
-const callsModalIsVisible = ref(false);
+const completedRequestsLength = computed(() => {
+    if (isNullish(form.value)) return 0;
 
-function showCalls() {
-    if (scheduledCallTasks.value.length > 1) {
-        callsModalIsVisible.value = true;
-    } else {
-        showTaskPreview(scheduledCallTasks.value[0]);
-    }
-}
+    return Object.values(form.value.requests.current).filter(object => isNotNullish(object.answer))
+        .length;
+});
 
-// visits
+const otherQuestions = computed(() => {
+    if (isNullish(form.value)) return [];
 
-const visitsModalIsVisible = ref(false);
+    return Object.values(
+        form.value.other.reduce((acc, question) => {
+            if (acc[question.question_id]) {
+                acc[question.question_id].push(question.value);
+            } else {
+                acc[question.question_id] = [question.value];
+            }
 
-function showVisits() {
-    if (scheduledVisitTasks.value.length > 1) {
-        visitsModalIsVisible.value = true;
-    } else {
-        showTaskPreview(scheduledVisitTasks.value[0]);
-    }
-}
-
-// previews
-
-const pinnedMessagesModalIsVisible = ref(false);
-const tasksModalIsVisible = ref(false);
-
-// pinned messages
-
-const { confirm } = useConfirm();
-const notify = useNotify();
-
-async function unpinMessage(message) {
-    const confirmed = await confirm(
-        'Открепить сообщение',
-        'Вы уверены, что хотите открепить сообщение?'
+            return acc;
+        }, {})
     );
-    if (!confirmed) return;
+});
 
-    try {
-        await api.companies.unpinMessage(message.id);
-        spliceById(props.company.pinned_messages, message.id);
-    } catch (error) {
-        notify.error('Произошла ошибка. Попробуйте позже');
-        captureException(error, { company_id: message.entity_id });
-    }
-}
+const completedOtherLength = computed(() => {
+    return otherQuestions.value.filter(group =>
+        group.some(element => isNotNullish(element) && element.type === 'main')
+    ).length;
+});
 
-// tasks
+const progress = computed(() => {
+    if (isNullish(form.value)) return 0;
 
-const currentTask = ref(null);
-const taskPreviewIsVisible = ref(false);
+    return 0;
+});
 
-function showTaskPreview(task) {
-    currentTask.value = task;
-    taskPreviewIsVisible.value = true;
-}
-
-function onUpdatedTask(payload) {
-    Object.assign(currentTask.value, payload);
-    currentTask.value = null;
-}
-
-const completedTasksLength = computed(() =>
-    baseTasks.value.reduce(
-        (acc, task) => acc + Number(task.status === taskOptions.clearStatusTypes.COMPLETED),
-        0
-    )
-);
+const title = computed(() => {
+    if (!visibleModel.value) return 'Обработка запроса';
+    if (props.editMode) return 'Завершение редактирования';
+    return `Запрос обработан на ${progress.value}%`;
+});
 </script>

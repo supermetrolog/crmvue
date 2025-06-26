@@ -228,7 +228,7 @@ import CompanyTableItemSurveyTab from '@/components/Company/Table/CompanyTableIt
 import UiButtonIcon from '@/components/common/UI/UiButtonIcon.vue';
 import CompanyTableItemSurveyTasks from '@/components/Company/Table/CompanyTableItemSurveyTasks.vue';
 import UiDropdownActionsTrigger from '@/components/common/UI/DropdownActions/UiDropdownActionsTrigger.vue';
-import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
+import { isNotNullish } from '@/utils/helpers/common/isNotNullish.ts';
 import UiButton from '@/components/common/UI/UiButton.vue';
 import UiTooltipIcon from '@/components/common/UI/UiTooltipIcon.vue';
 import { useAuth } from '@/composables/useAuth.js';

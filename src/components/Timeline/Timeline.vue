@@ -139,7 +139,7 @@ import { computed, onMounted, ref, watch } from 'vue';
 import { useAuth } from '@/composables/useAuth.js';
 import { useRoute, useRouter } from 'vue-router';
 import { requestOptions } from '@/const/options/request.options.js';
-import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
+import { isNotNullish } from '@/utils/helpers/common/isNotNullish.ts';
 import TimelineHeaderSkeleton from '@/components/Timeline/TimelineHeaderSkeleton.vue';
 import FormCompanyRequest from '@/components/Forms/Company/FormCompanyRequest.vue';
 import api from '@/api/api.js';
@@ -147,6 +147,7 @@ import UiButton from '@/components/common/UI/UiButton.vue';
 import { useConfirm } from '@/composables/useConfirm.js';
 import UiCol from '@/components/common/UI/UiCol.vue';
 import TimelineTreeSkeleton from '@/components/Timeline/Tree/Skeleton/TimelineTreeSkeleton.vue';
+
 defineEmits(['close']);
 
 const { isLoading: stepIsLoading } = useDelayedLoader();

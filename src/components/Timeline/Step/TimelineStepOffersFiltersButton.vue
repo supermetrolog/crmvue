@@ -23,7 +23,7 @@
 <script setup>
 import Button from '@/components/common/Button.vue';
 import { Tippy } from 'vue-tippy';
-import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
+import { isNotNullish } from '@/utils/helpers/common/isNotNullish.ts';
 import Spinner from '@/components/common/Spinner.vue';
 
 defineProps({

@@ -119,7 +119,7 @@ import { useValidation } from '@/composables/useValidation.js';
 import { helpers, maxLength, minLength, required } from '@vuelidate/validators';
 import dayjs from 'dayjs';
 import { isNullish } from '@/utils/helpers/common/isNullish.ts';
-import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
+import { isNotNullish } from '@/utils/helpers/common/isNotNullish.ts';
 import UiCol from '@/components/common/UI/UiCol.vue';
 import UiTextarea from '@/components/common/Forms/UiTextarea.vue';
 import UiFormDivider from '@/components/common/Forms/UiFormDivider.vue';

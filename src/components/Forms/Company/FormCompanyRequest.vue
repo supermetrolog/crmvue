@@ -550,7 +550,7 @@ import RadioChip from '@/components/common/Forms/RadioChip.vue';
 import SwitchSlider from '@/components/common/Forms/SwitchSlider.vue';
 import { useAuth } from '@/composables/useAuth.js';
 import { isString } from '@/utils/helpers/string/isString.js';
-import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
+import { isNotNullish } from '@/utils/helpers/common/isNotNullish.ts';
 
 const emit = defineEmits(['close', 'created', 'updated']);
 const props = defineProps({

@@ -104,7 +104,7 @@ import { computed, onMounted, ref, watch } from 'vue';
 import { useFileDialog } from '@vueuse/core';
 import { getApiObjects } from '@/utils/url.js';
 import { isArray } from '@/utils/helpers/array/isArray.ts';
-import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
+import { isNotNullish } from '@/utils/helpers/common/isNotNullish.ts';
 
 const compressionOptions = {
     maxSizeMB: 1,

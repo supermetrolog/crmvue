@@ -13,7 +13,7 @@
 <script setup>
 import CompanyBoxCell from '@/components/Company/Box/CompanyBoxCell.vue';
 import { computed } from 'vue';
-import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
+import { isNotNullish } from '@/utils/helpers/common/isNotNullish.ts';
 import { isNotEmptyString } from '@/utils/helpers/string/isNotEmptyString.js';
 
 const props = defineProps({

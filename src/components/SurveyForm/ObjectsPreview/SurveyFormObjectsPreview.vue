@@ -212,7 +212,7 @@ import SurveyFormObjectsPreviewTab from '@/components/SurveyForm/ObjectsPreview/
 import SurveyFormObjectsPreviewNewOffer from '@/components/SurveyForm/ObjectsPreview/SurveyFormObjectsPreviewNewOffer.vue';
 import SurveyFormObjectsPreviewOfferForm from '@/components/SurveyForm/ObjectsPreview/SurveyFormObjectsPreviewOfferForm.vue';
 import { spliceById } from '@/utils/helpers/array/spliceById.js';
-import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
+import { isNotNullish } from '@/utils/helpers/common/isNotNullish.ts';
 import { toNumberOrRangeFormat } from '@/utils/formatters/number.js';
 import { floorOptions } from '@/const/options/floor.options.js';
 import UiAccordion from '@/components/common/UI/Accordion/UiAccordion.vue';

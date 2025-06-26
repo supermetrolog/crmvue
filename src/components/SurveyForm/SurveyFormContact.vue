@@ -77,7 +77,7 @@
 import { computed, ref, watch } from 'vue';
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
 import SurveyFormContactCard from '@/components/SurveyForm/SurveyFormContactCard.vue';
-import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
+import { isNotNullish } from '@/utils/helpers/common/isNotNullish.ts';
 import dayjs from 'dayjs';
 import SurveyFormContactForm from '@/components/SurveyForm/SurveyFormContactForm.vue';
 import { useAuth } from '@/composables/useAuth.js';

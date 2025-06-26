@@ -14,7 +14,7 @@
         >
             <template v-if="canBeEdit" #after-navigation>
                 <template v-if="company">
-                    <SurveyFormStepperSummary :company :survey />
+                    <SurveyFormStepperRelations :company :survey />
                     <span>|</span>
                 </template>
                 <UiButton @click="onEditSurvey" icon="fa-solid fa-pen" color="light" small>
@@ -89,7 +89,7 @@ import UiButton from '@/components/common/UI/UiButton.vue';
 import SurveyCardContactPreview from '@/components/SurveyCard/SurveyCardContactPreview.vue';
 import { useSurveyEditing } from '@/components/Survey/useSurveyEditing.js';
 import { useSurveyForm } from '@/composables/useSurveyForm.js';
-import SurveyFormStepperSummary from '@/components/SurveyForm/SurveyFormStepperSummary.vue';
+import SurveyFormStepperRelations from '@/components/SurveyForm/SurveyFormStepperRelations.vue';
 import SurveyCardAdvancedRequests from '@/components/SurveyCard/SurveyCardAdvancedRequests.vue';
 import SurveyCardAdvancedObjects from '@/components/SurveyCard/SurveyCardAdvancedObjects.vue';
 

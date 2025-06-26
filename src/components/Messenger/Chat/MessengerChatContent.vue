@@ -92,7 +92,7 @@ import { vIntersectionObserver } from '@vueuse/components';
 import MessengerChatContentDisabled from '@/components/Messenger/Chat/MessengerChatContentDisabled.vue';
 import { useMessengerChatContext } from '@/components/Messenger/Chat/useMessengerChatContext.js';
 import MessengerChatLabelRow from '@/components/Messenger/Chat/MessengerChatLabelRow.vue';
-import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
+import { isNotNullish } from '@/utils/helpers/common/isNotNullish.ts';
 
 defineProps({ disabled: Boolean });
 

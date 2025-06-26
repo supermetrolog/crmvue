@@ -1,7 +1,7 @@
 import { computed, onMounted } from 'vue';
 import { toValue } from '@vueuse/core';
 import { useRoute, useRouter } from 'vue-router';
-import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
+import { isNotNullish } from '@/utils/helpers/common/isNotNullish.ts';
 import { isEmpty } from '@/utils/helpers/common/isEmpty.js';
 import { isArray } from '@/utils/helpers/array/isArray.ts';
 import { isEmptyArray } from '@/utils/helpers/array/isEmptyArray.js';
