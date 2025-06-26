@@ -102,7 +102,7 @@ import MessengerQuizFormRadioChip from '@/components/MessengerQuiz/Form/Messenge
 import MessengerQuizQuestionCallDescription from '@/components/MessengerQuiz/Question/Call/MessengerQuizQuestionCallDescription.vue';
 import MessengerQuizQuestionCallSchedule from '@/components/MessengerQuiz/Question/Call/MessengerQuizQuestionCallSchedule.vue';
 import RadioOptions from '@/components/common/Forms/RadioOptions.vue';
-import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
+import { isNotNullish } from '@/utils/helpers/common/isNotNullish.ts';
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
 import UiTextarea from '@/components/common/Forms/UiTextarea.vue';
 import UiField from '@/components/common/UI/UiField.vue';

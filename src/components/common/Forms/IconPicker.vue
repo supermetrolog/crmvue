@@ -38,7 +38,7 @@
 <script setup>
 import UiDropdownActions from '@/components/common/UI/DropdownActions/UiDropdownActions.vue';
 import { computed } from 'vue';
-import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
+import { isNotNullish } from '@/utils/helpers/common/isNotNullish.ts';
 import UiButton from '@/components/common/UI/UiButton.vue';
 
 const modelValue = defineModel({ type: String, default: 'fa-solid fa-folder' });

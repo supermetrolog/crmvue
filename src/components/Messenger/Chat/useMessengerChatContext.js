@@ -3,7 +3,7 @@ import { useStore } from 'vuex';
 import { useNotify } from '@/utils/use/useNotify.js';
 import { useTaskManager } from '@/composables/useTaskManager.js';
 import { messenger } from '@/const/messenger.js';
-import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
+import { isNotNullish } from '@/utils/helpers/common/isNotNullish.ts';
 import { isNotEmptyString } from '@/utils/helpers/string/isNotEmptyString.js';
 import { getObjectMbUniqueAddress } from '@/utils/formatters/models/object.js';
 import { isEmpty } from '@/utils/helpers/common/isEmpty.js';

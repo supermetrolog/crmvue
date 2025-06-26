@@ -117,7 +117,9 @@ function getForm() {
         .map(element => ({
             value: element.value,
             question_answer_id: element.question_answer_id,
-            file: element.file
+            file: element.file,
+            question_id: element.question_id,
+            type: element.type
         }));
 }
 

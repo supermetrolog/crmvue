@@ -5,6 +5,7 @@
         class="modal-previewer"
         title="Просмотр объекта на карте"
         :width="1400"
+        :min-height="400"
     >
         <UiField v-if="isNotFound">Объект не найден..</UiField>
         <OfferYmap

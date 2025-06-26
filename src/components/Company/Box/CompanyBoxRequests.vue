@@ -77,7 +77,7 @@ import FormModalCompanyRequestClone from '@/components/Forms/Company/FormModalCo
 import EmptyData from '@/components/common/EmptyData.vue';
 import UiButton from '@/components/common/UI/UiButton.vue';
 import { computed, ref, shallowRef } from 'vue';
-import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
+import { isNotNullish } from '@/utils/helpers/common/isNotNullish.ts';
 import UiModal from '@/components/common/UI/UiModal.vue';
 import FormCompanyRequestDisable from '@/components/Forms/Company/FormCompanyRequestDisable.vue';
 import Loader from '@/components/common/Loader.vue';

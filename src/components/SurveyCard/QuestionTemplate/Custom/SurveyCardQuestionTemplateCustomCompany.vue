@@ -25,7 +25,7 @@ import SurveyQuestionCompany from '@/components/Survey/QuestionCompany/SurveyQue
 import { getCompanyName } from '@/utils/formatters/models/company.js';
 import { isNullish } from '@/utils/helpers/common/isNullish.ts';
 import { isArray } from '@/utils/helpers/array/isArray.ts';
-import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
+import { isNotNullish } from '@/utils/helpers/common/isNotNullish.ts';
 
 const props = defineProps({
     answers: {

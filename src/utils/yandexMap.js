@@ -1,5 +1,5 @@
 import { loadYmap } from 'vue-yandex-maps';
-import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
+import { isNotNullish } from '@/utils/helpers/common/isNotNullish.ts';
 
 export const yandexmap = {
     settings: {

@@ -1,4 +1,4 @@
-import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
+import { isNotNullish } from '@/utils/helpers/common/isNotNullish.ts';
 
 const API = import.meta.env.VITE_VUE_APP_API_URL;
 const HOST = import.meta.env.VITE_VUE_APP_HOST;
@@ -78,33 +78,42 @@ export function getApiUrl() {
         return import.meta.env.VITE_VUE_APP_RESERVE_API_URL;
     return API;
 }
+
 export function getApiObjects() {
     return FILES;
 }
+
 export function getApiUploads() {
     return API + import.meta.env.VITE_VUE_APP_UPLOADS_PATH;
 }
+
 export function getApiImages() {
     return API + import.meta.env.VITE_VUE_APP_IMAGES_PATH;
 }
+
 export function getApiFileNotFound() {
     return getApiImages() + import.meta.env.VITE_VUE_APP_NOT_FOUND_FILENAME;
 }
+
 export function getApiArchiver() {
     return API + 'archiver/download';
 }
+
 export function getLinkUpload(src) {
     return getApiObjects() + src;
 }
+
 export function getLinkImages(src) {
     return getApiImages() + src;
 }
+
 export function getLinkUserAvatar(filename) {
     if (!filename) {
         return getApiImages() + import.meta.env.VITE_VUE_APP_NOT_FOUND_AVATAR_NAME;
     }
     return getApiUploads() + filename;
 }
+
 export function getLinkUploadedFile(filename) {
     if (!filename) {
         return getApiImages() + import.meta.env.VITE_VUE_APP_NOT_FOUND_FILENAME;

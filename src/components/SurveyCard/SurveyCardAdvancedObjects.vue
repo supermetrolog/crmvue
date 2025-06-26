@@ -112,7 +112,7 @@ import api from '@/api/api.js';
 import { Pane, Splitpanes } from 'splitpanes';
 import UiField from '@/components/common/UI/UiField.vue';
 import VueEditor from '@/components/common/Forms/VueEditor.vue';
-import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
+import { isNotNullish } from '@/utils/helpers/common/isNotNullish.ts';
 import Loader from '@/components/common/Loader.vue';
 import SurveyCardAdvancedObjectsPreview from '@/components/SurveyCard/SurveyCardAdvancedObjectsPreview.vue';
 import EmptyData from '@/components/common/EmptyData.vue';

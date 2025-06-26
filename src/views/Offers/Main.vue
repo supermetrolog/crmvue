@@ -130,7 +130,7 @@ import { locationOptions } from '@/const/options/location.options.js';
 import FormOfferSearchExternal from '@/components/Forms/Offer/FormOfferSearchExternal.vue';
 import { useSelectedFilters } from '@/composables/useSelectedFilters.js';
 import { singleToArrayByKeys } from '@/utils/helpers/object/singleToArrayByKeys.js';
-import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
+import { isNotNullish } from '@/utils/helpers/common/isNotNullish.ts';
 import UserFolders from '@/components/UserFolder/UserFolders.vue';
 import UiButton from '@/components/common/UI/UiButton.vue';
 import { useDebounceFn, useTimeoutFn } from '@vueuse/core';

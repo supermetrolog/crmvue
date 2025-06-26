@@ -50,7 +50,7 @@
             <Loader v-if="isLoading && questionAnswers.length" small label="Загрузка вариантов.." />
             <Spinner v-else-if="isLoading" small center label="Загрузка вариантов.." />
             <UiCol v-else-if="!questionAnswers.length" cols="4" class="mx-auto my-2">
-                <EmptyData> Список вариантов ответа пуст.. </EmptyData>
+                <EmptyData> Список вариантов ответа пуст..</EmptyData>
             </UiCol>
             <UiCol v-for="element in questionAnswers" :key="element.id" :cols="4">
                 <SettingsFormElement
@@ -105,7 +105,7 @@ import { useConfirm } from '@/composables/useConfirm.js';
 import { useNotify } from '@/utils/use/useNotify.js';
 import { useDebounceFn } from '@vueuse/core';
 import Button from '@/components/common/Button.vue';
-import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
+import { isNotNullish } from '@/utils/helpers/common/isNotNullish.ts';
 import EmptyData from '@/components/common/EmptyData.vue';
 import UiCheckbox from '@/components/common/Forms/UiCheckbox.vue';
 import MultiSelect from '@/components/common/Forms/MultiSelect.vue';

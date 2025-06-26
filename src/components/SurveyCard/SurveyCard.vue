@@ -17,7 +17,7 @@ import { computed, onMounted, ref, watch } from 'vue';
 import Spinner from '@/components/common/Spinner.vue';
 import api from '@/api/api.js';
 import { isNullish } from '@/utils/helpers/common/isNullish.ts';
-import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
+import { isNotNullish } from '@/utils/helpers/common/isNotNullish.ts';
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
 import SurveyCardBasic from '@/components/SurveyCard/SurveyCardBasic.vue';
 import SurveyCardAdvanced from '@/components/SurveyCard/SurveyCardAdvanced.vue';

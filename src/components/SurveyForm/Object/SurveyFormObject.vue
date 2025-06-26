@@ -67,7 +67,7 @@
 import SurveyFormObjectContent from '@/components/SurveyForm/Object/SurveyFormObjectContent.vue';
 import SurveyFormObjectPreview from '@/components/SurveyForm/Object/SurveyFormObjectPreview.vue';
 import { computed, ref, watch } from 'vue';
-import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
+import { isNotNullish } from '@/utils/helpers/common/isNotNullish.ts';
 import { isNullish } from '@/utils/helpers/common/isNullish.ts';
 import UiDropdownActions from '@/components/common/UI/DropdownActions/UiDropdownActions.vue';
 import UiDropdownActionsButton from '@/components/common/UI/DropdownActions/UiDropdownActionsButton.vue';

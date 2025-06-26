@@ -74,7 +74,7 @@
 <script setup>
 import Chip from '@/components/common/Chip.vue';
 import { computed } from 'vue';
-import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
+import { isNotNullish } from '@/utils/helpers/common/isNotNullish.ts';
 import MessengerChatMessageAdditionsTask from '@/components/Messenger/Chat/Message/Additions/MessengerChatMessageAdditionsTask.vue';
 import { isNullish } from '@/utils/helpers/common/isNullish.ts';
 import File from '@/components/common/Forms/File.vue';

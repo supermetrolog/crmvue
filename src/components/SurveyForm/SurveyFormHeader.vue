@@ -36,7 +36,7 @@ import SurveyFormHeaderCompany from '@/components/SurveyForm/SurveyFormHeaderCom
 import CallScheduler from '@/components/CallScheduler/CallScheduler.vue';
 import { computed, ref } from 'vue';
 import VisitScheduler from '@/components/VisitScheduler/VisitScheduler.vue';
-import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
+import { isNotNullish } from '@/utils/helpers/common/isNotNullish.ts';
 
 const emit = defineEmits([
     'update-logo',

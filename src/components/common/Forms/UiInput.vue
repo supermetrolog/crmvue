@@ -55,7 +55,7 @@ import { isNotEmptyString } from '@/utils/helpers/string/isNotEmptyString.js';
 import { isNullish } from '@/utils/helpers/common/isNullish.ts';
 import { isArray } from '@/utils/helpers/array/isArray.ts';
 import { isString } from '@/utils/helpers/string/isString.js';
-import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
+import { isNotNullish } from '@/utils/helpers/common/isNotNullish.ts';
 
 const modelValue = defineModel({
     type: [String, Number],

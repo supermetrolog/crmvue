@@ -1,4 +1,4 @@
-import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
+import { isNotNullish } from '@/utils/helpers/common/isNotNullish.ts';
 import { captureException } from '@sentry/vue';
 
 export const LOCALSTORAGE_PREFIX = 'plr:';

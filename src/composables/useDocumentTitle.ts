@@ -1,5 +1,5 @@
 import { config } from '@/configs/config.js';
-import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
+import { isNotNullish } from '@/utils/helpers/common/isNotNullish';
 
 const TITLE_SEPARATOR = '|';
 

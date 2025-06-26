@@ -10,7 +10,7 @@ import CompaniesView from '@/views/Companies/Company.vue';
 import CompaniesList from '@/views/Companies/Main.vue';
 import { AUTH_ROLE } from '@/const/role.js';
 import { isNullish } from '@/utils/helpers/common/isNullish.ts';
-import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
+import { isNotNullish } from '@/utils/helpers/common/isNotNullish.ts';
 
 const routes = [
     {

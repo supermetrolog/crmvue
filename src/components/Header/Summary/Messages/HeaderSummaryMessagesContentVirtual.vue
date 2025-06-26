@@ -55,7 +55,7 @@ import { useAuth } from '@/composables/useAuth.js';
 import HeaderSummaryMessagesContentMessage from '@/components/Header/Summary/Messages/HeaderSummaryMessagesContentMessage.vue';
 import HeaderSummaryMessagesContentNotification from '@/components/Header/Summary/Messages/HeaderSummaryMessagesContentNotification.vue';
 import MessengerChatLabelRow from '@/components/Messenger/Chat/MessengerChatLabelRow.vue';
-import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
+import { isNotNullish } from '@/utils/helpers/common/isNotNullish.ts';
 
 const emit = defineEmits(['load', 'read']);
 

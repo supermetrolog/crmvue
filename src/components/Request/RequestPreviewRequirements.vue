@@ -78,7 +78,7 @@
 <script setup>
 import { computed } from 'vue';
 import { toNumberFormat } from '@/utils/formatters/number.js';
-import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
+import { isNotNullish } from '@/utils/helpers/common/isNotNullish.ts';
 import { GateTypeList } from '@/const/const.js';
 import RequestPreviewRequirementsRow from '@/components/Request/RequestPreviewRequirementsRow.vue';
 import { objectOptions } from '@/const/options/object.options.js';
