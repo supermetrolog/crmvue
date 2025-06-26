@@ -133,7 +133,7 @@ import { isNullish } from '@/utils/helpers/common/isNullish.ts';
 import { isArray } from '@/utils/helpers/array/isArray.ts';
 import { isString } from '@/utils/helpers/string/isString.js';
 import { isNotEmptyString } from '@/utils/helpers/string/isNotEmptyString.js';
-import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
+import { isNotNullish } from '@/utils/helpers/common/isNotNullish.ts';
 import { plural } from '@/utils/plural.js';
 import UiButtonIcon from '@/components/common/UI/UiButtonIcon.vue';
 

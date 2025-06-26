@@ -13,7 +13,7 @@ import MobileSidebarMenuExtra from '@/components/SideBar/MobileSidebarMenuExtra.
 import { computed } from 'vue';
 import { useAuth } from '@/composables/useAuth.js';
 import { isNullish } from '@/utils/helpers/common/isNullish.ts';
-import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
+import { isNotNullish } from '@/utils/helpers/common/isNotNullish.ts';
 
 const props = defineProps({
     item: {

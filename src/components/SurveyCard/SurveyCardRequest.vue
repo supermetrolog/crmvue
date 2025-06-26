@@ -38,7 +38,7 @@ import { unitTypes } from '@/const/unitTypes.js';
 import WithUnitType from '@/components/common/WithUnitType.vue';
 import { dealOptions } from '@/const/options/deal.options.js';
 import Chip from '@/components/common/Chip.vue';
-import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
+import { isNotNullish } from '@/utils/helpers/common/isNotNullish.ts';
 import { toBool } from '@/utils/helpers/string/toBool.js';
 
 const props = defineProps({

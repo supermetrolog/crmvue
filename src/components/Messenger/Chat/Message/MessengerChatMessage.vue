@@ -95,7 +95,7 @@ import { useAsyncPopup } from '@/composables/useAsyncPopup.js';
 import { useIntersectionObserver, useTimeoutFn } from '@vueuse/core';
 import MessengerChatMessageTemplate from '@/components/Messenger/Chat/Message/MessengerChatMessageTemplate.vue';
 import { useLinkify } from '@/composables/useLinkify.js';
-import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
+import { isNotNullish } from '@/utils/helpers/common/isNotNullish.ts';
 
 const store = useStore();
 const notify = useNotify();

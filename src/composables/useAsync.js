@@ -1,7 +1,7 @@
 import { computed, ref, shallowRef, toValue } from 'vue';
 import { noop } from '@vueuse/core';
 import { useConfirm } from '@/composables/useConfirm.js';
-import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
+import { isNotNullish } from '@/utils/helpers/common/isNotNullish.ts';
 import { isArray } from '@/utils/helpers/array/isArray.ts';
 
 const supportsAbort = typeof AbortController === 'function';

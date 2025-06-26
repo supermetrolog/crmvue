@@ -151,7 +151,7 @@ keep-alive>
                         :toolbar="false"
                         label="Описание задачи"
                         placeholder="Дайте дополнительные комментарии, опишите алгоритмы выполнения.."
-                        class="col-12"
+                        :class="{ 'col-7': hasCustomDescription, 'col-12': !hasCustomDescription }"
                     />
                     <FormModalTaskDescription
                         v-if="hasCustomDescription"
@@ -209,7 +209,7 @@ import { taskOptions } from '@/const/options/task.options.js';
 import FormModalTaskDescription from '@/components/Forms/FormModalTaskDescription.vue';
 import { useAuth } from '@/composables/useAuth.js';
 import { useDebounceFn, useTimeoutFn } from '@vueuse/core';
-import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
+import { isNotNullish } from '@/utils/helpers/common/isNotNullish.ts';
 import FileInput from '@/components/common/Forms/FileInput.vue';
 import api from '@/api/api.js';
 import UiTextarea from '@/components/common/Forms/UiTextarea.vue';

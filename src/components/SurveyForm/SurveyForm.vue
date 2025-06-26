@@ -75,6 +75,7 @@
                 <MessengerQuizFormWarningAlreadyCreated
                     v-else-if="lastSurveys.length"
                     @show="showLastSurvey"
+                    @edit="$emit('close')"
                     :last-survey="lastSurveys[0]"
                 />
                 <teleport to="body">
@@ -136,13 +137,13 @@
         </template>
     </UiMinimizeModal>
 </template>
-<script setup>
+<script setup lang="ts">
 import { computed, reactive, ref, shallowRef, toRef, useTemplateRef } from 'vue';
 import { useFormData } from '@/utils/use/useFormData.js';
 import SurveyFormHeader from '@/components/SurveyForm/SurveyFormHeader.vue';
 import api from '@/api/api.js';
 import Spinner from '@/components/common/Spinner.vue';
-import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
+import { isNotNullish } from '@/utils/helpers/common/isNotNullish.ts';
 import SurveyFormStepper from '@/components/SurveyForm/SurveyFormStepper.vue';
 import { useAsync } from '@/composables/useAsync.js';
 import { isNullish } from '@/utils/helpers/common/isNullish.ts';
@@ -162,13 +163,20 @@ import MessengerQuizFormWarningAlreadyCreated from '@/components/Messenger/Quiz/
 import UiModal from '@/components/common/UI/UiModal.vue';
 import UiButton from '@/components/common/UI/UiButton.vue';
 import { toDateFormat } from '@/utils/formatters/date.js';
+import { SurveyView } from '@/types/survey';
 
-const emit = defineEmits(['close', 'minimized']);
-const props = defineProps({
-    survey: Object,
-    initialStep: Number,
-    companyId: Number
-});
+const emit = defineEmits<{
+    (e: 'close'): void;
+    (e: 'minimized', handler: () => void): void;
+}>();
+
+interface Props {
+    survey?: SurveyView;
+    initialStep?: number;
+    companyId?: number;
+}
+
+const props = defineProps<Props>();
 
 const { isEditMode } = useFormData(reactive({}), props.survey);
 
@@ -541,6 +549,7 @@ const { show: showSurvey } = useAsyncPopup('surveyPreview');
 
 function showLastSurvey() {
     showSurvey({ surveyId: lastSurveys.value[0].id });
+    emit('close');
 }
 
 // initialization

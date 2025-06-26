@@ -15,7 +15,7 @@
 </template>
 <script setup>
 import { computed, toRef, useTemplateRef } from 'vue';
-import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
+import { isNotNullish } from '@/utils/helpers/common/isNotNullish.ts';
 import Spinner from '@/components/common/Spinner.vue';
 import { useTippy } from 'vue-tippy';
 

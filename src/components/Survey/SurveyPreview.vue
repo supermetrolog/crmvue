@@ -43,7 +43,7 @@ import FormSurvey from '@/components/Forms/FormSurvey.vue';
 import api from '@/api/api.js';
 import Spinner from '@/components/common/Spinner.vue';
 import EmptyData from '@/components/common/EmptyData.vue';
-import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
+import { isNotNullish } from '@/utils/helpers/common/isNotNullish.ts';
 
 const surveyId = ref(null);
 const survey = ref(null);

@@ -10,7 +10,7 @@
 <script setup>
 import { useTippy } from 'vue-tippy';
 import { computed, toRef, useTemplateRef } from 'vue';
-import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
+import { isNotNullish } from '@/utils/helpers/common/isNotNullish.ts';
 
 const props = defineProps({
     disabled: Boolean,

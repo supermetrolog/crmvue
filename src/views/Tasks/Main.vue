@@ -200,7 +200,7 @@ import UiField from '@/components/common/UI/UiField.vue';
 import UiCol from '@/components/common/UI/UiCol.vue';
 import UiButton from '@/components/common/UI/UiButton.vue';
 import UserFolders from '@/components/UserFolder/UserFolders.vue';
-import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
+import { isNotNullish } from '@/utils/helpers/common/isNotNullish.ts';
 import DashboardTargetUser from '@/components/Dashboard/DashboardTargetUser.vue';
 
 const store = useStore();

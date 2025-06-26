@@ -7,7 +7,7 @@ import { ucFirst } from '@/utils/formatters/string.js';
 import { messenger } from '@/const/messenger.js';
 import { spliceById } from '@/utils/helpers/array/spliceById.js';
 import { taskOptions } from '@/const/options/task.options.js';
-import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
+import { isNotNullish } from '@/utils/helpers/common/isNotNullish.ts';
 import { isNumeric } from '@/utils/helpers/common/isNumeric.js';
 import { isNotEmptyString } from '@/utils/helpers/string/isNotEmptyString.js';
 import { isNullish } from '@/utils/helpers/common/isNullish.ts';

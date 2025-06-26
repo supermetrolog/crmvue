@@ -35,6 +35,7 @@ export default {
         YandexMapSelectionBehavior,
         yandexMap
     },
+    emits: ['mounted'],
     provide() {
         return {
             add: this.addMarker,
@@ -260,6 +261,7 @@ export default {
     async mounted() {
         await loadYmap({ ...this.settings });
         this.mounted = true;
+        this.$emit('mounted');
     },
     beforeUnmount() {
         this.destroyMap();

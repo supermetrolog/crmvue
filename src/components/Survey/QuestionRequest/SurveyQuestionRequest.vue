@@ -110,7 +110,7 @@ import { requestOptions } from '@/const/options/request.options.js';
 import { companyOptions } from '@/const/options/company.options.js';
 import { locationOptions } from '@/const/options/location.options.js';
 import { toNumberOrRangeFormat } from '@/utils/formatters/number.js';
-import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
+import { isNotNullish } from '@/utils/helpers/common/isNotNullish.ts';
 import UiButtonIcon from '@/components/common/UI/UiButtonIcon.vue';
 import { toDateFormat } from '@/utils/formatters/date.js';
 import { ucFirst } from '@/utils/formatters/string.js';

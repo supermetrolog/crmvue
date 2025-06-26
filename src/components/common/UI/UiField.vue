@@ -5,7 +5,7 @@
 </template>
 <script setup>
 import { computed, toRef, useTemplateRef } from 'vue';
-import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
+import { isNotNullish } from '@/utils/helpers/common/isNotNullish.ts';
 import { useTippyText } from '@/composables/useTippyText.js';
 
 const props = defineProps({

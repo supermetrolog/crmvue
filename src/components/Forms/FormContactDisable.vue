@@ -51,7 +51,7 @@ import UiButton from '@/components/common/UI/UiButton.vue';
 import { useValidation } from '@/composables/useValidation.js';
 import { helpers, required, requiredIf } from '@vuelidate/validators';
 import UiModal from '@/components/common/UI/UiModal.vue';
-import { ContactPassiveWhyEnum } from '@/types/contact.ts';
+import { ContactPassiveWhyEnum } from '@/types/contact/contact.ts';
 
 const emit = defineEmits(['disabled', 'close']);
 const props = defineProps({

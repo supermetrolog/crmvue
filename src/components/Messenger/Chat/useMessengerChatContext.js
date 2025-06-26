@@ -3,10 +3,9 @@ import { useStore } from 'vuex';
 import { useNotify } from '@/utils/use/useNotify.js';
 import { useTaskManager } from '@/composables/useTaskManager.js';
 import { messenger } from '@/const/messenger.js';
-import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
+import { isNotNullish } from '@/utils/helpers/common/isNotNullish.ts';
 import { isNotEmptyString } from '@/utils/helpers/string/isNotEmptyString.js';
 import { getObjectMbUniqueAddress } from '@/utils/formatters/models/object.js';
-import { isEmpty } from '@/utils/helpers/common/isEmpty.js';
 import { getCompanyName, getCompanyShortName } from '@/utils/formatters/models/company.js';
 import api from '@/api/api.js';
 
@@ -30,10 +29,15 @@ export function createMessengerChatContext() {
             modelType: dialogType
         };
 
+        const panel = store.state.Messenger.currentPanel;
+
         switch (dialogType) {
             case messenger.dialogTypes.OBJECT: {
                 const object = dialog.model.object;
-                const messageTemplate = [`ID ${object.id}`];
+                const messageTemplate = [
+                    `Объект #${object.id}`,
+                    `(комп. ${panel ? '"' + getCompanyShortName(panel) + '"' : '#' + object.company_id})`
+                ];
 
                 customDescription = true;
 
@@ -46,10 +50,6 @@ export function createMessengerChatContext() {
                 additionalContent.objectId = object.id;
                 additionalContent.area = object.area_floor_full || object.area_building;
 
-                if (isNotNullish(additionalContent.area) && !isEmpty(additionalContent.area)) {
-                    messageTemplate.push(`${additionalContent.area} м2`);
-                }
-
                 message = messageTemplate.join(', ') + ', ';
 
                 if (object.consultant) {
@@ -60,7 +60,7 @@ export function createMessengerChatContext() {
             }
             case messenger.dialogTypes.COMPANY: {
                 const company = dialog.model;
-                const messageTemplate = [`Компания ${getCompanyShortName(company)}`];
+                const messageTemplate = [`Комп. "${getCompanyShortName(company)}"`];
 
                 customDescription = true;
 

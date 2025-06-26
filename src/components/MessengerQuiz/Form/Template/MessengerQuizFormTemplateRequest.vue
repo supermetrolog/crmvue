@@ -81,7 +81,7 @@ import UiDropdownActionsButton from '@/components/common/UI/DropdownActions/UiDr
 import RequestRowCard from '@/components/RequestRowCard/RequestRowCard.vue';
 import { useAuth } from '@/composables/useAuth.js';
 import { useStore } from 'vuex';
-import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
+import { isNotNullish } from '@/utils/helpers/common/isNotNullish.ts';
 
 defineEmits(['edit']);
 

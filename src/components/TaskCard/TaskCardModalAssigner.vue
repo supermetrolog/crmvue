@@ -48,7 +48,7 @@ import { computed, ref, watch } from 'vue';
 import UiTextarea from '@/components/common/Forms/UiTextarea.vue';
 import UiForm from '@/components/common/Forms/UiForm.vue';
 import ConsultantPicker from '@/components/common/Forms/ConsultantPicker/ConsultantPicker.vue';
-import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
+import { isNotNullish } from '@/utils/helpers/common/isNotNullish.ts';
 import { useConsultantsOptions } from '@/composables/options/useConsultantsOptions.js';
 import { helpers, requiredIf } from '@vuelidate/validators';
 import UiModal from '@/components/common/UI/UiModal.vue';

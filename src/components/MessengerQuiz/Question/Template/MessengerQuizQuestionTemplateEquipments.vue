@@ -16,7 +16,7 @@ import { useTemplateRef } from 'vue';
 import MessengerQuizQuestionTemplateDefault from '@/components/MessengerQuiz/Question/Template/MessengerQuizQuestionTemplateDefault.vue';
 import MessengerQuizFormCustomEquipments from '@/components/MessengerQuiz/Form/Custom/MessengerQuizFormCustomEquipments.vue';
 import { quizEffectKinds } from '@/const/quiz.js';
-import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
+import { isNotNullish } from '@/utils/helpers/common/isNotNullish.ts';
 
 defineProps({
     question: {

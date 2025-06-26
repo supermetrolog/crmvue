@@ -2,7 +2,7 @@ import { isEmpty } from '@/utils/helpers/common/isEmpty.js';
 import { isArray } from '@/utils/helpers/array/isArray.ts';
 import { cloneObject } from '@/utils/helpers/object/cloneObject.js';
 import { computed } from 'vue';
-import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
+import { isNotNullish } from '@/utils/helpers/common/isNotNullish.ts';
 
 function _updateForm(form, formData, transforms = {}) {
     if (isEmpty(formData)) return;

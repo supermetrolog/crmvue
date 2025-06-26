@@ -171,7 +171,7 @@ import { getCompanyName } from '@/utils/formatters/models/company.js';
 import UiButton from '@/components/common/UI/UiButton.vue';
 import UiModal from '@/components/common/UI/UiModal.vue';
 import UiField from '@/components/common/UI/UiField.vue';
-import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
+import { isNotNullish } from '@/utils/helpers/common/isNotNullish.ts';
 
 const emit = defineEmits(['updated', 'deleted', 'canceled', 'edited']);
 const props = defineProps({

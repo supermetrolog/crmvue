@@ -44,7 +44,7 @@
 <script setup>
 import VueDatePicker from '@vuepic/vue-datepicker';
 import { computed, toRef } from 'vue';
-import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
+import { isNotNullish } from '@/utils/helpers/common/isNotNullish.ts';
 import ValidationMessage from '@/components/common/Forms/VaildationMessage.vue';
 import ValidationInfo from '@/components/common/Forms/ValidationInfo.vue';
 import { useFormControlValidation } from '@/composables/useFormControlValidation.js';
