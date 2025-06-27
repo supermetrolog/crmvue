@@ -32,6 +32,7 @@ import taskComment from '@/api/taskComment.js';
 import taskFavorite from '@/api/taskFavorite.js';
 import contactComment from '@/api/contactComment.js';
 import folder from '@/api/folder.js';
+import tour from '@/api/tour.js';
 
 export default {
     user,
@@ -67,5 +68,6 @@ export default {
     taskComment,
     taskFavorite,
     contactComment,
-    folder
+    folder,
+    tour
 };

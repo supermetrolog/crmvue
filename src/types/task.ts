@@ -48,7 +48,8 @@ export const TaskRelationEntityModelTypeEnum = {
     CONTACT: 'contact',
     USER: 'user',
     COMPANY: 'company',
-    OBJECT: 'c_industry'
+    OBJECT: 'c_industry',
+    SURVEY: 'survey'
 };
 
 export type TaskRelationEntityModelType =

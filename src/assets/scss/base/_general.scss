@@ -92,7 +92,7 @@ main {
 }
 
 .tabs-component-panels {
-    padding: 20px 0!important;
+    padding: 20px 0 !important;
 }
 
 .with-unit-type {
@@ -237,7 +237,7 @@ main {
 }
 
 .no-rounded {
-    border-radius: 0!important;
+    border-radius: 0 !important;
 }
 
 .ui-date-input {
@@ -323,7 +323,7 @@ main {
                     cl-danger-light variables.$bg-danger-l variables.$bg-danger-l #000,
                     cl-info #e7e7e7 #e7e7e7 #000,
                     cl-dark #505050 #505050 #fff,
-                    cl-light variables.$color_grey_light  variables.$color_grey_light #000,
+                    cl-light variables.$color_grey_light variables.$color_grey_light #000,
                     cl-white #fff #fff #000,
                     cl-gray-l rgba(138, 138, 138, 0.3) rgba(138, 138, 138, 0.3) #000
     );
@@ -344,7 +344,7 @@ body:has(.modal.active) {
     }
 
     &__phone {
-        text-align: left!important;
+        text-align: left !important;
         width: 100%;
         font-size: 14px;
         padding: 2px 3px;
@@ -383,4 +383,8 @@ body:has(.modal.active) {
     border-radius: 100%;
     left: unset;
     transform: none;
+}
+
+.driver-popover-footer button {
+    font-size: 14px !important;
 }

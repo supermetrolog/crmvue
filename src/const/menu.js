@@ -155,6 +155,23 @@ export const menu = [
         auth: new Set([AUTH_ROLE.ADMIN, AUTH_ROLE.OWNER])
     },
     {
+        id: 30,
+        name: 'Админка',
+        icon: 'fas fa-poop',
+        url: '/admin',
+        key: 'admin',
+        auth: new Set([AUTH_ROLE.ADMIN]),
+        internal: [
+            {
+                id: 0,
+                name: 'Туры',
+                url: '/admin/tours',
+                icon: 'fa-solid fa-plane-departure',
+                exact: true
+            }
+        ]
+    },
+    {
         id: 4,
         name: 'Юзеры',
         icon: 'fas fa-users',

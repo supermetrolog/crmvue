@@ -680,5 +680,6 @@
         font-size: 13px;
         color: variables.$color_grey;
         margin-bottom: 5px;
+        @include mixins.flex-box($a: center);
     }
 }

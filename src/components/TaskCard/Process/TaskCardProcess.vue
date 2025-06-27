@@ -1,26 +1,34 @@
 <template>
-    <div class="task-card-process">
+    <div data-tour-id="task-process:wrapper" class="task-card-process">
         <p class="task-card-process__title">
             <i class="fa-solid fa-gear mr-1" />
             <span>{{ title }}</span>
+            <UiButtonIcon
+                @click="run()"
+                mini
+                class="ml-auto"
+                color="light"
+                label="Что за управление?"
+                icon="fa-solid fa-question"
+            />
         </p>
-        <UiButton v-if="isLoading"
-small
-loading
-disabled
-color="white">Загрузка </UiButton>
-        <ProcessComponent v-else :task :relations />
+        <UiButton v-if="isLoading" small loading color="white">Загрузка</UiButton>
+        <ProcessComponent v-else @show-survey="showSurvey" :task :relations />
     </div>
 </template>
 
 <script setup lang="ts">
 import TaskCardProcessRequests from '@/components/TaskCard/Process/TaskCardProcessRequests.vue';
-import TaskCardProcessContact from '@/components/TaskCard/Process/TaskCardProcessContact.vue';
+import TaskCardProcessContacts from '@/components/TaskCard/Process/TaskCardProcessContacts.vue';
 import { Component, computed, onBeforeMount, ref } from 'vue';
 import { TaskRelationEntity, TaskType, TaskTypeEnum, TaskView } from '@/types/task';
 import api from '@/api/api';
 import { captureException } from '@sentry/vue';
 import UiButton from '@/components/common/UI/UiButton.vue';
+import { useAsyncPopup } from '@/composables/useAsyncPopup';
+import { useAuth } from '@/composables/useAuth';
+import UiButtonIcon from '@/components/common/UI/UiButtonIcon.vue';
+import { useTour } from '@/composables/useTour/useTour';
 
 const props = defineProps<{ task: TaskView }>();
 
@@ -67,7 +75,38 @@ async function fetchTaskRelations() {
     }
 }
 
-onBeforeMount(() => {
-    if (props.task.relations_count > 0) fetchTaskRelations();
+const { currentUserIsModeratorOrHigher } = useAuth();
+
+onBeforeMount(async () => {
+    if (props.task.relations_count > 0) await fetchTaskRelations();
+
+    if (currentUserIsModeratorOrHigher.value && relations.value.length > 0) {
+        softRun();
+    }
+});
+
+const { show } = useAsyncPopup('surveyPreview');
+
+function showSurvey(surveyId: number) {
+    show({ surveyId });
+}
+
+// tour
+
+const { softRun, run } = useTour('task-process', {
+    autorun: false,
+    steps: [
+        {
+            key: 0,
+            element: '[data-tour-id="task-process:wrapper"]',
+            popover: {
+                title: 'Управление связями',
+                description:
+                    'Теперь вы можете управлять сущностями прямо в карточке задачи. Например, отредактировать что-то, отправить в пассив или создать.',
+                side: 'right',
+                align: 'start'
+            }
+        }
+    ]
 });
 </script>
