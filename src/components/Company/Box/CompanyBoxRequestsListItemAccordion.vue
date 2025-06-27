@@ -99,7 +99,7 @@ import { unitTypes } from '@/const/unitTypes.js';
 import CompanyBoxRequestsListItemParameter from '@/components/Company/Box/CompanyBoxRequestsListItemParameter.vue';
 import { objectPurposesOptions } from '@/const/options/object.options.js';
 import UiField from '@/components/common/UI/UiField.vue';
-import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
+import { isNotNullish } from '@/utils/helpers/common/isNotNullish.ts';
 import { computed } from 'vue';
 import { toNumberFormat, toNumberOrRangeFormat } from '@/utils/formatters/number.js';
 import UiAccordion from '@/components/common/UI/Accordion/UiAccordion.vue';

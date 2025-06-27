@@ -12,7 +12,7 @@
         :disabled="isCreating"
     >
         <template #after-navigation>
-            <SurveyFormStepperSummary :company :survey="currentSurvey" />
+            <SurveyFormStepperRelations :company :survey="currentSurvey" />
         </template>
         <template #before-body>
             <SurveyFormStepperHelper />
@@ -82,39 +82,24 @@
         </template>
         <template #after>
             <Loader v-if="isCreating || surveyIsUpdating" label="Сохранение опроса.." />
-            <UiModal
-                v-model:visible="commentModalIsVisible"
+            <SurveyFormStepperSummary
+                v-model:form="form"
+                v-model:visible="summaryModalIsVisible"
                 @closed="isCancelling = false"
-                title="Комментарий по результатам"
-                :width="600"
-            >
-                <UiForm>
-                    <UiFormGroup>
-                        <VueEditor
-                            v-model="form.comment"
-                            :v="v$.form.comment"
-                            :min-height="150"
-                            :max-height="400"
-                            :toolbar="false"
-                            placeholder="Что выяснили? Какое положение по компании? Опишите ситуацию.."
-                            class="col-12"
-                        />
-                    </UiFormGroup>
-                </UiForm>
-                <template #actions="{ close }">
-                    <UiButton @click="completeOrCancel" icon="fa-solid fa-check" color="success">
-                        Сохранить опрос
-                    </UiButton>
-                    <UiButton @click="close" icon="fa-solid fa-ban" color="light">Отмена</UiButton>
-                </template>
-            </UiModal>
+                @complete="completeOrCancel"
+                :edit-mode="isEditMode"
+                :contacts
+                :objects
+                :requests="activeRequests"
+                :other="otherQuestions"
+            />
         </template>
     </Stepper>
 </template>
 <script setup>
 import { computed, onBeforeMount, reactive, ref, shallowRef, useTemplateRef, watch } from 'vue';
 import Stepper from '@/components/common/Stepper/Stepper.vue';
-import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
+import { isNotNullish } from '@/utils/helpers/common/isNotNullish.ts';
 import { useEventBus, useIntervalFn } from '@vueuse/core';
 import api from '@/api/api.js';
 import { surveyConfig } from '@/configs/survey.config.js';
@@ -129,7 +114,7 @@ import { useStore } from 'vuex';
 import { useNotify } from '@/utils/use/useNotify.js';
 import SurveyFormQuestions from '@/components/SurveyForm/SurveyFormQuestions.vue';
 import SurveyFormRequests from '@/components/SurveyForm/SurveyFormRequests.vue';
-import { helpers, maxLength } from '@vuelidate/validators';
+import { helpers } from '@vuelidate/validators';
 import SurveyFormCalls from '@/components/SurveyForm/SurveyFormCalls.vue';
 import { useValidation } from '@/composables/useValidation.js';
 import { callStatusEnum, callTypeEnum } from '@/const/enums/call.js';
@@ -139,12 +124,9 @@ import dayjs from 'dayjs';
 import { getCompanyShortName } from '@/utils/formatters/models/company.js';
 import Loader from '@/components/common/Loader.vue';
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
-import UiModal from '@/components/common/UI/UiModal.vue';
-import UiForm from '@/components/common/Forms/UiForm.vue';
-import UiFormGroup from '@/components/common/Forms/UiFormGroup.vue';
-import VueEditor from '@/components/common/Forms/VueEditor.vue';
-import SurveyFormStepperSummary from '@/components/SurveyForm/SurveyFormStepperSummary.vue';
+import SurveyFormStepperRelations from '@/components/SurveyForm/SurveyFormStepperRelations.vue';
 import SurveyFormStepperHelper from '@/components/SurveyForm/SurveyFormStepperHelper.vue';
+import SurveyFormStepperSummary from '@/components/SurveyForm/SurveyFormStepperSummary.vue';
 
 function toBool(value) {
     if (typeof value === 'string') return value === 'true';
@@ -180,6 +162,8 @@ const props = defineProps({
         required: true
     }
 });
+
+const isEditMode = computed(() => isNotNullish(props.survey));
 
 const currentSurveyId = computed(() => {
     if (isNotNullish(currentSurvey.value)) return currentSurvey.value.id;
@@ -395,23 +379,7 @@ function requiredCallsValidationHandler(value) {
     });
 }
 
-function requiredObjectsValidationHandler(value) {
-    if (objects.value.length === 0) return true;
-
-    return Object.values(value.current).every(objectForm => {
-        return isNotNullish(objectForm?.answer);
-    });
-}
-
 const activeRequests = computed(() => requests.value.filter(request => request.status === 1));
-
-function requiredRequestsValidationHandler(value) {
-    if (activeRequests.value.length === 0) return true;
-
-    return Object.values(value.current).every(requestForm => {
-        return isNotNullish(requestForm.answer) && Number(requestForm.answer) !== 0;
-    });
-}
 
 const { v$, validate } = useValidation(
     {
@@ -420,25 +388,6 @@ const { v$, validate } = useValidation(
                 required: helpers.withMessage(
                     'Свяжитесь с представителем компании!',
                     requiredCallsValidationHandler
-                )
-            },
-            objects: {
-                required: helpers.withMessage(
-                    'Заполните информацию по всем предложениям клиента!',
-                    requiredObjectsValidationHandler
-                )
-            },
-            requests: {
-                required: helpers.withMessage(
-                    'Заполните информацию по всем запросам клиента!',
-                    requiredRequestsValidationHandler
-                )
-            },
-            other: {},
-            comment: {
-                maxLength: helpers.withMessage(
-                    'Комментарий не может быть больше 512 символов',
-                    maxLength(512)
                 )
             }
         }
@@ -651,7 +600,11 @@ function createSurveyPayload() {
             question_answers: [
                 ...objectsQuestionAnswers,
                 ...requestQuestionAnswers,
-                ...otherQuestionAnswers,
+                ...otherQuestionAnswers.map(element => ({
+                    value: element.value,
+                    question_answer_id: element.question_answer_id,
+                    file: element.file
+                })),
                 ...callsQuestionAnswers
             ],
             type: 'advanced',
@@ -820,7 +773,7 @@ const isCancelling = ref(false);
 
 function cancelSurvey() {
     isCancelling.value = true;
-    commentModalIsVisible.value = true;
+    summaryModalIsVisible.value = true;
 }
 
 async function cancel() {
@@ -1032,9 +985,15 @@ async function fetchQuestions() {
 
 // complete
 
-const commentModalIsVisible = ref(false);
+const summaryModalIsVisible = ref(false);
+
+watch(summaryModalIsVisible, value => {
+    if (value) {
+        form.value.other = questionsStep.value?.getForm() ?? [];
+    }
+});
 
 function completeSurvey() {
-    commentModalIsVisible.value = true;
+    summaryModalIsVisible.value = true;
 }
 </script>

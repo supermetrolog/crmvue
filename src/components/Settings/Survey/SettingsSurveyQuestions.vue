@@ -75,7 +75,7 @@ import SettingsSurveyQuestionsElement from '@/components/Settings/Survey/Setting
 import Button from '@/components/common/Button.vue';
 import UiInput from '@/components/common/Forms/UiInput.vue';
 import UiCol from '@/components/common/UI/UiCol.vue';
-import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
+import { isNotNullish } from '@/utils/helpers/common/isNotNullish.ts';
 import { isNotEmptyString } from '@/utils/helpers/string/isNotEmptyString.js';
 import EmptyData from '@/components/common/EmptyData.vue';
 

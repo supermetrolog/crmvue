@@ -26,7 +26,7 @@ import Avatar from '@/components/common/Avatar.vue';
 import { dayjsFromMoscow } from '@/utils/formatters/date.js';
 import dayjs from 'dayjs';
 import { plural } from '@/utils/plural.js';
-import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
+import { isNotNullish } from '@/utils/helpers/common/isNotNullish.ts';
 
 const props = defineProps({
     lastMessage: {

@@ -1,5 +1,5 @@
 import isNullish from '@vueform/multiselect/src/utils/isNullish.js';
-import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
+import { isNotNullish } from '@/utils/helpers/common/isNotNullish.ts';
 import { isNotEmptyString } from '@/utils/helpers/string/isNotEmptyString.js';
 
 export function getCompanyName(company, companyID = null) {

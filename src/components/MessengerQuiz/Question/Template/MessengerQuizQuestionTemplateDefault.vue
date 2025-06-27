@@ -23,14 +23,6 @@
                     unselect
                     label="Нет"
                 />
-                <MessengerQuizFormRadioChip
-                    v-model="hasNullMainAnswer"
-                    :value="true"
-                    :disabled="disabled || disabledByTemplate"
-                    unselect
-                    class="messenger-quiz-question__no-answer"
-                    label="Не ответил"
-                />
             </div>
         </div>
         <div v-show="hasMainAnswer" class="messenger-quiz-question__additions">
@@ -141,7 +133,7 @@ import UiTextarea from '@/components/common/Forms/UiTextarea.vue';
 import { computed, reactive, ref, watch } from 'vue';
 import RadioChip from '@/components/common/Forms/RadioChip.vue';
 import { isNullish } from '@/utils/helpers/common/isNullish.ts';
-import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
+import { isNotNullish } from '@/utils/helpers/common/isNotNullish.ts';
 import { useNotify } from '@/utils/use/useNotify.js';
 import FileInput from '@/components/common/Forms/FileInput.vue';
 import AccordionSimple from '@/components/common/Accordion/AccordionSimple.vue';

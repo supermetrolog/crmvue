@@ -1,6 +1,6 @@
 import { isNullish } from '@/utils/helpers/common/isNullish.ts';
 import { isEmptyArray } from '@/utils/helpers/array/isEmptyArray.js';
-import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
+import { isNotNullish } from '@/utils/helpers/common/isNotNullish.ts';
 
 export function normalizeDataForCompanyForm(data, company) {
     data.contacts = company.generalContact;

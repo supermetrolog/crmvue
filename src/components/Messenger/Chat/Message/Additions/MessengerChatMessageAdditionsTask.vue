@@ -95,7 +95,7 @@ import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
 import { Tippy } from 'vue-tippy';
 import { useAsyncPopup } from '@/composables/useAsyncPopup.js';
 import { dayjsFromMoscow, toDateFormat } from '@/utils/formatters/date.js';
-import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
+import { isNotNullish } from '@/utils/helpers/common/isNotNullish.ts';
 
 const emit = defineEmits(['read', 'deleted']);
 const props = defineProps({

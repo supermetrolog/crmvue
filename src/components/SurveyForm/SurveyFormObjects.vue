@@ -213,7 +213,7 @@ import SurveyFormObjectsPreview from '@/components/SurveyForm/ObjectsPreview/Sur
 import EmptyData from '@/components/common/EmptyData.vue';
 import UiButton from '@/components/common/UI/UiButton.vue';
 import UiField from '@/components/common/UI/UiField.vue';
-import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
+import { isNotNullish } from '@/utils/helpers/common/isNotNullish.ts';
 import dayjs from 'dayjs';
 import UiDropdownActions from '@/components/common/UI/DropdownActions/UiDropdownActions.vue';
 import UiDropdownActionsButton from '@/components/common/UI/DropdownActions/UiDropdownActionsButton.vue';

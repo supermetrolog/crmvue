@@ -40,7 +40,7 @@ import AccordionSimple from '@/components/common/Accordion/AccordionSimple.vue';
 import MessengerLoader from '@/components/Messenger/MessengerLoader.vue';
 import AccordionSimpleTrigger from '@/components/common/Accordion/AccordionSimpleTrigger.vue';
 import { computed } from 'vue';
-import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
+import { isNotNullish } from '@/utils/helpers/common/isNotNullish.ts';
 
 const props = defineProps({
     title: {

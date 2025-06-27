@@ -1,5 +1,5 @@
 import { isEmpty } from '@/utils/helpers/common/isEmpty.js';
-import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
+import { isNotNullish } from '@/utils/helpers/common/isNotNullish.ts';
 import { isEmptyArray } from '@/utils/helpers/array/isEmptyArray.js';
 
 function isNotEmpty(value) {

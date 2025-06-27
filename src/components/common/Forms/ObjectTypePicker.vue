@@ -30,7 +30,7 @@
 
 <script setup>
 import { computed } from 'vue';
-import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
+import { isNotNullish } from '@/utils/helpers/common/isNotNullish.ts';
 
 const modelValue = defineModel('value');
 const extraModelValue = defineModel('extra');

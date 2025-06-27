@@ -25,7 +25,7 @@ import MessengerQuizFormCustomFreeArea from '@/components/MessengerQuiz/Form/Cus
 import { quizEffectKinds } from '@/const/quiz.js';
 import { isNullish } from '@/utils/helpers/common/isNullish.ts';
 import { useNotify } from '@/utils/use/useNotify.js';
-import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
+import { isNotNullish } from '@/utils/helpers/common/isNotNullish.ts';
 
 defineProps({
     question: {

@@ -5,7 +5,7 @@ import { toCleanObject } from '@/utils/helpers/object/toCleanObjects.js';
 import { isArray } from '@/utils/helpers/array/isArray.ts';
 import { isObject } from '@/utils/helpers/object/isObject.js';
 import { cloneObject } from '@/utils/helpers/object/cloneObject.js';
-import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
+import { isNotNullish } from '@/utils/helpers/common/isNotNullish.ts';
 
 const compareArrays = (first, second) => {
     if (!Array.isArray(first) || !Array.isArray(second)) return false;

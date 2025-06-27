@@ -71,7 +71,7 @@ import FileInput from '@/components/common/Forms/FileInput.vue';
 import { usePasteFiles } from '@/composables/usePasteFiles.js';
 import VueEditor from '@/components/common/Forms/VueEditor.vue';
 import api from '@/api/api.js';
-import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
+import { isNotNullish } from '@/utils/helpers/common/isNotNullish.ts';
 import Spinner from '@/components/common/Spinner.vue';
 import EmptyData from '@/components/common/EmptyData.vue';
 

@@ -151,7 +151,7 @@ import { useSearchForm } from '@/composables/useSearchForm.js';
 import { cloneObject } from '@/utils/helpers/object/cloneObject.js';
 import { useAuth } from '@/composables/useAuth.js';
 import UiFormDivider from '@/components/common/Forms/UiFormDivider.vue';
-import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
+import { isNotNullish } from '@/utils/helpers/common/isNotNullish.ts';
 import { useSelectedFilters } from '@/composables/useSelectedFilters.js';
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
 import { isArray } from '@/utils/helpers/array/isArray.ts';

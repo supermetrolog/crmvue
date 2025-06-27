@@ -92,7 +92,7 @@ import api from '@/api/api.js';
 import { useIntersectionObserver, useTimeoutFn } from '@vueuse/core';
 import MessengerChatNotificationTemplate from '@/components/Messenger/Chat/Notification/MessengerChatNotificationTemplate.vue';
 import { useLinkify } from '@/composables/useLinkify.js';
-import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
+import { isNotNullish } from '@/utils/helpers/common/isNotNullish.ts';
 
 const emit = defineEmits(['deleted', 'reply', 'cancel-reply', 'viewed', 'create-task']);
 const props = defineProps({

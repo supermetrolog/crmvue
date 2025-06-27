@@ -1,5 +1,6 @@
 <template>
     <YandexMapView
+        @mounted="$emit('mounted')"
         @selectionDone="$emit('selection-done', $event)"
         @removedDone="$emit('removed-done', $event)"
         @updated="$emit('updated', $event)"
@@ -30,7 +31,7 @@ import OfferObject from '@/components/Offer/OfferObject.vue';
 import { ref, watch } from 'vue';
 import { getLinkComplex } from '@/utils/url.js';
 import YandexMapLoader from '@/components/common/YandexMap/YandexMapLoader.vue';
-import { isNotNullish } from '@/utils/helpers/common/isNotNullish.js';
+import { isNotNullish } from '@/utils/helpers/common/isNotNullish.ts';
 
 const yandexMapOptions = {
     settings: {
@@ -54,7 +55,7 @@ const yandexMapOptions = {
     ]
 };
 
-defineEmits(['selection-done', 'removed-done', 'updated']);
+defineEmits(['selection-done', 'removed-done', 'updated', 'mounted']);
 const props = defineProps({
     list: {
         type: Array,
