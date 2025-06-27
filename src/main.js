@@ -15,6 +15,7 @@ import './assets/fontawesome/css/all.min.css';
 import 'animate.css';
 import 'cropperjs/dist/cropper.css';
 import 'splitpanes/dist/splitpanes.css';
+import 'driver.js/dist/driver.css';
 import Tab from '@/components/common/Tabs/Tab.vue';
 import Tabs from '@/components/common/Tabs/Tabs.vue';
 import Url from '@/plugins/url';

@@ -1,6 +1,16 @@
 <template>
     <div class="task-card-process-request">
         <div class="d-flex flex-wrap gap-1">
+            <UiButton
+                v-if="survey"
+                @click="$emit('show-survey', survey.entity_id)"
+                small
+                color="white"
+                icon="fa-solid  fa-square-poll-horizontal"
+                data-tour-id="task-process:show-survey"
+            >
+                Опрос #{{ survey.entity_id }}
+            </UiButton>
             <TaskCardProcessEntityRequest
                 v-for="request in requests"
                 :key="request.id"
@@ -12,8 +22,15 @@
                 @clone="cloneRequest(request.entity)"
                 :request="request.entity"
                 :loading="isLoading"
+                data-tour-id="task-process:show-requests"
             />
-            <UiButton @click="formIsVisible = true" small icon="fa-solid fa-plus" color="white">
+            <UiButton
+                @click="formIsVisible = true"
+                small
+                icon="fa-solid fa-plus"
+                color="white"
+                data-tour-id="task-process:create-request"
+            >
                 Добавить запрос
             </UiButton>
         </div>
@@ -73,6 +90,9 @@ import FormModalCompanyRequestChangeConsultant from '@/components/Forms/Company/
 import FormModalCompanyRequestClone from '@/components/Forms/Company/FormModalCompanyRequestClone.vue';
 import UiButton from '@/components/common/UI/UiButton.vue';
 import { useAsync } from '@/composables/useAsync';
+import { createTourStepElementGenerator, useTourStep } from '@/composables/useTour/useTourStep';
+
+defineEmits<{ (e: 'show-survey', surveyId: number): void }>();
 
 const props = defineProps<{
     task: TaskView;
@@ -88,6 +108,12 @@ const requests = computed(() =>
 const companies = computed(() =>
     props.relations.filter(
         relation => relation.entity_type === TaskRelationEntityModelTypeEnum.COMPANY
+    )
+);
+
+const survey = computed(() =>
+    props.relations.find(
+        relation => relation.entity_type === TaskRelationEntityModelTypeEnum.SURVEY
     )
 );
 
@@ -212,6 +238,44 @@ const { execute: enableRequest } = useAsync(api.request.undisable, {
     confirmationContent: {
         title: 'Восстановить запрос',
         message: 'Вы уверены, что хотите восстановить запрос из архива?'
+    }
+});
+
+const createTourStepElement = createTourStepElementGenerator('task-process');
+
+useTourStep({
+    key: 1,
+    element: createTourStepElement('show-survey'),
+    popover: {
+        title: 'Просмотр опроса',
+        description:
+            'Мгновенно открывайте опрос для просмотра результатов, необходимых для выполнения задачи.',
+        side: 'right',
+        align: 'start'
+    }
+});
+
+useTourStep({
+    key: 2,
+    element: createTourStepElement('show-requests'),
+    popover: {
+        title: 'Управление запросом',
+        description:
+            'Редактируйте, архивируйте, восстанавливайте и просматривайте запрос в пару нажатий.',
+        side: 'right',
+        align: 'start'
+    }
+});
+
+useTourStep({
+    key: 3,
+    element: createTourStepElement('create-request'),
+    popover: {
+        title: 'Создавайте запросы',
+        description:
+            'Создавайте запрос без перехода на страницу компании. Информация из карточки задачи останется рядом с вами.',
+        side: 'right',
+        align: 'start'
     }
 });
 </script>
