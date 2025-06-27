@@ -328,6 +328,27 @@ const routes = [
         ]
     },
     {
+        path: '/admin',
+        name: 'admin',
+        meta: {
+            layout: 'default',
+            auth: { isAuth: true, roles: [AUTH_ROLE.ADMIN] },
+            title: 'Админка'
+        },
+        component: () => import('@/views/Admin/View.vue'),
+        redirect: { name: 'admin-tours' },
+        children: [
+            {
+                path: 'tours',
+                name: 'admin-tours',
+                meta: {
+                    title: ['Админка', 'Туры']
+                },
+                component: () => import('../views/Admin/Tours.vue')
+            }
+        ]
+    },
+    {
         path: '/:catchAll(.*)',
         name: 'notfound',
         meta: {
