@@ -21,6 +21,16 @@
                         :key="request.id"
                         @to-chat="$emit('to-chat', request)"
                         @view="$emit('view', request)"
+                        @open-survey="openSurvey(request.company_id)"
+                        @edit="$emit('edit', request)"
+                        @enable="$emit('enable', request)"
+                        @disable="$emit('disable', request)"
+                        @change-consultant="$emit('change-consultant', request)"
+                        @clone="$emit('clone', request)"
+                        @show-tasks="$emit('show-tasks', request)"
+                        @show-created-tasks="$emit('show-created-tasks', request)"
+                        @create-task="$emit('create-task', request)"
+                        @deleted-from-folder="$emit('deleted-from-folder')"
                         :request="request"
                     />
                 </template>
@@ -39,8 +49,22 @@ import Table from '@/components/common/Table/Table.vue';
 import Loader from '@/components/common/Loader.vue';
 import CompanyRequestTableItem from '@/components/Company/Request/CompanyRequestTableItem.vue';
 import CompanyRequestTableItemSkeleton from '@/components/Company/Request/CompanyRequestTableItemSkeleton.vue';
+import { useSurveyForm } from '@/composables/useSurveyForm.js';
 
-defineEmits(['to-chat', 'view', 'toggle-disable', 'edit']);
+defineEmits([
+    'to-chat',
+    'view',
+    'toggle-disable',
+    'edit',
+    'disable',
+    'enable',
+    'change-consultant',
+    'clone',
+    'show-tasks',
+    'show-created-tasks',
+    'deleted-from-folder'
+]);
+
 defineProps({
     requests: {
         type: Array,
@@ -48,4 +72,6 @@ defineProps({
     },
     loader: Boolean
 });
+
+const { openSurvey } = useSurveyForm();
 </script>

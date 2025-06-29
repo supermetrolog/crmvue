@@ -164,6 +164,7 @@ import UiModal from '@/components/common/UI/UiModal.vue';
 import UiButton from '@/components/common/UI/UiButton.vue';
 import { toDateFormat } from '@/utils/formatters/date.js';
 import { SurveyView } from '@/types/survey';
+import { useEventBus } from '@vueuse/core';
 
 const emit = defineEmits<{
     (e: 'close'): void;
@@ -345,6 +346,8 @@ async function saveDraftAndClose() {
     emit('close');
 }
 
+const bus = useEventBus('survey');
+
 const isDeleting = ref(false);
 
 async function deleteDraftAndClose() {
@@ -359,11 +362,8 @@ async function deleteDraftAndClose() {
 
     isDeleting.value = false;
 
+    bus.emit('deleted', { companyId: props.companyId ?? company.value?.id });
     emit('close');
-}
-
-function updateSurvey() {
-    stepper.value.updateSurvey();
 }
 
 // contacts

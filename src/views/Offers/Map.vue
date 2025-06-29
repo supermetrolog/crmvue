@@ -14,6 +14,7 @@
                     :offers-count="counts.offers"
                     :objects-count="counts.objects"
                     :is-map="true"
+                    :loading="isLoading"
                 />
                 <div class="col-12 my-2">
                     <div class="company-table__filters">

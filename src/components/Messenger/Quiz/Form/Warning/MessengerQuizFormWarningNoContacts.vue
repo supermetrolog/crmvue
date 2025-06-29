@@ -60,7 +60,7 @@
                                     v-else
                                     @handle="disableContact(contact)"
                                     icon="fa-solid fa-ban"
-                                    label="Отправить в пассив"
+                                    label="Архивировать"
                                 />
                             </template>
                         </CompanyBoxContactListItem>

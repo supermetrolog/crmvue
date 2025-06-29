@@ -287,7 +287,7 @@ const unavailableReasonOptions = [
     createAvailableReasonOptionUnavailable(),
     {
         value: 7,
-        label: 'Не существует',
+        label: 'Не существует/не зарегистрирован',
         icon: 'fa-solid fa-ban',
         after: '(Будет удален)',
         afterClass: 'text-danger'

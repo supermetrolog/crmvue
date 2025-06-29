@@ -1,5 +1,12 @@
 <template>
-    <button ref="button" class="ui-button" :class="classes" :disabled="disabled || loading">
+    <component
+        :is="as ?? 'button'"
+        ref="button"
+        class="ui-button"
+        :class="classes"
+        :disabled="disabled || loading"
+        :to
+    >
         <slot name="before"></slot>
         <slot name="icon">
             <i v-if="icon" :class="[icon, iconClass]" />
@@ -9,36 +16,67 @@
         </span>
         <Spinner v-if="loading" class="mini" />
         <slot name="after"></slot>
-    </button>
+        <span
+            v-if="badge"
+            class="ui-button__badge"
+            :class="[badgeClass, `ui-button__badge--${badgePosition ?? 'right'}`]"
+        >
+            {{ badge }}
+        </span>
+    </component>
 </template>
-<script setup>
+<script setup lang="ts">
+import type { Component } from 'vue';
 import { computed, toRef, useTemplateRef } from 'vue';
 import { isNotNullish } from '@/utils/helpers/common/isNotNullish.ts';
 import Spinner from '@/components/common/Spinner.vue';
 import { useTippyText } from '@/composables/useTippyText.js';
+import { RouteLocationRaw } from 'vue-router';
 
-const props = defineProps({
-    label: String,
-    icon: String,
-    iconClass: {
-        type: [Array, String, Object]
-    },
-    color: String,
-    loading: Boolean,
-    active: Boolean,
-    small: Boolean,
-    rounded: Boolean,
-    outlined: Boolean,
-    bolder: Boolean,
-    shadow: Boolean,
-    uppercase: Boolean,
-    rect: Boolean,
-    disabled: Boolean,
-    big: Boolean,
-    center: Boolean,
-    tooltip: String,
-    mini: Boolean
-});
+export type ButtonAs = 'button' | 'a' | Component;
+
+export type ButtonColor =
+    | 'warning'
+    | 'warning-light'
+    | 'success'
+    | 'success-light'
+    | 'danger'
+    | 'danger-light'
+    | 'info'
+    | 'dark'
+    | 'light'
+    | 'white'
+    | 'transparent';
+
+export type ButtonBadgePosition = 'left' | 'right';
+
+export interface ButtonProps {
+    as?: ButtonAs;
+    to?: RouteLocationRaw;
+    label?: string;
+    icon?: string;
+    iconClass?: string | string[] | object;
+    color?: ButtonColor;
+    loading?: boolean;
+    active?: boolean;
+    small?: boolean;
+    rounded?: boolean;
+    outlined?: boolean;
+    bolder?: boolean;
+    shadow?: boolean;
+    uppercase?: boolean;
+    rect?: boolean;
+    disabled?: boolean;
+    big?: boolean;
+    center?: boolean;
+    tooltip?: string;
+    mini?: boolean;
+    badge?: number;
+    badgeClass?: string | string[] | object;
+    badgePosition?: ButtonBadgePosition;
+}
+
+const props = defineProps<ButtonProps>();
 
 const classes = computed(() => {
     return {

@@ -226,7 +226,7 @@
                                     v-model="form.passive_why"
                                     :v="v$.form.passive_why"
                                     required
-                                    label="Причина пассива"
+                                    label="Причина архивации"
                                     :options="PassiveWhyContact"
                                 >
                                     <UiTextarea
@@ -244,7 +244,7 @@
             <UiButton @click="submit" color="success-light" icon="fa-solid fa-check">
                 Сохранить
             </UiButton>
-            <UiButton @click="close" color="light" icon="fa-solid fa-ban"> Отмена </UiButton>
+            <UiButton @click="close" color="light" icon="fa-solid fa-ban"> Отмена</UiButton>
         </template>
     </UiModal>
 </template>

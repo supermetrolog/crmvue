@@ -127,7 +127,7 @@ async function submit() {
 
     try {
         const createdRequest = await api.request.clone(props.request.id, form);
-        if (createdRequest) emit('cloned');
+        if (createdRequest) emit('cloned', createdRequest);
     } finally {
         isLoading.value = false;
     }

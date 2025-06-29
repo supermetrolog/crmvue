@@ -5,7 +5,7 @@ const statusStatement = {
 };
 
 const status = {
-    0: 'Пассив',
+    0: 'Архив',
     1: 'Актив',
     2: 'Завершен'
 };

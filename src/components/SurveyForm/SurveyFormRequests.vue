@@ -11,8 +11,12 @@
                     <i class="fa-solid fa-down-long mr-1" />
                     <span>Пассивные ({{ passiveRequests.length }})</span>
                 </SurveyFormObjectsPreviewTab>
-                <span>|</span>
-                <span @click="addNewRequest" class="survey-form-objects__link"> + Добавить </span>
+                <template v-if="activeRequests.length">
+                    <span>|</span>
+                    <span @click="addNewRequest" class="survey-form-objects__link">
+                        + Добавить
+                    </span>
+                </template>
                 <div v-if="activeRequests.length" class="d-flex gap-1 ml-auto">
                     <UiDropdownActions>
                         <template #trigger>
@@ -63,7 +67,18 @@
                             editable
                         />
                     </div>
-                    <EmptyData v-else class="mt-2"> Список активных запросов пуст..</EmptyData>
+                    <EmptyData v-else no-rounded class="h-100">
+                        <p>Список активных запросов пуст..</p>
+                        <template #actions>
+                            <UiButton
+                                @click="addNewRequest"
+                                color="success-light"
+                                icon="fa-solid fa-plus"
+                            >
+                                Добавить запрос
+                            </UiButton>
+                        </template>
+                    </EmptyData>
                 </div>
                 <div v-show="currenTab === TABS.PASSIVE">
                     <div v-if="passiveRequests.length" class="survey-form-object-preview__list">

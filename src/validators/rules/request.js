@@ -4,9 +4,11 @@ import dayjs from 'dayjs';
 function distanceValidator(value, form) {
     return Boolean(form.distanceFromMKADnotApplicable) || value !== null;
 }
+
 function passiveWhyValidator(_, form, vm) {
     return form.status || required.$validator(form.passive_why, form, vm);
 }
+
 function movingDateValidator(value, form) {
     return form.unknownMovingDate !== null || value !== null;
 }
@@ -53,7 +55,7 @@ export const validationRulesForRequest = {
     },
     passive_why: {
         customRequiredPassiveWhy: helpers.withMessage(
-            'Выберите причину пассива',
+            'Выберите причину архивации',
             passiveWhyValidator
         )
     }

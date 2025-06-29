@@ -8,65 +8,73 @@
                 class="main-input"
             />
         </div>
-        <div class="col-12 col-md-2 align-self-end">
+        <div class="col-12 col-md-6 align-self-end">
             <div class="offer-search__actions">
-                <Button @click="$emit('open-filters')" icon :badge="filterCount || false">
-                    <span>Фильтры</span>
-                    <i class="icon fa-solid fa-sliders"></i>
-                </Button>
-                <div>
-                    <ButtonLink
-                        icon
-                        :to="
-                            router.resolve({
-                                name: isMap ? 'OffersMain' : 'OffersMap',
-                                query: route.query
-                            }).href
-                        "
-                    >
-                        <i v-if="isMap" class="icon fa-solid fa-list-ul"></i>
-                        <i v-else class="icon fa-solid fa-map-location-dot"></i>
-                        <span>
-                            {{ isMap ? 'Списком' : 'На карте' }}
-                            <span v-if="isMap">{{ offersCount }} ({{ objectsCount }})</span>
-                            <span v-else>({{ offersCount ?? objectsCount }})</span>
+                <UiButton
+                    @click="$emit('open-filters')"
+                    :badge="filterCount || undefined"
+                    icon="fa-solid fa-sliders"
+                    color="light"
+                >
+                    Фильтры
+                </UiButton>
+                <UiButton
+                    @click="resetForm"
+                    :disabled="!filterCount"
+                    color="danger-light"
+                    icon="fa-solid fa-trash"
+                >
+                    Очистить фильтры
+                </UiButton>
+                <UiButton
+                    :icon="isMap ? 'fa-solid fa-list-ul' : 'fa-solid fa-map-location-dot'"
+                    :to="{
+                        name: props.isMap ? 'OffersMain' : 'OffersMap',
+                        query: route.query
+                    }"
+                    :as="RouterLink"
+                    color="dark"
+                    :loading
+                >
+                    <span class="mr-1">{{ isMap ? 'Списком' : 'На карте' }}</span>
+                    <span v-if="isMap">
+                        <span v-if="!loading">
+                            ({{ offersCount }} предл. /{{ objectsCount }} объект.)
                         </span>
-                    </ButtonLink>
-                </div>
+                    </span>
+                    <span v-else>({{ offersCount ?? objectsCount }})</span>
+                </UiButton>
             </div>
         </div>
         <div class="col-12">
-            <div class="offer-search__functions flex-wrap">
-                <Button @click="toggleFavorites" icon warning small>
-                    <i class="fa-solid fa-star"></i>
-                    <span>Избранные</span>
-                </Button>
-                <!--                <Button icon success small>-->
-                <!--                    <i class="fa-solid fa-heart"></i>-->
-                <!--                    <span>Сохранить поиск</span>-->
-                <!--                </Button>-->
-                <Button @click="resetForm" :disabled="!filterCount" icon danger small>
-                    <i class="fa-solid fa-circle-xmark"></i>
-                    <span>Сбросить фильтры</span>
-                </Button>
-            </div>
+            <UiButton
+                @click="toggleFavorites"
+                :color="form.favorites ? 'warning' : 'warning-light'"
+                small
+                icon="fa-solid fa-star"
+            >
+                Избранные
+            </UiButton>
+            <!--                <Button icon success small>-->
+            <!--                    <i class="fa-solid fa-heart"></i>-->
+            <!--                    <span>Сохранить поиск</span>-->
+            <!--                </Button>-->
         </div>
     </UiForm>
 </template>
 
 <script setup>
-import Button from '@/components/common/Button.vue';
-import ButtonLink from '@/components/common/ButtonLink.vue';
 import { computed, onBeforeMount, reactive, watch } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
+import { RouterLink, useRoute, useRouter } from 'vue-router';
 import UiForm from '@/components/common/Forms/UiForm.vue';
 import UiInput from '@/components/common/Forms/UiInput.vue';
 import { useDebounceFn } from '@vueuse/core';
 import { deleteEmptyFields } from '@/utils/helpers/object/deleteEmptyFields.js';
 import { toCleanObject } from '@/utils/helpers/object/toCleanObjects.js';
+import UiButton from '@/components/common/UI/UiButton.vue';
 
 defineEmits(['open-filters']);
-defineProps({
+const props = defineProps({
     offersCount: {
         type: Number,
         default: 0
@@ -75,10 +83,8 @@ defineProps({
         type: Number,
         default: 0
     },
-    isMap: {
-        type: Boolean,
-        default: false
-    }
+    isMap: Boolean,
+    loading: Boolean
 });
 
 const defaultForm = {
