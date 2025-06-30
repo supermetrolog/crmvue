@@ -17,6 +17,11 @@ const Folder = {
             loading: false,
             loaded: false,
             folders: []
+        },
+        request: {
+            loading: false,
+            loaded: false,
+            folders: []
         }
     },
     mutations: {},

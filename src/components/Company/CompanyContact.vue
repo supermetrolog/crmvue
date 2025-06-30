@@ -53,7 +53,7 @@ const position = computed(() => contactOptions.position[props.contact.position])
 const fullName = computed(() => getContactFullName(props.contact));
 const isPassive = computed(() => props.contact.status === 0);
 
-useTippyText(useTemplateRef('passiveIconEl'), 'Контакт в пассиве');
+useTippyText(useTemplateRef('passiveIconEl'), 'Контакт архивирован');
 
 const mainPhone = computed(() => {
     if (props.contact.phones?.length) {

@@ -35,7 +35,7 @@ import InProgress from '@/components/common/InProgress.vue';
 import { useStore } from 'vuex';
 import MessengerPanelCompanyObjects from '@/components/Messenger/Panel/Company/MessengerPanelCompanyObjects.vue';
 import MessengerPanelCompanyRequests from '@/components/Messenger/Panel/Company/MessengerPanelCompanyRequests.vue';
-import { computed, onBeforeMount, provide, ref, shallowReactive, useTemplateRef } from 'vue';
+import { computed, onBeforeMount, provide, ref, shallowReactive } from 'vue';
 import MessengerPanelCompanyTab from '@/components/Messenger/Panel/Company/MessengerPanelCompanyTab.vue';
 import MessengerPanelCompanyContacts from '@/components/Messenger/Panel/Company/MessengerPanelCompanyContacts.vue';
 

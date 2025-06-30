@@ -81,7 +81,8 @@ watch(
 const createPayload = () => {
     const payload = {
         company: { ...filters.company },
-        object: { ...filters.object }
+        object: { ...filters.object },
+        request: { ...filters.request }
     };
 
     payload[store.state.Messenger.currentAsidePanel].sort = props.currentTab.sort

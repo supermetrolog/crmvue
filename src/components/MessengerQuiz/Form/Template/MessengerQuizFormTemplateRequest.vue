@@ -24,16 +24,22 @@
                     />
                 </template>
                 <template #actions>
-                    <div v-if="editable" class="survey-form-object-preview-offer__actions ml-1">
+                    <div
+                        v-if="editable"
+                        class="survey-form-object-preview-offer__actions ml-1"
+                        data-tour-id="survey-form:stepper-request-form"
+                    >
                         <UiButtonIcon
                             @click="selectAnswer(ANSWER.SUCCESS)"
                             :active="hasSuccessStatus"
+                            :disabled
                             icon="fa-solid fa-thumbs-up"
                             label="Без изменений"
                         />
                         <UiButtonIcon
                             @click="selectAnswer(ANSWER.FAIL)"
                             :active="hasFailStatus"
+                            :disabled
                             icon="fa-solid fa-thumbs-down"
                             label="Больше не актуально"
                             class="survey-form-object-preview-offer__action-negative"
@@ -41,6 +47,7 @@
                         <UiButtonIcon
                             @click="selectAnswer(ANSWER.EDIT)"
                             :active="needEditing"
+                            :disabled
                             icon="fa-solid fa-pen"
                             label="Внести изменения"
                             class="survey-form-object-preview-offer__action-warning"

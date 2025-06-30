@@ -98,15 +98,15 @@ tr.TableRequestRow {
     height: 1px !important;
 
     > td {
-        padding: 0!important;
+        padding: 0 !important;
     }
 
     thead tr {
-        background-color: transparent!important;
+        background-color: transparent !important;
     }
 
     tbody tr td {
-        padding: 10px!important;
+        padding: 10px !important;
     }
 }
 
@@ -234,7 +234,7 @@ tr.TableRequestRow {
     }
 
     &-dropdown {
-        z-index: 9999!important;
+        z-index: 9999 !important;
         height: max-content;
     }
 }
@@ -300,7 +300,7 @@ tr.TableRequestRow {
 
     &__element {
         &--archived {
-            opacity: .5!important;
+            opacity: .5 !important;
         }
 
         &--restored {
@@ -450,7 +450,7 @@ tr.TableRequestRow {
         bottom: 0;
         left: 0;
         right: 0;
-        background-color: rgba($color:#ffffff, $alpha: 0.9);
+        background-color: rgba($color: #ffffff, $alpha: 0.9);
         z-index: 2;
     }
 
@@ -492,7 +492,7 @@ tr.TableRequestRow {
                 font-size: 16px;
                 font-weight: bold;
                 color: variables.$color_success_alt;
-                background-color: rgba($color:variables.$color_light, $alpha: 0.85);
+                background-color: rgba($color: variables.$color_light, $alpha: 0.85);
 
                 &.deal_type {
                     top: 10px;
@@ -509,7 +509,7 @@ tr.TableRequestRow {
                     right: 10px;
                     padding: 0 5px;
                     color: variables.$color_light;
-                    background-color: rgba($color:variables.$color_danger, $alpha: 0.85);
+                    background-color: rgba($color: variables.$color_danger, $alpha: 0.85);
                 }
             }
         }
@@ -542,6 +542,7 @@ tr.TableRequestRow {
         font-weight: 600;
         letter-spacing: 0.4px;
     }
+
     &__form-group {
         & .multiselect-single-label {
         }
@@ -702,6 +703,10 @@ tr.TableRequestRow {
 
     &__text {
         font-weight: 500;
+    }
+
+    &--transparent {
+        background-color: transparent;
     }
 }
 
@@ -892,7 +897,7 @@ tr.TableRequestRow {
 
 .tippy-box {
     .messenger-warning {
-        color: variables.$cl-danger!important;
+        color: variables.$cl-danger !important;
     }
 }
 

@@ -622,7 +622,7 @@
         will-change: opacity;
         @include mixins.transition(opacity);
 
-        &:not(.active):not(:hover) {
+        &:not(.active):not(:hover):not(:has(.driver-active-element)) {
             opacity: .3;
         }
     }

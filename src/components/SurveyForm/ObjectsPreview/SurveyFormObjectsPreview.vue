@@ -21,6 +21,7 @@
                     <template #actions>
                         <UiButton
                             @click="parametersFormIsVisible = true"
+                            :disabled
                             mini
                             icon="fa-solid fa-pen"
                             color="light"
@@ -48,8 +49,14 @@
                         {{ completedTradeOffersTitle }}
                     </SurveyFormObjectsPreviewTab>
                 </template>
-                <span @click="addNewOffer" class="survey-form-objects__link"> + Добавить </span>
-                <div v-if="activeTradeOffers.length" class="d-flex gap-1 ml-auto">
+                <span
+                    v-if="(activeTradeOffers.length || modelValue.created?.length) && !disabled"
+                    @click="addNewOffer"
+                    class="survey-form-objects__link"
+                >
+                    + Добавить
+                </span>
+                <div v-if="activeTradeOffers.length && !disabled" class="d-flex gap-1 ml-auto">
                     <UiDropdownActions>
                         <template #trigger>
                             <UiButton color="light" class="py-0 px-1 op-7" mini>
@@ -87,6 +94,7 @@
                             @edit="editNewOffer(offer)"
                             @delete="deleteNewOffer(offer)"
                             :offer="offer"
+                            :disabled
                             editable
                         />
                         <hr
@@ -101,30 +109,24 @@
                             :offer="tradeOffer"
                             :commercial-offer="commercialOffersByIdMap[tradeOffer.offer_id]"
                             :object
+                            :disabled
                             editable
                         />
                     </div>
-                    <div v-else class="d-flex justify-content-center gap-2 mt-4">
-                        <UiButton
-                            @click="isOffersNotFound = !isOffersNotFound"
-                            :color="isOffersNotFound ? 'success' : 'success-light'"
-                        >
-                            <div class="d-flex gap-1">
-                                <UiCheckbox
-                                    disabled
-                                    :checked="isOffersNotFound"
-                                    class="no-events"
-                                />
-                                <span>Нет новых предложений</span>
-                            </div>
-                        </UiButton>
-                        <UiButton
-                            @click="addNewOffer"
-                            color="success-light"
-                            icon="fa-solid fa-plus"
-                        >
-                            Добавить предложение
-                        </UiButton>
+                    <div v-else class="d-flex justify-content-center mt-4">
+                        <EmptyData no-rounded transparent>
+                            <p>Список активных предложений пуст..</p>
+                            <template #actions>
+                                <UiButton
+                                    @click="addNewOffer"
+                                    :disabled
+                                    color="success-light"
+                                    icon="fa-solid fa-plus"
+                                >
+                                    Добавить предложение
+                                </UiButton>
+                            </template>
+                        </EmptyData>
                     </div>
                 </div>
                 <div v-show="currenTab === TABS.PASSIVE">
@@ -221,7 +223,6 @@ import MessengerDialogObjectPreview from '@/components/Messenger/Dialog/Object/M
 import UiDropdownActions from '@/components/common/UI/DropdownActions/UiDropdownActions.vue';
 import UiDropdownActionsButton from '@/components/common/UI/DropdownActions/UiDropdownActionsButton.vue';
 import { useNotify } from '@/utils/use/useNotify.js';
-import UiCheckbox from '@/components/common/Forms/UiCheckbox.vue';
 import UiModal from '@/components/common/UI/UiModal.vue';
 import UiTextarea from '@/components/common/Forms/UiTextarea.vue';
 import api from '@/api/api.js';
@@ -246,7 +247,8 @@ const props = defineProps({
     survey: {
         type: Object,
         required: true
-    }
+    },
+    disabled: Boolean
 });
 
 const activeTradeOffers = shallowRef([]);

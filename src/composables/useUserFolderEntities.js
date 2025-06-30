@@ -122,7 +122,8 @@ const FOLDER_MORPH = {
     COMPANY: 'company',
     OBJECT: 'object',
     OFFER: 'offer_mix',
-    TASK: 'task'
+    TASK: 'task',
+    REQUEST: 'request'
 };
 
 function useSharedUserFolderEntitiesByMorph(morph) {
@@ -130,6 +131,7 @@ function useSharedUserFolderEntitiesByMorph(morph) {
     if (morph === FOLDER_MORPH.OBJECT) return useObjectFolderEntities();
     if (morph === FOLDER_MORPH.OFFER) return useOfferFolderEntities();
     if (morph === FOLDER_MORPH.TASK) return useTaskFolderEntities();
+    if (morph === FOLDER_MORPH.REQUEST) return useRequestFolderEntities();
 }
 
 export function useUserFolderEntities(morph, entityId) {
@@ -204,4 +206,8 @@ export const useOfferFolderEntities = createSharedComposable(() => {
 
 export const useTaskFolderEntities = createSharedComposable(() => {
     return createSharedFolderEntities(FOLDER_MORPH.TASK);
+});
+
+export const useRequestFolderEntities = createSharedComposable(() => {
+    return createSharedFolderEntities(FOLDER_MORPH.REQUEST);
 });

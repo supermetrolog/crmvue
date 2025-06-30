@@ -15,8 +15,8 @@ export default {
         const response = await axios.get(`${URL}/${id}/with-questions`);
         return responseToData(response);
     },
-    async findDraftByChatMemberId(chatMemberId) {
-        const response = await axios.get(`${URL}/draft-by-chat-member/${chatMemberId}`);
+    async findPendingByChatMemberId(chatMemberId) {
+        const response = await axios.get(`${URL}/pending-by-chat-member/${chatMemberId}`);
         return responseToData(response);
     },
     async list(params) {
@@ -41,6 +41,14 @@ export default {
     },
     async cancel(id) {
         const response = await axios.post(`${URL}/${id}/cancel`);
+        return responseToData(response);
+    },
+    async delay(id) {
+        const response = await axios.post(`${URL}/${id}/delay`);
+        return responseToData(response);
+    },
+    async continue(id) {
+        const response = await axios.post(`${URL}/${id}/continue`);
         return responseToData(response);
     }
 };

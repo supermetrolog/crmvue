@@ -29,11 +29,13 @@
                         <div v-if="editable" class="survey-form-object-preview-offer__actions">
                             <UiButtonIcon
                                 @click="$emit('edit')"
+                                :disabled
                                 icon="fa-solid fa-pen"
                                 label="Редактировать"
                             />
                             <UiButtonIcon
                                 @click="$emit('delete')"
+                                :disabled
                                 icon="fa-solid fa-trash"
                                 label="Удалить"
                             />
@@ -55,7 +57,7 @@
                 :min-height="60"
                 :max-height="200"
                 :toolbar="false"
-                :disabled="!editable"
+                :disabled="!editable || disabled"
                 :debounce="200"
                 placeholder="Описание запроса.."
                 class="survey-form-object-preview-offer__editor mt-2 font-weight-semi"
@@ -81,7 +83,8 @@ const props = defineProps({
         type: Object,
         required: true
     },
-    editable: Boolean
+    editable: Boolean,
+    disabled: Boolean
 });
 
 const { currentUser } = useAuth();

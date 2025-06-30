@@ -70,6 +70,7 @@ export const TaskTypeEnum = {
     BASE: 'base',
     SCHEDULED_CALL: 'scheduled_call',
     SCHEDULED_VISIT: 'scheduled_visit',
+    SCHEDULED_EVENT: 'scheduled_event',
     REQUEST_HANDLING: 'request_handling',
     CONTACT_HANDLING: 'contact_handling',
     OBJECT_HANDLING: 'object_handling'
