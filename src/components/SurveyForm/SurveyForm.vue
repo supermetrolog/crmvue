@@ -70,9 +70,11 @@
                     @survey-updated="onUpdateSurvey"
                     @contact-created="onContactCreated"
                     @contact-updated="onContactUpdated"
+                    @add-contact="suggestCreateContact"
                     :chat-member-id
                     :company
                     :contacts
+                    :passive-contacts
                     :draft="surveyDraft"
                     :survey
                     :disabled="isDelayedSurvey"
