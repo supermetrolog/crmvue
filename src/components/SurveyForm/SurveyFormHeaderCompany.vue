@@ -28,7 +28,17 @@
                 </CompanyTabs>
             </UiCol>
         </div>
-        <div class="survey-form-header-company__actions">
+        <div
+            class="survey-form-header-company__actions"
+            data-tour-id="survey-form:header-company-actions"
+        >
+            <UiButtonIcon
+                @click="$emit('show-tour')"
+                icon="fa-solid fa-question"
+                color="light"
+                small
+                label="Что такое опрос?"
+            />
             <UserFoldersDropdown
                 @create="folderModalIsVisible = true"
                 :entity="company.id"
@@ -177,6 +187,7 @@ import FormUserFolder from '@/components/Forms/FormUserFolder.vue';
 import { useUserFolders } from '@/composables/useUserFolders.js';
 import { useAuth } from '@/composables/useAuth.js';
 import UiDropdownActionsGroup from '@/components/common/UI/DropdownActions/UiDropdownActionsGroup.vue';
+import UiButtonIcon from '@/components/common/UI/UiButtonIcon.vue';
 
 const emit = defineEmits([
     'update-logo',
@@ -185,7 +196,8 @@ const emit = defineEmits([
     'create-task',
     'schedule-call',
     'schedule-visit',
-    'show-task'
+    'show-task',
+    'show-tour'
 ]);
 
 const props = defineProps({

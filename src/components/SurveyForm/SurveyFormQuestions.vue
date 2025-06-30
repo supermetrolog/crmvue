@@ -7,6 +7,7 @@
                 :key="question.id"
                 ref="questionEls"
                 :question="question"
+                :disabled
                 class="messenger-quiz-question-card"
             />
         </div>
@@ -29,7 +30,8 @@ const props = defineProps({
     form: {
         type: Array,
         default: () => []
-    }
+    },
+    disabled: Boolean
 });
 
 function generateForm() {

@@ -36,10 +36,10 @@ type TemplateTaskType = Exclude<TaskType, typeof TaskTypeEnum.BASE>;
 
 const templates: Record<TemplateTaskType, Component> = {
     [TaskTypeEnum.REQUEST_HANDLING]: TaskCardProcessRequests,
-    [TaskTypeEnum.CONTACT_HANDLING]: TaskCardProcessContact,
-    [TaskTypeEnum.OBJECT_HANDLING]: TaskCardProcessContact,
-    [TaskTypeEnum.SCHEDULED_CALL]: TaskCardProcessContact,
-    [TaskTypeEnum.SCHEDULED_VISIT]: TaskCardProcessContact
+    [TaskTypeEnum.CONTACT_HANDLING]: TaskCardProcessContacts,
+    [TaskTypeEnum.OBJECT_HANDLING]: TaskCardProcessContacts,
+    [TaskTypeEnum.SCHEDULED_CALL]: TaskCardProcessContacts,
+    [TaskTypeEnum.SCHEDULED_VISIT]: TaskCardProcessContacts
 } as const;
 
 const ProcessComponent = computed(() => templates[props.task.type as TemplateTaskType]);
@@ -102,7 +102,7 @@ const { softRun, run } = useTour('task-process', {
             popover: {
                 title: 'Управление связями',
                 description:
-                    'Теперь вы можете управлять сущностями прямо в карточке задачи. Например, отредактировать что-то, отправить в пассив или создать.',
+                    'Теперь вы можете управлять сущностями прямо в карточке задачи. Например, отредактировать что-то, отправить в архив или создать.',
                 side: 'right',
                 align: 'start'
             }

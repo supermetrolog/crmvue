@@ -57,7 +57,8 @@ const FOLDER_MORPH = {
     COMPANY: 'company',
     OBJECT: 'object',
     OFFER: 'offer_mix',
-    TASK: 'task'
+    TASK: 'task',
+    REQUEST: 'request'
 };
 
 export function useUserFolders(morph) {
@@ -65,6 +66,7 @@ export function useUserFolders(morph) {
     if (morph === FOLDER_MORPH.OBJECT) return useObjectFolders();
     if (morph === FOLDER_MORPH.OFFER) return useOfferFolders();
     if (morph === FOLDER_MORPH.TASK) return useTaskFolders();
+    if (morph === FOLDER_MORPH.REQUEST) return useRequestFolders();
 }
 
 export const useCompanyFolders = createSharedComposable(() => {
@@ -81,4 +83,8 @@ export const useOfferFolders = createSharedComposable(() => {
 
 export const useTaskFolders = createSharedComposable(() => {
     return createSharedFolders(FOLDER_MORPH.TASK);
+});
+
+export const useRequestFolders = createSharedComposable(() => {
+    return createSharedFolders(FOLDER_MORPH.REQUEST);
 });

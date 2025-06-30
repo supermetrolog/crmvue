@@ -23,6 +23,7 @@
                     :class="{
                         animate__headShake: !localeCanBeClosed
                     }"
+                    v-bind="containerAttrs"
                 >
                     <div v-if="!hideHeader" class="modal__header">
                         <p v-if="title">
@@ -118,7 +119,8 @@ const props = defineProps({
         type: Boolean,
         default: true
     },
-    pinnedTask: Object
+    pinnedTask: Object,
+    containerAttrs: Object
 });
 
 if (props.show) {

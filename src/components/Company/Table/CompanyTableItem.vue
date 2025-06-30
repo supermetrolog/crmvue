@@ -39,12 +39,12 @@
                             <UiDropdownActionsButton
                                 @handle="openInSurvey"
                                 :icon="
-                                    company.has_survey_draft
+                                    company.has_pending_survey
                                         ? 'fa-solid fa-play'
                                         : 'fa-solid fa-square-poll-horizontal'
                                 "
                                 :label="
-                                    company.has_survey_draft ? 'Продолжить опрос' : 'Начать опрос'
+                                    company.has_pending_survey ? 'Продолжить опрос' : 'Начать опрос'
                                 "
                             />
                             <UiDropdownActionsButton
@@ -72,12 +72,16 @@
                     </template>
                 </UiDropdownActions>
                 <UiButtonIcon
-                    v-if="company.has_survey_draft"
+                    v-if="company.has_pending_survey"
                     @click="openInSurvey"
                     small
                     icon="fa-solid fa-play"
                     label="Продолжить заполнение опроса"
-                    color="success-light"
+                    :color="
+                        company.pending_survey_status === 'draft'
+                            ? 'success-light'
+                            : 'warning-light'
+                    "
                 />
             </div>
         </Td>

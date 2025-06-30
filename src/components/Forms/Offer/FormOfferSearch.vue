@@ -9,13 +9,22 @@
             />
             <div class="col-6">
                 <div class="offer-search__actions">
-                    <Button @click="extraVisible = !extraVisible" icon :badge="filtersCount" dark>
-                        <span>Фильтры</span>
-                        <i class="fa-solid fa-sliders icon" />
-                    </Button>
-                    <Button @click="resetForm" :disabled="resetIsDisabled" dark>
-                        <i class="fa-regular fa-trash-can icon"></i>
-                    </Button>
+                    <UiButton
+                        @click="extraVisible = !extraVisible"
+                        :badge="filtersCount || null"
+                        icon="fa-solid fa-sliders"
+                        color="light"
+                    >
+                        Фильтры
+                    </UiButton>
+                    <UiButton
+                        @click="resetForm"
+                        :disabled="!resetIsDisabled"
+                        color="danger-light"
+                        icon="fa-solid fa-trash"
+                    >
+                        Очистить фильтры
+                    </UiButton>
                     <slot name="buttons"></slot>
                 </div>
             </div>
@@ -335,7 +344,6 @@
 </template>
 
 <script setup>
-import Button from '@/components/common/Button.vue';
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
 import DoubleInput from '@/components/common/Forms/DoubleInput.vue';
 import {
@@ -388,6 +396,7 @@ import { isEmptyArray } from '@/utils/helpers/array/isEmptyArray.js';
 import { isNullish } from '@/utils/helpers/common/isNullish.ts';
 import { isEmptyString } from '@/utils/helpers/string/isEmptyString.js';
 import { deepToRaw } from '@/utils/common/deepToRaw.js';
+import UiButton from '@/components/common/UI/UiButton.vue';
 
 const emit = defineEmits(['close', 'search', 'reset', 'resetSelected', 'changed-query']);
 const props = defineProps({

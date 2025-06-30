@@ -104,6 +104,7 @@
                     </li>
                 </ul>
             </div>
+            <p class="text-grey mt-1">Создана {{ createdAt }}</p>
         </div>
     </div>
 </template>
@@ -119,6 +120,7 @@ import { alg } from '@/utils/alg.js';
 import { toCorrectUrl } from '@/utils/formatters/string.js';
 import { companyOptions } from '@/const/options/company.options.js';
 import { useRouter } from 'vue-router';
+import { toDateFormat } from '@/utils/formatters/date.js';
 
 defineEmits(['update-logo']);
 const props = defineProps({
@@ -181,6 +183,8 @@ const companyName = computed(() => getCompanyShortName(props.company, props.comp
 
 const isPassive = computed(() => !props.company.status);
 const isWithoutActiveContacts = computed(() => props.company.active_contacts_count === 0);
+
+const createdAt = computed(() => toDateFormat(props.company.created_at, 'D.MM.YYг.'));
 
 // tippy
 

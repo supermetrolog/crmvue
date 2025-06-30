@@ -15,6 +15,7 @@
                 :show-radio
                 :rounded
                 :icon="option.icon"
+                :data-tour-id="option.attrs?.tourId"
             />
             <slot name="after-options" />
         </div>
@@ -55,7 +56,8 @@ const preparedOptions = computed(() => {
     return Object.keys(props.options).map(key => ({
         value: Number(key),
         label: props.objectKey ? props.options[key][props.objectKey] : props.options[key],
-        icon: props.options[key]?.icon
+        icon: props.options[key]?.icon,
+        attrs: props.options[key]?.attrs
     }));
 });
 

@@ -144,7 +144,6 @@ const { v$, validate } = useValidation(
 
 async function complete() {
     const isValid = await validate();
-    console.log(isValid);
     if (!isValid) return;
 
     emit('complete');

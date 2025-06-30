@@ -3,7 +3,7 @@
         <div v-if="showProgress" class="stepper__progress">
             <div class="stepper__progress-bar" :style="{ width: progress + '%' }"></div>
         </div>
-        <div class="stepper__navigation">
+        <div class="stepper__navigation" v-bind="navigationAttrs">
             <StepperStep
                 v-for="(step, index) in steps"
                 :key="index"
@@ -32,7 +32,7 @@
                 </span>
             </div>
         </AnimationTransition>
-        <div class="stepper__body">
+        <div class="stepper__body" v-bind="bodyAttrs">
             <slot name="body" :complete="complete" />
             <template v-if="keepAlive">
                 <div
@@ -122,7 +122,9 @@ const props = defineProps({
     showActions: {
         type: Boolean,
         default: true
-    }
+    },
+    navigationAttrs: Object,
+    bodyAttrs: Object
 });
 
 const viewed = ref({});

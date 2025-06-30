@@ -49,6 +49,7 @@ export const filtersAliases = {
     agent_id: 'Консультант:',
     productRanges: 'Номенклатура:',
     without_product_ranges: 'Без номенклатуры',
+    show_product_ranges: 'Со скрытой номенклатурой',
     with_passive_consultant: 'С неактивными консультантами',
     statuses: 'Статус:',
     user_ids: 'Сотрудник:',
@@ -63,7 +64,11 @@ export const filtersAliases = {
     cian_regions: 'Регионы ЦИАН:',
     with_current_user_tasks: 'С активными задачами',
     requests_filter: 'Связь с запросами',
-    categories: 'Категории'
+    categories: 'Категории',
+    expressRequest: 'Срочный запрос',
+    gateTypes: 'Тип ворот:',
+    directions: 'Направления:',
+    objectClasses: 'Класс:'
 };
 
 const IGNORING_FILTERS = new Set([

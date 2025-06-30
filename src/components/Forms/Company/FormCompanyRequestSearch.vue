@@ -9,22 +9,29 @@
                         class="w-100"
                         placeholder="ID запроса, название компании"
                     />
-                    <div class="form-search__actions ml-4">
-                        <Button
+                    <div class="ml-md-2 mt-2 mt-md-0 d-flex gap-2 w-100">
+                        <UiButton
                             @click="extraIsVisible = !extraIsVisible"
                             :badge="filtersCount || undefined"
+                            icon="fa-solid fa-sliders"
+                            color="light"
                         >
-                            <span>Фильтры</span>
-                        </Button>
-                        <Button @click="resetForm" :disabled="!filtersCount" danger>
-                            Сбросить фильтры
-                        </Button>
+                            Фильтры
+                        </UiButton>
+                        <UiButton
+                            @click="resetForm"
+                            :disabled="!filtersCount"
+                            color="danger-light"
+                            icon="fa-solid fa-trash"
+                        >
+                            Очистить фильтры
+                        </UiButton>
                     </div>
                 </div>
             </div>
         </UiFormGroup>
         <UiFormGroup>
-            <UiCol :cols="12">
+            <UiCol :cols="12" class="mb-3">
                 <div class="d-flex gap-2 flex-wrap">
                     <Chip
                         v-for="item in humanizedSelectedFilters"
@@ -362,7 +369,6 @@ import UiForm from '@/components/common/Forms/UiForm.vue';
 import UiFormGroup from '@/components/common/Forms/UiFormGroup.vue';
 import UiInput from '@/components/common/Forms/UiInput.vue';
 import MultiSelect from '@/components/common/Forms/MultiSelect.vue';
-import Button from '@/components/common/Button.vue';
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
 import CheckboxChip from '@/components/common/Forms/CheckboxChip.vue';
 import RadioChip from '@/components/common/Forms/RadioChip.vue';
@@ -386,9 +392,14 @@ import {
     DistrictList,
     GateTypeList,
     ObjectClassList,
-    OutsideMkad
+    ObjectTypesGeneralList,
+    OutsideMkad,
+    RegionList
 } from '@/const/const.js';
-import { objectPurposesWithSectionsOptions } from '@/const/options/object.options.js';
+import {
+    objectPurposesOptions,
+    objectPurposesWithSectionsOptions
+} from '@/const/options/object.options.js';
 import ObjectTypePicker from '@/components/common/Forms/ObjectTypePicker.vue';
 import SwitchSlider from '@/components/common/Forms/SwitchSlider.vue';
 import Switch from '@/components/common/Forms/Switch.vue';
@@ -409,6 +420,7 @@ import { toDateFormat } from '@/utils/formatters/date.js';
 import { isNotNullish } from '@/utils/helpers/common/isNotNullish.ts';
 import { singleToArrayByKeys } from '@/utils/helpers/object/singleToArrayByKeys.js';
 import { toNumberFormat } from '@/utils/formatters/number.js';
+import UiButton from '@/components/common/UI/UiButton.vue';
 
 const route = useRoute();
 const router = useRouter();
@@ -576,7 +588,36 @@ const gettersForFilters = {
     rangeMinPricePerFloor: value => toNumberFormat(value) + '₽',
     rangeMaxPricePerFloor: value => toNumberFormat(value) + '₽',
     rangeMinCeilingHeight: value => toNumberFormat(value) + 'м',
-    rangeMaxCeilingHeight: value => toNumberFormat(value) + 'м'
+    rangeMaxCeilingHeight: value => toNumberFormat(value) + 'м',
+    maxDistanceFromMKAD: value => `${toNumberFormat(value)}км до МКАД`,
+    gateTypes: value => {
+        if (isArray(value)) return value.map(i => GateTypeList[i]).join(', ');
+        return null;
+    },
+    regions: value => {
+        if (isArray(value)) return value.map(i => RegionList[i].label).join(', ');
+        return null;
+    },
+    directions: value => {
+        if (isArray(value)) return value.map(i => DirectionList[i].full).join(', ');
+        return null;
+    },
+    dealType: value => {
+        if (!value) return null;
+        return DealTypeList[value].label;
+    },
+    objectClasses: value => {
+        if (isArray(value)) return value.map(i => ObjectClassList[i]).join(', ');
+        return null;
+    },
+    objectTypes: value => {
+        if (isArray(value)) return value.map(i => objectPurposesOptions[i].name).join(', ');
+        return null;
+    },
+    objectTypesGeneral: value => {
+        if (isArray(value)) return value.map(i => ObjectTypesGeneralList[i]).join(', ');
+        return null;
+    }
 };
 
 const { filtersCount, humanizedSelectedFilters, removeQueryFilterByKey } = useSelectedFilters(

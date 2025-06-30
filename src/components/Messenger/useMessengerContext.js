@@ -21,7 +21,8 @@ export function createMessengerContext() {
         },
         user: {
             status: 10
-        }
+        },
+        request: {}
     });
 
     provide(CURRENT_TAB_INJECTION_KEY, currentAsideTab);
