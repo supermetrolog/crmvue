@@ -541,7 +541,7 @@ const bus = useEventBus('survey');
 function onCompleteSurvey(payload) {
     const company = COMPANIES.value.find(company => company.id === payload.companyId);
     if (company) {
-        company.has_survey_draft = false;
+        company.has_pending_survey = false;
     }
 }
 

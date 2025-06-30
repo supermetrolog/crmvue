@@ -14,12 +14,12 @@
                             <UiDropdownActionsButton
                                 @handle="$emit('open-survey')"
                                 :icon="
-                                    request.has_survey_draft
+                                    request.has_pending_survey
                                         ? 'fa-solid fa-play'
                                         : 'fa-solid fa-square-poll-horizontal'
                                 "
                                 :label="
-                                    request.has_survey_draft
+                                    request.has_pending_survey
                                         ? 'Продолжить опрос'
                                         : 'Заполнить опрос'
                                 "
@@ -85,12 +85,16 @@
                     </template>
                 </UiDropdownActions>
                 <UiButtonIcon
-                    v-if="request.has_survey_draft"
+                    v-if="request.has_pending_survey"
                     @click="$emit('open-survey')"
                     small
                     icon="fa-solid fa-play"
                     label="Продолжить заполнение опроса"
-                    color="success-light"
+                    :color="
+                        request.pending_survey_status === 'draft'
+                            ? 'success-light'
+                            : 'warning-light'
+                    "
                 />
             </div>
         </Td>

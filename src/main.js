@@ -10,6 +10,7 @@ import { VueAgile } from 'vue-agile';
 import 'tippy.js/dist/tippy.css';
 import '@vueform/multiselect/themes/default.css';
 import 'vue-color-kit/dist/vue-color-kit.css';
+import '@vuepic/vue-datepicker/dist/main.css';
 import './assets/fontawesome/css/fontawesome.min.css';
 import './assets/fontawesome/css/all.min.css';
 import 'animate.css';

@@ -12,11 +12,14 @@
                 @edit="editContact(contact)"
                 @select="selectCurrentContact(contact)"
                 @schedule-call="createScheduleCallTask(contact)"
+                @schedule-visit="createScheduleVisitTask(contact)"
+                @schedule-event="createScheduleEventTask(contact)"
                 @change="$emit('change')"
                 @close="currentContact = null"
                 :contact="contact"
                 :active="currentContact?.id === contact.id"
                 :most-callable="contact.id === mostCallableContactId"
+                :disabled
                 editable
                 full
             />
@@ -39,18 +42,36 @@
                     @updated="onUpdatedComment"
                     @deleted="onDeletedComment"
                     @created="onCreatedComment"
-                    :comments
                     :contact="viewedCommentsContact"
+                    :comments
                 />
             </UiModal>
             <CallScheduler
                 v-if="scheduleCallModalIsVisible"
                 @created="onCreatedScheduledCall"
                 @close="closeScheduleCallModal"
-                :company="company"
                 :contact="scheduleCallContact"
-                :chat-member-id
                 :relations="schedulerRelations"
+                :company
+                :chat-member-id
+            />
+            <VisitScheduler
+                v-if="scheduleVisitModalIsVisible"
+                @created="onCreatedScheduledVisit"
+                @close="closeScheduleVisitModal"
+                :contact="scheduleVisitContact"
+                :relations="schedulerRelations"
+                :company
+                :chat-member-id
+            />
+            <EventScheduler
+                v-if="scheduleEventModalIsVisible"
+                @created="onCreatedScheduledEvent"
+                @close="closeScheduleEventModal"
+                :contact="scheduleEventContact"
+                :relations="schedulerRelations"
+                :company
+                :chat-member-id
             />
         </teleport>
     </div>
@@ -63,6 +84,9 @@ import UiModal from '@/components/common/UI/UiModal.vue';
 import MessengerQuizContactsComments from '@/components/MessengerQuiz/MessengerQuizContactsComments.vue';
 import { spliceById } from '@/utils/helpers/array/spliceById.js';
 import CallScheduler from '@/components/CallScheduler/CallScheduler.vue';
+import VisitScheduler from '@/components/VisitScheduler/VisitScheduler.vue';
+import EventScheduler from '@/components/EventScheduler/EventScheduler.vue';
+import { createTourStepElementGenerator, useTourStep } from '@/composables/useTour/useTourStep';
 
 const emit = defineEmits(['contact-created', 'contact-updated', 'change']);
 const props = defineProps({
@@ -78,7 +102,8 @@ const props = defineProps({
         type: Number,
         required: true
     },
-    surveyId: Number
+    surveyId: Number,
+    disabled: Boolean
 });
 
 const mostCallableContactId = computed(() => {
@@ -115,6 +140,8 @@ watch(() => props.contacts.length, generateForm, { immediate: true });
 const currentContact = ref(null);
 
 function selectCurrentContact(contact) {
+    if (props.disabled) return;
+
     if (currentContact.value?.id === contact.id) {
         currentContact.value = null;
     } else {
@@ -168,6 +195,7 @@ function onCreatedComment(comment) {
 }
 
 // scheduled calls
+
 const scheduleCallModalIsVisible = ref(false);
 const scheduleCallContact = shallowRef(null);
 
@@ -191,5 +219,64 @@ const schedulerRelations = computed(() => {
     }
 
     return [];
+});
+
+// scheduled visits
+
+const scheduleVisitModalIsVisible = ref(false);
+const scheduleVisitContact = shallowRef(null);
+
+async function createScheduleVisitTask(contact) {
+    scheduleVisitContact.value = contact;
+    scheduleVisitModalIsVisible.value = true;
+}
+
+function closeScheduleVisitModal() {
+    scheduleVisitModalIsVisible.value = false;
+    scheduleVisitContact.value = null;
+}
+
+function onCreatedScheduledVisit(_, payload) {
+    form.value[scheduleVisitContact.value.id].visit = payload.start;
+}
+
+// scheduled event
+
+const scheduleEventModalIsVisible = ref(false);
+const scheduleEventContact = shallowRef(null);
+
+async function createScheduleEventTask(contact) {
+    scheduleEventContact.value = contact;
+    scheduleEventModalIsVisible.value = true;
+}
+
+function closeScheduleEventModal() {
+    scheduleEventModalIsVisible.value = false;
+    scheduleEventContact.value = null;
+}
+
+function onCreatedScheduledEvent(_, payload) {
+    form.value[scheduleEventContact.value.id].event = payload.start;
+}
+
+// tour
+
+// tour
+
+const createTourStepElement = createTourStepElementGenerator('survey-form');
+
+useTourStep({
+    key: 5,
+    element: createTourStepElement('stepper-calls'),
+    popover: {
+        title: 'Контакт для разговора',
+        description:
+            'Созвонитесь с представителем компании, чтобы обсудить положение дел. При необходимости, попытайтесь созвониться со всеми контактами компании, пока не установите связь.',
+        side: 'bottom',
+        align: 'center'
+    },
+    onHighlighted() {
+        selectCurrentContact(props.contacts[0]);
+    }
 });
 </script>

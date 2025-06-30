@@ -11,13 +11,13 @@
                     <i class="fa-solid fa-down-long mr-1" />
                     <span>Пассивные ({{ passiveRequests.length }})</span>
                 </SurveyFormObjectsPreviewTab>
-                <template v-if="activeRequests.length">
+                <template v-if="activeRequests.length && !disabled">
                     <span>|</span>
                     <span @click="addNewRequest" class="survey-form-objects__link">
                         + Добавить
                     </span>
                 </template>
-                <div v-if="activeRequests.length" class="d-flex gap-1 ml-auto">
+                <div v-if="activeRequests.length && !disabled" class="d-flex gap-1 ml-auto">
                     <UiDropdownActions>
                         <template #trigger>
                             <UiButton color="light" class="py-0 px-1 op-7" mini>
@@ -55,6 +55,7 @@
                             @edit="editNewRequest(request)"
                             @delete="deleteNewRequest(request)"
                             :request="request"
+                            :disabled
                             editable
                         />
                         <hr v-if="activeRequests.length && form.created?.length" class="w-100" />
@@ -64,7 +65,9 @@
                             v-model="form.current[request.id]"
                             @edit="editRequest(request)"
                             :request="request"
+                            :disabled
                             editable
+                            data-tour-id="survey-form:stepper-request-card"
                         />
                     </div>
                     <EmptyData v-else no-rounded class="h-100">
@@ -72,8 +75,10 @@
                         <template #actions>
                             <UiButton
                                 @click="addNewRequest"
+                                :disabled
                                 color="success-light"
                                 icon="fa-solid fa-plus"
+                                data-tour-id="survey-form:stepper-request-create"
                             >
                                 Добавить запрос
                             </UiButton>
@@ -110,7 +115,7 @@
     </div>
 </template>
 <script setup>
-import { computed, markRaw, ref, shallowRef, watch } from 'vue';
+import { computed, markRaw, onMounted, ref, shallowRef, watch } from 'vue';
 import SurveyFormObjectsPreviewTab from '@/components/SurveyForm/ObjectsPreview/SurveyFormObjectsPreviewTab.vue';
 import EmptyData from '@/components/common/EmptyData.vue';
 import SurveyFormRequestForm from '@/components/SurveyForm/SurveyFormRequestForm.vue';
@@ -125,6 +130,7 @@ import UiDropdownActionsButton from '@/components/common/UI/DropdownActions/UiDr
 import UiDropdownActions from '@/components/common/UI/DropdownActions/UiDropdownActions.vue';
 import UiButton from '@/components/common/UI/UiButton.vue';
 import { useNotify } from '@/utils/use/useNotify.js';
+import { createTourStepElementGenerator, useTourStep } from '@/composables/useTour/useTourStep';
 
 const props = defineProps({
     requests: {
@@ -134,7 +140,8 @@ const props = defineProps({
     company: {
         type: Object,
         required: true
-    }
+    },
+    disabled: Boolean
 });
 
 // form
@@ -261,4 +268,48 @@ function markAll(value) {
 
     notify.success('Все запроса обработаны');
 }
+
+const createTourStepElement = createTourStepElementGenerator('survey-form');
+
+const { addStep } = useTourStep();
+
+onMounted(() => {
+    if (activeRequests.value.length) {
+        addStep({
+            key: 11,
+            element: createTourStepElement('stepper-request-card'),
+            popover: {
+                title: 'Карточка запроса',
+                description:
+                    'В карточке запроса можно ознакомиться с запрашиваемой локацией и площадью. При необходимости вы можете редактировать запрос прямо здесь с помощью меню запроса.',
+                side: 'top',
+                align: 'center'
+            }
+        });
+
+        addStep({
+            key: 12,
+            element: createTourStepElement('stepper-request-form'),
+            popover: {
+                title: 'Положение по запросу',
+                description:
+                    'Для каждого запроса необходимо указать его текущий статус: актуален, больше не актуален или требуются изменения. Запросы архивируются системой автоматически.',
+                side: 'left',
+                align: 'center'
+            }
+        });
+    } else {
+        addStep({
+            key: 11,
+            element: createTourStepElement('stepper-request-create'),
+            popover: {
+                title: 'Результат звонка',
+                description:
+                    'Добавляйте новые запросы клиента в CRM с помощью формы. Будут созданы задачи для офис-менеджера.',
+                side: 'top',
+                align: 'center'
+            }
+        });
+    }
+});
 </script>

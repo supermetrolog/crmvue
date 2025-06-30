@@ -15,6 +15,7 @@
                 :scheduled="form.scheduled"
                 :most-callable
                 class="survey-form-contact__element"
+                data-tour-id="survey-form:stepper-calls"
             />
             <AnimationTransition :speed="0.5">
                 <div v-if="isCompleted" class="survey-form-contact__result">
@@ -67,6 +68,8 @@
                 @close="$emit('close')"
                 @change="$emit('change')"
                 @schedule-call="$emit('schedule-call')"
+                @schedule-visit="$emit('schedule-visit')"
+                @schedule-event="$emit('schedule-event')"
                 :contact
                 class="mt-2 mb-4"
             />
@@ -127,7 +130,6 @@ const isCompleted = computed(() => {
     return isNotNullish(form.value?.available) && isNotNullish(form.value?.reason);
 });
 
-const callScheduled = computed(() => isNotNullish(form.value.scheduled));
 const callScheduledDate = computed(() => dayjs(form.value.scheduled).format('DD.MM.YY, HH:mm'));
 
 // form

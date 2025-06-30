@@ -1,5 +1,5 @@
 <template>
-    <div class="survey-form-stepper-helper">
+    <div class="survey-form-stepper-helper" data-tour-id="survey-form:stepper-helper">
         <svg
             class="survey-form-stepper-helper__icon"
             viewBox="0 0 24 24"

@@ -25,6 +25,7 @@
             :focus-start-date
             :disabled
             :range
+            :ui="{}"
         >
             <template v-if="presetsLabel" #presets-label>
                 <span class="ui-date-input__presets-label">{{ presetsLabel }}:</span>
@@ -57,7 +58,6 @@
 </template>
 <script setup>
 import VueDatePicker from '@vuepic/vue-datepicker';
-import '@vuepic/vue-datepicker/dist/main.css';
 import DatePickerTooltip from '@/components/common/Forms/DatePicker/DatePickerTooltip.vue';
 import dayjs from 'dayjs';
 import { computed, ref, toRef, useTemplateRef, watch } from 'vue';

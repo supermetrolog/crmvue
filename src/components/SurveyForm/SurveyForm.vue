@@ -11,6 +11,9 @@
         class="survey-form"
         custom-close
         show
+        :container-attrs="{
+            'data-tour-id': 'survey-form:container'
+        }"
     >
         <template #header>
             <template v-if="isEditMode">
@@ -34,11 +37,17 @@
                 @update-company="onUpdateCompany"
                 @create-task="createCompanyTask"
                 @call-scheduled="onCompanyCallScheduled"
+                @show-tour="runTour"
                 :company
                 :last-surveys
                 :survey="surveyDraft ?? survey"
                 :surveys-count
                 class="survey-form__header"
+            />
+            <SurveyFormWarningPending
+                v-if="isDelayedSurvey"
+                @continue="continueSurvey"
+                :draft="surveyDraft"
             />
         </template>
         <template #default="{ minimized }">
@@ -52,6 +61,7 @@
                     v-else-if="canBeCreated || isEditMode"
                     ref="stepper"
                     @canceled="$emit('close')"
+                    @delayed="$emit('close')"
                     @completed="$emit('close')"
                     @draft-expired="surveyDraft = null"
                     @draft-deleted="$emit('close')"
@@ -65,6 +75,7 @@
                     :contacts
                     :draft="surveyDraft"
                     :survey
+                    :disabled="isDelayedSurvey"
                 />
                 <MessengerQuizFormWarningNoContacts
                     v-else-if="contacts.length === 0"
@@ -100,6 +111,9 @@
                         class="confirm"
                         title="Подтверждение действия"
                         hide-header
+                        :container-attrs="{
+                            'data-tour-id': 'survey-form:stepper-close'
+                        }"
                     >
                         <div class="confirm__content">
                             <div class="confirm__description">
@@ -138,7 +152,7 @@
     </UiMinimizeModal>
 </template>
 <script setup lang="ts">
-import { computed, reactive, ref, shallowRef, toRef, useTemplateRef } from 'vue';
+import { computed, reactive, ref, shallowRef, toRef, useTemplateRef, watch } from 'vue';
 import { useFormData } from '@/utils/use/useFormData.js';
 import SurveyFormHeader from '@/components/SurveyForm/SurveyFormHeader.vue';
 import api from '@/api/api.js';
@@ -164,7 +178,10 @@ import UiModal from '@/components/common/UI/UiModal.vue';
 import UiButton from '@/components/common/UI/UiButton.vue';
 import { toDateFormat } from '@/utils/formatters/date.js';
 import { SurveyView } from '@/types/survey';
-import { useEventBus } from '@vueuse/core';
+import { useEventBus, useTimeoutFn } from '@vueuse/core';
+import SurveyFormWarningPending from '@/components/SurveyForm/SurveyFormWarningPending.vue';
+import { createTourStepElementGenerator } from '@/composables/useTour/useTourStep';
+import { useTour } from '@/composables/useTour/useTour';
 
 const emit = defineEmits<{
     (e: 'close'): void;
@@ -272,8 +289,8 @@ async function fetchLastSurveys() {
 
 const surveyDraft = ref(null);
 
-const { isLoading: surveyDraftIsSearching, execute: searchSurveyDraft } = useAsync(
-    api.survey.findDraftByChatMemberId,
+const { isLoading: surveyDraftIsSearching, execute: searchPendingSurvey } = useAsync(
+    api.survey.findPendingByChatMemberId,
     {
         onFetchResponse({ response }) {
             surveyDraft.value = response;
@@ -301,7 +318,7 @@ async function fetchInitialData() {
     fetchLastSurveys();
 
     if (!isEditMode.value) {
-        await searchSurveyDraft();
+        await searchPendingSurvey();
     }
 
     initialDataIsLoading.value = false;
@@ -312,7 +329,7 @@ async function fetchInitialData() {
 const stepper = useTemplateRef('stepper');
 
 function close() {
-    if (surveyDraft.value) {
+    if (surveyDraft.value && !isDelayedSurvey.value) {
         showCloseModal();
     } else {
         emit('close');
@@ -590,4 +607,128 @@ function onMinimized() {
 
     saveDraft();
 }
+
+function continueSurvey() {
+    surveyDraft.value.status = 'draft';
+}
+
+const isDelayedSurvey = computed(() => surveyDraft.value && surveyDraft.value.status === 'delayed');
+
+// tour
+
+const createTourStepElement = createTourStepElementGenerator('survey-form');
+
+watch(
+    initialDataIsLoading,
+    value => {
+        if (!value && !isEditMode.value && canBeCreated.value) {
+            softRunTour();
+        }
+    },
+    { once: true }
+);
+
+const { softRun: softRunTour, run: runTour } = useTour('survey-form', {
+    autorun: false,
+    steps: [
+        {
+            key: 0,
+            popover: {
+                title: 'Опрос клиента',
+                description:
+                    'Добро пожаловать в важный компонент системы - опрос клиентов. Здесь можно заполнять актуальную информацию по клиенту, создавать быстрые задачи и ознакомиться со всеми предложениями/запросами клиента'
+            }
+        },
+        {
+            key: 1,
+            element: createTourStepElement('header-company'),
+            popover: {
+                title: 'Информация о компании',
+                description:
+                    'В этой части опроса можно ознакомиться с основными характеристиками компании. Посмотреть описание, документы или старые опросы.',
+                side: 'bottom',
+                align: 'center'
+            }
+        },
+        {
+            key: 2,
+            element: createTourStepElement('header-company-actions'),
+            popover: {
+                title: 'Управление компанией',
+                description:
+                    'Управление компанией, создание задач и перемещение в папки доступно в несколько кликов.',
+                side: 'left',
+                align: 'center'
+            },
+            onHighlighted(element) {
+                element?.click();
+            }
+        },
+        {
+            key: 3,
+            element: createTourStepElement('stepper-navigation'),
+            popover: {
+                title: 'Навигация по опросу',
+                description:
+                    'Опрос состоит из 4 шагов. Переходите по ним, чтобы заполнить информацию по предложения и запросам клиента.',
+                side: 'bottom',
+                align: 'center'
+            }
+        },
+        {
+            key: 4,
+            element: createTourStepElement('stepper-helper'),
+            popover: {
+                title: 'Дополнительные вопросы',
+                description:
+                    'Эти дополнительные вопросы необходимо обсудить с клиентом в процессе разговора.',
+                side: 'bottom',
+                align: 'center'
+            }
+        },
+        {
+            key: 6,
+            element: createTourStepElement('stepper-contact-info'),
+            popover: {
+                title: 'Информация о контакте',
+                description:
+                    'В этой части вы можете ознакомиться с предыдущими звонками контакту, с номером телефонов и почтой для связи.',
+                side: 'right',
+                align: 'center'
+            }
+        },
+        {
+            key: 14,
+            element: createTourStepElement('stepper-actions'),
+            popover: {
+                title: 'Завершение опроса',
+                description:
+                    'После созвона с контактом вам станет доступна возможность завершить опрос. Вы сможете сохранить результаты или перенести опрос на несколько дней, если не удалось связаться с контактами.',
+                side: 'top',
+                align: 'center',
+                onNextClick(element, step, opts) {
+                    closeModalIsVisible.value = true;
+
+                    useTimeoutFn(() => {
+                        opts.driver.moveNext();
+                    }, 200);
+                }
+            }
+        },
+        {
+            key: 15,
+            element: createTourStepElement('stepper-close'),
+            popover: {
+                title: 'Сохранение черновика',
+                description:
+                    'Вы можете сохранить текущий опрос в черновике или продолжить его заполнение, чтобы завершить его в будущем.',
+                side: 'top',
+                align: 'center'
+            },
+            onDeselected() {
+                closeModalIsVisible.value = false;
+            }
+        }
+    ]
+});
 </script>

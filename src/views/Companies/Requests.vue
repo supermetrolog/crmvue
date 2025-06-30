@@ -493,7 +493,7 @@ function onCompleteSurvey(payload) {
     );
 
     requestsWithDraft.forEach(request => {
-        request.has_survey_draft = false;
+        request.has_pending_survey = false;
     });
 }
 

@@ -21,6 +21,7 @@
                     <template #actions>
                         <UiButton
                             @click="parametersFormIsVisible = true"
+                            :disabled
                             mini
                             icon="fa-solid fa-pen"
                             color="light"
@@ -49,13 +50,13 @@
                     </SurveyFormObjectsPreviewTab>
                 </template>
                 <span
-                    v-if="activeTradeOffers.length || modelValue.created?.length"
+                    v-if="(activeTradeOffers.length || modelValue.created?.length) && !disabled"
                     @click="addNewOffer"
                     class="survey-form-objects__link"
                 >
                     + Добавить
                 </span>
-                <div v-if="activeTradeOffers.length" class="d-flex gap-1 ml-auto">
+                <div v-if="activeTradeOffers.length && !disabled" class="d-flex gap-1 ml-auto">
                     <UiDropdownActions>
                         <template #trigger>
                             <UiButton color="light" class="py-0 px-1 op-7" mini>
@@ -93,6 +94,7 @@
                             @edit="editNewOffer(offer)"
                             @delete="deleteNewOffer(offer)"
                             :offer="offer"
+                            :disabled
                             editable
                         />
                         <hr
@@ -107,6 +109,7 @@
                             :offer="tradeOffer"
                             :commercial-offer="commercialOffersByIdMap[tradeOffer.offer_id]"
                             :object
+                            :disabled
                             editable
                         />
                     </div>
@@ -116,6 +119,7 @@
                             <template #actions>
                                 <UiButton
                                     @click="addNewOffer"
+                                    :disabled
                                     color="success-light"
                                     icon="fa-solid fa-plus"
                                 >
@@ -243,7 +247,8 @@ const props = defineProps({
     survey: {
         type: Object,
         required: true
-    }
+    },
+    disabled: Boolean
 });
 
 const activeTradeOffers = shallowRef([]);

@@ -16,6 +16,10 @@ function close() {
     dropdownEl.value.close();
 }
 
+function open() {
+    dropdownEl.value?.display();
+}
+
 function eventListener(event) {
     event.stopPropagation();
     if (event.code === 'Escape') close();
@@ -26,5 +30,5 @@ function visibleHandler(visible) {
     else document.removeEventListener('keydown', eventListener, true);
 }
 
-defineExpose({ close });
+defineExpose({ close, open });
 </script>
