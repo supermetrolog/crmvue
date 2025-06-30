@@ -196,7 +196,15 @@ const completedOtherLength = computed(() => {
 const progress = computed(() => {
     if (isNullish(form.value)) return 0;
 
-    return 0;
+    const totalValue =
+        otherQuestions.value.length + props.objects.length + props.requests.length + 1;
+    const value =
+        completedObjectsLength.value +
+        completedRequestsLength.value +
+        completedOtherLength.value +
+        1;
+
+    return (value / totalValue) * 100;
 });
 
 const title = computed(() => {
