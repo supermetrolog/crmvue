@@ -312,14 +312,17 @@ const initialDataIsLoading = ref(false);
 async function fetchInitialData() {
     initialDataIsLoading.value = true;
 
-    fetchCompany();
-    fetchContacts();
+    const promises = [fetchCompany(), fetchContacts()];
+
     await fetchChatMember();
-    fetchLastSurveys();
+
+    promises.push(fetchLastSurveys());
 
     if (!isEditMode.value) {
         await searchPendingSurvey();
     }
+
+    await Promise.allSettled(promises);
 
     initialDataIsLoading.value = false;
 }
