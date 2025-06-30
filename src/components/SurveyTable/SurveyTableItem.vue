@@ -169,13 +169,15 @@ const props = defineProps({
 const surveyStatusesEnum = {
     COMPLETED: 'completed',
     DRAFT: 'draft',
-    CANCELLED: 'canceled'
+    CANCELLED: 'canceled',
+    DELAYED: 'delayed'
 };
 
 const surveyStatuses = {
     [surveyStatusesEnum.COMPLETED]: 'Завершен',
     [surveyStatusesEnum.DRAFT]: 'Черновик',
-    [surveyStatusesEnum.CANCELLED]: 'Отменен'
+    [surveyStatusesEnum.CANCELLED]: 'Отменен',
+    [surveyStatusesEnum.DELAYED]: 'Отложен'
 };
 
 const statusLabel = computed(() => surveyStatuses[props.survey.status]);
@@ -183,6 +185,7 @@ const statusLabel = computed(() => surveyStatuses[props.survey.status]);
 const statusColor = computed(() => {
     if (props.survey.status === surveyStatusesEnum.COMPLETED) return 'text-success';
     if (props.survey.status === surveyStatusesEnum.DRAFT) return 'text-grey';
+    if (props.survey.status === surveyStatusesEnum.DELAYED) return 'text-warning';
     return 'color-danger';
 });
 
