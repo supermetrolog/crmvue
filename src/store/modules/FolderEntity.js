@@ -20,6 +20,12 @@ const FolderEntity = {
             loaded: false,
             entities: [],
             needsUpdate: false
+        },
+        request: {
+            loading: false,
+            loaded: false,
+            entities: [],
+            needsUpdate: false
         }
     },
     mutations: {

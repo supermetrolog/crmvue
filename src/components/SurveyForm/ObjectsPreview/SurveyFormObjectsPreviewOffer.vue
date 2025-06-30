@@ -79,12 +79,14 @@
                             <UiButtonIcon
                                 @click="selectAnswer(ANSWER.SUCCESS)"
                                 :active="hasSuccessStatus"
+                                :disabled
                                 icon="fa-solid fa-thumbs-up"
                                 label="Без изменений"
                             />
                             <UiButtonIcon
                                 @click="selectAnswer(ANSWER.FAIL)"
                                 :active="hasFailStatus"
+                                :disabled
                                 icon="fa-solid fa-thumbs-down"
                                 label="Больше не актуально"
                                 class="survey-form-object-preview-offer__action-negative"
@@ -92,6 +94,7 @@
                             <UiButtonIcon
                                 @click="selectAnswer(ANSWER.EDIT)"
                                 :active="needEditing"
+                                :disabled
                                 icon="fa-solid fa-pen"
                                 label="Внести изменения"
                                 class="survey-form-object-preview-offer__action-warning"
@@ -144,6 +147,7 @@
                     :min-height="60"
                     :max-height="200"
                     :toolbar="false"
+                    :disabled
                     placeholder="Что необходимо изменить или добавить?"
                     class="survey-form-object-preview-offer__editor mt-2 font-weight-bold"
                 >
@@ -198,7 +202,8 @@ const props = defineProps({
         required: true
     },
     editable: Boolean,
-    passive: Boolean
+    passive: Boolean,
+    disabled: Boolean
 });
 
 const dealTypeName = computed(() => dealOptions.type[props.commercialOffer.deal_type]);

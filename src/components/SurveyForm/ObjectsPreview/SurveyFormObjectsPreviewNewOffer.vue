@@ -28,12 +28,14 @@
                         <div v-if="editable" class="survey-form-object-preview-offer__actions">
                             <UiButtonIcon
                                 @click="$emit('edit')"
+                                :disabled
                                 icon="fa-solid fa-pen"
                                 label="Редактировать"
                                 small
                             />
                             <UiButtonIcon
                                 @click="$emit('delete')"
+                                :disabled
                                 icon="fa-solid fa-trash"
                                 label="Удалить"
                                 small
@@ -142,7 +144,8 @@ const props = defineProps({
         type: Object,
         required: true
     },
-    editable: Boolean
+    editable: Boolean,
+    disabled: Boolean
 });
 
 const dealTypeName = computed(() => dealOptions.type[props.offer.deal_type]);

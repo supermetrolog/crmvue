@@ -42,6 +42,7 @@
                 </template>
             </UiDropdownActions>
             <UiCheckbox
+                v-if="!disabled"
                 @change="$emit('toggle-checked', $event)"
                 :checked
                 class="survey-form-object__checkbox"

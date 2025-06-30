@@ -1,14 +1,101 @@
 <template>
-    <Tr class="request-table-item">
+    <Tr class="request-table-item" :class="{ cloned: request.cloned }">
         <Td class="text-center request-table-item__id">
             <p class="mb-1">#{{ request.id }}</p>
             <div class="request-table-item__buttons">
-                <HoverActionsButton @click="$emit('to-chat')" label="Открыть в чате">
-                    <i class="fa-solid fa-comment" />
-                </HoverActionsButton>
-                <HoverActionsButton @click="$emit('view')" label="Подробнее">
-                    <i class="fa-solid fa-eye" />
-                </HoverActionsButton>
+                <UserFoldersDropdown
+                    @deleted-from-folder="$emit('deleted-from-folder', $event)"
+                    morph="request"
+                    :entity="request.id"
+                />
+                <UiDropdownActions :title small>
+                    <template #menu>
+                        <UiDropdownActionsGroup>
+                            <UiDropdownActionsButton
+                                @handle="$emit('open-survey')"
+                                :icon="
+                                    request.has_pending_survey
+                                        ? 'fa-solid fa-play'
+                                        : 'fa-solid fa-square-poll-horizontal'
+                                "
+                                :label="
+                                    request.has_pending_survey
+                                        ? 'Продолжить опрос'
+                                        : 'Заполнить опрос'
+                                "
+                            />
+                        </UiDropdownActionsGroup>
+                        <UiDropdownActionsGroup>
+                            <UiDropdownActionsButton
+                                @handle="$emit('view')"
+                                label="Подробнее"
+                                icon="fa-solid fa-eye"
+                            />
+                            <UiDropdownActionsButton
+                                @handle="$emit('to-chat')"
+                                label="Открыть в чате"
+                                icon="fa-solid fa-comment"
+                            />
+                            <a :href="timelineHref" target="_blank" class="text-inherit">
+                                <UiDropdownActionsButton
+                                    label="Открыть таймлайн"
+                                    icon="fa-solid fa-up-right-from-square"
+                                />
+                            </a>
+                        </UiDropdownActionsGroup>
+                        <UiDropdownActionsGroup>
+                            <UiDropdownActionsButton
+                                @handle="$emit('create-task')"
+                                icon="fa-solid fa-bolt"
+                                label="Создать задачу"
+                            />
+                        </UiDropdownActionsGroup>
+                        <UiDropdownActionsGroup>
+                            <template v-if="!isDone">
+                                <UiDropdownActionsButton
+                                    v-if="isPassive"
+                                    @handle="$emit('enable')"
+                                    label="Восстановить"
+                                    icon="fa-solid fa-undo"
+                                />
+                                <UiDropdownActionsButton
+                                    v-else
+                                    @handle="$emit('disable')"
+                                    label="Архивировать"
+                                    icon="fa-solid fa-ban"
+                                />
+                                <UiDropdownActionsButton
+                                    v-if="canChangeConsultant"
+                                    @handle="$emit('change-consultant')"
+                                    label="Изменить консультанта"
+                                    icon="fa-solid fa-user-tag"
+                                />
+                            </template>
+                            <UiDropdownActionsButton
+                                @handle="$emit('edit')"
+                                label="Редактировать"
+                                icon="fa-solid fa-pen"
+                            />
+                            <UiDropdownActionsButton
+                                @handle="$emit('clone')"
+                                label="Клонировать"
+                                icon="fa-solid fa-clone"
+                            />
+                        </UiDropdownActionsGroup>
+                    </template>
+                </UiDropdownActions>
+                <UiButtonIcon
+                    v-if="request.has_pending_survey"
+                    @click="$emit('open-survey')"
+                    small
+                    icon="fa-solid fa-play"
+                    label="Продолжить заполнение опроса"
+                    :color="
+                        request.pending_survey_status === 'draft'
+                            ? 'success-light'
+                            : 'warning-light'
+                    "
+                />
             </div>
         </Td>
         <Td class="request-table__deal" sort="dealType">
@@ -33,6 +120,34 @@
                 <div class="col-12">
                     <Progress :percent="request.timeline_progress" title="Обработано" />
                 </div>
+                <p ref="createdAtEl" class="text-grey fs-1">
+                    <i class="fa-solid fa-calendar mr-1" />
+                    <span>{{ createdAt }}</span>
+                </p>
+            </div>
+            <div class="d-flex gap-1 mt-3">
+                <UiButton
+                    v-if="request.tasks_count"
+                    @click="$emit('show-tasks')"
+                    color="danger-light"
+                    icon="fa-solid fa-arrow-up-right-from-square"
+                    class="fs-2"
+                    small
+                    rect
+                >
+                    Задачи ({{ request.tasks_count }})
+                </UiButton>
+                <UiButton
+                    v-if="request.created_task_ids?.length"
+                    @click="$emit('show-created-tasks')"
+                    color="success-light"
+                    icon="fa-solid fa-plus"
+                    class="fs-2"
+                    small
+                    rect
+                >
+                    Созданы задачи ({{ request.created_task_ids?.length }})
+                </UiButton>
             </div>
         </Td>
         <Td class="text-center request-table__area request-table-item__area">
@@ -104,7 +219,11 @@
             />
             <p v-else>&#8212;</p>
         </Td>
-        <Td class="text-center request-table__status" sort="updated_at">
+        <Td class="text-center request-table__status position-relative" sort="updated_at">
+            <UiField v-if="request.cloned" color="dark" class="fs-2 mx-auto mb-1">
+                <i class="fa-solid fa-clone" />
+                <span>Клонирован</span>
+            </UiField>
             <UiField
                 v-if="isPassive"
                 :tooltip="passiveWhyComment"
@@ -118,20 +237,9 @@
             <UiField v-else class="dashboard-bg-primary-l offer-table-item__chip">
                 Завершен
             </UiField>
-            <!--            <OfferTableItemCall @click="openSurvey" :call="company.last_call" />-->
-            <!--            <HoverActionsButton-->
-            <!--                @click="openInChat"-->
-            <!--                class="my-2 mx-auto offer-table-item__chat"-->
-            <!--                :label="`У вас ${offer.unread_message_count} непрочитанных сообщений по этой компании`"-->
-            <!--            >-->
-            <!--                <div class="d-flex flex-column">-->
-            <!--                    <i class="fa-solid fa-comment" />-->
-            <!--                    <span>{{ offer.unread_message_count }}</span>-->
-            <!--                </div>-->
-            <!--            </HoverActionsButton>-->
             <TableDateBlock
                 class="text-center"
-                :date="request.updated_at || request.created_at"
+                :date="request.updated_at ?? request.created_at"
                 label="Обновление"
             />
         </Td>
@@ -144,17 +252,38 @@ import Tr from '@/components/common/Table/Tr.vue';
 import WithUnitType from '@/components/common/WithUnitType.vue';
 import Progress from '@/components/common/Progress.vue';
 import { unitTypes } from '@/const/unitTypes.js';
-import { computed, defineProps } from 'vue';
+import { computed, defineProps, useTemplateRef } from 'vue';
 import { ucFirst } from '@/utils/formatters/string.js';
 import { DealTypeList, DirectionList, DistrictList, PassiveWhyRequest } from '@/const/const.js';
-import HoverActionsButton from '@/components/common/HoverActions/HoverActionsButton.vue';
 import Avatar from '@/components/common/Avatar.vue';
 import CompanyElement from '@/components/Company/CompanyElement.vue';
 import CompanyContact from '@/components/Company/CompanyContact.vue';
 import TableDateBlock from '@/components/common/Table/TableDateBlock.vue';
 import UiField from '@/components/common/UI/UiField.vue';
+import UiDropdownActionsGroup from '@/components/common/UI/DropdownActions/UiDropdownActionsGroup.vue';
+import UiDropdownActions from '@/components/common/UI/DropdownActions/UiDropdownActions.vue';
+import UiDropdownActionsButton from '@/components/common/UI/DropdownActions/UiDropdownActionsButton.vue';
+import { useAuth } from '@/composables/useAuth.js';
+import { toBeautifulDateFormat } from '@/utils/formatters/date.js';
+import { useTippy } from 'vue-tippy';
+import UiButton from '@/components/common/UI/UiButton.vue';
+import UiButtonIcon from '@/components/common/UI/UiButtonIcon.vue';
+import UserFoldersDropdown from '@/components/UserFolder/UserFoldersDropdown.vue';
 
-defineEmits(['to-chat', 'view']);
+defineEmits([
+    'to-chat',
+    'view',
+    'open-survey',
+    'disable',
+    'enable',
+    'edit',
+    'change-consultant',
+    'clone',
+    'create-task',
+    'show-tasks',
+    'deleted-from-folder'
+]);
+
 const props = defineProps({
     request: {
         type: Object,
@@ -175,6 +304,7 @@ const dealType = computed(() => DealTypeList[props.request.dealType].label);
 
 const isPassive = computed(() => !props.request.status);
 const isActive = computed(() => props.request.status === 1);
+const isDone = computed(() => props.request.status === 2);
 
 const passiveWhyComment = computed(() => {
     if (!props.request.passive_why) return 'Причина не указана';
@@ -183,4 +313,25 @@ const passiveWhyComment = computed(() => {
     if (props.request.passive_why_comment) text += ': ' + props.request.passive_why_comment;
     return text;
 });
+
+const title = computed(() => {
+    if (props.request.name) return `${props.request.name} (#${props.request.id})`;
+    return `Запрос #${props.request.id}`;
+});
+
+const timelineHref = computed(() => {
+    return `/companies/${props.request.company_id}?request_id=${props.request.id}&consultant_id=${currentUserId.value}&step=0`;
+});
+
+const { currentUserIsModeratorOrHigher, currentUserId } = useAuth();
+
+const canChangeConsultant = computed(() => {
+    return (
+        currentUserIsModeratorOrHigher.value || currentUserId.value === props.request.consultant_id
+    );
+});
+
+const createdAt = computed(() => toBeautifulDateFormat(props.request.created_at));
+
+useTippy(useTemplateRef('createdAtEl'), { content: 'Дата создания запроса' });
 </script>

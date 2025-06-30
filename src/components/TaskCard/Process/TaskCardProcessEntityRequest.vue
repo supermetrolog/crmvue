@@ -28,7 +28,7 @@
                     <UiDropdownActionsButton
                         v-else
                         @handle="$emit('disable')"
-                        label="В пассив"
+                        label="Архивировать"
                         icon="fa-solid fa-ban"
                     />
                 </template>

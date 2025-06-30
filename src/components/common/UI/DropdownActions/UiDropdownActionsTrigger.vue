@@ -22,9 +22,17 @@ const props = defineProps({
     color: String
 });
 
-useTippy(useTemplateRef('trigger'), { content: toRef(props, 'label') });
+const trigger = useTemplateRef('trigger');
+
+useTippy(trigger, { content: toRef(props, 'label') });
 
 const classes = computed(() => ({
     [`ui-dropdown-actions__trigger--cl-${props.color}`]: isNotNullish(props.color)
 }));
+
+function click() {
+    trigger.value.click();
+}
+
+defineExpose({ click });
 </script>

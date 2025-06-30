@@ -1549,6 +1549,7 @@
     &__accordion {
         font-weight: 500;
         background-color: transparent !important;
+        padding: 10px;
     }
 
     &__preview {
@@ -2660,4 +2661,14 @@
             background-color: #f88f01;
         }
     }
+}
+
+.survey-form-warning-pending {
+    position: absolute;
+    top: 60px;
+    right: 10px;
+    padding: 10px;
+    border-radius: 5px;
+    background-color: #f88f01;
+    color: #fff
 }

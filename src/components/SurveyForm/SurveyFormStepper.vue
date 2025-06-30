@@ -10,6 +10,12 @@
         class="survey-form__stepper"
         footer-class="survey-form__footer"
         :disabled="isCreating"
+        :navigation-attrs="{
+            'data-tour-id': 'survey-form:stepper-navigation'
+        }"
+        :body-attrs="{
+            'data-tour-id': 'survey-form:stepper-body'
+        }"
     >
         <template #after-navigation>
             <SurveyFormStepperRelations :company :survey="currentSurvey" />
@@ -27,6 +33,7 @@
                 :contacts
                 :chat-member-id
                 :survey-id="currentSurveyId"
+                :disabled
             />
         </template>
         <template #2>
@@ -37,11 +44,16 @@
                 :company
                 :objects
                 :survey="survey ?? draft"
+                :disabled
             />
         </template>
         <template #3>
             <Spinner v-if="requestsIsLoading" class="absolute-center" label="Загрузка запросов.." />
-            <SurveyFormRequests v-else v-model="form.requests" :company :requests />
+            <SurveyFormRequests v-else
+v-model="form.requests"
+:company
+:requests
+:disabled />
         </template>
         <template #4>
             <Spinner
@@ -55,19 +67,31 @@
                 :form="form.other"
                 :questions="otherQuestions"
                 :company
+                :disabled
             />
         </template>
         <template #footer="{ complete }">
-            <AnimationTransition :speed="0.5">
-                <UiButton
-                    v-if="canBeCancelled"
-                    @click="cancelSurvey"
-                    tooltip='Завершить опрос с отметкой "Не удалось дозвониться"'
-                    color="success"
-                    icon="fa-solid fa-phone-slash"
-                >
-                    Можно сохранить опрос
-                </UiButton>
+            <div class="d-flex gap-2" data-tour-id="survey-form:stepper-actions">
+                <template v-if="canBeCancelled">
+                    <UiButton
+                        @click="delaySurvey"
+                        tooltip="Отложить опрос на 5 дней для дальнейшей попытки созвониться"
+                        color="warning"
+                        icon="fa-solid fa-phone-slash"
+                        :disabled
+                    >
+                        Можно отложить опрос
+                    </UiButton>
+                    <UiButton
+                        @click="cancelSurvey"
+                        tooltip='Завершить опрос с отметкой "Не удалось дозвониться"'
+                        color="danger-light"
+                        icon="fa-solid fa-phone-slash"
+                        :disabled
+                    >
+                        Можно сохранить опрос
+                    </UiButton>
+                </template>
                 <UiButton
                     v-else
                     @click="complete"
@@ -75,10 +99,11 @@
                     icon="fa-solid fa-check"
                     class="survey-form__stepper-action"
                     :class="{ disabled: !formIsValid }"
+                    :disabled
                 >
                     {{ formIsValid ? 'Можно сохранить опрос' : 'Нельзя сохранить опрос' }}
                 </UiButton>
-            </AnimationTransition>
+            </div>
         </template>
         <template #after>
             <Loader v-if="isCreating || surveyIsUpdating" label="Сохранение опроса.." />
@@ -107,7 +132,6 @@ import { useAuth } from '@/composables/useAuth.js';
 import { isNullish } from '@/utils/helpers/common/isNullish.ts';
 import UiButton from '@/components/common/UI/UiButton.vue';
 import { useAsync } from '@/composables/useAsync.js';
-import { useSharedWindowFocus } from '@/composables/useSharedWindowFocus.js';
 import SurveyFormObjects from '@/components/SurveyForm/SurveyFormObjects.vue';
 import Spinner from '@/components/common/Spinner.vue';
 import { useStore } from 'vuex';
@@ -123,10 +147,11 @@ import { captureException } from '@sentry/vue';
 import dayjs from 'dayjs';
 import { getCompanyShortName } from '@/utils/formatters/models/company.js';
 import Loader from '@/components/common/Loader.vue';
-import AnimationTransition from '@/components/common/AnimationTransition.vue';
 import SurveyFormStepperRelations from '@/components/SurveyForm/SurveyFormStepperRelations.vue';
 import SurveyFormStepperHelper from '@/components/SurveyForm/SurveyFormStepperHelper.vue';
 import SurveyFormStepperSummary from '@/components/SurveyForm/SurveyFormStepperSummary.vue';
+import { useConfirm } from '@/composables/useConfirm.js';
+import { createTourStepElementGenerator, useTourStep } from '@/composables/useTour/useTourStep';
 
 function toBool(value) {
     if (typeof value === 'string') return value === 'true';
@@ -142,7 +167,8 @@ const emit = defineEmits([
     'contact-created',
     'contact-updated',
     'completed',
-    'canceled'
+    'canceled',
+    'delayed'
 ]);
 
 const props = defineProps({
@@ -160,7 +186,8 @@ const props = defineProps({
     chatMemberId: {
         type: Number,
         required: true
-    }
+    },
+    disabled: Boolean
 });
 
 const isEditMode = computed(() => isNotNullish(props.survey));
@@ -252,23 +279,15 @@ watch(
 
         if (value) pause();
         else resume();
-    }
+    },
+    { immediate: true }
 );
-
-const windowIsFocused = useSharedWindowFocus();
-
-watch(windowIsFocused, value => {
-    if (value) {
-        resume();
-    } else {
-        pause();
-    }
-});
 
 const draftShouldBeSaved = ref(false);
 
 function onUpdateStep() {
-    if (!isLoading.value && isNullish(props.survey)) draftShouldBeSaved.value = true;
+    if (!isLoading.value && isNullish(props.survey) && !props.disabled)
+        draftShouldBeSaved.value = true;
 }
 
 watch(draftShouldBeSaved, value => {
@@ -615,16 +634,6 @@ function createSurveyPayload() {
     };
 }
 
-async function findSurveyMessage(surveyId, toChatMemberId) {
-    const { data: messages } = await api.messenger.getMessagesByQuery({
-        to_chat_member_id: toChatMemberId,
-        survey_id: surveyId
-    });
-
-    if (messages.length > 0) return messages[0];
-    return null;
-}
-
 function generateTaskPayload(title, additional = {}) {
     return {
         start: dayjs().toDate(),
@@ -650,7 +659,7 @@ function createRelation(type, id) {
     };
 }
 
-async function createPotentialTasks(contacts, messageId, surveyId = null) {
+async function createPotentialTasks(contacts, surveyId = null) {
     const relations = [createRelation('company', props.company.id)];
 
     if (surveyId) {
@@ -688,10 +697,7 @@ async function createPotentialTasks(contacts, messageId, surveyId = null) {
     }, []);
 
     if (payloads.length > 0) {
-        return await api.messenger.createTasks(
-            messageId,
-            payloads.map(element => element.payload)
-        );
+        await Promise.allSettled(payloads.map(element => api.task.create(element.payload)));
     }
 }
 
@@ -730,25 +736,8 @@ async function submit() {
         return;
     }
 
-    let surveyMessage;
-
     try {
-        surveyMessage = await findSurveyMessage(props.draft.id, props.chatMemberId);
-    } catch (error) {
-        notify.info('Не удалось установить связь с чатом, создайте задачи по контактам вручную..');
-        isCreating.value = false;
-
-        captureException(error, {
-            survey_id: props.draft.id,
-            user_id: currentUserId.value,
-            company_id: props.company.id
-        });
-
-        return;
-    }
-
-    try {
-        await createPotentialTasks(calls, surveyMessage.id, props.draft.id);
+        await createPotentialTasks(calls, props.draft.id);
     } catch (error) {
         notify.info('Не удалось создать задачи по контактам, создайте задачи вручную..');
         isCreating.value = false;
@@ -762,7 +751,7 @@ async function submit() {
         return;
     }
 
-    notify.success('Опрос успешно сохранен!', 'Опрос клиента');
+    notify.success('Опрос успешно завершен!', 'Опрос клиента');
     isCreating.value = false;
 
     emit('completed');
@@ -791,25 +780,8 @@ async function cancel() {
     await api.survey.updateWithAnswers(surveyId, surveyPayload);
     await api.survey.cancel(surveyId);
 
-    let surveyMessage;
-
     try {
-        surveyMessage = await findSurveyMessage(surveyId, props.chatMemberId);
-    } catch (error) {
-        notify.info('Не удалось установить связь с чатом, создайте задачи по контактам вручную..');
-        isCreating.value = false;
-
-        captureException(error, {
-            survey_id: surveyId,
-            user_id: currentUserId.value,
-            company_id: props.company.id
-        });
-
-        return;
-    }
-
-    try {
-        await createPotentialTasks(calls, surveyMessage.id, surveyId);
+        await createPotentialTasks(calls, surveyId);
     } catch (error) {
         notify.info('Не удалось создать задачи по контактам, создайте задачи вручную..');
         isCreating.value = false;
@@ -823,7 +795,7 @@ async function cancel() {
         return;
     }
 
-    notify.success('Опрос успешно сохранен!');
+    notify.success('Опрос успешно завершен!', 'Работа с опросом');
     isCreating.value = false;
     emit('canceled');
     bus.emit('canceled', { companyId: props.company.id });
@@ -832,6 +804,52 @@ async function cancel() {
 function completeOrCancel() {
     if (isCancelling.value) cancel();
     else submit();
+}
+
+const { confirm } = useConfirm();
+
+async function delaySurvey() {
+    const confirmed = await confirm({
+        title: 'Отложить опрос',
+        message:
+            'Вы уверены, что хотите отложить опрос? Все ответы будут сохранены для заполнения позже.'
+    });
+
+    if (!confirmed) return;
+
+    isCreating.value = true;
+
+    let surveyId = props.draft?.id;
+
+    if (isNullish(props.draft)) {
+        const response = await createDraft();
+        surveyId = response.id;
+    }
+
+    const { survey: surveyPayload, calls } = createSurveyPayload();
+
+    await api.survey.updateWithAnswers(surveyId, surveyPayload);
+    await api.survey.delay(surveyId);
+
+    try {
+        await createPotentialTasks(calls, surveyId);
+    } catch (error) {
+        notify.info('Не удалось создать задачи по контактам, создайте задачи вручную..');
+        isCreating.value = false;
+
+        captureException(error, {
+            survey_id: surveyId,
+            user_id: currentUserId.value,
+            company_id: props.company.id
+        });
+
+        return;
+    }
+
+    notify.success('Опрос отложен', 'Работа с опросом');
+    isCreating.value = false;
+    emit('delayed');
+    bus.emit('delayed', { companyId: props.company.id, surveyId });
 }
 
 // objects
@@ -996,4 +1014,67 @@ watch(summaryModalIsVisible, value => {
 function completeSurvey() {
     summaryModalIsVisible.value = true;
 }
+
+// tour
+
+const createTourStepElement = createTourStepElementGenerator('survey-form');
+
+const { addStep } = useTourStep({
+    key: 7,
+    element: createTourStepElement('stepper-contact-question'),
+    popover: {
+        title: 'Результат звонка',
+        description:
+            'Укажите, удалось ли связаться с контактом. В случае неудачи укажите подробности.',
+        side: 'left',
+        align: 'center'
+    },
+    onDeselected: () => {
+        step.value = 1;
+    }
+});
+
+addStep({
+    key: 10,
+    element: createTourStepElement('stepper-body'),
+    popover: {
+        title: 'Запросы клиента',
+        description:
+            'На данном шаге необходимо указать актуальные запросов клиента или добавить новые, если такие существуют.',
+        side: 'top',
+        align: 'center'
+    },
+    onHighlightStarted: () => {
+        step.value = 2;
+    }
+});
+
+addStep({
+    key: 13,
+    element: createTourStepElement('stepper-body'),
+    popover: {
+        title: 'Дополнительные вопросы',
+        description:
+            'Дополнительные вопросы не связаны с текущими предложениями или запросами клиента и относятся конкретно к планам компании. Вы можете просто пропустить их, если не уверены, что контакт сможет дать ответ.',
+        side: 'top',
+        align: 'center'
+    },
+    onHighlightStarted: () => {
+        step.value = 3;
+    }
+});
+
+addStep({
+    key: 16,
+    popover: {
+        title: 'Хорошего дня!',
+        description:
+            'При возникновении ошибок или вопросов, пожалуйста, сообщайте и обращайтесь в WhatsApp CRM-системы.',
+        side: 'over',
+        align: 'center'
+    },
+    onHighlightStarted: () => {
+        step.value = 0;
+    }
+});
 </script>

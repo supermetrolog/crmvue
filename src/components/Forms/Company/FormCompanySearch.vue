@@ -13,7 +13,7 @@
                     <div class="ml-md-2 mt-2 mt-md-0 d-flex gap-2 w-100">
                         <UiButton
                             @click="extraIsVisible = !extraIsVisible"
-                            :badge="filtersCount || null"
+                            :badge="filtersCount || undefined"
                             icon="fa-solid fa-sliders"
                             color="light"
                         >

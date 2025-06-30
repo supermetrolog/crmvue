@@ -48,92 +48,86 @@
         </VirtualDragList>
     </div>
 </template>
-<script>
+<script setup>
 import EmptyData from '@/components/common/EmptyData.vue';
 import MessengerDialogRequestSkeleton from '@/components/Messenger/Dialog/MessengerDialogRequestSkeleton.vue';
 import MessengerDialogRequest from '@/components/Messenger/Dialog/MessengerDialogRequest.vue';
-import { mapActions, mapState, useStore } from 'vuex';
+import { useStore } from 'vuex';
 import InfiniteLoading from 'v3-infinite-loading';
 import VirtualDragList from 'vue-virtual-draglist';
 import Spinner from '@/components/common/Spinner.vue';
 import { useDelayedLoader } from '@/composables/useDelayedLoader.js';
 import { useInfiniteLoading } from '@/composables/useInfiniteLoading.js';
 import { useAsyncPopup } from '@/composables/useAsyncPopup.js';
+import { computed, inject, useTemplateRef, watch } from 'vue';
+import { isNotNullish } from '@/utils/helpers/common/isNotNullish';
+import { useTimeoutFn } from '@vueuse/core';
 
-export default {
-    name: 'MessengerPanelCompanyRequests',
-    components: {
-        Spinner,
-        VirtualDragList,
-        InfiniteLoading,
-        MessengerDialogRequest,
-        MessengerDialogRequestSkeleton,
-        EmptyData
-    },
-    inject: ['lastRenderedObjectCount', 'setLastRendererObjectCount'],
-    props: {
-        companyID: {
-            type: Number,
-            required: true
-        }
-    },
-    setup(props) {
-        const { isLoading } = useDelayedLoader();
-        const store = useStore();
-        const getCompanyRequests = (page = 1) =>
-            store.dispatch('Messenger/getCompanyChats', {
-                companyID: props.companyID,
-                modelType: 'request',
-                page,
-                status: 1
-            });
+const lastRenderedObjectCount = inject('lastRenderedObjectCount');
+const setLastRendererObjectCount = inject('setLastRendererObjectCount');
 
-        const {
-            items: requests,
-            pagination,
-            load: loadRequests
-        } = useInfiniteLoading(getCompanyRequests);
-
-        const { show: showLastCallPopup } = useAsyncPopup('chatMemberLastCall');
-
-        return {
-            requests,
-            pagination,
-            isLoading,
-            loadRequests,
-            getCompanyRequests,
-            showLastCallPopup
-        };
-    },
-    computed: {
-        ...mapState({ currentDialogID: state => state.Messenger.currentPanelDialogID })
-    },
-    watch: {
-        isLoading(value) {
-            if (!value) this.setLastRendererObjectCount(Math.min(this.requests.length, 3) || 1);
-        }
-    },
-    methods: {
-        ...mapActions({
-            selectChat: 'Messenger/selectChat'
-        }),
-        async fetchRequests() {
-            this.isLoading = true;
-
-            const data = await this.getCompanyRequests();
-
-            this.requests = data.data;
-            this.pagination = data.pagination;
-
-            this.isLoading = false;
-        },
-        async updateCall(payload, record) {
-            const response = await this.showLastCallPopup(payload);
-            if (response) record.last_call = response.lastCall;
-        }
-    },
-    created() {
-        this.fetchRequests();
+const props = defineProps({
+    companyID: {
+        type: Number,
+        required: true
     }
-};
+});
+
+const { isLoading } = useDelayedLoader();
+const store = useStore();
+
+const getCompanyRequests = (page = 1) =>
+    store.dispatch('Messenger/getCompanyChats', {
+        companyID: props.companyID,
+        modelType: 'request',
+        page,
+        status: 1
+    });
+
+const { items: requests, pagination, load: loadRequests } = useInfiniteLoading(getCompanyRequests);
+
+const { show: showLastCallPopup } = useAsyncPopup('chatMemberLastCall');
+
+const currentDialogID = computed(() => store.state.Messenger.currentPanelDialogID);
+
+const virtual = useTemplateRef('virtualList');
+
+const { start: scrollToTarget } = useTimeoutFn(
+    () => {
+        if (isNotNullish(currentDialogID.value)) {
+            virtual.value.scrollToKey(currentDialogID.value);
+        }
+    },
+    100,
+    { immediate: false }
+);
+
+watch(isLoading, value => {
+    if (!value) {
+        setLastRendererObjectCount(Math.min(requests.value.length, 3) || 1);
+        scrollToTarget();
+    }
+});
+
+function selectChat(options) {
+    store.dispatch('Messenger/selectChat', options);
+}
+
+async function updateCall(payload, record) {
+    const response = await showLastCallPopup(payload);
+    if (response) record.last_call = response.lastCall;
+}
+
+async function fetchRequests() {
+    isLoading.value = true;
+
+    const data = await getCompanyRequests();
+
+    requests.value = data.data;
+    pagination.value = data.pagination;
+
+    isLoading.value = false;
+}
+
+fetchRequests();
 </script>

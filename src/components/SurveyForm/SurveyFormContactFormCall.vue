@@ -1,6 +1,9 @@
 <template>
     <div class="survey-form-contact-form-call">
-        <div class="survey-form-contact-form-call__question">
+        <div
+            class="survey-form-contact-form-call__question"
+            data-tour-id="survey-form:stepper-contact-question"
+        >
             <p class="survey-form-contact-form-call__question-text mb-2">Дозвонились?</p>
             <div class="d-flex gap-1 align-items-center">
                 <RadioChip v-model="available"
@@ -35,9 +38,15 @@ label="Да"
                         />
                         <UiDropdownActionsButton
                             @handle="$emit('schedule-visit')"
-                            icon="fa-solid fa-people-arrows"
-                            label="Встреча (в разраб.)"
-                            disabled
+                            :icon="form.visit ? 'fa-solid fa-check' : 'fa-solid fa-people-arrows'"
+                            :label="form.visit ? 'Встреча запланирована' : 'Встреча'"
+                            :disabled="!!form.visit"
+                        />
+                        <UiDropdownActionsButton
+                            @handle="$emit('schedule-event')"
+                            :icon="form.event ? 'fa-solid fa-check' : 'fa-solid fa-calendar-plus'"
+                            :label="form.event ? 'Действие запланировано' : 'Действие'"
+                            :disabled="!!form.event"
                         />
                     </template>
                 </UiDropdownActions>
@@ -86,7 +95,7 @@ import UiDropdownActions from '@/components/common/UI/DropdownActions/UiDropdown
 import UiDropdownActionsButton from '@/components/common/UI/DropdownActions/UiDropdownActionsButton.vue';
 import { plural } from '@/utils/plural.js';
 
-const emit = defineEmits(['schedule-call', 'change']);
+const emit = defineEmits(['schedule-call', 'change', 'schedule-visit', 'schedule-event']);
 const props = defineProps({
     contact: {
         type: Object,
@@ -177,12 +186,12 @@ const completedCallsCount = computed(() =>
     )
 );
 
-let lastCallsCount = 0;
-let pluralLastCallsCount = null;
-const lastCallsStatus = props.contact.calls[props.contact.calls.length - 1]?.status;
+let lastCallsCount = 1;
+let pluralLastCallsCount = '1 попытка';
+const lastCallsStatus = props.contact.calls[0]?.status;
 
 function handleCalls() {
-    for (let i = props.contact.calls.length - 1; i > 0; i--) {
+    for (let i = 1; i < props.contact.calls.length; i++) {
         if (props.contact.calls[i].status === props.contact.calls[i - 1].status) {
             lastCallsCount++;
         } else {
@@ -287,7 +296,7 @@ const unavailableReasonOptions = [
     createAvailableReasonOptionUnavailable(),
     {
         value: 7,
-        label: 'Не существует',
+        label: 'Не существует/не зарегистрирован',
         icon: 'fa-solid fa-ban',
         after: '(Будет удален)',
         afterClass: 'text-danger'

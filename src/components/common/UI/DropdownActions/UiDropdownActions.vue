@@ -1,8 +1,13 @@
 <template>
-    <VDropdown>
+    <VDropdown ref="dropdownEl">
         <template #trigger>
             <slot name="trigger">
-                <UiButtonIcon :label :disabled :icon :small :color :class="buttonClass" />
+                <UiButtonIcon :label
+:disabled
+:icon
+:small
+:color
+:class="buttonClass" />
             </slot>
         </template>
         <DropdownContent class="ui-dropdown-actions" :class="menuClass" :z-index="4001">
@@ -26,6 +31,7 @@
 import UiButtonIcon from '@/components/common/UI/UiButtonIcon.vue';
 import VDropdown from '@/components/common/Dropdown/VDropdown.vue';
 import { DropdownContent } from 'v-dropdown';
+import { useTemplateRef } from 'vue';
 
 defineProps({
     disabled: Boolean,
@@ -41,4 +47,12 @@ defineProps({
     buttonClass: [String, Object, Array],
     titleClass: [String, Object, Array]
 });
+
+const dropdownEl = useTemplateRef('dropdownEl');
+
+function open() {
+    dropdownEl.value?.open();
+}
+
+defineExpose({ open });
 </script>

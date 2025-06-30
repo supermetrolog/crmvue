@@ -33,12 +33,12 @@
                             <UiDropdownActionsButton
                                 @handle="openInSurvey"
                                 :icon="
-                                    company.has_survey_draft
+                                    company.has_pending_survey
                                         ? 'fa-solid fa-play'
                                         : 'fa-solid fa-square-poll-horizontal'
                                 "
                                 :label="
-                                    company.has_survey_draft ? 'Продолжить опрос' : 'Начать опрос'
+                                    company.has_pending_survey ? 'Продолжить опрос' : 'Начать опрос'
                                 "
                             />
                             <UiDropdownActionsButton

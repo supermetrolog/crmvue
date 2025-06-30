@@ -8,15 +8,6 @@
         :close-on-press-esc="false"
         :close-on-outside-click="false"
     >
-        <template #header-actions>
-            <UiButtonIcon
-                @click="runTour"
-                mini
-                label="Помощь"
-                icon="fa-solid fa-question"
-                color="light"
-            />
-        </template>
         <UiForm>
             <Loader v-if="isCreating" />
             <UiFormGroup>
@@ -29,9 +20,8 @@
                             :rounded="false"
                             required
                             object-key="label"
-                            label="Дата планируемого звонка"
+                            label="Дата события"
                             class="col-12"
-                            data-tour-id="call-scheduler:start"
                         />
                         <UiFormDivider class="w-100" />
                         <MultiSelect
@@ -43,7 +33,6 @@
                             class="col-12"
                             can-deselect
                             placeholder="Выберите контакта.."
-                            data-tour-id="call-scheduler:contact"
                         >
                             <template #option="{ option, isSelected }">
                                 <div class="d-flex flex-column">
@@ -73,7 +62,6 @@
                             </template>
                         </MultiSelect>
                         <UiInput
-                            v-if="titleInputShouldBeShown"
                             v-model="form.title"
                             label="Название задачи"
                             required
@@ -82,12 +70,11 @@
                         <UiTextarea
                             v-model="form.comment"
                             label="Комментарий"
-                            placeholder="Комментарий к запланированному звонку.."
+                            placeholder="Комментарий к событию.."
                             auto-height
                             :min-height="60"
                             :max-height="200"
                             class="col-12"
-                            data-tour-id="call-scheduler:comment"
                         />
                     </div>
                 </UiCol>
@@ -95,19 +82,14 @@
                     <DatePicker
                         v-model="form.start"
                         @change="form.startOption = CUSTOM_START_OPTION"
-                        @update-month-year="onUpdateMonthYear"
                         :min-date="new Date()"
                         :v="v$.form.start"
-                        :markers="events"
-                        :events-loading="eventsIsLoading"
                         size="40px"
                         label="Календарь"
-                        data-tour-id="call-scheduler:calendar"
                     />
                 </div>
             </UiFormGroup>
         </UiForm>
-        <CallSchedulerTour ref="tourEl" />
         <template #actions="{ close }">
             <UiButton
                 @click="submit"
@@ -115,7 +97,7 @@
                 icon="fa-solid fa-check"
                 :loading="isCreating"
             >
-                Запланировать
+                Сохранить
             </UiButton>
             <UiButton @click="close" color="light" icon="fa-solid fa-ban" :disabled="isCreating">
                 Отмена
@@ -128,7 +110,7 @@ import UiForm from '@/components/common/Forms/UiForm.vue';
 import UiFormGroup from '@/components/common/Forms/UiFormGroup.vue';
 import DatePicker from '@/components/common/Forms/DatePicker/DatePicker.vue';
 import RadioOptions from '@/components/common/Forms/RadioOptions.vue';
-import { computed, onBeforeMount, reactive, ref, useTemplateRef, watch } from 'vue';
+import { computed, onBeforeMount, reactive, ref, watch } from 'vue';
 import { useValidation } from '@/composables/useValidation.js';
 import { helpers, maxLength, minLength, required } from '@vuelidate/validators';
 import dayjs from 'dayjs';
@@ -147,17 +129,12 @@ import { useSearchContacts } from '@/composables/useSearchContacts.ts';
 import UiField from '@/components/common/UI/UiField.vue';
 import Loader from '@/components/common/Loader.vue';
 import { useNotify } from '@/utils/use/useNotify.js';
-import { useCalendarEvents } from '@/composables/useCalendarEvents.js';
-import { useDebounceFn } from '@vueuse/core';
-import CallSchedulerTour from '@/components/CallScheduler/CallSchedulerTour.vue';
-import UiButtonIcon from '@/components/common/UI/UiButtonIcon.vue';
 
 const emit = defineEmits(['close', 'created']);
 const props = defineProps({
     company: Object,
     contact: Object,
     chatMemberId: Number,
-    withMessage: Boolean,
     relations: {
         type: Array,
         default: () => []
@@ -166,14 +143,14 @@ const props = defineProps({
 
 const title = computed(() => {
     if (props.contact) {
-        return `Запланировать звонок | ${props.contact.full_name}`;
+        return `Запланировать действие | ${props.contact.full_name}`;
     }
 
     if (props.company) {
-        return `Запланировать звонок | ${props.company.full_name}`;
+        return `Запланировать действие | ${props.company.full_name}`;
     }
 
-    return 'Запланировать звонок';
+    return 'Запланировать действие';
 });
 
 const currentCompanyId = computed(() => props.company?.id ?? props.contact?.company_id);
@@ -187,7 +164,7 @@ const {
 const form = reactive({
     start: getPreparedStartDate(1, 'month'),
     startOption: 6,
-    title: generateTaskTitle(),
+    title: null,
     comment: null,
     contact_id: props.contact?.id
 });
@@ -261,10 +238,7 @@ function generateStartPresets() {
         100: {
             value: null,
             icon: 'fa-solid fa-calendar',
-            label: 'Выбрать вручную..',
-            attrs: {
-                tourId: 'call-scheduler:custom-start'
-            }
+            label: 'Выбрать вручную..'
         }
     };
 }
@@ -288,16 +262,6 @@ watch(
 const CUSTOM_START_OPTION = 100;
 
 const calendarIsActive = computed(() => Number(form.startOption) === CUSTOM_START_OPTION);
-
-function generateTaskTitle() {
-    if (props.contact) {
-        return `Созвониться с ${props.contact.full_name} (комп. "${props.company.full_name}")`;
-    }
-
-    if (props.company) {
-        return `Созвониться c компанией "${props.company.full_name}"`;
-    }
-}
 
 function generateTaskRelations() {
     const relations = [...props.relations];
@@ -329,7 +293,7 @@ function formToPayload() {
         end: dayjs(form.start).add(5, 'days').toDate(),
         user_id: currentUserId.value,
         relations: generateTaskRelations(),
-        type: 'scheduled_call'
+        type: 'scheduled_event'
     };
 }
 
@@ -345,12 +309,9 @@ async function submit() {
 
         const payload = formToPayload();
 
-        let response;
+        const response = await api.task.create(payload);
 
-        if (props.withMessage) response = await createTaskWithMessage(payload);
-        else response = await createTask(payload);
-
-        notify.success('Звонок успешно запланирован');
+        notify.success('Действие успешно запланировано');
 
         emit('created', response, payload);
         emit('close');
@@ -359,59 +320,8 @@ async function submit() {
     }
 }
 
-async function createTask(payload) {
-    return await api.task.create(payload);
-}
-
-function generateMessagePayload() {
-    const payload = {
-        message: `Запланировал звонок на ${dayjs(form.start).format('D.MM.YYYY')}`,
-        template: 'schedule-call'
-    };
-
-    if (form.contact_id) payload.contact_ids = [form.contact_id];
-
-    return payload;
-}
-
-async function createTaskWithMessage(payload) {
-    await api.messenger.sendMessageWithTask(props.chatMemberId, generateMessagePayload(), payload);
-}
-
-const titleInputShouldBeShown = ref(false);
-
 onBeforeMount(() => {
     generateStartPresets();
-
-    titleInputShouldBeShown.value = form.title.length < 16;
-
     searchContacts();
 });
-
-// scheduled events
-
-const { loadEventsAround, events, isLoading: eventsIsLoading } = useCalendarEvents();
-
-const onUpdateMonthYear = useDebounceFn(({ month, year }) => {
-    loadEventsAround(dayjs().month(month).year(year));
-}, 400);
-
-const debouncedLoadEventsAround = useDebounceFn(loadEventsAround, 400);
-
-onBeforeMount(() => loadEventsAround(dayjs()));
-
-watch(
-    () => form.startOption,
-    value => {
-        if (value) {
-            debouncedLoadEventsAround(form.start);
-        }
-    }
-);
-
-const tourEl = useTemplateRef('tourEl');
-
-function runTour() {
-    tourEl.value?.run();
-}
 </script>

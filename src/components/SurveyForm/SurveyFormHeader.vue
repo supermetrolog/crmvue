@@ -7,11 +7,13 @@
             @create-task="$emit('create-task')"
             @schedule-call="scheduleCallModalIsVisible = true"
             @schedule-visit="scheduleVisitModalIsVisible = true"
+            @show-tour="$emit('show-tour')"
             :company
             :last-surveys
             :surveys-count
             :survey
             editable
+            data-tour-id="survey-form:header-company"
         />
         <teleport to="body">
             <CallScheduler
@@ -43,7 +45,8 @@ const emit = defineEmits([
     'update-company',
     'to-chat',
     'create-task',
-    'call-scheduled'
+    'call-scheduled',
+    'show-tour'
 ]);
 
 const props = defineProps({

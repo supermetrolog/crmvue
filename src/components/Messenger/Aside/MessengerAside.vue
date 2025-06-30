@@ -13,10 +13,7 @@ import MessengerAsideConsultants from '@/components/Messenger/Aside/MessengerAsi
 import MessengerAsideOffers from '@/components/Messenger/Aside/MessengerAsideOffers.vue';
 
 const props = defineProps({
-    currentTab: {
-        type: Object,
-        default: null
-    }
+    currentTab: Object
 });
 
 const currentMessengerAsideComponent = computed(() => {

@@ -9,12 +9,13 @@
                     >
                         <span class="font-weight-bold fs-3">Строения ({{ objects.length }})</span>
                         <span
+                            v-if="!disabled"
                             @click="newObjectFormIsVisible = true"
                             class="ml-1 survey-form-objects__link"
                         >
                             + Добавить
                         </span>
-                        <UiDropdownActions v-if="objects.length" class="ml-auto">
+                        <UiDropdownActions v-if="objects.length && !disabled" class="ml-auto">
                             <template #trigger>
                                 <UiButton
                                     :color="hasCheckedObject ? 'success-light' : 'light'"
@@ -69,6 +70,7 @@
                     <div
                         v-if="objects.length || createdObjects.length"
                         class="survey-form-objects__list"
+                        data-tour-id="survey-form:stepper-objects-list"
                     >
                         <SurveyFormNewObject
                             v-for="(object, key) in createdObjects"
@@ -96,6 +98,7 @@
                             :active="selectedObject?.id === object.id"
                             :object="object"
                             :checked="checkedObjects.has(object.id)"
+                            :disabled
                             editable
                             class="survey-form-objects__element"
                         />
@@ -105,8 +108,10 @@
                         <template #actions>
                             <UiButton
                                 @click="newObjectFormIsVisible = true"
+                                :disabled
                                 color="success-light"
                                 icon="fa-solid fa-plus"
+                                data-tour-id="survey-form:stepper-objects-create"
                             >
                                 Добавить объект
                             </UiButton>
@@ -132,6 +137,7 @@
                     :object="selectedObject"
                     :company
                     :survey
+                    :disabed
                 />
                 <div v-else-if="selectedNewObject" class="pl-2">
                     <p class="form__subtitle">Тип объекта</p>
@@ -232,6 +238,7 @@ import RadioChip from '@/components/common/Forms/RadioChip.vue';
 import { unrefElement, useElementVisibility } from '@vueuse/core';
 import UiButtonIcon from '@/components/common/UI/UiButtonIcon.vue';
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
+import { createTourStepElementGenerator, useTourStep } from '@/composables/useTour/useTourStep';
 
 const props = defineProps({
     objects: {
@@ -242,7 +249,8 @@ const props = defineProps({
         type: Object,
         required: true
     },
-    survey: Object
+    survey: Object,
+    disabled: Boolean
 });
 
 const form = defineModel({ type: Object });
@@ -534,6 +542,49 @@ function scrollToSelected() {
     el?.scrollIntoView({
         behavior: 'smooth',
         block: 'center'
+    });
+}
+
+// tour
+
+const createTourStepElement = createTourStepElementGenerator('survey-form');
+
+const { addStep } = useTourStep();
+
+addStep({
+    key: 8,
+    element: createTourStepElement('stepper-body'),
+    popover: {
+        title: 'Предложения клиента',
+        description:
+            'В процессе разговора с клиентом необходимо обсудить предложения. Выяснить актуальность предложений, находящихся в нашей CRM. Также необходимо уточнить, не появилось ли у клиента новых строений или участков с предложениями.',
+        side: 'over',
+        align: 'center'
+    }
+});
+
+if (props.objects.length) {
+    addStep({
+        key: 9,
+        element: createTourStepElement('stepper-objects-list'),
+        popover: {
+            title: 'Список объектов',
+            description:
+                'Переходите по карточкам объектов, чтобы ознакомиться с информацией о них. Изучайте фотографии и расположение объекта наведением мышки на превью.',
+            side: 'right',
+            align: 'center'
+        }
+    });
+} else {
+    addStep({
+        key: 9,
+        element: createTourStepElement('stepper-objects-create'),
+        popover: {
+            title: 'Добавление объекта',
+            description: 'Добавляйте новые объекты и предложения клиента в CRM с помощью формы.',
+            side: 'bottom',
+            align: 'center'
+        }
     });
 }
 </script>
