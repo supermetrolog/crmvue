@@ -16,6 +16,7 @@ export type TourID = string;
 
 export type TourOptions<T = DriverOptions> = T & {
     autorun?: boolean;
+    force?: boolean;
     steps?: TourStep[];
 };
 
@@ -25,7 +26,7 @@ export function useTour(tourId: TourID, options: TourOptions = {}) {
     const isRunning = ref(false);
     const isAlreadyShown = ref(false);
 
-    const { autorun = true } = options;
+    const { autorun = true, force: forceAutoRun = false } = options;
 
     const tourSteps = ref<TourStep[]>([]);
 
@@ -118,7 +119,8 @@ export function useTour(tourId: TourID, options: TourOptions = {}) {
     }
 
     onMounted(() => {
-        if (autorun) void softRun();
+        if (forceAutoRun) void run();
+        else if (autorun) void softRun();
     });
 
     onBeforeUnmount(() => {

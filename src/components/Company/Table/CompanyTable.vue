@@ -1,48 +1,36 @@
 <template>
     <Table shadow fluid class="company-table">
         <template #thead>
-            <Tr>
+            <Tr data-tour-id="company-table-filters:header">
                 <Th>#</Th>
                 <Th class="text-left" sort="nameRu">название компании</Th>
-                <Th>работа с компанией</Th>
+                <Th
+                    v-model:filters="activityFilters"
+                    @confirm-filter="confirmActivityFilters"
+                    data-tour-id="company-table-filters:column-activity"
+                >
+                    <template #default>работа с компанией</template>
+                    <template #filter>
+                        <CompanyTableFiltersActivity v-model="activityFilters" />
+                    </template>
+                </Th>
                 <Th v-model:filters="consultantFilters" @confirm-filter="confirmConsultantFilters">
                     <template #default>консультант</template>
                     <template #filter>
-                        <div class="row">
-                            <Spinner v-if="consultantsIsLoading" small />
-                            <ConsultantPicker
-                                v-else
-                                v-model="consultantFilters.consultant_id"
-                                :options="getConsultantsOptions"
-                                class="col-12"
-                                :append-to-body="false"
-                            />
-                        </div>
+                        <CompanyTableFiltersConsultant v-model="consultantFilters" />
                     </template>
                 </Th>
                 <Th
+                    ref="statusThEl"
                     v-model:filters="dateFilters"
                     @confirm-filter="confirmDateFilters"
                     :sorting-options
+                    name="status"
+                    data-tour-id="company-table-filters:column-status"
                 >
                     <template #default>статус</template>
                     <template #filter>
-                        <div class="row">
-                            <UiDateInput
-                                v-model="dateFilters.dateStart"
-                                placeholder="Дата внесения"
-                                label="Внесено после"
-                                :max-date="new Date()"
-                                class="col-6"
-                            />
-                            <UiDateInput
-                                v-model="dateFilters.dateEnd"
-                                placeholder="Дата внесения"
-                                label="Внесено до"
-                                class="col-6"
-                                :min-date="dateFilters.dateStart"
-                            />
-                        </div>
+                        <CompanyTableFiltersStatus v-model="dateFilters" />
                     </template>
                 </Th>
             </Tr>
@@ -94,17 +82,18 @@ import Table from '@/components/common/Table/Table.vue';
 import Th from '@/components/common/Table/Th.vue';
 import Tr from '@/components/common/Table/Tr.vue';
 import Loader from '@/components/common/Loader.vue';
-import UiDateInput from '@/components/common/Forms/UiDateInput.vue';
-import { onMounted, reactive, ref, watch } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
+import { onMounted, ref } from 'vue';
+import { useRoute } from 'vue-router';
 import dayjs from 'dayjs';
-import ConsultantPicker from '@/components/common/Forms/ConsultantPicker/ConsultantPicker.vue';
-import { useConsultantsOptions } from '@/composables/options/useConsultantsOptions.js';
 import Spinner from '@/components/common/Spinner.vue';
 import EmptyData from '@/components/common/EmptyData.vue';
 import Td from '@/components/common/Table/Td.vue';
 import { useAsyncPopup } from '@/composables/useAsyncPopup.js';
 import TaskPreview from '@/components/TaskPreview/TaskPreview.vue';
+import { useTableColumnFilters } from '@/composables/useTableColumnFilters';
+import CompanyTableFiltersActivity from '@/components/Company/Table/Filters/CompanyTableFiltersActivity.vue';
+import CompanyTableFiltersStatus from '@/components/Company/Table/Filters/CompanyTableFiltersStatus.vue';
+import CompanyTableFiltersConsultant from '@/components/Company/Table/Filters/CompanyTableFiltersConsultant.vue';
 
 defineEmits([
     'deleted-from-folder',
@@ -135,77 +124,50 @@ defineProps({
 
 // query filters
 
-const { getConsultantsOptions, isFetching: consultantsIsLoading } = useConsultantsOptions();
+const { filters: dateFilters, confirmFilters: confirmDateFilters } = useTableColumnFilters(
+    {
+        dateStart: null,
+        dateEnd: null,
+        status: null
+    },
+    {
+        transform: {
+            dateStart: value => dayjs(value).toJSON(),
+            dateEnd: value => dayjs(value).toJSON()
+        },
+        prepare: {
+            dateStart: value => dayjs(value).toDate(),
+            dateEnd: value => dayjs(value).toDate()
+        }
+    }
+);
 
-const dateFilters = reactive({
-    dateStart: null,
-    dateEnd: null
+const { filters: consultantFilters, confirmFilters: confirmConsultantFilters } =
+    useTableColumnFilters({
+        consultant_id: null
+    });
+
+const { filters: activityFilters, confirmFilters: confirmActivityFilters } = useTableColumnFilters({
+    without_surveys: null,
+    with_current_user_tasks: null,
+    requests_filter: null
 });
 
-const consultantFilters = reactive({
-    consultant_id: null
-});
+const route = useRoute();
 
 function initFilters() {
     dateFilters.dateStart = route.query.dateStart ? dayjs(route.query.dateStart).toDate() : null;
     dateFilters.dateEnd = route.query.dateEnd ? dayjs(route.query.dateEnd).toDate() : null;
+    dateFilters.status = route.query.status;
 
     consultantFilters.consultant_id = route.query.consultant_id;
+
+    activityFilters.without_surveys = route.query.without_surveys;
+    activityFilters.with_current_user_tasks = route.query.with_current_user_tasks;
+    activityFilters.requests_filter = route.query.requests_filter;
 }
 
 onMounted(initFilters);
-
-const router = useRouter();
-const route = useRoute();
-
-function confirmDateFilters() {
-    const query = { ...route.query };
-
-    if (dateFilters.dateStart) {
-        query.dateStart = dayjs(dateFilters.dateStart).toJSON();
-    } else {
-        delete query.dateStart;
-    }
-
-    if (dateFilters.dateEnd) {
-        query.dateEnd = dayjs(dateFilters.dateEnd).toJSON();
-    } else {
-        delete query.dateEnd;
-    }
-
-    router.replace({ query });
-}
-
-function confirmConsultantFilters() {
-    const query = { ...route.query };
-
-    query.consultant_id = consultantFilters.consultant_id;
-
-    router.replace({ query });
-}
-
-// date
-
-watch(
-    () => route.query.dateStart,
-    value => {
-        dateFilters.dateStart = value ? dayjs(value).toDate() : null;
-    }
-);
-
-watch(
-    () => route.query.dateEnd,
-    value => {
-        dateFilters.dateEnd = value ? dayjs(value).toDate() : null;
-    }
-);
-
-watch(
-    () => route.query.consultant_id,
-    value => {
-        consultantFilters.consultant_id = value;
-    }
-);
 
 // sort
 
@@ -259,4 +221,83 @@ function onUpdatedTask(payload) {
     Object.assign(currentTask.value, payload);
     currentTask.value = null;
 }
+
+// // tour
+//
+// const statusThEl = useTemplateRef('statusThEl');
+//
+// const createTourStepElement = createTourStepElementGenerator('company-table-filters');
+//
+// useTour('company-table-filters', {
+//     force: true,
+//     steps: [
+//         {
+//             key: 1,
+//             element: createTourStepElement('header'),
+//             popover: {
+//                 title: 'Новые возможности в таблице',
+//                 description:
+//                     'Сортируйте и фильтруйте компании прямо из таблицы с помощью быстрых фильтров.',
+//                 side: 'top',
+//                 align: 'center'
+//             }
+//         },
+//         {
+//             key: 2,
+//             element: createTourStepElement('column-status', '.th__filter'),
+//             popover: {
+//                 title: 'Сортировка компаний',
+//                 description:
+//                     'Для выбора сортировки просто нажмите на значок сортировки в заголовке столбца.',
+//                 side: 'left',
+//                 align: 'center',
+//                 onNextClick(element, step, { driver }) {
+//                     element?.click();
+//
+//                     useTimeoutFn(() => driver.moveNext(), 100);
+//                 }
+//             }
+//         },
+//         {
+//             key: 3,
+//             element: '.th-dd-content__sort[data-tr-name="status"] .th-dd-content__sort-select',
+//             popover: {
+//                 title: 'Возможности сортировки',
+//                 description: 'Вы можете выбрать сортировку по актуальности, дате внесения и т.д.',
+//                 side: 'left',
+//                 align: 'center'
+//             }
+//         },
+//         {
+//             key: 4,
+//             element: '.th-dd-content__sort[data-tr-name="status"] .th-dd-content__sort-order',
+//             popover: {
+//                 title: 'Порядок сортировки',
+//                 description:
+//                     'Для изменения порядка сортировки просто выберите один из вариантов. Например, показывать сначала добавленные давно или сначала добавленные недавно',
+//                 side: 'left',
+//                 align: 'center',
+//                 onNextClick(element, step, { driver }) {
+//                     statusThEl.value?.closeFilters();
+//
+//                     driver.moveNext();
+//                 }
+//             }
+//         },
+//         {
+//             key: 5,
+//             element: createTourStepElement('column-activity', '.th__filter'),
+//             popover: {
+//                 title: 'Фильтры для удобной работы',
+//                 description:
+//                     'Теперь есть возможность просмотреть только те компании, с которыми необходимо работать прямо сейчас. Например, просмотреть только компании с активными задачами, или только компании без опросов.',
+//                 side: 'top',
+//                 align: 'center'
+//             },
+//             onHighlighted(element) {
+//                 element?.click();
+//             }
+//         }
+//     ]
+// });
 </script>
