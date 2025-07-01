@@ -68,7 +68,8 @@ export const filtersAliases = {
     expressRequest: 'Срочный запрос',
     gateTypes: 'Тип ворот:',
     directions: 'Направления:',
-    objectClasses: 'Класс:'
+    objectClasses: 'Класс:',
+    without_surveys: 'Без завершенных опросов'
 };
 
 const IGNORING_FILTERS = new Set([

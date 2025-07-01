@@ -8,7 +8,10 @@ export interface TourStep extends DriveStep {
 }
 
 export function createTourStepElementGenerator(tourId: TourID) {
-    return (name: string) => `[data-tour-id="${tourId}:${name}"]`;
+    return (name: string, path?: string) => {
+        if (isNotNullish(path)) return `[data-tour-id="${tourId}:${name}"] ${path}`;
+        return `[data-tour-id="${tourId}:${name}"]`;
+    };
 }
 
 export function useTourStep(step?: TourStep) {
