@@ -70,9 +70,11 @@
                     @survey-updated="onUpdateSurvey"
                     @contact-created="onContactCreated"
                     @contact-updated="onContactUpdated"
+                    @add-contact="suggestCreateContact"
                     :chat-member-id
                     :company
                     :contacts
+                    :passive-contacts
                     :draft="surveyDraft"
                     :survey
                     :disabled="isDelayedSurvey"
@@ -312,14 +314,17 @@ const initialDataIsLoading = ref(false);
 async function fetchInitialData() {
     initialDataIsLoading.value = true;
 
-    fetchCompany();
-    fetchContacts();
+    const promises = [fetchCompany(), fetchContacts()];
+
     await fetchChatMember();
-    fetchLastSurveys();
+
+    promises.push(fetchLastSurveys());
 
     if (!isEditMode.value) {
         await searchPendingSurvey();
     }
+
+    await Promise.allSettled(promises);
 
     initialDataIsLoading.value = false;
 }

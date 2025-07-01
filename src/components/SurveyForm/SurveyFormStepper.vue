@@ -29,8 +29,10 @@
                 @change="onChangeCalls"
                 @contact-created="$emit('contact-created', $event)"
                 @contact-updated="$emit('contact-updated', $event)"
+                @add-contact="$emit('add-contact')"
                 :company
                 :contacts
+                :passive-contacts
                 :chat-member-id
                 :survey-id="currentSurveyId"
                 :disabled
@@ -168,7 +170,8 @@ const emit = defineEmits([
     'contact-updated',
     'completed',
     'canceled',
-    'delayed'
+    'delayed',
+    'add-contact'
 ]);
 
 const props = defineProps({
@@ -187,7 +190,11 @@ const props = defineProps({
         type: Number,
         required: true
     },
-    disabled: Boolean
+    disabled: Boolean,
+    passiveContacts: {
+        type: Array,
+        default: () => []
+    }
 });
 
 const isEditMode = computed(() => isNotNullish(props.survey));

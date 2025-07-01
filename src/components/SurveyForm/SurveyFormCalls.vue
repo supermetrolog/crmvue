@@ -1,28 +1,61 @@
 <template>
     <div class="survey-form-calls p-2">
-        <div class="survey-form-calls__header mb-1">
-            <div class="survey-form-calls__title">Выберите контакт для разговора</div>
+        <div>
+            <div class="survey-form-object-preview__tabs">
+                <SurveyFormObjectsPreviewTab v-model="currenTab" :name="TABS.ACTIVE">
+                    <i class="fa-solid fa-up-long mr-1" />
+                    <span>Активные ({{ contacts.length }})</span>
+                </SurveyFormObjectsPreviewTab>
+                <span>|</span>
+                <SurveyFormObjectsPreviewTab v-model="currenTab" :name="TABS.PASSIVE">
+                    <i class="fa-solid fa-down-long mr-1" />
+                    <span>Архивные ({{ passiveContacts.length }})</span>
+                </SurveyFormObjectsPreviewTab>
+                <template v-if="contacts.length && !disabled">
+                    <span>|</span>
+                    <span @click="$emit('add-contact')" class="survey-form-objects__link">
+                        + Добавить
+                    </span>
+                </template>
+            </div>
         </div>
-        <div class="survey-form-calls__list">
-            <SurveyFormContact
-                v-for="contact in contacts"
-                :key="contact.id"
-                v-model="form[contact.id]"
-                @show-comments="showComments(contact)"
-                @edit="editContact(contact)"
-                @select="selectCurrentContact(contact)"
-                @schedule-call="createScheduleCallTask(contact)"
-                @schedule-visit="createScheduleVisitTask(contact)"
-                @schedule-event="createScheduleEventTask(contact)"
-                @change="$emit('change')"
-                @close="currentContact = null"
-                :contact="contact"
-                :active="currentContact?.id === contact.id"
-                :most-callable="contact.id === mostCallableContactId"
-                :disabled
-                editable
-                full
-            />
+        <div v-if="currenTab === TABS.ACTIVE">
+            <div class="survey-form-calls__list">
+                <SurveyFormContact
+                    v-for="contact in contacts"
+                    :key="contact.id"
+                    v-model="form[contact.id]"
+                    @show-comments="showComments(contact)"
+                    @edit="editContact(contact)"
+                    @select="selectCurrentContact(contact)"
+                    @schedule-call="createScheduleCallTask(contact)"
+                    @schedule-visit="createScheduleVisitTask(contact)"
+                    @schedule-event="createScheduleEventTask(contact)"
+                    @change="$emit('change')"
+                    @close="currentContact = null"
+                    :contact="contact"
+                    :active="currentContact?.id === contact.id"
+                    :most-callable="contact.id === mostCallableContactId"
+                    :disabled
+                    editable
+                    full
+                />
+            </div>
+        </div>
+        <div v-else-if="currenTab === TABS.PASSIVE">
+            <div v-if="passiveContacts.length" class="survey-form-calls__list">
+                <SurveyFormPassiveContact
+                    v-for="contact in passiveContacts"
+                    :key="contact.id"
+                    @show-comments="showComments(contact)"
+                    @edit="editContact(contact)"
+                    @select="selectCurrentContact(contact)"
+                    @close="currentContact = null"
+                    :contact="contact"
+                    :active="currentContact?.id === contact.id"
+                />
+            </div>
+            <EmptyData v-else class="mt-2"> Список архивных контактов пуст..</EmptyData>
         </div>
         <teleport to="body">
             <FormCompanyContact
@@ -87,14 +120,21 @@ import CallScheduler from '@/components/CallScheduler/CallScheduler.vue';
 import VisitScheduler from '@/components/VisitScheduler/VisitScheduler.vue';
 import EventScheduler from '@/components/EventScheduler/EventScheduler.vue';
 import { createTourStepElementGenerator, useTourStep } from '@/composables/useTour/useTourStep';
+import SurveyFormObjectsPreviewTab from '@/components/SurveyForm/ObjectsPreview/SurveyFormObjectsPreviewTab.vue';
+import EmptyData from '@/components/common/EmptyData.vue';
+import SurveyFormPassiveContact from '@/components/SurveyForm/SurveyFormPassiveContact.vue';
 
-const emit = defineEmits(['contact-created', 'contact-updated', 'change']);
+const emit = defineEmits(['contact-created', 'contact-updated', 'change', 'add-contact']);
 const props = defineProps({
     company: {
         type: Object,
         required: true
     },
     contacts: {
+        type: Array,
+        default: () => []
+    },
+    passiveContacts: {
         type: Array,
         default: () => []
     },
@@ -105,6 +145,15 @@ const props = defineProps({
     surveyId: Number,
     disabled: Boolean
 });
+
+// tabs
+
+const TABS = {
+    ACTIVE: 'active',
+    PASSIVE: 'passive'
+};
+
+const currenTab = ref(TABS.ACTIVE);
 
 const mostCallableContactId = computed(() => {
     let currentMaxIndex = 0;
