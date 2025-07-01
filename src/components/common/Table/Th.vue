@@ -25,7 +25,11 @@
                         />
                     </div>
                 </template>
-                <DropdownContent :z-index="4001" class="th-dd-content th-dd-content__sort">
+                <DropdownContent
+                    :z-index="4001"
+                    class="th-dd-content th-dd-content__sort"
+                    :data-tr-name="name"
+                >
                     <div class="p-3 w-100">
                         <MultiSelect
                             v-model="sortingOption"
@@ -33,7 +37,7 @@
                             placeholder="Выберите сортировку"
                             :options="sortingOptions"
                             :append-to-body="false"
-                            class="mb-2"
+                            class="mb-2 th-dd-content__sort-select"
                         >
                             <template #singlelabel="{ value }">
                                 <i
@@ -44,24 +48,26 @@
                                 <span>{{ value.label }}</span>
                             </template>
                         </MultiSelect>
-                        <span class="form__subtitle">Порядок сортировки</span>
-                        <div class="form__row mt-1">
-                            <RadioChip
-                                v-model="sortingOptionIsDesc"
-                                :disabled="sortingOptionOnlyAsc"
-                                label="Сначала старые"
-                                :value="false"
-                                :rounded="false"
-                                icon="fa-solid fa-sort-amount-down"
-                            />
-                            <RadioChip
-                                v-model="sortingOptionIsDesc"
-                                :disabled="sortingOptionOnlyAsc"
-                                label="Сначала новые"
-                                :value="true"
-                                :rounded="false"
-                                icon="fa-solid fa-sort-amount-up-alt"
-                            />
+                        <div class="th-dd-content__sort-order">
+                            <span class="form__subtitle">Порядок сортировки</span>
+                            <div class="form__row mt-1">
+                                <RadioChip
+                                    v-model="sortingOptionIsDesc"
+                                    :disabled="sortingOptionOnlyAsc"
+                                    label="Сначала старые"
+                                    :value="false"
+                                    :rounded="false"
+                                    icon="fa-solid fa-sort-amount-down"
+                                />
+                                <RadioChip
+                                    v-model="sortingOptionIsDesc"
+                                    :disabled="sortingOptionOnlyAsc"
+                                    label="Сначала новые"
+                                    :value="true"
+                                    :rounded="false"
+                                    icon="fa-solid fa-sort-amount-up-alt"
+                                />
+                            </div>
                         </div>
                         <div class="d-flex gap-2 mt-3 flex-wrap">
                             <slot name="actions">
@@ -79,7 +85,7 @@
                     </div>
                 </DropdownContent>
             </VDropdown>
-            <VDropdown v-if="$slots.filter">
+            <VDropdown v-if="$slots.filter" ref="filterDropdownEl">
                 <template #trigger>
                     <div class="th__filter">
                         <i ref="filterIcon" :class="filterIcon" />
@@ -88,7 +94,11 @@
                         </span>
                     </div>
                 </template>
-                <DropdownContent :z-index="4001" class="th-dd-content th-dd-content__filter">
+                <DropdownContent
+                    :z-index="4001"
+                    class="th-dd-content th-dd-content__filter"
+                    style="max-width: 550px"
+                >
                     <div class="p-3 w-100">
                         <slot name="filter" />
                         <div class="d-flex gap-2 mt-3 flex-wrap">
@@ -160,7 +170,8 @@ const props = defineProps({
         type: String,
         default: 'Открыть сортировку'
     },
-    sortingOptions: Array
+    sortingOptions: Array,
+    name: String
 });
 
 const isDescSort = computed(() => {
@@ -334,4 +345,12 @@ const filtersCount = computed(() => {
         0
     );
 });
+
+const filterDropdownEl = useTemplateRef('filterDropdownEl');
+
+function closeFilters() {
+    filterDropdownEl.value?.close();
+}
+
+defineExpose({ closeFilters });
 </script>

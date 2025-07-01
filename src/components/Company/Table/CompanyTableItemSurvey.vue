@@ -3,7 +3,14 @@
         <Loader v-if="company.last_survey.isLoading || isUpdating" small />
         <div class="company-table-item-survey__header">
             <div class="company-table-item-survey__title">
-                <span class="company-table-item-survey__name">
+                <span class="company-table-item-survey__name d-flex align-items-center">
+                    <Avatar
+                        v-if="company.last_survey.user_id !== company.user_id"
+                        :src="company.last_survey.user.userProfile.avatar"
+                        :size="24"
+                        :label="company.last_survey.user.userProfile.short_name"
+                        class="mr-2"
+                    />
                     <UiTooltipIcon
                         v-if="isCanceled"
                         tooltip="Не удалось дозвониться до компании"
@@ -242,6 +249,7 @@ import DashboardTableTasksItem from '@/components/Dashboard/Table/TasksItem/Dash
 import { useTypedTasks } from '@/composables/task/useTypedTasks.ts';
 import { Tippy } from 'vue-tippy';
 import ContactCard from '@/components/Contact/Card/ContactCard.vue';
+import Avatar from '@/components/common/Avatar.vue';
 
 const emit = defineEmits(['create-task', 'open-preview', 'edit-comment', 'show-task']);
 
