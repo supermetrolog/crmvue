@@ -183,7 +183,10 @@ import CallScheduler from '@/components/CallScheduler/CallScheduler.vue';
 import VisitScheduler from '@/components/VisitScheduler/VisitScheduler.vue';
 
 const route = useRoute();
+// const router = useRouter();
 const store = useStore();
+
+const { currentUserId } = useAuth();
 
 const COMPANIES = computed(() => store.getters.COMPANIES);
 const COMPANIES_PAGINATION = computed(() => store.getters.COMPANIES_PAGINATION);
@@ -216,6 +219,18 @@ const { next, nextWithScroll, queryIsInitialized, isInitialLoading } = useTableC
         scrollTo: firstPagination
     }
 );
+
+// initQuery: async () => {
+//     const query = { ...route.query };
+//
+//     const queryIsEmpty = Object.keys(query).length === 0;
+//
+//     if (queryIsEmpty) query.consultant_id = currentUserId.value;
+//
+//     query.sort = 'activity';
+//
+//     await router.replace({ query });
+// }
 
 const currentViewComponentName = computed(() => {
     if (isMobile) return CompanyGrid;
@@ -465,8 +480,6 @@ function showCreatedTasks(company) {
 
     tasksIsVisible.value = true;
 }
-
-const { currentUserId } = useAuth();
 
 async function fetchCompanyTasks() {
     tasksIsLoading.value = true;

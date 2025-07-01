@@ -210,6 +210,7 @@ watch(
 // sort
 
 const sortingOptions = [
+    { value: 'activity', label: 'По актуальности', icon: 'fa-solid fa-fire', onlyAsc: true },
     { value: 'updated_at', label: 'По дате модерации', icon: 'fa-solid fa-pen' },
     { value: 'created_at', label: 'По дате внесения', icon: 'fa-solid fa-calendar-plus' },
     {
