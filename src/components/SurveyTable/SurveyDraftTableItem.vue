@@ -8,6 +8,7 @@
                 class="mx-auto"
                 label="Продолжить заполнение"
                 small
+                :color="isDelayed ? 'warning-light' : undefined"
             />
             <div class="justify-content-center d-flex mt-1">
                 <UiDropdownActions small label="Действия над черновиком">
@@ -179,4 +180,6 @@ const companyUrl = computed(() => {
 const callsLabel = computed(() =>
     plural(props.survey.calls.length, '%d звонок', '%d звонка', '%d звонков')
 );
+
+const isDelayed = computed(() => props.survey.status === 'delayed');
 </script>

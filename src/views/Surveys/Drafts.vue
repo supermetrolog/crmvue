@@ -76,7 +76,7 @@ function createQuery() {
     return {
         sort: '-updated_at',
         ...route.query,
-        status: 'draft',
+        statuses: ['delayed', 'draft'],
         user_id: currentUserId.value
     };
 }

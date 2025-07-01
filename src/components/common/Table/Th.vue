@@ -48,6 +48,7 @@
                         <div class="form__row mt-1">
                             <RadioChip
                                 v-model="sortingOptionIsDesc"
+                                :disabled="sortingOptionOnlyAsc"
                                 label="Сначала старые"
                                 :value="false"
                                 :rounded="false"
@@ -55,6 +56,7 @@
                             />
                             <RadioChip
                                 v-model="sortingOptionIsDesc"
+                                :disabled="sortingOptionOnlyAsc"
                                 label="Сначала новые"
                                 :value="true"
                                 :rounded="false"
@@ -238,13 +240,30 @@ const sortingOption = computed({
     set: updateSortRoute
 });
 
+const sortingOptionOnlyAsc = computed(() => {
+    if (!sortingOption.value) return false;
+
+    if (!props.sortingOptions?.length) return false;
+
+    const option = props.sortingOptions.find(item => item.value === sortingOption.value);
+    if (!option) return false;
+
+    return option.onlyAsc ?? false;
+});
+
 function updateSortRoute(value) {
     if (isNullish(value)) {
         return router.replace({ query: { ...route.query, sort: null } });
     }
 
+    const option = props.sortingOptions?.find(item => item.value === value);
+    const _sortingOptionOnlyAsc = option?.onlyAsc ?? false;
+
     router.replace({
-        query: { ...route.query, sort: sortingOptionIsDesc.value ? `-${value}` : value }
+        query: {
+            ...route.query,
+            sort: sortingOptionIsDesc.value && !_sortingOptionOnlyAsc ? `-${value}` : value
+        }
     });
 }
 
