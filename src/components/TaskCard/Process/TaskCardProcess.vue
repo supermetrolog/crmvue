@@ -29,6 +29,7 @@ import { useAsyncPopup } from '@/composables/useAsyncPopup';
 import { useAuth } from '@/composables/useAuth';
 import UiButtonIcon from '@/components/common/UI/UiButtonIcon.vue';
 import { useTour } from '@/composables/useTour/useTour';
+import TaskCardProcessDefault from '@/components/TaskCard/Process/TaskCardProcessDefault.vue';
 
 const props = defineProps<{ task: TaskView }>();
 
@@ -39,20 +40,26 @@ const templates: Record<TemplateTaskType, Component> = {
     [TaskTypeEnum.CONTACT_HANDLING]: TaskCardProcessContacts,
     [TaskTypeEnum.OBJECT_HANDLING]: TaskCardProcessContacts,
     [TaskTypeEnum.SCHEDULED_CALL]: TaskCardProcessContacts,
-    [TaskTypeEnum.SCHEDULED_VISIT]: TaskCardProcessContacts
+    [TaskTypeEnum.SCHEDULED_VISIT]: TaskCardProcessContacts,
+    [TaskTypeEnum.SCHEDULED_EVENT]: TaskCardProcessContacts
 } as const;
 
-const ProcessComponent = computed(() => templates[props.task.type as TemplateTaskType]);
+const ProcessComponent = computed(
+    () => templates[props.task.type as TemplateTaskType] ?? TaskCardProcessDefault
+);
 
 const templateTitles: Record<TemplateTaskType, string> = {
     [TaskTypeEnum.REQUEST_HANDLING]: 'Управление запросами',
     [TaskTypeEnum.CONTACT_HANDLING]: 'Управление контактами',
     [TaskTypeEnum.OBJECT_HANDLING]: 'Управление объектами',
     [TaskTypeEnum.SCHEDULED_CALL]: 'Управление звонками',
-    [TaskTypeEnum.SCHEDULED_VISIT]: 'Управление встречами'
+    [TaskTypeEnum.SCHEDULED_VISIT]: 'Управление встречами',
+    [TaskTypeEnum.SCHEDULED_EVENT]: 'Управление событиями'
 } as const;
 
-const title = computed(() => templateTitles[props.task.type as TemplateTaskType]);
+const title = computed(
+    () => templateTitles[props.task.type as TemplateTaskType] ?? 'Управление связями'
+);
 
 // relations
 
@@ -81,7 +88,7 @@ onBeforeMount(async () => {
     if (props.task.relations_count > 0) await fetchTaskRelations();
 
     if (currentUserIsModeratorOrHigher.value && relations.value.length > 0) {
-        softRun();
+        void softRun();
     }
 });
 
