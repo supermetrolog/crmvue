@@ -7,9 +7,12 @@
                         small
                         color="white"
                         :loading
-                        :icon="isPassive ? 'fa-solid fa-ban' : undefined"
+                        :icon="isPassive ? 'fa-solid fa-ban' : 'fa-solid fa-user'"
                     >
-                        <span>{{ contact.full_name }} (#{{ contact.id }})</span>
+                        <span>
+                            {{ contact.full_name }}
+                            <span class="text-grey fs-1">(#{{ contact.id }})</span>
+                        </span>
                         <i class="fa-solid fa-pen ml-2 text-grey" />
                     </UiButton>
                 </template>

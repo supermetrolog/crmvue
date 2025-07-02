@@ -573,7 +573,7 @@ const updateCompany = async () => {
     const updated = await api.companies.update(props.formData.id, form);
 
     if (updated) {
-        emit('updated');
+        emit('updated', updated);
         emit('close');
     }
 };
