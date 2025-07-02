@@ -432,7 +432,7 @@ const canBeProcessed = computed(() => {
         (currentUserIsModeratorOrHigher.value || props.task.user_id === currentUserId.value) &&
         (props.task.type === TaskTypeEnum.REQUEST_HANDLING ||
             props.task.type === TaskTypeEnum.CONTACT_HANDLING ||
-            (props.task.type === 'base' && props.task.relations_count > 0))
+            props.task.relations_count > 0)
     );
 });
 </script>

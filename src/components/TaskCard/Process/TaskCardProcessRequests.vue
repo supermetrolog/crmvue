@@ -1,16 +1,6 @@
 <template>
-    <div class="task-card-process-request">
-        <div class="d-flex flex-wrap gap-1">
-            <UiButton
-                v-if="survey"
-                @click="$emit('show-survey', survey.entity_id)"
-                small
-                color="white"
-                icon="fa-solid  fa-square-poll-horizontal"
-                data-tour-id="task-process:show-survey"
-            >
-                Опрос #{{ survey.entity_id }}
-            </UiButton>
+    <TaskCardProcessDefault :task :relations>
+        <template #list>
             <TaskCardProcessEntityRequest
                 v-for="request in requests"
                 :key="request.id"
@@ -33,46 +23,48 @@
             >
                 Добавить запрос
             </UiButton>
-        </div>
-        <UiModal
-            v-model:visible="requestModalIsVisible"
-            :width="1600"
-            :min-height="400"
-            title="Просмотр запроса"
-        >
-            <Spinner v-if="isLoading" class="absolute-center" />
-            <RequestCard v-else-if="visibleRequest" :request="visibleRequest" />
-        </UiModal>
-        <FormCompanyRequest
-            v-if="formIsVisible"
-            @close="closeEditForm"
-            @updated="onUpdatedRequest"
-            :form-data="editedRequest"
-            :pinned-task="task"
-            :company-id="companyId"
-        />
-        <FormModalCompanyRequestDisable
-            @close="disableRequestFormIsVisible = false"
-            @disabled="onRequestDisabled"
-            :show="disableRequestFormIsVisible"
-            :request_id="disablingRequest?.id"
-            :pinned-task="task"
-        />
-        <FormModalCompanyRequestChangeConsultant
-            v-if="changeModalIsVisible"
-            @close="changeModalIsVisible = false"
-            @changed="onRequestConsultantChanged"
-            :request="changedRequest"
-            :pinned-task="task"
-        />
-        <FormModalCompanyRequestClone
-            v-if="cloneModalIsVisible"
-            @close="cloneModalIsVisible = false"
-            @cloned="onRequestCloned"
-            :request="clonedRequestItem"
-            :pinned-task="task"
-        />
-    </div>
+        </template>
+        <template #modals>
+            <UiModal
+                v-model:visible="requestModalIsVisible"
+                :width="1600"
+                :min-height="400"
+                title="Просмотр запроса"
+            >
+                <Spinner v-if="isLoading" class="absolute-center" />
+                <RequestCard v-else-if="visibleRequest" :request="visibleRequest" />
+            </UiModal>
+            <FormCompanyRequest
+                v-if="formIsVisible"
+                @close="closeEditForm"
+                @updated="onUpdatedRequest"
+                :form-data="editedRequest"
+                :pinned-task="task"
+                :company-id="companyId"
+            />
+            <FormModalCompanyRequestDisable
+                @close="disableRequestFormIsVisible = false"
+                @disabled="onRequestDisabled"
+                :show="disableRequestFormIsVisible"
+                :request_id="disablingRequest?.id"
+                :pinned-task="task"
+            />
+            <FormModalCompanyRequestChangeConsultant
+                v-if="changeModalIsVisible"
+                @close="changeModalIsVisible = false"
+                @changed="onRequestConsultantChanged"
+                :request="changedRequest"
+                :pinned-task="task"
+            />
+            <FormModalCompanyRequestClone
+                v-if="cloneModalIsVisible"
+                @close="cloneModalIsVisible = false"
+                @cloned="onRequestCloned"
+                :request="clonedRequestItem"
+                :pinned-task="task"
+            />
+        </template>
+    </TaskCardProcessDefault>
 </template>
 
 <script setup lang="ts">
@@ -91,6 +83,7 @@ import FormModalCompanyRequestClone from '@/components/Forms/Company/FormModalCo
 import UiButton from '@/components/common/UI/UiButton.vue';
 import { useAsync } from '@/composables/useAsync';
 import { createTourStepElementGenerator, useTourStep } from '@/composables/useTour/useTourStep';
+import TaskCardProcessDefault from '@/components/TaskCard/Process/TaskCardProcessDefault.vue';
 
 defineEmits<{ (e: 'show-survey', surveyId: number): void }>();
 
@@ -108,12 +101,6 @@ const requests = computed(() =>
 const companies = computed(() =>
     props.relations.filter(
         relation => relation.entity_type === TaskRelationEntityModelTypeEnum.COMPANY
-    )
-);
-
-const survey = computed(() =>
-    props.relations.find(
-        relation => relation.entity_type === TaskRelationEntityModelTypeEnum.SURVEY
     )
 );
 

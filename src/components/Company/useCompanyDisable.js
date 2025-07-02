@@ -1,7 +1,8 @@
 import { ref, shallowRef } from 'vue';
-import { useAsync } from '@/composables/useAsync.js';
 import api from '@/api/api.js';
 import { useNotify } from '@/utils/use/useNotify.js';
+import { captureException } from '@sentry/vue';
+import { useConfirm } from '@/composables/useConfirm.js';
 
 export function useCompanyDisable() {
     const formIsVisible = ref(false);
@@ -18,17 +19,33 @@ export function useCompanyDisable() {
     }
 
     const notify = useNotify();
+    const { confirm } = useConfirm();
 
-    const { isLoading, execute: enableCompany } = useAsync(api.companies.enable, {
-        onFetchResponse: () => {
-            notify.success('Компания успешно восстановлена.');
-        },
-        confirmation: true,
-        confirmationContent: {
+    const isLoading = ref(false);
+
+    async function enableCompany(company) {
+        const confirmed = await confirm({
             title: 'Восстановить компанию',
             message: 'Вы уверены, что хотите восстановить компанию из архива?'
+        });
+
+        if (!confirmed) return;
+
+        company.loading = true;
+        isLoading.value = true;
+
+        try {
+            await api.companies.enable(company.id);
+
+            company.status = 1;
+            notify.success('Компания успешно восстановлена.');
+        } catch (error) {
+            captureException(error);
+        } finally {
+            company.loading = false;
+            isLoading.value = false;
         }
-    });
+    }
 
     function onDisabledCompany(payload) {
         formIsVisible.value = false;

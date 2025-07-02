@@ -32,13 +32,14 @@
                     label="Архивировать"
                     icon="fa-solid fa-ban"
                 />
-                <UiDropdownActionsButton
-                    v-if="!isDisabled"
-                    @handle="$emit('change-consultant')"
-                    label="Изменить консультанта (скоро)"
-                    icon="fa-solid fa-user-tag"
-                    disabled
-                />
+                <UiCan moderator-or-higher>
+                    <UiDropdownActionsButton
+                        v-if="!isDisabled"
+                        @handle="$emit('change-consultant')"
+                        label="Изменить консультанта"
+                        icon="fa-solid fa-user-tag"
+                    />
+                </UiCan>
             </UiDropdownActionsGroup>
             <UiDropdownActionsGroup>
                 <a :href="companyUrl" target="_blank" class="text-inherit">
@@ -60,6 +61,7 @@ import { computed } from 'vue';
 import UiDropdownActionsGroup from '@/components/common/UI/DropdownActions/UiDropdownActionsGroup.vue';
 import { getCompanyShortName } from '@/utils/formatters/models/company';
 import { useRouter } from 'vue-router';
+import UiCan from '@/components/common/UI/UiCan.vue';
 
 defineEmits<{
     (e: 'edit'): void;
