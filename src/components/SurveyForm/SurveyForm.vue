@@ -154,7 +154,7 @@
     </UiMinimizeModal>
 </template>
 <script setup lang="ts">
-import { computed, reactive, ref, shallowRef, toRef, useTemplateRef, watch } from 'vue';
+import { computed, reactive, ref, shallowRef, useTemplateRef, watch } from 'vue';
 import { useFormData } from '@/utils/use/useFormData.js';
 import SurveyFormHeader from '@/components/SurveyForm/SurveyFormHeader.vue';
 import api from '@/api/api.js';
@@ -167,7 +167,6 @@ import { getCompanyName, getCompanyShortName } from '@/utils/formatters/models/c
 import UiMinimizeModal from '@/components/common/UI/UiMinimizeModal.vue';
 import { contactOptions } from '@/const/options/contact.options.js';
 import { isPassiveContact, isPersonalContact } from '@/utils/helpers/models/contact.js';
-import { useSurveyEditing } from '@/components/Survey/useSurveyEditing.js';
 import { useAsyncPopup } from '@/composables/useAsyncPopup.js';
 import { TASK_FORM_STEPS, useTaskManager } from '@/composables/useTaskManager.js';
 import { messenger } from '@/const/messenger.js';
@@ -178,12 +177,13 @@ import MessengerQuizFormWarningNoContacts from '@/components/Messenger/Quiz/Form
 import MessengerQuizFormWarningAlreadyCreated from '@/components/Messenger/Quiz/Form/Warning/MessengerQuizFormWarningAlreadyCreated.vue';
 import UiModal from '@/components/common/UI/UiModal.vue';
 import UiButton from '@/components/common/UI/UiButton.vue';
-import { toDateFormat } from '@/utils/formatters/date.js';
+import { dayjsFromMoscow, toDateFormat } from '@/utils/formatters/date.js';
 import { SurveyView } from '@/types/survey';
 import { useEventBus, useTimeoutFn } from '@vueuse/core';
 import SurveyFormWarningPending from '@/components/SurveyForm/SurveyFormWarningPending.vue';
 import { createTourStepElementGenerator } from '@/composables/useTour/useTourStep';
 import { useTour } from '@/composables/useTour/useTour';
+import dayjs from 'dayjs';
 
 const emit = defineEmits<{
     (e: 'close'): void;
@@ -544,11 +544,6 @@ function onCompanyCallScheduled(date) {
 
 // surveys
 
-const { remainingTimeInMinutes } = useSurveyEditing(
-    toRef(() => lastSurveys.value?.[0]),
-    { adminCanEdit: false }
-);
-
 const canBeCreated = computed(() => {
     if (contacts.value.length === 0) {
         return false;
@@ -564,7 +559,10 @@ const canBeCreated = computed(() => {
         return true;
     }
 
-    return remainingTimeInMinutes.value <= 0;
+    return (
+        dayjs().diff(dayjsFromMoscow(lastSurvey.completed_at ?? lastSurvey.updated_at), 'minutes') >
+        60 * 24
+    );
 });
 
 const { show: showSurvey } = useAsyncPopup('surveyPreview');
