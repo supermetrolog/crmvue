@@ -433,6 +433,8 @@ function onUpdatedOffer(offer) {
 const answers = computed(() => Object.values(modelValue.value.current));
 
 function markProgress() {
+    if (modelValue.value.checked) return;
+
     if (answers.value.length === 0) {
         modelValue.value.answer =
             modelValue.value.created?.length || isOffersNotFound.value ? 4 : null;

@@ -82,8 +82,11 @@
                     <DatePicker
                         v-model="form.start"
                         @change="form.startOption = CUSTOM_START_OPTION"
+                        @update-month-year="onUpdateMonthYear"
                         :min-date="new Date()"
                         :v="v$.form.start"
+                        :markers="events"
+                        :events-loading="eventsIsLoading"
                         size="40px"
                         label="Календарь"
                     />
@@ -129,6 +132,8 @@ import { useSearchContacts } from '@/composables/useSearchContacts.ts';
 import UiField from '@/components/common/UI/UiField.vue';
 import Loader from '@/components/common/Loader.vue';
 import { useNotify } from '@/utils/use/useNotify.js';
+import { useCalendarEvents } from '@/composables/useCalendarEvents.js';
+import { useDebounceFn } from '@vueuse/core';
 
 const emit = defineEmits(['close', 'created']);
 const props = defineProps({
@@ -324,4 +329,25 @@ onBeforeMount(() => {
     generateStartPresets();
     searchContacts();
 });
+
+// scheduled events
+
+const { loadEventsAround, events, isLoading: eventsIsLoading } = useCalendarEvents();
+
+const onUpdateMonthYear = useDebounceFn(({ month, year }) => {
+    loadEventsAround(dayjs().month(month).year(year));
+}, 400);
+
+const debouncedLoadEventsAround = useDebounceFn(loadEventsAround, 400);
+
+onBeforeMount(() => loadEventsAround(dayjs()));
+
+watch(
+    () => form.startOption,
+    value => {
+        if (value) {
+            debouncedLoadEventsAround(form.start);
+        }
+    }
+);
 </script>

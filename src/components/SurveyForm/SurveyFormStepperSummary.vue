@@ -204,7 +204,7 @@ const progress = computed(() => {
         completedOtherLength.value +
         1;
 
-    return (value / totalValue) * 100;
+    return Math.floor((value / totalValue) * 100);
 });
 
 const title = computed(() => {

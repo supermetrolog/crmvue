@@ -17,22 +17,25 @@
         </button>
     </div>
 </template>
-<script setup>
+<script setup lang="ts">
 import Spinner from '@/components/common/Spinner.vue';
 import { useDropdown } from 'v-dropdown';
+import { ComponentClassAttribute } from '@/types/base';
 
-const emit = defineEmits(['handle']);
-const props = defineProps({
-    disabled: Boolean,
-    active: Boolean,
-    icon: String,
-    label: String,
-    buttonClass: String,
-    closeOnClick: {
-        type: Boolean,
-        default: true
-    },
-    loading: Boolean
+const emit = defineEmits<{ (e: 'handle'): void }>();
+
+export type UiDropdownActionsButtonProps = {
+    disabled?: boolean;
+    active?: boolean;
+    icon?: string;
+    label?: string;
+    buttonClass?: ComponentClassAttribute;
+    closeOnClick?: boolean;
+    loading?: boolean;
+};
+
+const props = withDefaults(defineProps<UiDropdownActionsButtonProps>(), {
+    closeOnClick: true
 });
 
 function handle() {

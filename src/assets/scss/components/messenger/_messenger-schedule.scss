@@ -8,6 +8,20 @@
     }
 }
 
+.schedule-marker {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    height: 16px;
+    width: 16px;
+    border-radius: 50%;
+    background-color: #f93154;
+    color: #fff;
+    font-size: 12px;
+    font-weight: 500;
+    @include mixins.flex-box($a: center, $j: center);
+}
+
 .schedule-sidebar {
     @include mixins.flex-box($d: column);
     width: 150px;
@@ -47,6 +61,10 @@
     text-align: left;
     font-size: 14px;
 
+    &__list {
+        @include mixins.flex-box($d: column-reverse, $gap: 3px);
+    }
+
     &__call {
         padding: 5px;
         border-radius: 5px;
@@ -65,7 +83,6 @@
     }
 
     &__text {
-        max-width: 300px;
         @include mixins.text-overflow(1);
     }
 }

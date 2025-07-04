@@ -19,7 +19,7 @@
     }
 
     &__element {
-        width: 100%;
+        width: 100% !important;
     }
 
     &__button {
@@ -60,6 +60,10 @@
             height: 20px !important;
             width: 20px !important;
             border-width: 3px;
+        }
+
+        &.selected {
+            background-color: variables.$bg-primary-l;
         }
     }
 

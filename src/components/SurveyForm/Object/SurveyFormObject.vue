@@ -24,6 +24,43 @@
                     />
                 </template>
                 <template #menu>
+                    <UiDropdownActionsNested
+                        label="Указать статус"
+                        icon="fa-solid fa-lightbulb"
+                        :active="success"
+                    >
+                        <template #menu>
+                            <UiDropdownActionsButton
+                                @handle="markAs(1)"
+                                :active="answer === 1"
+                                label="Без изменений"
+                                icon="fa-solid fa-thumbs-up"
+                                :close-on-click="false"
+                            />
+                            <UiDropdownActionsButton
+                                @handle="markAs(2)"
+                                :active="answer === 2"
+                                label="Больше не актуально"
+                                icon="fa-solid fa-thumbs-down"
+                                :close-on-click="false"
+                            />
+                            <UiDropdownActionsButton
+                                @handle="markAs(3)"
+                                :active="answer === 3"
+                                label="Не опросил"
+                                icon="fa-solid fa-phone-slash"
+                                :close-on-click="false"
+                            />
+                        </template>
+                        <template v-if="success" #footer>
+                            <UiDropdownActionsButton
+                                @handle="markAs(null)"
+                                label="Отменить выбор"
+                                icon="fa-solid fa-rotate-left"
+                                :close-on-click="false"
+                            />
+                        </template>
+                    </UiDropdownActionsNested>
                     <UiDropdownActionsButton
                         @handle="$emit('create-task')"
                         label="Создать задачу"
@@ -76,6 +113,7 @@ import UiDropdownActionsTrigger from '@/components/common/UI/DropdownActions/UiD
 import UiCheckbox from '@/components/common/Forms/UiCheckbox.vue';
 import UiTooltipIcon from '@/components/common/UI/UiTooltipIcon.vue';
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
+import UiDropdownActionsNested from '@/components/common/UI/DropdownActions/UiDropdownActionsNested.vue';
 
 const form = defineModel({ type: Object, default: () => ({}) });
 
@@ -112,7 +150,16 @@ const stopWatch = watch(
     }
 );
 
-const success = computed(() => isNotNullish(form.value.answer));
+const answer = computed({
+    get() {
+        return isNotNullish(form.value.answer) ? Number(form.value.answer) : null;
+    },
+    set(value) {
+        form.value.answer = value;
+    }
+});
+
+const success = computed(() => isNotNullish(answer.value));
 
 const hasWarnings = computed(() => {
     if (isNullish(props.object)) return false;
@@ -125,4 +172,8 @@ const hasWarnings = computed(() => {
         !props.object.railway
     );
 });
+
+function markAs(value) {
+    answer.value = value;
+}
 </script>

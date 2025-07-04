@@ -17,3 +17,5 @@ export interface Auditable<T> {
 }
 
 export type BooleanNumber = 0 | 1;
+
+export type ComponentClassAttribute<T extends string | Record<string, boolean> = string> = T | T[];
