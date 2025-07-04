@@ -36,19 +36,38 @@
 </template>
 <script setup>
 import UiButton from '@/components/common/UI/UiButton.vue';
-import { useSurveyEditing } from '@/components/Survey/useSurveyEditing.js';
-import { ref, toRef } from 'vue';
+import { computed, ref } from 'vue';
 import UiModal from '@/components/common/UI/UiModal.vue';
 import api from '@/api/api.js';
 import { useSurveyForm } from '@/composables/useSurveyForm.js';
 import { captureException } from '@sentry/vue';
+import dayjs from 'dayjs';
+import { dayjsFromMoscow } from '@/utils/formatters/date.js';
 
 const emit = defineEmits(['show', 'edit']);
 
 const props = defineProps({ lastSurvey: Object });
 
-const { remainingTimeLabel } = useSurveyEditing(toRef(props, 'lastSurvey'), {
-    adminCanEdit: false
+const remainingTimeInMinutes = computed(() => {
+    return (
+        60 * 24 -
+        dayjs().diff(
+            dayjsFromMoscow(props.lastSurvey.completed_at ?? props.lastSurvey.updated_at),
+            'minutes'
+        )
+    );
+});
+
+const remainingTimeLabel = computed(() => {
+    if (remainingTimeInMinutes.value < 60) return `${remainingTimeInMinutes.value} мин.`;
+
+    const hours = Math.ceil(remainingTimeInMinutes.value / 60);
+
+    if (hours < 36) {
+        return `${hours} ч.`;
+    }
+
+    return `${Math.ceil(hours / 24)} дн.`;
 });
 
 const editingSurveyIsLoading = ref(false);
@@ -62,7 +81,7 @@ async function onEditSurvey() {
         const survey = await api.survey.get(props.lastSurvey.id);
 
         emit('edit');
-        
+
         editSurvey(survey);
     } catch (e) {
         captureException(e, { data: { survey_id: props.lastSurvey.id } });

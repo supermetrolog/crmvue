@@ -72,5 +72,9 @@ export default {
     async unpinMessage(id) {
         const response = await axios.delete(`entity-pinned-messages/${id}`);
         return responseHasStatus(response);
+    },
+    async changeConsultant(id, payload) {
+        const response = await axios.post(`${URL}/${id}/change-consultant`, payload);
+        return responseToData(response);
     }
 };

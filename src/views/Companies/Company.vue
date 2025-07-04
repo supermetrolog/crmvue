@@ -71,6 +71,7 @@
                 @create-task="createCompanyTask"
                 @schedule-visit="scheduleVisitModalIsVisible = true"
                 @schedule-call="scheduleCallModalIsVisible = true"
+                @change-consultant="changeCompanyConsultantModalIsVisible = true"
                 :company="COMPANY"
                 :contacts="COMPANY_CONTACTS"
                 class="mb-2"
@@ -112,6 +113,12 @@
                 v-if="scheduleVisitModalIsVisible"
                 @close="scheduleVisitModalIsVisible = false"
                 @created="scheduleVisitModalIsVisible = false"
+                :company="COMPANY"
+            />
+            <FormModalCompanyChangeConsultant
+                v-if="changeCompanyConsultantModalIsVisible"
+                @close="changeCompanyConsultantModalIsVisible = false"
+                @changed="onCompanyConsultantChanged"
                 :company="COMPANY"
             />
         </teleport>
@@ -158,6 +165,7 @@ import { useTaskManager } from '@/composables/useTaskManager.js';
 import { getCompanyShortName } from '@/utils/formatters/models/company.js';
 import VisitScheduler from '@/components/VisitScheduler/VisitScheduler.vue';
 import CallScheduler from '@/components/CallScheduler/CallScheduler.vue';
+import FormModalCompanyChangeConsultant from '@/components/Forms/Company/FormModalCompanyChangeConsultant.vue';
 
 provide('openContact', showContact);
 provide('createContactComment', createContactComment);
@@ -453,6 +461,22 @@ function onDisabledCompany(payload) {
     }
 }
 
+// consultant
+
+const changeCompanyConsultantModalIsVisible = ref(false);
+
+function onCompanyConsultantChanged(company, payload) {
+    Object.assign(COMPANY.value, company);
+
+    changeCompanyConsultantModalIsVisible.value = false;
+
+    if (payload.change_requests_consultants) {
+        fetchCompanyRequests();
+    }
+
+    notify.success('Консультант компании успешно изменен');
+}
+
 // tasks
 
 const isLoading = ref(false);
@@ -477,7 +501,7 @@ async function createCompanyTask() {
     try {
         isLoading.value = true;
 
-        const task = await api.task.create(taskPayload);
+        await api.task.create(taskPayload);
 
         notify.success('Задача успешно создана!');
     } finally {

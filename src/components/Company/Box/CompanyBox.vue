@@ -48,6 +48,14 @@
                             />
                         </UiDropdownActionsGroup>
                         <UiDropdownActionsGroup>
+                            <UiCan moderator-or-higher>
+                                <UiDropdownActionsButton
+                                    v-if="!isPassive"
+                                    @handle="$emit('change-consultant')"
+                                    label="Изменить консультанта"
+                                    icon="fa-solid fa-user-tag"
+                                />
+                            </UiCan>
                             <UiDropdownActionsButton
                                 v-if="isPassive"
                                 @handle="$emit('enable')"
@@ -322,6 +330,7 @@ import UiDropdownActionsButton from '@/components/common/UI/DropdownActions/UiDr
 import UiDropdownActions from '@/components/common/UI/DropdownActions/UiDropdownActions.vue';
 import UiDropdownActionsGroup from '@/components/common/UI/DropdownActions/UiDropdownActionsGroup.vue';
 import { useSurveyForm } from '@/composables/useSurveyForm.js';
+import UiCan from '@/components/common/UI/UiCan.vue';
 
 defineEmits([
     'create-contact',
@@ -335,7 +344,8 @@ defineEmits([
     'open-in-chat',
     'create-task',
     'schedule-call',
-    'schedule-visit'
+    'schedule-visit',
+    'change-consultant'
 ]);
 
 const props = defineProps({

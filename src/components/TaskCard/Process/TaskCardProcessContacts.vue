@@ -1,16 +1,6 @@
 <template>
-    <div class="task-card-process-request">
-        <div class="d-flex flex-wrap gap-1">
-            <UiButton
-                v-if="survey"
-                @click="$emit('show-survey', survey.entity_id)"
-                small
-                color="white"
-                icon="fa-solid  fa-square-poll-horizontal"
-                data-tour-id="task-process:show-survey"
-            >
-                Опрос #{{ survey.entity_id }}
-            </UiButton>
+    <TaskCardProcessDefault :task :relations>
+        <template #list>
             <TaskCardProcessEntityContact
                 v-for="contact in contacts"
                 :key="contact.id"
@@ -30,24 +20,26 @@
             >
                 Добавить контакт
             </UiButton>
-        </div>
-        <FormCompanyContact
-            v-if="formIsVisible"
-            @close="closeForm"
-            @created="closeForm"
-            @updated="onUpdatedContact"
-            :formdata="editedContact"
-            :pinned-task="task"
-            :company_id="companyId"
-        />
-        <FormContactDisable
-            v-if="disableContactFormIsVisible"
-            @close="disableContactFormIsVisible = false"
-            @disabled="onContactDisabled"
-            :contact="disablingContact"
-            :pinned-task="task"
-        />
-    </div>
+        </template>
+        <template #modals>
+            <FormCompanyContact
+                v-if="formIsVisible"
+                @close="closeForm"
+                @created="closeForm"
+                @updated="onUpdatedContact"
+                :formdata="editedContact"
+                :pinned-task="task"
+                :company_id="companyId"
+            />
+            <FormContactDisable
+                v-if="disableContactFormIsVisible"
+                @close="disableContactFormIsVisible = false"
+                @disabled="onContactDisabled"
+                :contact="disablingContact"
+                :pinned-task="task"
+            />
+        </template>
+    </TaskCardProcessDefault>
 </template>
 
 <script setup lang="ts">
@@ -62,6 +54,7 @@ import TaskCardProcessEntityContact from '@/components/TaskCard/Process/TaskCard
 import { contactOptions } from '@/const/options/contact.options';
 import FormContactDisable from '@/components/Forms/FormContactDisable.vue';
 import { createTourStepElementGenerator, useTourStep } from '@/composables/useTour/useTourStep';
+import TaskCardProcessDefault from '@/components/TaskCard/Process/TaskCardProcessDefault.vue';
 
 defineEmits<{ (e: 'show-survey', surveyId: number): void }>();
 
@@ -79,12 +72,6 @@ const contacts = computed(() =>
 const companies = computed(() =>
     props.relations.filter(
         relation => relation.entity_type === TaskRelationEntityModelTypeEnum.COMPANY
-    )
-);
-
-const survey = computed(() =>
-    props.relations.find(
-        relation => relation.entity_type === TaskRelationEntityModelTypeEnum.SURVEY
     )
 );
 

@@ -38,7 +38,7 @@ type TemplateTaskType = Exclude<TaskType, typeof TaskTypeEnum.BASE>;
 const templates: Record<TemplateTaskType, Component> = {
     [TaskTypeEnum.REQUEST_HANDLING]: TaskCardProcessRequests,
     [TaskTypeEnum.CONTACT_HANDLING]: TaskCardProcessContacts,
-    [TaskTypeEnum.OBJECT_HANDLING]: TaskCardProcessContacts,
+    [TaskTypeEnum.OBJECT_HANDLING]: TaskCardProcessDefault,
     [TaskTypeEnum.SCHEDULED_CALL]: TaskCardProcessContacts,
     [TaskTypeEnum.SCHEDULED_VISIT]: TaskCardProcessContacts,
     [TaskTypeEnum.SCHEDULED_EVENT]: TaskCardProcessContacts
