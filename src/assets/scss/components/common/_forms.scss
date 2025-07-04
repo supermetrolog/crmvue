@@ -821,6 +821,10 @@
         margin-right: 0 !important;
     }
 
+    &-caret, &-clear {
+        z-index: unset !important;
+    }
+
     &-dropdown {
         max-height: 300px !important;
     }

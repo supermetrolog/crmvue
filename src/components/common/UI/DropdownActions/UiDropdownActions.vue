@@ -1,5 +1,5 @@
 <template>
-    <VDropdown ref="dropdownEl">
+    <VDropdown ref="dropdownEl" @visible-change="$emit('visible-change', $event)" :manual :align>
         <template #trigger>
             <slot name="trigger">
                 <UiButtonIcon :label
@@ -10,7 +10,12 @@
 :class="buttonClass" />
             </slot>
         </template>
-        <DropdownContent class="ui-dropdown-actions" :class="menuClass" :z-index="4001">
+        <DropdownContent
+            class="ui-dropdown-actions"
+            :class="menuClass"
+            :z-index="4001"
+            :style="menuStyle"
+        >
             <div class="ui-dropdown-actions__menu">
                 <p
                     v-if="title || $slots.title"
@@ -31,7 +36,9 @@
 import UiButtonIcon from '@/components/common/UI/UiButtonIcon.vue';
 import VDropdown from '@/components/common/Dropdown/VDropdown.vue';
 import { DropdownContent } from 'v-dropdown';
-import { useTemplateRef } from 'vue';
+import { computed, useTemplateRef } from 'vue';
+
+defineEmits(['visible-change']);
 
 defineProps({
     disabled: Boolean,
@@ -45,7 +52,10 @@ defineProps({
     },
     color: String,
     buttonClass: [String, Object, Array],
-    titleClass: [String, Object, Array]
+    titleClass: [String, Object, Array],
+    menuStyle: [String, Object, Array],
+    manual: Boolean,
+    align: String
 });
 
 const dropdownEl = useTemplateRef('dropdownEl');
@@ -54,5 +64,11 @@ function open() {
     dropdownEl.value?.open();
 }
 
-defineExpose({ open });
+function toggleVisible() {
+    dropdownEl.value?.toggleVisible();
+}
+
+const isVisible = computed(() => dropdownEl.value?.visible ?? false);
+
+defineExpose({ open, toggleVisible, visible: isVisible });
 </script>

@@ -56,6 +56,7 @@
                     @show-survey="showSurvey({ surveyId: company.last_survey.id })"
                     @show-task="showTaskPreview"
                     @schedule-visit="$emit('schedule-visit', company)"
+                    @schedule-event="$emit('schedule-event', company)"
                     :company="company"
                     :odd="!(idx % 2)"
                 />
@@ -108,7 +109,8 @@ defineEmits([
     'disable-company',
     'enable-company',
     'schedule-call',
-    'schedule-visit'
+    'schedule-visit',
+    'schedule-event'
 ]);
 
 defineProps({

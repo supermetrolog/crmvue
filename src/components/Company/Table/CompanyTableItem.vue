@@ -5,85 +5,19 @@
     >
         <Td class="text-center company-table-item__id">
             <p class="mb-1">{{ company.id }}</p>
-            <div class="d-flex flex-column gap-2 align-items-center">
-                <UserFoldersDropdown
-                    @deleted-from-folder="$emit('deleted-from-folder', $event)"
-                    morph="company"
-                    :entity="company.id"
-                />
-                <UiDropdownActions label="Действия над компанией" :title="companyShortName" small>
-                    <template #menu>
-                        <UiDropdownActionsGroup>
-                            <UiDropdownActionsButton
-                                @handle="$emit('create-task')"
-                                icon="fa-solid fa-bolt"
-                                label="Создать задачу"
-                            />
-                            <UiDropdownActionsButton
-                                @handle="$emit('schedule-call')"
-                                icon="fa-solid fa-phone"
-                                label="Запланировать звонок"
-                            />
-                            <UiDropdownActionsButton
-                                @handle="$emit('schedule-visit')"
-                                icon="fa-solid fa-people-arrows"
-                                label="Запланировать встречу"
-                            />
-                        </UiDropdownActionsGroup>
-                        <UiDropdownActionsGroup>
-                            <UiDropdownActionsButton
-                                @handle="$emit('create-pinned-message')"
-                                icon="fa-solid fa-thumbtack"
-                                label="Добавить сообщение"
-                            />
-                            <UiDropdownActionsButton
-                                @handle="openInSurvey"
-                                :icon="
-                                    company.has_pending_survey
-                                        ? 'fa-solid fa-play'
-                                        : 'fa-solid fa-square-poll-horizontal'
-                                "
-                                :label="
-                                    company.has_pending_survey ? 'Продолжить опрос' : 'Начать опрос'
-                                "
-                            />
-                            <UiDropdownActionsButton
-                                @handle="openInChat"
-                                icon="fa-solid fa-comment"
-                                label="Открыть в чате"
-                            />
-                        </UiDropdownActionsGroup>
-                        <UiDropdownActionsGroup>
-                            <template v-if="canDisable || true">
-                                <UiDropdownActionsButton
-                                    v-if="isPassive"
-                                    @handle="$emit('enable')"
-                                    icon="fa-solid fa-undo"
-                                    label="Восстановить из архива"
-                                />
-                                <UiDropdownActionsButton
-                                    v-else
-                                    @handle="$emit('disable')"
-                                    icon="fa-solid fa-ban"
-                                    label="Отправить в архив"
-                                />
-                            </template>
-                        </UiDropdownActionsGroup>
-                    </template>
-                </UiDropdownActions>
-                <UiButtonIcon
-                    v-if="company.has_pending_survey"
-                    @click="openInSurvey"
-                    small
-                    icon="fa-solid fa-play"
-                    label="Продолжить заполнение опроса"
-                    :color="
-                        company.pending_survey_status === 'draft'
-                            ? 'success-light'
-                            : 'warning-light'
-                    "
-                />
-            </div>
+            <CompanyTableItemActions
+                @create-task="$emit('create-task')"
+                @schedule-call="$emit('schedule-call')"
+                @schedule-visit="$emit('schedule-visit')"
+                @schedule-event="$emit('schedule-event')"
+                @disable="$emit('disable')"
+                @enable="$emit('enable')"
+                @create-pinned-message="$emit('create-pinned-message')"
+                @open-chat="openInChat"
+                @open-survey="openInSurvey"
+                @deleted-from-folder="$emit('deleted-from-folder', $event)"
+                :company
+            />
         </Td>
         <Td class="company-table-item__name" sort="nameRu">
             <div class="company-table-item__main">
@@ -157,13 +91,13 @@
             <p v-else class="text-center">&#8212;</p>
         </Td>
         <Td class="company-table-item__date position-relative" sort="created_at">
-            <DashboardChip
+            <UiField
                 v-if="isPassive"
                 ref="passiveWhyCommentEl"
-                class="offer-table-item__chip text-white danger"
+                class="offer-table-item__chip text-white danger font-weight-semi"
             >
                 {{ passiveWhyLabel }}
-            </DashboardChip>
+            </UiField>
             <CompanyTableItemCall
                 @to-chat="openInChat"
                 @to-survey="openInSurvey"
@@ -196,32 +130,27 @@
 import Tr from '@/components/common/Table/Tr.vue';
 import Td from '@/components/common/Table/Td.vue';
 import { useStore } from 'vuex';
-import { computed, ref, toRef, useTemplateRef } from 'vue';
+import { computed, ref, useTemplateRef } from 'vue';
 import { useRouter } from 'vue-router';
 import { PassiveWhy } from '@/const/const.js';
-import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
 import Avatar from '@/components/common/Avatar.vue';
 import TableDateBlock from '@/components/common/Table/TableDateBlock.vue';
 import { useMessenger } from '@/components/Messenger/useMessenger.js';
-import { getCompanyName, getCompanyShortName } from '@/utils/formatters/models/company.js';
+import { getCompanyName } from '@/utils/formatters/models/company.js';
 import CompanyLogo from '@/components/Company/CompanyLogo.vue';
 import { messenger } from '@/const/messenger.js';
 import CompanyTableItemCall from '@/components/Company/Table/CompanyTableItemCall.vue';
-import UserFoldersDropdown from '@/components/UserFolder/UserFoldersDropdown.vue';
-import UiDropdownActions from '@/components/common/UI/DropdownActions/UiDropdownActions.vue';
-import UiDropdownActionsButton from '@/components/common/UI/DropdownActions/UiDropdownActionsButton.vue';
 import { useSurveyForm } from '@/composables/useSurveyForm.js';
 import { useTippy } from 'vue-tippy';
 import CompanyTableItemSurvey from '@/components/Company/Table/CompanyTableItemSurvey.vue';
-import { useCompanyPermissions } from '@/components/Company/useCompanyPermissions.js';
 import CompanyTableItemObjects from '@/components/Company/Table/CompanyTableItemObjects.vue';
 import CompanyTableItemRequests from '@/components/Company/Table/CompanyTableItemRequests.vue';
 import CompanyTableDropdown from '@/components/Company/Table/CompanyTableDropdown.vue';
 import CompanyTableItemInfo from '@/components/Company/Table/CompanyTableItemInfo.vue';
 import UiButton from '@/components/common/UI/UiButton.vue';
 import CompanyTableItemPinnedMessages from '@/components/Company/Table/CompanyTableItemPinnedMessages.vue';
-import UiButtonIcon from '@/components/common/UI/UiButtonIcon.vue';
-import UiDropdownActionsGroup from '@/components/common/UI/DropdownActions/UiDropdownActionsGroup.vue';
+import UiField from '@/components/common/UI/UiField.vue';
+import CompanyTableItemActions from '@/components/Company/Table/CompanyTableItemActions.vue';
 
 const store = useStore();
 const router = useRouter();
@@ -242,7 +171,8 @@ defineEmits([
     'show-task',
     'edit-survey-comment',
     'schedule-call',
-    'schedule-visit'
+    'schedule-visit',
+    'schedule-event'
 ]);
 
 const props = defineProps({
@@ -270,7 +200,6 @@ const passiveWhyComment = computed(() => {
 });
 
 const companyName = computed(() => getCompanyName(props.company));
-const companyShortName = computed(() => getCompanyShortName(props.company));
 
 const openTimeline = requestID => {
     const route = router.resolve({
@@ -298,12 +227,6 @@ const openInSurvey = () => {
 };
 
 useTippy(useTemplateRef('passiveWhyCommentEl'), { content: passiveWhyComment });
-
-// permissions
-
-// TODO: Permissions
-
-const { canDisable } = useCompanyPermissions(toRef(props, 'company'));
 
 // dropdown
 

@@ -97,7 +97,7 @@ const lastCallDiffInDays = computed(() =>
     dayjs().diff(dayjsFromMoscow(props.call.created_at), 'days')
 );
 const lastCallIsExpired = computed(
-    () => lastCallDiffInDays.value > import.meta.env.VITE_VUE_APP_MESSENGER_DATE_FROM_CALL_WARNING
+    () => lastCallDiffInDays.value > import.meta.env.VITE_VUE_APP_MESSENGER_DATE_FROM_CALL_DANGER
 );
 
 const createdAtFormat = computed(() => toDateFormat(props.createdAt, 'D.MM.YYYY'));
