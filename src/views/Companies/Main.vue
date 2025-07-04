@@ -66,6 +66,7 @@
                             @create-survey-task="createSurveyTask"
                             @schedule-call="scheduleCall"
                             @schedule-visit="scheduleVisit"
+                            @schedule-event="scheduleEvent"
                             :companies="COMPANIES"
                             :loader="isLoading"
                         />
@@ -139,6 +140,12 @@
                 @created="onCreatedScheduledVisit"
                 :company="scheduleVisitCompany"
             />
+            <EventScheduler
+                v-if="scheduleEventModalIsVisible"
+                @close="closeScheduleEventModal"
+                @created="onCreatedScheduledEvent"
+                :company="scheduleEventCompany"
+            />
         </teleport>
     </section>
 </template>
@@ -181,6 +188,7 @@ import { useCompanyDisable } from '@/components/Company/useCompanyDisable.js';
 import { spliceById } from '@/utils/helpers/array/spliceById.js';
 import CallScheduler from '@/components/CallScheduler/CallScheduler.vue';
 import VisitScheduler from '@/components/VisitScheduler/VisitScheduler.vue';
+import EventScheduler from '@/components/EventScheduler/EventScheduler.vue';
 
 const route = useRoute();
 // const router = useRouter();
@@ -577,5 +585,24 @@ function closeScheduleVisitModal() {
 function onCreatedScheduledVisit(task) {
     addCreatedTaskInCompany(scheduleVisitCompany.value, task);
     closeScheduleVisitModal();
+}
+
+// event
+
+const scheduleEventModalIsVisible = ref(false);
+const scheduleEventCompany = shallowRef(null);
+
+function scheduleEvent(company) {
+    scheduleEventCompany.value = company;
+    scheduleEventModalIsVisible.value = true;
+}
+
+function closeScheduleEventModal() {
+    scheduleEventModalIsVisible.value = false;
+}
+
+function onCreatedScheduledEvent(task) {
+    addCreatedTaskInCompany(scheduleEventCompany.value, task);
+    closeScheduleEventModal();
 }
 </script>

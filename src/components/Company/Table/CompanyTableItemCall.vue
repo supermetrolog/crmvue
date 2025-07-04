@@ -54,7 +54,7 @@
             @click="$emit('to-chat')"
             class="offer-table-item-call__chip"
         >
-            <p class="offer-table-item-call__help">Новая сделка</p>
+            <p class="offer-table-item-call__help">Новая компания</p>
             <p>от {{ createdAtFormat }}</p>
         </DashboardChip>
         <DashboardChip
@@ -104,7 +104,7 @@ const lastCallDiffInDays = computed(() =>
     dayjs().diff(dayjsFromMoscow(props.call.created_at), 'days')
 );
 const lastCallIsExpired = computed(
-    () => lastCallDiffInDays.value > import.meta.env.VITE_VUE_APP_MESSENGER_DATE_FROM_CALL_WARNING
+    () => lastCallDiffInDays.value > import.meta.env.VITE_VUE_APP_MESSENGER_DATE_FROM_CALL_DANGER
 );
 
 const createdAtFormat = computed(() => toDateFormat(props.createdAt, 'D.MM.YYYY'));

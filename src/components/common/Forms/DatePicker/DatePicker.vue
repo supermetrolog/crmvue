@@ -38,6 +38,11 @@
             <template #marker-tooltip="{ tooltip }">
                 <DatePickerTooltip :tooltip="tooltip" />
             </template>
+            <template #marker="{ marker }">
+                <div class="schedule-marker">
+                    {{ marker.tooltip[0].count }}
+                </div>
+            </template>
             <template #action-preview>
                 <AnimationTransition>
                     <div v-if="modelValue" class="schedule-sidebar__body">

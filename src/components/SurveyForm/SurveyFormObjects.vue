@@ -512,6 +512,7 @@ const hasCheckedObject = computed(() => !!checkedObjects.value.size);
 function markChecked(value) {
     for (const objectId of checkedObjects.value) {
         form.value.current[objectId].answer = value;
+        form.value.current[objectId].checked = 1;
     }
 
     checkedObjects.value.clear();

@@ -5,6 +5,8 @@ import { taskOptions } from '@/const/options/task.options.js';
 import { useAuth } from '@/composables/useAuth.js';
 import { deduplicate } from '@/utils/deduplicate.js';
 import { dayjsFromMoscow } from '@/utils/formatters/date.js';
+import { TaskTypeEnum } from '@/types/task';
+import { isArray } from '@/utils/helpers/array/isArray';
 
 const eventsMap = new Map();
 
@@ -23,13 +25,33 @@ function taskToEvent(task) {
         color: '#7be502',
         tooltip: [
             {
-                calls: [{ title: task.title, id: task.id }]
+                events: {
+                    [task.type]: [
+                        {
+                            title: task.title,
+                            id: task.id,
+                            time: dayjsFromMoscow(task.start).format('HH:mm')
+                        }
+                    ]
+                },
+                count: 1
             }
         ]
     };
 }
 
 // TODO: idb cache
+
+const TaskEventTypes = [
+    TaskTypeEnum.SCHEDULED_EVENT,
+    TaskTypeEnum.SCHEDULED_CALL,
+    TaskTypeEnum.SCHEDULED_VISIT
+];
+
+const TaskEventStatuses = [
+    taskOptions.clearStatusTypes.NEW,
+    taskOptions.clearStatusTypes.IN_PROGRESS
+];
 
 export function useCalendarEvents() {
     const { currentUserId } = useAuth();
@@ -60,11 +82,11 @@ export function useCalendarEvents() {
         const response = await deduplicate(key, async () => {
             return await api.task.get({
                 'per-page': 100,
-                type: 'scheduled_call',
+                types: TaskEventTypes,
                 user_id: currentUserId.value,
                 start_after: from.toJSON(),
                 start_before: to.toJSON(),
-                status: [taskOptions.clearStatusTypes.NEW]
+                status: TaskEventStatuses
             });
         });
 
@@ -73,7 +95,17 @@ export function useCalendarEvents() {
             const existing = eventsMap.get(date);
 
             if (existing) {
-                existing.tooltip[0].calls.push({ title: task.title, id: task.id });
+                if (!isArray(existing.tooltip[0].events[task.type])) {
+                    existing.tooltip[0].events[task.type] = [];
+                }
+
+                existing.tooltip[0].events[task.type].push({
+                    title: task.title,
+                    id: task.id,
+                    time: dayjsFromMoscow(task.start).format('HH:mm')
+                });
+
+                existing.tooltip[0].count = (existing.tooltip[0].count ?? 0) + 1;
             } else {
                 eventsMap.set(date, taskToEvent(task));
             }
