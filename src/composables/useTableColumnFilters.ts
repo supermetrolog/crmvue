@@ -28,6 +28,7 @@ export function useTableColumnFilters(
     }
 
     function prepareValue(key: string, value: TableColumnFilterValue | TableColumnFilterValue[]) {
+        if (isNullish(value)) return value;
         if (prepare[key]) return prepare[key](value);
         return value;
     }

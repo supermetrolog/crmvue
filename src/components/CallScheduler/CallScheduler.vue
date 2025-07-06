@@ -151,6 +151,7 @@ import { useCalendarEvents } from '@/composables/useCalendarEvents.js';
 import { useDebounceFn } from '@vueuse/core';
 import CallSchedulerTour from '@/components/CallScheduler/CallSchedulerTour.vue';
 import UiButtonIcon from '@/components/common/UI/UiButtonIcon.vue';
+import { fromUtcToServer } from '@/utils/formatters/date.js';
 
 const emit = defineEmits(['close', 'created']);
 const props = defineProps({
@@ -325,8 +326,8 @@ function formToPayload() {
     return {
         title: form.title,
         message: form.comment,
-        start: form.start,
-        end: dayjs(form.start).add(5, 'days').toDate(),
+        start: fromUtcToServer(form.start),
+        end: fromUtcToServer(dayjs(form.start).add(5, 'days')),
         user_id: currentUserId.value,
         relations: generateTaskRelations(),
         type: 'scheduled_call'

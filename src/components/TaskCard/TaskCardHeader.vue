@@ -10,7 +10,7 @@
     >
         <div class="task-card__left">
             <div class="task-card__chips mb-2">
-                <DashboardChip class="task-card__chip"> Задача #{{ task.id }} </DashboardChip>
+                <DashboardChip class="task-card__chip"> Задача #{{ task.id }}</DashboardChip>
                 <DashboardChip v-tippy="'Дата начала выполнения'" class="task-card__chip" with-icon>
                     <i class="fa-solid fa-play"></i>
                     <span>с {{ startDate }}</span>
@@ -229,7 +229,5 @@ const status = computed(() => taskOptions.status[props.task.status]);
 const statusIcon = computed(() => taskOptions.statusIcon[props.task.status]);
 
 const endDate = computed(() => toDateFormat(props.task.end, 'D.MM.YY'));
-const startDate = computed(() => toDateFormat(props.task.start, 'D.MM.YY'));
-
-// TODO: "Изменить статус" поменять на "выполнить", пушто статус почти не меняют на другой
+const startDate = computed(() => toDateFormat(props.task.start, 'D.MM.YY, HH:mm'));
 </script>
