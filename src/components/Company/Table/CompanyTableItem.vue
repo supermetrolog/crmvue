@@ -98,12 +98,12 @@
             >
                 {{ passiveWhyLabel }}
             </UiField>
-            <CompanyTableItemCall
+            <CompanyTableItemActivity
                 @to-chat="openInChat"
                 @to-survey="openInSurvey"
-                :call="company.last_call"
-                :created-at="company.created_at"
-                :without-contacts="isWithoutActiveContacts"
+                @show-task="$emit('show-task', $event)"
+                @show-tasks="$emit('show-tasks')"
+                :company
                 class="my-1"
             />
             <TableDateBlock
@@ -139,7 +139,6 @@ import { useMessenger } from '@/components/Messenger/useMessenger.js';
 import { getCompanyName } from '@/utils/formatters/models/company.js';
 import CompanyLogo from '@/components/Company/CompanyLogo.vue';
 import { messenger } from '@/const/messenger.js';
-import CompanyTableItemCall from '@/components/Company/Table/CompanyTableItemCall.vue';
 import { useSurveyForm } from '@/composables/useSurveyForm.js';
 import { useTippy } from 'vue-tippy';
 import CompanyTableItemSurvey from '@/components/Company/Table/CompanyTableItemSurvey.vue';
@@ -151,6 +150,7 @@ import UiButton from '@/components/common/UI/UiButton.vue';
 import CompanyTableItemPinnedMessages from '@/components/Company/Table/CompanyTableItemPinnedMessages.vue';
 import UiField from '@/components/common/UI/UiField.vue';
 import CompanyTableItemActions from '@/components/Company/Table/CompanyTableItemActions.vue';
+import CompanyTableItemActivity from '@/components/Company/Table/CompanyTableItemActivity.vue';
 
 const store = useStore();
 const router = useRouter();
@@ -189,8 +189,6 @@ const dropdownMustBeShown = computed(
 
 const isPassive = computed(() => props.company.status === 0);
 const passiveWhyLabel = computed(() => PassiveWhy[props.company.passive_why].short ?? 'Пассив');
-
-const isWithoutActiveContacts = computed(() => props.company.active_contacts_count === 0);
 
 const passiveWhyComment = computed(() => {
     if (!props.company.passive_why) return 'Причина не указана';
