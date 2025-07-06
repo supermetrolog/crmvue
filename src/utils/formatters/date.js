@@ -41,5 +41,5 @@ export function isSameYear(date1, date2 = dayjs()) {
 
 export function fromUtcToServer(date) {
     // TODO: Сделать норм время
-    return dayjs.utc(date).tz('Europe/Moscow');
+    return dayjs(date).add(3, 'hour').toDate();
 }
