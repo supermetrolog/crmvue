@@ -5,6 +5,23 @@
             morph="company"
             :entity="company.id"
         />
+        <UiButtonIcon
+            @click="$emit('open-survey')"
+            small
+            :icon="
+                company.has_pending_survey
+                    ? 'fa-solid fa-play'
+                    : 'fa-solid fa-square-poll-horizontal'
+            "
+            :label="company.has_pending_survey ? 'Продолжить опрос' : 'Начать опрос'"
+            :color="surveyButtonColor"
+        />
+        <UiButtonIcon
+            @click="$emit('open-chat')"
+            label="Открыть чат"
+            icon="fa-solid fa-comment"
+            small
+        />
         <UiDropdownActions label="Действия над компанией" :title="companyShortName" small>
             <template #menu>
                 <UiDropdownActionsGroup>
@@ -39,20 +56,6 @@
                         icon="fa-solid fa-thumbtack"
                         label="Добавить сообщение"
                     />
-                    <UiDropdownActionsButton
-                        @handle="$emit('open-survey')"
-                        :icon="
-                            company.has_pending_survey
-                                ? 'fa-solid fa-play'
-                                : 'fa-solid fa-square-poll-horizontal'
-                        "
-                        :label="company.has_pending_survey ? 'Продолжить опрос' : 'Начать опрос'"
-                    />
-                    <UiDropdownActionsButton
-                        @handle="$emit('open-chat')"
-                        icon="fa-solid fa-comment"
-                        label="Открыть в чате"
-                    />
                 </UiDropdownActionsGroup>
                 <UiDropdownActionsGroup>
                     <template v-if="canDisable">
@@ -72,14 +75,6 @@
                 </UiDropdownActionsGroup>
             </template>
         </UiDropdownActions>
-        <UiButtonIcon
-            v-if="company.has_pending_survey"
-            @click="$emit('open-survey')"
-            small
-            icon="fa-solid fa-play"
-            label="Продолжить заполнение опроса"
-            :color="company.pending_survey_status === 'draft' ? 'success-light' : 'warning-light'"
-        />
     </div>
 </template>
 
@@ -120,4 +115,12 @@ const companyShortName = computed(() => getCompanyShortName(props.company));
 // TODO: Permissions
 
 const { canDisable } = useCompanyPermissions(toRef(props, 'company'));
+
+const surveyButtonColor = computed(() => {
+    if (props.company.has_pending_survey) {
+        return props.company.pending_survey_status === 'draft' ? 'success-light' : 'warning-light';
+    }
+
+    return undefined;
+});
 </script>

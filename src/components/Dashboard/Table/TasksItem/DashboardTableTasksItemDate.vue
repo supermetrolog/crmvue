@@ -1,21 +1,32 @@
 <template>
     <div class="dashboard-card-task-date">
-        <span v-if="task.end" class="dashboard-card-task__date">до {{ expiredDate }}</span>
+        <Tippy v-if="!isCompleted">
+            <span class="dashboard-card-task__date">{{ dateLabel }}</span>
+            <template #content>
+                <p class="text-grey">Сроки выполнения:</p>
+                <p>C {{ startDate }} до {{ endDate }}</p>
+            </template>
+        </Tippy>
         <span>
-            <i
-                v-if="isExpired"
-                class="dashboard-card-task__icon fa-solid fa-fire dashboard-cl-danger"
+            <UiTooltipIcon
+                v-if="isStarted"
+                icon="fa-solid fa-fire"
+                tooltip="Дата старта уже прошла"
+                class="dashboard-card-task__icon dashboard-cl-danger"
             />
-            <i
+            <UiTooltipIcon
                 v-if="isCompleted"
-                class="dashboard-card-task__icon fa-solid fa-check-circle dashboard-cl-success"
+                icon="fa-solid fa-check-circle"
+                tooltip="Задача выполнена"
+                class="dashboard-card-task__icon dashboard-cl-success"
             />
-            <i
+            <UiTooltipIcon
                 v-if="isForMe"
-                v-tippy="
+                :tooltip="
                     task.is_viewed ? `Задача просмотрена ${viewedAt}` : 'Задача не просмотрена'
                 "
-                class="dashboard-card-task__icon fa-solid fa-eye ml-1"
+                icon="fa-solid fa-eye"
+                class="dashboard-card-task__icon ml-1"
                 :class="{
                     'dashboard-cl-success': task.is_viewed,
                     'dashboard-cl-light': !task.is_viewed
@@ -32,6 +43,8 @@ import { taskOptions } from '@/const/options/task.options.js';
 import { useStore } from 'vuex';
 import { dayjsFromMoscow, toBeautifulDateFormat } from '@/utils/formatters/date.js';
 import { isString } from '@/utils/helpers/string/isString.js';
+import { Tippy } from 'vue-tippy';
+import UiTooltipIcon from '@/components/common/UI/UiTooltipIcon.vue';
 
 const props = defineProps({
     task: {
@@ -43,15 +56,27 @@ const props = defineProps({
 const store = useStore();
 
 const isCompleted = computed(() => props.task.status === taskOptions.statusTypes.COMPLETED);
+
 const expiredDayjs = computed(() => {
     if (isString(props.task.end)) return dayjsFromMoscow(props.task.end);
     return dayjs(props.task.end);
 });
-const isExpired = computed(() => expiredDayjs.value.diff(dayjs(), 'day') < 3 && !isCompleted.value);
+
+const startDayjs = computed(() => {
+    if (isString(props.task.start)) return dayjsFromMoscow(props.task.start);
+    return dayjs(props.task.start);
+});
+
+const endDate = computed(() => expiredDayjs.value.format('D.MM.YY'));
+const startDate = computed(() => startDayjs.value.format('D.MM.YY, HH:mm'));
+
 const isForMe = computed(() => Number(props.task.user_id) === Number(store.getters.THIS_USER.id));
 
-const expiredDate = computed(() => {
-    return expiredDayjs.value.format('DD.MM.YYYY');
+const isStarted = computed(() => startDayjs.value.isBefore(dayjs().add(3, 'h')));
+
+const dateLabel = computed(() => {
+    if (isStarted.value) return `до ${endDate.value}`;
+    return `от ${startDate.value}`;
 });
 
 const viewedAt = computed(() => toBeautifulDateFormat(props.task.viewed_at));

@@ -157,7 +157,9 @@
                 <div
                     v-if="
                         !company.last_survey.comment &&
-                        !company.last_survey.tasks.length &&
+                        baseTasks.length === 0 &&
+                        scheduledCallTasks.length === 0 &&
+                        scheduledVisitTasks.length === 0 &&
                         !commentIsEditing
                     "
                     class="d-flex gap-2 justify-content-center"
