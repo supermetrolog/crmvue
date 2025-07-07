@@ -12,34 +12,36 @@
         >
             Нет контактов
         </UiButton>
-        <UiButton
-            v-else-if="!lastCallHasCompleteStatus"
-            @click="$emit('to-survey')"
-            icon="fa-solid fa-phone-slash"
-            :tooltip="lastCallTooltip"
-            small
-            class="fs-2 w-100"
-            center
-            color="dark"
-        >
-            Не дозвонились
-        </UiButton>
-        <UiButton
-            v-else-if="lastSurveyIsExpired"
-            @click="$emit('to-survey')"
-            :style="{ 'background-color': surveyColor }"
-            icon="fa-solid fa-triangle-exclamation"
-            :tooltip="surveyTooltip"
-            small
-            class="fs-2 w-100 font-weight-semi"
-            center
-        >
-            {{ lastSurveyIsOutdated ? 'Пройдите опрос!' : 'Пройти опрос!' }}
-        </UiButton>
+        <template v-else-if="isCurrentUserCompany">
+            <UiButton
+                v-if="!lastCallHasCompleteStatus"
+                @click="$emit('to-survey')"
+                icon="fa-solid fa-phone-slash"
+                :tooltip="lastCallTooltip"
+                small
+                class="fs-2 w-100"
+                center
+                color="dark"
+            >
+                Не дозвонились
+            </UiButton>
+            <UiButton
+                v-else-if="lastSurveyIsExpired"
+                @click="$emit('to-survey')"
+                :style="{ 'background-color': surveyColor }"
+                icon="fa-solid fa-triangle-exclamation"
+                :tooltip="surveyTooltip"
+                small
+                class="fs-2 w-100 font-weight-semi"
+                center
+            >
+                {{ lastSurveyIsOutdated ? 'Пройдите опрос!' : 'Пройти опрос!' }}
+            </UiButton>
+        </template>
         <UiButton
             v-else
             @click="$emit('to-chat')"
-            icon="fa-solid fa-solid fa-comments"
+            icon="fa-solid fa-comments"
             color="success-light"
             :tooltip="surveyTooltip"
             small
@@ -70,7 +72,7 @@
         Нет контактов
     </UiButton>
     <UiButton
-        v-else-if="companyOutdated"
+        v-else-if="companyOutdated && isCurrentUserCompany"
         @click="$emit('to-survey')"
         style="background-color: #fe6a49"
         icon="fa-solid fa-triangle-exclamation"
@@ -81,6 +83,18 @@
     >
         Пройти опрос!
     </UiButton>
+    <UiButton
+        v-else
+        @click="$emit('to-chat')"
+        icon="fa-solid fa-comments"
+        color="success-light"
+        tooltip="Нажмите, чтобы перейти в чат компании."
+        small
+        class="fs-2 w-100"
+        center
+    >
+        Перейти в чат
+    </UiButton>
 </template>
 
 <script setup>
@@ -90,6 +104,7 @@ import dayjs from 'dayjs';
 import { dayjsFromMoscow, toDateFormat } from '@/utils/formatters/date.js';
 import { CALL_STATUSES } from '@/components/MessengerQuiz/useMessengerQuiz.js';
 import { isNullish } from '@/utils/helpers/common/isNullish';
+import { useAuth } from '@/composables/useAuth.js';
 
 defineEmits(['to-chat', 'to-survey']);
 
@@ -101,6 +116,10 @@ const props = defineProps({
 });
 
 const lastSurvey = computed(() => props.company.last_survey);
+
+const { currentUserId } = useAuth();
+
+const isCurrentUserCompany = computed(() => props.company.consultant_id === currentUserId.value);
 
 const lastSurveyDate = computed(() => dayjsFromMoscow(lastSurvey.value.completed_at));
 
@@ -130,7 +149,7 @@ const surveyColor = computed(() => {
 });
 
 const surveyTooltip = computed(() => {
-    if (lastSurveyIsExpired.value) {
+    if (lastSurveyIsExpired.value && isCurrentUserCompany.value) {
         return `Дата последнего опроса - ${toDateFormat(lastSurveyDate.value)}. Нажмите, чтобы перейти к опросу и обновить информацию.`;
     }
 
