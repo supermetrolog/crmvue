@@ -31,7 +31,7 @@
             icon="fa-solid fa-triangle-exclamation"
             :tooltip="surveyTooltip"
             small
-            class="fs-2 w-100"
+            class="fs-2 w-100 font-weight-semi"
             center
         >
             {{ lastSurveyIsOutdated ? 'Пройдите опрос!' : 'Пройти опрос!' }}
@@ -76,7 +76,7 @@
         icon="fa-solid fa-triangle-exclamation"
         tooltip="По компании еще не было зафиксированных звонков. Нажмите, чтобы перейти к опросу и обновить информацию."
         small
-        class="fs-2 w-100"
+        class="fs-2 w-100 font-weight-semi"
         center
     >
         Пройти опрос!

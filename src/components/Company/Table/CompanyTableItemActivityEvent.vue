@@ -2,8 +2,9 @@
     <UiButton
         :style="{ 'background-color': color }"
         :badge="eventsBadge"
+        :color="expiredEvents.length ? 'dark' : 'white'"
         tooltip="Нажмите, чтобы просмотреть задачи."
-        class="fs-2 w-100"
+        class="fs-2 w-100 font-weight-semi"
         small
         center
     >
