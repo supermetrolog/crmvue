@@ -33,7 +33,13 @@ export function useTypedTasks(tasks: MaybeRefOrGetter<Task[]>, options: UseTyped
     });
 
     const baseTasks = computed(() => {
-        return toValue(tasks).filter(task => !excludedTypes.has(task.type));
+        const _withCompleted = toValue(withCompleted);
+
+        return toValue(tasks).filter(
+            task =>
+                !excludedTypes.has(task.type) &&
+                (_withCompleted || task.status !== TaskStatusEnum.DONE)
+        );
     });
 
     const lastScheduledCallDate = computed(() => {

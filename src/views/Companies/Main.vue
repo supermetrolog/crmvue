@@ -161,7 +161,7 @@ import Switch from '@/components/common/Forms/Switch.vue';
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
 import { computed, ref, shallowRef, watch } from 'vue';
 import { useTableContent } from '@/composables/useTableContent.js';
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import Spinner from '@/components/common/Spinner.vue';
 import { useMobile } from '@/composables/useMobile.js';
 import { isArray } from '@/utils/helpers/array/isArray.ts';
@@ -221,24 +221,27 @@ const getCompanies = async () => {
 
 const debouncedFetchCompanies = useDebounceFn(getCompanies, 300);
 
+const router = useRouter();
+
 const { next, nextWithScroll, queryIsInitialized, isInitialLoading } = useTableContent(
     getCompanies,
     {
-        scrollTo: firstPagination
+        scrollTo: firstPagination,
+        initQuery: async () => {
+            const query = { ...route.query };
+
+            const queryIsEmpty = Object.keys(query).length === 0;
+
+            if (queryIsEmpty) {
+                query.consultant_id = currentUserId.value;
+                query.status = 1;
+                query.with_active_contacts = 1;
+            }
+
+            await router.replace({ query });
+        }
     }
 );
-
-// initQuery: async () => {
-//     const query = { ...route.query };
-//
-//     const queryIsEmpty = Object.keys(query).length === 0;
-//
-//     if (queryIsEmpty) query.consultant_id = currentUserId.value;
-//
-//     query.sort = 'activity';
-//
-//     await router.replace({ query });
-// }
 
 const currentViewComponentName = computed(() => {
     if (isMobile) return CompanyGrid;

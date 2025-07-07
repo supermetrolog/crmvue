@@ -13,7 +13,11 @@
             />
         </p>
         <UiButton v-if="isLoading" small loading color="white">Загрузка</UiButton>
-        <ProcessComponent v-else @show-survey="showSurvey" :task :relations />
+        <ProcessComponent v-else
+@show-survey="showSurvey"
+@to-survey="toSurvey"
+:task
+:relations />
     </div>
 </template>
 
@@ -30,6 +34,8 @@ import { useAuth } from '@/composables/useAuth';
 import UiButtonIcon from '@/components/common/UI/UiButtonIcon.vue';
 import { useTour } from '@/composables/useTour/useTour';
 import TaskCardProcessDefault from '@/components/TaskCard/Process/TaskCardProcessDefault.vue';
+import TaskCardProcessCalls from '@/components/TaskCard/Process/TaskCardProcessCalls.vue';
+import { useSurveyForm } from '@/composables/useSurveyForm';
 
 const props = defineProps<{ task: TaskView }>();
 
@@ -39,7 +45,7 @@ const templates: Record<TemplateTaskType, Component> = {
     [TaskTypeEnum.REQUEST_HANDLING]: TaskCardProcessRequests,
     [TaskTypeEnum.CONTACT_HANDLING]: TaskCardProcessContacts,
     [TaskTypeEnum.OBJECT_HANDLING]: TaskCardProcessDefault,
-    [TaskTypeEnum.SCHEDULED_CALL]: TaskCardProcessContacts,
+    [TaskTypeEnum.SCHEDULED_CALL]: TaskCardProcessCalls,
     [TaskTypeEnum.SCHEDULED_VISIT]: TaskCardProcessContacts,
     [TaskTypeEnum.SCHEDULED_EVENT]: TaskCardProcessContacts
 } as const;
@@ -91,6 +97,12 @@ onBeforeMount(async () => {
         void softRun();
     }
 });
+
+const { openSurvey } = useSurveyForm();
+
+function toSurvey(companyId: number) {
+    openSurvey(companyId);
+}
 
 const { show } = useAsyncPopup('surveyPreview');
 

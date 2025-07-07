@@ -55,7 +55,9 @@
         v-else-if="isRecentlyCreated"
         @click="$emit('to-chat')"
         tooltip="Компания недавно добавлена в систему. Нажмите, чтобы перейти в чат компании."
-        class="offer-table-item-call__chip"
+        color="success-light"
+        small
+        center
     >
         Новая компания
     </UiButton>

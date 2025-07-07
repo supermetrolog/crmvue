@@ -69,7 +69,8 @@ export const filtersAliases = {
     gateTypes: 'Тип ворот:',
     directions: 'Направления:',
     objectClasses: 'Класс:',
-    without_surveys: 'Без завершенных опросов'
+    without_surveys: 'Без завершенных опросов',
+    with_active_contacts: 'С активными контактами'
 };
 
 const IGNORING_FILTERS = new Set([

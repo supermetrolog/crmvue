@@ -152,7 +152,8 @@ const { filters: consultantFilters, confirmFilters: confirmConsultantFilters } =
 const { filters: activityFilters, confirmFilters: confirmActivityFilters } = useTableColumnFilters({
     without_surveys: null,
     with_current_user_tasks: null,
-    requests_filter: null
+    requests_filter: null,
+    with_active_contacts: null
 });
 
 const route = useRoute();
