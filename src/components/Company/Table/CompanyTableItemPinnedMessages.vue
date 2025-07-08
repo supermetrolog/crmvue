@@ -109,10 +109,14 @@ const messagesCountButtonShouldBeVisible = computed(() => {
     if (props.company.pinned_messages.length > 2) return true;
 
     if (isNotNullish(props.company.last_survey)) {
-        return (
+        if (
             isNullish(props.company.last_survey.comment) ||
             isEmptyString(props.company.last_survey.comment)
-        );
+        ) {
+            return props.company.pinned_messages.length > 1;
+        } else {
+            return props.company.pinned_messages.length > 2;
+        }
     }
 
     return props.company.pinned_messages.length > 1;

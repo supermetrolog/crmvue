@@ -175,6 +175,13 @@ onMounted(initFilters);
 
 const sortingOptions = [
     { value: 'activity', label: 'По актуальности', icon: 'fa-solid fa-fire', onlyAsc: true },
+    {
+        value: 'relevant_tasks',
+        label: 'По выполнению задач',
+        icon: 'fa-solid fa-bolt',
+        asc: 'Сначала актуальные',
+        desc: 'Сначала неактуальные'
+    },
     { value: 'updated_at', label: 'По дате модерации', icon: 'fa-solid fa-pen' },
     { value: 'created_at', label: 'По дате внесения', icon: 'fa-solid fa-calendar-plus' },
     {
@@ -187,7 +194,6 @@ const sortingOptions = [
         label: 'По дате последнего сообщения',
         icon: 'fa-solid fa-comment'
     },
-    { value: 'last_task_created_at', label: 'По дате последней задачи', icon: 'fa-solid fa-bolt' },
     {
         value: 'last_request_created_at',
         label: 'По дате последнего запроса',

@@ -219,7 +219,7 @@ import UiButton from '@/components/common/UI/UiButton.vue';
 import { useValidation } from '@/composables/useValidation.js';
 import { isNullish } from '@/utils/helpers/common/isNullish.ts';
 import { isString } from '@/utils/helpers/string/isString.js';
-import { dayjsFromMoscow } from '@/utils/formatters/date.js';
+import { dayjsFromMoscow, fromUtcToServer } from '@/utils/formatters/date.js';
 import InProgress from '@/components/common/InProgress.vue';
 import RadioOptions from '@/components/common/Forms/RadioOptions.vue';
 import VueEditor from '@/components/common/Forms/VueEditor.vue';
@@ -547,8 +547,8 @@ const { v$, validate } = useValidation(
 
 const formToPayload = () => {
     return {
-        start: form.value.date.start,
-        end: form.value.date.end,
+        start: fromUtcToServer(form.value.date.start),
+        end: fromUtcToServer(form.value.date.end),
         user_id: Number(form.value.user_id),
         title: form.value.title,
         message: form.value.message,
