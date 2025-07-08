@@ -1,5 +1,5 @@
 <template>
-    <TaskCardProcessDefault :task :relations>
+    <TaskCardProcessDefault @show-survey="$emit('show-survey', $event)" :task :relations>
         <template #list>
             <TaskCardProcessEntityContact
                 v-for="contact in contacts"
@@ -177,25 +177,26 @@ useTourStep({
     }
 });
 
-useTourStep({
-    key: 2,
-    element: createTourStepElement('show-contacts'),
-    popover: {
-        title: 'Управление контактом',
-        description:
-            'Редактируйте, архивируйте, восстанавливайте и просматривайте контакт в пару нажатий.',
-        side: 'right',
-        align: 'start'
-    }
-});
+if (contacts.value.length) {
+    useTourStep({
+        key: 2,
+        element: createTourStepElement('show-contacts'),
+        popover: {
+            title: 'Управление контактом',
+            description:
+                'Редактируйте, архивируйте, восстанавливайте и просматривайте контакт в пару нажатий.',
+            side: 'right',
+            align: 'start'
+        }
+    });
+}
 
 useTourStep({
     key: 3,
-    element: createTourStepElement('create-contact'),
+    element: createTourStepElement('start-survey'),
     popover: {
-        title: 'Создавайте контакт',
-        description:
-            'Создавайте контакт без перехода на страницу компании. Информация из карточки задачи останется рядом с вами.',
+        title: 'Проходите опрос',
+        description: 'Переходите в опрос компании сразу прямо из карточки задачи.',
         side: 'right',
         align: 'start'
     }

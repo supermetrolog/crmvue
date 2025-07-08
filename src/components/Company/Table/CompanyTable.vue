@@ -48,7 +48,6 @@
                     @schedule-call="$emit('schedule-call', company)"
                     @create-task="$emit('create-task', company)"
                     @show-tasks="$emit('show-tasks', company)"
-                    @show-created-tasks="$emit('show-created-tasks', company)"
                     @disable="$emit('disable-company', company)"
                     @enable="$emit('enable-company', company)"
                     @create-request-task="$emit('create-request-task', $event, company)"
