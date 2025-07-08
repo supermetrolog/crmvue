@@ -11,6 +11,7 @@ import CompaniesList from '@/views/Companies/Main.vue';
 import { AUTH_ROLE } from '@/const/role.js';
 import { isNullish } from '@/utils/helpers/common/isNullish.ts';
 import { isNotNullish } from '@/utils/helpers/common/isNotNullish.ts';
+import Unavailable from '@/views/Unavailable.vue';
 
 const routes = [
     {
@@ -349,6 +350,16 @@ const routes = [
         ]
     },
     {
+        path: '/unavailable',
+        name: 'unavailable',
+        meta: {
+            layout: 'empty',
+            auth: { isAuth: false },
+            title: 'Сервис недоступен'
+        },
+        component: Unavailable
+    },
+    {
         path: '/:catchAll(.*)',
         name: 'notfound',
         meta: {
@@ -373,12 +384,14 @@ const router = createRouter({
 const notify = useNotify();
 
 router.beforeEach((to, from) => {
+    if (to.name === 'unavailable') return;
+
     const { isAuth, setRedirect, login, currentUser } = useAuth();
     const { accessToken } = getAccessTokenFromLocalStorage();
 
     if (!isAuth.value && isNotNullish(accessToken)) login();
 
-    if (to.meta.auth.isAuth) {
+    if (to.meta.auth?.isAuth) {
         if (!isAuth.value) {
             setRedirect(to.fullPath);
 

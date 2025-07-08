@@ -1,39 +1,37 @@
 <template>
-    <div class="not-found">
-        <div class="not-found__container">
-            <div class="row">
-                <div class="col-12 text-center">
-                    <h1>404</h1>
-                </div>
-                <div class="col-12 text-center">
-                    <h4 class="item_1">Страница не найдена</h4>
-                </div>
+    <div class="not-found-page">
+        <div class="row">
+            <div class="col-12 text-center">
+                <ErrorCard>
+                    <template #actions>
+                        <UiButton @click="toHome" icon="fa-solid fa-house" big bolder>
+                            Перейти на главную
+                        </UiButton>
+                    </template>
+                </ErrorCard>
             </div>
         </div>
     </div>
 </template>
 
-<script>
-export default {
-    name: 'NotFound'
-};
+<script setup>
+import UiButton from '@/components/common/UI/UiButton.vue';
+import ErrorCard from '@/components/common/ErrorCard.vue';
+import { useRouter } from 'vue-router';
+
+const router = useRouter();
+
+function toHome() {
+    router.push({ name: 'root' });
+}
 </script>
 
 <style lang="scss" scoped>
-.not-found {
+.not-found-page {
     display: flex;
     align-items: center;
     justify-content: center;
     height: 100%;
-    font-family: Arial;
-}
-
-h1 {
-    font-size: 6rem;
-}
-
-h4 {
-    font-size: 1rem;
-    text-transform: uppercase;
+    color: #02305b;
 }
 </style>

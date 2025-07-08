@@ -357,7 +357,8 @@ const { resetForm, form } = useSearchForm(
         requests_area_min: null,
         requests_area_max: null,
         with_passive_consultant: null,
-        with_current_user_tasks: null
+        with_current_user_tasks: null,
+        with_active_contacts: null
     },
     {
         submit: onSubmit,

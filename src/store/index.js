@@ -15,7 +15,7 @@ import Location from './modules/Location';
 import Complex from './modules/Complex';
 import Messenger from '@/store/modules/Messenger';
 import Task from '@/store/modules/Task.js';
-import { useAuth } from '@/composables/useAuth.js';
+import { hasAccessToken, login, logout } from '@/composables/useAuth.js';
 import Quizz from '@/store/modules/Quiz.js';
 import { getAccessTokenFromLocalStorage } from '@/services/localStorage.js';
 import { setAccessToken } from '@/services/axios.js';
@@ -27,8 +27,6 @@ const store = createStore({
     mutations: {},
     actions: {
         async initialize({ dispatch }) {
-            const { hasAccessToken, login } = useAuth();
-
             if (!hasAccessToken()) return false;
 
             const userInitialized = dispatch('initializeUser');
@@ -47,8 +45,6 @@ const store = createStore({
             return true;
         },
         destroy({ dispatch, commit }) {
-            const { logout } = useAuth();
-
             dispatch('WEBSOCKET_STOP');
             dispatch('dropUser');
             commit('Messenger/clearCountersInterval');
