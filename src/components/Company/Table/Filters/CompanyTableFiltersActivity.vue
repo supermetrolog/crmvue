@@ -1,6 +1,6 @@
 <template>
     <div>
-        <UiFormGroup data-field-id="">
+        <UiFormGroup>
             <UiCol :cols="12">
                 <p class="font-weight-semi fs-2">
                     <UiTooltipIcon
@@ -36,6 +36,28 @@
                     :false-value="null"
                 >
                     Компании с активными задачами для меня
+                </UiCheckbox>
+            </UiCol>
+        </UiFormGroup>
+        <UiFormDivider />
+        <UiFormGroup>
+            <UiCol :cols="12">
+                <p class="font-weight-semi fs-2">
+                    <UiTooltipIcon
+                        icon="fa-solid fa-link"
+                        class="text-success"
+                        tooltip="Новый фильтр"
+                    />
+                    Связь с контактами
+                </p>
+            </UiCol>
+            <UiCol :cols="12">
+                <UiCheckbox
+                    v-model="filters.with_active_contacts"
+                    :true-value="1"
+                    :false-value="null"
+                >
+                    Компании с активными контактами
                 </UiCheckbox>
             </UiCol>
         </UiFormGroup>
@@ -102,6 +124,7 @@ interface CompanyTableFiltersActivity {
     with_current_user_tasks: number | null;
     requests_filter: string | null;
     without_surveys: number | null;
+    with_active_contacts: number | null;
 }
 
 const filters = defineModel<CompanyTableFiltersActivity>({ default: () => ({}) });

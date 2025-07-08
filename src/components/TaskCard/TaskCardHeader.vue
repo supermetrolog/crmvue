@@ -28,6 +28,18 @@
                     <span>{{ status }}</span>
                     <span v-if="isCanceled">до {{ impossibleDate }}</span>
                 </DashboardChip>
+                <Tippy>
+                    <UiButtonIcon
+                        v-if="!isDeleted && draggable && canBeDragged && !isCompleted"
+                        @click="$emit('complete')"
+                        icon="fa-solid fa-check"
+                        :disabled
+                    />
+                    <template #content>
+                        <span>Отметить как </span>
+                        <span class="color-success font-weight-semi">Выполнено</span>
+                    </template>
+                </Tippy>
                 <div class="task-card__actions">
                     <UiDropdownActions menu-class="task-card__dropdown">
                         <template #trigger>
@@ -38,13 +50,6 @@
                             />
                         </template>
                         <template #menu>
-                            <UiDropdownActionsButton
-                                v-if="!isDeleted && draggable && canBeDragged && !isCompleted"
-                                @handle="$emit('complete')"
-                                icon="fa-solid fa-check"
-                                label="Выполнить"
-                                :disabled
-                            />
                             <UiDropdownActionsButton
                                 v-if="editable && canBeEdit"
                                 @handle="$emit('edit')"
@@ -144,6 +149,7 @@ import UiButtonIcon from '@/components/common/UI/UiButtonIcon.vue';
 import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
 import UiDropdownActions from '@/components/common/UI/DropdownActions/UiDropdownActions.vue';
 import UiDropdownActionsButton from '@/components/common/UI/DropdownActions/UiDropdownActionsButton.vue';
+import { Tippy } from 'vue-tippy';
 
 defineEmits([
     'to-chat',

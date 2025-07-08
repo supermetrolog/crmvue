@@ -1,6 +1,7 @@
 <template>
     <div class="messenger-dialog__last-message" :class="{ column }">
         <div class="messenger-dialog__last-message-header">
+            <slot name="before" />
             <Avatar
                 v-if="!hideAvatar"
                 class="messenger-dialog__last-message-user"

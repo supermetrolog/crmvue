@@ -1,13 +1,16 @@
 <template>
     <div>
         <MessengerDialogLastMessage
-            v-if="!company.last_survey"
+            v-if="lastMessageShouldBeVisible"
             @click="$emit('show-message', company.pinned_messages[0].message)"
             :last-message="company.pinned_messages[0].message"
             class="company-table-item__message w-100"
             hide-avatar
             column
         >
+            <template #before>
+                <span class="company-table-item__message-label">Закреплено,</span>
+            </template>
             <template #after>
                 <UiDropdownActions small label="Действия над сообщением" class="ml-auto">
                     <template #menu>
@@ -74,8 +77,9 @@ import UiModal from '@/components/common/UI/UiModal.vue';
 import { computed, ref } from 'vue';
 import UiButton from '@/components/common/UI/UiButton.vue';
 import { plural } from '@/utils/plural.js';
-import { isNullish } from '@/utils/helpers/common/isNullish.ts';
+import { isNullish } from '@/utils/helpers/common/isNullish';
 import { isEmptyString } from '@/utils/helpers/string/isEmptyString.js';
+import { isNotNullish } from '@/utils/helpers/common/isNotNullish';
 
 defineEmits(['create-pinned-message', 'show-message', 'unpin-message']);
 
@@ -88,6 +92,10 @@ const props = defineProps({
 
 const modalIsVisible = ref(false);
 
+const lastMessageShouldBeVisible = computed(() => {
+    return props.company.pinned_messages[0].message.message !== props.company.last_survey?.comment;
+});
+
 const messagesCountLabel = computed(() =>
     plural(
         props.company.pinned_messages.length - 1 || 1,
@@ -98,11 +106,15 @@ const messagesCountLabel = computed(() =>
 );
 
 const messagesCountButtonShouldBeVisible = computed(() => {
-    return (
-        props.company.pinned_messages.length > 1 ||
-        (props.company.last_survey &&
-            (isNullish(props.company.last_survey.comment) ||
-                isEmptyString(props.company.last_survey.comment)))
-    );
+    if (props.company.pinned_messages.length > 2) return true;
+
+    if (isNotNullish(props.company.last_survey)) {
+        return (
+            isNullish(props.company.last_survey.comment) ||
+            isEmptyString(props.company.last_survey.comment)
+        );
+    }
+
+    return props.company.pinned_messages.length > 1;
 });
 </script>

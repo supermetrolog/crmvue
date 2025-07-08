@@ -79,7 +79,8 @@
                     cl-dark #505050 #2a454c,
                     cl-light variables.$color_grey_light #c8c8c8 #000,
                     cl-white #fff #ddd #000,
-                    cl-transparent transparent #c8c8c8 #000
+                    cl-transparent transparent #c8c8c8 #000,
+                    cl-gray-light #e0e0e0 #d3d3d3 #000
     );
 
     &--cl-success, &--cl-danger {

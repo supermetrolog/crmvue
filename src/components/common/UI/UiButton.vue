@@ -28,7 +28,7 @@
 <script setup lang="ts">
 import type { Component } from 'vue';
 import { computed, toRef, useTemplateRef } from 'vue';
-import { isNotNullish } from '@/utils/helpers/common/isNotNullish.ts';
+import { isNotNullish } from '@/utils/helpers/common/isNotNullish';
 import Spinner from '@/components/common/Spinner.vue';
 import { useTippyText } from '@/composables/useTippyText.js';
 import { RouteLocationRaw } from 'vue-router';
@@ -46,7 +46,8 @@ export type ButtonColor =
     | 'dark'
     | 'light'
     | 'white'
-    | 'transparent';
+    | 'transparent'
+    | 'gray-light';
 
 export type ButtonBadgePosition = 'left' | 'right';
 

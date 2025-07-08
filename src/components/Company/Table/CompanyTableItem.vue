@@ -32,8 +32,6 @@
                 v-if="dropdownMustBeShown"
                 v-model:objects-visible="objectsIsOpen"
                 v-model:requests-visible="requestsIsOpen"
-                @show-tasks="$emit('show-tasks')"
-                @show-created-tasks="$emit('show-tasks')"
                 :company
                 class="mt-2"
             />

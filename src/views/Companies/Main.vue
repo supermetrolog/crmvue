@@ -59,7 +59,6 @@
                             @create-pinned-message="createPinnedMessage"
                             @create-task="createCompanyTask"
                             @show-tasks="showTasks"
-                            @show-created-tasks="showCreatedTasks"
                             @disable-company="disableCompany"
                             @enable-company="enableCompany"
                             @create-request-task="createRequestTask"
@@ -161,10 +160,9 @@ import Switch from '@/components/common/Forms/Switch.vue';
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
 import { computed, ref, shallowRef, watch } from 'vue';
 import { useTableContent } from '@/composables/useTableContent.js';
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import Spinner from '@/components/common/Spinner.vue';
 import { useMobile } from '@/composables/useMobile.js';
-import { isArray } from '@/utils/helpers/array/isArray.ts';
 import { dayjsFromMoscow } from '@/utils/formatters/date.js';
 import UserFolders from '@/components/UserFolder/UserFolders.vue';
 import { isNotNullish } from '@/utils/helpers/common/isNotNullish.ts';
@@ -221,24 +219,27 @@ const getCompanies = async () => {
 
 const debouncedFetchCompanies = useDebounceFn(getCompanies, 300);
 
+const router = useRouter();
+
 const { next, nextWithScroll, queryIsInitialized, isInitialLoading } = useTableContent(
     getCompanies,
     {
-        scrollTo: firstPagination
+        scrollTo: firstPagination,
+        initQuery: async () => {
+            const query = { ...route.query };
+
+            const queryIsEmpty = Object.keys(query).length === 0;
+
+            if (queryIsEmpty) {
+                query.consultant_id = currentUserId.value;
+                query.status = 1;
+                query.with_active_contacts = 1;
+            }
+
+            await router.replace({ query });
+        }
     }
 );
-
-// initQuery: async () => {
-//     const query = { ...route.query };
-//
-//     const queryIsEmpty = Object.keys(query).length === 0;
-//
-//     if (queryIsEmpty) query.consultant_id = currentUserId.value;
-//
-//     query.sort = 'activity';
-//
-//     await router.replace({ query });
-// }
 
 const currentViewComponentName = computed(() => {
     if (isMobile) return CompanyGrid;
@@ -323,7 +324,7 @@ async function showPinnedMessage(message) {
     pinnedMessageViewIsVisible.value = true;
 
     try {
-        pinnedMessage.value = await api.messenger.getMessagesByQuery({ id: message.id });
+        pinnedMessage.value = await api.messenger.getMessage(message.id);
         pinnedMessage.value.dayjs_date = dayjsFromMoscow(pinnedMessage.value.created_at);
     } finally {
         pinnedMessageIsLoading.value = false;
@@ -355,14 +356,6 @@ async function unpinMessage(message) {
 
 // tasks
 
-function addCreatedTaskInCompany(company, task) {
-    if (isArray(company.created_task_ids) && company.created_task_ids.length) {
-        company.created_task_ids.push(task.id);
-    } else {
-        company.created_task_ids = [task.id];
-    }
-}
-
 const { createTaskWithTemplate } = useTaskManager();
 
 async function createCompanyTask(company) {
@@ -386,8 +379,6 @@ async function createCompanyTask(company) {
         const task = await api.task.create(taskPayload);
 
         notify.success('Задача успешно создана!');
-
-        addCreatedTaskInCompany(company, task);
     } finally {
         company.isLoading = false;
     }
@@ -463,8 +454,7 @@ function closeScheduleCallModal() {
     scheduleCallCompany.value = null;
 }
 
-function onCreatedScheduledCall(payload) {
-    addCreatedTaskInCompany(scheduleCallCompany.value, payload);
+function onCreatedScheduledCall() {
     closeScheduleCallModal();
 }
 
@@ -477,14 +467,6 @@ function showTasks(company) {
     currentTasksCompany.value = company;
 
     fetchCompanyTasks();
-
-    tasksIsVisible.value = true;
-}
-
-function showCreatedTasks(company) {
-    currentTasksCompany.value = company;
-
-    fetchCompanyCreatedTasks();
 
     tasksIsVisible.value = true;
 }
@@ -510,20 +492,6 @@ async function fetchCompanyTasks() {
     }
 }
 
-async function fetchCompanyCreatedTasks() {
-    tasksIsLoading.value = true;
-
-    try {
-        const response = await api.task.get({
-            ids: currentTasksCompany.value.created_task_ids ?? []
-        });
-
-        currentTasks.value = response.data;
-    } finally {
-        tasksIsLoading.value = false;
-    }
-}
-
 function onTaskUpdated(task) {
     const taskIndex = currentTasks.value.findIndex(element => element.id === task.id);
     if (taskIndex === -1) return;
@@ -531,17 +499,7 @@ function onTaskUpdated(task) {
     if (task.status === taskOptions.statusTypes.COMPLETED) {
         currentTasks.value.splice(taskIndex, 1);
 
-        if (
-            isArray(currentTasksCompany.value.created_task_ids) &&
-            currentTasksCompany.value.created_task_ids.includes(task.id)
-        ) {
-            currentTasksCompany.value.created_task_ids.splice(
-                currentTasksCompany.value.created_task_ids.indexOf(task.id),
-                1
-            );
-        } else {
-            currentTasksCompany.value.tasks_count--;
-        }
+        currentTasksCompany.value.tasks_count--;
     } else {
         Object.assign(currentTasks.value[taskIndex], task);
     }
@@ -582,8 +540,7 @@ function closeScheduleVisitModal() {
     scheduleVisitModalIsVisible.value = false;
 }
 
-function onCreatedScheduledVisit(task) {
-    addCreatedTaskInCompany(scheduleVisitCompany.value, task);
+function onCreatedScheduledVisit() {
     closeScheduleVisitModal();
 }
 
@@ -601,8 +558,7 @@ function closeScheduleEventModal() {
     scheduleEventModalIsVisible.value = false;
 }
 
-function onCreatedScheduledEvent(task) {
-    addCreatedTaskInCompany(scheduleEventCompany.value, task);
+function onCreatedScheduledEvent() {
     closeScheduleEventModal();
 }
 </script>

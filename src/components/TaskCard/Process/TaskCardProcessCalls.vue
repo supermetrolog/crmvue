@@ -12,13 +12,13 @@
                 data-tour-id="task-process:show-contacts"
             />
             <UiButton
-                @click="formIsVisible = true"
+                @click="$emit('to-survey', companyId)"
                 small
-                icon="fa-solid fa-plus"
+                icon="fa-solid fa-play"
                 color="white"
-                data-tour-id="task-process:create-contact"
+                data-tour-id="task-process:start-survey"
             >
-                Добавить контакт
+                Пройти опрос
             </UiButton>
         </template>
         <template #modals>
@@ -56,7 +56,10 @@ import FormContactDisable from '@/components/Forms/FormContactDisable.vue';
 import { createTourStepElementGenerator, useTourStep } from '@/composables/useTour/useTourStep';
 import TaskCardProcessDefault from '@/components/TaskCard/Process/TaskCardProcessDefault.vue';
 
-defineEmits<{ (e: 'show-survey', surveyId: number): void }>();
+defineEmits<{
+    (e: 'show-survey', surveyId: number): void;
+    (e: 'to-survey', companyId: number): void;
+}>();
 
 const props = defineProps<{
     task: TaskView;
@@ -174,25 +177,26 @@ useTourStep({
     }
 });
 
-useTourStep({
-    key: 2,
-    element: createTourStepElement('show-contacts'),
-    popover: {
-        title: 'Управление контактом',
-        description:
-            'Редактируйте, архивируйте, восстанавливайте и просматривайте контакт в пару нажатий.',
-        side: 'right',
-        align: 'start'
-    }
-});
+if (contacts.value.length) {
+    useTourStep({
+        key: 2,
+        element: createTourStepElement('show-contacts'),
+        popover: {
+            title: 'Управление контактом',
+            description:
+                'Редактируйте, архивируйте, восстанавливайте и просматривайте контакт в пару нажатий.',
+            side: 'right',
+            align: 'start'
+        }
+    });
+}
 
 useTourStep({
     key: 3,
-    element: createTourStepElement('create-contact'),
+    element: createTourStepElement('start-survey'),
     popover: {
-        title: 'Создавайте контакт',
-        description:
-            'Создавайте контакт без перехода на страницу компании. Информация из карточки задачи останется рядом с вами.',
+        title: 'Проходите опрос',
+        description: 'Переходите в опрос компании сразу прямо из карточки задачи.',
         side: 'right',
         align: 'start'
     }
