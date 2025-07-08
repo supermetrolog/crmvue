@@ -498,8 +498,6 @@ function onTaskUpdated(task) {
 
     if (task.status === taskOptions.statusTypes.COMPLETED) {
         currentTasks.value.splice(taskIndex, 1);
-
-        currentTasksCompany.value.tasks_count--;
     } else {
         Object.assign(currentTasks.value[taskIndex], task);
     }

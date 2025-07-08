@@ -48,27 +48,29 @@
                                 <span>{{ value.label }}</span>
                             </template>
                         </MultiSelect>
-                        <div class="th-dd-content__sort-order">
-                            <span class="form__subtitle">Порядок сортировки</span>
-                            <div class="form__row mt-1">
-                                <RadioChip
-                                    v-model="sortingOptionIsDesc"
-                                    :disabled="sortingOptionOnlyAsc"
-                                    label="Сначала старые"
-                                    :value="false"
-                                    :rounded="false"
-                                    icon="fa-solid fa-sort-amount-down"
-                                />
-                                <RadioChip
-                                    v-model="sortingOptionIsDesc"
-                                    :disabled="sortingOptionOnlyAsc"
-                                    label="Сначала новые"
-                                    :value="true"
-                                    :rounded="false"
-                                    icon="fa-solid fa-sort-amount-up-alt"
-                                />
+                        <AnimationTransition :speed="0.4">
+                            <div v-show="!sortingOptionOnlyAsc" class="th-dd-content__sort-order">
+                                <span class="form__subtitle">Порядок сортировки</span>
+                                <div class="form__row mt-1">
+                                    <RadioChip
+                                        v-model="sortingOptionIsDesc"
+                                        :disabled="sortingOptionOnlyAsc"
+                                        :label="sortingOptionAscLabel"
+                                        :value="false"
+                                        :rounded="false"
+                                        icon="fa-solid fa-sort-amount-down"
+                                    />
+                                    <RadioChip
+                                        v-model="sortingOptionIsDesc"
+                                        :disabled="sortingOptionOnlyAsc"
+                                        :label="sortingOptionDescLabel"
+                                        :value="true"
+                                        :rounded="false"
+                                        icon="fa-solid fa-sort-amount-up-alt"
+                                    />
+                                </div>
                             </div>
-                        </div>
+                        </AnimationTransition>
                         <div class="d-flex gap-2 mt-3 flex-wrap">
                             <slot name="actions">
                                 <UiButton
@@ -141,6 +143,7 @@ import { isNullish } from '@/utils/helpers/common/isNullish.ts';
 import MultiSelect from '@/components/common/Forms/MultiSelect.vue';
 import { isString } from '@/utils/helpers/string/isString.js';
 import RadioChip from '@/components/common/Forms/RadioChip.vue';
+import AnimationTransition from '@/components/common/AnimationTransition.vue';
 
 const route = useRoute();
 const router = useRouter();
@@ -260,6 +263,30 @@ const sortingOptionOnlyAsc = computed(() => {
     if (!option) return false;
 
     return option.onlyAsc ?? false;
+});
+
+const sortingOptionDescLabel = computed(() => {
+    if (sortingOption.value && props.sortingOptions?.length) {
+        const option = props.sortingOptions.find(item => item.value === sortingOption.value);
+
+        if (isNotNullish(option?.desc)) {
+            return option.desc;
+        }
+    }
+
+    return 'Сначала новые';
+});
+
+const sortingOptionAscLabel = computed(() => {
+    if (sortingOption.value && props.sortingOptions?.length) {
+        const option = props.sortingOptions.find(item => item.value === sortingOption.value);
+
+        if (isNotNullish(option?.asc)) {
+            return option.asc;
+        }
+    }
+
+    return 'Сначала старые';
 });
 
 function updateSortRoute(value) {
