@@ -7,19 +7,19 @@ import { createSharedComposable } from '@vueuse/core';
 const isAuth = shallowRef(false);
 const redirectRoute = shallowRef(null);
 
-function login() {
+export function login() {
     isAuth.value = true;
 }
 
-function logout() {
+export function logout() {
     isAuth.value = false;
 }
 
-function setRedirect(value) {
+export function setRedirect(value) {
     redirectRoute.value = value;
 }
 
-function hasAccessToken() {
+export function hasAccessToken() {
     return hasAccessTokenInLocalStorage();
 }
 
