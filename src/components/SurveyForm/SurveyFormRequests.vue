@@ -56,6 +56,7 @@
                             @delete="deleteNewRequest(request)"
                             :request="request"
                             :disabled
+                            :survey
                             editable
                         />
                         <hr v-if="activeRequests.length && form.created?.length" class="w-100" />
@@ -66,6 +67,7 @@
                             @edit="editRequest(request)"
                             :request="request"
                             :disabled
+                            :survey
                             editable
                             data-tour-id="survey-form:stepper-request-card"
                         />
@@ -106,10 +108,17 @@
                 :form-data="editingNewRequest"
             />
             <FormCompanyRequest
-                v-if="editFormIsVisible"
-                @close="closeEditForm"
+                v-if="requestFormIsVisible"
+                @close="closeRequestForm"
                 @updated="updateRequest"
+                @created="$emit('created', $event)"
+                :company-id="company.id"
                 :form-data="editedRequest"
+            />
+            <SurveyFormRequestsSuggestModal
+                v-model:visible="newRequestSuggestModalIsVisible"
+                @create-task="formIsVisible = true"
+                @create-request="requestFormIsVisible = true"
             />
         </teleport>
     </div>
@@ -131,6 +140,9 @@ import UiDropdownActions from '@/components/common/UI/DropdownActions/UiDropdown
 import UiButton from '@/components/common/UI/UiButton.vue';
 import { useNotify } from '@/utils/use/useNotify.js';
 import { createTourStepElementGenerator, useTourStep } from '@/composables/useTour/useTourStep';
+import SurveyFormRequestsSuggestModal from '@/components/SurveyForm/SurveyFormRequestsSuggestModal.vue';
+
+defineEmits(['created']);
 
 const props = defineProps({
     requests: {
@@ -141,7 +153,8 @@ const props = defineProps({
         type: Object,
         required: true
     },
-    disabled: Boolean
+    disabled: Boolean,
+    survey: Object
 });
 
 // form
@@ -209,8 +222,10 @@ function deleteNewRequest(request) {
     }
 }
 
+const newRequestSuggestModalIsVisible = ref(false);
+
 function addNewRequest() {
-    formIsVisible.value = true;
+    newRequestSuggestModalIsVisible.value = true;
 }
 
 function closeForm() {
@@ -233,15 +248,15 @@ function onUpdatedRequest(request) {
 // edit
 
 const editedRequest = shallowRef(null);
-const editFormIsVisible = ref(false);
+const requestFormIsVisible = ref(false);
 
 function editRequest(request) {
     editedRequest.value = request;
-    editFormIsVisible.value = true;
+    requestFormIsVisible.value = true;
 }
 
-function closeEditForm() {
-    editFormIsVisible.value = false;
+function closeRequestForm() {
+    requestFormIsVisible.value = false;
     editedRequest.value = null;
 }
 
@@ -256,7 +271,7 @@ async function updateRequest() {
         }
     }
 
-    closeEditForm();
+    closeRequestForm();
 }
 
 const notify = useNotify();

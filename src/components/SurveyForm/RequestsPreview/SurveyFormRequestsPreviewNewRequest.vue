@@ -4,7 +4,12 @@
             <div class="request-row-card">
                 <div class="request-row-card__except">
                     <div class="request-row-card__column">
-                        <Avatar class="mt-4" :src="currentUser.userProfile.avatar" :size="40" />
+                        <Avatar
+                            v-if="survey"
+                            class="mt-4"
+                            :src="survey.user.userProfile.avatar"
+                            :size="40"
+                        />
                         <div class="survey-form-object-preview-offer__badge">Новый</div>
                     </div>
                     <div class="request-row-card__info">
@@ -73,7 +78,6 @@ import { unitTypes } from '@/const/unitTypes.js';
 import WithUnitType from '@/components/common/WithUnitType.vue';
 import UiField from '@/components/common/UI/UiField.vue';
 import Avatar from '@/components/common/Avatar.vue';
-import { useAuth } from '@/composables/useAuth.js';
 import UiButtonIcon from '@/components/common/UI/UiButtonIcon.vue';
 
 defineEmits(['edit', 'delete']);
@@ -84,10 +88,9 @@ const props = defineProps({
         required: true
     },
     editable: Boolean,
-    disabled: Boolean
+    disabled: Boolean,
+    survey: Object
 });
-
-const { currentUser } = useAuth();
 
 const form = defineModel();
 

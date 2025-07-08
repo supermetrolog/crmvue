@@ -5,7 +5,8 @@
             completed: hasStatus,
             success: hasSuccessStatus || needEditing,
             danger: hasFailStatus,
-            warning: needEditing
+            warning: needEditing,
+            'survey-form-object-preview-offer--new': isCreatedAfterSurvey
         }"
     >
         <div class="survey-form-object-preview-offer__wrapper">
@@ -25,7 +26,7 @@
                 </template>
                 <template #actions>
                     <div
-                        v-if="editable"
+                        v-if="editable && !isCreatedAfterSurvey"
                         class="survey-form-object-preview-offer__actions ml-1"
                         data-tour-id="survey-form:stepper-request-form"
                     >
@@ -55,7 +56,7 @@
                     </div>
                 </template>
             </RequestRowCard>
-            <AnimationTransition v-if="editable" :speed="0.5">
+            <AnimationTransition v-if="editable && !isCreatedAfterSurvey" :speed="0.5">
                 <VueEditor
                     v-if="needEditing || hasFailStatus"
                     v-model="modelValue.description"
@@ -88,7 +89,9 @@ import UiDropdownActionsButton from '@/components/common/UI/DropdownActions/UiDr
 import RequestRowCard from '@/components/RequestRowCard/RequestRowCard.vue';
 import { useAuth } from '@/composables/useAuth.js';
 import { useStore } from 'vuex';
-import { isNotNullish } from '@/utils/helpers/common/isNotNullish.ts';
+import { isNotNullish } from '@/utils/helpers/common/isNotNullish';
+import { isNullish } from '@/utils/helpers/common/isNullish';
+import { dayjsFromMoscow } from '@/utils/formatters/date.js';
 
 defineEmits(['edit']);
 
@@ -98,7 +101,8 @@ const props = defineProps({
         required: true
     },
     disabled: Boolean,
-    editable: Boolean
+    editable: Boolean,
+    survey: Object
 });
 
 const form = defineModel({ type: Object });
@@ -136,5 +140,13 @@ const editorHelper = computed(() => {
 
     if (Number(form.value.answer) === ANSWER.EDIT) return `Редактирование: ${postfix}`;
     return `Не актуально: ${postfix}`;
+});
+
+const isCreatedAfterSurvey = computed(() => {
+    if (isNullish(props.survey)) return false;
+
+    return dayjsFromMoscow(props.survey.created_at).isBefore(
+        dayjsFromMoscow(props.request.created_at)
+    );
 });
 </script>

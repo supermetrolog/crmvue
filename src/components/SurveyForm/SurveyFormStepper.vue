@@ -51,11 +51,15 @@
         </template>
         <template #3>
             <Spinner v-if="requestsIsLoading" class="absolute-center" label="Загрузка запросов.." />
-            <SurveyFormRequests v-else
-v-model="form.requests"
-:company
-:requests
-:disabled />
+            <SurveyFormRequests
+                v-else
+                v-model="form.requests"
+                @created="onCreateRequest"
+                :company
+                :requests
+                :disabled
+                :survey="survey ?? draft"
+            />
         </template>
         <template #4>
             <Spinner
@@ -899,6 +903,10 @@ async function fetchRequests() {
     requests.value = response.data;
 
     requestsIsLoading.value = false;
+}
+
+function onCreateRequest(request) {
+    requests.value.unshift(request);
 }
 
 onBeforeMount(fetchInitialData);
