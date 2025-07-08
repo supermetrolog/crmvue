@@ -1,5 +1,5 @@
 <template>
-    <UiModal title="Добавить контакт" :width="600" ыьфдд>
+    <UiModal title="Добавить контакт" :width="600" small>
         <h3 class="text-center font-weight-semi">
             Заполнить данные контакта или создать задачу для офис-менеджера?
         </h3>
