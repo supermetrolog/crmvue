@@ -85,18 +85,6 @@
     >
         Пройти опрос!
     </UiButton>
-    <UiButton
-        v-else
-        @click="$emit('to-chat')"
-        icon="fa-solid fa-comments"
-        color="success-light"
-        tooltip="Нажмите, чтобы перейти в чат компании."
-        small
-        class="fs-2 w-100"
-        center
-    >
-        Перейти в чат
-    </UiButton>
 </template>
 
 <script setup>
@@ -123,7 +111,9 @@ const { currentUserId } = useAuth();
 
 const isCurrentUserCompany = computed(() => props.company.consultant_id === currentUserId.value);
 
-const lastSurveyDate = computed(() => dayjsFromMoscow(lastSurvey.value.completed_at));
+const lastSurveyDate = computed(() =>
+    dayjsFromMoscow(lastSurvey.value.completed_at ?? lastSurvey.value.updated_at)
+);
 
 const SURVEY_TASK_DELAY = 7; // days
 

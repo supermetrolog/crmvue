@@ -177,9 +177,9 @@ const otherQuestions = computed(() => {
     return Object.values(
         form.value.other.reduce((acc, question) => {
             if (acc[question.question_id]) {
-                acc[question.question_id].push(question.value);
+                acc[question.question_id].push(question);
             } else {
-                acc[question.question_id] = [question.value];
+                acc[question.question_id] = [question];
             }
 
             return acc;
@@ -189,7 +189,10 @@ const otherQuestions = computed(() => {
 
 const completedOtherLength = computed(() => {
     return otherQuestions.value.filter(group =>
-        group.some(element => isNotNullish(element) && element.type === 'main')
+        group.some(
+            element =>
+                isNotNullish(element) && element.type === 'main' && isNotNullish(element.value)
+        )
     ).length;
 });
 

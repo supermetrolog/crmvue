@@ -179,10 +179,7 @@ const props = defineProps({
 });
 
 const dropdownMustBeShown = computed(
-    () =>
-        props.company.objects.length ||
-        props.company.requests.length ||
-        props.company.tasks_count > 0
+    () => props.company.objects.length || props.company.requests.length
 );
 
 const isPassive = computed(() => props.company.status === 0);

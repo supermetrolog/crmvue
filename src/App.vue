@@ -16,10 +16,12 @@ import { useRoute, useRouter } from 'vue-router';
 import { useStore } from 'vuex';
 import { useTimeoutFn } from '@vueuse/core';
 import AppVersionChecker from '@/components/common/AppVersionChecker.vue';
+import { captureException } from '@sentry/vue';
 
 const LAYOUTS = {
     login: Login,
     empty: Empty,
+    mobile: Mobile,
     default: Default
 };
 
@@ -32,30 +34,36 @@ const store = useStore();
 const isMobile = initializeDevice();
 
 const layoutComponent = computed(() => {
-    if (route.meta.layout === 'login') return Login;
-    if (isMobile) return Mobile;
+    if (route.meta.layout === 'login') return LAYOUTS.login;
+    if (isMobile) return LAYOUTS.mobile;
 
-    return LAYOUTS[route.meta.layout] ?? Default;
+    return LAYOUTS[route.meta.layout] ?? LAYOUTS.default;
 });
 
-const disableSplash = () => {
+function disableSplash() {
     document.body.classList.add('splash-disabling');
+
     useTimeoutFn(() => {
         document.body.classList.remove('splash-disabling', 'splash');
     }, 250);
-};
+}
 
-const initialize = async () => {
-    const initialized = await store.dispatch('initialize');
+async function initialize() {
+    try {
+        const initialized = await store.dispatch('initialize');
 
-    if (!initialized) {
-        store.dispatch('destroy');
-        await router.push({ name: 'login' });
+        if (!initialized) {
+            void store.dispatch('destroy');
+            await router.push({ name: 'login' });
+        }
+    } catch (error) {
+        captureException(error);
+        void router.push({ name: 'unavailable' });
+    } finally {
+        isInitialized.value = true;
+        disableSplash();
     }
-
-    isInitialized.value = true;
-    disableSplash();
-};
+}
 
 initialize();
 </script>

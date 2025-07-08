@@ -302,7 +302,7 @@ function formToPayload() {
         title: form.title,
         message: form.comment,
         start: fromUtcToServer(form.start),
-        end: fromUtcToServer(dayjs(form.start).add(3, 'days')),
+        end: fromUtcToServer(dayjs(form.start).add(1, 'days')),
         user_id: currentUserId.value,
         relations: generateTaskRelations(),
         type: 'scheduled_visit'
