@@ -18,7 +18,7 @@ const props = defineProps({
 });
 
 const color = computed(() => {
-    if (modelValue.value === props.name) return 'primary';
+    if (modelValue.value === props.name) return 'gray-light';
     return 'transparent';
 });
 </script>

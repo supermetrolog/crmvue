@@ -5,7 +5,6 @@
             <div class="company-table-item-survey__title">
                 <span class="company-table-item-survey__name d-flex align-items-center">
                     <Avatar
-                        v-if="company.last_survey.user_id !== company.user_id"
                         :src="company.last_survey.user.userProfile.avatar"
                         :size="24"
                         :label="company.last_survey.user.userProfile.short_name"
@@ -88,7 +87,6 @@
                             @click="editComment"
                             label="Изменить комментарий"
                             icon="fa-solid fa-pen"
-                            :color="currentTab === TABS.COMMENT ? 'dark' : undefined"
                             transparent
                             mini
                         />
@@ -102,7 +100,7 @@
                 >
                     <div class="d-flex gap-2 align-items-center">
                         <span>Задачи</span>
-                        <UiButtonIcon :color="currentTab === TABS.TASKS ? 'light' : 'primary'" mini>
+                        <UiButtonIcon mini>
                             {{ baseTasks.length }}
                         </UiButtonIcon>
                     </div>

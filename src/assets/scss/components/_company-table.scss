@@ -173,6 +173,11 @@
         }
     }
 
+    &__message-label {
+        color: variables.$color_dark_grey;
+        font-size: 13px;
+    }
+
     &__categories {
         text-align: center;
         width: 250px;

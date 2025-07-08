@@ -30,6 +30,10 @@ export default {
         if (data?.length) return data[0];
         return null;
     },
+    async getMessage(id) {
+        const response = await axios.get(`/chat-member-messages/${id}`);
+        return responseToData(response);
+    },
     async getMessages(memberID, idLessThen = null) {
         const params = new URLSearchParams({ to_chat_member_id: memberID });
         if (idLessThen) params.append('id_less_then', idLessThen);

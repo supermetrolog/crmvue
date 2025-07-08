@@ -1,5 +1,5 @@
 <template>
-    <TaskCardProcessDefault :task :relations>
+    <TaskCardProcessDefault @show-survey="$emit('show-survey', $event)" :task :relations>
         <template #list>
             <TaskCardProcessEntityContact
                 v-for="contact in contacts"
