@@ -125,6 +125,7 @@ import UiModal from '@/components/common/UI/UiModal.vue';
 import UiField from '@/components/common/UI/UiField.vue';
 
 defineEmits(['to-map', 'next-page', 'refresh', 'favorite-deleted']);
+
 const props = defineProps({
     pagination: Object,
     objects: {
@@ -141,10 +142,22 @@ const props = defineProps({
         default: () => []
     },
     submittedView: Boolean,
-    alreadySubmittedSet: Set,
-    alreadyVisitedSet: Set,
-    alreadySubmitted: Object,
-    alreadyVisited: Object
+    alreadySubmittedSet: {
+        type: Set,
+        default: () => new Set()
+    },
+    alreadyVisitedSet: {
+        type: Set,
+        default: () => new Set()
+    },
+    alreadySubmitted: {
+        type: Object,
+        default: () => ({})
+    },
+    alreadyVisited: {
+        type: Object,
+        default: () => ({})
+    }
 });
 
 const selectedObjectsSet = computed(() => {

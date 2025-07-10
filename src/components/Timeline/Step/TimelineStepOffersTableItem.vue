@@ -358,7 +358,7 @@ const openPDF = () => {
     window.open(
         getLinkPDF(
             {
-                type_id: 2,
+                type_id: props.offer.type_id,
                 offer_id: props.offer.original_id,
                 object_id: props.offer.object_id
             },

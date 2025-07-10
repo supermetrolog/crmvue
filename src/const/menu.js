@@ -168,6 +168,13 @@ export const menu = [
                 url: '/admin/tours',
                 icon: 'fa-solid fa-plane-departure',
                 exact: true
+            },
+            {
+                id: 1,
+                name: 'PDF',
+                url: '/admin/pdf',
+                icon: 'fa-solid fa-file-pdf',
+                exact: true
             }
         ]
     },

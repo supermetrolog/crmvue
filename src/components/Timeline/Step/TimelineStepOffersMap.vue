@@ -1,7 +1,7 @@
 <template>
     <div>
-        <div class="d-flex align-items-end gap-3 mb-1">
-            <UiField color="danger" class="fs-3">Функция в активной разработке!</UiField>
+        <div class="d-flex align-items-end gap-2 mb-2">
+            <UiField color="danger" class="fs-3">Функция в разработке!</UiField>
             <UiButton
                 @click="$emit('to-list')"
                 class="ml-auto"

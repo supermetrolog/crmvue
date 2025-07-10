@@ -346,6 +346,14 @@ const routes = [
                     title: ['Админка', 'Туры']
                 },
                 component: () => import('../views/Admin/Tours.vue')
+            },
+            {
+                path: 'pdf',
+                name: 'admin-pdf',
+                meta: {
+                    title: ['Админка', 'PDF']
+                },
+                component: () => import('../views/Admin/PDF.vue')
             }
         ]
     },
