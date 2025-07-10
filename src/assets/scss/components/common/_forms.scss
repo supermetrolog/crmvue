@@ -1902,3 +1902,27 @@
 .multiselect-option-icon {
     width: 18px;
 }
+
+.form-utility-transfer-companies {
+    &__selected {
+        position: absolute;
+        top: 60px;
+        right: 20px;
+        border-radius: 10px;
+        background-color: variables.$color_light_grey;
+        box-shadow: 0 0 10px rgba(0, 0, 0, .2);
+        padding: 10px 15px;
+        z-index: 100;
+    }
+
+    &__checkbox {
+        .checkbox__row {
+            justify-content: center;
+        }
+
+        input {
+            height: 30px;
+            width: 30px;
+        }
+    }
+}

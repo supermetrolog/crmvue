@@ -25,7 +25,7 @@
                             :name="TABS.DONE"
                         >
                             <i class="fa-solid fa-down-long mr-1 text-danger" />
-                            <span>Завершенные {{ requestsByGroups.passive?.length }}</span>
+                            <span>Завершенные {{ requestsByGroups.done?.length }}</span>
                         </SurveyFormObjectsPreviewTab>
                     </div>
                     <AnimationTransition :speed="0.3">
@@ -37,6 +37,7 @@
                                 @open-timeline="$emit('open-timeline', request.id)"
                                 @create-task="$emit('create-task', request)"
                                 :request="request"
+                                :read-only
                             />
                             <UiField
                                 v-if="requestsByGroups.active === undefined"
@@ -56,6 +57,7 @@
                                 @open-timeline="$emit('open-timeline', request.id)"
                                 @create-task="$emit('create-task', request)"
                                 :request="request"
+                                :read-only
                                 class="content-archive"
                             />
                         </div>
@@ -66,6 +68,7 @@
                                 @open-timeline="$emit('open-timeline', request.id)"
                                 @create-task="$emit('create-task', request)"
                                 :request="request"
+                                :read-only
                                 class="content-archive"
                             />
                         </div>
@@ -73,7 +76,7 @@
                 </template>
             </div>
         </td>
-        <teleport to="body">
+        <teleport v-if="!readOnly" to="body">
             <FormModalCompanyRequestDisable
                 @close="disableRequestFormIsVisible = false"
                 @disabled="onRequestDisabled"
@@ -96,7 +99,8 @@ import FormModalCompanyRequestDisable from '@/components/Forms/Company/FormModal
 
 defineEmits(['open-timeline', 'create-task']);
 const props = defineProps({
-    companyId: Number
+    companyId: Number,
+    readOnly: Boolean
 });
 
 const requests = shallowRef([]);
