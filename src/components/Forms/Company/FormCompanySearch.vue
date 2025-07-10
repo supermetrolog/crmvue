@@ -158,6 +158,28 @@
                         <UiCol :cols="12">
                             <p class="font-weight-semi fs-2">
                                 <UiTooltipIcon
+                                    icon="fa-solid fa-link"
+                                    class="text-success"
+                                    tooltip="Новый фильтр"
+                                />
+                                Связь с опросами
+                            </p>
+                        </UiCol>
+                        <UiCol :cols="12">
+                            <UiCheckbox
+                                v-model="form.without_surveys"
+                                :true-value="1"
+                                :false-value="null"
+                            >
+                                Компании без завершенных опросов
+                            </UiCheckbox>
+                        </UiCol>
+                    </UiFormGroup>
+                    <UiFormDivider />
+                    <UiFormGroup>
+                        <UiCol :cols="12">
+                            <p class="font-weight-semi fs-2">
+                                <UiTooltipIcon
                                     icon="fa-solid fa-star"
                                     class="text-success"
                                     tooltip="Новый фильтр"
@@ -172,6 +194,28 @@
                                 :false-value="null"
                             >
                                 Компании с активными задачами для меня
+                            </UiCheckbox>
+                        </UiCol>
+                    </UiFormGroup>
+                    <UiFormDivider />
+                    <UiFormGroup>
+                        <UiCol :cols="12">
+                            <p class="font-weight-semi fs-2">
+                                <UiTooltipIcon
+                                    icon="fa-solid fa-link"
+                                    class="text-success"
+                                    tooltip="Новый фильтр"
+                                />
+                                Связь с контактами
+                            </p>
+                        </UiCol>
+                        <UiCol :cols="12">
+                            <UiCheckbox
+                                v-model="form.with_active_contacts"
+                                :true-value="1"
+                                :false-value="null"
+                            >
+                                Компании с активными контактами
                             </UiCheckbox>
                         </UiCol>
                     </UiFormGroup>
@@ -358,7 +402,8 @@ const { resetForm, form } = useSearchForm(
         requests_area_max: null,
         with_passive_consultant: null,
         with_current_user_tasks: null,
-        with_active_contacts: null
+        with_active_contacts: null,
+        without_surveys: null
     },
     {
         submit: onSubmit,
