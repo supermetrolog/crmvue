@@ -37,7 +37,13 @@
             v-if="hasValidationError && !disabled"
             :message="v.$errors[0].$message"
         />
-        <Button @click="addInput" :disabled="hasEmptyInput" prevent icon small success class="mt-1">
+        <Button @click="addInput"
+:disabled="hasEmptyInput"
+prevent
+icon
+small
+success
+class="mt-1">
             <i class="fas fa-plus"></i>
             {{ addText }}
         </Button>
@@ -50,6 +56,7 @@ import AnimationTransition from '@/components/common/AnimationTransition.vue';
 import ValidationMessage from '@/components/common/Forms/VaildationMessage.vue';
 import { computed, nextTick, onBeforeMount, ref, toRef } from 'vue';
 import { useFormControlValidation } from '@/composables/useFormControlValidation.js';
+import { vMaska } from 'maska/vue';
 
 const props = defineProps({
     required: {

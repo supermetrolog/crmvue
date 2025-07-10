@@ -28,12 +28,10 @@
                 <UiInput v-model="form.last_name" label="Отчество" class="col-4" />
             </UiFormGroup>
             <UiFormGroup>
-                <PropogationDoubleInput
+                <UiPhoneInput
                     v-model="form.phones"
                     :v="v$.form.phones"
                     :validators="formContactsPhonesValidators"
-                    maska="+7 (###) ###-##-##"
-                    placeholder="+7"
                     addText="Добавить телефон"
                     first-name="phone"
                     second-name="exten"
@@ -79,7 +77,7 @@
                         />
                     </template>
                 </UiCol>
-                <PropogationDoubleInput
+                <UiPhoneInput
                     v-model="form.invalidPhones"
                     maska="#################################"
                     addText="Добавить телефон"
@@ -254,7 +252,7 @@ import { helpers, or, required } from '@vuelidate/validators';
 import { ActivePassive, FeedbackIcons, PassiveWhyContact, PositionList } from '@/const/const.js';
 import UiInput from '@/components/common/Forms/UiInput.vue';
 import PropogationInput from '@/components/common/Forms/PropogationInput.vue';
-import PropogationDoubleInput from '@/components/common/Forms/PropogationDoubleInput.vue';
+import UiPhoneInput from '@/components/common/Forms/UiPhoneInput.vue';
 import UiTextarea from '@/components/common/Forms/UiTextarea.vue';
 import MultiSelect from '@/components/common/Forms/MultiSelect.vue';
 import Loader from '@/components/common/Loader.vue';

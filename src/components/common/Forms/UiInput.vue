@@ -4,6 +4,7 @@
             <span v-if="label" class="form__label">{{ label }}</span>
             <input
                 ref="input"
+                v-maska="maska"
                 @input="onInput($event.target.value.trim())"
                 @focus="onFocus"
                 @keypress.enter="keyPressEnter"
@@ -56,6 +57,7 @@ import { isNullish } from '@/utils/helpers/common/isNullish.ts';
 import { isArray } from '@/utils/helpers/array/isArray.ts';
 import { isString } from '@/utils/helpers/string/isString.js';
 import { isNotNullish } from '@/utils/helpers/common/isNotNullish.ts';
+import { vMaska } from 'maska/vue';
 
 const modelValue = defineModel({
     type: [String, Number],
@@ -82,7 +84,8 @@ const props = defineProps({
     disabled: Boolean,
     reactive: Boolean,
     required: Boolean,
-    withEnterSubmit: Boolean
+    withEnterSubmit: Boolean,
+    maska: String
 });
 
 const searchableIsVisible = shallowRef(false);

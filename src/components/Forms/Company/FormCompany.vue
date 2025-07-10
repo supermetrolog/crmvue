@@ -161,7 +161,7 @@
                         />
                     </UiFormGroup>
                     <UiFormGroup>
-                        <PropogationDoubleInput
+                        <UiPhoneInput
                             v-model="form.contacts.phones"
                             :v="v$.form.contacts.phones"
                             :maska="[
@@ -431,7 +431,7 @@ import UiInput from '@/components/common/Forms/UiInput.vue';
 import UiTextarea from '@/components/common/Forms/UiTextarea.vue';
 import FileInput from '@/components/common/Forms/FileInput.vue';
 import PropogationInput from '@/components/common/Forms/PropogationInput.vue';
-import PropogationDoubleInput from '@/components/common/Forms/PropogationDoubleInput.vue';
+import UiPhoneInput from '@/components/common/Forms/UiPhoneInput.vue';
 import RadioStars from '@/components/common/Forms/RadioStars.vue';
 import MultiSelect from '@/components/common/Forms/MultiSelect.vue';
 import {

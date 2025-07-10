@@ -15,10 +15,11 @@
                         class="form__close fas fa-xmark-circle"
                     ></i>
                 </AnimationTransition>
+                <UiPhoneInputCode v-model="fields[index].code" />
                 <input
                     ref="inputs"
                     v-model="fields[index][firstName]"
-                    v-maska="maska"
+                    v-maska="maskaByCode[fields[index].code]"
                     @input.stop.prevent="onInput"
                     @keypress.enter.prevent
                     type="text"
@@ -27,7 +28,7 @@
                         invalid: isInvalid(index),
                         valid: !isInvalid(index)
                     }"
-                    :placeholder="placeholder"
+                    :placeholder="placeholderByCode[fields[index].code]"
                 />
                 <input
                     v-model="fields[index][secondName]"
@@ -48,7 +49,13 @@
             v-if="hasValidationError && !disabled"
             :message="v.$errors[0].$message"
         />
-        <Button @click="addInput" :disabled="hasEmptyInput" prevent icon small success class="mt-1">
+        <Button @click="addInput"
+:disabled="hasEmptyInput"
+prevent
+icon
+small
+success
+class="mt-1">
             <i class="fas fa-plus"></i>
             {{ addText }}
         </Button>
@@ -61,6 +68,8 @@ import AnimationTransition from '@/components/common/AnimationTransition.vue';
 import ValidationMessage from '@/components/common/Forms/VaildationMessage.vue';
 import { useFormControlValidation } from '@/composables/useFormControlValidation.js';
 import { computed, nextTick, onBeforeMount, ref, toRef } from 'vue';
+import UiPhoneInputCode from '@/components/common/Forms/UiPhoneInputCode.vue';
+import { vMaska } from 'maska/vue';
 
 const modelValue = defineModel({
     type: Array,
@@ -116,7 +125,7 @@ const props = defineProps({
     }
 });
 
-const createDefaultField = () => ({ [props.firstName]: '', [props.secondName]: null });
+const createDefaultField = () => ({ [props.firstName]: '', [props.secondName]: null, code: 'ru' });
 
 const isDeleteShowList = ref([false]);
 const inputs = ref([]);
@@ -174,4 +183,29 @@ onBeforeMount(() => {
     if (!modelValue.value.length) fields.value = [createDefaultField()];
     else fields.value = [...modelValue.value];
 });
+
+const placeholderByCode = {
+    ru: '+7 (___) ___-__-__',
+    kz: '+7 (___) ___-__-__',
+    ua: '+380 (__) ___-__-__',
+    by: '+375 (__) ___-__-__'
+};
+
+const maskaByCode = {
+    ru: '+7 (###) ###-##-##',
+    kz: '+7 (###) ###-##-##',
+    ua: '+380 (##) ###-##-##',
+    by: '+375 (##) ###-##-##'
+};
+
+// code
+
+const COUNTRY_CODES = {
+    RU: 'ru',
+    KZ: 'kz',
+    UA: 'ua',
+    BY: 'by'
+};
+
+const currentCode = ref(COUNTRY_CODES.RU);
 </script>
