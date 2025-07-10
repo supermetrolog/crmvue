@@ -11,7 +11,7 @@
             <template #before>
                 <span class="company-table-item__message-label">Закреплено,</span>
             </template>
-            <template #after>
+            <template v-if="!readOnly" #after>
                 <UiDropdownActions small label="Действия над сообщением" class="ml-auto">
                     <template #menu>
                         <UiDropdownActionsButton
@@ -87,7 +87,8 @@ const props = defineProps({
     company: {
         type: Object,
         required: true
-    }
+    },
+    readOnly: Boolean
 });
 
 const modalIsVisible = ref(false);

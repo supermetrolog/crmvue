@@ -1,6 +1,6 @@
 <template>
     <RequestRowCard @open-timeline="$emit('open-timeline')" :request="request" full linked-timeline>
-        <template #menu>
+        <template v-if="!readOnly" #menu>
             <UiDropdownActionsGroup>
                 <UiDropdownActionsButton
                     @handle="$emit('create-task')"
@@ -37,7 +37,8 @@ const props = defineProps({
     request: {
         type: Object,
         required: true
-    }
+    },
+    readOnly: Boolean
 });
 
 const { currentUserId, currentUserIsModeratorOrHigher } = useAuth();
