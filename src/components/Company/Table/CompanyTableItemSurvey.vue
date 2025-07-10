@@ -39,7 +39,12 @@
                     {{ callsPluralLabel }}
                 </span>
             </div>
-            <UiDropdownActions label="Действия" :title="`Опрос #${company.last_survey.id}`" small>
+            <UiDropdownActions
+                v-if="!readOnly"
+                label="Действия"
+                :title="`Опрос #${company.last_survey.id}`"
+                small
+            >
                 <template #menu>
                     <UiDropdownActionsGroup>
                         <UiDropdownActionsButton
@@ -83,7 +88,7 @@
                     <div class="d-flex align-items-center gap-2">
                         <span>Важный комментарий</span>
                         <UiButtonIcon
-                            v-if="surveyCommentCanBeEdit"
+                            v-if="surveyCommentCanBeEdit && !readOnly"
                             @click="editComment"
                             label="Изменить комментарий"
                             icon="fa-solid fa-pen"
@@ -142,7 +147,7 @@
                     @cancel="commentIsEditing = false"
                     @update="updateComment"
                     @delete="deleteComment"
-                    :edit-mode="commentIsEditing"
+                    :edit-mode="commentIsEditing && !readOnly"
                     :survey="company.last_survey"
                     class="mt-2"
                 />
@@ -158,7 +163,8 @@
                         baseTasks.length === 0 &&
                         scheduledCallTasks.length === 0 &&
                         scheduledVisitTasks.length === 0 &&
-                        !commentIsEditing
+                        !commentIsEditing &&
+                        !readOnly
                     "
                     class="d-flex gap-2 justify-content-center"
                 >
@@ -257,7 +263,8 @@ const props = defineProps({
     company: {
         type: Object,
         required: true
-    }
+    },
+    readOnly: Boolean
 });
 
 const {
