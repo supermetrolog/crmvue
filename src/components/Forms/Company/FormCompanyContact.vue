@@ -8,7 +8,7 @@
         :title="isEditMode ? `Редактирование контакта #${formdata.id}` : 'Создание нового контакта'"
     >
         <Loader v-if="isLoading" />
-        <UiForm v-else>
+        <UiForm>
             <UiFormGroup>
                 <UiInput v-model="form.middle_name" label="Фамилия" class="col-4" />
                 <UiInput
@@ -27,32 +27,13 @@
                 </UiInput>
                 <UiInput v-model="form.last_name" label="Отчество" class="col-4" />
             </UiFormGroup>
+            <UiFormDivider />
             <UiFormGroup>
-                <UiPhoneInput
-                    v-model="form.phones"
-                    :v="v$.form.phones"
-                    :validators="formContactsPhonesValidators"
-                    addText="Добавить телефон"
-                    first-name="phone"
-                    second-name="exten"
-                    label="Телефон"
-                    class="col-3"
+                <FormCompanyContactPhones
+                    v-model:phones="form.phones"
+                    :contact="formdata"
+                    class="col-4"
                 />
-                <UiCol :cols="1">
-                    <template v-if="form.phones.length">
-                        <span class="form__subtitle">Осн.</span>
-                        <CheckboxChip
-                            v-for="(phone, key) in form.phones"
-                            :key="key"
-                            v-model="phone.isMain"
-                            @change="onChangeIsMainPhone(key)"
-                            :v="v$.form.phones"
-                            title="Основной номер"
-                            class="mb-2"
-                            icon="fa-solid fa-user-check"
-                        />
-                    </template>
-                </UiCol>
                 <PropogationInput
                     v-model="form.emails"
                     :v="v$.form.emails"
@@ -79,6 +60,7 @@
                 </UiCol>
                 <UiPhoneInput
                     v-model="form.invalidPhones"
+                    :disabled="form.invalidPhones.length === 0"
                     maska="#################################"
                     addText="Добавить телефон"
                     first-name="phone"
@@ -257,13 +239,7 @@ import UiTextarea from '@/components/common/Forms/UiTextarea.vue';
 import MultiSelect from '@/components/common/Forms/MultiSelect.vue';
 import Loader from '@/components/common/Loader.vue';
 import UiForm from '@/components/common/Forms/UiForm.vue';
-import {
-    anyHasProperty,
-    emptyWithProperty,
-    everyProperty,
-    validateEmail,
-    validatePhone
-} from '@//validators';
+import { anyHasProperty, emptyWithProperty, everyProperty, validateEmail } from '@//validators';
 import CheckboxChip from '@/components/common/Forms/CheckboxChip.vue';
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
 import RadioChip from '@/components/common/Forms/RadioChip.vue';
@@ -280,6 +256,8 @@ import UiModal from '@/components/common/UI/UiModal.vue';
 import UiFormGroup from '@/components/common/Forms/UiFormGroup.vue';
 import UiFormDivider from '@/components/common/Forms/UiFormDivider.vue';
 import UiCol from '@/components/common/UI/UiCol.vue';
+import { captureException } from '@sentry/vue';
+import FormCompanyContactPhones from '@/components/Forms/Company/FormCompanyContactPhones.vue';
 
 const emit = defineEmits(['close', 'updated', 'created']);
 const props = defineProps({
@@ -296,7 +274,7 @@ const props = defineProps({
 const { getConsultantsOptions } = useConsultantsOptions();
 const { form, isEditMode } = useFormData(
     reactive({
-        company_id: null,
+        company_id: props.company_id,
         first_name: null,
         middle_name: null,
         last_name: null,
@@ -325,9 +303,6 @@ const { form, isEditMode } = useFormData(
 const isLoading = ref(false);
 
 const formContactsEmailsValidators = [{ func: validateEmail, message: 'Укажите корректный Email' }];
-const formContactsPhonesValidators = [
-    { func: validatePhone, message: 'Телефон должен состоять из 11 цифр' }
-];
 
 const customRequiredPosition = value => {
     if (form.position_unknown) return true;
@@ -336,7 +311,7 @@ const customRequiredPosition = value => {
 };
 
 const customRequiredEmailsOrPhones = () => {
-    return !emptyWithProperty('email')(form.emails) || !emptyWithProperty('phone')(form.phones);
+    return !emptyWithProperty('email')(form.emails) || form.phones.length > 0;
 };
 
 const customRequiredPassiveWhy = () => {
@@ -381,20 +356,6 @@ const { v$, validate } = useValidation(
                     or(emptyWithProperty('email'), anyHasProperty('isMain', 1))
                 )
             },
-            phones: {
-                customRequiredPhones: helpers.withMessage(
-                    'Добавьте телефон или email',
-                    customRequiredEmailsOrPhones
-                ),
-                everyHasCorrectPhone: helpers.withMessage(
-                    'Заполните все телефоны',
-                    or(emptyWithProperty('phone'), everyProperty(validatePhone, 'phone'))
-                ),
-                requiredIsMain: helpers.withMessage(
-                    'Выберите главный номер',
-                    or(emptyWithProperty('phone'), anyHasProperty('isMain', 1))
-                )
-            },
             passive_why: {
                 customRequiredPassiveWhy: helpers.withMessage(
                     'Выберите причину',
@@ -412,21 +373,27 @@ const { v$, validate } = useValidation(
     { form }
 );
 
-const updateContact = async () => {
-    const updated = await api.contacts.update(props.formdata.id, form);
-    if (updated) {
-        emit('updated', props.formdata.id, updated);
-        emit('close');
-    }
-};
+async function updateContact() {
+    try {
+        const payload = await api.contacts.update(props.formdata.id, form);
 
-const createContact = async () => {
-    const createdContact = await api.contacts.create(form);
-    if (createdContact) {
-        emit('created', createdContact);
+        emit('updated', props.formdata.id, payload);
         emit('close');
+    } catch (error) {
+        captureException(error);
     }
-};
+}
+
+async function createContact() {
+    try {
+        const payload = await api.contacts.create(form);
+
+        emit('created', payload);
+        emit('close');
+    } catch (error) {
+        captureException(error);
+    }
+}
 
 async function submit() {
     const isValid = await validate();
@@ -435,15 +402,16 @@ async function submit() {
     isLoading.value = true;
 
     normalizeForm();
+
     if (props.formdata) await updateContact();
     else await createContact();
 
     isLoading.value = false;
 }
 
-const onChangeWarning = () => {
+function onChangeWarning() {
     if (form.warning) form.good = 0;
-};
+}
 
 const onChangePosition = () => {
     if (form.position) form.position_unknown = 0;
@@ -465,19 +433,9 @@ const onChangeIsMainEmail = key => {
     if (currentMainIndex !== -1) form.emails[currentMainIndex].isMain = null;
 };
 
-const onChangeIsMainPhone = key => {
-    const currentMainIndex = form.phones.findIndex(
-        (element, index) => element.isMain && index !== key
-    );
-
-    if (currentMainIndex !== -1) form.phones[currentMainIndex].isMain = null;
-};
-
 const normalizeForm = () => {
     form.phones = form.phones.filter(element => element.phone.length);
     form.emails = form.emails.filter(element => element.email.length);
     form.invalidPhones = form.invalidPhones.filter(element => element.phone.length);
 };
-
-if (props.company_id) form.company_id = props.company_id;
 </script>

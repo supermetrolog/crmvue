@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { responseToData } from '@/api/helpers/responseToData.js';
 import { responseToPaginatedData } from '@/api/helpers/responseToPaginatedData.js';
+import { Phone } from '@/types/contact/phone';
 
 const URL = '/contacts';
 
@@ -71,6 +72,14 @@ export default {
     },
     async enable(id) {
         const response = await axios.post(`${URL}/${id}/enable`);
+        return responseToData(response);
+    },
+    async phones(id) {
+        const response = await axios.get(`${URL}/${id}/phones`);
+        return responseToData<Phone[]>(response);
+    },
+    async addPhone(id, payload) {
+        const response = await axios.post(`${URL}/${id}/phones`, payload);
         return responseToData(response);
     }
 };

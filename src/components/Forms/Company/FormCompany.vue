@@ -161,18 +161,13 @@
                         />
                     </UiFormGroup>
                     <UiFormGroup>
-                        <UiPhoneInput
+                        <PropogationInput
                             v-model="form.contacts.phones"
                             :v="v$.form.contacts.phones"
-                            :maska="[
-                                '+7 (###) ###-##-###',
-                                '+### (###) ###-##-##',
-                                '+#### (###) ###-##-##'
-                            ]"
-                            placeholder="+7 "
+                            maska="+7 (###) ###-##-##"
+                            placeholder="+7 (___) ___-__-__"
                             name="phone"
-                            first-name="phone"
-                            second-name="exten"
+                            property-name="phone"
                             label="Телефон"
                             class="col-6"
                         />
@@ -431,7 +426,6 @@ import UiInput from '@/components/common/Forms/UiInput.vue';
 import UiTextarea from '@/components/common/Forms/UiTextarea.vue';
 import FileInput from '@/components/common/Forms/FileInput.vue';
 import PropogationInput from '@/components/common/Forms/PropogationInput.vue';
-import UiPhoneInput from '@/components/common/Forms/UiPhoneInput.vue';
 import RadioStars from '@/components/common/Forms/RadioStars.vue';
 import MultiSelect from '@/components/common/Forms/MultiSelect.vue';
 import {
@@ -467,7 +461,6 @@ import UiModal from '@/components/common/UI/UiModal.vue';
 import UiButton from '@/components/common/UI/UiButton.vue';
 import { useValidation } from '@/composables/useValidation.js';
 import Switch from '@/components/common/Forms/Switch.vue';
-import { useAuth } from '@/composables/useAuth.js';
 import { useCompanyPermissions } from '@/components/Company/useCompanyPermissions.js';
 
 const emit = defineEmits(['updated', 'created', 'close']);
@@ -477,8 +470,6 @@ const props = defineProps({
         default: null
     }
 });
-
-const { currentUserIsModeratorOrHigher } = useAuth();
 
 const { getConsultantsOptions } = useConsultantsOptions();
 const { getCompanyGroupsOptions } = useCompanyGroupsOptions();

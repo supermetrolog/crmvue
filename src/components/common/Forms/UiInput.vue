@@ -14,7 +14,7 @@
                     { 'form__input--unit': unit, 'form__input--rounded': rounded, filled: hasValue }
                 ]"
                 :style="unit ? paddingRightStyle : undefined"
-                :type="type"
+                :type="inputType ?? type"
                 :placeholder="placeholder"
                 :disabled="disabled"
                 :value="modelValue"
@@ -70,6 +70,7 @@ const props = defineProps({
         type: String,
         default: 'text'
     },
+    inputType: String,
     label: String,
     placeholder: String,
     searchable: Boolean,

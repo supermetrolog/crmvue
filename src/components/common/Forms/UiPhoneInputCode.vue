@@ -1,7 +1,8 @@
 <template>
-    <UiDropdownActions title="Выберите страну">
+    <UiDropdownActions title="Выберите страну" :disabled>
         <template #trigger>
             <UiButton
+                @click.prevent
                 rect
                 class="py-2 px-1 d-flex align-items-center"
                 style="background-color: #f1f1f1"
@@ -30,28 +31,31 @@
     </UiDropdownActions>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import UiDropdownActions from '@/components/common/UI/DropdownActions/UiDropdownActions.vue';
 import UiButton from '@/components/common/UI/UiButton.vue';
 import IconFlagRussia from '@/components/common/Icons/IconFlagRussia.vue';
 import IconFlagBelarus from '@/components/common/Icons/IconFlagBelarus.vue';
-import IconFlagKazakhstan from '@/components/common/Icons/IconFlagKazakhstan.vue';
 import IconFlagUkraine from '@/components/common/Icons/IconFlagUkraine.vue';
 import UiPhoneInputCodeItem from '@/components/common/Forms/UiPhoneInputCodeItem.vue';
+import { PhoneCountryCode, PhoneCountryCodeEnum } from '@/types/contact/phone';
+import type { Component } from 'vue';
 
-const modelValue = defineModel({ type: String, default: 'ru' });
+const modelValue = defineModel<PhoneCountryCode>({ default: PhoneCountryCodeEnum.RU });
 
-const countryIcons = {
-    ru: IconFlagRussia,
-    by: IconFlagBelarus,
-    kz: IconFlagKazakhstan,
-    ua: IconFlagUkraine
+defineProps<{
+    disabled?: boolean;
+}>();
+
+const countryIcons: Record<PhoneCountryCode, Component> = {
+    [PhoneCountryCodeEnum.RU]: IconFlagRussia,
+    [PhoneCountryCodeEnum.BY]: IconFlagBelarus,
+    [PhoneCountryCodeEnum.UA]: IconFlagUkraine
 };
 
 const options = [
-    { label: 'Россия', code: '+7', value: 'ru' },
-    { label: 'Беларусь', code: '+375', value: 'by' },
-    { label: 'Казахстан', code: '+7', value: 'kz' },
-    { label: 'Украина', code: '+380', value: 'ua' }
+    { label: 'Россия', code: '+7', value: PhoneCountryCodeEnum.RU },
+    { label: 'Беларусь', code: '+375', value: PhoneCountryCodeEnum.BY },
+    { label: 'Украина', code: '+380', value: PhoneCountryCodeEnum.UA }
 ];
 </script>
