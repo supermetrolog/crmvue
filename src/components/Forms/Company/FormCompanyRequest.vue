@@ -184,7 +184,6 @@
                         </UiDateInput>
                         <UiInput
                             v-model="form.pricePerFloor"
-                            maska="##########"
                             label="Цена пола"
                             :unit="pricePerFloorUnit"
                             type="number"
@@ -350,7 +349,6 @@
                     <UiFormGroup>
                         <UiInput
                             v-model="form.electricity"
-                            maska="##########"
                             label="Электричество"
                             class="col-12"
                             unit="кВт"

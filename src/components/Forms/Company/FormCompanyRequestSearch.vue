@@ -148,7 +148,6 @@
                                 v-model="form.maxElectricity"
                                 placeholder="не более"
                                 :v="v$.form.maxElectricity"
-                                maska="##########"
                                 label="Электричество"
                                 unit="кВт"
                                 type="number"
@@ -173,7 +172,6 @@
                             />
                             <UiInput
                                 v-model="form.maxDistanceFromMKAD"
-                                maska="###"
                                 :v="v$.form.maxDistanceFromMKAD"
                                 placeholder="не более"
                                 label="Удаленность от МКАД"

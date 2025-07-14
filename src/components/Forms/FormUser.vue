@@ -53,7 +53,6 @@
                         <UiInput
                             v-model="form.userProfile.caller_id"
                             label="Добавочный номер"
-                            maska="##########"
                             class="col-4"
                         />
                         <PropogationInput
@@ -134,7 +133,7 @@
             <UiButton @click="submit" color="success-light" icon="fa-solid fa-check">
                 Сохранить
             </UiButton>
-            <UiButton @click="close" color="light" icon="fa-solid fa-ban"> Отмена </UiButton>
+            <UiButton @click="close" color="light" icon="fa-solid fa-ban">Отмена</UiButton>
             <UiButton
                 v-if="isEditMode"
                 @click="archiveUser"
@@ -170,7 +169,6 @@ import UiButton from '@/components/common/UI/UiButton.vue';
 import { useFormData } from '@/utils/use/useFormData.js';
 import { useValidation } from '@/composables/useValidation.js';
 import { useAsync } from '@/composables/useAsync.js';
-import UiFormDivider from '@/components/common/Forms/UiFormDivider.vue';
 
 const emit = defineEmits(['close', 'updated', 'created']);
 const props = defineProps({

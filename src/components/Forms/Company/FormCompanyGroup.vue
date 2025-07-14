@@ -14,20 +14,12 @@
                     label="Название Ru"
                     required
                     class="col-12 mb-2"
-                    :maska="{
-                        mask: 'Z*',
-                        tokens: { Z: { pattern: /[а-яА-Я0-9 ]/ } }
-                    }"
                 />
                 <UiInput
                     v-model="form.nameEng"
                     :v="v$.nameEng"
                     label="Название Eng"
                     class="col-8"
-                    :maska="{
-                        mask: 'Z*',
-                        tokens: { Z: { pattern: /[a-zA-Z0-9 ]/ } }
-                    }"
                 />
                 <MultiSelect
                     v-model="form.formOfOrganization"
