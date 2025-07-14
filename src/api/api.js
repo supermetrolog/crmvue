@@ -34,6 +34,7 @@ import contactComment from '@/api/contactComment.js';
 import folder from '@/api/folder.js';
 import tour from '@/api/tour.js';
 import utility from '@/api/utility';
+import phone from '@/api/phone';
 
 export default {
     user,
@@ -71,5 +72,6 @@ export default {
     contactComment,
     folder,
     tour,
-    utility
+    utility,
+    phone
 };

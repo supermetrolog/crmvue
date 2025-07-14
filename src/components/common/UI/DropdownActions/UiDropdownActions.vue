@@ -1,5 +1,11 @@
 <template>
-    <VDropdown ref="dropdownEl" @visible-change="$emit('visible-change', $event)" :manual :align>
+    <VDropdown
+        ref="dropdownEl"
+        @visible-change="$emit('visible-change', $event)"
+        :manual
+        :align
+        :disabled
+    >
         <template #trigger>
             <slot name="trigger">
                 <UiButtonIcon :label
@@ -32,31 +38,29 @@
         </DropdownContent>
     </VDropdown>
 </template>
-<script setup>
+<script setup lang="ts">
 import UiButtonIcon from '@/components/common/UI/UiButtonIcon.vue';
 import VDropdown from '@/components/common/Dropdown/VDropdown.vue';
 import { DropdownContent } from 'v-dropdown';
 import { computed, useTemplateRef } from 'vue';
+import { ComponentClassAttribute } from '@/types/base';
 
-defineEmits(['visible-change']);
+defineEmits<{ (e: 'visible-change', visible: boolean) }>();
 
-defineProps({
-    disabled: Boolean,
-    small: Boolean,
-    menuClass: String,
-    label: String,
-    title: String,
-    icon: {
-        type: String,
-        default: 'fa-solid fa-ellipsis'
-    },
-    color: String,
-    buttonClass: [String, Object, Array],
-    titleClass: [String, Object, Array],
-    menuStyle: [String, Object, Array],
-    manual: Boolean,
-    align: String
-});
+const { icon = 'fa-solid fa-ellipsis' } = defineProps<{
+    disabled?: boolean;
+    small?: boolean;
+    menuClass?: string;
+    label?: string;
+    title?: string;
+    icon?: string;
+    color?: string;
+    buttonClass?: ComponentClassAttribute;
+    titleClass?: ComponentClassAttribute;
+    menuStyle?: ComponentClassAttribute;
+    manual?: boolean;
+    align?: 'left' | 'center' | 'right';
+}>();
 
 const dropdownEl = useTemplateRef('dropdownEl');
 
@@ -68,7 +72,7 @@ function toggleVisible() {
     dropdownEl.value?.toggleVisible();
 }
 
-const isVisible = computed(() => dropdownEl.value?.visible ?? false);
+const isVisible = computed(() => (dropdownEl.value?.visible as boolean) ?? false);
 
 defineExpose({ open, toggleVisible, visible: isVisible });
 </script>

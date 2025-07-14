@@ -142,16 +142,10 @@
                     v-model="form.area"
                     label="Площадь сделки"
                     class="col-6"
-                    maska="##########"
                     type="number"
                     unit="м<sup>2</sup>"
                 />
-                <UiInput
-                    v-model="form.floorPrice"
-                    label="Цена пола"
-                    class="col-6"
-                    maska="##########"
-                />
+                <UiInput v-model="form.floorPrice" label="Цена пола" class="col-6" />
             </UiFormGroup>
             <UiFormGroup>
                 <MultiSelect
@@ -168,7 +162,6 @@
                     label="Срок контракта"
                     :disabled="!contractTermVisible"
                     class="col-3"
-                    maska="####"
                     type="number"
                     unit="мес."
                 />

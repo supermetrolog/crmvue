@@ -4,7 +4,6 @@ import router from './router';
 import store from './store';
 import PhoneNumber from '@/components/common/PhoneNumber.vue';
 import Notifications from '@kyvg/vue3-notification';
-import Maska from 'maska';
 import { Formatter } from '@/plugins/index.js';
 import { VueAgile } from 'vue-agile';
 import 'tippy.js/dist/tippy.css';
@@ -49,7 +48,6 @@ app.component('Tabs', Tabs)
         type: 'info',
         duration: 1000
     })
-    .use(Maska)
     .use(store)
     .use(router)
     .mount('#app');

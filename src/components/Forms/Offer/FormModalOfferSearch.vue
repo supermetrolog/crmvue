@@ -48,7 +48,6 @@
                 <UiInput
                     v-model="form.rangeMinElectricity"
                     placeholder="не менее"
-                    maska="##########"
                     label="Электричество"
                     class="col-md-4 col-12"
                     unit="кВт"
@@ -102,7 +101,6 @@
                 <UiInput
                     v-if="hasApproximateDistance"
                     v-model="form.approximateDistanceFromMKAD"
-                    maska="###"
                     placeholder="не более"
                     label="Удаленность от МКАД +30%"
                     class="col-md-3 col-12"
