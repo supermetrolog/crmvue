@@ -898,9 +898,7 @@ async function fetchObjects() {
 async function fetchRequests() {
     requestsIsLoading.value = true;
 
-    const response = await api.request.search({ company_id: props.company.id });
-
-    requests.value = response.data;
+    requests.value = await api.request.byCompanyId(props.company.id);
 
     requestsIsLoading.value = false;
 }

@@ -10,7 +10,7 @@
         }"
     >
         <div class="survey-form-object-preview-offer__wrapper">
-            <RequestRowCard :request>
+            <RequestRowCard :request full>
                 <template #menu>
                     <UiDropdownActionsButton
                         @handle="$emit('create-task')"
