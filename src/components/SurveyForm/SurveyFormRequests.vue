@@ -43,60 +43,65 @@
                 </div>
             </div>
             <div v-if="form.current" class="survey-form-object-preview__content">
-                <div v-if="currenTab === TABS.ACTIVE">
-                    <div
-                        v-if="activeRequests.length || form.created?.length"
-                        class="survey-form-object-preview__list"
-                    >
-                        <SurveyFormRequestsPreviewNewRequest
-                            v-for="request in form.created"
-                            :key="request.id"
-                            v-model="request.description"
-                            @edit="editNewRequest(request)"
-                            @delete="deleteNewRequest(request)"
-                            :request="request"
-                            :disabled
-                            :survey
-                            editable
-                        />
-                        <hr v-if="activeRequests.length && form.created?.length" class="w-100" />
-                        <MessengerQuizFormTemplateRequest
-                            v-for="request in activeRequests"
-                            :key="request.id"
-                            v-model="form.current[request.id]"
-                            @edit="editRequest(request)"
-                            :request="request"
-                            :disabled
-                            :survey
-                            editable
-                            data-tour-id="survey-form:stepper-request-card"
-                        />
-                    </div>
-                    <EmptyData v-else no-rounded class="h-100">
-                        <p>Список активных запросов пуст..</p>
-                        <template #actions>
-                            <UiButton
-                                @click="addNewRequest"
+                <AnimationTransition :speed="0.5">
+                    <div v-if="currenTab === TABS.ACTIVE">
+                        <div
+                            v-if="activeRequests.length || form.created?.length"
+                            class="survey-form-object-preview__list"
+                        >
+                            <SurveyFormRequestsPreviewNewRequest
+                                v-for="request in form.created"
+                                :key="request.id"
+                                v-model="request.description"
+                                @edit="editNewRequest(request)"
+                                @delete="deleteNewRequest(request)"
+                                :request="request"
                                 :disabled
-                                color="success-light"
-                                icon="fa-solid fa-plus"
-                                data-tour-id="survey-form:stepper-request-create"
-                            >
-                                Добавить запрос
-                            </UiButton>
-                        </template>
-                    </EmptyData>
-                </div>
-                <div v-show="currenTab === TABS.PASSIVE">
-                    <div v-if="passiveRequests.length" class="survey-form-object-preview__list">
-                        <MessengerQuizFormTemplateRequest
-                            v-for="request in passiveRequests"
-                            :key="request.id"
-                            :request="request"
-                        />
+                                :survey
+                                editable
+                            />
+                            <hr
+                                v-if="activeRequests.length && form.created?.length"
+                                class="w-100"
+                            />
+                            <MessengerQuizFormTemplateRequest
+                                v-for="request in activeRequests"
+                                :key="request.id"
+                                v-model="form.current[request.id]"
+                                @edit="editRequest(request)"
+                                :request="request"
+                                :disabled
+                                :survey
+                                editable
+                                data-tour-id="survey-form:stepper-request-card"
+                            />
+                        </div>
+                        <EmptyData v-else no-rounded class="h-100">
+                            <p>Список активных запросов пуст..</p>
+                            <template #actions>
+                                <UiButton
+                                    @click="addNewRequest"
+                                    :disabled
+                                    color="success-light"
+                                    icon="fa-solid fa-plus"
+                                    data-tour-id="survey-form:stepper-request-create"
+                                >
+                                    Добавить запрос
+                                </UiButton>
+                            </template>
+                        </EmptyData>
                     </div>
-                    <EmptyData v-else class="mt-2"> Список архивных запросов пуст..</EmptyData>
-                </div>
+                    <div v-else-if="currenTab === TABS.PASSIVE">
+                        <div v-if="passiveRequests.length" class="survey-form-object-preview__list">
+                            <MessengerQuizFormTemplateRequest
+                                v-for="request in passiveRequests"
+                                :key="request.id"
+                                :request="request"
+                            />
+                        </div>
+                        <EmptyData v-else class="mt-2"> Список архивных запросов пуст..</EmptyData>
+                    </div>
+                </AnimationTransition>
             </div>
         </div>
         <teleport to="body">
@@ -141,6 +146,7 @@ import UiButton from '@/components/common/UI/UiButton.vue';
 import { useNotify } from '@/utils/use/useNotify.js';
 import { createTourStepElementGenerator, useTourStep } from '@/composables/useTour/useTourStep';
 import SurveyFormRequestsSuggestModal from '@/components/SurveyForm/SurveyFormRequestsSuggestModal.vue';
+import AnimationTransition from '@/components/common/AnimationTransition.vue';
 
 defineEmits(['created']);
 
