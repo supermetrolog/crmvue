@@ -56,19 +56,29 @@ class="col-6" />
                     v-model="form.availability_date"
                     :disabled="form.availability"
                     placeholder="Дата доступности"
-                    label="Освободится после"
+                    label="Свободно с"
                     :min-date="new Date()"
                     class="col-12"
                 >
                     <template #after>
-                        <UiCheckbox
-                            v-model="form.availability"
-                            @change="form.availability_date = null"
-                            :true-value="1"
-                            :false-value="null"
-                        >
-                            Уже доступно
-                        </UiCheckbox>
+                        <div class="d-flex gap-3">
+                            <UiCheckbox
+                                v-model="form.availability"
+                                @change="form.availability_date = null"
+                                :true-value="1"
+                                :false-value="null"
+                            >
+                                Уже доступно
+                            </UiCheckbox>
+                            <UiCheckbox
+                                v-model="form.availability"
+                                @change="form.availability_date = null"
+                                :true-value="2"
+                                :false-value="null"
+                            >
+                                По запросу
+                            </UiCheckbox>
+                        </div>
                     </template>
                 </UiDateInput>
             </UiFormGroup>

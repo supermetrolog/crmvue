@@ -111,7 +111,7 @@
             <CompanyBoxRequestsListItemAccordion
                 title="Подробнее о запросе"
                 :request
-                class="mt-1"
+                class="mb-1"
             />
             <UiAccordion v-if="request.deal" :title="dealTitle" without-render>
                 <template #body>
@@ -170,7 +170,7 @@ const statusText = computed(() => {
 });
 
 const dealTitle = computed(() => {
-    if (!props.request.deal) return null;
+    if (!props.request.deal?.company) return null;
     return `Сделка: ${getCompanyShortName(props.request.deal.company)}, ${dayjs(props.request.deal.dealDate).format('D.MM.YY')}`;
 });
 
