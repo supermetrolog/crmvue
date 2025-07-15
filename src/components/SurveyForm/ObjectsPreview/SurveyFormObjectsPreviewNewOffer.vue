@@ -163,7 +163,8 @@ const priceTitle = computed(() => {
 });
 
 const availabilityLabel = computed(() => {
-    if (props.offer.availability) return 'Свободен сейчас';
+    if (props.offer.availability == 1) return 'Свободен сейчас';
+    if (props.offer.availability == 2) return 'Освообождение по запросу';
     if (props.offer.availability_date)
         return `Свободен с ${toDateFormat(props.offer.availability_date, 'DD.MM.YY')}`;
     return '-';

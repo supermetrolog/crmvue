@@ -3,7 +3,7 @@
         <div class="error">
             <div class="number">{{ code.toString().at(0) }}</div>
             <div class="illustration">
-                <div class="circle"></div>
+                <div class="error-circle"></div>
                 <div class="clip">
                     <div class="paper">
                         <div class="face">
@@ -63,7 +63,7 @@ const { code = 404, label = 'Страница не найдена' } = defineP
     margin: 0 2.1rem;
 }
 
-.circle {
+.error-circle {
     position: absolute;
     bottom: 0;
     left: 0;
