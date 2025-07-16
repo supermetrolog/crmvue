@@ -49,11 +49,13 @@ const filteredTypes = computed(() => {
 });
 
 const preparedOffers = computed(() => {
-    return filteredTypes.value.map(offer => ({
-        id: offer.id,
-        label: dealOptions.type[offer.deal_type],
-        active: offer.status === 1 && !offer.is_deleted,
-        isDeleted: offer.is_deleted
-    }));
+    return filteredTypes.value
+        .filter(offer => !offer.is_fake && !offer.deal_id)
+        .map(offer => ({
+            id: offer.id,
+            label: dealOptions.type[offer.deal_type],
+            active: offer.status === 1 && !offer.is_deleted,
+            isDeleted: offer.is_deleted
+        }));
 });
 </script>

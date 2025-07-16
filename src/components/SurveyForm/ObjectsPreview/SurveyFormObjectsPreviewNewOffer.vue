@@ -148,14 +148,31 @@ const props = defineProps({
     disabled: Boolean
 });
 
-const dealTypeName = computed(() => dealOptions.type[props.offer.deal_type]);
+const type = {
+    1: 'Аренда',
+    2: 'Продажа',
+    3: 'Ответ-хранение',
+    4: 'Субаренда',
+    5: 'Built To Rent',
+    6: 'Built To Suit'
+};
+
+const dealTypeName = computed(() => type[props.offer.deal_type]);
+
+const dealType = computed(() => {
+    return Number(props.offer.deal_type);
+});
 
 const priceTitle = computed(() => {
-    if (props.offer.deal_type === dealOptions.typeStatement.SALE) {
+    if (
+        dealType.value === dealOptions.typeStatement.SALE ||
+        dealType.value === 5 ||
+        dealType.value === 6
+    ) {
         return 'СТАВКА ЗА М2';
     }
 
-    if (props.offer.deal_type === dealOptions.typeStatement.STORAGE) {
+    if (dealType.value === dealOptions.typeStatement.STORAGE) {
         return 'СТАВКА ЗА П.М';
     }
 

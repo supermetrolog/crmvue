@@ -206,7 +206,6 @@
 <script setup>
 import { computed, markRaw, onBeforeUnmount, ref, shallowRef, watch } from 'vue';
 import SurveyFormObjectsPreviewOffer from '@/components/SurveyForm/ObjectsPreview/SurveyFormObjectsPreviewOffer.vue';
-import { extractDeepProperty } from '@/utils/helpers/object/extractDeepProperty.js';
 import EmptyData from '@/components/common/EmptyData.vue';
 import { isNullish } from '@/utils/helpers/common/isNullish.ts';
 import UiButton from '@/components/common/UI/UiButton.vue';
@@ -306,7 +305,15 @@ function extractTradeOffers() {
 
     commercialOffersByIdMap.value = commercialOfferByIdMap;
 
-    const tradeOffers = extractDeepProperty(props.object, 'commercialOffers.blocks');
+    const commercialOffers = props.object.commercialOffers.filter(
+        offer => offer.deleted !== 1 && offer.company_id === props.company.id
+    );
+
+    const tradeOffers = commercialOffers.reduce((acc, offer) => {
+        acc.push(...offer.blocks.filter(block => block.is_fake !== 1));
+
+        return acc;
+    }, []);
 
     const activeOffers = [];
     const passiveOffers = [];
@@ -325,11 +332,11 @@ function extractTradeOffers() {
     }
 
     for (const offer of tradeOffers) {
-        if (
-            !offer.deleted &&
-            !offer.deal_id &&
-            commercialOfferByIdMap[offer.offer_id].company_id == props.company?.id
-        ) {
+        if (offer.is_fake) {
+            continue;
+        }
+
+        if (!offer.deleted && !offer.deal_id) {
             activeOffers.push(offer);
 
             if (isNullish(modelValue.value.current[offer.id])) {
@@ -373,6 +380,9 @@ function extractTradeOffers() {
     activeTradeOffers.value = activeOffers;
     passiveTradeOffers.value = passiveOffers;
     completedTradeOffers.value = completedOffers;
+
+    console.log(activeTradeOffers.value);
+    console.log(props.object);
 }
 
 watch(() => props.object.id, extractTradeOffers, { immediate: true });

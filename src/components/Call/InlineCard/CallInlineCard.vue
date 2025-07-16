@@ -1,6 +1,6 @@
 <template>
     <div class="call-inline-card">
-        <UiDropdownActions align="left">
+        <UiDropdownActions v-if="!readOnly" align="left">
             <template #trigger>
                 <UiButtonIcon small label="Подробнее" icon="fa-solid fa-ellipsis" />
             </template>
@@ -66,7 +66,8 @@ const props = defineProps({
         type: Object,
         required: true
     },
-    showAvatar: Boolean
+    showAvatar: Boolean,
+    readOnly: Boolean
 });
 
 const statusIcon = computed(() => {

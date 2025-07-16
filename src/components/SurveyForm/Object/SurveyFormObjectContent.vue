@@ -79,7 +79,8 @@ const props = defineProps({
     object: {
         type: Object,
         required: true
-    }
+    },
+    company: Object
 });
 
 const fullArea = computed(() => {
@@ -91,7 +92,14 @@ useTippyText(useTemplateRef('objectTypeField'), 'Тип объекта');
 useTippyText(useTemplateRef('fullAreaField'), 'Общая площадь');
 
 const preparedOffers = computed(() => {
-    return props.object.offers.filter(offer => !offer.isDeleted && offer.status === 1);
+    return props.object.offers.filter(
+        offer =>
+            !offer.is_deleted &&
+            offer.status === 1 &&
+            offer.company_id === props.company?.id &&
+            offer.is_fake !== 1 &&
+            !offer.deal_id
+    );
 });
 
 // copy
