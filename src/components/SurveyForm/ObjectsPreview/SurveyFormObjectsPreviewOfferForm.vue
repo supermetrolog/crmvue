@@ -191,7 +191,9 @@ const dealTypeOptions = {
     1: 'Аренда',
     2: 'Продажа',
     3: 'Ответ-хранение',
-    4: 'Субаренда'
+    4: 'Субаренда',
+    5: 'Built To Rent',
+    6: 'Built To Suit'
 };
 
 const canBeDivided = computed(() => {
@@ -203,8 +205,10 @@ const canBeDivided = computed(() => {
 const priceUnit = computed(() => {
     if (!form.deal_type) return undefined;
 
-    if (Number(form.deal_type) === 2) return '₽ за м<sup>2</sup>';
-    if (Number(form.deal_type) === 3) return '₽ за п.м';
+    const dealType = Number(form.deal_type);
+
+    if (dealType === 2 || dealType === 5 || dealType === 6) return '₽ за м<sup>2</sup>';
+    if (dealType === 3) return '₽ за п.м';
     return '₽ за м<sup>2</sup>/год';
 });
 

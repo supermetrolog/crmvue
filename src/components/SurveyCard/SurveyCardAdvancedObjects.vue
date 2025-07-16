@@ -27,6 +27,7 @@
                         :model-value="prepared[object.id]"
                         :active="selectedObject?.id === object.id"
                         :object="object"
+                        :company
                         class="survey-form-objects__element"
                     />
                 </div>

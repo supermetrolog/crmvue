@@ -32,12 +32,29 @@
                         <span>({{ contactPosition }})</span>
                     </span>
                 </span>
-                <span
-                    v-if="company.last_survey.calls?.length > 1"
-                    class="company-table-item-survey__calls"
+                <Tippy
+                    v-if="callsLabelShouldBeVisible"
+                    :delay="300"
+                    interactive
+                    :interactive-border="30"
+                    placement="left-start"
+                    :max-width="1000"
                 >
-                    {{ callsPluralLabel }}
-                </span>
+                    <span class="company-table-item-survey__calls">
+                        {{ callsPluralLabel }}
+                    </span>
+                    <template #content>
+                        <div class="company-table-item-survey__calls-list">
+                            <CallInlineCard
+                                v-for="call in company.last_survey.calls"
+                                :key="call.id"
+                                :call="call"
+                                read-only
+                                class="company-table-item-survey__call"
+                            />
+                        </div>
+                    </template>
+                </Tippy>
             </div>
             <UiDropdownActions
                 v-if="!readOnly"
@@ -256,6 +273,7 @@ import { useTypedTasks } from '@/composables/task/useTypedTasks.ts';
 import { Tippy } from 'vue-tippy';
 import ContactCard from '@/components/Contact/Card/ContactCard.vue';
 import Avatar from '@/components/common/Avatar.vue';
+import CallInlineCard from '@/components/Call/InlineCard/CallInlineCard.vue';
 
 const emit = defineEmits(['create-task', 'open-preview', 'edit-comment', 'show-task']);
 
@@ -292,12 +310,18 @@ const contactPosition = computed(() => {
     return contactOptions.position[props.company.last_survey.contact.position];
 });
 
+const hasMainContact = computed(() => isNotNullish(props.company.last_survey.contact_id));
+
+const callsLabelShouldBeVisible = computed(
+    () => props.company.last_survey.calls.length > 1 || !hasMainContact.value
+);
+
 const callsPluralLabel = computed(() =>
     plural(
-        props.company.last_survey.calls.length - 1,
-        '+ %d контакт',
-        '%d контакта',
-        '%d контактов'
+        props.company.last_survey.calls.length - (hasMainContact.value ? 1 : 0),
+        '+ %d звонок',
+        '+ %d звонка',
+        '+ %d звонков'
     )
 );
 

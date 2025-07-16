@@ -60,7 +60,12 @@ const props = defineProps({
 
 const offerExistByType = (offers, type) => {
     return offers.some(
-        element => element.deal_type === type && element.id !== props.current && !element.is_deleted
+        element =>
+            element.deal_type === type &&
+            element.id !== props.current &&
+            !element.is_deleted &&
+            !element.is_fake &&
+            !element.deal_id
     );
 };
 

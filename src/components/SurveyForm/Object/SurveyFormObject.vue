@@ -12,7 +12,7 @@
                 :object
                 :answer="form?.answer"
             />
-            <SurveyFormObjectContent @show-map="$emit('show-map')" :object />
+            <SurveyFormObjectContent @show-map="$emit('show-map')" :object :company />
         </div>
         <div v-if="editable" class="survey-form-object__aside">
             <UiDropdownActions>
@@ -30,31 +30,49 @@
                         :active="success"
                     >
                         <template #menu>
-                            <UiDropdownActionsButton
-                                @handle="markAs(1)"
-                                :active="answer === 1"
-                                label="Без изменений"
-                                icon="fa-solid fa-thumbs-up"
-                                :close-on-click="false"
-                            />
-                            <UiDropdownActionsButton
-                                @handle="markAs(2)"
-                                :active="answer === 2"
-                                label="Больше не актуально"
-                                icon="fa-solid fa-thumbs-down"
-                                :close-on-click="false"
-                            />
-                            <UiDropdownActionsButton
-                                @handle="markAs(3)"
-                                :active="answer === 3"
-                                label="Не опросил"
-                                icon="fa-solid fa-phone-slash"
-                                :close-on-click="false"
-                            />
+                            <UiDropdownActionsGroup>
+                                <UiDropdownActionsButton
+                                    @handle="markAs(1)"
+                                    :active="answer === 1"
+                                    label="Без изменений"
+                                    icon="fa-solid fa-thumbs-up"
+                                    :close-on-click="false"
+                                />
+                                <UiDropdownActionsButton
+                                    @handle="markAs(2)"
+                                    :active="answer === 2"
+                                    label="Больше не актуально"
+                                    icon="fa-solid fa-thumbs-down"
+                                    :close-on-click="false"
+                                />
+                                <UiDropdownActionsButton
+                                    @handle="markAs(3)"
+                                    :active="answer === 3"
+                                    label="Не опросил"
+                                    icon="fa-solid fa-phone-slash"
+                                    :close-on-click="false"
+                                />
+                            </UiDropdownActionsGroup>
+                            <UiDropdownActionsGroup>
+                                <UiDropdownActionsButton
+                                    @handle="markAs(5)"
+                                    :active="answer === 5"
+                                    label="Объект продан"
+                                    icon="fa-solid fa-dollar-sign"
+                                    :close-on-click="false"
+                                />
+                                <UiDropdownActionsButton
+                                    @handle="markAs(6)"
+                                    :active="answer === 6"
+                                    label="Объект снесен"
+                                    icon="fa-solid fa-ban"
+                                    :close-on-click="false"
+                                />
+                            </UiDropdownActionsGroup>
                         </template>
                         <template v-if="success" #footer>
                             <UiDropdownActionsButton
-                                @handle="markAs(null)"
+                                @handle="clearAnswer"
                                 label="Отменить выбор"
                                 icon="fa-solid fa-rotate-left"
                                 :close-on-click="false"
@@ -65,16 +83,6 @@
                         @handle="$emit('create-task')"
                         label="Создать задачу"
                         icon="fa-solid fa-bolt"
-                    />
-                    <UiDropdownActionsButton
-                        @handle="$emit('object-sold')"
-                        label="Объект продан"
-                        icon="fa-solid fa-dollar-sign"
-                    />
-                    <UiDropdownActionsButton
-                        @handle="$emit('object-destroyed')"
-                        label="Объект снесен"
-                        icon="fa-solid fa-ban"
                     />
                 </template>
             </UiDropdownActions>
@@ -114,24 +122,18 @@ import UiCheckbox from '@/components/common/Forms/UiCheckbox.vue';
 import UiTooltipIcon from '@/components/common/UI/UiTooltipIcon.vue';
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
 import UiDropdownActionsNested from '@/components/common/UI/DropdownActions/UiDropdownActionsNested.vue';
+import UiDropdownActionsGroup from '@/components/common/UI/DropdownActions/UiDropdownActionsGroup.vue';
 
 const form = defineModel({ type: Object, default: () => ({}) });
 
-defineEmits([
-    'show-preview',
-    'show-map',
-    'object-sold',
-    'object-destroyed',
-    'select',
-    'create-task',
-    'toggle-checked'
-]);
+defineEmits(['show-preview', 'show-map', 'select', 'create-task', 'toggle-checked']);
 
 const props = defineProps({
     object: {
         type: Object,
         required: true
     },
+    company: Object,
     disabled: Boolean,
     active: Boolean,
     editable: Boolean,
@@ -175,5 +177,12 @@ const hasWarnings = computed(() => {
 
 function markAs(value) {
     answer.value = value;
+
+    form.value.checked = true;
+}
+
+function clearAnswer() {
+    answer.value = null;
+    form.value.checked = false;
 }
 </script>

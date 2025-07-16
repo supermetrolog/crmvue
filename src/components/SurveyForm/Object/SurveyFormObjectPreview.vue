@@ -19,9 +19,13 @@
             />
         </div>
         <div v-if="answer" class="survey-form-object__preview-footer">
-            <UiField small color="light" class="fs-1">
-                <i :class="icon" />
-                <span>{{ answerLabel }}</span>
+            <UiField
+                small
+                color="light"
+                class="survey-form-object__preview-label"
+                :style="{ backgroundColor: answerColor, color: 'white' }"
+            >
+                {{ answerLabel }}
             </UiField>
         </div>
     </div>
@@ -41,17 +45,27 @@ const props = defineProps({
     answer: [Number, String]
 });
 
-const answerLabel = computed(() => {
-    if (Number(props.answer) === 1) return 'Без изменений';
-    if (Number(props.answer) === 2) return 'Не актуально';
-    if (Number(props.answer) === 3) return 'Не опросил';
-    return 'Обработан';
-});
+const answer = computed(() => Number(props.answer));
 
-const icon = computed(() => {
-    if (Number(props.answer) === 1) return 'fa-solid fa-thumbs-up';
-    if (Number(props.answer) === 2) return 'fa-solid fa-thumbs-down';
-    if (Number(props.answer) === 3) return 'fa-solid fa-phone-slash';
-    return 'fa-solid fa-check';
-});
+const answerToLabel = {
+    1: 'Без изменений',
+    2: 'Не актуально',
+    3: 'Не опросил',
+    4: 'Обработан',
+    5: 'Объект продан',
+    6: 'Объект снесен'
+};
+
+const answerLabel = computed(() => answerToLabel[answer.value]);
+
+const answerToColor = {
+    1: '#8e8e8e',
+    2: '#f80200',
+    3: '#8e8e8e',
+    4: '#12b780',
+    5: '#f80200',
+    6: '#f80200'
+};
+
+const answerColor = computed(() => answerToColor[answer.value]);
 </script>

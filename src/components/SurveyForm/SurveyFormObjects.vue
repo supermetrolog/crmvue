@@ -91,14 +91,13 @@
                             @select="selectObject(object)"
                             @show-map="showObjectOnMap(object)"
                             @show-preview="showObjectPreview(object)"
-                            @object-destroyed="onObjectDestroyed(object)"
-                            @object-sold="onObjectSold(object)"
                             @create-task="createTask(object)"
                             @toggle-checked="toggleCheckedObject(object, $event)"
                             :active="selectedObject?.id === object.id"
                             :object="object"
                             :checked="checkedObjects.has(object.id)"
                             :disabled
+                            :company
                             editable
                             class="survey-form-objects__element"
                         />
@@ -209,9 +208,8 @@ import { computed, ref, shallowRef, useTemplateRef, watch } from 'vue';
 import { useMapPreviewer } from '@/composables/useMapPreviewer.js';
 import { usePreviewer } from '@/composables/usePreviewer.js';
 import { getLinkFile } from '@/utils/url.js';
-import { TASK_FORM_STEPS, useTaskManager } from '@/composables/useTaskManager.js';
+import { useTaskManager } from '@/composables/useTaskManager.js';
 import api from '@/api/api.js';
-import { messenger } from '@/const/messenger.js';
 import { useNotify } from '@/utils/use/useNotify.js';
 import { getCompanyShortName } from '@/utils/formatters/models/company.js';
 import { Pane, Splitpanes } from 'splitpanes';
@@ -330,78 +328,12 @@ function selectObject(object) {
 const { createTaskWithTemplate } = useTaskManager();
 const notify = useNotify();
 
-async function createObjectMessageWithTask(object, messagePayload, taskPayload) {
-    const targetChatMemberId = await api.messenger.getChatMemberIdByQuery({
-        model_type: messenger.dialogTypes.OBJECT,
-        object_id: object.id
-    });
-
-    if (targetChatMemberId) {
-        try {
-            await api.messenger.sendMessageWithTask(
-                targetChatMemberId,
-                messagePayload,
-                taskPayload
-            );
-
-            notify.success('Сообщение и задача успешно созданы');
-        } catch (error) {
-            // TODO: Log sentry
-            notify.error('Произошла ошибка. Попробуйте еще раз..');
-        }
-    } else {
-        notify.warning('Объект не найден в чате. Создайте задачи вручную.');
-    }
-}
-
 function getTaskRelationsByObject(object) {
     return [
         { entity_type: 'company', entity_id: props.company.id },
         { entity_type: 'survey', entity_id: props.survey.id },
         { entity_type: 'c_industry', entity_id: object.id }
     ];
-}
-
-async function onObjectDestroyed(object) {
-    const companyName = getCompanyShortName(props.company);
-
-    const taskPayload = await createTaskWithTemplate({
-        title: `Объект #${object.id} (комп. ${companyName}) снесен, отправить в пассив`,
-        step: TASK_FORM_STEPS.MESSAGE,
-        start: new Date(),
-        end: dayjs().add(7, 'day').toDate(),
-        relations: getTaskRelationsByObject(object)
-    });
-
-    if (!taskPayload) return;
-
-    const messagePayload = {
-        message: `<b>Объект снесен!</b>`,
-        template: 'object-destroyed'
-    };
-
-    await createObjectMessageWithTask(object, messagePayload, taskPayload);
-}
-
-async function onObjectSold(object) {
-    const companyName = getCompanyShortName(props.company);
-
-    const taskPayload = await createTaskWithTemplate({
-        title: `Объект #${object.id} (комп. ${companyName}) продан`,
-        step: TASK_FORM_STEPS.MESSAGE,
-        start: new Date(),
-        end: dayjs().add(7, 'day').toDate(),
-        relations: getTaskRelationsByObject(object)
-    });
-
-    if (!taskPayload) return;
-
-    const messagePayload = {
-        message: `<b>Объект продан!</b> Комп. "${companyName}" больше не владелец`,
-        template: 'object-sold'
-    };
-
-    await createObjectMessageWithTask(object, messagePayload, taskPayload);
 }
 
 const taskIsCreating = ref(false);
