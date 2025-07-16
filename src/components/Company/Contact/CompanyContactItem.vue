@@ -167,7 +167,7 @@ const position = computed(() => contactOptions.position[props.contact.position])
 const wayOfCommunicate = computed(() =>
     props.contact.wayOfInformings.map(element => contactOptions.wayOfCommunicate[element.way])
 );
-const passiveWhy = computed(() => PassiveWhyContact[props.contact.passive_why].label);
+const passiveWhy = computed(() => PassiveWhyContact[props.contact.passive_why]?.label);
 
 const createComment = comment => {
     emit('create-comment', { contact_id: props.contact.id, comment: comment });

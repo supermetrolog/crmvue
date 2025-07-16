@@ -2,7 +2,7 @@
     <MessengerChatMessageAdditionsItem>
         <template #icon>
             <span
-                v-tippy="'Заполненный опросник'"
+                v-tippy="'Заполненный опрос'"
                 @click="showPreview"
                 class="messenger-chat-message-addition__icon rounded-icon bg-primary"
             >
@@ -17,13 +17,7 @@
             />
         </template>
         <template #content>
-            <span class="messenger-chat-message-addition__model">
-                {{ modelType }}
-            </span>
-            <span>
-                опросник #{{ addition.id }} с {{ addition.contact.full_name }} от
-                {{ createdAt }}
-            </span>
+            {{ surveyTitle }}
         </template>
     </MessengerChatMessageAdditionsItem>
 </template>
@@ -33,7 +27,7 @@ import { useAsyncPopup } from '@/composables/useAsyncPopup.js';
 import Avatar from '@/components/common/Avatar.vue';
 import { toDateFormat } from '@/utils/formatters/date.js';
 import { computed } from 'vue';
-import { messenger } from '@/const/messenger.js';
+import { isNotNullish } from '@/utils/helpers/common/isNotNullish';
 
 const props = defineProps({
     addition: {
@@ -50,16 +44,25 @@ const props = defineProps({
     }
 });
 
-const { show: showSurvey } = useAsyncPopup('surveyPreview');
+const createdAt = computed(() =>
+    toDateFormat(props.addition.completed_at ?? props.addition.created_at, 'D.MM.YY')
+);
 
-const createdAt = computed(() => toDateFormat(props.addition.created_at, 'D.MM.YY'));
-const modelType = computed(() => {
-    if (props.addition.chat_member.model_type === messenger.dialogTypes.COMPANY)
-        return 'Клиентский';
-    return 'Объектовый';
+const surveyTitle = computed(() => {
+    const parts = [`Опрос #${props.addition.id}`];
+
+    if (isNotNullish(props.addition.contact)) {
+        parts.push(`с ${props.addition.contact.full_name}`);
+    }
+
+    parts.push(`от ${createdAt.value}`);
+
+    return parts.join(' ');
 });
 
-const showPreview = () => {
+const { show: showSurvey } = useAsyncPopup('surveyPreview');
+
+function showPreview() {
     showSurvey({ surveyId: props.addition.id });
-};
+}
 </script>
