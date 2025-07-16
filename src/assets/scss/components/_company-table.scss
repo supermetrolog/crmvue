@@ -459,4 +459,14 @@ tr.CompanyTableEven {
     &__content:hover &__button {
         opacity: 1;
     }
+
+    &__calls-list {
+        @include mixins.flex-box($d: column, $gap: 5px);
+    }
+
+    &__call {
+        color: #000;
+        background-color: variables.$color_grey_light;
+        border-radius: 5px;
+    }
 }
