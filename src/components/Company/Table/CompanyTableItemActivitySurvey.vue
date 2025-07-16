@@ -141,6 +141,8 @@ const surveyColor = computed(() => {
 });
 
 const surveyTooltip = computed(() => {
+    if (isNullish(lastSurvey.value)) return 'Нажмите, чтобы перейти в чат компании';
+
     if (lastSurveyIsExpired.value && isCurrentUserCompany.value) {
         return `Дата последнего опроса - ${toDateFormat(lastSurveyDate.value)}. Нажмите, чтобы перейти к опросу и обновить информацию.`;
     }
