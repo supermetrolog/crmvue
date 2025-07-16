@@ -24,7 +24,7 @@
         >
             <div class="ui-dropdown-actions__menu">
                 <p
-                    v-if="title || $slots.title"
+                    v-if="title || $slots?.title"
                     class="ui-dropdown-actions__title"
                     :class="titleClass"
                 >

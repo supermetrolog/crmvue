@@ -202,7 +202,8 @@ export const PassiveWhyRequest = [
     { value: 2, label: 'Купили' },
     { value: 3, label: 'Запрос устарел' },
     { value: 4, label: 'Отложил поиск' },
-    { value: 5, label: 'Иное' }
+    { value: 5, label: 'Иное' },
+    { value: 6, label: 'По результатам опроса' }
 ];
 export const CompanyFormOrganization = [
     { value: 0, label: 'ООО' },
