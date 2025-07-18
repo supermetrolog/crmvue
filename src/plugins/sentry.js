@@ -1,4 +1,11 @@
-import { browserTracingIntegration, dedupeIntegration, init, isInitialized } from '@sentry/vue';
+import {
+    browserProfilingIntegration,
+    browserTracingIntegration,
+    dedupeIntegration,
+    init,
+    isInitialized,
+    replayIntegration
+} from '@sentry/vue';
 import router from '@/router/index.js';
 
 export function initSentry(app) {
@@ -11,8 +18,19 @@ export function initSentry(app) {
         init({
             app,
             dsn: import.meta.env.VITE_VUE_APP_GLITCH_DSN,
-            integrations: [browserTracingIntegration({ router }), dedupeIntegration()],
-            skipBrowserExtensionCheck: true
+            integrations: [
+                browserTracingIntegration({ router }),
+                dedupeIntegration(),
+                browserProfilingIntegration(),
+                replayIntegration({
+                    maskAllText: true,
+                    blockAllMedia: true
+                })
+            ],
+            skipBrowserExtensionCheck: true,
+
+            replaysOnErrorSampleRate: 1.0,
+            replaysSessionSampleRate: 0.1
         });
 
         console.warn('[Sentry] Sentry initialized');
