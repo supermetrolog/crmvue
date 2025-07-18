@@ -3,8 +3,7 @@ import {
     browserTracingIntegration,
     dedupeIntegration,
     init,
-    isInitialized,
-    replayIntegration
+    isInitialized
 } from '@sentry/vue';
 import router from '@/router/index.js';
 
@@ -21,16 +20,9 @@ export function initSentry(app) {
             integrations: [
                 browserTracingIntegration({ router }),
                 dedupeIntegration(),
-                browserProfilingIntegration(),
-                replayIntegration({
-                    maskAllText: true,
-                    blockAllMedia: true
-                })
+                browserProfilingIntegration()
             ],
-            skipBrowserExtensionCheck: true,
-
-            replaysOnErrorSampleRate: 1.0,
-            replaysSessionSampleRate: 0.1
+            skipBrowserExtensionCheck: true
         });
 
         console.warn('[Sentry] Sentry initialized');
