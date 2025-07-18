@@ -641,6 +641,10 @@ const normalizeForm = () => {
     if (isNotNullish(form.electricity) && isString(form.electricity)) {
         form.electricity = Number(form.electricity);
     }
+
+    if (isString(form.maxCeilingHeight) && form.maxCeilingHeight.length === 0) {
+        form.maxCeilingHeight = null;
+    }
 };
 
 const normalizeFormData = () => {
