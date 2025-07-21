@@ -4,7 +4,7 @@
         title="Оформление сделки"
         show
         custom-close
-        :width="800"
+        :width="1200"
         :close-on-outside-click="false"
         :close-on-press-esc="false"
     >
@@ -113,13 +113,13 @@
                 <UiInput
                     v-model="form.clientLegalEntity"
                     label="Юр. лицо клиента в сделке"
-                    class="col-6"
+                    class="col-3"
                 />
                 <MultiSelect
                     v-model="form.formOfOrganization"
                     label="Форма организации"
                     title="Форма организации"
-                    class="col-6"
+                    class="col-3"
                     :options="CompanyFormOrganization"
                 />
             </UiFormGroup>
@@ -135,7 +135,17 @@
                     label="Запрос"
                     class="col-12"
                     :options="requestOptions"
-                />
+                >
+                    <template v-if="!formData" #after>
+                        <UiCheckbox
+                            v-model="form.complete_request"
+                            :true-value="1"
+                            :false-value="0"
+                        >
+                            Завершить запрос
+                        </UiCheckbox>
+                    </template>
+                </MultiSelect>
             </UiFormGroup>
             <UiFormGroup>
                 <UiInput
@@ -210,6 +220,8 @@ import UiModal from '@/components/common/UI/UiModal.vue';
 import UiButton from '@/components/common/UI/UiButton.vue';
 import { useValidation } from '@/composables/useValidation.js';
 import { useFormData } from '@/utils/use/useFormData.js';
+import { captureException } from '@sentry/vue';
+import UiCheckbox from '@/components/common/Forms/UiCheckbox.vue';
 
 const emit = defineEmits(['updated', 'created', 'close']);
 const props = defineProps({
@@ -255,7 +267,8 @@ const { form, isEditMode } = useFormData(
         formOfOrganization: null,
         offerHandler: null,
         original_id: null,
-        visual_id: null
+        visual_id: null,
+        complete_request: 1
     }),
     props.formData
 );
@@ -291,7 +304,7 @@ const update = async () => {
 };
 
 const create = async () => {
-    const createdDeal = await api.deal.create(form);
+    const createdDeal = await api.deal.createForRequest(form.request_id, form);
 
     if (createdDeal) {
         emit('created', form);
@@ -309,8 +322,14 @@ async function submit() {
 
     isLoading.value = true;
 
-    if (isEditMode.value) update();
-    else create();
+    try {
+        if (isEditMode.value) await update();
+        else await create();
+    } catch (e) {
+        captureException(e);
+    } finally {
+        isLoading.value = false;
+    }
 }
 
 const onChangeCompany = async () => {
@@ -457,14 +476,14 @@ const changeOfferHandler = () => {
 };
 
 const setForm = () => {
-    form.request_id = props.request_id;
-    form.company_id = props.company_id;
-    form.consultant_id = props.consultant_id;
-    form.object_id = props.object_id;
-    form.original_id = props.original_id;
-    form.complex_id = props.complex_id;
-    form.type_id = props.type_id;
-    form.visual_id = props.visual_id;
+    form.request_id = props.request_id ?? props.formData?.request_id;
+    form.company_id = props.company_id ?? props.formData?.company_id;
+    form.consultant_id = props.consultant_id ?? props.formData?.consultant_id;
+    form.object_id = props.object_id ?? props.formData?.object_id;
+    form.original_id = props.original_id ?? props.formData?.original_id;
+    form.complex_id = props.complex_id ?? props.formData?.complex_id;
+    form.type_id = props.type_id ?? props.formData?.type_id;
+    form.visual_id = props.visual_id ?? props.formData?.visual_id;
 
     if (props.formData) Object.assign(form, props.formData);
 

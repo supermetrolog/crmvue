@@ -32,7 +32,7 @@
                 </div>
             </div>
         </div>
-        <p class="company-element__info">
+        <p v-if="showCounts" class="company-element__info">
             <span>{{ pluralContactsCount }}, </span>
             <span>{{ pluralRequestsCount }}, </span>
             <span>{{ pluralObjectsCount }}</span>
@@ -51,6 +51,10 @@ const props = defineProps({
     company: {
         type: Object,
         required: true
+    },
+    showCounts: {
+        type: Boolean,
+        default: true
     }
 });
 
