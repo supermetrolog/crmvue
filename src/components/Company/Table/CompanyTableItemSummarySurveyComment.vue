@@ -28,7 +28,7 @@
         </div>
     </div>
     <UiClamped v-else @expanded="$emit('expanded')" @hidden="$emit('hidden')" button-class="fs-2">
-        <div ref="comment" class="company-table-item-survey__comment"></div>
+        <div ref="comment" class="company-table-item-summary-survey__comment"></div>
     </UiClamped>
 </template>
 
@@ -49,11 +49,11 @@ const props = defineProps({
 });
 
 useLinkify(
-    computed(() => props.survey.comment),
+    computed(() => props.survey?.comment),
     useTemplateRef('comment')
 );
 
 // edit
 
-const localComment = ref(props.survey.comment);
+const localComment = ref(props.survey?.comment);
 </script>

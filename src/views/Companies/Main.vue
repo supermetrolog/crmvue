@@ -234,6 +234,7 @@ const { next, nextWithScroll, queryIsInitialized, isInitialLoading } = useTableC
                 query.consultant_id = currentUserId.value;
                 query.status = 1;
                 query.with_active_contacts = 1;
+                query.sort = 'activity';
             }
 
             await router.replace({ query });

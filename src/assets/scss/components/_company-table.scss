@@ -132,7 +132,7 @@
     &__comment {
         min-width: 500px;
         max-width: 1200px;
-        width: 40%;
+        width: 50%;
         position: relative;
 
         &:hover .company-table-item__comment-buttons {
@@ -365,60 +365,30 @@ tr.CompanyTableEven {
     }
 }
 
-.company-table-item-survey {
-    border: 1px solid rgba(0, 0, 0, .1);
-    border-radius: 4px;
-    height: 100%;
-    @include mixins.flex-box($d: column);
+.company-table-item-summary-survey {
+    &__header {
+        padding: 5px 0;
+        border-radius: 4px 4px 0 0;
+        font-size: 13px;
+        overflow-x: auto;
+        @include mixins.flex-box($a: center, $gap: 10px);
 
-    &__tab {
-        height: 30px;
-        flex-shrink: 0;
-
-        &.danger {
-            color: #c93a19
+        &::-webkit-scrollbar {
+            height: 3px;
+            background-color: lighten(variables.$color_grey, 30);
         }
     }
 
-    &__header {
-        padding: 5px;
-        background-color: #efefef;
-        border-radius: 4px 4px 0 0;
-        font-size: 13px;
-        border-bottom: 1px solid rgba(0, 0, 0, .1);
-        @include mixins.flex-box($a: center, $gap: 10px);
-    }
-
     &__title {
-        width: 100%;
+        max-width: 100%;
         color: #7c7c7c;
         @include mixins.flex-box($gap: 10px, $j: space-between);
-    }
-
-    &__name {
         @include mixins.text-overflow();
     }
 
     &__contact {
         color: #8486b0;
         text-decoration: underline;
-    }
-
-    &__calls {
-        flex-shrink: 0;
-        text-decoration: underline;
-    }
-
-    &__tabs {
-        margin-bottom: 5px;
-        overflow-x: auto;
-        padding: 3px;
-        @include mixins.flex-box($gap: 8px);
-
-        &::-webkit-scrollbar {
-            height: 3px;
-            background-color: lighten(variables.$color_grey, 30);
-        }
     }
 
     &__content {
@@ -441,23 +411,20 @@ tr.CompanyTableEven {
         color: variables.$color_dark;
     }
 
-    &__tasks {
-        @include mixins.flex-box($d: column, $gap: 5px);
-    }
-
-    &__task {
-        font-size: 14px;
-        border: 1px solid rgba(0, 0, 0, .1);
-    }
-
     &__button {
         opacity: .1;
         will-change: opacity;
         @include mixins.transition(opacity, background-color, color);
     }
 
-    &__content:hover &__button {
+    &__body:hover &__button {
         opacity: 1;
+    }
+
+    &__calls {
+        flex-shrink: 0;
+        text-decoration: underline;
+        color: #7a83a9;
     }
 
     &__calls-list {
@@ -468,5 +435,75 @@ tr.CompanyTableEven {
         color: #000;
         background-color: variables.$color_grey_light;
         border-radius: 5px;
+    }
+
+    &__tab {
+        height: 30px;
+        flex-shrink: 0;
+
+        &.danger {
+            color: #c93a19
+        }
+
+        &.pending {
+            background-color: #d89727;
+            color: #fff;
+
+            &:hover {
+                background-color: #e3a63d !important;
+            }
+        }
+
+        &.success {
+            background-color: #589766;
+            color: #fff;
+
+            &:hover {
+                background-color: #6daa7c !important;
+            }
+        }
+
+        &.outdated {
+            background-color: #f73155;
+            color: #fff;
+
+            &:hover {
+                background-color: #d83350 !important;
+            }
+        }
+
+        &.passive {
+            background-color: #505050;
+            color: #fff;
+
+            &:hover {
+                background-color: #474545 !important;
+            }
+        }
+    }
+
+    &__tab-survey {
+        height: 34px;
+        font-weight: 500;
+        border: 2px solid rgb(0, 137, 0);
+    }
+}
+
+.company-table-item-summary {
+    &__header {
+        @include mixins.flex-box($gap: 7px, $a: center);
+    }
+
+    &__tasks {
+        @include mixins.flex-box($d: column, $gap: 5px);
+    }
+
+    &__task {
+        font-size: 14px;
+        border: 1px solid rgba(0, 0, 0, .1);
+
+        .dashboard-card-task-date {
+            padding: 7px 7px 5px 10px;
+        }
     }
 }
