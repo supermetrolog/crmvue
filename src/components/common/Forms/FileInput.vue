@@ -38,6 +38,7 @@
                     Удалить все
                 </UiButton>
                 <UiButton
+                    v-if="files.length"
                     @click="clear"
                     icon="fa-solid fa-xmark"
                     small

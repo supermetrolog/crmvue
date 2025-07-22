@@ -4,7 +4,8 @@
             <div class="col-lg-8">
                 <div class="account-section">
                     <Loader v-if="isLoading" />
-                    <p class="account-section__title">Редактирование профиля</p>
+                    <p class="font-weight-semi fs-4">Редактирование профиля</p>
+                    <UiFormDivider />
                     <FormGroup>
                         <Input
                             v-model="form.userProfile.middle_name"
@@ -32,11 +33,7 @@
                             :validators="formPhonesValidators"
                             label="Телефон"
                             property-name="phone"
-                            :maska="[
-                                '+# (###) ###-##-##',
-                                '+## (###) ###-##-##',
-                                '+### (###) ###-##-##'
-                            ]"
+                            maska="+7 (###) ###-##-##"
                             class="col-12 col-sm-6 col-lg-12 col-xl-4"
                             add-text="Добавить телефон"
                         />
@@ -48,12 +45,6 @@
                             class="col-12 col-sm-6 col-lg-12 col-xl-4"
                             property-name="email"
                             add-text="Добавить Email"
-                        />
-                        <Input
-                            v-model="form.password"
-                            label="Пароль"
-                            class="col-12 col-sm-6 col-lg-12 col-xl-4"
-                            type="password"
                         />
                     </FormGroup>
                     <FormGroup>
@@ -68,7 +59,7 @@
                     <p class="account-section__title">Редактирование аватара</p>
                     <FormGroup>
                         <FileInput
-                            v-model:native="form.userProfile.fileList"
+                            v-model:native="form.files"
                             v-model:data="form.userProfile.avatar"
                             class="col-12 account-edit__avatar"
                             single
@@ -98,10 +89,12 @@ import Loader from '@/components/common/Loader.vue';
 import Utils from '@/utils';
 import api from '@/api/api.js';
 import { cloneObject } from '@/utils/helpers/object/cloneObject.js';
+import UiFormDivider from '@/components/common/Forms/UiFormDivider.vue';
 
 export default {
     name: 'AccountEdit',
     components: {
+        UiFormDivider,
         UiForm,
         Loader,
         Submit,
@@ -115,7 +108,6 @@ export default {
             isLoading: false,
             v$: useValidate(),
             form: {
-                password: null,
                 email: null,
                 userProfile: {
                     first_name: null,
@@ -123,9 +115,9 @@ export default {
                     last_name: null,
                     phones: [],
                     emails: [],
-                    avatar: null,
-                    fileList: []
-                }
+                    avatar: null
+                },
+                files: []
             }
         };
     },
@@ -197,7 +189,6 @@ export default {
                     this.$notify('При обновлении пользователя произошла ошибка. Попробуйте позже.');
                 }
 
-                this.form.password = null;
                 this.v$.$reset();
                 this.isLoading = false;
             }
