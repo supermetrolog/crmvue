@@ -19,6 +19,12 @@
                                 </router-link>
                                 <router-link
                                     class="account-view__link"
+                                    :to="{ name: 'profile-edit-password' }"
+                                >
+                                    Сменить пароль
+                                </router-link>
+                                <router-link
+                                    class="account-view__link"
                                     :to="{ name: 'profile-sessions' }"
                                 >
                                     Безопасность
