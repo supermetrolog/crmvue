@@ -205,6 +205,14 @@ const routes = [
                 component: () => import('../views/Account/Edit.vue')
             },
             {
+                path: 'edit-password',
+                name: 'profile-edit-password',
+                meta: {
+                    title: ['Смена пароля', 'Личный кабинет']
+                },
+                component: () => import('../views/Account/EditPassword.vue')
+            },
+            {
                 path: 'consultants',
                 name: 'profile-consultants',
                 meta: {

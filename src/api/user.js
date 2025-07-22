@@ -63,5 +63,9 @@ export default {
     async online() {
         const response = await axios.get(`${URL}/online`);
         return responseToData(response);
+    },
+    async changePassword(payload) {
+        const response = await axios.post(`${URL}/change-password`, payload);
+        return responseToData(response);
     }
 };

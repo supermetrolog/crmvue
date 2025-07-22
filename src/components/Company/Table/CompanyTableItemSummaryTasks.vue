@@ -1,12 +1,12 @@
 <template>
-    <div class="company-table-item-survey__tasks">
+    <div class="company-table-item-summary__tasks">
         <DashboardTableTasksItem
             v-for="task in sortedTasks"
             :key="task.id"
             @view="$emit('show-task', task)"
             :task="task"
-            class="company-table-item-survey__task"
-            :avatar-size="35"
+            class="company-table-item-summary__task"
+            :avatar-size="30"
             :observer-size="25"
             :show-diligence="false"
             :show-tags="false"

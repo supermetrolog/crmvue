@@ -29,7 +29,7 @@
             />
         </Td>
         <Td class="company-table-item__comment">
-            <CompanyTableItemSurvey v-if="company.last_survey" :company read-only />
+            <CompanyTableItemSummarySurvey v-if="company.last_survey" :company read-only />
             <CompanyTableItemPinnedMessages
                 v-if="company.pinned_messages.length"
                 :company
@@ -93,7 +93,7 @@ import Avatar from '@/components/common/Avatar.vue';
 import { getCompanyName } from '@/utils/formatters/models/company.js';
 import CompanyLogo from '@/components/Company/CompanyLogo.vue';
 import { useTippy } from 'vue-tippy';
-import CompanyTableItemSurvey from '@/components/Company/Table/CompanyTableItemSurvey.vue';
+import CompanyTableItemSummarySurvey from '@/components/Company/Table/CompanyTableItemSummarySurvey.vue';
 import CompanyTableItemObjects from '@/components/Company/Table/CompanyTableItemObjects.vue';
 import CompanyTableItemRequests from '@/components/Company/Table/CompanyTableItemRequests.vue';
 import CompanyTableDropdown from '@/components/Company/Table/CompanyTableDropdown.vue';
