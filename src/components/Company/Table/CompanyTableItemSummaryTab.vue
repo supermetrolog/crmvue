@@ -1,5 +1,10 @@
 <template>
-    <UiButton @click="modelValue = name" :color class="fs-2 company-table-item-survey__tab" small>
+    <UiButton
+        @click="modelValue = name"
+        :color
+        class="fs-2 company-table-item-summary-survey__tab"
+        small
+    >
         <slot />
     </UiButton>
 </template>

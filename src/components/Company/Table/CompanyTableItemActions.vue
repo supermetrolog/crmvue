@@ -1,26 +1,9 @@
 <template>
-    <div class="d-flex flex-column gap-2 align-items-center">
+    <div class="d-flex gap-2 align-items-center justify-content-end">
         <UserFoldersDropdown
             @deleted-from-folder="$emit('deleted-from-folder', $event)"
             morph="company"
             :entity="company.id"
-        />
-        <UiButtonIcon
-            @click="$emit('open-survey')"
-            small
-            :icon="
-                company.has_pending_survey
-                    ? 'fa-solid fa-play'
-                    : 'fa-solid fa-square-poll-horizontal'
-            "
-            :label="company.has_pending_survey ? 'Продолжить опрос' : 'Начать опрос'"
-            :color="surveyButtonColor"
-        />
-        <UiButtonIcon
-            @click="$emit('open-chat')"
-            label="Открыть чат"
-            icon="fa-solid fa-comment"
-            small
         />
         <UiDropdownActions label="Действия над компанией" :title="companyShortName" small>
             <template #menu>
@@ -75,6 +58,23 @@
                 </UiDropdownActionsGroup>
             </template>
         </UiDropdownActions>
+        <UiButtonIcon
+            @click="$emit('open-survey')"
+            small
+            :icon="
+                company.has_pending_survey
+                    ? 'fa-solid fa-play'
+                    : 'fa-solid fa-square-poll-horizontal'
+            "
+            :label="company.has_pending_survey ? 'Продолжить опрос' : 'Начать опрос'"
+            :color="surveyButtonColor"
+        />
+        <UiButtonIcon
+            @click="$emit('open-chat')"
+            label="Открыть чат"
+            icon="fa-solid fa-comment"
+            small
+        />
     </div>
 </template>
 

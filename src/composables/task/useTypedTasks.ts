@@ -44,7 +44,7 @@ export function useTypedTasks(tasks: MaybeRefOrGetter<Task[]>, options: UseTyped
 
     const lastScheduledCallDate = computed(() => {
         if (scheduledCallTasks.value.length) {
-            return toDateFormat(scheduledCallTasks.value[0].start, 'D.MM.YY');
+            return toDateFormat(scheduledCallTasks.value[0].start, 'D.MM.YY в HH:mm');
         }
 
         return null;
@@ -52,7 +52,7 @@ export function useTypedTasks(tasks: MaybeRefOrGetter<Task[]>, options: UseTyped
 
     const lastScheduledVisitDate = computed(() => {
         if (scheduledVisitTasks.value.length) {
-            return toDateFormat(scheduledVisitTasks.value[0].start, 'D.MM.YY');
+            return toDateFormat(scheduledVisitTasks.value[0].start, 'D.MM.YY в HH:mm');
         }
 
         return null;

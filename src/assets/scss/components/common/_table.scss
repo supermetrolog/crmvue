@@ -61,6 +61,12 @@
                     }
                 }
 
+                &.text-left .th__wrapper {
+                    &:has(.th__filter) {
+                        justify-content: flex-start;
+                    }
+                }
+
                 .th__filter {
                     margin-left: 2px;
                     cursor: pointer;
@@ -148,7 +154,7 @@
 }
 
 .th-dd-content {
-    overflow: visible!important;
+    overflow: visible !important;
 
     &__sort {
         min-width: 400px;

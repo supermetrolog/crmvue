@@ -2,35 +2,25 @@
     <Table shadow fluid class="company-table">
         <template #thead>
             <Tr data-tour-id="company-table-filters:header">
-                <Th>#</Th>
-                <Th class="text-left" sort="nameRu">название компании</Th>
-                <Th
-                    v-model:filters="activityFilters"
-                    @confirm-filter="confirmActivityFilters"
-                    data-tour-id="company-table-filters:column-activity"
-                >
-                    <template #default>работа с компанией</template>
-                    <template #filter>
-                        <CompanyTableFiltersActivity v-model="activityFilters" />
-                    </template>
-                </Th>
                 <Th v-model:filters="consultantFilters" @confirm-filter="confirmConsultantFilters">
-                    <template #default>консультант</template>
                     <template #filter>
                         <CompanyTableFiltersConsultant v-model="consultantFilters" />
                     </template>
                 </Th>
+                <Th class="text-left" sort="nameRu">название компании</Th>
                 <Th
                     ref="statusThEl"
-                    v-model:filters="dateFilters"
-                    @confirm-filter="confirmDateFilters"
+                    v-model:filters="activityFilters"
+                    @confirm-filter="confirmActivityFilters"
                     :sorting-options
+                    default-sort="activity"
                     name="status"
-                    data-tour-id="company-table-filters:column-status"
+                    data-tour-id="company-table-filters:column-activity"
+                    class="text-left"
                 >
-                    <template #default>статус</template>
+                    <template #default>работа с компанией</template>
                     <template #filter>
-                        <CompanyTableFiltersStatus v-model="dateFilters" />
+                        <CompanyTableFiltersActivity v-model="activityFilters" />
                     </template>
                 </Th>
             </Tr>
@@ -92,7 +82,6 @@ import { useAsyncPopup } from '@/composables/useAsyncPopup.js';
 import TaskPreview from '@/components/TaskPreview/TaskPreview.vue';
 import { useTableColumnFilters } from '@/composables/useTableColumnFilters';
 import CompanyTableFiltersActivity from '@/components/Company/Table/Filters/CompanyTableFiltersActivity.vue';
-import CompanyTableFiltersStatus from '@/components/Company/Table/Filters/CompanyTableFiltersStatus.vue';
 import CompanyTableFiltersConsultant from '@/components/Company/Table/Filters/CompanyTableFiltersConsultant.vue';
 
 defineEmits([
@@ -125,8 +114,17 @@ defineProps({
 
 // query filters
 
-const { filters: dateFilters, confirmFilters: confirmDateFilters } = useTableColumnFilters(
+const { filters: consultantFilters, confirmFilters: confirmConsultantFilters } =
+    useTableColumnFilters({
+        consultant_id: null
+    });
+
+const { filters: activityFilters, confirmFilters: confirmActivityFilters } = useTableColumnFilters(
     {
+        without_surveys: null,
+        with_current_user_tasks: null,
+        requests_filter: null,
+        with_active_contacts: null,
         dateStart: null,
         dateEnd: null,
         status: null
@@ -143,26 +141,16 @@ const { filters: dateFilters, confirmFilters: confirmDateFilters } = useTableCol
     }
 );
 
-const { filters: consultantFilters, confirmFilters: confirmConsultantFilters } =
-    useTableColumnFilters({
-        consultant_id: null
-    });
-
-const { filters: activityFilters, confirmFilters: confirmActivityFilters } = useTableColumnFilters({
-    without_surveys: null,
-    with_current_user_tasks: null,
-    requests_filter: null,
-    with_active_contacts: null
-});
-
 const route = useRoute();
 
 function initFilters() {
-    dateFilters.dateStart = route.query.dateStart ? dayjs(route.query.dateStart).toDate() : null;
-    dateFilters.dateEnd = route.query.dateEnd ? dayjs(route.query.dateEnd).toDate() : null;
-    dateFilters.status = route.query.status;
-
     consultantFilters.consultant_id = route.query.consultant_id;
+
+    activityFilters.dateStart = route.query.dateStart
+        ? dayjs(route.query.dateStart).toDate()
+        : null;
+    activityFilters.dateEnd = route.query.dateEnd ? dayjs(route.query.dateEnd).toDate() : null;
+    activityFilters.status = route.query.status;
 
     activityFilters.without_surveys = route.query.without_surveys;
     activityFilters.with_current_user_tasks = route.query.with_current_user_tasks;
