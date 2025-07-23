@@ -20,7 +20,7 @@
                     v-for="user in users"
                     :key="user.id"
                     @delete="deleteUser(user)"
-                    @show-sessions="$emit('show-sessions', user.id)"
+                    @show-sessions="$emit('show-sessions', user)"
                     @edit="$emit('edit', user)"
                     @restore="restore(user)"
                     @archive="archive(user)"
