@@ -43,3 +43,7 @@ export function fromUtcToServer(date) {
     // TODO: Сделать норм время
     return dayjs(date).add(3, 'hour').toDate();
 }
+
+export function now() {
+    return dayjs().add(3, 'hour');
+}
