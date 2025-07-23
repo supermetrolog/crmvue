@@ -1,35 +1,17 @@
 <template>
     <div>
-        <MessengerDialogLastMessage
-            v-if="lastMessageShouldBeVisible"
-            @click="$emit('show-message', company.pinned_messages[0].message)"
-            :last-message="company.pinned_messages[0].message"
-            class="company-table-item__message w-100"
-            hide-avatar
-            column
-        >
-            <template #before>
-                <span class="company-table-item__message-label">Закреплено,</span>
-            </template>
-            <template v-if="!readOnly" #after>
-                <UiDropdownActions small label="Действия над сообщением" class="ml-auto">
-                    <template #menu>
-                        <UiDropdownActionsButton
-                            @handle="$emit('create-pinned-message')"
-                            label="Добавить новое сообщение"
-                            icon="fa-solid fa-plus"
-                        />
-                        <UiDropdownActionsButton
-                            @handle="$emit('unpin-message', company.pinned_messages[0])"
-                            label="Открепить сообщение"
-                            icon="fa-solid fa-trash"
-                        />
-                    </template>
-                </UiDropdownActions>
-            </template>
-        </MessengerDialogLastMessage>
+        <CompanyTableItemSummaryComment
+            @expanded="isExpanded = true"
+            @hidden="isExpanded = false"
+            @cancel="commentIsEditing = false"
+            @update="updateComment"
+            @delete="deleteComment"
+            :edit-mode="commentIsEditing && !readOnly"
+            :message="company.pinned_messages[0].message"
+            :company
+        />
         <UiButton
-            v-if="messagesCountButtonShouldBeVisible"
+            v-if="company.pinned_messages.length > 1"
             @click="modalIsVisible = true"
             small
             class="mt-2 fs-2"
@@ -39,7 +21,7 @@
         </UiButton>
         <UiModal
             v-model:visible="modalIsVisible"
-            :title="`Закрепленные сообщения (${company.pinned_messages.length}) | ${company.full_name}`"
+            :title="`Комментарии (${company.pinned_messages.length}) | ${company.full_name}`"
             :width="600"
         >
             <div class="d-flex flex-column gap-2">
@@ -49,39 +31,23 @@
                     @click="$emit('show-message', message.message)"
                     :last-message="message.message"
                     class="company-table-item__message w-100"
-                    hide-avatar
                     column
-                >
-                    <template #after>
-                        <UiDropdownActions small label="Действия над сообщением" class="ml-auto">
-                            <template #menu>
-                                <UiDropdownActionsButton
-                                    @handle="$emit('unpin-message', message)"
-                                    label="Открепить сообщение"
-                                    icon="fa-solid fa-trash"
-                                />
-                            </template>
-                        </UiDropdownActions>
-                    </template>
-                </MessengerDialogLastMessage>
+                />
             </div>
         </UiModal>
     </div>
 </template>
 
 <script setup>
-import UiDropdownActions from '@/components/common/UI/DropdownActions/UiDropdownActions.vue';
-import UiDropdownActionsButton from '@/components/common/UI/DropdownActions/UiDropdownActionsButton.vue';
 import MessengerDialogLastMessage from '@/components/Messenger/Dialog/MessengerDialogLastMessage.vue';
 import UiModal from '@/components/common/UI/UiModal.vue';
 import { computed, ref } from 'vue';
 import UiButton from '@/components/common/UI/UiButton.vue';
 import { plural } from '@/utils/plural.js';
-import { isNullish } from '@/utils/helpers/common/isNullish';
-import { isEmptyString } from '@/utils/helpers/string/isEmptyString.js';
-import { isNotNullish } from '@/utils/helpers/common/isNotNullish';
-
-defineEmits(['create-pinned-message', 'show-message', 'unpin-message']);
+import CompanyTableItemSummaryComment from '@/components/Company/Table/CompanyTableItemSummaryComment.vue';
+import { useNotify } from '@/utils/use/useNotify.js';
+import api from '@/api/api.js';
+import { useConfirm } from '@/composables/useConfirm.js';
 
 const props = defineProps({
     company: {
@@ -93,33 +59,68 @@ const props = defineProps({
 
 const modalIsVisible = ref(false);
 
-const lastMessageShouldBeVisible = computed(() => {
-    return props.company.pinned_messages[0].message.message !== props.company.last_survey?.comment;
-});
-
 const messagesCountLabel = computed(() =>
     plural(
-        props.company.pinned_messages.length - 1 || 1,
-        '+ еще %d закрепленное сообщение',
-        '+ еще %d закрепленных сообщения',
-        '+ еще %d закрепленных сообщений'
+        props.company.pinned_messages.length - 1,
+        '+ еще %d комментарий',
+        '+ еще %d комментария',
+        '+ еще %d комментариев'
     )
 );
 
-const messagesCountButtonShouldBeVisible = computed(() => {
-    if (props.company.pinned_messages.length > 2) return true;
+// edit
 
-    if (isNotNullish(props.company.last_survey)) {
-        if (
-            isNullish(props.company.last_survey.comment) ||
-            isEmptyString(props.company.last_survey.comment)
-        ) {
-            return props.company.pinned_messages.length > 1;
-        } else {
-            return props.company.pinned_messages.length > 2;
-        }
+const isExpanded = ref(false);
+
+// edit comment
+
+const commentIsEditing = ref(false);
+
+function editComment() {
+    commentIsEditing.value = true;
+}
+
+const isUpdating = ref(false);
+const notify = useNotify();
+
+async function updateComment(comment) {
+    try {
+        isUpdating.value = true;
+        await api.survey.update(props.company.last_survey.id, {
+            comment,
+            contact_id: props.company.last_survey.contact_id
+        });
+
+        Object.assign(props.company.last_survey, { comment });
+        commentIsEditing.value = false;
+
+        notify.success('Комментарий успешно изменен');
+    } finally {
+        isUpdating.value = false;
     }
+}
 
-    return props.company.pinned_messages.length > 1;
-});
+const { confirm } = useConfirm();
+
+async function deleteComment() {
+    const confirmed = await confirm(
+        'Удалить комментарии',
+        'Вы действительно хотите безвозвратно удалить комментарии?'
+    );
+
+    if (!confirmed) return;
+
+    try {
+        isUpdating.value = true;
+        await api.survey.update(props.company.last_survey.id, { comment: null });
+
+        Object.assign(props.company.last_survey, { comment: null });
+
+        commentIsEditing.value = false;
+
+        notify.success('Комментарий успешно удален');
+    } finally {
+        isUpdating.value = false;
+    }
+}
 </script>

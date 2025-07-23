@@ -1,7 +1,7 @@
 <template>
     <div class="company-table-item-summary">
         <div class="company-table-item-summary__content">
-            <div class="company-table-item-summary__header">
+            <div class="company-table-item-summary__header mb-1">
                 <CompanyTableItemSummaryTabSurvey
                     v-model="currentTab"
                     @to-survey="$emit('open-survey')"
@@ -16,25 +16,33 @@
                 <UiButton
                     v-if="scheduledCallTasks.length"
                     @click="showScheduledCallTasks"
-                    class="fs-2 company-table-item-summary-survey__tab danger"
+                    class="fs-2 company-table-item-summary-survey__tab"
                     color="transparent"
                     small
+                    :class="{
+                        danger: lastScheduledCallDateExpired,
+                        primary: !lastScheduledCallDateExpired
+                    }"
                 >
-                    <span>Звонок {{ lastScheduledCallDate }}</span>
+                    <span>Звонок {{ nearestScheduledCallDate }}</span>
                     <span v-if="scheduledCallTasks.length > 1" class="ml-1">
-                        (+{{ scheduledCallTasks.length - 1 }})
+                        (+ еще {{ scheduledCallTasks.length - 1 }})
                     </span>
                 </UiButton>
                 <UiButton
                     v-if="scheduledVisitTasks.length"
                     @click="showScheduledVisitTasks"
-                    class="fs-2 company-table-item-summary-survey__tab danger"
+                    class="fs-2 company-table-item-summary-survey__tab"
                     color="transparent"
                     small
+                    :class="{
+                        danger: lastScheduledVisitDateExpired,
+                        primary: !lastScheduledVisitDateExpired
+                    }"
                 >
-                    <span>Встреча {{ lastScheduledVisitDate }}</span>
+                    <span>Встреча {{ nearestScheduledVisitDate }}</span>
                     <span v-if="scheduledVisitTasks.length > 1" class="ml-1">
-                        (+{{ scheduledVisitTasks.length - 1 }})
+                        (+ еще {{ scheduledVisitTasks.length - 1 }})
                     </span>
                 </UiButton>
             </div>
@@ -42,7 +50,6 @@
                 v-if="currentTab === TABS.SURVEY"
                 @edit-comment="$emit('edit-survey-comment')"
                 @open-preview="$emit('show-survey')"
-                @create-pinned-message="$emit('create-pinned-message')"
                 :company
             />
             <CompanyTableItemSummaryTasks
@@ -51,13 +58,6 @@
                 :tasks="baseTasks"
             />
         </div>
-        <CompanyTableItemPinnedMessages
-            v-if="company.pinned_messages.length"
-            @show-message="$emit('show-message', $event)"
-            @unpin-message="$emit('unpin-message', $event)"
-            @create-pinned-message="$emit('create-pinned-message')"
-            :company
-        />
         <CompanyTableItemActions
             @create-task="$emit('create-task')"
             @schedule-call="$emit('schedule-call')"
@@ -65,7 +65,6 @@
             @schedule-event="$emit('schedule-event')"
             @disable="$emit('disable')"
             @enable="$emit('enable')"
-            @create-pinned-message="$emit('create-pinned-message')"
             @open-chat="$emit('open-chat')"
             @open-survey="$emit('open-survey')"
             @deleted-from-folder="$emit('deleted-from-folder', $event)"
@@ -74,7 +73,7 @@
         />
         <UiModal
             v-model:visible="scheduledCallTasksIsVisible"
-            title="Запланированные звонки"
+            :title="`Запланированные звонки (${scheduledCallTasks.length})`"
             :width="800"
         >
             <div class="d-flex flex-column gap-2">
@@ -88,7 +87,7 @@
         </UiModal>
         <UiModal
             v-model:visible="scheduledVisitTasksIsVisible"
-            title="Запланированные встречи"
+            :title="`Запланированные встречи (${scheduledVisitTasks.length})`"
             :width="800"
         >
             <div class="d-flex flex-column gap-2">
@@ -106,7 +105,7 @@
 <script setup>
 import CompanyTableItemActions from '@/components/Company/Table/CompanyTableItemActions.vue';
 import CompanyTableItemSummaryTabSurvey from '@/components/Company/Table/CompanyTableItemSummaryTabSurvey.vue';
-import { ref, toRef } from 'vue';
+import { computed, ref, toRef } from 'vue';
 import { useTypedTasks } from '@/composables/task/useTypedTasks';
 import CompanyTableItemSummaryTabTasks from '@/components/Company/Table/CompanyTableItemSummaryTabTasks.vue';
 import CompanyTableItemSummaryTasks from '@/components/Company/Table/CompanyTableItemSummaryTasks.vue';
@@ -114,11 +113,11 @@ import CompanyTableItemSummarySurvey from '@/components/Company/Table/CompanyTab
 import UiButton from '@/components/common/UI/UiButton.vue';
 import DashboardTableTasksItem from '@/components/Dashboard/Table/TasksItem/DashboardTableTasksItem.vue';
 import UiModal from '@/components/common/UI/UiModal.vue';
-import CompanyTableItemPinnedMessages from '@/components/Company/Table/CompanyTableItemPinnedMessages.vue';
+import { dayjsFromMoscow } from '@/utils/formatters/date.js';
+import { now } from '@vueuse/core';
 
 const emit = defineEmits([
     'deleted-from-folder',
-    'create-pinned-message',
     'show-message',
     'unpin-message',
     'create-task',
@@ -152,12 +151,23 @@ const currentTab = ref(TABS.SURVEY);
 const {
     scheduledCallTasks,
     scheduledVisitTasks,
-    lastScheduledCallDate,
-    lastScheduledVisitDate,
+    nearestScheduledCall,
+    nearestScheduledCallDate,
+    nearestScheduledVisit,
+    nearestScheduledVisitDate,
     baseTasks
-} = useTypedTasks(
-    toRef(() => props.company.last_survey?.tasks ?? []),
-    { withCompleted: true }
+} = useTypedTasks(toRef(() => props.company.tasks ?? []));
+
+const lastScheduledCallDateExpired = computed(
+    () =>
+        nearestScheduledCall.value &&
+        dayjsFromMoscow(nearestScheduledCall.value.start).isBefore(now(), 'day')
+);
+
+const lastScheduledVisitDateExpired = computed(
+    () =>
+        nearestScheduledVisit.value &&
+        dayjsFromMoscow(nearestScheduledVisit.value.start).isBefore(now(), 'day')
 );
 
 const scheduledCallTasksIsVisible = ref(false);

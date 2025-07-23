@@ -50,80 +50,40 @@
                 small
             >
                 <template #menu>
-                    <UiDropdownActionsGroup>
-                        <UiDropdownActionsButton
-                            @handle="$emit('open-preview')"
-                            label="Посмотреть опрос"
-                            icon="fa-solid fa-eye"
-                        />
-                    </UiDropdownActionsGroup>
-                    <UiDropdownActionsGroup v-if="surveyCommentCanBeEdit">
-                        <UiDropdownActionsButton
-                            v-if="company.last_survey.comment"
-                            @handle="editComment"
-                            label="Изменить комментарий"
-                            icon="fa-solid fa-pen"
-                        />
-                        <UiDropdownActionsButton
-                            v-else
-                            @handle="editComment"
-                            label="Добавить комментарий"
-                            icon="fa-solid fa-thumbtack"
-                        />
-                    </UiDropdownActionsGroup>
+                    <UiDropdownActionsButton
+                        @handle="$emit('open-preview')"
+                        label="Посмотреть опрос"
+                        icon="fa-solid fa-eye"
+                    />
                 </template>
             </UiDropdownActions>
         </div>
-        <div class="company-table-item-summary-survey__body">
-            <CompanyTableItemSummarySurveyComment
-                v-if="company.last_survey?.comment || commentIsEditing"
-                @expanded="isExpanded = true"
-                @hidden="isExpanded = false"
-                @cancel="commentIsEditing = false"
-                @update="updateComment"
-                @delete="deleteComment"
-                :edit-mode="commentIsEditing && !readOnly"
-                :survey="company.last_survey"
+        <div v-if="company.last_survey" class="company-table-item-summary-survey__body">
+            <CompanyTableItemPinnedMessages
+                v-if="company.pinned_messages.length"
+                :read-only
+                :company
             />
-            <div
-                v-if="!company.last_survey?.comment && !commentIsEditing && !readOnly"
-                class="d-flex gap-2 align-items-center mt-2"
-            >
-                <UiButton
-                    @click="$emit('create-pinned-message')"
-                    icon="fa-solid fa-plus"
-                    color="transparent"
-                    small
-                    class="company-table-item-summary-survey__button"
-                >
-                    Добавить комментарий
-                </UiButton>
-            </div>
+            <p v-else class="text-grey op-5 fs-2">Без комментариев..</p>
         </div>
     </div>
 </template>
 
 <script setup>
-import { computed, ref } from 'vue';
+import { computed } from 'vue';
 import { getContactFullName } from '@/utils/formatters/models/contact.js';
 import { contactOptions } from '@/const/options/contact.options.js';
-import CompanyTableItemSummarySurveyComment from '@/components/Company/Table/CompanyTableItemSummarySurveyComment.vue';
-import UiButton from '@/components/common/UI/UiButton.vue';
-import { useAuth } from '@/composables/useAuth.js';
 import Loader from '@/components/common/Loader.vue';
-import api from '@/api/api.js';
-import { useNotify } from '@/utils/use/useNotify.js';
-import { useConfirm } from '@/composables/useConfirm.js';
 import { Tippy } from 'vue-tippy';
 import ContactCard from '@/components/Contact/Card/ContactCard.vue';
 import UiDropdownActions from '@/components/common/UI/DropdownActions/UiDropdownActions.vue';
-import UiDropdownActionsGroup from '@/components/common/UI/DropdownActions/UiDropdownActionsGroup.vue';
 import UiDropdownActionsButton from '@/components/common/UI/DropdownActions/UiDropdownActionsButton.vue';
 import CallInlineCard from '@/components/Call/InlineCard/CallInlineCard.vue';
 import { plural } from '@/utils/plural.js';
 import { isNotNullish } from '@/utils/helpers/common/isNotNullish';
+import CompanyTableItemPinnedMessages from '@/components/Company/Table/CompanyTableItemPinnedMessages.vue';
 
-const emit = defineEmits(['open-preview', 'edit-comment', 'create-pinned-message']);
+defineEmits(['open-preview']);
 
 const props = defineProps({
     company: {
@@ -141,72 +101,6 @@ const contactPosition = computed(() => {
     if (props.company.last_survey.contact.position_unknown) return 'Должность неизвестна';
     return contactOptions.position[props.company.last_survey.contact.position];
 });
-
-const { currentUserId } = useAuth();
-
-const surveyCommentCanBeEdit = computed(
-    () => props.company.last_survey.user_id === currentUserId.value
-);
-
-// expand
-
-const isExpanded = ref(false);
-
-// edit comment
-
-const commentIsEditing = ref(false);
-
-function editComment() {
-    if (props.company.last_survey?.comment) {
-        commentIsEditing.value = true;
-    } else {
-        emit('create-pinned-message');
-    }
-}
-
-const isUpdating = ref(false);
-const notify = useNotify();
-
-async function updateComment(comment) {
-    try {
-        isUpdating.value = true;
-        await api.survey.update(props.company.last_survey.id, {
-            comment,
-            contact_id: props.company.last_survey.contact_id
-        });
-
-        Object.assign(props.company.last_survey, { comment });
-        commentIsEditing.value = false;
-
-        notify.success('Комментарий успешно изменен');
-    } finally {
-        isUpdating.value = false;
-    }
-}
-
-const { confirm } = useConfirm();
-
-async function deleteComment() {
-    const confirmed = await confirm(
-        'Удалить комментарии',
-        'Вы действительно хотите безвозвратно удалить комментарии?'
-    );
-
-    if (!confirmed) return;
-
-    try {
-        isUpdating.value = true;
-        await api.survey.update(props.company.last_survey.id, { comment: null });
-
-        Object.assign(props.company.last_survey, { comment: null });
-
-        commentIsEditing.value = false;
-
-        notify.success('Комментарий успешно удален');
-    } finally {
-        isUpdating.value = false;
-    }
-}
 
 // calls
 

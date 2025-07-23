@@ -55,6 +55,7 @@ import { dayjsFromMoscow, toDateFormat } from '@/utils/formatters/date.js';
 import { isNullish } from '@/utils/helpers/common/isNullish';
 import dayjs from 'dayjs';
 import Avatar from '@/components/common/Avatar.vue';
+import { isNotNullish } from '@/utils/helpers/common/isNotNullish';
 
 const emit = defineEmits(['to-survey']);
 
@@ -71,8 +72,10 @@ const props = defineProps({
     }
 });
 
+const isSelected = computed(() => modelValue.value === props.name);
+
 const color = computed(() => {
-    if (modelValue.value === props.name) return 'gray-light';
+    if (isSelected.value) return 'gray-light';
     return 'transparent';
 });
 
@@ -81,9 +84,18 @@ const pendingSurveyStatusLabel = computed(() => {
     return 'Опрос на паузе';
 });
 
-const lastSurveyDate = computed(() =>
-    dayjsFromMoscow(props.company.last_survey.completed_at ?? props.company.last_survey.updated_at)
-);
+const lastSurveyDate = computed(() => {
+    if (isNullish(props.company.last_survey)) return null;
+
+    if (isNotNullish(props.company.last_survey.completed_at)) {
+        return dayjs.max(
+            dayjsFromMoscow(props.company.last_survey.completed_at),
+            dayjsFromMoscow(props.company.last_survey.updated_at)
+        );
+    }
+
+    return dayjsFromMoscow(props.company.last_survey.updated_at);
+});
 
 const lastSurveyDateFormatted = computed(() => toDateFormat(lastSurveyDate.value, 'DD.MM.YYYY'));
 
@@ -120,6 +132,10 @@ const colorClass = computed(() => {
 });
 
 function select() {
-    modelValue.value = props.name;
+    if (isSelected.value) {
+        emit('to-survey');
+    } else {
+        modelValue.value = props.name;
+    }
 }
 </script>

@@ -43,7 +43,6 @@
                 @schedule-event="$emit('schedule-event')"
                 @disable="$emit('disable')"
                 @enable="$emit('enable')"
-                @create-pinned-message="$emit('create-pinned-message')"
                 @open-chat="openInChat"
                 @open-survey="openInSurvey"
                 @show-survey="$emit('show-survey')"
@@ -96,7 +95,6 @@ const router = useRouter();
 
 defineEmits([
     'deleted-from-folder',
-    'create-pinned-message',
     'show-message',
     'unpin-message',
     'create-task',
