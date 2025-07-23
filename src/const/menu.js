@@ -192,6 +192,6 @@ export const menu = [
                 icon: 'fa-solid fa-shield-halved'
             }
         ],
-        auth: new Set([AUTH_ROLE.ADMIN])
+        auth: new Set([AUTH_ROLE.ADMIN, AUTH_ROLE.MODERATOR])
     }
 ];

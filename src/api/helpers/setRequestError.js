@@ -10,8 +10,13 @@ const notifyOptions = {
     duration: 15000
 };
 
+function showNotify(text, title = 'Ошибка') {
+    notify({ ...notifyOptions, title, text });
+}
+
 const ValidationErrorHttpStatusCode = 422;
 const AuthErrorHttpStatusCode = 401;
+const ForbiddenErrorHttpStatusCode = 401;
 
 function getTitle(data) {
     if ('success' in data) {
@@ -59,10 +64,27 @@ function handleAuthError(data) {
     notify(notifyOptions);
 }
 
+const ErrorCodeEnum = {
+    IP_RESTRICTED: 1001
+};
+
+const errorHandlers = {
+    [ErrorCodeEnum.IP_RESTRICTED]: async error => {
+        abortRequests();
+
+        showNotify(error.message, 'Доступ запрещен');
+
+        if (store) await store.dispatch('destroy');
+        await router.push('/login');
+    }
+};
+
 export async function setRequestError(event) {
     if (!event.response) return;
 
     const data = event.response.data;
+    const code = event.response.data.code;
+
     if (!('status' in data)) data.status = event.response.status;
 
     if (data.status === AuthErrorHttpStatusCode) {
@@ -74,6 +96,12 @@ export async function setRequestError(event) {
         if (store) await store.dispatch('destroy');
         setRedirect(router.currentRoute.value.fullPath);
         await router.push('/login');
+
+        return;
+    }
+
+    if (code && code in errorHandlers) {
+        await errorHandlers[code](data);
 
         return;
     }

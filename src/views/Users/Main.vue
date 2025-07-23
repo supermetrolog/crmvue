@@ -58,20 +58,18 @@
                 @close="sessionsIsVisible = false"
                 width="1000"
                 :show="sessionsIsVisible"
-                title="Просмотр сессий"
+                :title="`Просмотр сессий | ${sessionsUser?.userProfile?.medium_name}`"
             >
-                <Button
+                <UiButton
                     v-if="sessions.length"
                     @click="dropSessions"
                     :disabled="sessionsIsLoading || sessionsIsUpdating"
+                    color="danger"
+                    icon="fa-solid fa-ban"
                     class="mb-2"
-                    small
-                    danger
-                    icon
                 >
-                    <i class="fa-solid fa-ban" />
-                    <span>Отозвать все сессии</span>
-                </Button>
+                    Отозвать все сессии
+                </UiButton>
                 <div class="account-sessions position-relative">
                     <div v-if="sessionsIsLoading" class="account-sessions__list row">
                         <AccountSessionSkeleton v-for="i in 6" :key="i" class="col-12 col-xxl-6" />
@@ -111,6 +109,7 @@ import { useNotify } from '@/utils/use/useNotify.js';
 import { useConfirm } from '@/composables/useConfirm.js';
 import Switch from '@/components/common/Forms/Switch.vue';
 import { spliceById } from '@/utils/helpers/array/spliceById.js';
+import UiButton from '@/components/common/UI/UiButton.vue';
 
 const STATUSES = {
     ACTIVE: 10,
@@ -130,7 +129,7 @@ const sessionsIsVisible = shallowRef(false);
 const sessionsIsLoading = shallowRef(false);
 const sessionsIsUpdating = shallowRef(false);
 const sessions = ref([]);
-const sessionsUserId = shallowRef(null);
+const sessionsUser = shallowRef(null);
 
 const onlyActive = ref(true);
 watch(onlyActive, () => fetchUsers());
@@ -187,10 +186,10 @@ const fetchSessions = async userId => {
     sessionsIsLoading.value = false;
 };
 
-const showSessions = userId => {
+const showSessions = user => {
     sessionsIsVisible.value = true;
-    sessionsUserId.value = userId;
-    fetchSessions(userId);
+    sessionsUser.value = user;
+    fetchSessions(user.id);
 };
 
 const logoutSession = async session => {
@@ -218,10 +217,10 @@ const dropSessions = async () => {
 
     sessionsIsUpdating.value = true;
 
-    const dropped = await api.user.sessions.drop(sessionsUserId.value);
+    const dropped = await api.user.sessions.drop(sessionsUser.value.id);
     if (dropped) {
         notify.success('Все сессии сотрудника успешно отозваны.');
-        await fetchSessions(sessionsUserId.value);
+        await fetchSessions(sessionsUser.value.id);
     }
 
     sessionsIsUpdating.value = false;
