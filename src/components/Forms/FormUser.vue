@@ -1,7 +1,7 @@
 <template>
     <UiModal
         @close="$emit('close')"
-        :width="1300"
+        :width="1000"
         :title="isEditMode ? `Изменение пользователя #${formData.id}` : 'Создание пользователя'"
         class="modal-form-user"
         show
@@ -11,25 +11,25 @@
         <Loader v-if="isLoading" />
         <UiForm>
             <Tabs>
-                <Tab name="Основные данные">
+                <Tab name="Основные данные" required>
                     <UiFormGroup>
                         <UiInput
                             v-model="form.username"
                             :disabled="isEditMode"
                             :v="v$.form.username"
-                            label="Username"
                             :required="!isEditMode"
-                            class="col-4"
+                            label="Username"
+                            class="col-6"
                         />
                         <UiInput
                             v-model="form.password"
                             :v="v$.form.password"
-                            label="Пароль"
                             :required="!isEditMode"
-                            class="col-4"
+                            label="Пароль"
+                            class="col-6"
                         />
                     </UiFormGroup>
-                    <p class="form__block">Данные профиля</p>
+                    <UiFormDivider />
                     <UiFormGroup>
                         <UiInput
                             v-model="form.userProfile.middle_name"
@@ -61,11 +61,7 @@
                             :validators="formPhonesValidators"
                             label="Телефон"
                             property-name="phone"
-                            :maska="[
-                                '+# (###) ###-##-##',
-                                '+## (###) ###-##-##',
-                                '+### (###) ###-##-##'
-                            ]"
+                            maska="+7 (###) ###-##-##"
                             class="col-4"
                             add-text="Добавить телефон"
                         />
@@ -73,12 +69,27 @@
                             v-model="form.userProfile.emails"
                             :v="v$.form.userProfile.emails"
                             :validators="formEmailsValidators"
-                            label="Emails"
+                            label="Почта"
                             class="col-4"
                             property-name="email"
+                            add-text="Добавить почту"
                         />
                     </UiFormGroup>
-                    <p class="form__block">Данные почты</p>
+                    <template v-if="currentUserIsDirector || currentUserIsAdmin || !isEditMode">
+                        <UiFormDivider />
+                        <UiFormGroup>
+                            <RadioOptions
+                                v-model="form.role"
+                                class="col-12"
+                                label="Роль"
+                                :options="RoleList"
+                                show-radio
+                                :rounded="false"
+                            />
+                        </UiFormGroup>
+                    </template>
+                </Tab>
+                <Tab name="Email" required>
                     <UiFormGroup>
                         <UiInput
                             v-model="form.email"
@@ -86,6 +97,7 @@
                             label="Email для почты"
                             class="col-4"
                             title="Необходим для отправки предложений с аккаунта пользователя"
+                            required
                         />
                         <UiInput
                             v-model="form.email_username"
@@ -98,17 +110,6 @@
                             label="Email пароль"
                             class="col-4"
                             title="Необходим для отправки предложений с аккаунта пользователя"
-                        />
-                    </UiFormGroup>
-                    <p class="form__block">Статус</p>
-                    <UiFormGroup>
-                        <RadioOptions
-                            v-model="form.role"
-                            class="col-12"
-                            label="Роль"
-                            :options="RoleList"
-                            show-radio
-                            :rounded="false"
                         />
                     </UiFormGroup>
                 </Tab>
@@ -127,6 +128,20 @@
                         </FileInput>
                     </UiFormGroup>
                 </Tab>
+                <Tab name="Безопасность">
+                    <UiFormGroup>
+                        <UiCol :cols="12">
+                            <p class="form__block">Авторизация</p>
+                        </UiCol>
+                        <Switch
+                            v-model="form.restrict_ip_login"
+                            class="col-12"
+                            true-title="Доступ только из офиса компании"
+                            true-tooltip="Пользователь будет иметь доступ к базе только из офиса компании (Москва, Знаменка д. 13, стр 3)"
+                            :transform="Number"
+                        />
+                    </UiFormGroup>
+                </Tab>
             </Tabs>
         </UiForm>
         <template #actions="{ close }">
@@ -134,15 +149,17 @@
                 Сохранить
             </UiButton>
             <UiButton @click="close" color="light" icon="fa-solid fa-ban">Отмена</UiButton>
-            <UiButton
-                v-if="isEditMode"
-                @click="archiveUser"
-                :loading="isLoadingArchive"
-                color="light"
-                icon="fa-solid fa-archive"
-            >
-                Отправить в архив
-            </UiButton>
+            <template v-if="isEditMode">
+                <span>|</span>
+                <UiButton
+                    @click="archiveUser"
+                    :loading="isLoadingArchive"
+                    color="light"
+                    icon="fa-solid fa-archive"
+                >
+                    Отправить в архив
+                </UiButton>
+            </template>
         </template>
     </UiModal>
 </template>
@@ -169,11 +186,17 @@ import UiButton from '@/components/common/UI/UiButton.vue';
 import { useFormData } from '@/utils/use/useFormData.js';
 import { useValidation } from '@/composables/useValidation.js';
 import { useAsync } from '@/composables/useAsync.js';
+import { useAuth } from '@/composables/useAuth.js';
+import UiFormDivider from '@/components/common/Forms/UiFormDivider.vue';
+import UiCol from '@/components/common/UI/UiCol.vue';
+import Switch from '@/components/common/Forms/Switch.vue';
 
 const emit = defineEmits(['close', 'updated', 'created']);
 const props = defineProps({
     formData: Object
 });
+
+const { currentUserIsAdmin, currentUserIsDirector } = useAuth();
 
 const store = useStore();
 
@@ -185,6 +208,7 @@ const { form, isEditMode } = useFormData(
         email_username: null,
         email_password: null,
         role: 2,
+        restrict_ip_login: 0,
         userProfile: {
             first_name: null,
             middle_name: null,

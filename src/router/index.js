@@ -144,7 +144,7 @@ const routes = [
         name: 'users',
         meta: {
             layout: 'default',
-            auth: { isAuth: true, roles: [AUTH_ROLE.ADMIN, AUTH_ROLE.OWNER] },
+            auth: { isAuth: true, roles: [AUTH_ROLE.ADMIN, AUTH_ROLE.OWNER, AUTH_ROLE.MODERATOR] },
             title: 'Сотрудники'
         },
         component: () => import('../views/Users/Users.vue'),

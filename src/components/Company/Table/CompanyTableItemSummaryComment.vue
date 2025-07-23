@@ -58,15 +58,6 @@ const props = defineProps({
     editMode: Boolean
 });
 
-useLinkify(
-    computed(() => props.message.message),
-    useTemplateRef('comment')
-);
-
-// edit
-
-const localComment = ref(props.message.message);
-
 const updatedAt = computed(() => {
     return toDateFormat(props.message.updated_at, 'D.MM.YY');
 });
@@ -92,4 +83,13 @@ const authorLabel = computed(() => {
 
     return props.message.from.model.userProfile.short_name;
 });
+
+useLinkify(
+    computed(() => props.message.message),
+    useTemplateRef('comment')
+);
+
+// edit
+
+const localComment = ref(props.message.message);
 </script>
