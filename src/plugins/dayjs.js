@@ -16,5 +16,6 @@ export function initDayjs() {
     dayjs.extend(minMax);
     dayjs.extend(duration);
     dayjs.extend(timezone);
+    dayjs.extend(minMax);
     dayjs.locale('ru');
 }

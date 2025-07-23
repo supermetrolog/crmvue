@@ -357,6 +357,13 @@ async function unpinMessage(message) {
 
 // tasks
 
+function addTaskToCompany(task, company) {
+    const companyIndex = COMPANIES.value.findIndex(c => c.id === company.id);
+    if (companyIndex === -1) return;
+
+    COMPANIES.value[companyIndex].tasks.push(task);
+}
+
 const { createTaskWithTemplate } = useTaskManager();
 
 async function createCompanyTask(company) {
@@ -455,7 +462,8 @@ function closeScheduleCallModal() {
     scheduleCallCompany.value = null;
 }
 
-function onCreatedScheduledCall() {
+function onCreatedScheduledCall(task) {
+    addTaskToCompany(task, scheduleCallCompany.value);
     closeScheduleCallModal();
 }
 
@@ -537,9 +545,11 @@ function scheduleVisit(company) {
 
 function closeScheduleVisitModal() {
     scheduleVisitModalIsVisible.value = false;
+    scheduleVisitCompany.value = null;
 }
 
-function onCreatedScheduledVisit() {
+function onCreatedScheduledVisit(task) {
+    addTaskToCompany(task, scheduleVisitCompany.value);
     closeScheduleVisitModal();
 }
 
@@ -555,9 +565,11 @@ function scheduleEvent(company) {
 
 function closeScheduleEventModal() {
     scheduleEventModalIsVisible.value = false;
+    scheduleEventCompany.value = null;
 }
 
-function onCreatedScheduledEvent() {
+function onCreatedScheduledEvent(task) {
+    addTaskToCompany(task, scheduleEventCompany.value);
     closeScheduleEventModal();
 }
 </script>

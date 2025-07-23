@@ -2,6 +2,12 @@ export function plural(num, ...forms) {
     return toPlural(num, toCorrectForms(forms));
 }
 
+export function pluralTemplate(template, num, ...forms) {
+    const text = plural(num, ...forms);
+
+    return template.replace(/%s/g, text);
+}
+
 export function pluralVerb(num, ...forms) {
     return toPluralVerb(num, toCorrectForms(forms));
 }

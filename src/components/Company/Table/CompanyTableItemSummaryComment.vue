@@ -28,7 +28,10 @@
         </div>
     </div>
     <UiClamped v-else @expanded="$emit('expanded')" @hidden="$emit('hidden')" button-class="fs-2">
-        <div ref="comment" class="company-table-item-summary-survey__comment"></div>
+        <div class="d-inline-flex">
+            <i class="fs-2 mr-1">{{ updatedAt }}. {{ authorLabel }}.</i>
+            <div ref="comment" class="company-table-item-summary-survey__comment d-inline"></div>
+        </div>
     </UiClamped>
 </template>
 
@@ -38,10 +41,17 @@ import { useLinkify } from '@/composables/useLinkify.js';
 import UiClamped from '@/components/common/UiClamped.vue';
 import VueEditor from '@/components/common/Forms/VueEditor.vue';
 import UiButton from '@/components/common/UI/UiButton.vue';
+import { toDateFormat } from '@/utils/formatters/date.js';
+import { useAuth } from '@/composables/useAuth.js';
+import { UserRoleEnum } from '@/types/user';
 
 defineEmits(['expanded', 'hidden', 'cancel', 'update', 'delete']);
 const props = defineProps({
-    survey: {
+    message: {
+        type: Object,
+        required: true
+    },
+    company: {
         type: Object,
         required: true
     },
@@ -49,11 +59,37 @@ const props = defineProps({
 });
 
 useLinkify(
-    computed(() => props.survey?.comment),
+    computed(() => props.message.message),
     useTemplateRef('comment')
 );
 
 // edit
 
-const localComment = ref(props.survey?.comment);
+const localComment = ref(props.message.message);
+
+const updatedAt = computed(() => {
+    return toDateFormat(props.message.updated_at, 'D.MM.YY');
+});
+
+const { currentUserId } = useAuth();
+
+const authorLabel = computed(() => {
+    if (props.message.from.model.id === currentUserId.value) {
+        return 'Вы';
+    }
+
+    if (props.message.from.model.role === UserRoleEnum.SYSTEM) {
+        if (props.company.last_survey) {
+            if (props.company.last_survey.user.id === currentUserId.value) {
+                return 'Вы';
+            }
+
+            return props.company.last_survey.user.userProfile.short_name;
+        }
+
+        return 'Система';
+    }
+
+    return props.message.from.model.userProfile.short_name;
+});
 </script>

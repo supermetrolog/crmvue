@@ -109,6 +109,7 @@
     &__name {
         text-transform: none;
         font-weight: 500;
+        min-width: 550px;
     }
 
     &__main {
@@ -132,7 +133,7 @@
     &__comment {
         min-width: 500px;
         max-width: 1200px;
-        width: 50%;
+        width: 80%;
         position: relative;
 
         &:hover .company-table-item__comment-buttons {
@@ -443,6 +444,10 @@ tr.CompanyTableEven {
 
         &.danger {
             color: #c93a19
+        }
+
+        &.primary {
+            color: variables.$color_primary;
         }
 
         &.pending {
