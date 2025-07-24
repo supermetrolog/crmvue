@@ -25,7 +25,7 @@ import { useMessenger } from '@/components/Messenger/useMessenger.js';
 import { useAuth } from '@/composables/useAuth.js';
 import { computed, onBeforeMount, ref } from 'vue';
 import api from '@/api/api.js';
-import { toDateFormat } from '@/utils/formatters/date.js';
+import { toDateFormat } from '@/utils/formatters/date.ts';
 import { spliceById } from '@/utils/helpers/array/spliceById.js';
 
 const emit = defineEmits(['updated', 'close']);

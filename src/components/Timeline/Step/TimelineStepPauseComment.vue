@@ -19,7 +19,7 @@
 
 <script setup>
 import { computed } from 'vue';
-import { toBeautifulDateFormat } from '@/utils/formatters/date.js';
+import { toBeautifulDateFormat } from '@/utils/formatters/date.ts';
 import Avatar from '@/components/common/Avatar.vue';
 
 const props = defineProps({

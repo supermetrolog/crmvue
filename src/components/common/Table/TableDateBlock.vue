@@ -7,7 +7,7 @@
 <script setup>
 import { computed, toRef, useTemplateRef } from 'vue';
 import { useTippy } from 'vue-tippy';
-import { toBeautifulDateFormat } from '@/utils/formatters/date.js';
+import { toBeautifulDateFormat } from '@/utils/formatters/date.ts';
 
 const props = defineProps({
     label: { type: String, required: true },

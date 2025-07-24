@@ -57,13 +57,22 @@
                                 label="Редактировать"
                                 :disabled
                             />
-                            <UiDropdownActionsButton
-                                v-if="!isDeleted && draggable && canBeDragged"
-                                @handle="$emit('change-status')"
-                                icon="fa-solid fa-arrow-right-arrow-left"
-                                label="Изменить статус"
-                                :disabled
-                            />
+                            <template v-if="!isDeleted">
+                                <UiDropdownActionsButton
+                                    v-if="draggable && canBeDragged"
+                                    @handle="$emit('change-status')"
+                                    icon="fa-solid fa-arrow-right-arrow-left"
+                                    label="Изменить статус"
+                                    :disabled
+                                />
+                                <UiDropdownActionsButton
+                                    v-if="editable && canBeEdit"
+                                    @handle="$emit('change-dates')"
+                                    icon="fa-regular fa-calendar-check"
+                                    label="Изменить даты"
+                                    :disabled
+                                />
+                            </template>
                             <UiDropdownActionsButton
                                 @handle="toggleFavoriteTask(task.id)"
                                 :icon="isFavorite ? 'fa-solid fa-star' : 'fa-regular fa-star'"
@@ -120,6 +129,23 @@
                         </template>
                     </UiDropdownActions>
                 </div>
+                <UiDropdownActions
+                    v-if="currentUserIsAdmin"
+                    menu-class="task-card__dropdown"
+                    title="Продвинутые действия"
+                >
+                    <template #trigger>
+                        <UiButtonIcon icon="fa-solid fa-ellipsis" color="success-light" />
+                    </template>
+                    <template #menu>
+                        <UiDropdownActionsButton
+                            @handle="$emit('change-type')"
+                            icon="fa-solid fa-tag"
+                            label="Изменить тип"
+                            :disabled
+                        />
+                    </template>
+                </UiDropdownActions>
             </div>
             <div v-if="task.tags?.length" class="task-card__chips">
                 <DashboardChip
@@ -141,7 +167,7 @@ import { computed } from 'vue';
 import dayjs from 'dayjs';
 import { taskOptions } from '@/const/options/task.options.js';
 import { useStore } from 'vuex';
-import { dayjsFromMoscow, toDateFormat } from '@/utils/formatters/date.js';
+import { dayjsFromServer, toDateFormat } from '@/utils/formatters/date.ts';
 import { useAuth } from '@/composables/useAuth.js';
 import TaskCardHeaderTargets from '@/components/TaskCard/TaskCardHeaderTargets.vue';
 import { useFavoriteTasks } from '@/composables/useFavoriteTasks.js';
@@ -155,6 +181,8 @@ defineEmits([
     'to-chat',
     'read',
     'change-status',
+    'change-dates',
+    'change-type',
     'postpone',
     'assign',
     'delete',
@@ -176,14 +204,14 @@ const props = defineProps({
 });
 
 const store = useStore();
-const { currentUserId, currentUserIsModeratorOrHigher } = useAuth();
+const { currentUserId, currentUserIsModeratorOrHigher, currentUserIsAdmin } = useAuth();
 
 const isCompleted = computed(() => props.task.status === taskOptions.statusTypes.COMPLETED);
 const isDeleted = computed(() => props.task.deleted_at !== null);
 const isCanceled = computed(() => props.task.status === taskOptions.statusTypes.CANCELED);
 
 const isRecent = computed(
-    () => dayjs().diff(dayjsFromMoscow(props.task.created_at), 'minute') < 20
+    () => dayjs().diff(dayjsFromServer(props.task.created_at), 'minute') < 20
 );
 
 // favorites
@@ -228,7 +256,7 @@ const canBeAssigned = computed(() => {
 const isAlreadyExpired = computed(() => expiredDayjs.value.isBefore(dayjs()) && !isCompleted.value);
 const isExpired = computed(() => expiredDayjs.value.diff(dayjs(), 'day') < 3 && !isCompleted.value);
 
-const expiredDayjs = computed(() => dayjsFromMoscow(props.task.end));
+const expiredDayjs = computed(() => dayjsFromServer(props.task.end));
 const impossibleDate = computed(() => toDateFormat(props.task.impossible_to, 'D.MM.YY'));
 
 const status = computed(() => taskOptions.status[props.task.status]);

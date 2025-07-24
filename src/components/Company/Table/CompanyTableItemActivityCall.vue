@@ -15,7 +15,7 @@
 <script setup>
 import { computed } from 'vue';
 import dayjs from 'dayjs';
-import { dayjsFromMoscow, toDateFormat } from '@/utils/formatters/date.js';
+import { dayjsFromServer, toDateFormat } from '@/utils/formatters/date.ts';
 import UiButton from '@/components/common/UI/UiButton.vue';
 
 const props = defineProps({
@@ -30,11 +30,11 @@ const props = defineProps({
 const today = dayjs().add(3, 'h');
 
 const expiredCall = computed(() =>
-    props.tasks.find(task => dayjsFromMoscow(task.start).isBefore(today, 'day'))
+    props.tasks.find(task => dayjsFromServer(task.start).isBefore(today, 'day'))
 );
 
 const todayCall = computed(() =>
-    props.tasks.find(task => dayjsFromMoscow(task.start).isSame(today, 'day'))
+    props.tasks.find(task => dayjsFromServer(task.start).isSame(today, 'day'))
 );
 
 const label = computed(() => {

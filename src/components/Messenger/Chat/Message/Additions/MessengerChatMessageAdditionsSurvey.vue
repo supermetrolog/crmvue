@@ -25,7 +25,7 @@
 import MessengerChatMessageAdditionsItem from '@/components/Messenger/Chat/Message/Additions/MessengerChatMessageAdditionsItem.vue';
 import { useAsyncPopup } from '@/composables/useAsyncPopup.js';
 import Avatar from '@/components/common/Avatar.vue';
-import { toDateFormat } from '@/utils/formatters/date.js';
+import { toDateFormat } from '@/utils/formatters/date.ts';
 import { computed } from 'vue';
 import { isNotNullish } from '@/utils/helpers/common/isNotNullish';
 

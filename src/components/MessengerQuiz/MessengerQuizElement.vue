@@ -15,7 +15,7 @@
 import Avatar from '@/components/common/Avatar.vue';
 import { computed } from 'vue';
 import { getContactFullName } from '@/utils/formatters/models/contact.js';
-import { toDateFormat } from '@/utils/formatters/date.js';
+import { toDateFormat } from '@/utils/formatters/date.ts';
 
 const props = defineProps({
     quiz: {

@@ -80,7 +80,7 @@ import { useValidation } from '@/composables/useValidation.js';
 import Avatar from '@/components/common/Avatar.vue';
 import UiCol from '@/components/common/UI/UiCol.vue';
 import { userOptions } from '@/const/options/user.options.js';
-import { toBeautifulDateFormat } from '@/utils/formatters/date.js';
+import { toBeautifulDateFormat } from '@/utils/formatters/date.ts';
 import UiFormDivider from '@/components/common/Forms/UiFormDivider.vue';
 import { getCompanyShortName } from '@/utils/formatters/models/company.js';
 import Switch from '@/components/common/Forms/Switch.vue';

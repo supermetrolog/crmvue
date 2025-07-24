@@ -52,7 +52,7 @@
 <script setup>
 import DashboardCard from '@/components/Dashboard/Card/DashboardCard.vue';
 import { computed, toRef } from 'vue';
-import { toBeautifulDateFormat } from '@/utils/formatters/date.js';
+import { toBeautifulDateFormat } from '@/utils/formatters/date.ts';
 import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
 import { Tippy } from 'vue-tippy';
 import ContactCard from '@/components/Contact/Card/ContactCard.vue';

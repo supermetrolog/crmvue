@@ -133,7 +133,7 @@ import { useSearchContacts } from '@/composables/useSearchContacts.ts';
 import UiField from '@/components/common/UI/UiField.vue';
 import Loader from '@/components/common/Loader.vue';
 import { useNotify } from '@/utils/use/useNotify.js';
-import { fromUtcToServer } from '@/utils/formatters/date.js';
+import { toServerDate } from '@/utils/formatters/date.ts';
 import { useDebounceFn } from '@vueuse/core';
 import { useCalendarEvents } from '@/composables/useCalendarEvents.js';
 
@@ -301,8 +301,8 @@ function formToPayload() {
     return {
         title: form.title,
         message: form.comment,
-        start: fromUtcToServer(form.start),
-        end: fromUtcToServer(dayjs(form.start).add(1, 'days')),
+        start: toServerDate(form.start),
+        end: toServerDate(dayjs(form.start).add(1, 'days')),
         user_id: currentUserId.value,
         relations: generateTaskRelations(),
         type: 'scheduled_visit'

@@ -30,7 +30,7 @@ import CompanyTableItemActivityCall from '@/components/Company/Table/CompanyTabl
 import CompanyTableItemActivityVisit from '@/components/Company/Table/CompanyTableItemActivityVisit.vue';
 import CompanyTableItemActivityEvent from '@/components/Company/Table/CompanyTableItemActivityEvent.vue';
 import CompanyTableItemActivitySurvey from '@/components/Company/Table/CompanyTableItemActivitySurvey.vue';
-import { dayjsFromMoscow } from '@/utils/formatters/date.js';
+import { dayjsFromServer } from '@/utils/formatters/date.ts';
 import dayjs from 'dayjs';
 
 defineEmits(['to-chat', 'to-survey', 'show-task', 'show-tasks']);
@@ -58,7 +58,7 @@ const scheduledEvents = computed(() =>
     props.company.tasks.filter(
         task =>
             !excludedTaskTypes.has(task.type) &&
-            dayjsFromMoscow(task.start).isBefore(today.endOf('day'))
+            dayjsFromServer(task.start).isBefore(today.endOf('day'))
     )
 );
 

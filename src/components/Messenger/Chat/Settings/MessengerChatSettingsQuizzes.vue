@@ -70,7 +70,7 @@ import Spinner from '@/components/common/Spinner.vue';
 import InfiniteLoading from 'v3-infinite-loading';
 import EmptyLabel from '@/components/common/EmptyLabel.vue';
 import { useStore } from 'vuex';
-import { toDateFormat } from '@/utils/formatters/date.js';
+import { toDateFormat } from '@/utils/formatters/date.ts';
 import UiTooltipIcon from '@/components/common/UI/UiTooltipIcon.vue';
 
 defineEmits(['close']);

@@ -62,7 +62,7 @@ import WithUnitType from '@/components/common/WithUnitType.vue';
 import { unitTypes } from '@/const/unitTypes.js';
 import { computed } from 'vue';
 import { toNumberFormat } from '@/utils/formatters/number.js';
-import { toBeautifulDateFormat } from '@/utils/formatters/date.js';
+import { toBeautifulDateFormat } from '@/utils/formatters/date.ts';
 
 defineEmits(['edit', 'delete']);
 

@@ -21,7 +21,7 @@ import { computed } from 'vue';
 import WithUnitType from '@/components/common/WithUnitType.vue';
 import { unitTypes } from '@/const/unitTypes.js';
 import { toNumberFormat } from '@/utils/formatters/number.js';
-import { toDateFormat } from '@/utils/formatters/date.js';
+import { toDateFormat } from '@/utils/formatters/date.ts';
 import { isNotNullish } from '@/utils/helpers/common/isNotNullish.ts';
 import { unknownMovingDate } from '@/const/const.js';
 

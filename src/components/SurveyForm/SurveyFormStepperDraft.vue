@@ -12,7 +12,7 @@
 import { computed, shallowRef, watch } from 'vue';
 import UiField from '@/components/common/UI/UiField.vue';
 import { useIntervalFn } from '@vueuse/core';
-import { dayjsFromMoscow } from '@/utils/formatters/date.js';
+import { dayjsFromServer } from '@/utils/formatters/date.ts';
 import UiTooltipIcon from '@/components/common/UI/UiTooltipIcon.vue';
 
 const props = defineProps({
@@ -25,7 +25,7 @@ const props = defineProps({
 
 // draft
 
-const draftUpdatedAtDayjs = computed(() => dayjsFromMoscow(props.draft.updated_at));
+const draftUpdatedAtDayjs = computed(() => dayjsFromServer(props.draft.updated_at));
 
 const draftUpdatedAt = computed(() => draftUpdatedAtDayjs.value.format('D.MM.YY, HH:mm:ss'));
 

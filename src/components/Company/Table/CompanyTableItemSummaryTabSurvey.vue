@@ -51,7 +51,7 @@
 import UiButton from '@/components/common/UI/UiButton.vue';
 import { computed } from 'vue';
 import { SurveyStatusEnum } from '@/types/survey';
-import { dayjsFromMoscow, toDateFormat } from '@/utils/formatters/date.js';
+import { dayjsFromServer, toDateFormat } from '@/utils/formatters/date.ts';
 import { isNullish } from '@/utils/helpers/common/isNullish';
 import dayjs from 'dayjs';
 import Avatar from '@/components/common/Avatar.vue';
@@ -89,12 +89,12 @@ const lastSurveyDate = computed(() => {
 
     if (isNotNullish(props.company.last_survey.completed_at)) {
         return dayjs.max(
-            dayjsFromMoscow(props.company.last_survey.completed_at),
-            dayjsFromMoscow(props.company.last_survey.updated_at)
+            dayjsFromServer(props.company.last_survey.completed_at),
+            dayjsFromServer(props.company.last_survey.updated_at)
         );
     }
 
-    return dayjsFromMoscow(props.company.last_survey.updated_at);
+    return dayjsFromServer(props.company.last_survey.updated_at);
 });
 
 const lastSurveyDateFormatted = computed(() => toDateFormat(lastSurveyDate.value, 'DD.MM.YYYY'));

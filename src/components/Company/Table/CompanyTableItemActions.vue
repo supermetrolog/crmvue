@@ -80,7 +80,7 @@ import UiDropdownActionsNested from '@/components/common/UI/DropdownActions/UiDr
 import dayjs from 'dayjs';
 import { isNullish } from '@/utils/helpers/common/isNullish';
 import { SurveyStatusEnum } from '@/types/survey';
-import { dayjsFromMoscow } from '@/utils/formatters/date';
+import { dayjsFromServer } from '@/utils/formatters/date';
 
 defineEmits<{
     (e: 'deleted-from-folder', folderId: number): void;
@@ -120,7 +120,7 @@ const lastSurveyIsOutdated = computed(() => {
 
     return (
         dayjs().diff(
-            dayjsFromMoscow(
+            dayjsFromServer(
                 props.company.last_survey.completed_at ?? props.company.last_survey.updated_at
             ),
             'day'

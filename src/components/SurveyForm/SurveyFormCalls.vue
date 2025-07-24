@@ -159,7 +159,7 @@ const mostCallableContactId = computed(() => {
     let currentMaxIndex = 0;
 
     for (let i = 0; i < props.contacts.length; i++) {
-        if (props.contacts[i].calls?.length > props.contacts[currentMaxIndex].calls.length) {
+        if (props.contacts[i].calls?.length > props.contacts[currentMaxIndex].calls?.length) {
             currentMaxIndex = i;
         }
     }

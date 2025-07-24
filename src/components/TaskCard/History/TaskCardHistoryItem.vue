@@ -28,7 +28,7 @@
 import TaskCardHistoryEvent from '@/components/TaskCard/History/TaskCardHistoryEvent.vue';
 import Avatar from '@/components/common/Avatar.vue';
 import { computed } from 'vue';
-import { toBeautifulDateFormat } from '@/utils/formatters/date.js';
+import { toBeautifulDateFormat } from '@/utils/formatters/date.ts';
 import { taskOptions } from '@/const/options/task.options.js';
 
 const props = defineProps({

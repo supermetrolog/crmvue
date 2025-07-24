@@ -84,7 +84,7 @@ import Tr from '@/components/common/Table/Tr.vue';
 import Td from '@/components/common/Table/Td.vue';
 import { callStatus, callType } from '@/const/options/call.options.js';
 import Avatar from '@/components/common/Avatar.vue';
-import { toBeautifulDateFormat } from '@/utils/formatters/date.js';
+import { toBeautifulDateFormat } from '@/utils/formatters/date.ts';
 import { contactOptions } from '@/const/options/contact.options.js';
 import { computed } from 'vue';
 import { callStatusEnum } from '@/const/enums/call.js';

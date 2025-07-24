@@ -136,7 +136,7 @@ import { useStore } from 'vuex';
 import { useMessenger } from '@/components/Messenger/useMessenger.js';
 import { useAuth } from '@/composables/useAuth.js';
 import { getLinkPDF } from '@/utils/url.js';
-import { toDateFormat } from '@/utils/formatters/date.js';
+import { toDateFormat } from '@/utils/formatters/date.ts';
 import { isNotNullish } from '@/utils/helpers/common/isNotNullish.ts';
 
 const emit = defineEmits(['favorite-deleted']);

@@ -109,7 +109,7 @@ import { computed } from 'vue';
 import { contactOptions } from '@/const/options/contact.options.js';
 import ContactCardAddition from '@/components/Contact/Card/ContactCardAddition.vue';
 import ContactCardStatus from '@/components/Contact/Card/ContactCardStatus.vue';
-import { dayjsFromMoscow, toDateFormat } from '@/utils/formatters/date.js';
+import { dayjsFromServer, toDateFormat } from '@/utils/formatters/date.ts';
 import ContactCardWarning from '@/components/Contact/Card/ContactCardWarning.vue';
 import HoverActionsButton from '@/components/common/HoverActions/HoverActionsButton.vue';
 import { getLinkCompany } from '@/utils/url.js';
@@ -124,7 +124,7 @@ const props = defineProps({
 const createdAt = computed(() => toDateFormat(props.contact.created_at));
 const updatedAt = computed(() => {
     if (props.contact.updated_at) {
-        const date = dayjsFromMoscow(props.contact.updated_at);
+        const date = dayjsFromServer(props.contact.updated_at);
         if (date.isValid()) return date.format('D.MM.YY, HH:mm');
         return createdAt.value;
     }

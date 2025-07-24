@@ -41,7 +41,7 @@ import dayjs from 'dayjs';
 import { computed } from 'vue';
 import { taskOptions } from '@/const/options/task.options.js';
 import { useStore } from 'vuex';
-import { dayjsFromMoscow, toBeautifulDateFormat } from '@/utils/formatters/date.js';
+import { dayjsFromServer, toBeautifulDateFormat } from '@/utils/formatters/date.ts';
 import { isString } from '@/utils/helpers/string/isString.js';
 import { Tippy } from 'vue-tippy';
 import UiTooltipIcon from '@/components/common/UI/UiTooltipIcon.vue';
@@ -58,12 +58,12 @@ const store = useStore();
 const isCompleted = computed(() => props.task.status === taskOptions.statusTypes.COMPLETED);
 
 const expiredDayjs = computed(() => {
-    if (isString(props.task.end)) return dayjsFromMoscow(props.task.end);
+    if (isString(props.task.end)) return dayjsFromServer(props.task.end);
     return dayjs(props.task.end);
 });
 
 const startDayjs = computed(() => {
-    if (isString(props.task.start)) return dayjsFromMoscow(props.task.start);
+    if (isString(props.task.start)) return dayjsFromServer(props.task.start);
     return dayjs(props.task.start);
 });
 

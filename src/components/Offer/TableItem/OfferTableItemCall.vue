@@ -75,7 +75,7 @@
 </template>
 <script setup>
 import { computed } from 'vue';
-import { dayjsFromMoscow, toDateFormat } from '@/utils/formatters/date.js';
+import { dayjsFromServer, toDateFormat } from '@/utils/formatters/date.ts';
 import dayjs from 'dayjs';
 import { CALL_STATUSES } from '@/components/MessengerQuiz/useMessengerQuiz.js';
 import UiField from '@/components/common/UI/UiField.vue';
@@ -94,7 +94,7 @@ const isRecentlyCreated = computed(() => dayjs().diff(dayjs(props.createdAt), 'd
 
 const lastCallDate = computed(() => toDateFormat(props.call.created_at, 'D.MM.YYYY'));
 const lastCallDiffInDays = computed(() =>
-    dayjs().diff(dayjsFromMoscow(props.call.created_at), 'days')
+    dayjs().diff(dayjsFromServer(props.call.created_at), 'days')
 );
 const lastCallIsExpired = computed(
     () => lastCallDiffInDays.value > import.meta.env.VITE_VUE_APP_MESSENGER_DATE_FROM_CALL_DANGER

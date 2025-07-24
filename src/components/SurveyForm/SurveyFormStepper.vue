@@ -398,15 +398,17 @@ const hasCompletedContact = computed(() => {
 });
 
 function requiredCallsValidationHandler(value) {
-    return props.contacts.some(contact => {
-        if (isNullish(value[contact.id])) return false;
+    return (
+        props.contacts.some(contact => {
+            if (isNullish(value[contact.id])) return false;
 
-        const isAvailable = value[contact.id].available;
+            const isAvailable = value[contact.id].available;
 
-        if (isNullish(isAvailable)) return false;
+            if (isNullish(isAvailable)) return false;
 
-        return toBool(isAvailable) && Number(value[contact.id].reason) === 1;
-    });
+            return toBool(isAvailable) && Number(value[contact.id].reason) === 1;
+        }) || props.contacts.every()
+    );
 }
 
 const activeRequests = computed(() => requests.value.filter(request => request.status === 1));

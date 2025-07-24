@@ -21,7 +21,6 @@
                 />
                 <UiTextarea v-model="form.comment" class="col-12" label="Комментарий" auto-height />
             </UiFormGroup>
-            {{ form.company }}
         </UiForm>
         <template #actions="{ close }">
             <UiButton

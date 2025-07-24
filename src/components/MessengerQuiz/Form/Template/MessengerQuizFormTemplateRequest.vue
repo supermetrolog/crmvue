@@ -91,7 +91,7 @@ import { useAuth } from '@/composables/useAuth.js';
 import { useStore } from 'vuex';
 import { isNotNullish } from '@/utils/helpers/common/isNotNullish';
 import { isNullish } from '@/utils/helpers/common/isNullish';
-import { dayjsFromMoscow } from '@/utils/formatters/date.js';
+import { dayjsFromServer } from '@/utils/formatters/date.ts';
 
 defineEmits(['edit']);
 
@@ -145,8 +145,8 @@ const editorHelper = computed(() => {
 const isCreatedAfterSurvey = computed(() => {
     if (isNullish(props.survey)) return false;
 
-    return dayjsFromMoscow(props.survey.created_at).isBefore(
-        dayjsFromMoscow(props.request.created_at)
+    return dayjsFromServer(props.survey.created_at).isBefore(
+        dayjsFromServer(props.request.created_at)
     );
 });
 </script>

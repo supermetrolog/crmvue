@@ -1,7 +1,7 @@
 import { MaybeRefOrGetter } from '@vueuse/core';
 import { Task, TaskStatusEnum, TaskType, TaskTypeEnum } from '@/types/task';
 import { computed, toValue } from 'vue';
-import { dayjsFromMoscow, toDateFormat } from '@/utils/formatters/date';
+import { dayjsFromServer, toDateFormat } from '@/utils/formatters/date';
 
 export interface UseTypedTasksOptions {
     withCompleted?: MaybeRefOrGetter<boolean>;
@@ -29,7 +29,7 @@ export function useTypedTasks(tasks: MaybeRefOrGetter<Task[]>, options: UseTyped
         if (scheduledCallTasks.value.length === 0) return null;
 
         return scheduledCallTasks.value.reduce((prev, task) => {
-            if (dayjsFromMoscow(prev.start).isBefore(dayjsFromMoscow(task.start))) return prev;
+            if (dayjsFromServer(prev.start).isBefore(dayjsFromServer(task.start))) return prev;
             return task;
         }, scheduledCallTasks.value[0]);
     });
@@ -48,7 +48,7 @@ export function useTypedTasks(tasks: MaybeRefOrGetter<Task[]>, options: UseTyped
         if (scheduledVisitTasks.value.length === 0) return null;
 
         return scheduledVisitTasks.value.reduce((prev, task) => {
-            if (dayjsFromMoscow(prev.start).isBefore(dayjsFromMoscow(task.start))) return prev;
+            if (dayjsFromServer(prev.start).isBefore(dayjsFromServer(task.start))) return prev;
             return task;
         }, scheduledVisitTasks.value[0]);
     });

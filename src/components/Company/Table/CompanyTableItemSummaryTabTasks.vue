@@ -31,7 +31,7 @@ import UiButton from '@/components/common/UI/UiButton.vue';
 import { computed } from 'vue';
 import { Tippy } from 'vue-tippy';
 import dayjs from 'dayjs';
-import { dayjsFromMoscow } from '@/utils/formatters/date.js';
+import { dayjsFromServer } from '@/utils/formatters/date.ts';
 import { useAuth } from '@/composables/useAuth.js';
 import { plural, pluralTemplate } from '@/utils/plural.js';
 
@@ -56,7 +56,7 @@ const color = computed(() => {
 const today = dayjs().add(3, 'h');
 
 const startedTasksLength = computed(
-    () => props.tasks.filter(task => dayjsFromMoscow(task.start).isBefore(today, 'day')).length
+    () => props.tasks.filter(task => dayjsFromServer(task.start).isBefore(today, 'day')).length
 );
 
 const notStartedTasksLength = computed(() => {

@@ -16,7 +16,7 @@
 <script setup>
 import { computed } from 'vue';
 import dayjs from 'dayjs';
-import { dayjsFromMoscow, toDateFormat } from '@/utils/formatters/date.js';
+import { dayjsFromServer, toDateFormat } from '@/utils/formatters/date.ts';
 import UiButton from '@/components/common/UI/UiButton.vue';
 
 const props = defineProps({
@@ -31,18 +31,18 @@ const props = defineProps({
 const today = dayjs().startOf('day');
 
 const expiredVisits = computed(() =>
-    props.tasks.filter(task => dayjsFromMoscow(task.start).isBefore(today, 'day'))
+    props.tasks.filter(task => dayjsFromServer(task.start).isBefore(today, 'day'))
 );
 
 const todayVisits = computed(() =>
-    props.tasks.filter(task => dayjsFromMoscow(task.start).isSame(today, 'day'))
+    props.tasks.filter(task => dayjsFromServer(task.start).isSame(today, 'day'))
 );
 
 const nearestVisits = computed(() => {
     const nearestDate = today.add(3, 'day');
 
     return props.tasks.filter(task => {
-        const taskDate = dayjsFromMoscow(task.start);
+        const taskDate = dayjsFromServer(task.start);
 
         return taskDate.isAfter(today, 'day') && taskDate.isBefore(nearestDate);
     });
