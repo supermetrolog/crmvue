@@ -83,7 +83,7 @@ import UiDropdownActionsTrigger from '@/components/common/UI/DropdownActions/UiD
 import { dealOptions } from '@/const/options/deal.options.js';
 import { toNumberOrRangeFormat } from '@/utils/formatters/number.js';
 import { locationOptions } from '@/const/options/location.options.js';
-import { toDateFormat } from '@/utils/formatters/date.js';
+import { toDateFormat } from '@/utils/formatters/date.ts';
 import api from '@/api/api.js';
 import Spinner from '@/components/common/Spinner.vue';
 import UiField from '@/components/common/UI/UiField.vue';

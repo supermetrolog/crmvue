@@ -177,7 +177,7 @@ import MessengerQuizFormWarningNoContacts from '@/components/Messenger/Quiz/Form
 import MessengerQuizFormWarningAlreadyCreated from '@/components/Messenger/Quiz/Form/Warning/MessengerQuizFormWarningAlreadyCreated.vue';
 import UiModal from '@/components/common/UI/UiModal.vue';
 import UiButton from '@/components/common/UI/UiButton.vue';
-import { dayjsFromMoscow, toDateFormat } from '@/utils/formatters/date.js';
+import { dayjsFromServer, toDateFormat } from '@/utils/formatters/date.js';
 import { SurveyView } from '@/types/survey';
 import { useEventBus, useTimeoutFn } from '@vueuse/core';
 import SurveyFormWarningPending from '@/components/SurveyForm/SurveyFormWarningPending.vue';
@@ -560,7 +560,7 @@ const canBeCreated = computed(() => {
     }
 
     return (
-        dayjs().diff(dayjsFromMoscow(lastSurvey.completed_at ?? lastSurvey.updated_at), 'minutes') >
+        dayjs().diff(dayjsFromServer(lastSurvey.completed_at ?? lastSurvey.updated_at), 'minutes') >
         60 * 24
     );
 });

@@ -210,7 +210,7 @@ import UiTooltip from '@/components/common/UI/UiTooltip.vue';
 import UiButton from '@/components/common/UI/UiButton.vue';
 import UiCheckbox from '@/components/common/Forms/UiCheckbox.vue';
 import UiField from '@/components/common/UI/UiField.vue';
-import { toDateFormat } from '@/utils/formatters/date.js';
+import { toDateFormat } from '@/utils/formatters/date.ts';
 
 const emit = defineEmits([
     'favorite-deleted',

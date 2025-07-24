@@ -19,7 +19,7 @@
 
 <script setup>
 import { computed } from 'vue';
-import { toDateFormat } from '@/utils/formatters/date.js';
+import { toDateFormat } from '@/utils/formatters/date.ts';
 import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
 import { taskOptions } from '@/const/options/task.options.js';
 

@@ -113,7 +113,7 @@ import CompanyTableItemSummarySurvey from '@/components/Company/Table/CompanyTab
 import UiButton from '@/components/common/UI/UiButton.vue';
 import DashboardTableTasksItem from '@/components/Dashboard/Table/TasksItem/DashboardTableTasksItem.vue';
 import UiModal from '@/components/common/UI/UiModal.vue';
-import { dayjsFromMoscow } from '@/utils/formatters/date.js';
+import { dayjsFromServer } from '@/utils/formatters/date.ts';
 import { now } from '@vueuse/core';
 
 const emit = defineEmits([
@@ -161,13 +161,13 @@ const {
 const lastScheduledCallDateExpired = computed(
     () =>
         nearestScheduledCall.value &&
-        dayjsFromMoscow(nearestScheduledCall.value.start).isBefore(now(), 'day')
+        dayjsFromServer(nearestScheduledCall.value.start).isBefore(now(), 'day')
 );
 
 const lastScheduledVisitDateExpired = computed(
     () =>
         nearestScheduledVisit.value &&
-        dayjsFromMoscow(nearestScheduledVisit.value.start).isBefore(now(), 'day')
+        dayjsFromServer(nearestScheduledVisit.value.start).isBefore(now(), 'day')
 );
 
 const scheduledCallTasksIsVisible = ref(false);

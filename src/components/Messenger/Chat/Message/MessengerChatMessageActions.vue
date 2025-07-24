@@ -53,7 +53,7 @@ import HoverActionsButton from '@/components/common/HoverActions/HoverActionsBut
 import { useStore } from 'vuex';
 import { computed, inject } from 'vue';
 import dayjs from 'dayjs';
-import { dayjsFromMoscow } from '@/utils/formatters/date.js';
+import { dayjsFromServer } from '@/utils/formatters/date.ts';
 
 defineEmits(['pin', 'edit', 'pin-to-object', 'delete', 'reply', 'create-task']);
 const props = defineProps({
@@ -75,7 +75,7 @@ const store = useStore();
 const $createAddition = inject('$createAddition');
 
 const isRecent = computed(
-    () => dayjs().diff(dayjsFromMoscow(props.message.created_at), 'minute') < 10
+    () => dayjs().diff(dayjsFromServer(props.message.created_at), 'minute') < 10
 );
 
 const canBeEdited = computed(() => {

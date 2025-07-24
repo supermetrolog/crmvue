@@ -33,7 +33,7 @@ import UiButton from '@/components/common/UI/UiButton.vue';
 import { computed, ref } from 'vue';
 import api from '@/api/api.js';
 import { captureException } from '@sentry/vue';
-import { toDateFormat } from '@/utils/formatters/date.js';
+import { toDateFormat } from '@/utils/formatters/date.ts';
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
 import { useNotify } from '@/utils/use/useNotify.js';
 

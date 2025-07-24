@@ -155,7 +155,7 @@ import { useRouter } from 'vue-router';
 import { plural } from '@/utils/plural.js';
 import UiDropdownActionsGroup from '@/components/common/UI/DropdownActions/UiDropdownActionsGroup.vue';
 import { useAuth } from '@/composables/useAuth.js';
-import { dayjsFromMoscow } from '@/utils/formatters/date.js';
+import { dayjsFromServer } from '@/utils/formatters/date.ts';
 import dayjs from 'dayjs';
 
 defineEmits(['to-chat', 'open-survey', 'edit-survey']);
@@ -223,7 +223,7 @@ const canBeEdit = computed(() => {
     if (props.survey.user_id !== currentUserId.value) return false;
     if (props.survey.status === 'draft') return true;
     return (
-        dayjs().diff(dayjsFromMoscow(props.survey.completed_at ?? props.survey.updated_at), 'day') <
+        dayjs().diff(dayjsFromServer(props.survey.completed_at ?? props.survey.updated_at), 'day') <
         31
     );
 });

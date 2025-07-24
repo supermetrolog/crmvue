@@ -62,7 +62,6 @@
                             @disable-company="disableCompany"
                             @enable-company="enableCompany"
                             @create-request-task="createRequestTask"
-                            @create-survey-task="createSurveyTask"
                             @schedule-call="scheduleCall"
                             @schedule-visit="scheduleVisit"
                             @schedule-event="scheduleEvent"
@@ -163,7 +162,7 @@ import { useTableContent } from '@/composables/useTableContent.js';
 import { useRoute, useRouter } from 'vue-router';
 import Spinner from '@/components/common/Spinner.vue';
 import { useMobile } from '@/composables/useMobile.js';
-import { dayjsFromMoscow } from '@/utils/formatters/date.js';
+import { dayjsFromServer } from '@/utils/formatters/date.ts';
 import UserFolders from '@/components/UserFolder/UserFolders.vue';
 import { isNotNullish } from '@/utils/helpers/common/isNotNullish.ts';
 import { useDebounceFn, useEventBus, useTimeoutFn } from '@vueuse/core';
@@ -326,7 +325,7 @@ async function showPinnedMessage(message) {
 
     try {
         pinnedMessage.value = await api.messenger.getMessage(message.id);
-        pinnedMessage.value.dayjs_date = dayjsFromMoscow(pinnedMessage.value.created_at);
+        pinnedMessage.value.dayjs_date = dayjsFromServer(pinnedMessage.value.created_at);
     } finally {
         pinnedMessageIsLoading.value = false;
     }
@@ -384,7 +383,7 @@ async function createCompanyTask(company) {
     try {
         company.isLoading = true;
 
-        const task = await api.task.create(taskPayload);
+        await api.task.create(taskPayload);
 
         notify.success('Задача успешно создана!');
     } finally {
@@ -423,29 +422,6 @@ async function createRequestTask(request, company) {
         await createTask(taskPayload);
     } finally {
         request.isLoading = false;
-    }
-}
-
-async function createSurveyTask(company) {
-    const companyName = getCompanyShortName(company);
-
-    const taskPayload = await createTaskWithTemplate({
-        title: `Опрос #${company.last_survey.id} (комп. ${companyName}) `,
-        user_id: company.last_survey.user_id ?? currentUserId.value,
-        relations: [
-            createTaskRelation('company', company.id),
-            createTaskRelation('survey', company.last_survey.id)
-        ]
-    });
-
-    if (!taskPayload) return;
-
-    try {
-        company.last_survey.isLoading = true;
-        const task = await createTask(taskPayload);
-        company.last_survey.tasks.push(task);
-    } finally {
-        company.last_survey.isLoading = false;
     }
 }
 

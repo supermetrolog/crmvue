@@ -86,7 +86,7 @@ import Td from '@/components/common/Table/Td.vue';
 import Avatar from '@/components/common/Avatar.vue';
 import { computed } from 'vue';
 import { userOptions } from '@/const/options/user.options.js';
-import { toDateFormat } from '@/utils/formatters/date.js';
+import { toDateFormat } from '@/utils/formatters/date.ts';
 import UiDropdownActions from '@/components/common/UI/DropdownActions/UiDropdownActions.vue';
 import UiDropdownActionsButton from '@/components/common/UI/DropdownActions/UiDropdownActionsButton.vue';
 import UiButtonIcon from '@/components/common/UI/UiButtonIcon.vue';

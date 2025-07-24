@@ -1,6 +1,6 @@
 import { computed, toValue } from 'vue';
 import dayjs from 'dayjs';
-import { dayjsFromMoscow } from '@/utils/formatters/date.js';
+import { dayjsFromServer } from '@/utils/formatters/date.ts';
 import { useAuth } from '@/composables/useAuth.js';
 
 const editTimeLimit = import.meta.env.PROD ? 60 * 24 * 30 : 60;
@@ -14,7 +14,7 @@ export function useSurveyEditing(survey, options = {}) {
         const _survey = toValue(survey);
         if (!_survey) return 0;
 
-        return editTimeLimit - dayjs().diff(dayjsFromMoscow(_survey.created_at), 'minute');
+        return editTimeLimit - dayjs().diff(dayjsFromServer(_survey.created_at), 'minute');
     });
 
     const remainingTimeLabel = computed(() => {

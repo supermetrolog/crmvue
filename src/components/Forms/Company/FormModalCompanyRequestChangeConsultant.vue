@@ -109,7 +109,7 @@ import AnimationTransition from '@/components/common/AnimationTransition.vue';
 import Avatar from '@/components/common/Avatar.vue';
 import UiCol from '@/components/common/UI/UiCol.vue';
 import { userOptions } from '@/const/options/user.options.js';
-import { toBeautifulDateFormat } from '@/utils/formatters/date.js';
+import { toBeautifulDateFormat } from '@/utils/formatters/date.ts';
 import UiFormDivider from '@/components/common/Forms/UiFormDivider.vue';
 
 const emit = defineEmits(['changed', 'close']);

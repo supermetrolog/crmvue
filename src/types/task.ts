@@ -76,6 +76,16 @@ export const TaskTypeEnum = {
     OBJECT_HANDLING: 'object_handling'
 } as const;
 
+export const TaskTypeLabel = {
+    [TaskTypeEnum.BASE]: 'Обычная',
+    [TaskTypeEnum.SCHEDULED_CALL]: 'Звонок',
+    [TaskTypeEnum.SCHEDULED_VISIT]: 'Встреча',
+    [TaskTypeEnum.SCHEDULED_EVENT]: 'Событие',
+    [TaskTypeEnum.REQUEST_HANDLING]: 'Обработка запроса',
+    [TaskTypeEnum.CONTACT_HANDLING]: 'Обработка контакта',
+    [TaskTypeEnum.OBJECT_HANDLING]: 'Обработка объекта'
+};
+
 export type TaskType = (typeof TaskTypeEnum)[keyof typeof TaskTypeEnum];
 
 export const TaskStatusEnum = {

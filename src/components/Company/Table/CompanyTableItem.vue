@@ -99,7 +99,6 @@ defineEmits([
     'unpin-message',
     'create-task',
     'create-request-task',
-    'create-survey-task',
     'show-tasks',
     'show-created-tasks',
     'disable',

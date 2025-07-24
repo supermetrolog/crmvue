@@ -30,7 +30,7 @@
 import Avatar from '@/components/common/Avatar.vue';
 import { computed } from 'vue';
 import { userOptions } from '@/const/options/user.options.js';
-import { dayjsFromMoscow, toDateFormat } from '@/utils/formatters/date.js';
+import { dayjsFromServer, toDateFormat } from '@/utils/formatters/date.ts';
 import { useStore } from 'vuex';
 import dayjs from 'dayjs';
 import UiTooltip from '@/components/common/UI/UiTooltip.vue';
@@ -47,7 +47,7 @@ const store = useStore();
 const role = computed(() => userOptions.role[props.user.role]);
 const lastSeen = computed(() => {
     if (!props.user.last_seen) return 'Неизвестно..';
-    const dayjsDate = dayjsFromMoscow(props.user.last_seen);
+    const dayjsDate = dayjsFromServer(props.user.last_seen);
 
     if (dayjsDate.isToday()) return `Сегодня в ${dayjsDate.format('HH:mm')}`;
     else if (dayjsDate.isYesterday()) return `Вчера в ${dayjsDate.format('HH:mm')}`;

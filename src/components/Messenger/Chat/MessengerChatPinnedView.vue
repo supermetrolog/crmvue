@@ -9,7 +9,7 @@
 import MessengerChatMessage from '@/components/Messenger/Chat/Message/MessengerChatMessage.vue';
 import Modal from '@/components/common/Modal.vue';
 import { useStore } from 'vuex';
-import { dayjsFromMoscow } from '@/utils/formatters/date.js';
+import { dayjsFromServer } from '@/utils/formatters/date.ts';
 import { computed } from 'vue';
 
 defineEmits(['close']);
@@ -18,7 +18,7 @@ const store = useStore();
 
 const message = computed(() => {
     const pinned = store.state.Messenger.currentPinned;
-    pinned.dayjs_date = dayjsFromMoscow(pinned.created_at);
+    pinned.dayjs_date = dayjsFromServer(pinned.created_at);
 
     return pinned;
 });

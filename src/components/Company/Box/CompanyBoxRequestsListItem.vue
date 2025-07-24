@@ -137,7 +137,7 @@ import { computed } from 'vue';
 import { getCompanyShortName } from '@/utils/formatters/models/company.js';
 import dayjs from 'dayjs';
 import { ucFirst } from '@/utils/formatters/string.js';
-import { toBeautifulDateFormat } from '@/utils/formatters/date.js';
+import { toBeautifulDateFormat } from '@/utils/formatters/date.ts';
 import { useRouter } from 'vue-router';
 import UiButton from '@/components/common/UI/UiButton.vue';
 import { toNumberOrRangeFormat } from '@/utils/formatters/number.js';

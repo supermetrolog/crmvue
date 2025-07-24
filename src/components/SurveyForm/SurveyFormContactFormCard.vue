@@ -46,7 +46,7 @@
 import { computed } from 'vue';
 import PhoneNumber from '@/components/common/PhoneNumber.vue';
 import { plural } from '@/utils/plural.js';
-import { toBeautifulDateFormat } from '@/utils/formatters/date.js';
+import { toBeautifulDateFormat } from '@/utils/formatters/date.ts';
 import { callStatusEnum } from '@/const/enums/call.js';
 import { callStatus } from '@/const/options/call.options.js';
 

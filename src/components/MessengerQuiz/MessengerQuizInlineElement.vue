@@ -23,7 +23,7 @@
 import Avatar from '@/components/common/Avatar.vue';
 import { computed } from 'vue';
 import { getContactFullName } from '@/utils/formatters/models/contact.js';
-import { dayjsFromMoscow, toDateFormat } from '@/utils/formatters/date.js';
+import { dayjsFromServer, toDateFormat } from '@/utils/formatters/date.ts';
 import UiButtonIcon from '@/components/common/UI/UiButtonIcon.vue';
 import UiChip from '@/components/common/UI/UiChip.vue';
 
@@ -39,6 +39,6 @@ const createdAt = computed(() => toDateFormat(props.quiz.created_at, 'DD.MM.YY')
 const contactName = computed(() => getContactFullName(props.quiz.contact));
 
 const fromNow = computed(() => {
-    return dayjsFromMoscow(props.quiz.created_at).fromNow();
+    return dayjsFromServer(props.quiz.created_at).fromNow();
 });
 </script>

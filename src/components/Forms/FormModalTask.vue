@@ -219,7 +219,7 @@ import UiButton from '@/components/common/UI/UiButton.vue';
 import { useValidation } from '@/composables/useValidation.js';
 import { isNullish } from '@/utils/helpers/common/isNullish.ts';
 import { isString } from '@/utils/helpers/string/isString.js';
-import { dayjsFromMoscow, fromUtcToServer } from '@/utils/formatters/date.js';
+import { dayjsFromServer, toServerDate } from '@/utils/formatters/date.ts';
 import InProgress from '@/components/common/InProgress.vue';
 import RadioOptions from '@/components/common/Forms/RadioOptions.vue';
 import VueEditor from '@/components/common/Forms/VueEditor.vue';
@@ -331,7 +331,9 @@ const fetchConsultants = async () => {
 
 function parseDate(date, defaultValue = null) {
     if (isNullish(date)) return defaultValue;
-    if (isString(date) && isEditing.value) return dayjsFromMoscow(date).toDate();
+
+    if (isString(date) && isEditing.value) return dayjsFromServer(date).toDate();
+
     return dayjs(date).toDate();
 }
 
@@ -547,8 +549,8 @@ const { v$, validate } = useValidation(
 
 const formToPayload = () => {
     return {
-        start: fromUtcToServer(form.value.date.start),
-        end: fromUtcToServer(form.value.date.end),
+        start: toServerDate(form.value.date.start),
+        end: toServerDate(form.value.date.end),
         user_id: Number(form.value.user_id),
         title: form.value.title,
         message: form.value.message,

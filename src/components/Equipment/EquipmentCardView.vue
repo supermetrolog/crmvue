@@ -209,7 +209,7 @@ import EmptyData from '@/components/common/EmptyData.vue';
 import HoverActionsButton from '@/components/common/HoverActions/HoverActionsButton.vue';
 import { computed } from 'vue';
 import { equipmentOptions } from '@/const/options/equipment.options.js';
-import { toDateFormat } from '@/utils/formatters/date.js';
+import { toDateFormat } from '@/utils/formatters/date.ts';
 
 defineEmits(['close', 'edit', 'toggle-passive', 'called', 'remove']);
 const props = defineProps({

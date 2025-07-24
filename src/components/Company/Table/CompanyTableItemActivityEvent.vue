@@ -15,7 +15,7 @@
 <script setup>
 import { computed } from 'vue';
 import dayjs from 'dayjs';
-import { dayjsFromMoscow } from '@/utils/formatters/date.js';
+import { dayjsFromServer } from '@/utils/formatters/date.ts';
 import UiButton from '@/components/common/UI/UiButton.vue';
 
 const props = defineProps({
@@ -30,7 +30,7 @@ const expiredEvents = computed(() => {
     const nearestDate = dayjs().subtract(7, 'day').startOf('day');
 
     return props.tasks.filter(task => {
-        const taskDate = dayjsFromMoscow(task.start);
+        const taskDate = dayjsFromServer(task.start);
 
         return taskDate.isBefore(nearestDate);
     });

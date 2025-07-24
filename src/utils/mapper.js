@@ -1,7 +1,7 @@
 import { formatterObject } from '@/plugins';
 import { deleteObjectsWithEmptyProperties } from '@/utils/deleteObjectsWithEmptyProperties.js';
 
-import { dayjsFromMoscow } from '@/utils/formatters/date.js';
+import { dayjsFromServer } from '@/utils/formatters/date.ts';
 import { chunk } from '@/utils/helpers/array/chunk.js';
 import { isNotNullish } from '@/utils/helpers/common/isNotNullish.ts';
 
@@ -254,7 +254,7 @@ export function messagesToSections(messages, lastMessageDate = null, reversed = 
     let hasNewMessageLabel = false;
 
     const _messages = messages.reduce((acc, message, index) => {
-        message.dayjs_date = dayjsFromMoscow(message.created_at);
+        message.dayjs_date = dayjsFromServer(message.created_at);
 
         if (index === 0) {
             if (lastMessageDate && reversed) {

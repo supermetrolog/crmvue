@@ -65,7 +65,7 @@ const EXPIRES_DATE_LIMIT = 7;
 <script setup>
 import { computed, useTemplateRef } from 'vue';
 import { UAParser } from 'ua-parser-js';
-import { dayjsFromMoscow, toDateFormat } from '@/utils/formatters/date.js';
+import { dayjsFromServer, toDateFormat } from '@/utils/formatters/date.ts';
 import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
 import dayjs from 'dayjs';
 import { plural } from '@/utils/plural.js';
@@ -92,7 +92,7 @@ const isDesktop = computed(() => userAgent.value.device.type === undefined);
 const createdAt = computed(() => toDateFormat(props.session.created_at));
 const expiresAt = computed(() => toDateFormat(props.session.expires_at, 'D MMMM YYYY'));
 const daysCountFromExpiresAt = computed(() =>
-    dayjsFromMoscow(props.session.expires_at).diff(dayjs(), 'days')
+    dayjsFromServer(props.session.expires_at).diff(dayjs(), 'days')
 );
 
 const expiresAtStateClass = computed(() =>

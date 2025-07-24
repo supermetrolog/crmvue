@@ -352,7 +352,7 @@ import UiButton from '@/components/common/UI/UiButton.vue';
 import { isArray } from '@/utils/helpers/array/isArray.ts';
 import { isEmptyArray } from '@/utils/helpers/array/isEmptyArray.js';
 import { companyOptions } from '@/const/options/company.options.js';
-import { toDateFormat } from '@/utils/formatters/date.js';
+import { toDateFormat } from '@/utils/formatters/date.ts';
 import UiDateInput from '@/components/common/Forms/UiDateInput.vue';
 import dayjs from 'dayjs';
 

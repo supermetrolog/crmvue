@@ -26,7 +26,7 @@ import { plural } from '@/utils/plural.js';
 import MessengerChatPinnedView from '@/components/Messenger/Chat/MessengerChatPinnedView.vue';
 import { useConfirm } from '@/composables/useConfirm.js';
 import { computed, ref } from 'vue';
-import { toDateFormat } from '@/utils/formatters/date.js';
+import { toDateFormat } from '@/utils/formatters/date.ts';
 import { useNotify } from '@/utils/use/useNotify.js';
 import { useStore } from 'vuex';
 import UiTooltipIcon from '@/components/common/UI/UiTooltipIcon.vue';

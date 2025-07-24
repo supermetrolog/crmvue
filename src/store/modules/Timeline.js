@@ -1,6 +1,6 @@
 // import axios from "axios"
 import api from '@/api/api';
-import { toBeautifulDateFormat } from '@/utils/formatters/date.js';
+import { toBeautifulDateFormat } from '@/utils/formatters/date.ts';
 
 function generateUniqueObjectId(object) {
     return `${object.object_id}-${object.offer_id}`;
