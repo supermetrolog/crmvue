@@ -32,7 +32,7 @@ import { computed, onUnmounted, ref } from 'vue';
 import { useAsyncPopup } from '@/composables/useAsyncPopup.js';
 import Modal from '@/components/common/Modal.vue';
 import { useStore } from 'vuex';
-import { toDateFormat } from '@/utils/formatters/date.js';
+import { toDateFormat } from '@/utils/formatters/date.ts';
 import api from '@/api/api.js';
 import Spinner from '@/components/common/Spinner.vue';
 import TaskCard from '@/components/TaskCard/TaskCard.vue';

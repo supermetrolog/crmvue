@@ -64,7 +64,7 @@ import MessengerDialogObject from '@/components/Messenger/Dialog/Object/Messenge
 import MessengerDialogRequest from '@/components/Messenger/Dialog/MessengerDialogRequest.vue';
 import MessengerChatShortMessage from '@/components/Messenger/Chat/Message/MessengerChatShortMessage.vue';
 import MessengerDialogUser from '@/components/Messenger/Dialog/MessengerDialogUser.vue';
-import { dayjsFromMoscow } from '@/utils/formatters/date.js';
+import { dayjsFromServer } from '@/utils/formatters/date.ts';
 import { messenger } from '@/const/messenger.js';
 import MessengerDialogCompany from '@/components/Messenger/Dialog/Company/MessengerDialogCompany.vue';
 import MessengerChatShortNotification from '@/components/Messenger/Chat/Notification/MessengerChatShortNotification.vue';
@@ -83,7 +83,7 @@ const props = defineProps({
 
 const chatMemberMessage = computed(() => {
     const message = props.task.related_by.chat_member_message;
-    message.dayjs_date = dayjsFromMoscow(message.created_at);
+    message.dayjs_date = dayjsFromServer(message.created_at);
     return message;
 });
 

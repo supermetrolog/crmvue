@@ -35,7 +35,7 @@
 <script setup>
 import UiField from '@/components/common/UI/UiField.vue';
 import { computed } from 'vue';
-import { toDateFormat } from '@/utils/formatters/date.js';
+import { toDateFormat } from '@/utils/formatters/date.ts';
 import TimelineStepPauseComment from '@/components/Timeline/Step/TimelineStepPauseComment.vue';
 
 const props = defineProps({

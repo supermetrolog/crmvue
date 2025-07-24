@@ -1,14 +1,14 @@
 <template>
     <div class="task-card-history-event__content">
         <div class="task-card-history-event__column">
-            <TaskCardHistoryEventRow label="Выполнить до">
+            <TaskCardHistoryEventRow label="Выполнить с">
                 <div class="d-flex align-items-center">
                     <DashboardChip class="task-card-history-event__help danger">
-                        {{ prevSnapshot ? prevEndDate : '-' }}
+                        {{ prevSnapshot ? prevStartDate : '-' }}
                     </DashboardChip>
                     <i class="fa-solid fa-arrow-right-long mx-2"></i>
                     <DashboardChip class="task-card-history-event__help success">
-                        {{ endDate }}
+                        {{ startDate }}
                     </DashboardChip>
                 </div>
             </TaskCardHistoryEventRow>
@@ -33,6 +33,6 @@ const props = defineProps({
     }
 });
 
-const prevEndDate = computed(() => toDateFormat(props.prevSnapshot.end, 'D.MM.YY, HH:mm'));
-const endDate = computed(() => toDateFormat(props.snapshot.end, 'D.MM.YY, HH:mm'));
+const prevStartDate = computed(() => toDateFormat(props.prevSnapshot.start, 'D.MM.YY, HH:mm'));
+const startDate = computed(() => toDateFormat(props.snapshot.start, 'D.MM.YY, HH:mm'));
 </script>

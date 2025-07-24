@@ -42,7 +42,7 @@ import api from '@/api/api.js';
 import { useSurveyForm } from '@/composables/useSurveyForm.js';
 import { captureException } from '@sentry/vue';
 import dayjs from 'dayjs';
-import { dayjsFromMoscow } from '@/utils/formatters/date.js';
+import { dayjsFromServer } from '@/utils/formatters/date.ts';
 
 const emit = defineEmits(['show', 'edit']);
 
@@ -52,7 +52,7 @@ const remainingTimeInMinutes = computed(() => {
     return (
         60 * 24 -
         dayjs().diff(
-            dayjsFromMoscow(props.lastSurvey.completed_at ?? props.lastSurvey.updated_at),
+            dayjsFromServer(props.lastSurvey.completed_at ?? props.lastSurvey.updated_at),
             'minutes'
         )
     );

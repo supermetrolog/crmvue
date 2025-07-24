@@ -133,7 +133,7 @@ import { taskOptions } from '@/const/options/task.options.js';
 import DashboardTableTasksItemSystem from '@/components/Dashboard/Table/TasksItem/DashboardTableTasksItemSystem.vue';
 import DashboardTableTasksItemDate from '@/components/Dashboard/Table/TasksItem/DashboardTableTasksItemDate.vue';
 import DashboardTableTasksItemLabel from '@/components/Dashboard/Table/TasksItem/DashboardTableTasksItemLabel.vue';
-import { dayjsFromMoscow, toBeautifulDateFormat, toDateFormat } from '@/utils/formatters/date.js';
+import { dayjsFromServer, toBeautifulDateFormat, toDateFormat } from '@/utils/formatters/date.ts';
 import { Tippy } from 'vue-tippy';
 import { useAuth } from '@/composables/useAuth.js';
 import DashboardTableTasksItemObserver from '@/components/Dashboard/Table/TasksItem/DashboardTableTasksItemObserver.vue';
@@ -192,7 +192,7 @@ const isViewing = computed(
 );
 const isCompleted = computed(() => props.task.status === taskOptions.statusTypes.COMPLETED);
 const expiredDayjs = computed(() => {
-    if (isString(props.task.end)) return dayjsFromMoscow(props.task.end);
+    if (isString(props.task.end)) return dayjsFromServer(props.task.end);
     return dayjs(props.task.end);
 });
 const isCanceled = computed(() => props.task.status === taskOptions.statusTypes.CANCELED);

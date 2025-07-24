@@ -53,7 +53,7 @@ import Avatar from '@/components/common/Avatar.vue';
 import { callStatusEnum } from '@/const/enums/call.js';
 import { Tippy } from 'vue-tippy';
 import { callStatus, callType } from '@/const/options/call.options.js';
-import { toBeautifulDateFormat } from '@/utils/formatters/date.js';
+import { toBeautifulDateFormat } from '@/utils/formatters/date.ts';
 import { contactOptions } from '@/const/options/contact.options.js';
 import UiButtonIcon from '@/components/common/UI/UiButtonIcon.vue';
 import UiDropdownActions from '@/components/common/UI/DropdownActions/UiDropdownActions.vue';

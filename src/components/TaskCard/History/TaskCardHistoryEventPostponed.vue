@@ -32,7 +32,7 @@
 
 <script setup>
 import { computed } from 'vue';
-import { toDateFormat } from '@/utils/formatters/date.js';
+import { toDateFormat } from '@/utils/formatters/date.ts';
 import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
 import TaskCardHistoryEventRow from '@/components/TaskCard/History/TaskCardHistoryEventRow.vue';
 import dayjs from 'dayjs';

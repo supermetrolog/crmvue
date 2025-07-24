@@ -48,7 +48,7 @@
 <script setup>
 import { computed } from 'vue';
 import { taskOptions } from '@/const/options/task.options.js';
-import { toBeautifulDateFormat } from '@/utils/formatters/date.js';
+import { toBeautifulDateFormat } from '@/utils/formatters/date.ts';
 import { Tippy } from 'vue-tippy';
 import Avatar from '@/components/common/Avatar.vue';
 import DashboardTableTasksItemObserver from '@/components/Dashboard/Table/TasksItem/DashboardTableTasksItemObserver.vue';

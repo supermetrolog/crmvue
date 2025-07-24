@@ -21,7 +21,7 @@
 <script setup>
 import Avatar from '@/components/common/Avatar.vue';
 import { computed } from 'vue';
-import { toBeautifulDateFormat } from '@/utils/formatters/date.js';
+import { toBeautifulDateFormat } from '@/utils/formatters/date.ts';
 import { Tippy } from 'vue-tippy';
 
 const props = defineProps({

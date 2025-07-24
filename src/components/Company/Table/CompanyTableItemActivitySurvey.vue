@@ -91,7 +91,7 @@
 import { computed } from 'vue';
 import UiButton from '@/components/common/UI/UiButton.vue';
 import dayjs from 'dayjs';
-import { dayjsFromMoscow, toDateFormat } from '@/utils/formatters/date.js';
+import { dayjsFromServer, toDateFormat } from '@/utils/formatters/date.ts';
 import { CALL_STATUSES } from '@/components/MessengerQuiz/useMessengerQuiz.js';
 import { isNullish } from '@/utils/helpers/common/isNullish';
 import { useAuth } from '@/composables/useAuth.js';
@@ -112,7 +112,7 @@ const { currentUserId } = useAuth();
 const isCurrentUserCompany = computed(() => props.company.consultant_id === currentUserId.value);
 
 const lastSurveyDate = computed(() =>
-    dayjsFromMoscow(lastSurvey.value.completed_at ?? lastSurvey.value.updated_at)
+    dayjsFromServer(lastSurvey.value.completed_at ?? lastSurvey.value.updated_at)
 );
 
 const SURVEY_TASK_DELAY = 7; // days
@@ -162,6 +162,6 @@ const lastCallHasCompleteStatus = computed(() => {
 });
 
 const companyOutdated = computed(() => {
-    return dayjs().diff(dayjsFromMoscow(props.company.created_at), 'day') >= 30;
+    return dayjs().diff(dayjsFromServer(props.company.created_at), 'day') >= 30;
 });
 </script>

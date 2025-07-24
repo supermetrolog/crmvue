@@ -56,7 +56,7 @@
 <script setup>
 import { entityOptions } from '@/const/options/options';
 import { computed, toRef, useTemplateRef } from 'vue';
-import { toDateFormat } from '@/utils/formatters/date.js';
+import { toDateFormat } from '@/utils/formatters/date.ts';
 import { ucFirst } from '@/utils/formatters/string.js';
 import Avatar from '@/components/common/Avatar.vue';
 import AccordionSimple from '@/components/common/Accordion/AccordionSimple.vue';

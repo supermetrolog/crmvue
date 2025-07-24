@@ -41,7 +41,7 @@
 </template>
 <script setup>
 import { computed, toRef, useTemplateRef } from 'vue';
-import { toBeautifulDateFormat } from '@/utils/formatters/date.js';
+import { toBeautifulDateFormat } from '@/utils/formatters/date.ts';
 import Avatar from '@/components/common/Avatar.vue';
 import { useLinkify } from '@/composables/useLinkify.js';
 import { useAuth } from '@/composables/useAuth.js';

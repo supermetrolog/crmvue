@@ -132,7 +132,7 @@ import { dealOptions } from '@/const/options/deal.options.js';
 import UiButtonIcon from '@/components/common/UI/UiButtonIcon.vue';
 import { unitTypes } from '@/const/unitTypes.js';
 import WithUnitType from '@/components/common/WithUnitType.vue';
-import { toDateFormat } from '@/utils/formatters/date.js';
+import { toDateFormat } from '@/utils/formatters/date.ts';
 import SurveyFormObjectsPreviewOfferParameter from '@/components/SurveyForm/ObjectsPreview/SurveyFormObjectsPreviewOfferParameter.vue';
 import VueEditor from '@/components/common/Forms/VueEditor.vue';
 import Avatar from '@/components/common/Avatar.vue';

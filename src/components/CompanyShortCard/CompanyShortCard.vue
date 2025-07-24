@@ -120,7 +120,7 @@ import { alg } from '@/utils/alg.js';
 import { toCorrectUrl } from '@/utils/formatters/string.js';
 import { companyOptions } from '@/const/options/company.options.js';
 import { useRouter } from 'vue-router';
-import { toDateFormat } from '@/utils/formatters/date.js';
+import { toDateFormat } from '@/utils/formatters/date.ts';
 
 defineEmits(['update-logo']);
 const props = defineProps({

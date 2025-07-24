@@ -320,7 +320,7 @@ import { useNotify } from '@/utils/use/useNotify.js';
 import { useStore } from 'vuex';
 import { getCompanyName, getCompanyShortName } from '@/utils/formatters/models/company.js';
 import { isNotNullish } from '@/utils/helpers/common/isNotNullish.ts';
-import { toDateFormat } from '@/utils/formatters/date.js';
+import { toDateFormat } from '@/utils/formatters/date.ts';
 import { toCorrectUrl } from '@/utils/formatters/string.js';
 import UiTooltipIcon from '@/components/common/UI/UiTooltipIcon.vue';
 import { useTippyText } from '@/composables/useTippyText.js';

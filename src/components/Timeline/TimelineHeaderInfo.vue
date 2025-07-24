@@ -30,7 +30,7 @@
 
 <script setup>
 import { computed } from 'vue';
-import { toDateFormat } from '@/utils/formatters/date.js';
+import { toDateFormat } from '@/utils/formatters/date.ts';
 import { getCompanyName } from '@/utils/formatters/models/company.js';
 
 const props = defineProps({

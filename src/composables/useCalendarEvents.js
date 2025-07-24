@@ -4,7 +4,7 @@ import api from '@/api/api.js';
 import { taskOptions } from '@/const/options/task.options.js';
 import { useAuth } from '@/composables/useAuth.js';
 import { deduplicate } from '@/utils/deduplicate.js';
-import { dayjsFromMoscow } from '@/utils/formatters/date.js';
+import { dayjsFromServer } from '@/utils/formatters/date.ts';
 import { TaskTypeEnum } from '@/types/task';
 import { isArray } from '@/utils/helpers/array/isArray';
 
@@ -30,7 +30,7 @@ function taskToEvent(task) {
                         {
                             title: task.title,
                             id: task.id,
-                            time: dayjsFromMoscow(task.start).format('HH:mm')
+                            time: dayjsFromServer(task.start).format('HH:mm')
                         }
                     ]
                 },
@@ -91,7 +91,7 @@ export function useCalendarEvents() {
         });
 
         for (let task of response.data) {
-            const date = dayjsFromMoscow(task.start).format('YY-MM-DD');
+            const date = dayjsFromServer(task.start).format('YY-MM-DD');
             const existing = eventsMap.get(date);
 
             if (existing) {
@@ -102,7 +102,7 @@ export function useCalendarEvents() {
                 existing.tooltip[0].events[task.type].push({
                     title: task.title,
                     id: task.id,
-                    time: dayjsFromMoscow(task.start).format('HH:mm')
+                    time: dayjsFromServer(task.start).format('HH:mm')
                 });
 
                 existing.tooltip[0].count = (existing.tooltip[0].count ?? 0) + 1;

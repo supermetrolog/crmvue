@@ -101,7 +101,7 @@ import CompanyTableItemInfo from '@/components/Company/Table/CompanyTableItemInf
 import CompanyTableItemPinnedMessages from '@/components/Company/Table/CompanyTableItemPinnedMessages.vue';
 import UiField from '@/components/common/UI/UiField.vue';
 import UiCheckbox from '@/components/common/Forms/UiCheckbox.vue';
-import { toDateFormat } from '@/utils/formatters/date.js';
+import { toDateFormat } from '@/utils/formatters/date.ts';
 
 defineEmits(['toggle-checked']);
 

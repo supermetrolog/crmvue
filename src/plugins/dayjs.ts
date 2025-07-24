@@ -7,6 +7,7 @@ import minMax from 'dayjs/plugin/minMax';
 import duration from 'dayjs/plugin/duration';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
 import timezone from 'dayjs/plugin/timezone';
+import utc from 'dayjs/plugin/utc';
 
 export function initDayjs() {
     dayjs.extend(isToday);
@@ -17,5 +18,6 @@ export function initDayjs() {
     dayjs.extend(duration);
     dayjs.extend(timezone);
     dayjs.extend(minMax);
+    dayjs.extend(utc);
     dayjs.locale('ru');
 }

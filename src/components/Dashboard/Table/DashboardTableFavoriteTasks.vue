@@ -51,7 +51,7 @@ import api from '@/api/api.js';
 import { useMessenger } from '@/components/Messenger/useMessenger.js';
 import { useAuth } from '@/composables/useAuth.js';
 import Spinner from '@/components/common/Spinner.vue';
-import { toDateFormat } from '@/utils/formatters/date.js';
+import { toDateFormat } from '@/utils/formatters/date.ts';
 import { spliceById } from '@/utils/helpers/array/spliceById.js';
 import EmptyData from '@/components/common/EmptyData.vue';
 import VirtualDragList from 'vue-virtual-draglist';

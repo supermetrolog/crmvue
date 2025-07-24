@@ -21,7 +21,7 @@ import Tabs from '@/components/common/Tabs/Tabs.vue';
 import Url from '@/plugins/url';
 import { initAxios } from '@/services/axios.js';
 import { initSentry } from '@/plugins/sentry.js';
-import { initDayjs } from '@/plugins/dayjs.js';
+import { initDayjs } from '@/plugins/dayjs.ts';
 import { initTippy } from '@/plugins/tippy.js';
 
 const app = createApp(App);

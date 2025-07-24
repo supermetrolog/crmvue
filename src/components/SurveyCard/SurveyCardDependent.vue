@@ -55,7 +55,7 @@
 <script setup>
 import Avatar from '@/components/common/Avatar.vue';
 import { computed, toRef } from 'vue';
-import { toDateFormat } from '@/utils/formatters/date.js';
+import { toDateFormat } from '@/utils/formatters/date.ts';
 import { getContactFullName } from '@/utils/formatters/models/contact.js';
 import MessengerDialogObject from '@/components/Messenger/Dialog/Object/MessengerDialogObject.vue';
 import MessengerButton from '@/components/Messenger/MessengerButton.vue';

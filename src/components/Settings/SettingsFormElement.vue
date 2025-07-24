@@ -46,7 +46,7 @@
 <script setup>
 import UiButtonIcon from '@/components/common/UI/UiButtonIcon.vue';
 import { computed } from 'vue';
-import { toDateFormat } from '@/utils/formatters/date.js';
+import { toDateFormat } from '@/utils/formatters/date.ts';
 import UiTooltip from '@/components/common/UI/UiTooltip.vue';
 
 defineEmits(['edit', 'delete']);

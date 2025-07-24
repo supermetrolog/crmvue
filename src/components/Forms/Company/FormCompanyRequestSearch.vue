@@ -414,7 +414,7 @@ import RadioOptions from '@/components/common/Forms/RadioOptions.vue';
 import UiDateInput from '@/components/common/Forms/UiDateInput.vue';
 import Chip from '@/components/common/Chip.vue';
 import { isArray } from '@/utils/helpers/array/isArray.ts';
-import { toDateFormat } from '@/utils/formatters/date.js';
+import { toDateFormat } from '@/utils/formatters/date.ts';
 import { isNotNullish } from '@/utils/helpers/common/isNotNullish.ts';
 import { singleToArrayByKeys } from '@/utils/helpers/object/singleToArrayByKeys.js';
 import { toNumberFormat } from '@/utils/formatters/number.js';

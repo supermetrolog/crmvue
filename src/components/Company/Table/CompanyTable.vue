@@ -41,7 +41,6 @@
                     @disable="$emit('disable-company', company)"
                     @enable="$emit('enable-company', company)"
                     @create-request-task="$emit('create-request-task', $event, company)"
-                    @create-survey-task="$emit('create-survey-task', company)"
                     @show-survey="showSurvey({ surveyId: company.last_survey.id })"
                     @show-task="showTaskPreview"
                     @schedule-visit="$emit('schedule-visit', company)"
@@ -91,7 +90,6 @@ defineEmits([
     'unpin-message',
     'create-task',
     'create-request-task',
-    'create-survey-task',
     'show-tasks',
     'open-filter',
     'disable-company',

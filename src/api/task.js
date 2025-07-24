@@ -45,6 +45,14 @@ export default {
         });
         return responseToData(response);
     },
+    async changeDates(taskId, payload) {
+        const response = await axios.post(`${URL}/${taskId}/change-dates`, payload);
+        return responseToData(response);
+    },
+    async changeType(taskId, payload) {
+        const response = await axios.post(`${URL}/${taskId}/change-type`, payload);
+        return responseToData(response);
+    },
     async createComment(id, payload) {
         const response = await axios.postForm(`${URL}/${id}/comments`, payload);
         return responseToData(response);

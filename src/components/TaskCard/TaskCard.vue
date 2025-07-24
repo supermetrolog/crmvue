@@ -9,6 +9,8 @@
             @to-chat="toChat"
             @assign="assignerFormIsVisible = !assignerFormIsVisible"
             @change-status="moveSettingsIsVisible = !moveSettingsIsVisible"
+            @change-dates="changeDatesFormIsVisible = !changeDatesFormIsVisible"
+            @change-type="changeTypeFormIsVisible = !changeTypeFormIsVisible"
             @postpone="postponeFormIsVisible = !postponeFormIsVisible"
             @complete="completeTask"
             :disabled="moveSettingsIsVisible || assignerFormIsVisible"
@@ -90,6 +92,16 @@
                     />
                 </AnimationTransition>
                 <AnimationTransition :speed="0.3">
+                    <TaskCardModalChangeDates
+                        v-if="changeDatesFormIsVisible"
+                        @confirm="changeDates"
+                        @close="changeDatesFormIsVisible = false"
+                        :loading="datesIsChanging"
+                        :start-date="task.start"
+                        :end-date="task.end"
+                    />
+                </AnimationTransition>
+                <AnimationTransition :speed="0.3">
                     <TaskCardAssigner
                         v-if="assignerFormIsVisible"
                         @assign="assign"
@@ -103,6 +115,15 @@
                         v-if="contactsIsVisible"
                         @close="contactsIsVisible = false"
                         :company-id="currentContactsCompanyId"
+                    />
+                </AnimationTransition>
+                <AnimationTransition v-if="currentUserIsAdmin" :speed="0.3">
+                    <TaskCardModalChangeType
+                        v-if="changeTypeFormIsVisible"
+                        @confirm="changeType"
+                        @close="changeTypeFormIsVisible = false"
+                        :loading="typeIsChanging"
+                        :type="task.type"
                     />
                 </AnimationTransition>
             </div>
@@ -142,11 +163,13 @@ import TaskCardFiles from '@/components/TaskCard/TaskCardFiles.vue';
 import TaskCardContacts from '@/components/TaskCard/TaskCardContactsList.vue';
 import TaskCardModalPostpone from '@/components/TaskCard/TaskCardModalPostpone.vue';
 import { useAsync } from '@/composables/useAsync.js';
-import { dayjsFromMoscow } from '@/utils/formatters/date.js';
+import { dayjsFromServer } from '@/utils/formatters/date.ts';
 import dayjs from 'dayjs';
 import TaskCardRelations from '@/components/TaskCard/Relations/TaskCardRelations.vue';
 import TaskCardProcess from '@/components/TaskCard/Process/TaskCardProcess.vue';
 import { TaskTypeEnum } from '@/types/task';
+import TaskCardModalChangeDates from '@/components/TaskCard/TaskCardModalChangeDates.vue';
+import TaskCardModalChangeType from '@/components/TaskCard/TaskCardModalChangeType.vue';
 
 const emit = defineEmits([
     'updated',
@@ -166,7 +189,7 @@ const props = defineProps({
 
 const notify = useNotify();
 const store = useStore();
-const { currentUserId, currentUserIsModeratorOrHigher } = useAuth();
+const { currentUserId, currentUserIsModeratorOrHigher, currentUserIsAdmin } = useAuth();
 
 const { isLoading } = useDelayedLoader();
 
@@ -273,8 +296,8 @@ const { execute: executePostponeTask, isLoading: isLoadingPostpone } = useAsync(
 const postponeFormIsVisible = ref(false);
 
 async function postponeTask(date) {
-    const dateDiff = dayjsFromMoscow(props.task.end).diff(
-        dayjsFromMoscow(props.task.start),
+    const dateDiff = dayjsFromServer(props.task.end).diff(
+        dayjsFromServer(props.task.start),
         'second'
     );
     const endDate = dayjs(date).add(dateDiff, 'second').toDate();
@@ -435,4 +458,49 @@ const canBeProcessed = computed(() => {
             props.task.relations_count > 0)
     );
 });
+
+const changeDatesEventBus = useEventBus(TASK_EVENTS.CHANGE_DATES);
+
+// change dates
+
+const changeDatesFormIsVisible = ref(false);
+const datesIsChanging = ref(false);
+
+async function changeDates(payload) {
+    datesIsChanging.value = true;
+
+    try {
+        const response = await api.task.changeDates(props.task.id, payload);
+
+        notify.success(`Даты задачи успешно изменены`);
+
+        changeDatesFormIsVisible.value = false;
+        changeDatesEventBus.emit({ task: response });
+
+        emit('updated', response);
+    } finally {
+        datesIsChanging.value = false;
+    }
+}
+
+// change type
+
+const changeTypeFormIsVisible = ref(false);
+const typeIsChanging = ref(false);
+
+async function changeType(payload) {
+    typeIsChanging.value = true;
+
+    try {
+        const response = await api.task.changeType(props.task.id, payload);
+
+        notify.success(`Тип задачи успешно изменен`);
+
+        changeDatesFormIsVisible.value = false;
+
+        emit('updated', response);
+    } finally {
+        datesIsChanging.value = false;
+    }
+}
 </script>

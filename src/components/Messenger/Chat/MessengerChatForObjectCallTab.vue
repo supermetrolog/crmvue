@@ -56,7 +56,7 @@
 <script setup>
 import { useStore } from 'vuex';
 import { computed } from 'vue';
-import { toDateFormat } from '@/utils/formatters/date.js';
+import { toDateFormat } from '@/utils/formatters/date.ts';
 import Spinner from '@/components/common/Spinner.vue';
 import { Tippy } from 'vue-tippy';
 import { isActiveContact, isPersonalContact } from '@/utils/helpers/models/contact.js';

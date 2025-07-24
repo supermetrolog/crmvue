@@ -24,7 +24,7 @@
 <script setup>
 import { computed } from 'vue';
 import Avatar from '@/components/common/Avatar.vue';
-import { dayjsFromMoscow } from '@/utils/formatters/date.js';
+import { dayjsFromServer } from '@/utils/formatters/date.ts';
 import dayjs from 'dayjs';
 import { plural } from '@/utils/plural.js';
 import { isNotNullish } from '@/utils/helpers/common/isNotNullish.ts';
@@ -46,7 +46,7 @@ const preparedMessage = computed(() => {
 });
 
 const createdAt = computed(() => {
-    const dayjsDate = dayjsFromMoscow(props.lastMessage.created_at);
+    const dayjsDate = dayjsFromServer(props.lastMessage.created_at);
 
     if (dayjsDate.isToday()) return dayjsDate.format('HH:mm');
     if (dayjsDate.isYesterday()) return `Вчера, ${dayjsDate.format('HH:mm')}`;

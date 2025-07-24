@@ -53,7 +53,7 @@ import { computed, useTemplateRef } from 'vue';
 import Avatar from '@/components/common/Avatar.vue';
 import TaskCardHistoryEventRow from '@/components/TaskCard/History/TaskCardHistoryEventRow.vue';
 import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
-import { toDateFormat } from '@/utils/formatters/date.js';
+import { toDateFormat } from '@/utils/formatters/date.ts';
 import { useTippy } from 'vue-tippy';
 
 const props = defineProps({
