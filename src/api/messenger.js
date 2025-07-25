@@ -50,6 +50,10 @@ export default {
         const response = await axios.get(url);
         return responseToPaginatedData(response);
     },
+    async searchMessages(params) {
+        const response = await axios.get(`/chat-member-messages/search`, { params });
+        return responseToPaginatedData(response);
+    },
     async pinMessage(memberID, messageID) {
         const url = `/chat-members/pin-message`;
         const payload = { chat_member_id: memberID, chat_member_message_id: messageID };
