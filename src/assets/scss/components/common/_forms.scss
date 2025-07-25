@@ -1956,3 +1956,9 @@
         @include mixins.flex-box($gap: 3px);
     }
 }
+
+.admin-chat-member-message-table-item {
+    .messenger-chat-message__wrapper, .messenger-chat-message__content {
+        width: auto;
+    }
+}

@@ -410,6 +410,11 @@ tr.CompanyTableEven {
         font-style: italic;
         font-size: 15px;
         color: variables.$color_dark;
+        display: inline;
+
+        p {
+            display: inline;
+        }
     }
 
     &__button {

@@ -28,9 +28,9 @@
         </div>
     </div>
     <UiClamped v-else @expanded="$emit('expanded')" @hidden="$emit('hidden')" button-class="fs-2">
-        <div class="d-inline-flex">
+        <div>
             <i class="fs-2 mr-1">{{ updatedAt }}. {{ authorLabel }}.</i>
-            <div ref="comment" class="company-table-item-summary-survey__comment d-inline"></div>
+            <div ref="comment" class="company-table-item-summary-survey__comment"></div>
         </div>
     </UiClamped>
 </template>

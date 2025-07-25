@@ -354,6 +354,14 @@ const routes = [
                     title: ['Админка', 'Туры']
                 },
                 component: () => import('../views/Admin/Tours.vue')
+            },
+            {
+                path: 'messages',
+                name: 'admin-messages',
+                meta: {
+                    title: ['Админка', 'Сообщения']
+                },
+                component: () => import('../views/Admin/ChatMemberMessages.vue')
             }
         ]
     },

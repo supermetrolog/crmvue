@@ -1,14 +1,15 @@
 <template>
-    <div
-        :id="'message-' + message.id"
-        ref="target"
-        class="messenger-chat-message"
-        :class="classList"
-    >
+    <div class="messenger-chat-message">
         <div class="messenger-chat-message__wrapper position-relative">
-            <Loader v-if="isDeleteLoading" class="absolute-center" small />
-            <Avatar v-if="!self" :src="message.from.model.userProfile.avatar" size="55" />
             <div class="messenger-chat-message__content hover-actions-trigger">
+                <MessengerChatMessageActions @delete="$emit('delete')" :message="message">
+                    <HoverActionsButton @click="$emit('pin-to-entity')" label="Закрепить в таблице">
+                        <i class="fa-solid fa-table"></i>
+                    </HoverActionsButton>
+                    <HoverActionsButton @click="$emit('delete')" label="Удалить">
+                        <i class="fa-solid fa-trash"></i>
+                    </HoverActionsButton>
+                </MessengerChatMessageActions>
                 <MessengerChatMessageReply v-if="message.reply_to_id" :message="message.reply_to" />
                 <MessengerChatMessageAdditions
                     :tasks="message.tasks"
@@ -32,16 +33,15 @@
                     />
                 </AnimationTransition>
                 <div class="messenger-chat-message__footer">
-                    <i v-if="pinned" class="fa-solid fa-lock messenger-chat-message__pinned" />
                     <span>{{ message.from.model.userProfile.short_name }}, </span>
                     <span v-tippy="originalDate" class="messenger-chat-message__date">
                         {{ formattedDate }},
                     </span>
                     <span v-if="message.contacts.length">
                         с
-                        <a href="#" class="messenger-chat-message__recipient">
+                        <span class="messenger-chat-message__recipient">
                             {{ recipientUsername }}
-                        </a>
+                        </span>
                     </span>
                     <span v-else>без звонка</span>
                     <template v-if="message.tags.length">
@@ -55,40 +55,28 @@
         </div>
     </div>
 </template>
-<script setup>
-import { entityOptions } from '@/const/options/options.js';
-import Avatar from '@/components/common/Avatar.vue';
-import MessengerChatMessageAdditions from '@/components/Messenger/Chat/Message/Additions/MessengerChatMessageAdditions.vue';
-import AnimationTransition from '@/components/common/AnimationTransition.vue';
-import MessengerChatMessageAttachments from '@/components/Messenger/Chat/Message/MessengerChatMessageAttachments.vue';
-import { computed, ref, toRef, useTemplateRef } from 'vue';
-import { ucFirst } from '@/utils/formatters/string.js';
-import Loader from '@/components/common/Loader.vue';
-import MessengerChatMessageReply from '@/components/Messenger/Chat/Message/MessengerChatMessageReply.vue';
-import { useIntersectionObserver, useTimeoutFn } from '@vueuse/core';
-import MessengerChatMessageTemplate from '@/components/Messenger/Chat/Message/MessengerChatMessageTemplate.vue';
-import { useLinkify } from '@/composables/useLinkify.js';
-import { isNotNullish } from '@/utils/helpers/common/isNotNullish.ts';
-import { dayjsFromServer } from '@/utils/formatters/date';
 
-const emit = defineEmits(['viewed']);
+<script setup>
+import MessengerChatMessageTemplate from '@/components/Messenger/Chat/Message/MessengerChatMessageTemplate.vue';
+import MessengerChatMessageAttachments from '@/components/Messenger/Chat/Message/MessengerChatMessageAttachments.vue';
+import MessengerChatMessageReply from '@/components/Messenger/Chat/Message/MessengerChatMessageReply.vue';
+import AnimationTransition from '@/components/common/AnimationTransition.vue';
+import MessengerChatMessageAdditions from '@/components/Messenger/Chat/Message/Additions/MessengerChatMessageAdditions.vue';
+import { computed, toRef, useTemplateRef } from 'vue';
+import { dayjsFromServer } from '@/utils/formatters/date.ts';
+import { entityOptions } from '@/const/options/options.js';
+import { ucFirst } from '@/utils/formatters/string.js';
+import { useLinkify } from '@/composables/useLinkify.js';
+import MessengerChatMessageActions from '@/components/Messenger/Chat/Message/MessengerChatMessageActions.vue';
+import HoverActionsButton from '@/components/common/HoverActions/HoverActionsButton.vue';
+
+defineEmits(['delete', 'pin-to-entity']);
 const props = defineProps({
     message: {
         type: Object,
         required: true
-    },
-    self: Boolean,
-    pinned: Boolean,
-    reply: Boolean,
-    canBeViewed: Boolean
+    }
 });
-
-const isDeleteLoading = ref(false);
-
-const isViewed = ref(props.message.is_viewed);
-const isNewMessage = isNotNullish(props.message.is_viewed) && !props.message.is_viewed;
-
-const target = useTemplateRef('target');
 
 const messageDayjsDate = computed(() => {
     return props.message.dayjs_date ?? dayjsFromServer(props.message.created_at);
@@ -102,15 +90,6 @@ const formattedDate = computed(() => {
     return messageDayjsDate.value.format('H:mm');
 });
 
-const classList = computed(() => {
-    return {
-        'messenger-chat-message--right': props.self,
-        'messenger-chat-message--not-viewed': !props.message.is_viewed && !isViewed.value,
-        'messenger-chat-message--reply': props.reply,
-        'messenger-chat-message--new': isNewMessage
-    };
-});
-
 const recipientUsername = computed(() => {
     const contact = props.message.contacts[0];
     if (contact.type === entityOptions.contact.typeStatement.GENERAL) return 'Общий контакт';
@@ -121,32 +100,7 @@ const categories = computed(() => {
     return props.message.tags.map(element => ucFirst(element.name)).join(', ');
 });
 
-const viewLocale = () => {
-    isViewed.value = true;
-};
-
-const { start: delayedViewLocale } = useTimeoutFn(viewLocale, 1200, { immediate: false });
-
-const { stop } = useIntersectionObserver(
-    target,
-    ([{ isIntersecting }]) => {
-        if (!isIntersecting) return;
-
-        if (props.message.is_viewed) {
-            stop();
-            return;
-        }
-
-        emit('viewed', props.message.id);
-        delayedViewLocale();
-        stop();
-    },
-    { immediate: props.canBeViewed }
-);
-
 // message linkify
 
-const messageElement = useTemplateRef('messageElement');
-
-useLinkify(toRef(props.message, 'message'), messageElement);
+useLinkify(toRef(props.message, 'message'), useTemplateRef('messageElement'));
 </script>

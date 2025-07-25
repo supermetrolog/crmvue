@@ -1,49 +1,51 @@
 <template>
     <div class="messenger-chat-message-actions">
         <HoverActions>
-            <HoverActionsButton @click="$emit('reply')" label="Ответить">
-                <i class="fa-solid fa-reply"></i>
-            </HoverActionsButton>
-            <HoverActionsButton @click="$emit('create-task')" label="Добавить задачу">
-                <i class="fa-solid fa-bolt"></i>
-            </HoverActionsButton>
-            <HoverActionsButton
-                @click="
-                    $createAddition({
-                        messageID: message.id,
-                        additionType: 'alert',
-                        successMessage: 'Уведомление успешно создано!'
-                    })
-                "
-                label="Добавить уведомление"
-            >
-                <i class="fa-solid fa-exclamation"></i>
-            </HoverActionsButton>
-            <HoverActionsButton
-                @click="$emit('pin-to-object')"
-                disabled
-                :active="message.pinnedToObject"
-                :label="message.pinnedToObject ? 'Открепить в таблице' : 'Закрепить в таблице'"
-            >
-                <i class="fa-solid fa-table"></i>
-            </HoverActionsButton>
-            <HoverActionsButton
-                @click="$emit('pin')"
-                :label="pinned ? 'Открепить в чате' : 'Закрепить в чате'"
-                :active="pinned"
-            >
-                <i class="fa-solid fa-thumbtack"></i>
-            </HoverActionsButton>
-            <HoverActionsButton
-                v-if="editable && canBeEdited"
-                @click="$emit('edit')"
-                label="Редактировать"
-            >
-                <i class="fa-solid fa-pen"></i>
-            </HoverActionsButton>
-            <HoverActionsButton v-if="canBeDeleted" @click="$emit('delete')" label="Удалить">
-                <i class="fa-solid fa-trash"></i>
-            </HoverActionsButton>
+            <slot>
+                <HoverActionsButton @click="$emit('reply')" label="Ответить">
+                    <i class="fa-solid fa-reply"></i>
+                </HoverActionsButton>
+                <HoverActionsButton @click="$emit('create-task')" label="Добавить задачу">
+                    <i class="fa-solid fa-bolt"></i>
+                </HoverActionsButton>
+                <HoverActionsButton
+                    @click="
+                        $createAddition({
+                            messageID: message.id,
+                            additionType: 'alert',
+                            successMessage: 'Уведомление успешно создано!'
+                        })
+                    "
+                    label="Добавить уведомление"
+                >
+                    <i class="fa-solid fa-exclamation"></i>
+                </HoverActionsButton>
+                <HoverActionsButton
+                    @click="$emit('pin-to-object')"
+                    disabled
+                    :active="message.pinnedToObject"
+                    :label="message.pinnedToObject ? 'Открепить в таблице' : 'Закрепить в таблице'"
+                >
+                    <i class="fa-solid fa-table"></i>
+                </HoverActionsButton>
+                <HoverActionsButton
+                    @click="$emit('pin')"
+                    :label="pinned ? 'Открепить в чате' : 'Закрепить в чате'"
+                    :active="pinned"
+                >
+                    <i class="fa-solid fa-thumbtack"></i>
+                </HoverActionsButton>
+                <HoverActionsButton
+                    v-if="editable && canBeEdited"
+                    @click="$emit('edit')"
+                    label="Редактировать"
+                >
+                    <i class="fa-solid fa-pen"></i>
+                </HoverActionsButton>
+                <HoverActionsButton v-if="canBeDeleted" @click="$emit('delete')" label="Удалить">
+                    <i class="fa-solid fa-trash"></i>
+                </HoverActionsButton>
+            </slot>
         </HoverActions>
     </div>
 </template>
