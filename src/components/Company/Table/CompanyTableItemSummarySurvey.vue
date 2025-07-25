@@ -58,13 +58,13 @@
                 </template>
             </UiDropdownActions>
         </div>
-        <div v-if="company.last_survey" class="company-table-item-summary-survey__body">
+        <div class="company-table-item-summary-survey__body">
             <CompanyTableItemPinnedMessages
                 v-if="company.pinned_messages.length"
                 :read-only
                 :company
             />
-            <p v-else class="text-grey op-5 fs-2">Без комментариев..</p>
+            <p v-else-if="!company.last_survey" class="text-grey op-5 fs-2">Без комментариев..</p>
         </div>
     </div>
 </template>

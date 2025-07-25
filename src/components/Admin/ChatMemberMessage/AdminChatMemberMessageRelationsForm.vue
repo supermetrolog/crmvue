@@ -4,31 +4,28 @@
         custom-close
         show
         :width="650"
-        :title="isEditMode ? 'Редактирование связи с компанией' : 'Связать задачу с компанией'"
+        title="Закрепить сообщение за компанией"
     >
-        <Loader v-if="loading" small />
+        <Loader v-if="isLoading" small />
         <UiForm>
             <UiFormGroup>
                 <CompanyPicker
-                    v-if="!isEditMode"
-                    v-model="form.company"
-                    :v="v$.company"
+                    v-model="form.company_id"
+                    :v="v$.company_id"
                     :options="searchCompany"
                     label="Выбор компании"
                     placement="top"
                     class="col-12"
-                    object
                 />
-                <UiTextarea v-model="form.comment" class="col-12" label="Комментарий" auto-height />
             </UiFormGroup>
         </UiForm>
         <template #actions="{ close }">
             <UiButton
                 @click="submit"
-                :disabled="loading || isNullish(form.company)"
+                :disabled="isNullish(form.company_id)"
                 color="success-light"
                 icon="fa-solid fa-check"
-                :loading
+                :loading="isLoading"
             >
                 Сохранить
             </UiButton>
@@ -38,7 +35,7 @@
 </template>
 
 <script setup>
-import { reactive, toRef } from 'vue';
+import { reactive, ref, toRef } from 'vue';
 import { helpers, required } from '@vuelidate/validators';
 import UiForm from '@/components/common/Forms/UiForm.vue';
 import UiButton from '@/components/common/UI/UiButton.vue';
@@ -48,51 +45,54 @@ import { useValidation } from '@/composables/useValidation.js';
 import Loader from '@/components/common/Loader.vue';
 import CompanyPicker from '@/components/common/Forms/CompanyPicker/CompanyPicker.vue';
 import { useSearchCompany } from '@/composables/useSearchCompany.js';
-import UiTextarea from '@/components/common/Forms/UiTextarea.vue';
 import { isNullish } from '@/utils/helpers/common/isNullish.ts';
-import { useFormData } from '@/utils/use/useFormData.js';
+import api from '@/api/api.js';
+import { captureException } from '@sentry/vue';
+import { useNotify } from '@/utils/use/useNotify.js';
 
-const emit = defineEmits(['create', 'close']);
+const emit = defineEmits(['created', 'close']);
 const props = defineProps({
-    loading: Boolean,
-    relations: {
-        type: Array,
-        default: () => []
-    },
-    formData: Object
+    message: {
+        type: Object,
+        required: true
+    }
 });
 
-const searchCompany = useSearchCompany(toRef(() => null));
+const searchCompany = useSearchCompany(toRef(() => props.message.to.model_id));
 
-const { form, isEditMode } = useFormData(
-    reactive({
-        company: null,
-        comment: null
-    }),
-    props.formData
-);
+const form = reactive({
+    company_id: props.message.to.model_id
+});
 
 const { v$, validate } = useValidation(
     {
-        company: {
+        company_id: {
             required: helpers.withMessage('Выберите компанию!', required)
         }
     },
     form
 );
 
-function formToPayload() {
-    return {
-        entity_type: 'company',
-        entity_id: form.company.value,
-        comment: form.comment
-    };
-}
+const notify = useNotify();
+const isLoading = ref(false);
 
 async function submit() {
     const isValid = await validate();
     if (!isValid) return;
 
-    emit('create', formToPayload());
+    isLoading.value = true;
+
+    try {
+        const response = await api.companies.pinMessage(form.company_id, {
+            message_id: props.message.id
+        });
+
+        notify.success('Сообщение успешно закреплено');
+        emit('created', response);
+    } catch (e) {
+        captureException(e);
+    } finally {
+        isLoading.value = false;
+    }
 }
 </script>
