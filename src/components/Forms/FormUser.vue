@@ -121,7 +121,7 @@
                             class="col-12 text-center"
                             single
                             only-images
-                            :api-url="$url.api.uploads()"
+                            :api-url="getApiUploads()"
                             accept="image/jpeg,image/png,image/jpg"
                         >
                             Выбрать аватар
@@ -190,6 +190,7 @@ import { useAuth } from '@/composables/useAuth.js';
 import UiFormDivider from '@/components/common/Forms/UiFormDivider.vue';
 import UiCol from '@/components/common/UI/UiCol.vue';
 import Switch from '@/components/common/Forms/Switch.vue';
+import { getApiUploads } from '@/utils/url.js';
 
 const emit = defineEmits(['close', 'updated', 'created']);
 const props = defineProps({

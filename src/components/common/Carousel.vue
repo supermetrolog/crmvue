@@ -15,7 +15,7 @@
                     :key="item.src"
                     @click="openPreview(item.id)"
                     class="carousel__cell"
-                    :src="item.src ?? $url.api.fileNotFound()"
+                    :src="item.src ?? notFoundUrl"
                 />
                 <div
                     v-if="slides.length > count + 4"
@@ -43,6 +43,7 @@ import VLazyImage from 'v-lazy-image';
 import NoImage from '@/components/common/NoImage.vue';
 import { computed, onMounted, ref } from 'vue';
 import { usePreviewer } from '@/composables/usePreviewer.js';
+import { getApiFileNotFound } from '@/utils/url.js';
 
 const IMAGE_SIZE = 325;
 
@@ -92,6 +93,8 @@ const createGallery = () => {
 onMounted(() => {
     createGallery();
 });
+
+const notFoundUrl = computed(() => getApiFileNotFound());
 
 // preview
 

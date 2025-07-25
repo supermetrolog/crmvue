@@ -18,7 +18,6 @@ import 'splitpanes/dist/splitpanes.css';
 import 'driver.js/dist/driver.css';
 import Tab from '@/components/common/Tabs/Tab.vue';
 import Tabs from '@/components/common/Tabs/Tabs.vue';
-import Url from '@/plugins/url';
 import { initAxios } from '@/services/axios.js';
 import { initSentry } from '@/plugins/sentry.js';
 import { initDayjs } from '@/plugins/dayjs.ts';
@@ -32,7 +31,6 @@ initDayjs();
 initTippy(app);
 
 // TODO: Удалить PhoneNumber, Tab, Tabs из глобала
-// TODO: Удалить $url плагин
 // TODO: Удалить $formatter плагин
 
 app.config.performance = true;
@@ -42,7 +40,6 @@ app.component('Tabs', Tabs)
     .component('PhoneNumber', PhoneNumber)
     .use(VueAgile)
     .use(Formatter)
-    .use(Url)
     .use(Notifications, {
         group: 'app',
         type: 'info',

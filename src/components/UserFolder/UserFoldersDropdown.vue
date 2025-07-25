@@ -86,6 +86,4 @@ async function handleFolder(folder) {
         addToFolder(folder.id);
     }
 }
-
-// TODO: Сделать вариант "Создать папку" в самом низу списка
 </script>

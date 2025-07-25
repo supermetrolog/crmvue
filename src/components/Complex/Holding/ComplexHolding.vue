@@ -46,8 +46,8 @@ import ComplexHoldingParameters from '@/components/Complex/Holding/ComplexHoldin
 import ComplexHoldingTabs from '@/components/Complex/Holding/ComplexHoldingTabs.vue';
 import ComplexHoldingCompany from '@/components/Complex/Holding/ComplexHoldingCompany.vue';
 import { computed, inject, provide } from 'vue';
-import { $generatorURL as $url } from '@/plugins/url.js';
 import { vIntersectionObserver } from '@vueuse/components';
+import { getLinkUpload } from '@/utils/url.js';
 
 const emit = defineEmits(['edit', 'intersected']);
 const props = defineProps({
@@ -67,7 +67,7 @@ const openDownloader = inject('openDownloader');
 const objectPhoto = computed(() =>
     props.object.photo
         ? props.object.photo.map(el => ({
-              src: $url.api.objects() + el
+              src: getLinkUpload(el)
           }))
         : []
 );

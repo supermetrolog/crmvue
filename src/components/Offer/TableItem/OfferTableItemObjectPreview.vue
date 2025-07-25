@@ -1,7 +1,7 @@
 <template>
     <div class="offer-table-item-preview">
         <a
-            :href="$url.complexOld(object.complex_id)"
+            :href="complexOldUrl"
             target="_blank"
             class="button button--small offer-table-item__button"
         >
@@ -15,12 +15,8 @@
                 {{ className }}
             </UiField>
         </div>
-        <a
-            class="offer-table-item-preview__container"
-            :href="$url.complex(object.complex_id)"
-            target="_blank"
-        >
-            <VLazyImage v-if="!object.thumb" :src="$url.api.fileNotFound()" alt="image" />
+        <a class="offer-table-item-preview__container" :href="complexUrl" target="_blank">
+            <VLazyImage v-if="!object.thumb" :src="notFoundUrl" alt="image" />
             <OfferTableItemPreviewMotionSlider
                 v-else
                 :thumb="object.thumb"
@@ -37,11 +33,11 @@
 
 <script setup>
 import VLazyImage from 'v-lazy-image';
-import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
 import { computed } from 'vue';
 import { objectOptions } from '@/const/options/object.options.js';
 import OfferTableItemPreviewMotionSlider from '@/components/Offer/TableItem/OfferTableItemPreviewMotionSlider.vue';
 import UiField from '@/components/common/UI/UiField.vue';
+import { getApiFileNotFound, getLinkComplex, getLinkComplexOld } from '@/utils/url.js';
 
 const props = defineProps({
     object: {
@@ -55,4 +51,8 @@ const props = defineProps({
 });
 
 const className = computed(() => objectOptions.class[props.object.object_class]);
+
+const complexUrl = computed(() => getLinkComplex(props.object.complex_id));
+const complexOldUrl = computed(() => getLinkComplexOld(props.object.complex_id));
+const notFoundUrl = computed(() => getApiFileNotFound());
 </script>

@@ -1,5 +1,5 @@
 <template>
-    <a :href="$url.offerByObject(offer)" target="_blank">
+    <a :href target="_blank">
         <p v-if="offer.region_name" class="font-weight-bold">
             {{ offer.region_name }}
         </p>
@@ -25,10 +25,15 @@
 </template>
 
 <script setup>
-defineProps({
+import { computed } from 'vue';
+import { getLinkOfferByObject } from '@/utils/url.js';
+
+const props = defineProps({
     offer: {
         type: Object,
         required: true
     }
 });
+
+const href = computed(() => getLinkOfferByObject(props.offer));
 </script>

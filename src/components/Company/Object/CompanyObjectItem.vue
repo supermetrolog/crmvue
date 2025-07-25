@@ -3,9 +3,12 @@
         <div class="row no-gutters">
             <div class="col-4" :title="object.description_auto || 'нет описания'">
                 <div class="image-container">
-                    <a :href="$url.complex(object.complex_id)" target="_blank">
+                    <router-link
+                        :to="{ name: 'ComplexView', params: { complex_id: object.complex_id } }"
+                        target="_blank"
+                    >
                         <img :src="object.thumb" alt="image" />
-                    </a>
+                    </router-link>
                 </div>
             </div>
             <div class="col-8 desc">
@@ -29,7 +32,9 @@
                 <div class="params">
                     <div class="params__item">
                         <p class="title">Электричество:</p>
-                        <p class="value">{{ $formatter.number(object.power) }} <small>кВт</small></p>
+                        <p class="value">
+                            {{ $formatter.number(object.power) }} <small>кВт</small>
+                        </p>
                     </div>
                     <div class="params__item">
                         <p class="title">Тип ворот:</p>
@@ -39,7 +44,12 @@
             </div>
         </div>
         <div v-if="object.offerMix" class="row no-gutters">
-            <CompanyObjectItemOffer v-for="offer in object.offerMix" :key="offer.id" :offer="offer" class="main" />
+            <CompanyObjectItemOffer
+                v-for="offer in object.offerMix"
+                :key="offer.id"
+                :offer="offer"
+                class="main"
+            />
         </div>
     </div>
 </template>
@@ -63,5 +73,3 @@ export default {
     }
 };
 </script>
-
-<style></style>

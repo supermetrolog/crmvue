@@ -62,9 +62,13 @@
             </Value>
             <Key>Компания:</Key>
             <Value>
-                <a class="text-primary" :href="$url.company(letter.company_id)" target="_blank">
+                <router-link
+                    class="text-primary"
+                    :to="{ name: 'company', params: { id: letter.company_id } }"
+                    target="_blank"
+                >
                     {{ letter.company.full_name }}
-                </a>
+                </router-link>
             </Value>
             <template v-if="letter.shipping_method">
                 <Key>Тема:</Key>

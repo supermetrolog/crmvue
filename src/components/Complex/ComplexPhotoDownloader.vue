@@ -52,7 +52,7 @@ import Modal from '@/components/common/Modal.vue';
 import VLazyImage from 'v-lazy-image';
 import Button from '@/components/common/Button.vue';
 import { computed, ref, shallowRef } from 'vue';
-import { $generatorURL as $url } from '@/plugins/url.js';
+import { getApiArchiver } from '@/utils/url.js';
 
 const isOpened = shallowRef(false);
 const photos = ref([]);
@@ -78,7 +78,7 @@ const toggleDownload = index => {
     downloads.value[index] = !downloads.value[index];
 };
 const createLink = params => {
-    return $url.api.archiver() + '?files[]=' + params.join('&files[]=');
+    return getApiArchiver() + '?files[]=' + params.join('&files[]=');
 };
 const download = () => {
     const link = createLink(
