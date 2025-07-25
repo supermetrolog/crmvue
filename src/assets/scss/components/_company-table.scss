@@ -414,6 +414,14 @@ tr.CompanyTableEven {
 
         p {
             display: inline;
+
+            &:not(:first-child) {
+                margin-left: 5px;
+            }
+
+            &:not(:last-child)::after {
+                content: ';';
+            }
         }
     }
 
