@@ -56,7 +56,8 @@ const color = computed(() => {
 const today = dayjs().add(3, 'h');
 
 const startedTasksLength = computed(
-    () => props.tasks.filter(task => dayjsFromServer(task.start).isBefore(today, 'day')).length
+    () =>
+        props.tasks.filter(task => dayjsFromServer(task.start).isSameOrBefore(today, 'day')).length
 );
 
 const notStartedTasksLength = computed(() => {

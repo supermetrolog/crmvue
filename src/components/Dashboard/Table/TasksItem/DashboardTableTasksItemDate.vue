@@ -41,7 +41,7 @@ import dayjs from 'dayjs';
 import { computed } from 'vue';
 import { taskOptions } from '@/const/options/task.options.js';
 import { useStore } from 'vuex';
-import { dayjsFromServer, toBeautifulDateFormat } from '@/utils/formatters/date.ts';
+import { dayjsFromServer, nowInServer, toBeautifulDateFormat } from '@/utils/formatters/date.ts';
 import { isString } from '@/utils/helpers/string/isString.js';
 import { Tippy } from 'vue-tippy';
 import UiTooltipIcon from '@/components/common/UI/UiTooltipIcon.vue';
@@ -72,7 +72,7 @@ const startDate = computed(() => startDayjs.value.format('D.MM.YY, HH:mm'));
 
 const isForMe = computed(() => Number(props.task.user_id) === Number(store.getters.THIS_USER.id));
 
-const isStarted = computed(() => startDayjs.value.isBefore(dayjs().add(3, 'h')));
+const isStarted = computed(() => startDayjs.value.isBefore(nowInServer()));
 
 const dateLabel = computed(() => {
     if (isStarted.value) return `до ${endDate.value}`;

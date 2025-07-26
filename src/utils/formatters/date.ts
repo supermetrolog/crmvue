@@ -28,3 +28,7 @@ export function toBeautifulDateFormat(date: MaybeDate, format: string = 'D.MM.YY
 export function toServerDate(date: Date | dayjsDate | string) {
     return dayjs(date).tz(SERVER_TIMEZONE).format(SERVER_DATETIME_FORMAT);
 }
+
+export function nowInServer() {
+    return dayjs().tz(SERVER_TIMEZONE);
+}
