@@ -44,7 +44,7 @@ import UiModal from '@/components/common/UI/UiModal.vue';
 import { computed, ref } from 'vue';
 import UiButton from '@/components/common/UI/UiButton.vue';
 import { plural } from '@/utils/plural.js';
-import CompanyTableItemSummaryComment from '@/components/Company/Table/CompanyTableItemSummaryComment.vue';
+import CompanyTableItemSummaryComment from '@/components/Company/Table/Summary/CompanyTableItemSummaryComment.vue';
 import { useNotify } from '@/utils/use/useNotify.js';
 import api from '@/api/api.js';
 import { useConfirm } from '@/composables/useConfirm.js';

@@ -17,11 +17,12 @@
                     v-if="scheduledCallTasks.length"
                     @click="showScheduledCallTasks"
                     class="fs-2 company-table-item-summary-survey__tab"
-                    color="transparent"
+                    color="white"
                     small
                     :class="{
                         danger: lastScheduledCallDateExpired,
-                        primary: !lastScheduledCallDateExpired
+                        primary: !lastScheduledCallDateExpired,
+                        'op-5': !hasCurrentUserScheduledCall
                     }"
                 >
                     <span>Звонок {{ nearestScheduledCallDate }}</span>
@@ -33,11 +34,12 @@
                     v-if="scheduledVisitTasks.length"
                     @click="showScheduledVisitTasks"
                     class="fs-2 company-table-item-summary-survey__tab"
-                    color="transparent"
+                    color="white"
                     small
                     :class="{
                         danger: lastScheduledVisitDateExpired,
-                        primary: !lastScheduledVisitDateExpired
+                        primary: !lastScheduledVisitDateExpired,
+                        'op-5': !hasCurrentUserScheduledVisit
                     }"
                 >
                     <span>Встреча {{ nearestScheduledVisitDate }}</span>
@@ -57,6 +59,11 @@
                 @show-task="$emit('show-task', $event)"
                 :tasks="baseTasks"
             />
+            <CompanyTableItemSummarySuggest
+                @show-task="$emit('show-task', $event)"
+                @open-survey="$emit('open-survey')"
+                :company
+            />
         </div>
         <CompanyTableItemActions
             @create-task="$emit('create-task')"
@@ -66,7 +73,6 @@
             @disable="$emit('disable')"
             @enable="$emit('enable')"
             @open-chat="$emit('open-chat')"
-            @open-survey="$emit('open-survey')"
             @deleted-from-folder="$emit('deleted-from-folder', $event)"
             :company
             class="mt-2"
@@ -104,17 +110,19 @@
 
 <script setup>
 import CompanyTableItemActions from '@/components/Company/Table/CompanyTableItemActions.vue';
-import CompanyTableItemSummaryTabSurvey from '@/components/Company/Table/CompanyTableItemSummaryTabSurvey.vue';
+import CompanyTableItemSummaryTabSurvey from '@/components/Company/Table/Summary/CompanyTableItemSummaryTabSurvey.vue';
 import { computed, ref, toRef } from 'vue';
 import { useTypedTasks } from '@/composables/task/useTypedTasks';
-import CompanyTableItemSummaryTabTasks from '@/components/Company/Table/CompanyTableItemSummaryTabTasks.vue';
-import CompanyTableItemSummaryTasks from '@/components/Company/Table/CompanyTableItemSummaryTasks.vue';
-import CompanyTableItemSummarySurvey from '@/components/Company/Table/CompanyTableItemSummarySurvey.vue';
+import CompanyTableItemSummaryTabTasks from '@/components/Company/Table/Summary/CompanyTableItemSummaryTabTasks.vue';
+import CompanyTableItemSummaryTasks from '@/components/Company/Table/Summary/CompanyTableItemSummaryTasks.vue';
+import CompanyTableItemSummarySurvey from '@/components/Company/Table/Summary/CompanyTableItemSummarySurvey.vue';
 import UiButton from '@/components/common/UI/UiButton.vue';
 import DashboardTableTasksItem from '@/components/Dashboard/Table/TasksItem/DashboardTableTasksItem.vue';
 import UiModal from '@/components/common/UI/UiModal.vue';
 import { dayjsFromServer } from '@/utils/formatters/date.ts';
 import { now } from '@vueuse/core';
+import { useAuth } from '@/composables/useAuth.js';
+import CompanyTableItemSummarySuggest from '@/components/Company/Table/Summary/Suggest/CompanyTableItemSummarySuggest.vue';
 
 const emit = defineEmits([
     'deleted-from-folder',
@@ -189,4 +197,16 @@ function showScheduledVisitTasks() {
         emit('show-task', scheduledVisitTasks.value[0]);
     }
 }
+
+const { currentUserId } = useAuth();
+
+const hasCurrentUserScheduledCall = computed(() => {
+    return nearestScheduledCall.value && nearestScheduledCall.value.user_id === currentUserId.value;
+});
+
+const hasCurrentUserScheduledVisit = computed(() => {
+    return (
+        nearestScheduledVisit.value && nearestScheduledVisit.value.user_id === currentUserId.value
+    );
+});
 </script>

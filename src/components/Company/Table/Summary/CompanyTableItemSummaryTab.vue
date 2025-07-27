@@ -9,18 +9,13 @@
     </UiButton>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import UiButton from '@/components/common/UI/UiButton.vue';
 import { computed } from 'vue';
 
-const modelValue = defineModel();
+const modelValue = defineModel<string>();
 
-const props = defineProps({
-    name: {
-        type: String,
-        required: true
-    }
-});
+const props = defineProps<{ name: string }>();
 
 const color = computed(() => {
     if (modelValue.value === props.name) return 'gray-light';

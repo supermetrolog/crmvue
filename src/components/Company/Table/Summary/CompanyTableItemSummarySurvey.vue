@@ -5,7 +5,17 @@
             <div class="company-table-item-summary-survey__title">
                 <span class="ml-1">#{{ company.last_survey.id }}.</span>
                 <span v-if="company.last_survey.contact" class="ml-1">
-                    <span>Общение с контактом</span>
+                    <span>
+                        <Tippy :delay="300">
+                            <span
+                                @click.prevent="$emit('open-preview')"
+                                class="company-table-item-summary-survey__link"
+                                >Общение</span
+                            >
+                            <template #content>Нажмите, чтобы просмотреть опрос</template>
+                        </Tippy>
+                        <span> с контактом</span>
+                    </span>
                     <Tippy interactive :interactive-border="40">
                         <template #default>
                             <span class="company-table-item-summary-survey__contact mx-1">
@@ -43,20 +53,6 @@
                     </template>
                 </Tippy>
             </div>
-            <UiDropdownActions
-                v-if="!readOnly"
-                label="Действия"
-                :title="`Опрос #${company.last_survey.id}`"
-                small
-            >
-                <template #menu>
-                    <UiDropdownActionsButton
-                        @handle="$emit('open-preview')"
-                        label="Посмотреть опрос"
-                        icon="fa-solid fa-eye"
-                    />
-                </template>
-            </UiDropdownActions>
         </div>
         <div class="company-table-item-summary-survey__body">
             <CompanyTableItemPinnedMessages
@@ -76,8 +72,6 @@ import { contactOptions } from '@/const/options/contact.options.js';
 import Loader from '@/components/common/Loader.vue';
 import { Tippy } from 'vue-tippy';
 import ContactCard from '@/components/Contact/Card/ContactCard.vue';
-import UiDropdownActions from '@/components/common/UI/DropdownActions/UiDropdownActions.vue';
-import UiDropdownActionsButton from '@/components/common/UI/DropdownActions/UiDropdownActionsButton.vue';
 import CallInlineCard from '@/components/Call/InlineCard/CallInlineCard.vue';
 import { plural } from '@/utils/plural.js';
 import { isNotNullish } from '@/utils/helpers/common/isNotNullish';

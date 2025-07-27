@@ -88,7 +88,7 @@ import CompanyTableItemObjects from '@/components/Company/Table/CompanyTableItem
 import CompanyTableItemRequests from '@/components/Company/Table/CompanyTableItemRequests.vue';
 import CompanyTableDropdown from '@/components/Company/Table/CompanyTableDropdown.vue';
 import CompanyTableItemInfo from '@/components/Company/Table/CompanyTableItemInfo.vue';
-import CompanyTableItemSummary from '@/components/Company/Table/CompanyTableItemSummary.vue';
+import CompanyTableItemSummary from '@/components/Company/Table/Summary/CompanyTableItemSummary.vue';
 
 const store = useStore();
 const router = useRouter();

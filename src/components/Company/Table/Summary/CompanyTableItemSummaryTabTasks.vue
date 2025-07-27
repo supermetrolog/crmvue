@@ -26,31 +26,23 @@
     </Tippy>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import UiButton from '@/components/common/UI/UiButton.vue';
 import { computed } from 'vue';
 import { Tippy } from 'vue-tippy';
 import dayjs from 'dayjs';
-import { dayjsFromServer } from '@/utils/formatters/date.ts';
+import { dayjsFromServer } from '@/utils/formatters/date';
 import { useAuth } from '@/composables/useAuth.js';
 import { plural, pluralTemplate } from '@/utils/plural.js';
+import { Task } from '@/types/task';
 
-const modelValue = defineModel();
+const modelValue = defineModel<string>();
 
-const props = defineProps({
-    tasks: {
-        type: Array,
-        required: true
-    },
-    name: {
-        type: String,
-        required: true
-    }
-});
+const props = defineProps<{ tasks: Task[]; name: string }>();
 
 const color = computed(() => {
     if (modelValue.value === props.name) return 'gray-light';
-    return 'transparent';
+    return 'white';
 });
 
 const today = dayjs().add(3, 'h');

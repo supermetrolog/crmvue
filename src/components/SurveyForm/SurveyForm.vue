@@ -177,7 +177,7 @@ import MessengerQuizFormWarningNoContacts from '@/components/Messenger/Quiz/Form
 import MessengerQuizFormWarningAlreadyCreated from '@/components/Messenger/Quiz/Form/Warning/MessengerQuizFormWarningAlreadyCreated.vue';
 import UiModal from '@/components/common/UI/UiModal.vue';
 import UiButton from '@/components/common/UI/UiButton.vue';
-import { dayjsFromServer, toDateFormat } from '@/utils/formatters/date.js';
+import { dayjsFromServer, toDateFormat } from '@/utils/formatters/date';
 import { SurveyView } from '@/types/survey';
 import { useEventBus, useTimeoutFn } from '@vueuse/core';
 import SurveyFormWarningPending from '@/components/SurveyForm/SurveyFormWarningPending.vue';

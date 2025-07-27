@@ -41,7 +41,7 @@ import { useLinkify } from '@/composables/useLinkify.js';
 import UiClamped from '@/components/common/UiClamped.vue';
 import VueEditor from '@/components/common/Forms/VueEditor.vue';
 import UiButton from '@/components/common/UI/UiButton.vue';
-import { toDateFormat } from '@/utils/formatters/date.ts';
+import { toDateFormat } from '@/utils/formatters/date';
 import { useAuth } from '@/composables/useAuth.js';
 import { UserRoleEnum } from '@/types/user';
 

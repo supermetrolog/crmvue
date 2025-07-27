@@ -14,18 +14,15 @@
     </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import DashboardTableTasksItem from '@/components/Dashboard/Table/TasksItem/DashboardTableTasksItem.vue';
 import { computed } from 'vue';
 import { taskOptions } from '@/const/options/task.options.js';
+import { Task } from '@/types/task';
 
-defineEmits(['show-task']);
-const props = defineProps({
-    tasks: {
-        type: Array,
-        required: true
-    }
-});
+defineEmits<{ (e: 'show-task') }>();
+
+const props = defineProps<{ tasks: Task[] }>();
 
 const sortedTasks = computed(() => {
     return [
