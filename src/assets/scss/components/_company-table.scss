@@ -600,6 +600,18 @@ tr.CompanyTableEven {
     }
 
     &__task-comment {
-        @include mixins.text-overflow(2);
+        display: inline;
+
+        p {
+            display: inline;
+
+            &:not(:first-child) {
+                margin-left: 5px;
+            }
+
+            &:not(:last-child)::after {
+                content: ';';
+            }
+        }
     }
 }

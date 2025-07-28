@@ -17,6 +17,14 @@
                     placement="top"
                     class="col-12"
                 />
+                <MultiSelect
+                    v-model="form.kind"
+                    :v="v$.kind"
+                    label="KIND"
+                    class="col-12"
+                    :options="kindOptions"
+                    placeholder="Укажите KIND.."
+                />
             </UiFormGroup>
         </UiForm>
         <template #actions="{ close }">
@@ -49,6 +57,7 @@ import { isNullish } from '@/utils/helpers/common/isNullish.ts';
 import api from '@/api/api.js';
 import { captureException } from '@sentry/vue';
 import { useNotify } from '@/utils/use/useNotify.js';
+import MultiSelect from '@/components/common/Forms/MultiSelect.vue';
 
 const emit = defineEmits(['created', 'close']);
 const props = defineProps({
@@ -58,16 +67,26 @@ const props = defineProps({
     }
 });
 
+const kindOptions = {
+    pin: 'Закреп',
+    comment: 'Комментарий',
+    note: 'Заметка'
+};
+
 const searchCompany = useSearchCompany(toRef(() => props.message.to.model_id));
 
 const form = reactive({
-    company_id: props.message.to.model_id
+    company_id: props.message.to.model_id,
+    kind: 'note'
 });
 
 const { v$, validate } = useValidation(
     {
         company_id: {
             required: helpers.withMessage('Выберите компанию!', required)
+        },
+        kind: {
+            required: helpers.withMessage('Выберите KIND!', required)
         }
     },
     form
@@ -83,8 +102,9 @@ async function submit() {
     isLoading.value = true;
 
     try {
-        const response = await api.companies.pinMessage(form.company_id, {
-            message_id: props.message.id
+        const response = await api.companies.linkMessage(form.company_id, {
+            message_id: props.message.id,
+            kind: form.kind
         });
 
         notify.success('Сообщение успешно закреплено');
