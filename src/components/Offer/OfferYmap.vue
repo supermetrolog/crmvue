@@ -5,6 +5,7 @@
         @removedDone="$emit('removed-done', $event)"
         @updated="$emit('updated', $event)"
         @objectClick="selectOffers"
+        @cluster-click="onClickCluster"
         :class="{ loading: loading }"
         :settings="yandexMapOptions.settings"
         :styles="styles"
@@ -32,6 +33,7 @@ import { ref, watch } from 'vue';
 import { getLinkComplex } from '@/utils/url.js';
 import YandexMapLoader from '@/components/common/YandexMap/YandexMapLoader.vue';
 import { isNotNullish } from '@/utils/helpers/common/isNotNullish.ts';
+import { captureMessage } from '@sentry/vue';
 
 const yandexMapOptions = {
     settings: {
@@ -97,8 +99,8 @@ const getFooter = offer => {
 
 const searchType = ref('offers');
 
-function isOffer(object) {
-    return isNotNullish(object.object_id);
+function isObject(object) {
+    return isNotNullish(object.morph) && object.morph === 'c_industry';
 }
 
 function selectOffers(objectId) {
@@ -106,13 +108,22 @@ function selectOffers(objectId) {
 
     if (!object) return;
 
-    if (isOffer(object)) {
-        searchType.value = 'offers';
-    } else {
+    if (isObject(object)) {
         searchType.value = 'objects';
+    } else {
+        searchType.value = 'offers';
     }
 
     offers.value = [objectId];
+}
+
+function selectObjects(objectIds) {
+    const objects = props.list.filter(element => objectIds.includes(Number(element.id)));
+
+    if (objects.length > 0) {
+        searchType.value = 'offers';
+        offers.value = objects.map(el => el.id);
+    }
 }
 
 watch(
@@ -122,4 +133,27 @@ watch(
     },
     { immediate: true }
 );
+
+// cluster
+
+function onClickCluster(clusterId, objectManager, event) {
+    const currentZoom = objectManager.getMap().getZoom();
+    const currentZoomRange = objectManager.getMap().zoomRange?.getCurrent() ?? [0, 21];
+
+    if (currentZoom >= currentZoomRange[1]) {
+        const clusterManager = event.currentTarget;
+        const cluster = clusterManager.getById(clusterId);
+
+        if (!cluster) {
+            captureMessage(`Cluster with id "${clusterId}" not found`);
+            return;
+        }
+
+        const features = cluster.features;
+
+        if (features?.length > 1) {
+            selectObjects(features.map(feature => feature.id));
+        }
+    }
+}
 </script>

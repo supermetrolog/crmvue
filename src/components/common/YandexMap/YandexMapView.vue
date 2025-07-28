@@ -35,7 +35,7 @@ export default {
         YandexMapSelectionBehavior,
         yandexMap
     },
-    emits: ['mounted'],
+    emits: ['mounted', 'cluster-click', 'selectionDone', 'object-click', 'updated', 'removedDone'],
     provide() {
         return {
             add: this.addMarker,
@@ -107,7 +107,7 @@ export default {
                     useMapMargin: true,
                     zoomMargin: null,
                     viewportMargin: null,
-                    sableClickZoom: false,
+                    clusterDisableClickZoom: false,
                     clusterOpenBalloonOnClick: false,
                     // clusterIconContentLayout: null
                     clusterBalloonLayout: null
@@ -176,11 +176,13 @@ export default {
         },
         getObjectManager() {
             let objectManager = this.$options.static.objectManager;
+
             if (!objectManager) {
                 objectManager = new window.ymaps.ObjectManager({
                     clusterize: true,
                     ...this.clusterOptions
                 });
+
                 objectManager.objects.events.add(['click'], this.objectEventHandler);
                 objectManager.clusters.events.add(['click'], this.clusterEventHandler);
             }
@@ -201,7 +203,8 @@ export default {
             this.$emit(
                 'cluster-' + event.get('type'),
                 event.get('objectId'),
-                this.getObjectManager()
+                this.getObjectManager(),
+                event.originalEvent
             );
         },
 
