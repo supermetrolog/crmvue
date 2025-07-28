@@ -50,8 +50,8 @@
                 @open-preview="$emit('show-survey')"
                 @edit-comment="$emit('edit-survey-comment')"
                 @show-task="$emit('show-task', $event)"
-                @show-message="$emit('show-message', $event)"
-                @unpin-message="$emit('unpin-message', $event)"
+                @show-comments="$emit('show-company-comments')"
+                @show-notes="$emit('show-company-notes')"
                 :company
             />
         </Td>
@@ -88,15 +88,13 @@ import CompanyTableItemObjects from '@/components/Company/Table/CompanyTableItem
 import CompanyTableItemRequests from '@/components/Company/Table/CompanyTableItemRequests.vue';
 import CompanyTableDropdown from '@/components/Company/Table/CompanyTableDropdown.vue';
 import CompanyTableItemInfo from '@/components/Company/Table/CompanyTableItemInfo.vue';
-import CompanyTableItemSummary from '@/components/Company/Table/CompanyTableItemSummary.vue';
+import CompanyTableItemSummary from '@/components/Company/Table/Summary/CompanyTableItemSummary.vue';
 
 const store = useStore();
 const router = useRouter();
 
 defineEmits([
     'deleted-from-folder',
-    'show-message',
-    'unpin-message',
     'create-task',
     'create-request-task',
     'show-tasks',
@@ -108,7 +106,9 @@ defineEmits([
     'edit-survey-comment',
     'schedule-call',
     'schedule-visit',
-    'schedule-event'
+    'schedule-event',
+    'show-company-notes',
+    'show-company-comments'
 ]);
 
 const props = defineProps({

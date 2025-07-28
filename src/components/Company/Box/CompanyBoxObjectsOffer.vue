@@ -34,35 +34,25 @@
                 {{ offer.calc_price_safe_pallet }}
             </WithUnitType>
         </UiField>
-        <a :href="oldOfferUrl" target="_blank" class="button button--small">Старая версия</a>
+        <a :href="offerOldUrl" target="_blank" class="button button--small">Старая версия</a>
     </a>
 </template>
 
-<script>
+<script setup>
 import WithUnitType from '@/components/common/WithUnitType.vue';
 import { unitTypes } from '@/const/unitTypes.js';
 import UiTooltipIcon from '@/components/common/UI/UiTooltipIcon.vue';
 import UiField from '@/components/common/UI/UiField.vue';
+import { getLinkOfferByObject, getLinkOfferOldByObject } from '@/utils/url.js';
+import { computed } from 'vue';
 
-export default {
-    name: 'CompanyBoxObjectsOffer',
-    components: { UiField, UiTooltipIcon, WithUnitType },
-    props: {
-        offer: {
-            type: Object,
-            required: true
-        }
-    },
-    computed: {
-        unitTypes() {
-            return unitTypes;
-        },
-        offerUrl() {
-            return this.$url.offerByObject(this.offer);
-        },
-        oldOfferUrl() {
-            return this.$url.offerOldByObject(this.offer);
-        }
+const props = defineProps({
+    offer: {
+        type: Object,
+        required: true
     }
-};
+});
+
+const offerUrl = computed(() => getLinkOfferByObject(props.offer));
+const offerOldUrl = computed(() => getLinkOfferOldByObject(props.offer));
 </script>

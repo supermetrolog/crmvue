@@ -5,7 +5,7 @@
 import { createTourStepElementGenerator } from '@/composables/useTour/useTourStep';
 import { useTour } from '@/composables/useTour/useTour';
 
-const createTourStepElement = createTourStepElementGenerator('call-scheduler');
+const createTourStepElement = createTourStepElementGenerator('scheduler');
 
 const { run } = useTour('call-scheduler', {
     autorun: true,

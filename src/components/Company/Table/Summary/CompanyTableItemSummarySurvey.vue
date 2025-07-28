@@ -1,11 +1,21 @@
 <template>
     <div class="company-table-item-summary-survey">
-        <Loader v-if="company.last_survey?.isLoading || isUpdating" small />
+        <Loader v-if="company.last_survey?.isLoading" small />
         <div v-if="company.last_survey" class="company-table-item-summary-survey__header">
             <div class="company-table-item-summary-survey__title">
                 <span class="ml-1">#{{ company.last_survey.id }}.</span>
                 <span v-if="company.last_survey.contact" class="ml-1">
-                    <span>Общение с контактом</span>
+                    <span>
+                        <Tippy :delay="300">
+                            <span
+                                @click.prevent="$emit('open-preview')"
+                                class="company-table-item-summary-survey__link"
+                                >Общение</span
+                            >
+                            <template #content>Нажмите, чтобы просмотреть опрос</template>
+                        </Tippy>
+                        <span> с контактом</span>
+                    </span>
                     <Tippy interactive :interactive-border="40">
                         <template #default>
                             <span class="company-table-item-summary-survey__contact mx-1">
@@ -43,28 +53,19 @@
                     </template>
                 </Tippy>
             </div>
-            <UiDropdownActions
-                v-if="!readOnly"
-                label="Действия"
-                :title="`Опрос #${company.last_survey.id}`"
-                small
-            >
-                <template #menu>
-                    <UiDropdownActionsButton
-                        @handle="$emit('open-preview')"
-                        label="Посмотреть опрос"
-                        icon="fa-solid fa-eye"
-                    />
-                </template>
-            </UiDropdownActions>
         </div>
         <div class="company-table-item-summary-survey__body">
-            <CompanyTableItemPinnedMessages
-                v-if="company.pinned_messages.length"
+            <CompanyTableItemSummaryLinkedMessages
+                @show-comments="$emit('show-comments')"
+                @show-notes="$emit('show-notes')"
+                @show-message="$emit('show-message', $event)"
+                @create-note="$emit('create-note', $event)"
+                @update-note="$emit('update-note', $event)"
+                @delete-note="$emit('delete-note')"
+                @unpin-message="$emit('unpin-message')"
                 :read-only
                 :company
             />
-            <p v-else-if="!company.last_survey" class="text-grey op-5 fs-2">Без комментариев..</p>
         </div>
     </div>
 </template>
@@ -76,14 +77,19 @@ import { contactOptions } from '@/const/options/contact.options.js';
 import Loader from '@/components/common/Loader.vue';
 import { Tippy } from 'vue-tippy';
 import ContactCard from '@/components/Contact/Card/ContactCard.vue';
-import UiDropdownActions from '@/components/common/UI/DropdownActions/UiDropdownActions.vue';
-import UiDropdownActionsButton from '@/components/common/UI/DropdownActions/UiDropdownActionsButton.vue';
 import CallInlineCard from '@/components/Call/InlineCard/CallInlineCard.vue';
 import { plural } from '@/utils/plural.js';
 import { isNotNullish } from '@/utils/helpers/common/isNotNullish';
-import CompanyTableItemPinnedMessages from '@/components/Company/Table/CompanyTableItemPinnedMessages.vue';
+import CompanyTableItemSummaryLinkedMessages from '@/components/Company/Table/Summary/CompanyTableItemSummaryLinkedMessages.vue';
 
-defineEmits(['open-preview']);
+defineEmits([
+    'open-preview',
+    'show-notes',
+    'show-comments',
+    'create-note',
+    'update-note',
+    'unpin-message'
+]);
 
 const props = defineProps({
     company: {

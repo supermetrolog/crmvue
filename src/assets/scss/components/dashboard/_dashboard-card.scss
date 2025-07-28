@@ -41,7 +41,7 @@
         }
 
         &:hover::after {
-           transform: translateX(0);
+            transform: translateX(0);
         }
     }
 }
@@ -90,10 +90,10 @@
         background-color: rgba(230, 233, 235, 0.3);
 
         @include mixins.bg-color-scheme(
-            danger variables.$bg-danger-l none variables.$cl-danger,
-            primary variables.$bg-primary-l,
-            success variables.$bg-success-l none variables.$cl-success,
-            warning variables.$bg-warning-l none variables.$cl-warning
+                        danger variables.$bg-danger-l none variables.$cl-danger,
+                        primary variables.$bg-primary-l,
+                        success variables.$bg-success-l none variables.$cl-success,
+                        warning variables.$bg-warning-l none variables.$cl-warning
         );
     }
 }
@@ -175,10 +175,24 @@
         }
     }
 
+    &.started {
+        .dashboard-card-task__body {
+            background-color: rgba(255, 173, 173, 0.3);
+
+            &:hover {
+                background-color: #ffadad;
+            }
+        }
+
+        .dashboard-card-task-date {
+            background-color: #fcd3d3;
+        }
+    }
+
 
     &.expired {
         .dashboard-card-task__body {
-            background-color: rgba(255, 173, 173, 0.8);
+            background-color: rgb(255, 173, 173);
             font-weight: 500;
 
             &:hover {
@@ -275,7 +289,7 @@
     &__moves {
         position: relative;
     }
-    
+
     &__row {
         > span:first-child {
             opacity: .5;
@@ -538,7 +552,7 @@
     }
 
     &__purpose {
-        width: calc(25% - 4px)!important;
+        width: calc(25% - 4px) !important;
         max-width: 50px;
         aspect-ratio: 1;
         @include mixins.flex-box($a: center, $j: center);

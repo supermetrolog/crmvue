@@ -8,6 +8,8 @@ import duration from 'dayjs/plugin/duration';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
 import timezone from 'dayjs/plugin/timezone';
 import utc from 'dayjs/plugin/utc';
+import isSameOrAfter from 'dayjs/plugin/isSameOrAfter';
+import isSameOrBefore from 'dayjs/plugin/isSameOrBefore';
 
 export function initDayjs() {
     dayjs.extend(isToday);
@@ -19,5 +21,7 @@ export function initDayjs() {
     dayjs.extend(timezone);
     dayjs.extend(minMax);
     dayjs.extend(utc);
+    dayjs.extend(isSameOrAfter);
+    dayjs.extend(isSameOrBefore);
     dayjs.locale('ru');
 }

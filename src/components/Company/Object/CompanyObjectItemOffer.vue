@@ -6,7 +6,7 @@
     >
         <div class="row no-gutters px-2 object-offer-inf">
             <div class="col-12 text-left">
-                <a :href="$url.offerByObject(offer)" target="_blank">
+                <a :href="offerUrl" target="_blank">
                     <span class="object-offer__visual_id">{{ offer.visual_id }}</span>
                     <span>{{ offer.deal_type_name }}</span>
                     <span>
@@ -33,15 +33,15 @@
     </div>
 </template>
 
-<script>
-export default {
-    name: 'CompanyObjectItemOffer',
-    props: {
-        offer: {
-            type: Object
-        }
-    }
-};
-</script>
+<script setup>
+import { computed } from 'vue';
+import { getLinkOfferByObject } from '@/utils/url.js';
 
-<style></style>
+const props = defineProps({
+    offer: {
+        type: Object
+    }
+});
+
+const offerUrl = computed(() => getLinkOfferByObject(props.offer));
+</script>

@@ -30,17 +30,7 @@ export default {
         CallerManagerTransitionList
     },
     props: {
-        call: {
-            type: Object
-        }
-    },
-    computed: {},
-    methods: {
-        getCompanyUrl(id) {
-            return this.$url.company(id);
-        }
+        call: Object
     }
 };
 </script>
-
-<style></style>

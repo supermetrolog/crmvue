@@ -66,6 +66,7 @@ import { entityProperties } from '@/const/properties/properties';
 import ComplexPurposes from '@/components/Complex/ComplexPurposes.vue';
 import { mapGetters } from 'vuex';
 import { deleteObjectsWithEmptyProperties } from '@/utils/deleteObjectsWithEmptyProperties.js';
+import { getLinkPDF } from '@/utils/url.js';
 
 export default {
     name: 'ComplexOfferItem',
@@ -109,7 +110,7 @@ export default {
                 notifications: { value: false },
                 pdf: {
                     handler: () => {
-                        const urlLink = this.$url.pdf(
+                        const urlLink = getLinkPDF(
                             {
                                 type_id: 1,
                                 offer_id: this.tradeOffer.id,

@@ -25,7 +25,7 @@
                                     class="complex-document"
                                 >
                                     <a
-                                        :href="$url.file(presentation)"
+                                        :href="getLinkFile(presentation)"
                                         target="_blank"
                                         class="complex-document__link"
                                     >
@@ -73,6 +73,7 @@ import PropertyGrid from '@/components/common/Property/PropertyGrid.vue';
 import { mapper } from '@/utils/mapper';
 import { entityProperties } from '@/const/properties/properties';
 import { computed } from 'vue';
+import { getLinkFile } from '@/utils/url.js';
 
 const props = defineProps({
     complex: {

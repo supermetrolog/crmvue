@@ -45,10 +45,10 @@ import { useStore } from 'vuex';
 import ComplexDealPrice from '@/components/Complex/Deal/Price/ComplexDealPrice.vue';
 import ComplexPurposes from '@/components/Complex/ComplexPurposes.vue';
 import { computed, inject, shallowRef } from 'vue';
-import { $generatorURL as $url } from '@/plugins/url.js';
 import { useRoute } from 'vue-router';
 import { notify } from '@kyvg/vue3-notification';
 import { dealProperties } from '@/const/properties/deal.properties.js';
+import { getLinkOffer, getLinkPDF, getLinkUpload } from '@/utils/url.js';
 
 const store = useStore();
 const route = useRoute();
@@ -78,7 +78,7 @@ const photos = computed(() => {
             : Object.values(props.deal.summaryBlock.photos);
 
     return photos.map(el => ({
-        src: $url.api.objects() + el
+        src: getLinkUpload(el)
     }));
 });
 
@@ -104,7 +104,7 @@ const actionButtons = computed(() => {
         pdf: {
             disabled: !hasActiveOffers.value,
             handler: () => {
-                const urlLink = $url.pdf(
+                const urlLink = getLinkPDF(
                     { type_id: 2, offer_id: props.deal.id, object_id: props.deal.object_id },
                     store.getters.THIS_USER.id
                 );
@@ -114,7 +114,7 @@ const actionButtons = computed(() => {
         delete: {},
         copy: {
             handler: async () => {
-                const url = $url.offer(route.params.complex_id, props.deal.id);
+                const url = getLinkOffer(route.params.complex_id, props.deal.id);
                 await navigator.clipboard.writeText(url);
                 notify('Ссылка на сделку скопирована');
             }

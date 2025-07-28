@@ -43,7 +43,7 @@
 
 <script setup lang="ts">
 import { computed, toRef, useTemplateRef } from 'vue';
-import { toBeautifulDateFormat } from '@/utils/formatters/date.js';
+import { toBeautifulDateFormat } from '@/utils/formatters/date';
 import Avatar from '@/components/common/Avatar.vue';
 import TaskCardButton from '@/components/TaskCard/TaskCardButton.vue';
 import { useAuth } from '@/composables/useAuth.js';

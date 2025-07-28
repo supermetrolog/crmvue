@@ -1,6 +1,6 @@
 import { WayOfSending } from '@/const/const.js';
 import { formatterObject } from '@/plugins/index.js';
-import { $generatorURL } from '@/plugins/url';
+import { getLinkOfferByObject } from '@/utils/url.js';
 
 export const DEFAULT_COMMENT_TYPE = 1;
 export const NOTIFICATION_COMMENT_TYPE = 2;
@@ -186,7 +186,7 @@ class DoneComment extends Comment {
     }
 
     _getOfferUrl(offer) {
-        return $generatorURL.offerByObject(offer);
+        return getLinkOfferByObject(offer);
     }
 }
 

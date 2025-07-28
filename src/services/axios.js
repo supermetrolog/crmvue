@@ -1,6 +1,6 @@
 import { setRequestError } from '@/api/helpers/setRequestError.js';
 import axios from 'axios';
-import { $generatorURL } from '@/plugins/url.js';
+import { getApiUrl } from '@/utils/url.js';
 
 const ACCESS_TOKEN_PREFIX = 'Bearer';
 
@@ -26,7 +26,7 @@ async function axiosResponseErrorInterceptor(error) {
 }
 
 export function initAxios() {
-    axios.defaults.baseURL = $generatorURL.api.url();
+    axios.defaults.baseURL = getApiUrl();
     axios.interceptors.request.use(axiosRequestInterceptor);
     axios.interceptors.response.use(response => response, axiosResponseErrorInterceptor);
 }

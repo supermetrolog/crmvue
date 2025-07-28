@@ -53,10 +53,7 @@
                         <Spinner v-if="isInitialLoading" />
                         <component
                             :is="currentViewComponentName"
-                            @show-message="showPinnedMessage"
-                            @unpin-message="unpinMessage"
                             @deleted-from-folder="onDeletedFromFolder"
-                            @create-pinned-message="createPinnedMessage"
                             @create-task="createCompanyTask"
                             @show-tasks="showTasks"
                             @disable-company="disableCompany"
@@ -65,6 +62,8 @@
                             @schedule-call="scheduleCall"
                             @schedule-visit="scheduleVisit"
                             @schedule-event="scheduleEvent"
+                            @show-company-comments="showCompanyComments"
+                            @show-company-notes="showCompanyNotes"
                             :companies="COMPANIES"
                             :loader="isLoading"
                         />
@@ -85,28 +84,6 @@
                 @close="companyFormIsVisible = false"
                 @created="getCompanies"
             />
-            <FormModalChatMemberMessage
-                v-if="messageFormIsVisible"
-                @close="closeMessageForm"
-                @created="onCreatedMessage"
-                :model-id="currentCompany.id"
-                model-type="company"
-            />
-            <UiModal
-                v-model:visible="pinnedMessageViewIsVisible"
-                title="Просмотр закрепленного сообщения"
-                width="800"
-            >
-                <UiCol :cols="12">
-                    <Spinner v-if="pinnedMessageIsLoading" label="Загрузка сообщения.." />
-                    <MessengerChatMessage
-                        v-else-if="pinnedMessage"
-                        :message="pinnedMessage"
-                        :editable="false"
-                        pinned
-                    />
-                </UiCol>
-            </UiModal>
             <UiModal
                 v-slot="{ close }"
                 v-model:visible="tasksIsVisible"
@@ -144,6 +121,16 @@
                 @created="onCreatedScheduledEvent"
                 :company="scheduleEventCompany"
             />
+            <CompanyTablePreviewComments
+                v-if="commentsModalIsVisible"
+                @close="closeCompanyComments"
+                :company="commentsCompany"
+            />
+            <CompanyTablePreviewNotes
+                v-if="notesModalIsVisible"
+                @close="closeCompanyNotes"
+                :company="notesCompany"
+            />
         </teleport>
     </section>
 </template>
@@ -162,30 +149,26 @@ import { useTableContent } from '@/composables/useTableContent.js';
 import { useRoute, useRouter } from 'vue-router';
 import Spinner from '@/components/common/Spinner.vue';
 import { useMobile } from '@/composables/useMobile.js';
-import { dayjsFromServer } from '@/utils/formatters/date.ts';
 import UserFolders from '@/components/UserFolder/UserFolders.vue';
 import { isNotNullish } from '@/utils/helpers/common/isNotNullish.ts';
 import { useDebounceFn, useEventBus, useTimeoutFn } from '@vueuse/core';
 import UiButton from '@/components/common/UI/UiButton.vue';
-import FormModalChatMemberMessage from '@/components/Forms/FormModalChatMemberMessage.vue';
 import api from '@/api/api.js';
-import MessengerChatMessage from '@/components/Messenger/Chat/Message/MessengerChatMessage.vue';
 import UiModal from '@/components/common/UI/UiModal.vue';
 import UiCol from '@/components/common/UI/UiCol.vue';
-import { useConfirm } from '@/composables/useConfirm.js';
 import { useNotify } from '@/utils/use/useNotify.js';
 import { useTaskManager } from '@/composables/useTaskManager.js';
 import { getCompanyShortName } from '@/utils/formatters/models/company.js';
 import DashboardTableTasks from '@/components/Dashboard/Table/DashboardTableTasks.vue';
 import { taskOptions } from '@/const/options/task.options.js';
 import { useAuth } from '@/composables/useAuth.js';
-import { captureException } from '@sentry/vue';
 import FormCompanyDisable from '@/components/Forms/Company/FormCompanyDisable.vue';
 import { useCompanyDisable } from '@/components/Company/useCompanyDisable.js';
-import { spliceById } from '@/utils/helpers/array/spliceById.js';
 import CallScheduler from '@/components/CallScheduler/CallScheduler.vue';
 import VisitScheduler from '@/components/VisitScheduler/VisitScheduler.vue';
 import EventScheduler from '@/components/EventScheduler/EventScheduler.vue';
+import CompanyTablePreviewComments from '@/components/Company/Table/CompanyTablePreviewComments.vue';
+import CompanyTablePreviewNotes from '@/components/Company/Table/CompanyTablePreviewNotes.vue';
 
 const route = useRoute();
 // const router = useRouter();
@@ -280,79 +263,7 @@ function onDeletedFromFolder(companyId, folderId) {
 
 // pinned message
 
-const currentCompany = shallowRef(null);
-const messageFormIsVisible = ref(false);
-
-function createPinnedMessage(company) {
-    currentCompany.value = company;
-    messageFormIsVisible.value = true;
-}
-
-function closeMessageForm() {
-    messageFormIsVisible.value = false;
-    currentCompany.value = null;
-}
-
-const isPinning = ref(false);
-
-async function onCreatedMessage(message) {
-    const companyId = currentCompany.value.id;
-
-    closeMessageForm();
-
-    isPinning.value = true;
-
-    try {
-        const pinnedMessage = await api.companies.pinMessage(companyId, { message_id: message.id });
-
-        const companyIndex = COMPANIES.value.findIndex(
-            company => company.id === pinnedMessage.entity_id
-        );
-        if (companyIndex !== -1)
-            COMPANIES.value[companyIndex].pinned_messages.unshift(pinnedMessage);
-    } finally {
-        isPinning.value = false;
-    }
-}
-
-const pinnedMessage = ref(null);
-const pinnedMessageViewIsVisible = ref(false);
-const pinnedMessageIsLoading = ref(false);
-
-async function showPinnedMessage(message) {
-    pinnedMessageIsLoading.value = true;
-    pinnedMessageViewIsVisible.value = true;
-
-    try {
-        pinnedMessage.value = await api.messenger.getMessage(message.id);
-        pinnedMessage.value.dayjs_date = dayjsFromServer(pinnedMessage.value.created_at);
-    } finally {
-        pinnedMessageIsLoading.value = false;
-    }
-}
-
-const { confirm } = useConfirm();
 const notify = useNotify();
-
-async function unpinMessage(message) {
-    const confirmed = await confirm(
-        'Открепить сообщение',
-        'Вы уверены, что хотите открепить сообщение?'
-    );
-    if (!confirmed) return;
-
-    try {
-        await api.companies.unpinMessage(message.id);
-
-        const companyIndex = COMPANIES.value.findIndex(company => company.id === message.entity_id);
-        if (companyIndex !== -1) {
-            spliceById(COMPANIES.value[companyIndex].pinned_messages, message.id);
-        }
-    } catch (error) {
-        notify.error('Произошла ошибка. Попробуйте позже');
-        captureException(error, { company_id: message.entity_id });
-    }
-}
 
 // tasks
 
@@ -547,5 +458,33 @@ function closeScheduleEventModal() {
 function onCreatedScheduledEvent(task) {
     addTaskToCompany(task, scheduleEventCompany.value);
     closeScheduleEventModal();
+}
+
+// linked messages preview
+
+const commentsModalIsVisible = ref(false);
+const commentsCompany = shallowRef(null);
+
+function showCompanyComments(company) {
+    commentsCompany.value = company;
+    commentsModalIsVisible.value = true;
+}
+
+function closeCompanyComments() {
+    commentsModalIsVisible.value = false;
+    commentsCompany.value = null;
+}
+
+const notesModalIsVisible = ref(false);
+const notesCompany = shallowRef(null);
+
+function showCompanyNotes(company) {
+    notesCompany.value = company;
+    notesModalIsVisible.value = true;
+}
+
+function closeCompanyNotes() {
+    notesModalIsVisible.value = false;
+    notesCompany.value = null;
 }
 </script>

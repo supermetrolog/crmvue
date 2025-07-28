@@ -1,12 +1,12 @@
 <template>
     <div class="d-flex ml-auto gap-2">
         <SurveyFormStepperRelationsButton
-            v-if="company.pinned_messages?.length"
+            v-if="company.comments_count"
             @click="pinnedMessagesModalIsVisible = true"
             icon="fa-regular fa-message"
         >
             <span>Комментарии</span>
-            <span class="ml-1">({{ company.pinned_messages?.length }})</span>
+            <span class="ml-1">({{ company.comments_count }})</span>
         </SurveyFormStepperRelationsButton>
         <SurveyFormStepperRelationsButton
             v-if="survey && baseTasks.length"
@@ -49,34 +49,6 @@
             </span>
         </SurveyFormStepperRelationsButton>
     </div>
-    <UiModal
-        v-model:visible="pinnedMessagesModalIsVisible"
-        title="Закрепленные комментарии"
-        :width="600"
-    >
-        <div class="d-flex flex-column gap-2">
-            <MessengerDialogLastMessage
-                v-for="message in company.pinned_messages"
-                :key="message.id"
-                :last-message="message.message"
-                class="company-table-item__message w-100"
-                only-avatar
-                column
-            >
-                <template #after>
-                    <UiDropdownActions small label="Действия над сообщением" class="ml-auto">
-                        <template #menu>
-                            <UiDropdownActionsButton
-                                @handle="unpinMessage(message)"
-                                label="Открепить сообщение"
-                                icon="fa-solid fa-trash"
-                            />
-                        </template>
-                    </UiDropdownActions>
-                </template>
-            </MessengerDialogLastMessage>
-        </div>
-    </UiModal>
     <UiModal v-model:visible="tasksModalIsVisible" title="Задачи по опросу" :width="800">
         <div class="d-flex flex-column gap-2">
             <DashboardTableTasksItem
@@ -108,6 +80,11 @@
         </div>
     </UiModal>
     <teleport to="body">
+        <CompanyTablePreviewComments
+            v-if="pinnedMessagesModalIsVisible"
+            @close="pinnedMessagesModalIsVisible = false"
+            :company
+        />
         <TaskPreview
             v-model:visible="taskPreviewIsVisible"
             @closed="currentTask = null"
@@ -120,18 +97,11 @@
 import { computed, ref, toRef } from 'vue';
 import UiModal from '@/components/common/UI/UiModal.vue';
 import DashboardTableTasksItem from '@/components/Dashboard/Table/TasksItem/DashboardTableTasksItem.vue';
-import MessengerDialogLastMessage from '@/components/Messenger/Dialog/MessengerDialogLastMessage.vue';
-import UiDropdownActionsButton from '@/components/common/UI/DropdownActions/UiDropdownActionsButton.vue';
-import UiDropdownActions from '@/components/common/UI/DropdownActions/UiDropdownActions.vue';
-import { useConfirm } from '@/composables/useConfirm.js';
-import { useNotify } from '@/utils/use/useNotify.js';
-import api from '@/api/api.js';
-import { spliceById } from '@/utils/helpers/array/spliceById.js';
-import { captureException } from '@sentry/vue';
 import TaskPreview from '@/components/TaskPreview/TaskPreview.vue';
 import SurveyFormStepperRelationsButton from '@/components/SurveyForm/SurveyFormStepperRelationsButton.vue';
 import { taskOptions } from '@/const/options/task.options.js';
 import { useTypedTasks } from '@/composables/task/useTypedTasks.ts';
+import CompanyTablePreviewComments from '@/components/Company/Table/CompanyTablePreviewComments.vue';
 
 const props = defineProps({
     survey: Object,
@@ -177,27 +147,6 @@ function showVisits() {
 
 const pinnedMessagesModalIsVisible = ref(false);
 const tasksModalIsVisible = ref(false);
-
-// pinned messages
-
-const { confirm } = useConfirm();
-const notify = useNotify();
-
-async function unpinMessage(message) {
-    const confirmed = await confirm(
-        'Открепить сообщение',
-        'Вы уверены, что хотите открепить сообщение?'
-    );
-    if (!confirmed) return;
-
-    try {
-        await api.companies.unpinMessage(message.id);
-        spliceById(props.company.pinned_messages, message.id);
-    } catch (error) {
-        notify.error('Произошла ошибка. Попробуйте позже');
-        captureException(error, { company_id: message.entity_id });
-    }
-}
 
 // tasks
 
