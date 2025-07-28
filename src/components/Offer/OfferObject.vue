@@ -91,7 +91,7 @@ const spinnerLabel = computed(() => {
 });
 
 const fetchObjects = async () => {
-    const response = await api.offers.search({ id: props.offerIds[0] });
+    const response = await api.offers.search({ ids: props.offerIds });
     return response.data;
 };
 

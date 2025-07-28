@@ -380,9 +380,6 @@ function extractTradeOffers() {
     activeTradeOffers.value = activeOffers;
     passiveTradeOffers.value = passiveOffers;
     completedTradeOffers.value = completedOffers;
-
-    console.log(activeTradeOffers.value);
-    console.log(props.object);
 }
 
 watch(() => props.object.id, extractTradeOffers, { immediate: true });
