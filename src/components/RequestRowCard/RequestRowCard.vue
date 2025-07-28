@@ -34,7 +34,14 @@
                     <span v-if="locationText.length">{{ locationText }}</span>
                     <span v-else>Неизвестно</span>
                 </p>
-                <div class="request-row-card__date">Создан {{ createdAt }}</div>
+                <Tippy
+                    v-if="createdAtIsInvalid"
+                    :delay="200"
+                    content="Дата создания запроса утеряна и не может быть восстановлена"
+                >
+                    <div class="request-row-card__date">Обновлен {{ updatedAt }}</div>
+                </Tippy>
+                <div v-else class="request-row-card__date">Создан {{ createdAt }}</div>
             </div>
         </div>
         <div class="request-row-card__body">
@@ -90,6 +97,7 @@ import UiField from '@/components/common/UI/UiField.vue';
 import RequestRowCardTimelineStep from '@/components/RequestRowCard/RequestRowCardTimelineStep.vue';
 import { ucFirst } from '@/utils/formatters/string.js';
 import { plural } from '@/utils/plural.js';
+import { Tippy } from 'vue-tippy';
 
 defineEmits(['open-timeline']);
 const props = defineProps({
@@ -271,7 +279,10 @@ const locationText = computed(() => {
     return locations.join(', ');
 });
 
+const createdAtIsInvalid = computed(() => props.request.created_at === '0000-00-00 00:00:00');
+
 const createdAt = computed(() => toDateFormat(props.request.created_at, 'D.MM.YYг.'));
+const updatedAt = computed(() => toDateFormat(props.request.updated_at, 'D.MM.YYг.'));
 
 // full version
 
