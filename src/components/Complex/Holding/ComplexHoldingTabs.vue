@@ -115,8 +115,8 @@ import { entityProperties } from '@/const/properties/properties';
 import PropertyGrid from '@/components/common/Property/PropertyGrid.vue';
 import EmptyData from '@/components/common/EmptyData.vue';
 import { computed, inject, onMounted, ref } from 'vue';
-import { $generatorURL as $url } from '@/plugins/url.js';
 import { useRoute } from 'vue-router';
+import { getLinkCadastral, getLinkUpload } from '@/utils/url.js';
 
 const route = useRoute();
 
@@ -150,7 +150,7 @@ const actionButtons = computed(() => {
         cadastral: {
             disabled: !props.object.cadastral_number,
             handler: () => {
-                window.open($url.cadastral(props.object.cadastral_number), '_blank');
+                window.open(getLinkCadastral(props.object.cadastral_number), '_blank');
             }
         },
         photos: {
@@ -163,7 +163,7 @@ const actionButtons = computed(() => {
 const objectPhoto = computed(() =>
     props.object.photo
         ? props.object.photo.map(el => ({
-              src: $url.api.objects() + el
+              src: getLinkUpload(el)
           }))
         : []
 );

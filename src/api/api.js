@@ -35,6 +35,7 @@ import folder from '@/api/folder.js';
 import tour from '@/api/tour.js';
 import utility from '@/api/utility';
 import phone from '@/api/phone';
+import entityMessageLink from '@/api/entityMessageLink';
 
 export default {
     user,
@@ -73,5 +74,6 @@ export default {
     folder,
     tour,
     utility,
-    phone
+    phone,
+    entityMessageLink
 };

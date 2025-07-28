@@ -79,6 +79,7 @@ import { unitTypes } from '@/const/unitTypes.js';
 import AccordionSimple from '@/components/common/Accordion/AccordionSimple.vue';
 import AccordionSimpleTriggerButton from '@/components/common/Accordion/AccordionSimpleTriggerButton.vue';
 import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
+import { getApiFileNotFound, getLinkComplexOld, getLinkUpload } from '@/utils/url.js';
 
 export default {
     name: 'CompanyBoxObjectsListItem',
@@ -103,15 +104,19 @@ export default {
         },
         imageSrc() {
             if (Array.isArray(this.object.photo)) {
-                return this.$url.api.getUploadUrl(this.object.photo[0]);
+                return getLinkUpload(this.object.photo[0]);
             }
-            return this.$url.api.fileNotFound();
+
+            return getApiFileNotFound();
         },
         objectUrl() {
-            return this.$url.complex(this.object.complex_id);
+            return this.$router.resolve({
+                name: 'ComplexView',
+                params: { complex_id: this.object.complex_id }
+            }).href;
         },
         oldObjectUrl() {
-            return this.$url.complexOld(this.object.complex_id);
+            return getLinkComplexOld(this.object.complex_id);
         },
         location() {
             let direction =

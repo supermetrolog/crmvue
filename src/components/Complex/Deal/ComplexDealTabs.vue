@@ -70,9 +70,9 @@ import Button from '@/components/common/Button.vue';
 import EmptyData from '@/components/common/EmptyData.vue';
 import { computed, inject } from 'vue';
 import { useStore } from 'vuex';
-import { $generatorURL as $url } from '@/plugins/url.js';
-import Tab from "@/components/common/Tabs/Tab.vue";
-import Tabs from "@/components/common/Tabs/Tabs.vue";
+import Tab from '@/components/common/Tabs/Tab.vue';
+import Tabs from '@/components/common/Tabs/Tabs.vue';
+import { getLinkFile } from '@/utils/url.js';
 
 const store = useStore();
 
@@ -102,7 +102,7 @@ const photos = computed(() => {
             : Object.values(props.deal.summaryBlock.photos);
 
     return photos.map(el => ({
-        src: $url.file(el)
+        src: getLinkFile(el)
     }));
 });
 

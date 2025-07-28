@@ -11,15 +11,9 @@
                 {{ companyName }}
             </router-link>
             <p class="object-holding-company__message">
-                <span>
-                    {{ plural(contacts.length, '%d контакт', '%d контакта', '%d контактов') }},
-                </span>
-                <span>
-                    {{ plural(company.requests_count, '%d запрос', '%d запроса', '%d запросов') }},
-                </span>
-                <span>
-                    {{ plural(company.objects_count, '%d объект', '%d объекта', '%d объектов') }}
-                </span>
+                <span>{{ contactsLabel }}, </span>
+                <span>{{ requestsLabel }}, </span>
+                <span>{{ objectsLabel }}</span>
             </p>
         </div>
         <div v-if="company.rating" class="object-holding-company__rating">
@@ -44,8 +38,6 @@ const props = defineProps({
     }
 });
 
-// TODO: Убрать plural из template
-
 const contacts = ref([]);
 
 const companyName = computed(() => getCompanyName(props.company));
@@ -53,4 +45,16 @@ const companyName = computed(() => getCompanyName(props.company));
 onMounted(async () => {
     contacts.value = await store.dispatch('FETCH_COMPANY_CONTACTS', props.company.id);
 });
+
+const contactsLabel = computed(() =>
+    plural(contacts.value.length, '%d контакт', '%d контакта', '%d контактов')
+);
+
+const requestsLabel = computed(() =>
+    plural(props.company.requests_count, '%d запрос', '%d запроса', '%d запросов')
+);
+
+const objectsLabel = computed(() =>
+    plural(props.company.objects_count, '%d объект', '%d объекта', '%d объектов')
+);
 </script>

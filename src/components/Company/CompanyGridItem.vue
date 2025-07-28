@@ -2,9 +2,9 @@
     <div class="col-xxl-4 col-md-6 col-12" :class="{ inactive: company.active === 0 }">
         <div class="company-grid-card">
             <div class="row no-gutters">
-                <a
+                <router-link
                     class="company-grid-card__preview col-lg-4 col-12"
-                    :href="$url.company(company.id)"
+                    :to="{ name: 'company', params: { id: company.id } }"
                     target="_blank"
                 >
                     <p class="company-grid-card__id">
@@ -15,7 +15,7 @@
                     <p class="company-grid-card__date">
                         {{ company.created_at }}
                     </p>
-                </a>
+                </router-link>
                 <div class="company-grid-card__body col-lg-8 col-12">
                     <div class="row no-gutters">
                         <div class="col-12">

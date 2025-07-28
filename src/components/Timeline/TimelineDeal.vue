@@ -21,9 +21,15 @@
                                 <p class="dashboard-card-view__property">
                                     <span class="dashboard-card-view__category">Компания:</span>
                                     <span>
-                                        <a :href="$url.company(deal.company_id)">
+                                        <router-link
+                                            :to="{
+                                                name: 'company',
+                                                params: { id: deal.company_id }
+                                            }"
+                                            target="_blank"
+                                        >
                                             {{ $formatter.companyName(deal.company) }}
-                                        </a>
+                                        </router-link>
                                     </span>
                                 </p>
                                 <p class="dashboard-card-view__property">
@@ -124,7 +130,6 @@ import { getCompanyName } from '@/utils/formatters/models/company.js';
 import { toNumberFormat } from '@/utils/formatters/number.js';
 import { unitTypes } from '@/const/unitTypes.js';
 import dayjs from 'dayjs';
-import OfferTableItem from '@/components/Offer/TableItem/OfferTableItem.vue';
 
 const props = defineProps({
     deal: {

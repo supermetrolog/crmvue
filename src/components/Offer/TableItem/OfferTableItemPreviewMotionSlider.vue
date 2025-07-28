@@ -34,9 +34,9 @@
 <script setup>
 import { useElementHover } from '@vueuse/core';
 import { computed, shallowRef, useTemplateRef } from 'vue';
-import { $generatorURL } from '@/plugins/url.js';
 import { vElementHover } from '@vueuse/components';
 import LazyImage from '@/components/common/LazyImage.vue';
+import { getLinkFile } from '@/utils/url.js';
 
 const props = defineProps({
     thumb: {
@@ -57,7 +57,7 @@ const preparedPhotos = computed(() => {
         { id: 0, src: props.thumb },
         ...props.photos
             .slice(1, 5)
-            .map((element, key) => ({ id: key + 1, src: $generatorURL.file(element) }))
+            .map((element, key) => ({ id: key + 1, src: getLinkFile(element) }))
     ];
 });
 const size = computed(() => Math.min(props.photos.length, 5));

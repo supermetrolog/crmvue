@@ -109,7 +109,7 @@
     &__name {
         text-transform: none;
         font-weight: 500;
-        min-width: 550px;
+        min-width: 700px;
     }
 
     &__main {
@@ -387,9 +387,21 @@ tr.CompanyTableEven {
         @include mixins.text-overflow();
     }
 
-    &__contact {
+    &__contact, &__link {
         color: #8486b0;
         text-decoration: underline;
+    }
+
+    &__contact {
+        font-weight: 500;
+    }
+
+    &__link {
+        cursor: pointer;
+    }
+
+    &__link:hover {
+        color: #6daa7c;
     }
 
     &__content {
@@ -414,6 +426,14 @@ tr.CompanyTableEven {
 
         p {
             display: inline;
+
+            &:not(:first-child) {
+                margin-left: 5px;
+            }
+
+            &:not(:last-child)::after {
+                content: ';';
+            }
         }
     }
 
@@ -465,7 +485,7 @@ tr.CompanyTableEven {
         }
 
         &.success {
-            background-color: #589766;
+            background-color: rgba(128, 175, 136);
             color: #fff;
 
             &:hover {
@@ -474,8 +494,12 @@ tr.CompanyTableEven {
         }
 
         &.outdated {
-            background-color: #f73155;
+            background-color: rgba(247, 49, 85, 0.4);
             color: #fff;
+
+            &.active {
+                background-color: #f73155;
+            }
 
             &:hover {
                 background-color: #d83350 !important;
@@ -495,7 +519,40 @@ tr.CompanyTableEven {
     &__tab-survey {
         height: 34px;
         font-weight: 500;
-        border: 2px solid rgb(0, 137, 0);
+    }
+
+    &__note, &__note-content {
+        color: #b700df
+    }
+
+    &__create-note {
+        color: #b700df;
+        cursor: pointer;
+        opacity: .4;
+
+        @include mixins.transition(color, background-color, opacity);
+
+        &:hover {
+            opacity: 1;
+        }
+    }
+
+    &__pinned-message {
+        border: 1px solid rgba(0, 0, 0, .2);
+        background-color: #d4ded4;
+    }
+
+    &__pinned-message-header {
+        border-bottom: 1px solid rgba(0, 0, 0, .2);
+        background-color: #b2cbb6;
+        padding: 2px 3px;
+        font-size: 13px;
+        @include mixins.flex-box($a: center);
+    }
+
+    &__pinned-message-content {
+        padding: 3px 5px;
+        font-size: 14px;
     }
 }
 
@@ -515,5 +572,34 @@ tr.CompanyTableEven {
         .dashboard-card-task-date {
             padding: 7px 7px 5px 10px;
         }
+    }
+
+    &__suggest {
+        font-size: 15px;
+    }
+
+    &__suggest-row {
+        color: variables.$color_grey;
+        opacity: .7;
+
+        &.active {
+            opacity: 1;
+            color: variables.$color_danger;
+        }
+    }
+
+    &__suggest-link {
+        color: #505181;
+        cursor: pointer;
+        text-decoration: underline;
+        @include mixins.transition(color);
+
+        &:hover {
+            color: #6daa7c;
+        }
+    }
+
+    &__task-comment {
+        @include mixins.text-overflow(2);
     }
 }

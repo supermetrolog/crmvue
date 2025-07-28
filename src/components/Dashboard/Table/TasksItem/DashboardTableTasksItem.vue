@@ -8,7 +8,8 @@
             myself: isMyTask,
             viewing: isViewing,
             viewed: isViewedByCurrentUser,
-            canceled: isCanceled
+            canceled: isCanceled,
+            started: isStarted
         }"
     >
         <div
@@ -133,7 +134,12 @@ import { taskOptions } from '@/const/options/task.options.js';
 import DashboardTableTasksItemSystem from '@/components/Dashboard/Table/TasksItem/DashboardTableTasksItemSystem.vue';
 import DashboardTableTasksItemDate from '@/components/Dashboard/Table/TasksItem/DashboardTableTasksItemDate.vue';
 import DashboardTableTasksItemLabel from '@/components/Dashboard/Table/TasksItem/DashboardTableTasksItemLabel.vue';
-import { dayjsFromServer, toBeautifulDateFormat, toDateFormat } from '@/utils/formatters/date.ts';
+import {
+    dayjsFromServer,
+    nowInServer,
+    toBeautifulDateFormat,
+    toDateFormat
+} from '@/utils/formatters/date.ts';
 import { Tippy } from 'vue-tippy';
 import { useAuth } from '@/composables/useAuth.js';
 import DashboardTableTasksItemObserver from '@/components/Dashboard/Table/TasksItem/DashboardTableTasksItemObserver.vue';
@@ -191,13 +197,24 @@ const isViewing = computed(
     () => !isMyTask.value && !isForMe.value && isObservingByCurrentUser.value
 );
 const isCompleted = computed(() => props.task.status === taskOptions.statusTypes.COMPLETED);
+
 const expiredDayjs = computed(() => {
     if (isString(props.task.end)) return dayjsFromServer(props.task.end);
     return dayjs(props.task.end);
 });
+
+const startDayjs = computed(() => {
+    if (isString(props.task.start)) return dayjsFromServer(props.task.start);
+    return dayjs(props.task.start);
+});
+
 const isCanceled = computed(() => props.task.status === taskOptions.statusTypes.CANCELED);
-const isAlreadyExpired = computed(() => expiredDayjs.value.isBefore(dayjs()) && !isCompleted.value);
+const isAlreadyExpired = computed(
+    () => expiredDayjs.value.isBefore(nowInServer()) && !isCompleted.value
+);
 const isDeleted = computed(() => props.task.deleted_at != null);
+
+const isStarted = computed(() => startDayjs.value.isBefore(nowInServer()));
 
 const impossibleDate = computed(() => {
     if (props.task.impossible_to) return toDateFormat(props.task.impossible_to, 'D.MM.YY');

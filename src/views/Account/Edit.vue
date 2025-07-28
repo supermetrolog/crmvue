@@ -63,7 +63,7 @@
                             v-model:data="form.userProfile.avatar"
                             class="col-12 account-edit__avatar"
                             single
-                            :api-url="$url.api.uploads()"
+                            :api-url="getApiUploads()"
                             accept="image/jpeg,image/png,image/jpg"
                         >
                             Выбрать аватар
@@ -90,6 +90,7 @@ import Utils from '@/utils';
 import api from '@/api/api.js';
 import { cloneObject } from '@/utils/helpers/object/cloneObject.js';
 import UiFormDivider from '@/components/common/Forms/UiFormDivider.vue';
+import { getApiUploads } from '@/utils/url.js';
 
 export default {
     name: 'AccountEdit',
@@ -176,6 +177,7 @@ export default {
         };
     },
     methods: {
+        getApiUploads,
         async onSubmit() {
             this.v$.$validate();
             if (!this.v$.form.$error) {

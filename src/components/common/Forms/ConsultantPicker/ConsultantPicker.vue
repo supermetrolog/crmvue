@@ -2,6 +2,7 @@
     <MultiSelect
         v-model="modelValue"
         :label="label"
+        :v
         searchable
         can-deselect
         resolve-on-load
@@ -49,7 +50,8 @@ defineProps({
     options: {
         type: [Array, Function, Object],
         required: true
-    }
+    },
+    v: Object
 });
 
 const multipleLabelFn = elements => {

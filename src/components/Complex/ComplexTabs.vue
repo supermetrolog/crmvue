@@ -74,7 +74,7 @@ import Button from '@/components/common/Button.vue';
 import EmptyData from '@/components/common/EmptyData.vue';
 import { computed, inject } from 'vue';
 import { useStore } from 'vuex';
-import { $generatorURL as $url } from '@/plugins/url.js';
+import { getLinkFile } from '@/utils/url.js';
 
 const store = useStore();
 
@@ -99,7 +99,7 @@ const servicesLength = computed(() => {
 const photos = computed(() => {
     return props.offer.photos
         ? props.offer.photos.map(el => ({
-              src: $url.file(el)
+              src: getLinkFile(el)
           }))
         : [];
 });

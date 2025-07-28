@@ -22,7 +22,6 @@
                 </HoverActionsButton>
                 <HoverActionsButton
                     @click="$emit('pin-to-object')"
-                    disabled
                     :active="message.pinnedToObject"
                     :label="message.pinnedToObject ? 'Открепить в таблице' : 'Закрепить в таблице'"
                 >

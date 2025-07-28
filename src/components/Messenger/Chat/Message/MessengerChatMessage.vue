@@ -18,7 +18,7 @@
                     v-if="editable"
                     @pin="pinMessage"
                     @edit="editMessage"
-                    @pin-to-object="pinToObject"
+                    @pin-to-object="$emit('pin-to-object')"
                     @delete="deleteMessage"
                     @reply="$emit('reply')"
                     @create-task="$emit('create-task')"
@@ -102,7 +102,14 @@ const notify = useNotify();
 const { confirm } = useConfirm();
 const { show: showMessageUpdateForm } = useAsyncPopup('messageUpdater');
 
-const emit = defineEmits(['deleted', 'reply', 'cancel-reply', 'viewed', 'create-task']);
+const emit = defineEmits([
+    'deleted',
+    'reply',
+    'cancel-reply',
+    'viewed',
+    'create-task',
+    'pin-to-object'
+]);
 const props = defineProps({
     message: {
         type: Object,
@@ -191,19 +198,6 @@ const pinMessage = async () => {
 const editMessage = async () => {
     const updated = await showMessageUpdateForm(props.message);
     if (updated) notify.success('Сообщение успешно обновлено');
-};
-const pinToObject = async () => {
-    const pinned = await store.dispatch('Messenger/pinMessageToObject', props.message);
-
-    if (pinned) {
-        notify.success(
-            props.message.pinnedToObject
-                ? 'Сообщение успешно закреплено за объектом'
-                : 'Сообщение успешно откреплено от объекта'
-        );
-    } else {
-        notify.error('Произошла ошибка. Попробуйте еще раз');
-    }
 };
 
 const deleteMessage = async () => {
