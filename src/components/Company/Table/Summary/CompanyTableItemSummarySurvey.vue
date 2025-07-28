@@ -1,6 +1,6 @@
 <template>
     <div class="company-table-item-summary-survey">
-        <Loader v-if="company.last_survey?.isLoading || isUpdating" small />
+        <Loader v-if="company.last_survey?.isLoading" small />
         <div v-if="company.last_survey" class="company-table-item-summary-survey__header">
             <div class="company-table-item-summary-survey__title">
                 <span class="ml-1">#{{ company.last_survey.id }}.</span>
@@ -55,12 +55,17 @@
             </div>
         </div>
         <div class="company-table-item-summary-survey__body">
-            <CompanyTableItemPinnedMessages
-                v-if="company.pinned_messages.length"
+            <CompanyTableItemSummaryLinkedMessages
+                @show-comments="$emit('show-comments')"
+                @show-notes="$emit('show-notes')"
+                @show-message="$emit('show-message', $event)"
+                @create-note="$emit('create-note', $event)"
+                @update-note="$emit('update-note', $event)"
+                @delete-note="$emit('delete-note')"
+                @unpin-message="$emit('unpin-message')"
                 :read-only
                 :company
             />
-            <p v-else-if="!company.last_survey" class="text-grey op-5 fs-2">Без комментариев..</p>
         </div>
     </div>
 </template>
@@ -75,9 +80,16 @@ import ContactCard from '@/components/Contact/Card/ContactCard.vue';
 import CallInlineCard from '@/components/Call/InlineCard/CallInlineCard.vue';
 import { plural } from '@/utils/plural.js';
 import { isNotNullish } from '@/utils/helpers/common/isNotNullish';
-import CompanyTableItemPinnedMessages from '@/components/Company/Table/CompanyTableItemPinnedMessages.vue';
+import CompanyTableItemSummaryLinkedMessages from '@/components/Company/Table/Summary/CompanyTableItemSummaryLinkedMessages.vue';
 
-defineEmits(['open-preview']);
+defineEmits([
+    'open-preview',
+    'show-notes',
+    'show-comments',
+    'create-note',
+    'update-note',
+    'unpin-message'
+]);
 
 const props = defineProps({
     company: {

@@ -31,9 +31,6 @@
                 <CompanyTableItem
                     v-for="(company, idx) in companies"
                     :key="company.id"
-                    @show-message="$emit('show-message', $event)"
-                    @create-pinned-message="$emit('create-pinned-message', company)"
-                    @unpin-message="$emit('unpin-message', $event)"
                     @deleted-from-folder="$emit('deleted-from-folder', company.id, $event)"
                     @schedule-call="$emit('schedule-call', company)"
                     @create-task="$emit('create-task', company)"
@@ -45,6 +42,8 @@
                     @show-task="showTaskPreview"
                     @schedule-visit="$emit('schedule-visit', company)"
                     @schedule-event="$emit('schedule-event', company)"
+                    @show-company-comments="$emit('show-company-comments', company)"
+                    @show-company-notes="$emit('show-company-notes', company)"
                     :company="company"
                     :odd="!(idx % 2)"
                 />
@@ -85,9 +84,6 @@ import CompanyTableFiltersConsultant from '@/components/Company/Table/Filters/Co
 
 defineEmits([
     'deleted-from-folder',
-    'create-pinned-message',
-    'show-message',
-    'unpin-message',
     'create-task',
     'create-request-task',
     'show-tasks',
@@ -96,7 +92,9 @@ defineEmits([
     'enable-company',
     'schedule-call',
     'schedule-visit',
-    'schedule-event'
+    'schedule-event',
+    'show-company-comments',
+    'show-company-notes'
 ]);
 
 defineProps({

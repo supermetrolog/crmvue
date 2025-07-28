@@ -1,5 +1,6 @@
 <template>
     <div class="company-table-item-summary">
+        <Loader v-if="isUpdating" />
         <div class="company-table-item-summary__content">
             <div class="company-table-item-summary__header mb-1">
                 <CompanyTableItemSummaryTabSurvey
@@ -52,6 +53,12 @@
                 v-if="currentTab === TABS.SURVEY"
                 @edit-comment="$emit('edit-survey-comment')"
                 @open-preview="$emit('show-survey')"
+                @show-comments="$emit('show-comments')"
+                @show-notes="$emit('show-notes')"
+                @create-note="createCompanyNote"
+                @update-note="updateCompanyNote"
+                @delete-note="deleteCompanyNote"
+                @unpin-message="unpinCompanyMessage"
                 :company
             />
             <CompanyTableItemSummaryTasks
@@ -63,6 +70,7 @@
                 @show-task="$emit('show-task', $event)"
                 @open-survey="$emit('open-survey')"
                 :company
+                class="mt-2"
             />
         </div>
         <CompanyTableItemActions
@@ -123,11 +131,14 @@ import { dayjsFromServer } from '@/utils/formatters/date.ts';
 import { now } from '@vueuse/core';
 import { useAuth } from '@/composables/useAuth.js';
 import CompanyTableItemSummarySuggest from '@/components/Company/Table/Summary/Suggest/CompanyTableItemSummarySuggest.vue';
+import api from '@/api/api.js';
+import { captureException } from '@sentry/vue';
+import { useNotify } from '@/utils/use/useNotify.js';
+import Loader from '@/components/common/Loader.vue';
+import { useConfirm } from '@/composables/useConfirm.js';
 
 const emit = defineEmits([
     'deleted-from-folder',
-    'show-message',
-    'unpin-message',
     'create-task',
     'show-created-tasks',
     'disable',
@@ -139,7 +150,9 @@ const emit = defineEmits([
     'schedule-visit',
     'schedule-event',
     'open-chat',
-    'open-survey'
+    'open-survey',
+    'show-notes',
+    'show-comments'
 ]);
 
 const props = defineProps({
@@ -209,4 +222,83 @@ const hasCurrentUserScheduledVisit = computed(() => {
         nearestScheduledVisit.value && nearestScheduledVisit.value.user_id === currentUserId.value
     );
 });
+
+// notes
+
+const isUpdating = ref(false);
+const notify = useNotify();
+
+async function createCompanyNote(payload) {
+    isUpdating.value = true;
+
+    try {
+        const note = await api.companies.createNote(props.company.id, payload);
+
+        Object.assign(props.company, { note, notes_count: props.company.notes_count + 1 });
+
+        notify.success('Заметка успешно добавлена');
+    } catch (e) {
+        captureException(e);
+    } finally {
+        isUpdating.value = false;
+    }
+}
+
+async function updateCompanyNote(payload) {
+    isUpdating.value = true;
+
+    try {
+        await api.messenger.updateMessage({ id: props.company.note.message.id, ...payload });
+
+        notify.success('Заметка успешно изменена');
+    } catch (e) {
+        captureException(e);
+    } finally {
+        isUpdating.value = false;
+    }
+}
+
+const { confirm } = useConfirm();
+
+async function deleteCompanyNote() {
+    const confirmed = await confirm(
+        'Удалить заметку',
+        'Вы действительно хотите безвозвратно удалить заметку?'
+    );
+
+    if (!confirmed) return;
+
+    try {
+        isUpdating.value = true;
+
+        await api.entityMessageLink.delete(props.company.note.id);
+
+        Object.assign(props.company, { note: null, notes_count: props.company.notes_count - 1 });
+
+        notify.success('Заметка успешно удалена');
+    } finally {
+        isUpdating.value = false;
+    }
+}
+
+async function unpinCompanyMessage() {
+    const confirmed = await confirm(
+        'Открепить сообщение',
+        'Вы действительно хотите открепить сообщение от компании?'
+    );
+
+    if (!confirmed) return;
+
+    try {
+        isUpdating.value = true;
+
+        await api.entityMessageLink.delete(props.company.pinned_message.id);
+
+        Object.assign(props.company, { pinned_message: null });
+
+        notify.success('Сообщение успешно откреплено');
+    } finally {
+        isUpdating.value = false;
+    }
+}
 </script>

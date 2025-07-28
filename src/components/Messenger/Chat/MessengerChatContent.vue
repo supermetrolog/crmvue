@@ -45,6 +45,7 @@
                     />
                     <MessengerChatMessage
                         v-else
+                        @pin-to-object="pinToObject(message)"
                         @viewed="debouncedReadMessage"
                         @deleted="onMessageDeleted(message.id)"
                         @reply="replyTo = message"
@@ -93,6 +94,9 @@ import MessengerChatContentDisabled from '@/components/Messenger/Chat/MessengerC
 import { useMessengerChatContext } from '@/components/Messenger/Chat/useMessengerChatContext.js';
 import MessengerChatLabelRow from '@/components/Messenger/Chat/MessengerChatLabelRow.vue';
 import { isNotNullish } from '@/utils/helpers/common/isNotNullish.ts';
+import api from '@/api/api.js';
+import { useNotify } from '@/utils/use/useNotify.js';
+import { captureException } from '@sentry/vue';
 
 defineProps({ disabled: Boolean });
 
@@ -190,4 +194,31 @@ onMounted(() => {
 // tasks
 
 const { createTaskForMessage } = useMessengerChatContext();
+
+// pin
+
+const notify = useNotify();
+
+async function pinToObject(message) {
+    const currentDialogType = store.state.Messenger.currentDialogType;
+
+    if (currentDialogType !== 'company') {
+        notify.info(
+            'На данный момент функционал закрепления доступен только для компаний',
+            'Функция недоступна'
+        );
+        return;
+    }
+
+    try {
+        await api.companies.linkMessage(store.state.Messenger.currentDialog.model.id, {
+            message_id: message.id,
+            kind: 'pin'
+        });
+
+        notify.success('Сообщение успешно закреплено в таблице');
+    } catch (e) {
+        captureException(e);
+    }
+}
 </script>

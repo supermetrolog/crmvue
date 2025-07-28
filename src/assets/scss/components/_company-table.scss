@@ -520,6 +520,40 @@ tr.CompanyTableEven {
         height: 34px;
         font-weight: 500;
     }
+
+    &__note, &__note-content {
+        color: #b700df
+    }
+
+    &__create-note {
+        color: #b700df;
+        cursor: pointer;
+        opacity: .4;
+
+        @include mixins.transition(color, background-color, opacity);
+
+        &:hover {
+            opacity: 1;
+        }
+    }
+
+    &__pinned-message {
+        border: 1px solid rgba(0, 0, 0, .2);
+        background-color: #d4ded4;
+    }
+
+    &__pinned-message-header {
+        border-bottom: 1px solid rgba(0, 0, 0, .2);
+        background-color: #b2cbb6;
+        padding: 2px 3px;
+        font-size: 13px;
+        @include mixins.flex-box($a: center);
+    }
+
+    &__pinned-message-content {
+        padding: 3px 5px;
+        font-size: 14px;
+    }
 }
 
 .company-table-item-summary {

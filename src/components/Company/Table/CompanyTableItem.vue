@@ -50,8 +50,8 @@
                 @open-preview="$emit('show-survey')"
                 @edit-comment="$emit('edit-survey-comment')"
                 @show-task="$emit('show-task', $event)"
-                @show-message="$emit('show-message', $event)"
-                @unpin-message="$emit('unpin-message', $event)"
+                @show-comments="$emit('show-company-comments')"
+                @show-notes="$emit('show-company-notes')"
                 :company
             />
         </Td>
@@ -95,8 +95,6 @@ const router = useRouter();
 
 defineEmits([
     'deleted-from-folder',
-    'show-message',
-    'unpin-message',
     'create-task',
     'create-request-task',
     'show-tasks',
@@ -108,7 +106,9 @@ defineEmits([
     'edit-survey-comment',
     'schedule-call',
     'schedule-visit',
-    'schedule-event'
+    'schedule-event',
+    'show-company-notes',
+    'show-company-comments'
 ]);
 
 const props = defineProps({

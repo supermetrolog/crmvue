@@ -13,6 +13,7 @@
 :icon
 :small
 :color
+:mini
 :class="buttonClass" />
             </slot>
         </template>
@@ -50,6 +51,7 @@ defineEmits<{ (e: 'visible-change', visible: boolean) }>();
 const { icon = 'fa-solid fa-ellipsis' } = defineProps<{
     disabled?: boolean;
     small?: boolean;
+    mini?: boolean;
     menuClass?: string;
     label?: string;
     title?: string;

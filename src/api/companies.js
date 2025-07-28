@@ -65,16 +65,16 @@ export default {
         const response = await axios.post(`${URL}/${companyId}/disable`, payload);
         return responseHasStatus(response, STATUS_SUCCESS);
     },
-    async pinMessage(id, payload) {
-        const response = await axios.post(`${URL}/${id}/pin-message`, payload);
+    async linkMessage(id, payload) {
+        const response = await axios.post(`${URL}/${id}/link-message`, payload);
         return responseToData(response);
-    },
-    async unpinMessage(id) {
-        const response = await axios.delete(`entity-pinned-messages/${id}`);
-        return responseHasStatus(response);
     },
     async changeConsultant(id, payload) {
         const response = await axios.post(`${URL}/${id}/change-consultant`, payload);
+        return responseToData(response);
+    },
+    async createNote(id, payload) {
+        const response = await axios.post(`${URL}/${id}/create-note`, payload);
         return responseToData(response);
     }
 };

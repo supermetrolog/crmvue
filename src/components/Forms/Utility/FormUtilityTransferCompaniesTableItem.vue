@@ -30,18 +30,6 @@
         </Td>
         <Td class="company-table-item__comment">
             <CompanyTableItemSummarySurvey v-if="company.last_survey" :company read-only />
-            <CompanyTableItemPinnedMessages
-                v-if="company.pinned_messages.length"
-                :company
-                read-only
-            />
-            <div
-                v-if="!company.last_survey"
-                class="company-table-item__comment-buttons"
-                :class="{ absolute: company.pinned_messages.length === 0 }"
-            >
-                <p>Опрос не был пройден</p>
-            </div>
         </Td>
         <Td class="company-table-item__consultant">
             <div v-if="company.consultant" class="company-table-item__consultant-wrapper">
@@ -98,7 +86,6 @@ import CompanyTableItemObjects from '@/components/Company/Table/CompanyTableItem
 import CompanyTableItemRequests from '@/components/Company/Table/CompanyTableItemRequests.vue';
 import CompanyTableDropdown from '@/components/Company/Table/CompanyTableDropdown.vue';
 import CompanyTableItemInfo from '@/components/Company/Table/CompanyTableItemInfo.vue';
-import CompanyTableItemPinnedMessages from '@/components/Company/Table/CompanyTableItemPinnedMessages.vue';
 import UiField from '@/components/common/UI/UiField.vue';
 import UiCheckbox from '@/components/common/Forms/UiCheckbox.vue';
 import { toDateFormat } from '@/utils/formatters/date.ts';
