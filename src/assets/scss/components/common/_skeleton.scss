@@ -1,7 +1,8 @@
 .skeleton {
     position: relative;
-    color: transparent!important;
+    color: transparent !important;
     pointer-events: none;
+    user-select: none;
 
     &::before {
         content: '';
@@ -23,11 +24,16 @@
 
 .skeleton-body {
     * {
-        background-color: transparent!important;
-        border: none!important;
-        color: transparent!important;
-        cursor: default!important;
+        background-color: transparent !important;
+        border: none !important;
+        color: transparent !important;
+        cursor: default !important;
     }
+}
+
+.skeleton-button {
+    border: none !important;
+    box-shadow: none !important;
 }
 
 @keyframes skeleton {

@@ -26,32 +26,32 @@
             </Tr>
         </template>
         <template #tbody>
-            <template v-if="companies.length">
-                <Loader v-if="loader" />
-                <CompanyTableItem
-                    v-for="(company, idx) in companies"
-                    :key="company.id"
-                    @deleted-from-folder="$emit('deleted-from-folder', company.id, $event)"
-                    @schedule-call="$emit('schedule-call', company)"
-                    @create-task="$emit('create-task', company)"
-                    @show-tasks="$emit('show-tasks', company)"
-                    @disable="$emit('disable-company', company)"
-                    @enable="$emit('enable-company', company)"
-                    @create-request-task="$emit('create-request-task', $event, company)"
-                    @show-survey="showSurvey({ surveyId: company.last_survey.id })"
-                    @show-task="showTaskPreview"
-                    @schedule-visit="$emit('schedule-visit', company)"
-                    @schedule-event="$emit('schedule-event', company)"
-                    @show-company-comments="$emit('show-company-comments', company)"
-                    @show-company-notes="$emit('show-company-notes', company)"
-                    :company="company"
-                    :odd="!(idx % 2)"
-                />
+            <Loader v-if="loader && companies.length" />
+            <template v-else-if="loader">
+                <CompanyTableItemSkeleton v-for="item in 5" :key="item" />
             </template>
-            <Tr v-else>
+            <CompanyTableItem
+                v-for="(company, idx) in companies"
+                :key="company.id"
+                @deleted-from-folder="$emit('deleted-from-folder', company.id, $event)"
+                @schedule-call="$emit('schedule-call', company)"
+                @create-task="$emit('create-task', company)"
+                @show-tasks="$emit('show-tasks', company)"
+                @disable="$emit('disable-company', company)"
+                @enable="$emit('enable-company', company)"
+                @create-request-task="$emit('create-request-task', $event, company)"
+                @show-survey="showSurvey({ surveyId: company.last_survey.id })"
+                @show-task="showTaskPreview"
+                @schedule-visit="$emit('schedule-visit', company)"
+                @schedule-event="$emit('schedule-event', company)"
+                @show-company-comments="$emit('show-company-comments', company)"
+                @show-company-notes="$emit('show-company-notes', company)"
+                :company="company"
+                :odd="!(idx % 2)"
+            />
+            <Tr v-if="!loader && !companies.length">
                 <Td colspan="6" class="p-0">
-                    <Spinner v-if="loader" class="my-4" />
-                    <EmptyData v-else no-rounded>Ничего не найдено...</EmptyData>
+                    <EmptyData no-rounded>Ничего не найдено...</EmptyData>
                 </Td>
             </Tr>
             <TaskPreview
@@ -73,7 +73,6 @@ import Loader from '@/components/common/Loader.vue';
 import { onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
 import dayjs from 'dayjs';
-import Spinner from '@/components/common/Spinner.vue';
 import EmptyData from '@/components/common/EmptyData.vue';
 import Td from '@/components/common/Table/Td.vue';
 import { useAsyncPopup } from '@/composables/useAsyncPopup.js';
@@ -81,6 +80,7 @@ import TaskPreview from '@/components/TaskPreview/TaskPreview.vue';
 import { useTableColumnFilters } from '@/composables/useTableColumnFilters';
 import CompanyTableFiltersActivity from '@/components/Company/Table/Filters/CompanyTableFiltersActivity.vue';
 import CompanyTableFiltersConsultant from '@/components/Company/Table/Filters/CompanyTableFiltersConsultant.vue';
+import CompanyTableItemSkeleton from '@/components/Company/Table/CompanyTableItemSkeleton.vue';
 
 defineEmits([
     'deleted-from-folder',
@@ -102,10 +102,7 @@ defineProps({
         type: Array,
         default: () => []
     },
-    loader: {
-        type: Boolean,
-        default: false
-    }
+    loader: Boolean
 });
 
 // query filters

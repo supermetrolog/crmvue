@@ -1,9 +1,14 @@
 <template>
     <Tr
-        class="company-table-item"
-        :class="{ CompanyTableOdd: odd, CompanyTableEven: !odd, 'fade-out': company.isDeleting }"
+        class="company-table-item position-relative"
+        :class="{
+            CompanyTableOdd: odd,
+            CompanyTableEven: !odd,
+            'fade-out': company.isDeleting
+        }"
     >
         <Td class="text-center company-table-item__id">
+            <Loader v-if="company.isLoading" class="absolute-center" small />
             <p class="mb-2">{{ company.id }}</p>
             <Avatar
                 v-if="company.consultant"
@@ -89,6 +94,7 @@ import CompanyTableItemRequests from '@/components/Company/Table/CompanyTableIte
 import CompanyTableDropdown from '@/components/Company/Table/CompanyTableDropdown.vue';
 import CompanyTableItemInfo from '@/components/Company/Table/CompanyTableItemInfo.vue';
 import CompanyTableItemSummary from '@/components/Company/Table/Summary/CompanyTableItemSummary.vue';
+import Loader from '@/components/common/Loader.vue';
 
 const store = useStore();
 const router = useRouter();
