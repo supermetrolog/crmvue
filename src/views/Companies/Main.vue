@@ -50,7 +50,6 @@
             <div class="row">
                 <div class="col-12 offers-page__table">
                     <AnimationTransition :speed="0.2">
-                        <Spinner v-if="isInitialLoading" />
                         <component
                             :is="currentViewComponentName"
                             @deleted-from-folder="onDeletedFromFolder"
@@ -147,7 +146,6 @@ import AnimationTransition from '@/components/common/AnimationTransition.vue';
 import { computed, ref, shallowRef, watch } from 'vue';
 import { useTableContent } from '@/composables/useTableContent.js';
 import { useRoute, useRouter } from 'vue-router';
-import Spinner from '@/components/common/Spinner.vue';
 import { useMobile } from '@/composables/useMobile.js';
 import UserFolders from '@/components/UserFolder/UserFolders.vue';
 import { isNotNullish } from '@/utils/helpers/common/isNotNullish.ts';
@@ -169,6 +167,7 @@ import VisitScheduler from '@/components/VisitScheduler/VisitScheduler.vue';
 import EventScheduler from '@/components/EventScheduler/EventScheduler.vue';
 import CompanyTablePreviewComments from '@/components/Company/Table/CompanyTablePreviewComments.vue';
 import CompanyTablePreviewNotes from '@/components/Company/Table/CompanyTablePreviewNotes.vue';
+import { captureException } from '@sentry/vue';
 
 const route = useRoute();
 // const router = useRouter();
@@ -203,26 +202,23 @@ const debouncedFetchCompanies = useDebounceFn(getCompanies, 300);
 
 const router = useRouter();
 
-const { next, nextWithScroll, queryIsInitialized, isInitialLoading } = useTableContent(
-    getCompanies,
-    {
-        scrollTo: firstPagination,
-        initQuery: async () => {
-            const query = { ...route.query };
+const { next, nextWithScroll, queryIsInitialized } = useTableContent(getCompanies, {
+    scrollTo: firstPagination,
+    initQuery: async () => {
+        const query = { ...route.query };
 
-            const queryIsEmpty = Object.keys(query).length === 0;
+        const queryIsEmpty = Object.keys(query).length === 0;
 
-            if (queryIsEmpty) {
-                query.consultant_id = currentUserId.value;
-                query.status = 1;
-                query.with_active_contacts = 1;
-                query.sort = 'activity';
-            }
-
-            await router.replace({ query });
+        if (queryIsEmpty) {
+            query.consultant_id = currentUserId.value;
+            query.status = 1;
+            query.with_active_contacts = 1;
+            query.sort = 'activity';
         }
+
+        await router.replace({ query });
     }
-);
+});
 
 const currentViewComponentName = computed(() => {
     if (isMobile) return CompanyGrid;
@@ -407,15 +403,32 @@ const tasksModalTitle = computed(() => {
     return 'Задачи';
 });
 
+// refresh company
+
+async function refreshCompany(company) {
+    try {
+        company.isLoading = true;
+
+        const response = await api.companies.searchCompanies({ id: company.id });
+
+        if (response.data.length) {
+            Object.assign(company, response.data[0]);
+        }
+    } catch (e) {
+        captureException(e);
+    } finally {
+        company.isLoading = false;
+    }
+}
+
 // survey bus
 
 const bus = useEventBus('survey');
 
 function onCompleteSurvey(payload) {
     const company = COMPANIES.value.find(company => company.id === payload.companyId);
-    if (company) {
-        company.has_pending_survey = false;
-    }
+
+    if (company) refreshCompany(company);
 }
 
 bus.on((_, payload) => onCompleteSurvey(payload));
