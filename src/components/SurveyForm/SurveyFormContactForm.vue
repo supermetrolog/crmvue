@@ -13,6 +13,7 @@
             @schedule-visit="$emit('schedule-visit')"
             @schedule-event="$emit('schedule-event')"
             :contact
+            :company
             class="survey-form-contact-form__call"
         />
         <div class="survey-form-contact-form__actions">
@@ -43,7 +44,8 @@ defineProps({
     contact: {
         type: Object,
         required: true
-    }
+    },
+    company: Object
 });
 
 const form = defineModel({ type: Object, default: () => ({}) });
