@@ -16,7 +16,10 @@
                 />
                 <PropertyGrid v-else :columns="4" :sections="sections" />
             </Tab>
-            <Tab :id="`deals-${object.id}`" :name="`Сделки (${object.commercialOffers.length})`">
+            <Tab
+                :id="`deals-${object.id}`"
+                :name="`Предложения (${object.commercialOffers.length})`"
+            >
                 <div class="ObjectHoldingsTabs-content">
                     <ComplexDeals
                         :object="object"

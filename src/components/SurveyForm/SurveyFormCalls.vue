@@ -37,6 +37,7 @@
                     :active="currentContact?.id === contact.id"
                     :most-callable="contact.id === mostCallableContactId"
                     :disabled
+                    :company
                     editable
                     full
                 />

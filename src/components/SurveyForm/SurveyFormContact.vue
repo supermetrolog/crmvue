@@ -71,6 +71,7 @@
                 @schedule-visit="$emit('schedule-visit')"
                 @schedule-event="$emit('schedule-event')"
                 :contact
+                :company
                 class="mt-2 mb-4"
             />
         </AnimationTransition>
@@ -102,6 +103,7 @@ const props = defineProps({
         type: Object,
         required: true
     },
+    company: Object,
     loading: Boolean,
     active: Boolean,
     disabled: Boolean,
