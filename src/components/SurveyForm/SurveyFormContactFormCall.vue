@@ -56,18 +56,17 @@ label="Да"
             <div v-if="hasAnyAnswer" class="mt-2">
                 <MultiSelect
                     v-model="reason"
-                    label="Положение по звонку"
-                    placeholder="Выберите статус.."
+                    placeholder="Выберите результат звонка.."
                     :options="available ? availableReasonOptions : unavailableReasonOptions"
                     required
                     :v="v$.reason"
                     class="mb-2"
                 />
                 <AnimationTransition :speed="0.3">
-                    <div v-if="available">
+                    <div v-if="descriptionShouldBeVisible">
                         <UiTextarea
                             v-model="form.description"
-                            placeholder="Комментарий к звонку.."
+                            placeholder="Комментарий к задаче.."
                             class="mb-2 survey-form-contact-form-call__editor"
                             :min-height="50"
                             :max-height="120"
@@ -94,13 +93,15 @@ import MultiSelect from '@/components/common/Forms/MultiSelect.vue';
 import UiDropdownActions from '@/components/common/UI/DropdownActions/UiDropdownActions.vue';
 import UiDropdownActionsButton from '@/components/common/UI/DropdownActions/UiDropdownActionsButton.vue';
 import { plural } from '@/utils/plural.js';
+import { getCompanyShortName } from '@/utils/formatters/models/company.js';
 
 const emit = defineEmits(['schedule-call', 'change', 'schedule-visit', 'schedule-event']);
 const props = defineProps({
     contact: {
         type: Object,
         required: true
-    }
+    },
+    company: Object
 });
 
 const form = defineModel({ type: Object, default: () => ({}) });
@@ -138,6 +139,10 @@ const available = computed({
         form.value.available = value;
     }
 });
+
+const descriptionShouldBeVisible = computed(
+    () => available.value && isNotNullish(reason.value) && reason.value !== 1
+);
 
 const contactCanNotBeDeletedReasons = new Set([1, 3]);
 const contactMustBeDeletedReasons = new Set([2, 7, 8]);
@@ -203,10 +208,14 @@ function handleCalls() {
 
 handleCalls();
 
+const companyName = computed(() =>
+    props.company ? getCompanyShortName(props.company) : `Компании #${props.contact.company_id}`
+);
+
 function createAvailableReasonOptionActualized() {
     const option = {
         value: 1,
-        label: 'Актуален',
+        label: `Актуален - контакт работает в ${companyName.value}`,
         icon: 'fa-solid fa-thumbs-up'
     };
 
@@ -220,12 +229,18 @@ function createAvailableReasonOptionActualized() {
 
 const availableReasonOptions = [
     createAvailableReasonOptionActualized(),
-    { value: 3, label: 'Перенести в другую компанию', icon: 'fa-solid fa-rotate' },
+    {
+        value: 3,
+        label: 'Актуален - но работает в другой компании',
+        icon: 'fa-solid fa-rotate',
+        after: '(Изменить компанию)',
+        afterClass: 'text-danger'
+    },
     {
         value: 2,
-        label: 'Больше не актуален',
+        label: 'Не актуален - не имеет отношения к недвижимости',
         icon: 'fa-solid fa-thumbs-down',
-        after: '(Будет удален)',
+        after: '(Перенести в архив)',
         afterClass: 'text-danger'
     }
 ];
@@ -239,7 +254,7 @@ function createAvailableReasonOptionMissed() {
 
     if (lastCallsStatus === callStatusMap.MISSED) {
         if (pluralLastCallsCount >= 5) {
-            option.after = `(${pluralLastCallsCount}. Будет удален)`;
+            option.after = `(${pluralLastCallsCount}. Перенести в архив)`;
             option.afterClass = 'text-danger';
         } else {
             option.after = `(${pluralLastCallsCount})`;
@@ -259,7 +274,7 @@ function createAvailableReasonOptionUnavailable() {
 
     if (lastCallsStatus === callStatusMap.NOT_AVAILABLE) {
         if (pluralLastCallsCount >= 5) {
-            option.after = `(${pluralLastCallsCount}. Будет удален)`;
+            option.after = `(${pluralLastCallsCount}. Перенести в архив)`;
             option.afterClass = 'text-danger';
         } else {
             option.after = `(${pluralLastCallsCount})`;
@@ -279,7 +294,7 @@ function createAvailableReasonOptionBusy() {
 
     if (lastCallsStatus === callStatusMap.BUSY) {
         if (pluralLastCallsCount >= 5) {
-            option.after = `(${pluralLastCallsCount}. Будет удален)`;
+            option.after = `(${pluralLastCallsCount}. Перенести в архив)`;
             option.afterClass = 'text-danger';
         } else {
             option.after = `(${pluralLastCallsCount})`;
@@ -298,14 +313,14 @@ const unavailableReasonOptions = [
         value: 7,
         label: 'Не существует/не зарегистрирован',
         icon: 'fa-solid fa-ban',
-        after: '(Будет удален)',
+        after: '(Перенести в архив)',
         afterClass: 'text-danger'
     },
     {
         value: 8,
         label: 'Заблокирован',
         icon: 'fa-solid fa-user-slash',
-        after: '(Будет удален)',
+        after: '(Перенести в архив)',
         afterClass: 'text-danger'
     }
 ];
