@@ -406,7 +406,7 @@ async function fetchContacts() {
                     contact.status === contactOptions.statusStatement.ACTIVE &&
                     isPersonalContact(contact)
             )
-            .sort((first, second) => second.isMain - first.isMain);
+            .sort((first, second) => second.calls?.length - first.calls?.length);
 
         passiveContacts.value = response.filter(
             contact => isPassiveContact(contact) && isPersonalContact(contact)
