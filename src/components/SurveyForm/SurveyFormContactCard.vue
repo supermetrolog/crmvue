@@ -55,16 +55,6 @@
             v-if="!isCompanyContact && editable"
             class="messenger-quiz-contact__actions align-items-center"
         >
-            <UiButtonIcon
-                @click.stop="$emit('show-comments')"
-                small
-                label="Посмотреть комментарии"
-                class="messenger-quiz-contact__button"
-                color="light"
-                :badge="contact.comments?.length"
-                badge-color="danger"
-                icon="fa-solid fa-comments"
-            />
             <UiDropdownActions
                 label="Действия над контактом"
                 small
@@ -72,24 +62,30 @@
                 icon="fa-solid fa-ellipsis-vertical"
                 color="light"
                 :title="contact.full_name"
+                :badge="contact.comments?.length"
+                badge-color="warning"
             >
                 <template #menu>
-                    <UiDropdownActionsButton
-                        @handle="$emit('edit')"
-                        icon="fa-solid fa-pen"
-                        label="Редактировать"
-                    />
-                    <UiDropdownActionsButton
-                        @handle="$emit('schedule-call')"
-                        :icon="scheduled ? 'fa-solid fa-check' : 'fa-solid fa-phone'"
-                        :label="scheduled ? 'Звонок запланирован' : 'Запланировать звонок'"
-                        :disabled="scheduled"
-                    />
-                    <UiDropdownActionsButton
-                        @handle="$emit('show-comments')"
-                        icon="fa-solid fa-comments"
-                        :label="`Открыть комментарии (${contact.comments?.length ?? 0})`"
-                    />
+                    <UiDropdownActionsGroup>
+                        <UiDropdownActionsButton
+                            @handle="$emit('edit')"
+                            icon="fa-solid fa-pen"
+                            label="Редактировать"
+                        />
+                        <UiDropdownActionsButton
+                            @handle="$emit('schedule-call')"
+                            :icon="scheduled ? 'fa-solid fa-check' : 'fa-solid fa-phone'"
+                            :label="scheduled ? 'Звонок запланирован' : 'Запланировать звонок'"
+                            :disabled="!!scheduled"
+                        />
+                    </UiDropdownActionsGroup>
+                    <UiDropdownActionsGroup>
+                        <UiDropdownActionsButton
+                            @handle="$emit('show-comments')"
+                            icon="fa-solid fa-comments"
+                            :label="`Открыть комментарии (${contact.comments?.length ?? 0})`"
+                        />
+                    </UiDropdownActionsGroup>
                 </template>
             </UiDropdownActions>
         </div>
@@ -98,10 +94,10 @@
 <script setup>
 import { computed } from 'vue';
 import { contactOptions } from '@/const/options/contact.options.js';
-import UiButtonIcon from '@/components/common/UI/UiButtonIcon.vue';
 import UiDropdownActions from '@/components/common/UI/DropdownActions/UiDropdownActions.vue';
 import UiDropdownActionsButton from '@/components/common/UI/DropdownActions/UiDropdownActionsButton.vue';
 import dayjs from 'dayjs';
+import UiDropdownActionsGroup from '@/components/common/UI/DropdownActions/UiDropdownActionsGroup.vue';
 
 defineEmits(['edit', 'show-comments', 'schedule-call']);
 const props = defineProps({

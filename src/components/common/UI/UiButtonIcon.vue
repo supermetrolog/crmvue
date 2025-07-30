@@ -13,26 +13,41 @@
         </span>
     </button>
 </template>
-<script setup>
+<script setup lang="ts">
 import { computed, toRef, useTemplateRef } from 'vue';
 import { isNotNullish } from '@/utils/helpers/common/isNotNullish.ts';
 import Spinner from '@/components/common/Spinner.vue';
 import { useTippy } from 'vue-tippy';
 
-const props = defineProps({
-    label: String,
-    active: Boolean,
-    small: Boolean,
-    mini: Boolean,
-    icon: String,
-    color: String,
-    disabled: Boolean,
-    loading: Boolean,
-    transparent: Boolean,
-    rect: Boolean,
-    badge: [Number, String],
-    badgeColor: String
-});
+export type ButtonIconColor =
+    | 'warning'
+    | 'warning-light'
+    | 'success'
+    | 'success-light'
+    | 'danger'
+    | 'danger-l'
+    | 'info'
+    | 'dark'
+    | 'light'
+    | 'white'
+    | 'gray-l';
+
+export interface ButtonIconProps {
+    label?: string;
+    icon?: string;
+    color?: ButtonIconColor;
+    active?: boolean;
+    small?: boolean;
+    mini?: boolean;
+    disabled?: boolean;
+    loading?: boolean;
+    transparent?: boolean;
+    rect?: boolean;
+    badge?: number | string;
+    badgeColor?: string;
+}
+
+const props = defineProps<ButtonIconProps>();
 
 const classes = computed(() => {
     return {

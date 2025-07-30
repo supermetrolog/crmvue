@@ -8,13 +8,17 @@
     >
         <template #trigger>
             <slot name="trigger">
-                <UiButtonIcon :label
-:disabled
-:icon
-:small
-:color
-:mini
-:class="buttonClass" />
+                <UiButtonIcon
+                    :label
+                    :disabled
+                    :icon
+                    :small
+                    :color
+                    :mini
+                    :class="buttonClass"
+                    :badge
+                    :badge-color
+                />
             </slot>
         </template>
         <DropdownContent
@@ -40,13 +44,13 @@
     </VDropdown>
 </template>
 <script setup lang="ts">
-import UiButtonIcon from '@/components/common/UI/UiButtonIcon.vue';
+import UiButtonIcon, { ButtonIconColor } from '@/components/common/UI/UiButtonIcon.vue';
 import VDropdown from '@/components/common/Dropdown/VDropdown.vue';
 import { DropdownContent } from 'v-dropdown';
 import { computed, useTemplateRef } from 'vue';
 import { ComponentClassAttribute } from '@/types/base';
 
-defineEmits<{ (e: 'visible-change', visible: boolean) }>();
+defineEmits<{ (e: 'visible-change', visible: boolean): void }>();
 
 const { icon = 'fa-solid fa-ellipsis' } = defineProps<{
     disabled?: boolean;
@@ -56,12 +60,14 @@ const { icon = 'fa-solid fa-ellipsis' } = defineProps<{
     label?: string;
     title?: string;
     icon?: string;
-    color?: string;
+    color?: ButtonIconColor;
     buttonClass?: ComponentClassAttribute;
     titleClass?: ComponentClassAttribute;
     menuStyle?: ComponentClassAttribute;
     manual?: boolean;
     align?: 'left' | 'center' | 'right';
+    badge?: number | string;
+    badgeColor?: string;
 }>();
 
 const dropdownEl = useTemplateRef('dropdownEl');
