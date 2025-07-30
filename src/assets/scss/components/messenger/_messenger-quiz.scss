@@ -489,12 +489,11 @@
 }
 
 .messenger-quiz-contact {
-    background-color: variables.$color_grey_light;
     padding: 15px;
-    border-radius: 5px;
+    border-radius: 10px;
     flex-shrink: 0;
     cursor: pointer;
-    border: 1px solid rgba(0, 0, 0, .2);
+    border: 2px solid rgba(0, 0, 0, .1);
     position: relative;
     @include mixins.flex-box($gap: 5px, $j: space-between);
     @include mixins.transition(background-color, color);
@@ -536,16 +535,13 @@
 
     &__actions {
         @include mixins.flex-box($gap: 5px);
+        align-self: flex-start;
     }
 
     &__username {
         font-weight: 500;
-        font-size: 15px;
-        @include mixins.text-overflow();
-    }
-
-    &.active &__username {
         font-size: 20px;
+        @include mixins.text-overflow();
     }
 
     &__error {
@@ -598,7 +594,6 @@
     }
 
     &__button {
-        border: 1px solid rgba(0, 0, 0, 0.2);
         @include mixins.transition(border, color, background-color);
 
         &.danger {
@@ -632,7 +627,7 @@
 
     &__badge {
         font-size: 13px;
-        padding: 1px 3px;
+        padding: 3px 5px;
         font-weight: 500;
         background-color: variables.$color_info;
         color: #fff;
@@ -642,7 +637,7 @@
         }
 
         &--warning {
-            background-color: #ce860c;
+            background-color: #f68e00;
         }
 
         &--success {
@@ -2262,6 +2257,11 @@
             background-color: #76a3ea !important;
             color: #fff !important;
         }
+
+        &.active {
+            border-color: transparent;
+            box-shadow: 0 4px 5px 1px rgba(0, 0, 0, 0.2);
+        }
     }
 
     &__form {
@@ -2306,19 +2306,40 @@
 }
 
 .survey-form-contact-form {
-    position: relative;
-    padding: 15px;
-    border-radius: 5px;
-    border: 2px solid rgb(182, 200, 232);
-    @include mixins.flex-box($gap: 10px, $a: start);
+    padding: 10px 0 15px;
+    @include mixins.transition(height);
 
-    &__card {
-        width: calc(600px - 15px);
+    &__header {
+        font-size: 18px;
+        padding-bottom: 2px;
+        border-bottom: 2px solid rgba(0, 0, 0, .2);
+        margin-bottom: 5px;
+        width: 100%;
+        @include mixins.flex-box($a: flex-end)
+    }
+
+    &__content {
+        border: 1px solid rgb(234, 234, 234);
+        @include mixins.flex-box();
+        @include mixins.transition(height);
+    }
+
+    &__list {
+        width: 40%;
         flex-shrink: 0;
+        overflow-y: auto;
+        max-height: 300px;
+        border-right: 1px solid rgb(234, 234, 234);
+        @include mixins.flex-box($d: column);
     }
 
     &__call {
-        width: 700px;
+        width: 60%;
+        padding: 10px 15px;
+        max-height: 310px;
+        min-height: 160px;
+        overflow-y: auto;
+        @include mixins.transition(height);
     }
 
     &__phone {
@@ -2330,9 +2351,7 @@
     }
 
     &__actions {
-        position: absolute;
-        right: 10px;
-        top: 10px;
+        margin-left: auto;
         @include mixins.flex-box($gap: 5px);
     }
 }
@@ -2371,8 +2390,10 @@
 
 .survey-form-contact-form-call {
     &__question-text {
-        font-size: 22px;
+        font-size: 24px;
         font-weight: 500;
+        //color: #75a2e9; // TODO: Спросить точно ли надо синий..
+        letter-spacing: 1px;
     }
 
     &__schedule {
@@ -2677,4 +2698,104 @@
     border-radius: 5px;
     background-color: #f88f01;
     color: #fff
+}
+
+.survey-form-contact-form-element {
+    padding: 15px;
+    cursor: pointer;
+    border-bottom: 1px solid rgb(234, 234, 234);
+
+    @include mixins.flex-box($gap: 10px, $a: flex-start);
+    @include mixins.transition(background-color, color);
+
+    &__icon {
+        height: 24px;
+        width: 24px;
+        font-size: 14px;
+        border-radius: 50%;
+        border: 1px solid #000;
+        color: #000;
+        @include mixins.flex-box($a: center, $j: center);
+        @include mixins.transition(color, border-color);
+    }
+
+    &.active &__icon, &:hover &__icon {
+        border-color: #fff;
+        color: #fff;
+    }
+
+    &:hover, &.active {
+        background-color: #75a2e9;
+        color: #fff;
+    }
+}
+
+.survey-form-contact-form-phone {
+    &__value {
+        font-size: 20px;
+        font-weight: 600;
+        line-height: 22px;
+        margin-bottom: 5px;
+        @include mixins.transition(color);
+    }
+
+    &__footer {
+        font-size: 15px;
+        @include mixins.transition(color);
+    }
+
+    &__last-call {
+        @include mixins.transition(color);
+
+        &.success {
+            color: variables.$color_success;
+        }
+
+        &.danger {
+            color: variables.$color_danger;
+        }
+    }
+
+    &.active &__footer, &:hover &__footer {
+        color: #fff;
+    }
+
+    &.active &__last-call, &:hover &__last-call {
+        color: #fff
+    }
+}
+
+.survey-form-contact-form-email {
+    &__value {
+        font-size: 20px;
+        font-weight: 600;
+        line-height: 22px;
+        margin-bottom: 5px;
+        color: #616bb3;
+        @include mixins.transition(color);
+    }
+
+    &__footer {
+        font-size: 15px;
+        @include mixins.transition(color);
+    }
+
+    &.active &__footer, &:hover &__footer {
+        color: #fff;
+    }
+
+    &.active &__value, &:hover &__value {
+        color: #fff;
+    }
+}
+
+.survey-form-contact-form-empty {
+    color: #75a2e9;
+    height: 100%;
+    @include mixins.flex-box($d: column, $a: center, $j: center);
+
+    &__text {
+        font-size: 26px;
+        font-weight: 500;
+    }
 }

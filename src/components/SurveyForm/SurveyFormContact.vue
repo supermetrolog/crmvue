@@ -1,6 +1,6 @@
 <template>
     <div class="survey-form-contact">
-        <div class="survey-form-contact__row">
+        <div class="survey-form-contact__row mb-2">
             <SurveyFormContactCard
                 @click="$emit('select')"
                 @edit="$emit('edit')"
@@ -26,42 +26,49 @@
                             <span>Обработан</span>
                         </p>
                     </div>
-                    <i class="fa-solid fa-arrow-right-long survey-form-contact__result-arrow"></i>
-                    <div class="d-flex flex-column gap-1 flex-shrink-0">
-                        <div class="survey-form-contact__block" :class="reasonClass">
-                            <p>
-                                <i :class="reasonOptionsIcons[form.reason]" class="mr-2" />
-                                <span>{{ reasonOptions[form.reason] }}</span>
-                            </p>
-                        </div>
-                        <div
-                            v-if="form.scheduled"
-                            class="survey-form-contact__block dashboard-bg-success-l"
-                        >
-                            <p>
-                                <i class="mr-2 fa-solid fa-phone" />
-                                <span>Звонок</span>
-                                <span v-if="form.scheduled" class="ml-1">
-                                    {{ callScheduledDate }}
-                                </span>
-                            </p>
-                        </div>
-                    </div>
-                    <template v-if="descriptionShouldBeVisible">
-                        <i
-                            class="fa-solid fa-arrow-right-long survey-form-contact__result-arrow"
-                        ></i>
-                        <div class="survey-form-contact__description fs-2">
-                            <p class="fs-1 text-grey">
-                                <i>Задача {{ currentUser.userProfile.middle_name }} => Еськова</i>
-                            </p>
-                            <i>{{ form.description }}</i>
-                        </div>
-                    </template>
+                    <!--                    <i class="fa-solid fa-arrow-right-long survey-form-contact__result-arrow"></i>-->
+                    <!--                    <div class="d-flex flex-column gap-1 flex-shrink-0">-->
+                    <!--                        <div class="survey-form-contact__block" :class="reasonClass">-->
+                    <!--                            <p>-->
+                    <!--                                <i-->
+                    <!--                                    :class="-->
+                    <!--                                        hasAvailabled-->
+                    <!--                                            ? 'fa-solid fa-thumbs-up'-->
+                    <!--                                            : 'fa-solid fa-thumbs-down'-->
+                    <!--                                    "-->
+                    <!--                                    class="mr-2"-->
+                    <!--                                />-->
+                    <!--                                <span>{{ hasAvailabled ? 'Актуален' : '' }}</span>-->
+                    <!--                            </p>-->
+                    <!--                        </div>-->
+                    <!--                        <div-->
+                    <!--                            v-if="form.scheduled"-->
+                    <!--                            class="survey-form-contact__block dashboard-bg-success-l"-->
+                    <!--                        >-->
+                    <!--                            <p>-->
+                    <!--                                <i class="mr-2 fa-solid fa-phone" />-->
+                    <!--                                <span>Звонок</span>-->
+                    <!--                                <span v-if="form.scheduled" class="ml-1">-->
+                    <!--                                    {{ callScheduledDate }}-->
+                    <!--                                </span>-->
+                    <!--                            </p>-->
+                    <!--                        </div>-->
+                    <!--                    </div>-->
+                    <!--                    <template v-if="descriptionShouldBeVisible">-->
+                    <!--                        <i-->
+                    <!--                            class="fa-solid fa-arrow-right-long survey-form-contact__result-arrow"-->
+                    <!--                        ></i>-->
+                    <!--                        <div class="survey-form-contact__description fs-2">-->
+                    <!--                            <p class="fs-1 text-grey">-->
+                    <!--                                <i>Задача {{ currentUser.userProfile.middle_name }} => Еськова</i>-->
+                    <!--                            </p>-->
+                    <!--                            <i>{{ form.description }}</i>-->
+                    <!--                        </div>-->
+                    <!--                    </template>-->
                 </div>
             </AnimationTransition>
         </div>
-        <AnimationTransition :speed="0.5">
+        <TransitionExpand>
             <SurveyFormContactForm
                 v-if="active"
                 v-model="form"
@@ -72,9 +79,8 @@
                 @schedule-event="$emit('schedule-event')"
                 :contact
                 :company
-                class="mt-2 mb-4"
             />
-        </AnimationTransition>
+        </TransitionExpand>
     </div>
 </template>
 <script setup>
@@ -82,11 +88,10 @@ import { computed, ref, watch } from 'vue';
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
 import SurveyFormContactCard from '@/components/SurveyForm/SurveyFormContactCard.vue';
 import { isNotNullish } from '@/utils/helpers/common/isNotNullish.ts';
-import dayjs from 'dayjs';
 import SurveyFormContactForm from '@/components/SurveyForm/SurveyFormContactForm.vue';
-import { useAuth } from '@/composables/useAuth.js';
 import { isString } from '@/utils/helpers/string/isString.js';
 import { toBool } from '@/utils/helpers/string/toBool.js';
+import { TransitionExpand } from '@morev/vue-transitions';
 
 defineEmits([
     'edit',
@@ -126,13 +131,27 @@ const available = computed(() => {
     return null;
 });
 
-const { currentUser } = useAuth();
+// const { currentUser } = useAuth();
+//
+// const phones = computed(() => {
+//     if (form.value.phones) {
+//         return Object.values(form.value.phones);
+//     }
+//
+//     return [];
+// });
 
 const isCompleted = computed(() => {
+    if (form.value.phones) {
+        return Object.values(form.value.phones).some(
+            phone => isNotNullish(phone?.available) && isNotNullish(phone?.reason)
+        );
+    }
+
     return isNotNullish(form.value?.available) && isNotNullish(form.value?.reason);
 });
 
-const callScheduledDate = computed(() => dayjs(form.value.scheduled).format('DD.MM.YY, HH:mm'));
+// const callScheduledDate = computed(() => dayjs(form.value.scheduled).format('DD.MM.YY, HH:mm'));
 
 // form
 
@@ -148,34 +167,36 @@ const stopActiveWatch = watch(
     }
 );
 
-const reasonOptions = {
-    1: 'Актуален',
-    2: 'Больше не актуален',
-    3: 'Будет перенесен',
-    4: 'Не поднимает',
-    5: 'Телефон недоступен',
-    6: 'Абонент занят',
-    7: 'Не существует/не зарегистрирован',
-    8: 'Заблокирован'
-};
+// TODO: Вернуть прогресс сверху
 
-const reasonOptionsIcons = {
-    1: 'fa-solid fa-thumbs-up',
-    2: 'fa-solid fa-thumbs-down',
-    3: 'fa-solid fa-rotate',
-    4: 'fa-solid fa-phone',
-    5: 'fa-solid fa-phone-slash',
-    6: 'fa-solid fa-user-clock',
-    7: 'fa-solid fa-ban',
-    8: 'fa-solid fa-user-slash'
-};
-
-const reasonClass = computed(() => {
-    if (Number(form.value.reason) === 1) return 'dashboard-bg-success-l';
-    return 'dashboard-bg-danger-l';
-});
-
-const descriptionShouldBeVisible = computed(
-    () => available.value && isNotNullish(form.value.description) && form.value.description?.length
-);
+// const reasonOptions = {
+//     1: 'Актуален',
+//     2: 'Больше не актуален',
+//     3: 'Будет перенесен',
+//     4: 'Не поднимает',
+//     5: 'Телефон недоступен',
+//     6: 'Абонент занят',
+//     7: 'Не существует/не зарегистрирован',
+//     8: 'Заблокирован'
+// };
+//
+// const reasonOptionsIcons = {
+//     1: 'fa-solid fa-thumbs-up',
+//     2: 'fa-solid fa-thumbs-down',
+//     3: 'fa-solid fa-rotate',
+//     4: 'fa-solid fa-phone',
+//     5: 'fa-solid fa-phone-slash',
+//     6: 'fa-solid fa-user-clock',
+//     7: 'fa-solid fa-ban',
+//     8: 'fa-solid fa-user-slash'
+// };
+//
+// const reasonClass = computed(() => {
+//     if (Number(form.value.reason) === 1) return 'dashboard-bg-success-l';
+//     return 'dashboard-bg-danger-l';
+// });
+//
+// const descriptionShouldBeVisible = computed(
+//     () => available.value && isNotNullish(form.value.description) && form.value.description?.length
+// );
 </script>

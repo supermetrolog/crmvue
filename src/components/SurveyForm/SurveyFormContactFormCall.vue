@@ -68,7 +68,7 @@ label="Да"
                             v-model="form.description"
                             placeholder="Комментарий к задаче.."
                             class="mb-2 survey-form-contact-form-call__editor"
-                            :min-height="50"
+                            :min-height="80"
                             :max-height="120"
                             auto-height
                         />
@@ -101,7 +101,8 @@ const props = defineProps({
         type: Object,
         required: true
     },
-    company: Object
+    company: Object,
+    phoneId: Number
 });
 
 const form = defineModel({ type: Object, default: () => ({}) });
@@ -184,8 +185,12 @@ const callStatusMap = {
     BLOCKED: 6
 };
 
+const currentCalls = computed(() =>
+    props.contact.calls.filter(call => call.phone_id === props.phoneId)
+);
+
 const completedCallsCount = computed(() =>
-    props.contact.calls.reduce(
+    currentCalls.value.reduce(
         (acc, call) => acc + Number(call.status === callStatusMap.COMPLETED),
         0
     )
@@ -193,11 +198,11 @@ const completedCallsCount = computed(() =>
 
 let lastCallsCount = 1;
 let pluralLastCallsCount = '1 попытка';
-const lastCallsStatus = props.contact.calls[0]?.status;
+const lastCallsStatus = currentCalls.value[0]?.status;
 
 function handleCalls() {
-    for (let i = 1; i < props.contact.calls.length; i++) {
-        if (props.contact.calls[i].status === props.contact.calls[i - 1].status) {
+    for (let i = 1; i < currentCalls.value.length; i++) {
+        if (currentCalls.value[i].status === currentCalls.value[i - 1].status) {
             lastCallsCount++;
         } else {
             pluralLastCallsCount = plural(lastCallsCount, '%d попытка', '%d попытки', '%d попыток');

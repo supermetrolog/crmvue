@@ -124,6 +124,7 @@ import { createTourStepElementGenerator, useTourStep } from '@/composables/useTo
 import SurveyFormObjectsPreviewTab from '@/components/SurveyForm/ObjectsPreview/SurveyFormObjectsPreviewTab.vue';
 import EmptyData from '@/components/common/EmptyData.vue';
 import SurveyFormPassiveContact from '@/components/SurveyForm/SurveyFormPassiveContact.vue';
+import { isNullish } from '@/utils/helpers/common/isNullish';
 
 const emit = defineEmits(['contact-created', 'contact-updated', 'change', 'add-contact']);
 const props = defineProps({
@@ -172,12 +173,24 @@ const form = defineModel({ type: Object, default: () => ({}) });
 
 function generateForm() {
     for (const contact of props.contacts) {
-        if (!(contact.id in form.value)) {
+        if (!(contact.id in form.value) || isNullish(form.value[contact.id].phones)) {
             form.value[contact.id] = {
-                available: null,
                 scheduled: null,
                 contact_id: contact.id,
-                full_name: contact.full_name
+                full_name: contact.full_name,
+                phones: contact.phones.reduce((acc, phone) => {
+                    acc[phone.id] = {
+                        id: phone.id,
+                        available: null,
+                        reason: null
+                    };
+
+                    return acc;
+                }, {}),
+                emails: contact.emails.reduce((acc, email) => {
+                    acc[email.id] = {};
+                    return acc;
+                }, {})
             };
         }
     }

@@ -386,29 +386,57 @@ const form = ref({
 });
 
 const hasCompletedContact = computed(() => {
-    return props.contacts.some(contact => {
-        if (isNullish(form.value.calls[contact.id])) return false;
+    const processedPhones = [];
+    const processedEmails = [];
 
-        const isAvailable = form.value.calls[contact.id].available;
+    for (const contact of props.contacts) {
+        const phones = form.value.calls[contact.id]?.phones ?? {};
+        const emails = form.value.calls[contact.id]?.emails ?? {};
 
-        if (isNullish(isAvailable)) return false;
+        for (const phone of Object.values(phones)) {
+            if (isNotNullish(phone.available)) {
+                processedPhones.push(phone);
+            }
+        }
+    }
 
-        return toBool(isAvailable) && Number(form.value.calls[contact.id].reason) === 1;
-    });
+    console.log(processedPhones);
+
+    if (processedPhones.length === 0) {
+        return false;
+    }
+
+    // TODO: Emails
+
+    const hasCompletedCall = processedPhones.some(
+        phone => toBool(phone.available) && Number(phone.reason) === 1
+    );
+
+    return hasCompletedCall;
 });
 
-function requiredCallsValidationHandler(value) {
-    return (
-        props.contacts.some(contact => {
-            if (isNullish(value[contact.id])) return false;
+const hasProcessedContact = computed(() => {
+    const processedPhones = [];
+    const processedEmails = [];
 
-            const isAvailable = value[contact.id].available;
+    // TODO: Emails
 
-            if (isNullish(isAvailable)) return false;
+    for (const contact of props.contacts) {
+        const phones = form.value.calls[contact.id]?.phones ?? {};
+        const emails = form.value.calls[contact.id]?.emails ?? {};
 
-            return toBool(isAvailable) && Number(value[contact.id].reason) === 1;
-        }) || props.contacts.every()
-    );
+        for (const phone of Object.values(phones)) {
+            if (isNotNullish(phone.available) && isNotNullish(phone.reason)) {
+                processedPhones.push(phone);
+            }
+        }
+    }
+
+    return processedPhones.length > 0;
+});
+
+function requiredCallsValidationHandler() {
+    return hasProcessedContact.value;
 }
 
 const activeRequests = computed(() => requests.value.filter(request => request.status === 1));
@@ -470,22 +498,9 @@ function createDraftPayload() {
 const formIsValid = computed(() => !v$.value.$invalid);
 
 const canBeCancelled = computed(() => {
-    if (formIsValid.value) return false;
     if (hasCompletedContact.value) return false;
 
-    return props.contacts.some(contact => {
-        if (isNullish(form.value.calls[contact.id])) return false;
-
-        const isAvailable = form.value.calls[contact.id].available;
-
-        if (isNullish(isAvailable)) return false;
-
-        return (
-            isNotNullish(form.value.calls[contact.id].reason) &&
-            ((toBool(isAvailable) && Number(form.value.calls[contact.id].reason) !== 1) ||
-                !toBool(isAvailable))
-        );
-    });
+    return hasProcessedContact.value;
 });
 
 function getQuestionByGroup(group) {
@@ -520,7 +535,17 @@ function createSurveyCallsPayload() {
         }
     ];
 
-    return { payload: Object.values(form.value.calls), questionAnswers };
+    const payload = Object.values(form.value.calls).reduce((acc, contact) => {
+        for (const phone of Object.values(contact?.phones ?? [])) {
+            if (isNotNullish(phone.available) && isNotNullish(phone.reason)) {
+                acc.push({ ...phone, phone_id: phone.id, contact_id: contact.contact_id });
+            }
+        }
+
+        return acc;
+    }, []);
+
+    return { payload, questionAnswers };
 }
 
 function createSurveyObjectsPayload() {
@@ -602,9 +627,10 @@ function createCallsForm(callPayload) {
         user_id: currentUserId.value,
         contact_id: form.contact_id,
         type: callTypeEnum.OUTGOING,
-        status: getCallStatusByForm(form),
-        description: form.description
+        status: getCallStatusByForm(form)
     }));
+
+    // TODO: Description для звонка внедрить можно
 }
 
 function createSurveyPayload() {
@@ -612,11 +638,13 @@ function createSurveyPayload() {
         createSurveyCallsPayload();
 
     const targetContact = callsPayload.find(contact => {
-        return (
-            isNotNullish(contact.available) &&
-            toBool(contact.available) &&
-            Number(contact.reason) === 1
-        );
+        return Object.values(contact.phones).some(phone => {
+            return (
+                isNotNullish(phone.available) &&
+                toBool(phone.available) &&
+                Number(phone.reason) === 1
+            );
+        });
     });
 
     const { questionAnswers: objectsQuestionAnswers } = createSurveyObjectsPayload();
@@ -628,7 +656,7 @@ function createSurveyPayload() {
             user_id: currentUserId.value,
             contact_id: targetContact?.contact_id,
             chat_member_id: props.chatMemberId,
-            calls: createCallsForm(callsPayload.filter(form => isNotNullish(form.available))),
+            calls: createCallsForm(callsPayload),
             question_answers: [
                 ...objectsQuestionAnswers,
                 ...requestQuestionAnswers,
@@ -643,7 +671,7 @@ function createSurveyPayload() {
             comment: form.value.comment
         },
         contact: targetContact,
-        calls: callsPayload.filter(form => isNotNullish(form.available))
+        calls: callsPayload
     };
 }
 
@@ -672,14 +700,16 @@ function createRelation(type, id) {
     };
 }
 
-async function createPotentialTasks(contacts, surveyId = null) {
+// TODO: Надо придумать, как отправлять задачи
+
+async function createPotentialTasks(calls, surveyId = null) {
     const relations = [createRelation('company', props.company.id)];
 
     if (surveyId) {
         relations.push(createRelation('survey', surveyId));
     }
 
-    const payloads = contacts.reduce((acc, element) => {
+    const payloads = calls.reduce((acc, element) => {
         if (contactMustBeDeleted(element)) {
             acc.push({
                 contactId: element.contact_id,

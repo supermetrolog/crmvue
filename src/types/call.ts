@@ -1,14 +1,14 @@
-export interface Call {
-    id: number;
-    category: string;
-    name: string;
-    original_name: string;
-    path: string;
-    src: string;
-    extension: string;
-    mime_type: string;
-    model_id: string;
-    model_type: string;
-    created_at: string;
-    deleted_at: string | null;
+import { Identifiable, SoftDelete, Timestamps } from '@/types/base';
+import { Contact } from '@/types/contact/contact';
+import { User } from '@/types/user';
+
+export interface Call extends Identifiable, SoftDelete, Timestamps {
+    phone_id: number;
+    user_id: number;
+    contact_id: number;
+    description: string | null;
+    status: number;
+    type: number;
+    contact?: Contact;
+    user?: User;
 }
