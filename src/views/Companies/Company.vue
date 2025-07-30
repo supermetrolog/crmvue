@@ -54,6 +54,12 @@
                 @disabled="onDisabledContact"
                 :contact="disablingContact"
             />
+            <FormContactChangeCompany
+                v-if="changeContactCompanyFormIsVisible"
+                @close="closeChangeContactCompanyForm"
+                @changed="onContactCompanyChanged"
+                :contact="changeCompanyContact"
+            />
         </teleport>
         <div class="company-page__wrapper">
             <Loader v-if="companyIsLoading || enableIsLoading" />
@@ -72,6 +78,7 @@
                 @schedule-visit="scheduleVisitModalIsVisible = true"
                 @schedule-call="scheduleCallModalIsVisible = true"
                 @change-consultant="changeCompanyConsultantModalIsVisible = true"
+                @change-company="changeContactCompany"
                 :company="COMPANY"
                 :contacts="COMPANY_CONTACTS"
                 class="mb-2"
@@ -166,6 +173,7 @@ import { getCompanyShortName } from '@/utils/formatters/models/company.js';
 import VisitScheduler from '@/components/VisitScheduler/VisitScheduler.vue';
 import CallScheduler from '@/components/CallScheduler/CallScheduler.vue';
 import FormModalCompanyChangeConsultant from '@/components/Forms/Company/FormModalCompanyChangeConsultant.vue';
+import FormContactChangeCompany from '@/components/Forms/FormContactChangeCompany.vue';
 
 provide('openContact', showContact);
 provide('createContactComment', createContactComment);
@@ -511,4 +519,24 @@ async function createCompanyTask() {
 
 const scheduleCallModalIsVisible = ref(false);
 const scheduleVisitModalIsVisible = ref(false);
+
+// contact company
+
+const changeContactCompanyFormIsVisible = ref(false);
+const changeCompanyContact = ref(null);
+
+async function changeContactCompany(contact) {
+    changeCompanyContact.value = contact;
+    changeContactCompanyFormIsVisible.value = true;
+}
+
+function closeChangeContactCompanyForm() {
+    changeContactCompanyFormIsVisible.value = false;
+    changeCompanyContact.value = null;
+}
+
+function onContactCompanyChanged() {
+    getCompanyContacts(false);
+    closeChangeContactCompanyForm();
+}
 </script>

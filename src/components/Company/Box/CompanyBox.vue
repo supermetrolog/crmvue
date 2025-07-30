@@ -271,6 +271,7 @@
                 @enable="$emit('enable-contact', $event)"
                 @disable="$emit('disable-contact', $event)"
                 @edit="$emit('edit-contact', $event)"
+                @change-company="$emit('change-company', $event)"
                 :contacts="contacts"
                 editable
             />
@@ -345,7 +346,8 @@ defineEmits([
     'create-task',
     'schedule-call',
     'schedule-visit',
-    'change-consultant'
+    'change-consultant',
+    'change-company'
 ]);
 
 const props = defineProps({

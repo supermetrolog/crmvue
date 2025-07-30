@@ -530,6 +530,10 @@ function removeFilter(filter) {
 const hasSort = computed(() => isNotNullish(route.query?.sort));
 
 function clearSort() {
-    router.replace({ query: { ...route.query, sort: null } });
+    const query = { ...route.query };
+
+    delete query.sort;
+
+    router.replace({ query });
 }
 </script>
