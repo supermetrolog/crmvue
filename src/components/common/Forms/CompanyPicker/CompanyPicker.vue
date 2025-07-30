@@ -22,6 +22,9 @@
         <template #singlelabel="{ value }">
             <CompanyPickerOption class="custom w-auto" :option="value" />
         </template>
+        <template #after>
+            <slot name="after" />
+        </template>
     </MultiSelect>
 </template>
 <script setup>

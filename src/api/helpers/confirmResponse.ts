@@ -4,12 +4,12 @@ import { isNullish } from '@/utils/helpers/common/isNullish';
 import { isObject } from '@vueuse/core';
 import { isArray } from '@/utils/helpers/array/isArray';
 
-function showNotify(text: string, title: string = 'Успешно') {
+function showNotify(text: string) {
     notify({
         group: 'app',
         type: 'success',
         duration: 5000,
-        title,
+        title: 'Успешно',
         text
     });
 }
@@ -20,27 +20,21 @@ interface ResponseStatusData<T = any> {
 }
 
 function setNotify(response: AxiosResponse) {
-    const title = response.statusText;
-
     if (isArray(response.data.message)) {
         for (const text of response.data.message) {
-            showNotify(text, title);
+            showNotify(text);
         }
     } else {
-        showNotify(response.data.message, title);
+        showNotify(response.data.message);
     }
 }
 
-export function responseToData<T = ResponseStatusData | any>(response: AxiosResponse<T>): T {
-    if (isNullish(response)) return response;
-
-    if (isObject(response.data)) {
-        if ('message' in response.data && 'data' in response.data) {
-            setNotify(response);
-
-            return response.data.data as T;
-        }
+export function confirmResponse(response: AxiosResponse<ResponseStatusData>): void {
+    if (isNullish(response)) {
+        return;
     }
 
-    return response.data;
+    if (isObject(response.data) && 'message' in response.data) {
+        setNotify(response);
+    }
 }

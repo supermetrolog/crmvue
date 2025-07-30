@@ -1,85 +1,152 @@
 import axios from 'axios';
 import { responseToData } from '@/api/helpers/responseToData.js';
 import { responseToPaginatedData } from '@/api/helpers/responseToPaginatedData.js';
-import { Phone } from '@/types/contact/phone';
+import { Phone, PhoneCountryCode, PhoneType } from '@/types/contact/phone';
+import {
+    Contact,
+    ContactPassiveWhy,
+    ContactPosition,
+    ContactStatus
+} from '@/types/contact/contact';
+import { BooleanNumber } from '@/types/base';
+import { RequestQueryParams } from '@/api/types';
+import { Website } from '@/types/contact/website';
+import { confirmResponse } from '@/api/helpers/confirmResponse';
 
 const URL = '/contacts';
 
-interface CompanyContactPhone {
+async function getByCompany(companyId: number) {
+    const expand =
+        'contactComments,contactComments.author,contactComments.author.userProfile,' +
+        'emails,phones,invalidPhones,websites,wayOfInformings,' +
+        'consultant,consultant.userProfile';
+    const sort = '-created_at';
+
+    const response = await axios.get(`${URL}/company-contacts/${companyId}`, {
+        params: { expand, sort }
+    });
+
+    return responseToData<Contact[]>(response);
+}
+
+async function get(id: number) {
+    const response = await axios.get(`${URL}/${id}`);
+    return responseToData(response);
+}
+
+async function list(params: RequestQueryParams) {
+    const expand = 'emails,phones,websites,wayOfInformings';
+
+    const response = await axios.get(URL, { params: { expand, ...params } });
+    return responseToPaginatedData(response);
+}
+
+export interface BaseContactRequestDto {
+    first_name: string;
+    middle_name: string | null;
+    last_name: string | null;
+    position: ContactPosition | null;
+    position_unknown: BooleanNumber;
+    faceToFaceMeeting: BooleanNumber | null;
+    passive_why: ContactPassiveWhy | null;
+    passive_why_comment: string | null;
+    consultant_id: number | null;
+    warning: BooleanNumber | null;
+    warning_why_comment: string | null;
+    good: BooleanNumber | null;
+    status: ContactStatus | null;
+    isMain: BooleanNumber | null;
+    emails: object[];
+    websites: Website[];
+    wayOfInformings: object[];
+}
+
+export interface CreateContactRequestDto extends BaseContactRequestDto {
+    company_id: number;
+}
+
+async function create(dto: CreateContactRequestDto) {
+    const response = await axios.post(URL, dto);
+    return responseToData(response);
+}
+
+export type UpdateContactRequestDto = BaseContactRequestDto;
+
+async function update(id: number, dto: UpdateContactRequestDto) {
+    const response = await axios.put(`${URL}/${id}`, dto);
+    return responseToData(response);
+}
+
+async function deleteContact(id: number) {
+    const response = await axios.delete(`${URL}/${id}`);
+    return responseToData(response);
+}
+
+export interface ContactCreateCommentRequestDto {
+    text: string;
+}
+
+async function createComment(dto: ContactCreateCommentRequestDto) {
+    const response = await axios.post(`${URL}/create-comment`, dto);
+    return responseToData(response);
+}
+
+export interface DisableContactRequestDto {
+    passive_why: ContactPassiveWhy;
+    passive_why_comment: string | null;
+}
+
+async function disable(id: number, dto: DisableContactRequestDto) {
+    const response = await axios.post(`${URL}/${id}/disable`, dto);
+    return responseToData(response);
+}
+
+async function enable(id: number) {
+    const response = await axios.post(`${URL}/${id}/enable`);
+    return responseToData(response);
+}
+
+async function phones(id: number) {
+    const response = await axios.get(`${URL}/${id}/phones`);
+    return responseToData<Phone[]>(response);
+}
+
+export interface ContactAddPhoneRequestDto {
     phone: string;
+    country_code: PhoneCountryCode;
+    type: PhoneType;
+    comment: string | null;
+    exten: string | null;
+    isMain: BooleanNumber | null;
 }
 
-interface CompanyContactCall {
-    id: number;
+async function addPhone(id: number, dto: ContactAddPhoneRequestDto) {
+    const response = await axios.post(`${URL}/${id}/phones`, dto);
+    return responseToData(response);
 }
 
-export interface CompanyContact {
-    id: number;
-    type: number;
-    full_name: string;
-    isMain: number;
-    position_unknown: number;
-    position: number | null;
-    phones: CompanyContactPhone[];
-    calls: CompanyContactCall[];
+export interface ChangeContactCompanyRequestDto {
+    disable_contact: BooleanNumber;
+    company_id: number;
+    consultant_id: number;
+}
+
+async function transferToCompany(id: number, dto: ChangeContactCompanyRequestDto) {
+    const response = await axios.post(`${URL}/${id}/transfer-to-company`, dto);
+    confirmResponse(response);
 }
 
 export default {
-    async getByCompany(companyId) {
-        const expand =
-            'contactComments,contactComments.author,contactComments.author.userProfile,' +
-            'emails,phones,invalidPhones,websites,wayOfInformings,' +
-            'consultant,consultant.userProfile';
-        const sort = '-created_at';
-
-        const response = await axios.get(`${URL}/company-contacts/${companyId}`, {
-            params: { expand, sort }
-        });
-
-        return responseToData<CompanyContact[]>(response);
-    },
-    async get(id) {
-        const response = await axios.get(`${URL}/${id}`);
-        return responseToData(response);
-    },
-    async list(params) {
-        const expand = 'emails,phones,websites,wayOfInformings';
-
-        const response = await axios.get(URL, { params: { expand, ...params } });
-        return responseToPaginatedData(response);
-    },
-    async create(payload) {
-        const response = await axios.post(URL, payload);
-        return responseToData(response);
-    },
-    async update(id, payload) {
-        const response = await axios.put(`${URL}/${id}`, payload);
-        return responseToData(response);
-    },
-    async delete(id) {
-        const response = await axios.delete(`${URL}/${id}`);
-        return responseToData(response);
-    },
-    async createComment(payload) {
-        const expand = 'author,author.userProfile';
-
-        const response = await axios.post(`${URL}/create-comment`, payload, { params: { expand } });
-        return responseToData(response);
-    },
-    async disable(id, payload) {
-        const response = await axios.post(`${URL}/${id}/disable`, payload);
-        return responseToData(response);
-    },
-    async enable(id) {
-        const response = await axios.post(`${URL}/${id}/enable`);
-        return responseToData(response);
-    },
-    async phones(id) {
-        const response = await axios.get(`${URL}/${id}/phones`);
-        return responseToData<Phone[]>(response);
-    },
-    async addPhone(id, payload) {
-        const response = await axios.post(`${URL}/${id}/phones`, payload);
-        return responseToData(response);
-    }
+    getByCompany,
+    get,
+    list,
+    create,
+    update,
+    delete: deleteContact,
+    createComment,
+    disable,
+    enable,
+    phones,
+    addPhone,
+    transferToCompany
 };
