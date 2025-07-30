@@ -7,6 +7,7 @@
                 @edit="editContact(contact.entity)"
                 @enable="enableContact(contact.entity_id)"
                 @disable="disableContact(contact.entity)"
+                @change-company="changeContactCompany(contact.entity)"
                 :contact="contact.entity"
                 :loading="isLoading"
                 data-tour-id="task-process:show-contacts"
@@ -38,6 +39,13 @@
                 :contact="disablingContact"
                 :pinned-task="task"
             />
+            <FormContactChangeCompany
+                v-if="changeContactCompanyFormIsVisible"
+                @close="closeChangeContactCompanyForm"
+                @changed="onContactCompanyChanged"
+                :contact="changeCompanyContact"
+                :pinned-task="task"
+            />
         </template>
     </TaskCardProcessDefault>
 </template>
@@ -55,6 +63,7 @@ import { contactOptions } from '@/const/options/contact.options';
 import FormContactDisable from '@/components/Forms/FormContactDisable.vue';
 import { createTourStepElementGenerator, useTourStep } from '@/composables/useTour/useTourStep';
 import TaskCardProcessDefault from '@/components/TaskCard/Process/TaskCardProcessDefault.vue';
+import FormContactChangeCompany from '@/components/Forms/FormContactChangeCompany.vue';
 
 defineEmits<{ (e: 'show-survey', surveyId: number): void }>();
 
@@ -157,6 +166,25 @@ const { execute: enableContact } = useAsync(api.contacts.enable, {
         message: 'Вы уверены, что хотите восстановить контакт из архива?'
     }
 });
+
+// change company {
+
+const changeContactCompanyFormIsVisible = ref(false);
+const changeCompanyContact = ref(null);
+
+async function changeContactCompany(contact) {
+    changeCompanyContact.value = contact;
+    changeContactCompanyFormIsVisible.value = true;
+}
+
+function closeChangeContactCompanyForm() {
+    changeContactCompanyFormIsVisible.value = false;
+    changeCompanyContact.value = null;
+}
+
+function onContactCompanyChanged(payload) {
+    Object.assign(changeCompanyContact.value, payload);
+}
 
 // tour
 

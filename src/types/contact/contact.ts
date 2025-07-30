@@ -4,6 +4,7 @@ import { Phone } from '@/types/contact/phone';
 import { Email } from '@/types/contact/email';
 import { WayOfInformings } from '@/types/contact/way-of-informings';
 import { Website } from '@/types/contact/website';
+import { Call } from '@/types/call';
 
 export const ContactPassiveWhyEnum = {
     NOT_ACTUAL: 0,
@@ -104,4 +105,5 @@ export interface Contact extends Identifiable, Timestamps {
     phones: Phone[];
     wayOfInformings: WayOfInformings[];
     websites: Website[];
+    calls?: Call[];
 }

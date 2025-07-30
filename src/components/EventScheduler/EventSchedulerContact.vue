@@ -36,7 +36,7 @@
 <script setup lang="ts">
 import { computed, onBeforeMount } from 'vue';
 import MultiSelect from '@/components/common/Forms/MultiSelect.vue';
-import { useSearchContacts } from '@/composables/useSearchContacts.ts';
+import { useSearchContacts } from '@/composables/useSearchContacts';
 import UiField from '@/components/common/UI/UiField.vue';
 
 const consultantId = defineModel<number>();
@@ -57,7 +57,7 @@ const currentCompanyId = computed(() => props.company?.id ?? props.contact?.comp
 
 const {
     searchContacts,
-    filteredContacts: contacts,
+    activeFilteredContacts: contacts,
     isLoading: contactsIsLoading
 } = useSearchContacts(currentCompanyId);
 
