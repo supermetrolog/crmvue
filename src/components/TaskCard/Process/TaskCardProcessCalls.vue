@@ -187,6 +187,7 @@ function closeChangeContactCompanyForm() {
 
 function onContactCompanyChanged(payload) {
     Object.assign(changeCompanyContact.value, payload);
+    closeChangeContactCompanyForm();
 }
 
 // tour
