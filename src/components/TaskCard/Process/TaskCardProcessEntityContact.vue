@@ -29,6 +29,12 @@
                     icon="fa-solid fa-pen"
                 />
                 <UiDropdownActionsButton
+                    v-if="!isPassive"
+                    @handle="$emit('change-company')"
+                    label="Перенести в другую компанию"
+                    icon="fa-solid fa-rotate"
+                />
+                <UiDropdownActionsButton
                     v-if="isPassive"
                     @handle="$emit('enable')"
                     label="Восстановить"
@@ -60,8 +66,7 @@ defineEmits<{
     (e: 'edit'): void;
     (e: 'disable'): void;
     (e: 'enable'): void;
-    (e: 'change-consultant'): void;
-    (e: 'clone'): void;
+    (e: 'change-company'): void;
 }>();
 
 const props = defineProps({

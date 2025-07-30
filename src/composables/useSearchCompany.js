@@ -11,7 +11,7 @@ function companyToOption(company) {
     };
 }
 
-export function useSearchCompany(defaultQuery) {
+export function useSearchCompany(defaultQuery = null) {
     return async function searchCompany(querySearch) {
         let query = {};
 
