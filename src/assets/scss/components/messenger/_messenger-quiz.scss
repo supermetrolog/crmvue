@@ -1948,7 +1948,6 @@
     }
 
     &__tab {
-        font-weight: 500;
         color: #7c7c86;
         display: inline-block;
         background-color: transparent;
@@ -1957,6 +1956,10 @@
         cursor: pointer;
         padding: 0;
         @include mixins.transition(color);
+
+        &.active {
+            font-weight: 500;
+        }
 
         &.active, &:hover {
             color: rgb(0, 142, 57);

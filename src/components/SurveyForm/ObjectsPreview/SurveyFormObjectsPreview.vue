@@ -37,12 +37,10 @@
             <div class="survey-form-object-preview__tabs">
                 <span class="font-weight-bold">Предложения</span>
                 <SurveyFormObjectsPreviewTab v-model="currenTab" :name="TABS.ACTIVE">
-                    <i class="fa-solid fa-up-long mr-1" />
-                    <span>Активные ({{ activeTradeOffers.length }})</span>
+                    <span>Актив ( {{ activeTradeOffers.length }} )</span>
                 </SurveyFormObjectsPreviewTab>
                 <SurveyFormObjectsPreviewTab v-model="currenTab" :name="TABS.PASSIVE">
-                    <i class="fa-solid fa-down-long mr-1" />
-                    <span>Пассивные ({{ passiveTradeOffers.length }})</span>
+                    <span>Пассив ( {{ passiveTradeOffers.length }} )</span>
                 </SurveyFormObjectsPreviewTab>
                 <template v-if="completedTradeOffers.length">
                     <SurveyFormObjectsPreviewTab v-model="currenTab" :name="TABS.COMPLETED">
@@ -54,7 +52,7 @@
                     @click="addNewOffer"
                     class="survey-form-objects__link"
                 >
-                    + Добавить
+                    + Добавить предложение
                 </span>
                 <div v-if="activeTradeOffers.length && !disabled" class="d-flex gap-1 ml-auto">
                     <UiDropdownActions>

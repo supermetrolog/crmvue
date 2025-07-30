@@ -3,18 +3,16 @@
         <div>
             <div class="survey-form-object-preview__tabs">
                 <SurveyFormObjectsPreviewTab v-model="currenTab" :name="TABS.ACTIVE">
-                    <i class="fa-solid fa-up-long mr-1" />
-                    <span>Активные ({{ contacts.length }})</span>
+                    <span>Актив ( {{ contacts.length }} )</span>
                 </SurveyFormObjectsPreviewTab>
                 <span>|</span>
                 <SurveyFormObjectsPreviewTab v-model="currenTab" :name="TABS.PASSIVE">
-                    <i class="fa-solid fa-down-long mr-1" />
-                    <span>Архивные ({{ passiveContacts.length }})</span>
+                    <span>Архив ( {{ passiveContacts.length }} )</span>
                 </SurveyFormObjectsPreviewTab>
                 <template v-if="contacts.length && !disabled">
                     <span>|</span>
                     <span @click="$emit('add-contact')" class="survey-form-objects__link">
-                        + Добавить
+                        + Добавить контакт
                     </span>
                 </template>
             </div>
