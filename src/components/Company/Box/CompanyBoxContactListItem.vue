@@ -36,6 +36,11 @@
                                 label="Редактировать"
                             />
                             <UiDropdownActionsButton
+                                @handle="$emit('change-company')"
+                                icon="fa-solid fa-rotate"
+                                label="Перенести в другую компанию"
+                            />
+                            <UiDropdownActionsButton
                                 v-if="isPassive"
                                 @handle="$emit('enable')"
                                 icon="fa-solid fa-undo"
@@ -119,7 +124,7 @@ import { isPersonalContact } from '@/utils/helpers/models/contact.js';
 import UiButtonIcon from '@/components/common/UI/UiButtonIcon.vue';
 import Loader from '@/components/common/Loader.vue';
 
-defineEmits(['edit', 'disable', 'enable', 'delete']);
+defineEmits(['edit', 'disable', 'enable', 'delete', 'change-company']);
 const props = defineProps({
     contact: {
         type: Object,

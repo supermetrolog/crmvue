@@ -29,6 +29,7 @@
                 @disable="$emit('disable', contact)"
                 @enable="$emit('enable', contact)"
                 @delete="$emit('delete', contact)"
+                @change-company="$emit('change-company', contact)"
                 :contact="contact"
                 :editable
             />
@@ -43,7 +44,16 @@ import { useHorizontalScroll } from '@/composables/useHorizontalScroll.js';
 import CompanyBoxContactListItemSkeleton from '@/components/Company/Box/CompanyBoxContactListItemSkeleton.vue';
 import UiButton from '@/components/common/UI/UiButton.vue';
 
-const emit = defineEmits(['create', 'show', 'edit', 'disable', 'enable', 'delete']);
+const emit = defineEmits([
+    'create',
+    'show',
+    'edit',
+    'disable',
+    'enable',
+    'delete',
+    'change-company'
+]);
+
 defineProps({
     contacts: {
         type: Array,
