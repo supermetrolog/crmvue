@@ -34,10 +34,8 @@ async function get(id: number) {
     return responseToData(response);
 }
 
-async function list(params: RequestQueryParams) {
-    const expand = 'emails,phones,websites,wayOfInformings';
-
-    const response = await axios.get(URL, { params: { expand, ...params } });
+async function search(params: RequestQueryParams = {}) {
+    const response = await axios.get(URL, { params });
     return responseToPaginatedData(response);
 }
 
@@ -139,7 +137,7 @@ async function transferToCompany(id: number, dto: ChangeContactCompanyRequestDto
 export default {
     getByCompany,
     get,
-    list,
+    search,
     create,
     update,
     delete: deleteContact,
