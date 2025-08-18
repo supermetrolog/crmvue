@@ -1,8 +1,12 @@
 <template>
     <SurveyFormContactFormElement
-        icon="fa-solid fa-phone"
+        :icon
         class="survey-form-contact-form-phone"
         :active
+        :class="{
+            success: hasSuccessCall,
+            danger: hasFailCall
+        }"
     >
         <template #header>
             <p class="survey-form-contact-form-phone__value">
@@ -33,11 +37,17 @@ import { pluralTemplate } from '@/utils/plural';
 import { toBeautifulDateFormat } from '@/utils/formatters/date';
 import { callStatus } from '@/const/options/call.options';
 import { callStatusEnum } from '@/const/enums/call';
+import { toBool } from '@/utils/helpers/string/toBool';
+import { isNotNullish } from '@/utils/helpers/common/isNotNullish';
 
 const props = defineProps<{
     phone: Phone;
     contact: Contact;
     active?: boolean;
+    form?: {
+        available: boolean;
+        reason: number | string;
+    };
 }>();
 
 const currentCalls = computed(() =>
@@ -71,4 +81,22 @@ const lastCallHasCompletedStatus = computed(
 
 const lastCallDateLabel = computed(() => toBeautifulDateFormat(lastCall.value.created_at));
 const lastCallStatusLabel = computed(() => callStatus[lastCall.value.status]);
+
+const hasSuccessCall = computed(
+    () => props.form?.available === true || toBool(props.form?.available)
+);
+
+const hasFailCall = computed(() => isNotNullish(props.form?.available) && !hasSuccessCall.value);
+
+const icon = computed(() => {
+    if (hasSuccessCall.value) {
+        return 'fa-solid fa-phone-volume';
+    }
+
+    if (hasFailCall.value) {
+        return 'fa-solid fa-phone-slash';
+    }
+
+    return 'fa-solid fa-phone';
+});
 </script>

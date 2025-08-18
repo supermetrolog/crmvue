@@ -10,6 +10,7 @@
                 @select="$emit('show-contact', contact.contact_id)"
                 :model-value="contacts[contact.contact_id]"
                 :contact="contact"
+                :survey
             />
             <EmptyData v-if="contactsIsEmpty">Список контактов в опросе пуст..</EmptyData>
         </div>
@@ -21,8 +22,13 @@ import EmptyData from '@/components/common/EmptyData.vue';
 import { computed } from 'vue';
 
 defineEmits(['show-contact']);
+
 const props = defineProps({
     contacts: {
+        type: Object,
+        required: true
+    },
+    survey: {
         type: Object,
         required: true
     }

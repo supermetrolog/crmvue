@@ -121,6 +121,7 @@ interface Props {
     requests: object[];
     other: object[];
     contacts: object[];
+    survey: object;
 }
 
 const props = defineProps<Props>();
@@ -153,7 +154,12 @@ const completedContactsLength = computed(() => {
     if (isNullish(form.value)) return 0;
 
     return Object.values(form.value.calls).filter(
-        call => isNotNullish(call.available) && isNotNullish(call.reason)
+        call =>
+            (isNotNullish(call.available) && isNotNullish(call.reason)) ||
+            Object.values(call.phones ?? {}).some(
+                phone => isNotNullish(phone.available) && isNotNullish(phone.reason)
+            ) ||
+            Object.values(call.emails ?? {}).some(email => isNotNullish(email.available))
     ).length;
 });
 

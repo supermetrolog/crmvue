@@ -1,24 +1,6 @@
 <template>
     <div class="survey-form-contact-form">
-        <div class="survey-form-contact-form__header">
-            <p>Контакты</p>
-            <div class="survey-form-contact-form__actions">
-                <UiButtonIcon
-                    @click="reset"
-                    icon="fa-solid fa-rotate-left"
-                    label="Сбросить ответы"
-                    small
-                    color="light"
-                />
-                <UiButtonIcon
-                    @click="$emit('close')"
-                    icon="fa-solid fa-close"
-                    label="Закрыть"
-                    small
-                    color="light"
-                />
-            </div>
-        </div>
+        <div class="survey-form-contact-form__header"></div>
         <div class="survey-form-contact-form__content">
             <div
                 class="survey-form-contact-form__list"
@@ -31,6 +13,7 @@
                     :phone="phone"
                     :contact
                     :active="selectedWay === 'phone' && selectedWayId === phone.id"
+                    :form="form?.phones?.[phone.id]"
                 />
                 <SurveyFormContactFormEmail
                     v-for="email in contact.emails"
@@ -39,13 +22,15 @@
                     :email="email"
                     :contact
                     :active="selectedWay === 'email' && selectedWayId === email.id"
+                    :letter-actions
+                    :form="form?.emails?.[email.id]"
                 />
             </div>
             <div class="survey-form-contact-form__call">
                 <AnimationTransition :speed="0.35">
                     <SurveyFormContactFormCall
                         v-if="hasSelectedWay && selectedWay === 'phone'"
-                        :key="formKey"
+                        :key="`phone-${formKey}`"
                         v-model="form.phones[selectedWayId]"
                         @change="$emit('change')"
                         @schedule-call="$emit('schedule-call')"
@@ -54,14 +39,26 @@
                         :contact
                         :company
                         :phone-id="selectedWayId"
+                        :scheduled="!!form.scheduled"
+                        :event="!!form.event"
+                        :visit="!!form.visit"
                     />
                     <SurveyFormContactFormSending
                         v-else-if="hasSelectedWay && selectedWay === 'email'"
-                        :key="formKey"
+                        :key="`email-${formKey}`"
                         v-model="form.emails[selectedWayId]"
                         @change="$emit('change')"
+                        @schedule-call="$emit('schedule-call')"
+                        @schedule-visit="$emit('schedule-visit')"
+                        @schedule-event="$emit('schedule-event')"
                         :contact
                         :company
+                        :email-id="selectedWayId"
+                        :survey
+                        :letter-actions
+                        :scheduled="!!form.scheduled"
+                        :event="!!form.event"
+                        :visit="!!form.visit"
                     />
                     <SurveyFormContactFormEmpty v-else />
                 </AnimationTransition>
@@ -71,7 +68,6 @@
 </template>
 <script setup>
 import SurveyFormContactFormCall from '@/components/SurveyForm/SurveyFormContactFormCall.vue';
-import UiButtonIcon from '@/components/common/UI/UiButtonIcon.vue';
 import SurveyFormContactFormPhone from '@/components/SurveyForm/SurveyFormContactFormPhone.vue';
 import SurveyFormContactFormEmail from '@/components/SurveyForm/SurveyFormContactFormEmail.vue';
 import { computed, ref } from 'vue';
@@ -86,16 +82,15 @@ const props = defineProps({
         type: Object,
         required: true
     },
-    company: Object
+    company: Object,
+    survey: Object
 });
 
 const form = defineModel({ type: Object, default: () => ({}) });
 
-function reset() {
-    form.value.available = null;
-    form.value.reason = null;
-    form.value.description = null;
-}
+const actions = computed(() => props.survey?.actions ?? []);
+
+const letterActions = computed(() => actions.value.filter(action => action.type === 'letter'));
 
 // select
 
@@ -115,5 +110,5 @@ function selectWay(way, id) {
 
 const hasSelectedWay = computed(() => selectedWay.value !== null && selectedWayId.value !== null);
 
-const formKey = computed(() => `${props.contact.id}-${selectedWay.value}-${selectedWayId.value}`);
+const formKey = computed(() => `${props.contact.id}-${selectedWayId.value}`);
 </script>

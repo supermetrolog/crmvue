@@ -36,6 +36,7 @@
                 :chat-member-id
                 :survey-id="currentSurveyId"
                 :disabled
+                :survey="survey ?? draft"
             />
         </template>
         <template #2>
@@ -114,6 +115,7 @@
         <template #after>
             <Loader v-if="isCreating || surveyIsUpdating" label="Сохранение опроса.." />
             <SurveyFormStepperSummary
+                v-if="currentSurvey"
                 v-model:form="form"
                 v-model:visible="summaryModalIsVisible"
                 @closed="isCancelling = false"
@@ -123,6 +125,7 @@
                 :objects
                 :requests="activeRequests"
                 :other="otherQuestions"
+                :survey="currentSurvey"
             />
         </template>
     </Stepper>
@@ -387,11 +390,9 @@ const form = ref({
 
 const hasCompletedContact = computed(() => {
     const processedPhones = [];
-    const processedEmails = [];
 
     for (const contact of props.contacts) {
         const phones = form.value.calls[contact.id]?.phones ?? {};
-        const emails = form.value.calls[contact.id]?.emails ?? {};
 
         for (const phone of Object.values(phones)) {
             if (isNotNullish(phone.available)) {
@@ -400,30 +401,28 @@ const hasCompletedContact = computed(() => {
         }
     }
 
-    console.log(processedPhones);
+    const hasCompletedEmail =
+        isNotNullish(currentSurvey.value) &&
+        currentSurvey.value.actions?.some(
+            action => action.type === 'letter' && action.status === 'done'
+        );
 
-    if (processedPhones.length === 0) {
+    if (processedPhones.length === 0 && !hasCompletedEmail) {
         return false;
     }
-
-    // TODO: Emails
 
     const hasCompletedCall = processedPhones.some(
         phone => toBool(phone.available) && Number(phone.reason) === 1
     );
 
-    return hasCompletedCall;
+    return hasCompletedCall || hasCompletedEmail;
 });
 
 const hasProcessedContact = computed(() => {
     const processedPhones = [];
-    const processedEmails = [];
-
-    // TODO: Emails
 
     for (const contact of props.contacts) {
         const phones = form.value.calls[contact.id]?.phones ?? {};
-        const emails = form.value.calls[contact.id]?.emails ?? {};
 
         for (const phone of Object.values(phones)) {
             if (isNotNullish(phone.available) && isNotNullish(phone.reason)) {
@@ -432,7 +431,11 @@ const hasProcessedContact = computed(() => {
         }
     }
 
-    return processedPhones.length > 0;
+    const hasProcessedEmail =
+        isNotNullish(currentSurvey.value) &&
+        currentSurvey.value.actions?.some(action => action.type === 'letter');
+
+    return processedPhones.length > 0 || hasProcessedEmail;
 });
 
 function requiredCallsValidationHandler() {
@@ -464,13 +467,19 @@ function createDraftPayload() {
     const { payload: callsPayload, questionAnswers: callsQuestionAnswers } =
         createSurveyCallsPayload();
 
-    const targetContact = callsPayload.find(contact => {
+    let targetContact = callsPayload.find(contact => {
         return (
             isNotNullish(contact.available) &&
             toBool(contact.available) &&
             Number(contact.reason) === 1
         );
     });
+
+    if (isNullish(targetContact)) {
+        targetContact = Object.values(form.value.calls).find(contact => {
+            return Object.values(contact.emails ?? {}).some(email => email.available);
+        });
+    }
 
     const { questionAnswers: objectsQuestionAnswers } = createSurveyObjectsPayload();
 
@@ -536,7 +545,7 @@ function createSurveyCallsPayload() {
     ];
 
     const payload = Object.values(form.value.calls).reduce((acc, contact) => {
-        for (const phone of Object.values(contact?.phones ?? [])) {
+        for (const phone of Object.values(contact?.phones ?? {})) {
             if (isNotNullish(phone.available) && isNotNullish(phone.reason)) {
                 acc.push({ ...phone, phone_id: phone.id, contact_id: contact.contact_id });
             }
@@ -627,7 +636,8 @@ function createCallsForm(callPayload) {
         user_id: currentUserId.value,
         contact_id: form.contact_id,
         type: callTypeEnum.OUTGOING,
-        status: getCallStatusByForm(form)
+        status: getCallStatusByForm(form),
+        phone_id: form.phone_id
     }));
 
     // TODO: Description для звонка внедрить можно
@@ -637,15 +647,19 @@ function createSurveyPayload() {
     const { payload: callsPayload, questionAnswers: callsQuestionAnswers } =
         createSurveyCallsPayload();
 
-    const targetContact = callsPayload.find(contact => {
-        return Object.values(contact.phones).some(phone => {
-            return (
-                isNotNullish(phone.available) &&
-                toBool(phone.available) &&
-                Number(phone.reason) === 1
-            );
-        });
+    let targetContact = callsPayload.find(contact => {
+        return (
+            isNotNullish(contact.available) &&
+            toBool(contact.available) &&
+            Number(contact.reason) === 1
+        );
     });
+
+    if (isNullish(targetContact)) {
+        targetContact = Object.values(form.value.calls).find(contact => {
+            return Object.values(contact.emails ?? {}).some(email => email.available);
+        });
+    }
 
     const { questionAnswers: objectsQuestionAnswers } = createSurveyObjectsPayload();
     const { questionAnswers: requestQuestionAnswers } = createSurveyRequestsPayload();

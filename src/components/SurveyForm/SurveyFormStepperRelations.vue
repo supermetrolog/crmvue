@@ -30,7 +30,7 @@
             class="danger"
             label="Нажмите, чтобы посмотреть подробнее"
         >
-            <span>Звонок {{ lastScheduledCallDate }}!</span>
+            <span>Звонок {{ nearestScheduledCallDate }}!</span>
             <span v-if="scheduledCallTasks.length > 1" class="ml-1">
                 (+{{ scheduledCallTasks.length - 1 }})
             </span>
@@ -43,7 +43,7 @@
             class="danger"
             label="Нажмите, чтобы посмотреть подробнее"
         >
-            <span>Встреча {{ lastScheduledVisitDate }}!</span>
+            <span>Встреча {{ nearestScheduledVisitDate }}!</span>
             <span v-if="scheduledVisitTasks.length > 1" class="ml-1">
                 (+{{ scheduledVisitTasks.length - 1 }})
             </span>
@@ -114,8 +114,8 @@ const props = defineProps({
 const {
     scheduledCallTasks,
     scheduledVisitTasks,
-    lastScheduledCallDate,
-    lastScheduledVisitDate,
+    nearestScheduledCallDate,
+    nearestScheduledVisitDate,
     baseTasks
 } = useTypedTasks(toRef(() => props.survey?.tasks ?? []));
 

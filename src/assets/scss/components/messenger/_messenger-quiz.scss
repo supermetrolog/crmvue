@@ -2272,11 +2272,12 @@
     }
 
     &__result {
-        @include mixins.flex-box($a: center, $gap: 10px);
+        @include mixins.flex-box($a: center, $gap: 15px);
     }
 
     &__result-arrow {
-        font-size: 26px;
+        color: #d9d9d9;
+        flex-shrink: 0;
     }
 
     &__block {
@@ -2328,7 +2329,7 @@
         width: 40%;
         flex-shrink: 0;
         overflow-y: auto;
-        max-height: 300px;
+        max-height: 350px;
         border-right: 1px solid rgb(234, 234, 234);
         @include mixins.flex-box($d: column);
     }
@@ -2336,7 +2337,7 @@
     &__call {
         width: 60%;
         padding: 10px 15px;
-        max-height: 310px;
+        max-height: 350px;
         min-height: 160px;
         overflow-y: auto;
         @include mixins.transition(height);
@@ -2390,9 +2391,9 @@
 
 .survey-form-contact-form-call {
     &__question-text {
-        font-size: 24px;
+        font-size: 26px;
         font-weight: 500;
-        //color: #75a2e9; // TODO: Спросить точно ли надо синий..
+        color: #75a2e9;
         letter-spacing: 1px;
     }
 
@@ -2715,8 +2716,23 @@
         border-radius: 50%;
         border: 1px solid #000;
         color: #000;
+        flex-shrink: 0;
         @include mixins.flex-box($a: center, $j: center);
         @include mixins.transition(color, border-color);
+    }
+
+    --gradient-to: #fff;
+
+    &.warning {
+        @include mixins.line-gradient-progress(#F88F0166, var(--gradient-to), 90%);
+    }
+
+    &.danger {
+        @include mixins.line-gradient-progress(#F9315466, var(--gradient-to), 90%);
+    }
+
+    &.success {
+        @include mixins.line-gradient-progress(#10B98166, var(--gradient-to), 90%);
     }
 
     &.active &__icon, &:hover &__icon {
@@ -2725,6 +2741,8 @@
     }
 
     &:hover, &.active {
+        --gradient-to: #75a2e9;
+
         background-color: #75a2e9;
         color: #fff;
     }
@@ -2780,11 +2798,31 @@
         @include mixins.transition(color);
     }
 
+    &__label {
+        text-decoration: underline;
+    }
+
+    &__last-letter {
+        @include mixins.transition(color);
+
+        &.success {
+            color: variables.$color_success;
+        }
+
+        &.danger {
+            color: variables.$color_danger;
+        }
+    }
+
     &.active &__footer, &:hover &__footer {
         color: #fff;
     }
 
     &.active &__value, &:hover &__value {
+        color: #fff;
+    }
+
+    &.active &__last-letter, &:hover &__last-letter {
         color: #fff;
     }
 }
@@ -2797,5 +2835,19 @@
     &__text {
         font-size: 26px;
         font-weight: 500;
+    }
+}
+
+.survey-form-contact-form-letter {
+    background-color: variables.$color_light;
+    padding: 5px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px 1px rgba(0, 0, 0, 0.1);
+    position: relative;
+
+    &__button {
+        position: absolute;
+        right: 5px;
+        top: 5px;
     }
 }

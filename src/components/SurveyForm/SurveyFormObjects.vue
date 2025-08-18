@@ -204,7 +204,7 @@
 </template>
 <script setup>
 import SurveyFormObject from '@/components/SurveyForm/Object/SurveyFormObject.vue';
-import { computed, ref, shallowRef, useTemplateRef, watch } from 'vue';
+import { computed, onBeforeMount, ref, shallowRef, useTemplateRef, watch } from 'vue';
 import { useMapPreviewer } from '@/composables/useMapPreviewer.js';
 import { usePreviewer } from '@/composables/usePreviewer.js';
 import { getLinkFile } from '@/utils/url.js';
@@ -410,6 +410,12 @@ function selectNewObject(object) {
     selectedNewObject.value = object;
     selectedObject.value = null;
 }
+
+onBeforeMount(() => {
+    if (props.objects.length) {
+        selectedObject.value = props.objects[0];
+    }
+});
 
 // select functions
 

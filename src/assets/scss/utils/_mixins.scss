@@ -46,11 +46,21 @@ $sizes: (
 @mixin flex-box($a: none, $j: none, $gap: none, $d: none, $wrap: none) {
     display: flex;
 
-    @if ($a != none) { align-items: $a; }
-    @if ($j != none) { justify-content: $j; }
-    @if ($gap != none) { gap: $gap; }
-    @if ($d != none) { flex-direction: $d; }
-    @if ($wrap != none) { flex-wrap: wrap }
+    @if ($a != none) {
+        align-items: $a;
+    }
+    @if ($j != none) {
+        justify-content: $j;
+    }
+    @if ($gap != none) {
+        gap: $gap;
+    }
+    @if ($d != none) {
+        flex-direction: $d;
+    }
+    @if ($wrap != none) {
+        flex-wrap: wrap
+    }
 }
 
 @mixin light-border() {
@@ -77,8 +87,12 @@ $sizes: (
     @each $property, $duration, $func in $args {
         $_duration: .3s;
         $_func: ease;
-        @if ($duration) { $_duration: $duration }
-        @if ($func) { $_func: $func }
+        @if ($duration) {
+            $_duration: $duration
+        }
+        @if ($func) {
+            $_func: $func
+        }
 
         @if (string.length($transition-list) > 0) {
             $transition-list: $transition-list + ", ";
@@ -114,4 +128,9 @@ $sizes: (
             }
         }
     }
+}
+
+@mixin line-gradient-progress($from, $to: #fff, $percents: 70%) {
+    background: -webkit-linear-gradient(90deg, $from, $to $percents);
+    background: linear-gradient(90deg, $from, $to $percents);
 }
