@@ -214,7 +214,7 @@ async function searchContact(search) {
         query = { search };
     }
 
-    const response = await api.contacts.list({ ...query, type: 0 });
+    const response = await api.contacts.search({ ...query, type: 0 });
     return response.data.map(element => ({
         value: element.id,
         label: element.full_name,

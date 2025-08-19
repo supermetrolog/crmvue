@@ -18,43 +18,12 @@ label="Да"
                     label="Нет"
                     :rounded="false"
                 />
-                <UiDropdownActions title="Выберите событие">
-                    <template #trigger>
-                        <UiButton
-                            icon="fa-solid fa-calendar-plus"
-                            small
-                            color="transparent"
-                            class="survey-form-contact-form-call__schedule ml-2"
-                        >
-                            Запланировать событие
-                        </UiButton>
-                    </template>
-                    <template #menu>
-                        <UiDropdownActionsButton
-                            @handle="$emit('schedule-call')"
-                            :icon="form.scheduled ? 'fa-solid fa-check' : 'fa-solid fa-phone'"
-                            :label="form.scheduled ? 'Звонок запланирован' : 'Звонок'"
-                            :disabled="!!form.scheduled"
-                        />
-                        <UiDropdownActionsButton
-                            @handle="$emit('schedule-visit')"
-                            :icon="form.visit ? 'fa-solid fa-check' : 'fa-solid fa-people-arrows'"
-                            :label="form.visit ? 'Встреча запланирована' : 'Встреча'"
-                            :disabled="!!form.visit"
-                        />
-                        <UiDropdownActionsButton
-                            @handle="$emit('schedule-event')"
-                            :icon="form.event ? 'fa-solid fa-check' : 'fa-solid fa-calendar-plus'"
-                            :label="form.event ? 'Действие запланировано' : 'Действие'"
-                            :disabled="!!form.event"
-                        />
-                    </template>
-                </UiDropdownActions>
             </div>
         </div>
         <AnimationTransition :speed="0.3">
             <div v-if="hasAnyAnswer" class="mt-2">
                 <MultiSelect
+                    ref="reasonSelectEl"
                     v-model="reason"
                     placeholder="Выберите результат звонка.."
                     :options="available ? availableReasonOptions : unavailableReasonOptions"
@@ -68,10 +37,50 @@ label="Да"
                             v-model="form.description"
                             placeholder="Комментарий к задаче.."
                             class="mb-2 survey-form-contact-form-call__editor"
-                            :min-height="50"
+                            :min-height="80"
                             :max-height="120"
                             auto-height
                         />
+                    </div>
+                </AnimationTransition>
+                <AnimationTransition :speed="0.3">
+                    <div v-if="schedulerIsVisible">
+                        <p class="font-weight-semi mb-1">Планирование событий</p>
+                        <UiDropdownActions title="Выберите событие">
+                            <template #trigger>
+                                <UiButton
+                                    icon="fa-solid fa-calendar-plus"
+                                    small
+                                    color="transparent"
+                                >
+                                    Запланировать событие
+                                </UiButton>
+                            </template>
+                            <template #menu>
+                                <UiDropdownActionsButton
+                                    @handle="$emit('schedule-call')"
+                                    :icon="scheduled ? 'fa-solid fa-check' : 'fa-solid fa-phone'"
+                                    :label="scheduled ? 'Звонок запланирован' : 'Звонок'"
+                                    :disabled="scheduled"
+                                />
+                                <UiDropdownActionsButton
+                                    @handle="$emit('schedule-visit')"
+                                    :icon="
+                                        visit ? 'fa-solid fa-check' : 'fa-solid fa-people-arrows'
+                                    "
+                                    :label="visit ? 'Встреча запланирована' : 'Встреча'"
+                                    :disabled="visit"
+                                />
+                                <UiDropdownActionsButton
+                                    @handle="$emit('schedule-event')"
+                                    :icon="
+                                        event ? 'fa-solid fa-check' : 'fa-solid fa-calendar-plus'
+                                    "
+                                    :label="event ? 'Действие запланировано' : 'Действие'"
+                                    :disabled="event"
+                                />
+                            </template>
+                        </UiDropdownActions>
                     </div>
                 </AnimationTransition>
             </div>
@@ -79,7 +88,7 @@ label="Да"
     </div>
 </template>
 <script setup>
-import { computed, watch } from 'vue';
+import { computed, nextTick, useTemplateRef, watch } from 'vue';
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
 import UiTextarea from '@/components/common/Forms/UiTextarea.vue';
 import { isNotNullish } from '@/utils/helpers/common/isNotNullish.ts';
@@ -101,7 +110,11 @@ const props = defineProps({
         type: Object,
         required: true
     },
-    company: Object
+    company: Object,
+    phoneId: Number,
+    scheduled: Boolean,
+    visit: Boolean,
+    event: Boolean
 });
 
 const form = defineModel({ type: Object, default: () => ({}) });
@@ -167,8 +180,18 @@ watch(reason, value => {
     }
 });
 
+const reasonSelectEl = useTemplateRef('reasonSelectEl');
+
 watch(available, value => {
-    if (isNotNullish(value)) emit('change');
+    if (isNotNullish(value)) {
+        emit('change');
+
+        nextTick(() => {
+            reasonSelectEl.value?.focus();
+            reasonSelectEl.value?.scrollIntoView();
+        });
+    }
+
     reason.value = null;
 });
 
@@ -184,8 +207,12 @@ const callStatusMap = {
     BLOCKED: 6
 };
 
+const currentCalls = computed(() =>
+    props.contact.calls.filter(call => call.phone_id === props.phoneId)
+);
+
 const completedCallsCount = computed(() =>
-    props.contact.calls.reduce(
+    currentCalls.value.reduce(
         (acc, call) => acc + Number(call.status === callStatusMap.COMPLETED),
         0
     )
@@ -193,11 +220,11 @@ const completedCallsCount = computed(() =>
 
 let lastCallsCount = 1;
 let pluralLastCallsCount = '1 попытка';
-const lastCallsStatus = props.contact.calls[0]?.status;
+const lastCallsStatus = currentCalls.value[0]?.status;
 
 function handleCalls() {
-    for (let i = 1; i < props.contact.calls.length; i++) {
-        if (props.contact.calls[i].status === props.contact.calls[i - 1].status) {
+    for (let i = 1; i < currentCalls.value.length; i++) {
+        if (currentCalls.value[i].status === currentCalls.value[i - 1].status) {
             lastCallsCount++;
         } else {
             pluralLastCallsCount = plural(lastCallsCount, '%d попытка', '%d попытки', '%d попыток');
@@ -215,7 +242,7 @@ const companyName = computed(() =>
 function createAvailableReasonOptionActualized() {
     const option = {
         value: 1,
-        label: `Актуален - контакт работает в ${companyName.value}`,
+        label: `Актуален - контакт работает в "${companyName.value}"`,
         icon: 'fa-solid fa-thumbs-up'
     };
 
@@ -336,4 +363,8 @@ const v$ = useVuelidate(
     },
     form
 );
+
+const schedulerIsVisible = computed(() => {
+    return isNotNullish(available.value) && isNotNullish(reason.value);
+});
 </script>

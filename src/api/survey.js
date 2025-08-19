@@ -50,5 +50,13 @@ export default {
     async continue(id) {
         const response = await axios.post(`${URL}/${id}/continue`);
         return responseToData(response);
+    },
+    async createAction(surveyId, payload) {
+        const response = await axios.post(`${URL}/${surveyId}/actions`, payload);
+        return responseToData(response);
+    },
+    async updateAction(id, payload) {
+        const response = await axios.put(`survey-actions/${id}`, payload);
+        return responseToData(response);
     }
 };
