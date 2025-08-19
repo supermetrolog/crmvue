@@ -22,7 +22,8 @@ export function initSentry(app) {
                 dedupeIntegration(),
                 browserProfilingIntegration()
             ],
-            skipBrowserExtensionCheck: true
+            skipBrowserExtensionCheck: true,
+            ignoreErrors: ['canceled', 'Request failed with status code 401', 'Network Error']
         });
 
         console.warn('[Sentry] Sentry initialized');
