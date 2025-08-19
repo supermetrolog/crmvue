@@ -3,7 +3,7 @@ import { computed, ref, shallowRef, toValue } from 'vue';
 import { contactOptions } from '@/const/options/contact.options.js';
 import { MaybeRefOrGetter } from '@vueuse/core';
 import { isNullish } from '@/utils/helpers/common/isNullish';
-import { ContactStatusEnum, ContactType } from '@/types/contact/contact';
+import { ContactStatus, ContactStatusEnum, ContactType } from '@/types/contact/contact';
 import { BooleanNumber } from '@/types/base';
 
 export interface SearchedContact {
@@ -14,6 +14,7 @@ export interface SearchedContact {
     position: string;
     phone: string | null;
     calls_count: number;
+    status: ContactStatus;
 }
 
 export function useSearchContacts(companyId: MaybeRefOrGetter<number>) {
@@ -34,6 +35,7 @@ export function useSearchContacts(companyId: MaybeRefOrGetter<number>) {
                     label: contact.type === 1 ? 'Основной контакт' : contact.full_name,
                     type: contact.type,
                     isMain: contact.isMain,
+                    status: contact.status,
                     position:
                         contact.position_unknown || isNullish(contact.position)
                             ? 'Должность неизвестна'

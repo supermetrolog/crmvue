@@ -4,7 +4,6 @@ import {
     onlyEnglish,
     onlyRussian,
     validateEmail,
-    validatePhone,
     validateUrl
 } from '@/validators/index.js';
 import { nextTick } from 'vue';
@@ -40,9 +39,6 @@ export const validationRulesForCompany = {
         },
         websites: {
             everyHasCorrectUrl: everyProperty(validateUrl, 'website')
-        },
-        phones: {
-            everyHasCorrectPhone: everyProperty(validatePhone, 'phone')
         }
     },
     nameEng: {
