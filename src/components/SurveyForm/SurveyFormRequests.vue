@@ -3,18 +3,16 @@
         <div>
             <div class="survey-form-object-preview__tabs">
                 <SurveyFormObjectsPreviewTab v-model="currenTab" :name="TABS.ACTIVE">
-                    <i class="fa-solid fa-up-long mr-1" />
-                    <span>Активные ({{ activeRequests.length }})</span>
+                    <span>Актив ( {{ activeRequests.length }} )</span>
                 </SurveyFormObjectsPreviewTab>
                 <span>|</span>
                 <SurveyFormObjectsPreviewTab v-model="currenTab" :name="TABS.PASSIVE">
-                    <i class="fa-solid fa-down-long mr-1" />
-                    <span>Пассивные ({{ passiveRequests.length }})</span>
+                    <span>Пассив ( {{ passiveRequests.length }} )</span>
                 </SurveyFormObjectsPreviewTab>
                 <template v-if="activeRequests.length && !disabled">
                     <span>|</span>
                     <span @click="addNewRequest" class="survey-form-objects__link">
-                        + Добавить
+                        + Добавить запрос
                     </span>
                 </template>
                 <div v-if="activeRequests.length && !disabled" class="d-flex gap-1 ml-auto">

@@ -161,14 +161,9 @@
                         />
                     </UiFormGroup>
                     <UiFormGroup>
-                        <PropogationInput
-                            v-model="form.contacts.phones"
-                            :v="v$.form.contacts.phones"
-                            maska="+7 (###) ###-##-##"
-                            placeholder="+7 (___) ___-__-__"
-                            name="phone"
-                            property-name="phone"
-                            label="Телефон"
+                        <FormCompanyContactPhones
+                            v-model:phones="form.contacts.phones"
+                            :contact="formData?.generalContact"
                             class="col-6"
                         />
                         <PropogationInput
@@ -462,6 +457,7 @@ import UiButton from '@/components/common/UI/UiButton.vue';
 import { useValidation } from '@/composables/useValidation.js';
 import Switch from '@/components/common/Forms/Switch.vue';
 import { useCompanyPermissions } from '@/components/Company/useCompanyPermissions.js';
+import FormCompanyContactPhones from '@/components/Forms/Company/FormCompanyContactPhones.vue';
 
 const emit = defineEmits(['updated', 'created', 'close']);
 const props = defineProps({
