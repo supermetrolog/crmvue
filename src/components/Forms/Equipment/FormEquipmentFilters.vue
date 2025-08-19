@@ -235,7 +235,7 @@ export default {
                 query = { company_id: query };
             }
 
-            const contacts = await api.contacts.list(query);
+            const contacts = await api.contacts.search(query);
             this.contactOptions = multiselectAdapterToObject(contacts.data, 'id', contact =>
                 contact.type === 1 ? 'Основной контакт' : contact.first_and_last_name
             );

@@ -59,7 +59,7 @@
             >
                 Сохранить
             </UiButton>
-            <UiButton @click="close" color="light" small icon="fa-solid fa-ban"> Отмена </UiButton>
+            <UiButton @click="close" color="light" small icon="fa-solid fa-ban"> Отмена</UiButton>
         </template>
     </UiModal>
 </template>
@@ -96,7 +96,7 @@ const {
 async function fetchContacts() {
     isLoading.value = true;
 
-    const response = await api.contacts.list({ company_id: props.value.companyID });
+    const response = await api.contacts.search({ company_id: props.value.companyID });
     contacts.value = response.data;
 
     isLoading.value = false;

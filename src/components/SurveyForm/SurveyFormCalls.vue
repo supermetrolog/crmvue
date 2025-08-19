@@ -36,6 +36,7 @@
                     :most-callable="contact.id === mostCallableContactId"
                     :disabled
                     :company
+                    :survey
                     editable
                     full
                 />
@@ -109,7 +110,7 @@
     </div>
 </template>
 <script setup>
-import { computed, ref, shallowRef, watch } from 'vue';
+import { computed, onBeforeMount, ref, shallowRef, watch } from 'vue';
 import SurveyFormContact from '@/components/SurveyForm/SurveyFormContact.vue';
 import FormCompanyContact from '@/components/Forms/Company/FormCompanyContact.vue';
 import UiModal from '@/components/common/UI/UiModal.vue';
@@ -122,6 +123,7 @@ import { createTourStepElementGenerator, useTourStep } from '@/composables/useTo
 import SurveyFormObjectsPreviewTab from '@/components/SurveyForm/ObjectsPreview/SurveyFormObjectsPreviewTab.vue';
 import EmptyData from '@/components/common/EmptyData.vue';
 import SurveyFormPassiveContact from '@/components/SurveyForm/SurveyFormPassiveContact.vue';
+import { isNullish } from '@/utils/helpers/common/isNullish';
 
 const emit = defineEmits(['contact-created', 'contact-updated', 'change', 'add-contact']);
 const props = defineProps({
@@ -142,7 +144,8 @@ const props = defineProps({
         required: true
     },
     surveyId: Number,
-    disabled: Boolean
+    disabled: Boolean,
+    survey: Object
 });
 
 // tabs
@@ -170,15 +173,34 @@ const form = defineModel({ type: Object, default: () => ({}) });
 
 function generateForm() {
     for (const contact of props.contacts) {
-        if (!(contact.id in form.value)) {
+        if (
+            !(contact.id in form.value) ||
+            checkFormElementShouldBeGenerated(form.value[contact.id])
+        ) {
             form.value[contact.id] = {
-                available: null,
                 scheduled: null,
                 contact_id: contact.id,
-                full_name: contact.full_name
+                full_name: contact.full_name,
+                phones: contact.phones.reduce((acc, phone) => {
+                    acc[phone.id] = {
+                        id: phone.id,
+                        available: null,
+                        reason: null
+                    };
+
+                    return acc;
+                }, {}),
+                emails: contact.emails.reduce((acc, email) => {
+                    acc[email.id] = {};
+                    return acc;
+                }, {})
             };
         }
     }
+}
+
+function checkFormElementShouldBeGenerated(element) {
+    return isNullish(element?.phones) || isNullish(element?.emails);
 }
 
 watch(() => props.contacts.length, generateForm, { immediate: true });
@@ -190,12 +212,16 @@ const currentContact = ref(null);
 function selectCurrentContact(contact) {
     if (props.disabled) return;
 
-    if (currentContact.value?.id === contact.id) {
-        currentContact.value = null;
-    } else {
+    if (currentContact.value?.id !== contact.id) {
         currentContact.value = contact;
     }
 }
+
+onBeforeMount(() => {
+    if (props.contacts.length) {
+        currentContact.value = props.contacts[0];
+    }
+});
 
 // edit
 

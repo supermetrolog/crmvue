@@ -1,5 +1,5 @@
 <template>
-    <div class="form__control">
+    <div ref="control" class="form__control">
         <label for="" :class="{ required: required }">
             <span v-if="label || $slots.label" class="form__label">
                 <slot name="label" :label="label">{{ label }}</slot>
@@ -127,7 +127,7 @@
 import Multiselect from '@vueform/multiselect';
 import Chip from '@/components/common/Chip.vue';
 import ValidationMessage from '@/components/common/Forms/VaildationMessage.vue';
-import { computed, ref, toRef, watch } from 'vue';
+import { computed, ref, toRef, useTemplateRef, watch } from 'vue';
 import { useFormControlValidation } from '@/composables/useFormControlValidation.js';
 import { isNullish } from '@/utils/helpers/common/isNullish.ts';
 import { isArray } from '@/utils/helpers/array/isArray.ts';
@@ -323,4 +323,17 @@ const onChange = (value, instance) => {
 
 if (props.name) setData();
 if (typeof props.options !== 'function') localeOptions.value = props.options;
+
+const multiselectEl = useTemplateRef('multiselect');
+const controlEl = useTemplateRef('control');
+
+function focus() {
+    multiselectEl.value?.$el?.focus();
+}
+
+function scrollIntoView() {
+    controlEl.value?.scrollIntoView({ behavior: 'smooth' });
+}
+
+defineExpose({ focus, scrollIntoView });
 </script>

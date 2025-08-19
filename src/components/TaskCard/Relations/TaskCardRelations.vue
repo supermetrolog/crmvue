@@ -29,17 +29,39 @@
                 </template>
             </TaskCardRelationsRow>
             <TaskCardRelationsRow
+                @link="contactRelationsModalIsVisible = true"
                 :relations="relationsByGroups.contact ?? []"
                 label="Контакты"
                 icon="fa-solid fa-address-card"
-                disabled
-            />
+                item-class="task-card-relations__contact"
+            >
+                <template #relation="{ relation }">
+                    <TaskCardRelationsPreviewContact
+                        @unlink="deleteRelation(relation.id)"
+                        :contact="relation.entity"
+                    />
+                </template>
+            </TaskCardRelationsRow>
             <TaskCardRelationsRow
                 :relations="relationsByGroups.request ?? []"
                 label="Запросы"
                 icon="fa-solid fa-user-clock"
                 disabled
             />
+            <TaskCardRelationsRow
+                :relations="relationsByGroups.survey ?? []"
+                label="Опросы"
+                icon="fa-solid fa-question"
+                item-class="task-card-relations__survey"
+                disabled
+            >
+                <template #relation="{ relation }">
+                    <TaskCardRelationsPreviewSurvey
+                        @unlink="deleteRelation(relation.id)"
+                        :survey="relation.entity"
+                    />
+                </template>
+            </TaskCardRelationsRow>
             <TaskCardRelationsRow
                 :relations="relationsByGroups.task ?? []"
                 label="Задачи"
@@ -53,6 +75,13 @@
                 @create="createRelation"
                 @close="companyRelationsModalIsVisible = false"
                 :relations="relationsByGroups.company ?? []"
+                :loading="isCreating"
+            />
+            <TaskCardRelationsModalContact
+                v-if="contactRelationsModalIsVisible"
+                @create="createRelation"
+                @close="contactRelationsModalIsVisible = false"
+                :relations="relationsByGroups.contact ?? []"
                 :loading="isCreating"
             />
         </teleport>
@@ -70,6 +99,9 @@ import TaskCardRelationsRow from '@/components/TaskCard/Relations/TaskCardRelati
 import TaskCardRelationsModalCompany from '@/components/TaskCard/Relations/TaskCardRelationsModalCompany.vue';
 import TaskCardRelationsPreviewCompany from '@/components/TaskCard/Relations/TaskCardRelationsPreviewCompany.vue';
 import { captureException } from '@sentry/vue';
+import TaskCardRelationsModalContact from '@/components/TaskCard/Relations/TaskCardRelationsModalContact.vue';
+import TaskCardRelationsPreviewContact from '@/components/TaskCard/Relations/TaskCardRelationsPreviewContact.vue';
+import TaskCardRelationsPreviewSurvey from '@/components/TaskCard/Relations/TaskCardRelationsPreviewSurvey.vue';
 
 const emit = defineEmits(['count-changed', 'to-company', 'show-contacts']);
 const props = defineProps({
@@ -114,6 +146,7 @@ onBeforeMount(() => {
 // link
 
 const companyRelationsModalIsVisible = ref(false);
+const contactRelationsModalIsVisible = ref(false);
 
 async function createRelation(payload) {
     isCreating.value = true;
@@ -125,6 +158,7 @@ async function createRelation(payload) {
         emit('count-changed', relations.value.length);
 
         companyRelationsModalIsVisible.value = false;
+        contactRelationsModalIsVisible.value = false;
     } finally {
         isCreating.value = false;
     }

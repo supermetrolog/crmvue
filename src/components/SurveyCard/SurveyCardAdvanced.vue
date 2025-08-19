@@ -22,7 +22,11 @@
                 </UiButton>
             </template>
             <template #1>
-                <SurveyCardAdvancedCalls @show-contact="showContact" :contacts="contactsAnswer" />
+                <SurveyCardAdvancedCalls
+                    @show-contact="showContact"
+                    :contacts="contactsAnswer"
+                    :survey
+                />
             </template>
             <template #2>
                 <Spinner v-if="companyIsLoading" label="Загрузка компании.." />

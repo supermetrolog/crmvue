@@ -874,7 +874,7 @@ async function sendLetterWithStepObjects(
     }));
 
     try {
-        const letterId = await api.letter.send({
+        const letterId = await api.letter.sendOffer({
             contacts,
             shipping_method: sendClientFlag ? 1 : 0,
             offers: objectsParams,

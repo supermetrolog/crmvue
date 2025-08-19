@@ -190,7 +190,7 @@ export const TimelineStepWithObjectsMixin = {
                 });
             });
 
-            const isSuccessfully = await api.letter.send({
+            const isSuccessfully = await api.letter.sendOffer({
                 contacts,
                 shipping_method: sendClientFlag ? 1 : 0,
                 offers: objectsParams,

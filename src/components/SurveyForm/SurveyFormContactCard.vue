@@ -1,8 +1,5 @@
 <template>
-    <div
-        class="messenger-quiz-contact"
-        :class="{ active, disabled, completed, main: contact.isMain }"
-    >
+    <div class="messenger-quiz-contact" :class="{ active, disabled, completed }">
         <div class="messenger-quiz-contact__info">
             <p class="messenger-quiz-contact__username">{{ contact.full_name }}</p>
             <template v-if="full">
