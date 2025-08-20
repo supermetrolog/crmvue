@@ -3,7 +3,7 @@ export type CacheItem<T> = {
     data: T;
 };
 
-function prepareKey(key: string) {
+export function createCacheKey(key: string) {
     return `plr:${key}`;
 }
 
@@ -13,12 +13,12 @@ export function saveCache<T>(key: string, data: T) {
         data
     };
 
-    localStorage.setItem(prepareKey(key), JSON.stringify(item));
+    localStorage.setItem(createCacheKey(key), JSON.stringify(item));
 }
 
 export function loadCache<T>(key: string, ttl = 24 * 60 * 60 * 1000): T | null {
     try {
-        const raw = localStorage.getItem(prepareKey(key));
+        const raw = localStorage.getItem(createCacheKey(key));
         if (!raw) return null;
 
         const parsed: CacheItem<T> = JSON.parse(raw);
@@ -31,5 +31,5 @@ export function loadCache<T>(key: string, ttl = 24 * 60 * 60 * 1000): T | null {
 }
 
 export function removeCache(key: string) {
-    localStorage.removeItem(prepareKey(key));
+    localStorage.removeItem(createCacheKey(key));
 }
