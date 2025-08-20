@@ -38,14 +38,10 @@ function createCachedRef<T>(
         function save(val: T) {
             value.value = val;
 
-            console.log(val, store.value);
-
             store.value = {
                 timestamp: Date.now(),
                 data: val
             };
-
-            console.log(val, store.value);
         }
 
         watch(

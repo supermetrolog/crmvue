@@ -129,19 +129,47 @@
     </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import Multiselect from '@vueform/multiselect';
 import Chip from '@/components/common/Chip.vue';
 import ValidationMessage from '@/components/common/Forms/VaildationMessage.vue';
 import { computed, ref, toRef, useTemplateRef, watch } from 'vue';
 import { useFormControlValidation } from '@/composables/useFormControlValidation.js';
-import { isNullish } from '@/utils/helpers/common/isNullish.ts';
-import { isArray } from '@/utils/helpers/array/isArray.ts';
+import { isNullish } from '@/utils/helpers/common/isNullish';
+import { isArray } from '@/utils/helpers/array/isArray';
 import { isString } from '@/utils/helpers/string/isString.js';
 import { isNotEmptyString } from '@/utils/helpers/string/isNotEmptyString.js';
-import { isNotNullish } from '@/utils/helpers/common/isNotNullish.ts';
+import { isNotNullish } from '@/utils/helpers/common/isNotNullish';
 import { plural } from '@/utils/plural.js';
 import UiButtonIcon from '@/components/common/UI/UiButtonIcon.vue';
+
+export type MultiSelectPlaneOption = number | string | boolean;
+
+export interface MultiSelectBaseOption<Label = string, Value = string | number | object | boolean> {
+    label: Label;
+    value: Value;
+    disabled?: boolean;
+}
+
+export type MultiSelectOptionExtra = Record<string, MultiSelectOptionExtraValue>;
+
+export type MultiSelectOptionExtraValue = any;
+
+export type MultiSelectOption<
+    Label = string,
+    Value = string,
+    Extra extends MultiSelectOptionExtra = {} // eslint-disable-line @typescript-eslint/no-empty-object-type
+> = MultiSelectBaseOption<Label, Value> & Extra;
+
+export type MultiSelectOptions<T extends MultiSelectOption = MultiSelectOption> =
+    | MultiSelectPlaneOption[]
+    | T[]
+    | Record<string | number, T>
+    | MultiSelectAsyncOptions<T>
+    | (() => T[]);
+
+export type MultiSelectAsyncOptions<T extends MultiSelectOption = MultiSelectOption> =
+    () => Promise<T[]>;
 
 const emit = defineEmits(['change']);
 const props = defineProps({
