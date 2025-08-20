@@ -381,7 +381,7 @@ function close() {
     multiselectEl.value?.close();
 }
 
-function refreshOptions(callback) {
+function refreshOptions(callback = () => {}) {
     multiselectEl.value?.refreshOptions(callback);
 }
 

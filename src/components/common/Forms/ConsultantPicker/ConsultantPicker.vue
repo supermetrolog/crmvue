@@ -83,7 +83,7 @@ const props = withDefaults(
     }
 );
 
-const multipleLabelFn = elements => {
+const multipleLabelFn = (elements: ConsultantPickerOption[]) => {
     return plural(
         elements.length,
         'Выбран %d сотрудник',
@@ -92,7 +92,7 @@ const multipleLabelFn = elements => {
     );
 };
 
-const availableConsultantRoles = new Set([
+const availableConsultantRoles = new Set<number>([
     UserRoleEnum.CONSULTANT,
     UserRoleEnum.SYSTEM,
     UserRoleEnum.OWNER
@@ -120,7 +120,7 @@ const showOnlyConsultants = useCachedRef('ui:show-only-consultants', true);
 const multiselectEl = useTemplateRef('multiselectEl');
 
 watch(showOnlyConsultants, () => {
-    multiselectEl.value.refreshOptions();
+    multiselectEl.value?.refreshOptions();
 });
 </script>
 <style scoped>
