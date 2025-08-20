@@ -95,10 +95,10 @@
                         class="ml-1 icon text-danger"
                     />
                 </p>
-                <p v-if="survey.contact.position_unknown" class="text-grey fs-2">
-                    Должность неизвестна
+
+                <p class="text-grey fs-2">
+                    <ContactPositionField :contact="survey.contact" />
                 </p>
-                <p v-else class="text-grey fs-2">{{ position }}</p>
                 <div v-if="survey.contact?.phones?.length" class="call-table-item__phones">
                     <PhoneNumber
                         v-for="phone of survey.contact.phones"
@@ -141,7 +141,6 @@
 import Tr from '@/components/common/Table/Tr.vue';
 import Td from '@/components/common/Table/Td.vue';
 import Avatar from '@/components/common/Avatar.vue';
-import { contactOptions } from '@/const/options/contact.options.js';
 import { computed } from 'vue';
 import UiTooltipIcon from '@/components/common/UI/UiTooltipIcon.vue';
 import PhoneNumber from '@/components/common/PhoneNumber.vue';
@@ -157,6 +156,7 @@ import UiDropdownActionsGroup from '@/components/common/UI/DropdownActions/UiDro
 import { useAuth } from '@/composables/useAuth.js';
 import { dayjsFromServer } from '@/utils/formatters/date.ts';
 import dayjs from 'dayjs';
+import ContactPositionField from '@/components/Contact/ContactPositionField.vue';
 
 defineEmits(['to-chat', 'open-survey', 'edit-survey']);
 const props = defineProps({
@@ -187,10 +187,6 @@ const statusColor = computed(() => {
     if (props.survey.status === surveyStatusesEnum.DRAFT) return 'text-grey';
     if (props.survey.status === surveyStatusesEnum.DELAYED) return 'text-warning';
     return 'color-danger';
-});
-
-const position = computed(() => {
-    return contactOptions.position[props.survey.contact.position];
 });
 
 const isCompleted = computed(() => props.survey.status === surveyStatusesEnum.COMPLETED);

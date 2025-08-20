@@ -39,7 +39,7 @@
         <span class="call-inline-card__contact">
             <i v-if="call.contact.isMain" class="fa-solid fa-crown mr-1" />
             <span class="font-weight-semi">{{ call.contact.full_name }}, </span>
-            <span class="text-grey">{{ contactPosition }}</span>
+            <ContactPositionField v-if="call.contact" :contact="call.contact" class="text-grey" />
         </span>
         <span class="ml-auto text-grey">
             <i class="fa-regular fa-clock mr-1" />
@@ -54,11 +54,11 @@ import { callStatusEnum } from '@/const/enums/call.js';
 import { Tippy } from 'vue-tippy';
 import { callStatus, callType } from '@/const/options/call.options.js';
 import { toBeautifulDateFormat } from '@/utils/formatters/date.ts';
-import { contactOptions } from '@/const/options/contact.options.js';
 import UiButtonIcon from '@/components/common/UI/UiButtonIcon.vue';
 import UiDropdownActions from '@/components/common/UI/DropdownActions/UiDropdownActions.vue';
 import UiDropdownActionsButton from '@/components/common/UI/DropdownActions/UiDropdownActionsButton.vue';
 import { useRouter } from 'vue-router';
+import ContactPositionField from '@/components/Contact/ContactPositionField.vue';
 
 defineEmits(['show-call', 'show-contact']);
 const props = defineProps({
@@ -95,11 +95,6 @@ const statusColor = computed(() => {
 });
 
 const createdAt = computed(() => toBeautifulDateFormat(props.call.created_at));
-
-const contactPosition = computed(() => {
-    if (props.call.contact.position_unknown) return 'Должность неизвестна';
-    return contactOptions.position[props.call.contact.position];
-});
 
 const router = useRouter();
 

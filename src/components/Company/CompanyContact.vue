@@ -4,11 +4,15 @@
             <i v-if="isPassive" ref="passiveIconEl" class="fa-solid fa-phone-slash mr-1"></i>
             <span :class="{ 'text-through': isPassive }">{{ fullName }}</span>
         </p>
-        <p v-if="contact.position" class="company-contact__position">{{ position }}</p>
-        <p v-else-if="contact.position_unknown" class="company-contact__position">
-            Должность неизвестна
+        <p
+            :class="
+                contact.position_id || contact.position_unknown
+                    ? 'company-contact__position'
+                    : 'error-message'
+            "
+        >
+            <ContactPositionField :contact show-warning warning-label="Должность не указана" />
         </p>
-        <p v-else class="error-message">Должность не указана</p>
         <div v-if="contact.phones?.length" class="mt-1 company-contact__list">
             <PhoneNumber
                 @click.stop="$emit('open-phone')"
@@ -29,9 +33,9 @@
 <script setup>
 import { computed, useTemplateRef } from 'vue';
 import PhoneNumber from '@/components/common/PhoneNumber.vue';
-import { contactOptions } from '@/const/options/contact.options.js';
 import { getContactFullName } from '@/utils/formatters/models/contact.js';
 import { useTippyText } from '@/composables/useTippyText.js';
+import ContactPositionField from '@/components/Contact/ContactPositionField.vue';
 
 defineEmits(['open-phone']);
 const props = defineProps({
@@ -49,7 +53,6 @@ const props = defineProps({
     }
 });
 
-const position = computed(() => contactOptions.position[props.contact.position]);
 const fullName = computed(() => getContactFullName(props.contact));
 const isPassive = computed(() => props.contact.status === 0);
 

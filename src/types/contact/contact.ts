@@ -5,6 +5,7 @@ import { Email } from '@/types/contact/email';
 import { WayOfInformings } from '@/types/contact/way-of-informings';
 import { Website } from '@/types/contact/website';
 import { Call } from '@/types/call';
+import { LetterContact } from '@/types/letter/letter';
 
 export const ContactPassiveWhyEnum = {
     NOT_ACTUAL: 0,
@@ -33,47 +34,57 @@ export const ContactTypeEnum = {
 
 export type ContactType = (typeof ContactTypeEnum)[keyof typeof ContactTypeEnum];
 
-export const ContactPositionEnum = {
-    SHAREHOLDER: 0,
-    CEO: 1,
-    COMMERCIAL_DIRECTOR: 2,
-    CFO: 3,
-    COO: 4,
-    MANAGING_DIRECTOR: 5,
-    LOGISTICS_DIRECTOR: 6,
-    WAREHOUSE_MANAGER: 7,
-    PROJECT_MANAGER: 8,
-    SECURITY: 9,
-    CHIEF_ENGINEER: 10,
-    SECRETARY: 11,
-    MANAGEMENT_COMPANY_REP: 12,
-    ONSITE_REP: 13,
-    ACCOUNTANT: 14,
-    LAWYER: 15,
-    AGENT: 16
-} as const;
+// export const ContactPositionEnum = {
+//     SHAREHOLDER: 0,
+//     CEO: 1,
+//     COMMERCIAL_DIRECTOR: 2,
+//     CFO: 3,
+//     COO: 4,
+//     MANAGING_DIRECTOR: 5,
+//     LOGISTICS_DIRECTOR: 6,
+//     WAREHOUSE_MANAGER: 7,
+//     PROJECT_MANAGER: 8,
+//     SECURITY: 9,
+//     CHIEF_ENGINEER: 10,
+//     SECRETARY: 11,
+//     MANAGEMENT_COMPANY_REP: 12,
+//     ONSITE_REP: 13,
+//     ACCOUNTANT: 14,
+//     LAWYER: 15,
+//     AGENT: 16
+// } as const;
 
-export type ContactPosition = (typeof ContactPositionEnum)[keyof typeof ContactPositionEnum];
+export interface ContactPosition extends Identifiable, Timestamps, SoftDelete {
+    slug: string;
+    name: string;
+    short_name: string | null;
+    description: string | null;
+    color: string | null;
+    icon: string | null;
+    sort_order: number | null;
+    is_active: boolean;
+    created_by_id: number | null;
+}
 
-export const ContactPositionLabels: Record<ContactPosition, string> = {
-    [ContactPositionEnum.SHAREHOLDER]: 'Акционер',
-    [ContactPositionEnum.CEO]: 'Генеральный директор',
-    [ContactPositionEnum.COMMERCIAL_DIRECTOR]: 'Коммерческий директор',
-    [ContactPositionEnum.CFO]: 'Финансовый директор',
-    [ContactPositionEnum.COO]: 'Операционный директор',
-    [ContactPositionEnum.MANAGING_DIRECTOR]: 'Управляющий директор',
-    [ContactPositionEnum.LOGISTICS_DIRECTOR]: 'Директор по логистике',
-    [ContactPositionEnum.WAREHOUSE_MANAGER]: 'Начальник склада',
-    [ContactPositionEnum.PROJECT_MANAGER]: 'Менеджер по проектам',
-    [ContactPositionEnum.SECURITY]: 'Охранник',
-    [ContactPositionEnum.CHIEF_ENGINEER]: 'Главный инженер',
-    [ContactPositionEnum.SECRETARY]: 'Секретарь',
-    [ContactPositionEnum.MANAGEMENT_COMPANY_REP]: 'Представитель управляющей компании',
-    [ContactPositionEnum.ONSITE_REP]: 'Представитель на объекте',
-    [ContactPositionEnum.ACCOUNTANT]: 'Бухгалтер',
-    [ContactPositionEnum.LAWYER]: 'Юрист',
-    [ContactPositionEnum.AGENT]: 'Агент'
-} as const;
+// export const ContactPositionLabels: Record<ContactPosition, string> = {
+//     [ContactPositionEnum.SHAREHOLDER]: 'Акционер',
+//     [ContactPositionEnum.CEO]: 'Генеральный директор',
+//     [ContactPositionEnum.COMMERCIAL_DIRECTOR]: 'Коммерческий директор',
+//     [ContactPositionEnum.CFO]: 'Финансовый директор',
+//     [ContactPositionEnum.COO]: 'Операционный директор',
+//     [ContactPositionEnum.MANAGING_DIRECTOR]: 'Управляющий директор',
+//     [ContactPositionEnum.LOGISTICS_DIRECTOR]: 'Директор по логистике',
+//     [ContactPositionEnum.WAREHOUSE_MANAGER]: 'Начальник склада',
+//     [ContactPositionEnum.PROJECT_MANAGER]: 'Менеджер по проектам',
+//     [ContactPositionEnum.SECURITY]: 'Охранник',
+//     [ContactPositionEnum.CHIEF_ENGINEER]: 'Главный инженер',
+//     [ContactPositionEnum.SECRETARY]: 'Секретарь',
+//     [ContactPositionEnum.MANAGEMENT_COMPANY_REP]: 'Представитель управляющей компании',
+//     [ContactPositionEnum.ONSITE_REP]: 'Представитель на объекте',
+//     [ContactPositionEnum.ACCOUNTANT]: 'Бухгалтер',
+//     [ContactPositionEnum.LAWYER]: 'Юрист',
+//     [ContactPositionEnum.AGENT]: 'Агент'
+// } as const;
 
 export const ContactStatusEnum = {
     PASSIVE: 0,
@@ -81,40 +92,6 @@ export const ContactStatusEnum = {
 } as const;
 
 export type ContactStatus = (typeof ContactStatusEnum)[keyof typeof ContactStatusEnum];
-
-export interface Letter extends Identifiable {
-    user_id: number;
-    subject: string | null;
-    body: string | null;
-    status: 0 | 1;
-    type: number;
-    shipping_method: number;
-    sender_email: string | null;
-    created_at: string;
-    user?: User;
-}
-
-export interface LetterContact extends Identifiable {
-    letter_id: number;
-    contact_id: number;
-    phone: string | null;
-    email: string | null;
-    created_at: string;
-
-    letter?: Letter;
-    answers: LetterContactAnswer[];
-}
-
-export interface LetterContactAnswer extends Identifiable, SoftDelete {
-    letter_contact_id: number;
-    marked_by_id: number;
-    marked_at: string;
-    type: string;
-    comment: string | null;
-    related_message_id: string | null;
-
-    marked_by?: User;
-}
 
 export interface Contact extends Identifiable, Timestamps {
     company_id: number;
@@ -125,7 +102,7 @@ export interface Contact extends Identifiable, Timestamps {
     type: ContactType;
     consultant_id: number | null;
     consultant?: User | null;
-    position: ContactPosition | null;
+    position_id: number | null;
     faceToFaceMeeting: BooleanNumber | null;
     warning: BooleanNumber | null;
     good: BooleanNumber | null;

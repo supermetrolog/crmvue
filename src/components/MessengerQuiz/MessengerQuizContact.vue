@@ -23,11 +23,7 @@
                 <UiTooltip :tooltip="contact.full_name">{{ contact.full_name }}</UiTooltip>
             </p>
             <p v-if="!isCompanyContact" class="messenger-quiz-contact__staff">
-                <span v-if="contact.position_unknown">Должность неизвестна..</span>
-                <span v-else-if="contact.position">
-                    {{ position }}
-                </span>
-                <span v-else class="color-error">Должность не заполнена!</span>
+                <ContactPositionField :contact show-warning warning-class="color-error" />
             </p>
             <p class="messenger-quiz-contact__email">
                 <template v-if="mainEmail">
@@ -128,23 +124,30 @@
         </div>
     </div>
 </template>
-<script setup>
+<script setup lang="ts">
 import { computed } from 'vue';
 import { contactOptions } from '@/const/options/contact.options.js';
 import { Tippy } from 'vue-tippy';
 import UiButtonIcon from '@/components/common/UI/UiButtonIcon.vue';
 import UiTooltipIcon from '@/components/common/UI/UiTooltipIcon.vue';
 import UiTooltip from '@/components/common/UI/UiTooltip.vue';
+import { Contact } from '@/types/contact/contact';
+import ContactPositionField from '@/components/Contact/ContactPositionField.vue';
 
-defineEmits(['edit', 'delete', 'move', 'show-comments', 'schedule-call']);
-const props = defineProps({
-    contact: Object,
-    loading: Boolean,
-    active: Boolean,
-    disabled: Boolean
-});
+defineEmits<{
+    (e: 'edit'): void;
+    (e: 'delete'): void;
+    (e: 'move'): void;
+    (e: 'show-comments'): void;
+    (e: 'schedule-call'): void;
+}>();
 
-const position = computed(() => contactOptions.position[props.contact.position]);
+const props = defineProps<{
+    contact?: Contact;
+    loading?: boolean;
+    active?: boolean;
+    disabled?: boolean;
+}>();
 
 const mainPhone = computed(() => props.contact.phones.find(phone => phone.isMain));
 const mainEmail = computed(() => props.contact.emails.find(email => email.isMain));

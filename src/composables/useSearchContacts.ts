@@ -1,10 +1,10 @@
 import api from '@/api/api.js';
 import { computed, ref, shallowRef, toValue } from 'vue';
-import { contactOptions } from '@/const/options/contact.options.js';
 import { MaybeRefOrGetter } from '@vueuse/core';
 import { isNullish } from '@/utils/helpers/common/isNullish';
 import { ContactStatus, ContactStatusEnum, ContactType } from '@/types/contact/contact';
 import { BooleanNumber } from '@/types/base';
+import { useContactPositionShared } from '@/composables/useContactPosition';
 
 export interface SearchedContact {
     value: number;
@@ -20,6 +20,8 @@ export interface SearchedContact {
 export function useSearchContacts(companyId: MaybeRefOrGetter<number>) {
     const contacts = shallowRef<SearchedContact[]>([]);
     const isLoading = ref(false);
+
+    const { getById } = useContactPositionShared();
 
     async function searchContacts(_companyId: number | null = null) {
         isLoading.value = true;
@@ -37,9 +39,9 @@ export function useSearchContacts(companyId: MaybeRefOrGetter<number>) {
                     isMain: contact.isMain,
                     status: contact.status,
                     position:
-                        contact.position_unknown || isNullish(contact.position)
+                        contact.position_unknown || isNullish(contact.position_id)
                             ? 'Должность неизвестна'
-                            : contactOptions.position[contact.position],
+                            : (getById(contact.position_id)?.name ?? 'Должность не определена'),
                     phone: contact.phones?.length ? contact.phones[0].phone : null,
                     calls_count: contact.calls!.length
                 }));

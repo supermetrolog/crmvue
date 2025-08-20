@@ -1,6 +1,8 @@
 <template>
     <p class="contact-card__name">{{ contact.full_name }}</p>
-    <p class="contact-card__position">{{ position }}</p>
+    <p class="contact-card__position">
+        <ContactPositionField :contact />
+    </p>
     <div class="contact-card__contacts mt-2">
         <div class="contact-card__column">
             <p class="contact-card__label">Телефоны:</p>
@@ -18,19 +20,9 @@
         </div>
     </div>
 </template>
-<script setup>
-import { computed } from 'vue';
-import { contactOptions } from '@/const/options/contact.options.js';
+<script setup lang="ts">
+import { Contact } from '@/types/contact/contact';
+import ContactPositionField from '@/components/Contact/ContactPositionField.vue';
 
-const props = defineProps({
-    contact: {
-        type: Object,
-        required: true
-    }
-});
-
-const position = computed(() => {
-    if (props.contact.position_unknown) return 'Должность неизвестна';
-    return contactOptions.position[props.contact.position];
-});
+defineProps<{ contact: Contact }>();
 </script>

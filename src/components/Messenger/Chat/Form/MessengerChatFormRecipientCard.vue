@@ -3,12 +3,12 @@
         <div class="messenger-chat-form-recipient-card__header">
             <div class="messenger-chat-form-recipient-card__description">
                 <p class="messenger-chat-form-recipient-card__username">{{ contact.full_name }}</p>
-                <p v-if="contact.position">
-                    {{ position }}
-                </p>
-                <p v-else-if="contact.positionUnknown">Должность неизвестна</p>
-                <p v-else class="messenger-warning messenger-warning--simple">
-                    Должность не заполнена!
+                <p>
+                    <ContactPositionField
+                        :contact
+                        show-warning
+                        warning-class="messenger-warning messenger-warning--simple"
+                    />
                 </p>
             </div>
             <div
@@ -87,21 +87,15 @@
         </teleport>
     </div>
 </template>
-<script setup>
+<script setup lang="ts">
 import HoverActions from '@/components/common/HoverActions/HoverActions.vue';
 import HoverActionsButton from '@/components/common/HoverActions/HoverActionsButton.vue';
 import FormCompanyContact from '@/components/Forms/Company/FormCompanyContact.vue';
-import { computed, ref } from 'vue';
-import { contactOptions } from '@/const/options/contact.options.js';
+import { ref } from 'vue';
+import ContactPositionField from '@/components/Contact/ContactPositionField.vue';
+import { Contact } from '@/types/contact/contact';
 
-const props = defineProps({
-    contact: {
-        type: Object,
-        required: true
-    }
-});
+defineProps<{ contact: Contact }>();
 
 const updateContactModalIsVisible = ref(false);
-
-const position = computed(() => contactOptions.position[props.contact.position]);
 </script>

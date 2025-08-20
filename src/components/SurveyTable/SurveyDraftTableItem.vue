@@ -95,10 +95,9 @@
                         class="ml-1 icon text-danger"
                     />
                 </p>
-                <p v-if="survey.contact.position_unknown" class="text-grey fs-2">
-                    Должность неизвестна
+                <p class="text-grey fs-2">
+                    <ContactPositionField :contact="survey.contact" />
                 </p>
-                <p v-else class="text-grey fs-2">{{ position }}</p>
                 <div v-if="survey.contact?.phones?.length" class="call-table-item__phones">
                     <PhoneNumber
                         v-for="phone of survey.contact.phones"
@@ -133,7 +132,6 @@
 <script setup>
 import Tr from '@/components/common/Table/Tr.vue';
 import Td from '@/components/common/Table/Td.vue';
-import { contactOptions } from '@/const/options/contact.options.js';
 import { computed } from 'vue';
 import UiTooltipIcon from '@/components/common/UI/UiTooltipIcon.vue';
 import PhoneNumber from '@/components/common/PhoneNumber.vue';
@@ -146,6 +144,7 @@ import UiDropdownActions from '@/components/common/UI/DropdownActions/UiDropdown
 import { useRouter } from 'vue-router';
 import { plural } from '@/utils/plural.js';
 import UiButtonIcon from '@/components/common/UI/UiButtonIcon.vue';
+import ContactPositionField from '@/components/Contact/ContactPositionField.vue';
 
 defineEmits(['to-chat', 'open-survey', 'continue', 'delete-draft']);
 const props = defineProps({
@@ -153,10 +152,6 @@ const props = defineProps({
         type: Object,
         required: true
     }
-});
-
-const position = computed(() => {
-    return contactOptions.position[props.survey.contact.position];
 });
 
 const router = useRouter();
