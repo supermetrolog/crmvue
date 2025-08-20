@@ -34,26 +34,6 @@ export const ContactTypeEnum = {
 
 export type ContactType = (typeof ContactTypeEnum)[keyof typeof ContactTypeEnum];
 
-// export const ContactPositionEnum = {
-//     SHAREHOLDER: 0,
-//     CEO: 1,
-//     COMMERCIAL_DIRECTOR: 2,
-//     CFO: 3,
-//     COO: 4,
-//     MANAGING_DIRECTOR: 5,
-//     LOGISTICS_DIRECTOR: 6,
-//     WAREHOUSE_MANAGER: 7,
-//     PROJECT_MANAGER: 8,
-//     SECURITY: 9,
-//     CHIEF_ENGINEER: 10,
-//     SECRETARY: 11,
-//     MANAGEMENT_COMPANY_REP: 12,
-//     ONSITE_REP: 13,
-//     ACCOUNTANT: 14,
-//     LAWYER: 15,
-//     AGENT: 16
-// } as const;
-
 export interface ContactPosition extends Identifiable, Timestamps, SoftDelete {
     slug: string;
     name: string;
@@ -65,26 +45,6 @@ export interface ContactPosition extends Identifiable, Timestamps, SoftDelete {
     is_active: boolean;
     created_by_id: number | null;
 }
-
-// export const ContactPositionLabels: Record<ContactPosition, string> = {
-//     [ContactPositionEnum.SHAREHOLDER]: 'Акционер',
-//     [ContactPositionEnum.CEO]: 'Генеральный директор',
-//     [ContactPositionEnum.COMMERCIAL_DIRECTOR]: 'Коммерческий директор',
-//     [ContactPositionEnum.CFO]: 'Финансовый директор',
-//     [ContactPositionEnum.COO]: 'Операционный директор',
-//     [ContactPositionEnum.MANAGING_DIRECTOR]: 'Управляющий директор',
-//     [ContactPositionEnum.LOGISTICS_DIRECTOR]: 'Директор по логистике',
-//     [ContactPositionEnum.WAREHOUSE_MANAGER]: 'Начальник склада',
-//     [ContactPositionEnum.PROJECT_MANAGER]: 'Менеджер по проектам',
-//     [ContactPositionEnum.SECURITY]: 'Охранник',
-//     [ContactPositionEnum.CHIEF_ENGINEER]: 'Главный инженер',
-//     [ContactPositionEnum.SECRETARY]: 'Секретарь',
-//     [ContactPositionEnum.MANAGEMENT_COMPANY_REP]: 'Представитель управляющей компании',
-//     [ContactPositionEnum.ONSITE_REP]: 'Представитель на объекте',
-//     [ContactPositionEnum.ACCOUNTANT]: 'Бухгалтер',
-//     [ContactPositionEnum.LAWYER]: 'Юрист',
-//     [ContactPositionEnum.AGENT]: 'Агент'
-// } as const;
 
 export const ContactStatusEnum = {
     PASSIVE: 0,
