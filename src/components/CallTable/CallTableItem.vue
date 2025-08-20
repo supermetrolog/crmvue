@@ -65,7 +65,9 @@
         </Td>
         <Td sort="contact_position" :width="350">
             <p v-if="call.contact.position_unknown" class="text-grey">Должность неизвестна</p>
-            <p v-else>{{ position }}</p>
+            <p v-else>
+                <ContactPositionField :contact="call.contact" />
+            </p>
         </Td>
         <Td sort="user_name" :width="250">
             <div class="d-flex align-items-center gap-2">
@@ -85,12 +87,12 @@ import Td from '@/components/common/Table/Td.vue';
 import { callStatus, callType } from '@/const/options/call.options.js';
 import Avatar from '@/components/common/Avatar.vue';
 import { toBeautifulDateFormat } from '@/utils/formatters/date.ts';
-import { contactOptions } from '@/const/options/contact.options.js';
 import { computed } from 'vue';
 import { callStatusEnum } from '@/const/enums/call.js';
 import UiTooltipIcon from '@/components/common/UI/UiTooltipIcon.vue';
 import { getCompanyShortName } from '@/utils/formatters/models/company.js';
 import PhoneNumber from '@/components/common/PhoneNumber.vue';
+import ContactPositionField from '@/components/Contact/ContactPositionField.vue';
 
 defineEmits(['open-phone']);
 const props = defineProps({
@@ -103,10 +105,6 @@ const props = defineProps({
 const typeLabel = computed(() => callType[props.call.type]);
 const statusLabel = computed(() => callStatus[props.call.status]);
 const createdAt = computed(() => toBeautifulDateFormat(props.call.created_at));
-
-const position = computed(() => {
-    return contactOptions.position[props.call.contact.position];
-});
 
 const statusColor = computed(() => {
     if (props.call.status === callStatusEnum.COMPLETED) return 'text-success';

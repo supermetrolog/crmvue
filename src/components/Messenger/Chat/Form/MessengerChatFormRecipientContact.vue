@@ -9,40 +9,23 @@
                 {{ fullName }}
             </p>
             <p class="messenger-chat-form-contact__staff">
-                <span v-if="contact.position">
-                    {{ position }}
-                </span>
-                <span v-else-if="contact.positionUnknown">Должность неизвестна..</span>
-                <span v-else class="messenger-chat-form-contact__warning">
-                    Должность не заполнена!
-                </span>
+                <ContactPositionField
+                    :contact
+                    show-warning
+                    warning-class="messenger-chat-form-contact__warning"
+                />
             </p>
         </div>
         <i class="fa-solid fa-chevron-right messenger-chat-form-contact__chevron"></i>
     </div>
 </template>
-<script>
-import { entityOptions } from '@/const/options/options';
+<script setup lang="ts">
+import { Contact } from '@/types/contact/contact';
+import { computed } from 'vue';
+import { getContactFullName } from '@/utils/formatters/models/contact';
+import ContactPositionField from '@/components/Contact/ContactPositionField.vue';
 
-export default {
-    name: 'MessengerChatFormRecipientContact',
-    props: {
-        contact: {
-            type: Object,
-            required: true
-        }
-    },
-    computed: {
-        position() {
-            return entityOptions.contact.position[this.contact.position];
-        },
-        fullName() {
-            if (this.contact.full_name) return this.contact.full_name;
-            return (
-                this.contact.first_name +
-                (this.contact.last_name ? ` ${this.contact.last_name}` : '')
-            );
-        }
-    }
-};
+const props = defineProps<{ contact: Contact }>();
+
+const fullName = computed(() => getContactFullName(props.contact));
 </script>

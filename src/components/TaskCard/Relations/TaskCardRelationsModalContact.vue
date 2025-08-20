@@ -47,9 +47,9 @@ import UiTextarea from '@/components/common/Forms/UiTextarea.vue';
 import { isNullish } from '@/utils/helpers/common/isNullish.ts';
 import { useFormData } from '@/utils/use/useFormData.js';
 import api from '@/api/api.js';
-import { contactOptions } from '@/const/options/contact.options.js';
 import { getCompanyName } from '@/utils/formatters/models/company.js';
 import ContactPicker from '@/components/common/Forms/ContactPicker/ContactPicker.vue';
+import { useContactPositionShared } from '@/composables/useContactPosition';
 
 const emit = defineEmits(['create', 'close']);
 
@@ -62,6 +62,8 @@ const props = defineProps({
     formData: Object
 });
 
+const { getById } = useContactPositionShared();
+
 async function searchContact(search) {
     let query = { search };
 
@@ -73,7 +75,7 @@ async function searchContact(search) {
         isMain: element.isMain,
         position: element.position_unknown
             ? 'Должность неизвестна'
-            : contactOptions.position[element.position],
+            : (getById(element.position_id)?.name ?? 'Должность не определена'),
         company: getCompanyName(element.company, element.company_id),
         phone: element.phones.length ? element.phones[0].phone : null
     }));

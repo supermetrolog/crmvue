@@ -120,8 +120,8 @@ import { isNullish } from '@/utils/helpers/common/isNullish.ts';
 import { useAuth } from '@/composables/useAuth.js';
 import { helpers, required } from '@vuelidate/validators';
 import { callStatus, callType } from '@/const/options/call.options.js';
-import { contactOptions } from '@/const/options/contact.options.js';
 import { getCompanyShortName } from '@/utils/formatters/models/company.js';
+import { useContactPositionShared } from '@/composables/useContactPosition';
 
 const emit = defineEmits(['updated', 'created', 'close']);
 const props = defineProps({
@@ -202,6 +202,8 @@ async function submit() {
     else await createCall();
 }
 
+const { getById } = useContactPositionShared();
+
 async function searchContact(search) {
     let query = {};
 
@@ -221,7 +223,7 @@ async function searchContact(search) {
         isMain: element.isMain,
         position: element.position_unknown
             ? 'Должность неизвестна'
-            : contactOptions.position[element.position],
+            : (getById(element.position_id)?.name ?? 'Должность не определена'),
         company: getCompanyShortName(element.company, element.company_id),
         phone: element.phones.length ? element.phones[0].phone : null
     }));

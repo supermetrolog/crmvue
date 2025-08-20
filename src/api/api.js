@@ -36,6 +36,7 @@ import tour from '@/api/tour.js';
 import utility from '@/api/utility';
 import phone from '@/api/phone';
 import entityMessageLink from '@/api/entityMessageLink';
+import contactPosition from '@/api/contactPosition';
 
 export default {
     user,
@@ -75,5 +76,6 @@ export default {
     tour,
     utility,
     phone,
-    entityMessageLink
+    entityMessageLink,
+    contactPosition
 };

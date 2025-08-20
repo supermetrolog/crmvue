@@ -6,9 +6,7 @@
         <div class="object-holding-contact__description">
             <p class="object-holding-contact__name">
                 <span>{{ fullName }}</span>
-                <span v-if="contact.position" class="object-holding-contact__message">
-                    {{ position }}
-                </span>
+                <ContactPositionField :contact class="object-holding-contact__message" />
             </p>
             <ul class="object-holding-contact__list">
                 <li
@@ -33,19 +31,13 @@
     </div>
 </template>
 
-<script setup>
-import { PositionList } from '@/const/const';
+<script setup lang="ts">
 import { computed } from 'vue';
 import { toInitialsFormat } from '@/utils/formatters/string.js';
+import ContactPositionField from '@/components/Contact/ContactPositionField.vue';
+import { Contact } from '@/types/contact/contact';
 
-const props = defineProps({
-    contact: {
-        type: Object,
-        required: true
-    }
-});
-
-const position = computed(() => PositionList[props.contact.position].label);
+const props = defineProps<{ contact: Contact }>();
 
 const avatarText = computed(() => {
     if (props.contact.middle_name && props.contact.first_name)

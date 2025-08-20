@@ -4,11 +4,12 @@
             <p class="messenger-quiz-contact__username">{{ contact.full_name }}</p>
             <template v-if="full">
                 <p v-if="!isCompanyContact" class="messenger-quiz-contact__staff">
-                    <span v-if="contact.position_unknown">Должность неизвестна..</span>
-                    <span v-else-if="contact.position">
-                        {{ position }}
-                    </span>
-                    <span v-else class="color-error">Должность не заполнена!</span>
+                    <ContactPositionField
+                        v-if="contact.position_id || contact.position_unknown"
+                        :contact
+                        show-warning
+                        warning-class="color-error"
+                    />
                 </p>
                 <div class="messenger-quiz-contact__badges mt-2">
                     <div
@@ -95,6 +96,7 @@ import UiDropdownActions from '@/components/common/UI/DropdownActions/UiDropdown
 import UiDropdownActionsButton from '@/components/common/UI/DropdownActions/UiDropdownActionsButton.vue';
 import dayjs from 'dayjs';
 import UiDropdownActionsGroup from '@/components/common/UI/DropdownActions/UiDropdownActionsGroup.vue';
+import ContactPositionField from '@/components/Contact/ContactPositionField.vue';
 
 defineEmits(['edit', 'show-comments', 'schedule-call']);
 const props = defineProps({
@@ -112,8 +114,6 @@ const props = defineProps({
 });
 
 // form
-
-const position = computed(() => contactOptions.position[props.contact.position]);
 
 const isCompanyContact = computed(
     () => props.contact?.type === contactOptions.typeStatement.GENERAL
