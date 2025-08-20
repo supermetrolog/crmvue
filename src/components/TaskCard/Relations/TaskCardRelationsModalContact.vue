@@ -75,7 +75,7 @@ async function searchContact(search) {
         isMain: element.isMain,
         position: element.position_unknown
             ? 'Должность неизвестна'
-            : (getById[element.position_id] ?? 'Должность не определена'),
+            : (getById(element.position_id)?.name ?? 'Должность не определена'),
         company: getCompanyName(element.company, element.company_id),
         phone: element.phones.length ? element.phones[0].phone : null
     }));
