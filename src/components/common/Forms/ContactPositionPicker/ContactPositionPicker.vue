@@ -128,6 +128,5 @@ function onCreated(position: ContactPosition) {
         });
     });
 
-    load(true);
 }
 </script>
