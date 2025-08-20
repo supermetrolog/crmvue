@@ -77,7 +77,7 @@
         <div class="company-contact-item__userinfo my-1 text-center">
             <strong>{{ name }}</strong>
             <small class="d-block text-grey">
-                {{ contact.position ? position : 'Должность неизвестна' }}
+                <ContactPositionField :contact />
             </small>
         </div>
         <div class="company-contact-item__body">
@@ -132,7 +132,7 @@
     </DashboardCard>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { PassiveWhyContact } from '@/const/const.js';
 import DashboardCard from '@/components/Dashboard/Card/DashboardCard.vue';
 import CompanyContactItemComments from '@/components/Company/Contact/CompanyContactItemComments.vue';
@@ -142,28 +142,26 @@ import UiTooltipIcon from '@/components/common/UI/UiTooltipIcon.vue';
 import UiField from '@/components/common/UI/UiField.vue';
 import UiButtonIcon from '@/components/common/UI/UiButtonIcon.vue';
 import UiAccordion from '@/components/common/UI/Accordion/UiAccordion.vue';
+import ContactPositionField from '@/components/Contact/ContactPositionField.vue';
+import { Contact } from '@/types/contact/contact';
 
-const emit = defineEmits([
-    'start-editing',
-    'delete-contact',
-    'create-comment',
-    'comment-deleted',
-    'disable',
-    'enable'
-]);
-const props = defineProps({
-    contact: {
-        type: Object,
-        required: true
-    },
-    readOnly: {
-        type: Boolean,
-        default: false
-    }
-});
+const emit = defineEmits<{
+    (e: 'start-editing', contact: Contact): void;
+    (e: 'delete-contact', contact: Contact): void;
+    (e: 'create-comment', commentDto: { contact_id: number; comment: string }): void;
+    (e: 'comment-deleted', comment: any): void;
+    (e: 'comment-updated', comment: any): void;
+    (e: 'disable'): void;
+    (e: 'enable'): void;
+}>();
+
+const props = defineProps<{
+    contact: Contact;
+    readOnly?: boolean;
+}>();
 
 const name = computed(() => (props.contact.type ? 'Общий контакт' : props.contact.full_name));
-const position = computed(() => contactOptions.position[props.contact.position]);
+
 const wayOfCommunicate = computed(() =>
     props.contact.wayOfInformings.map(element => contactOptions.wayOfCommunicate[element.way])
 );
@@ -172,9 +170,11 @@ const passiveWhy = computed(() => PassiveWhyContact[props.contact.passive_why]?.
 const createComment = comment => {
     emit('create-comment', { contact_id: props.contact.id, comment: comment });
 };
+
 const editContact = () => {
     emit('start-editing', props.contact);
 };
+
 const deleteContact = () => {
     emit('delete-contact', { ...props.contact, header: name.value });
 };

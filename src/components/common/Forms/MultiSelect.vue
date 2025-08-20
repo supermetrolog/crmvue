@@ -30,8 +30,8 @@
                 :disabled="Boolean(disabled)"
                 :hide-selected="hideSelected"
                 :groups="groups"
-                no-results-text="Ничего не найдено"
-                no-options-text="Список пуст"
+                :no-results-text
+                :no-options-text
                 :open-direction="placement"
                 :object="object"
                 :autocomplete="autocomplete"
@@ -40,6 +40,12 @@
                     <div class="multiselect-single-label">
                         <slot name="singlelabel" :value="value" />
                     </div>
+                </template>
+                <template #afterlist>
+                    <slot name="afterlist" />
+                </template>
+                <template #beforelist>
+                    <slot name="beforelist" />
                 </template>
                 <template #option="{ option, isSelected, isPointed }">
                     <slot
@@ -240,7 +246,15 @@ const props = defineProps({
         type: String,
         default: 'value'
     },
-    autocomplete: String
+    autocomplete: String,
+    noResultsText: {
+        type: String,
+        default: 'Ничего не найдено'
+    },
+    noOptionsText: {
+        type: String,
+        default: 'Список пуст'
+    }
 });
 
 const modelValue = defineModel();
@@ -335,5 +349,13 @@ function scrollIntoView() {
     controlEl.value?.scrollIntoView({ behavior: 'smooth' });
 }
 
-defineExpose({ focus, scrollIntoView });
+function close() {
+    multiselectEl.value?.close();
+}
+
+function refreshOptions(callback) {
+    multiselectEl.value?.refreshOptions(callback);
+}
+
+defineExpose({ focus, scrollIntoView, close, refreshOptions });
 </script>

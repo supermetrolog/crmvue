@@ -108,26 +108,13 @@
                         }
                     "
                 />
-                <MultiSelect
-                    v-model="form.position"
-                    @change="onChangePosition"
-                    :v="v$.form.position"
-                    :required="!form.position_unknown"
-                    :disabled="form.position_unknown"
-                    :options="PositionList"
-                    label="Должность"
+                <ContactPositionPicker
+                    v-model="form.position_id"
+                    v-model:unknown="form.position_unknown"
+                    :v="v$.form.position_id"
+                    required
                     class="col-6"
-                >
-                    <template #after>
-                        <UiCheckbox
-                            v-model="form.position_unknown"
-                            @change="onChangePositionUnknown"
-                            numeric
-                        >
-                            Должность неизвестна
-                        </UiCheckbox>
-                    </template>
-                </MultiSelect>
+                />
             </UiFormGroup>
             <UiFormGroup>
                 <ConsultantPicker
@@ -231,7 +218,7 @@
 
 <script setup>
 import { helpers, or, required } from '@vuelidate/validators';
-import { ActivePassive, FeedbackIcons, PassiveWhyContact, PositionList } from '@/const/const.js';
+import { ActivePassive, FeedbackIcons, PassiveWhyContact } from '@/const/const.js';
 import UiInput from '@/components/common/Forms/UiInput.vue';
 import PropogationInput from '@/components/common/Forms/PropogationInput.vue';
 import UiPhoneInput from '@/components/common/Forms/UiPhoneInput.vue';
@@ -258,6 +245,7 @@ import UiFormDivider from '@/components/common/Forms/UiFormDivider.vue';
 import UiCol from '@/components/common/UI/UiCol.vue';
 import { captureException } from '@sentry/vue';
 import FormCompanyContactPhones from '@/components/Forms/Company/FormCompanyContactPhones.vue';
+import ContactPositionPicker from '@/components/common/Forms/ContactPositionPicker/ContactPositionPicker.vue';
 
 const emit = defineEmits(['close', 'updated', 'created']);
 const props = defineProps({
@@ -278,7 +266,7 @@ const { form, isEditMode } = useFormData(
         first_name: null,
         middle_name: null,
         last_name: null,
-        position: null,
+        position_id: null,
         faceToFaceMeeting: 0,
         warning: 0,
         good: 0,
@@ -327,7 +315,7 @@ const customRequiredWarningWhyComment = () => {
 const { v$, validate } = useValidation(
     {
         form: {
-            position: {
+            position_id: {
                 customRequredPosition: helpers.withMessage(
                     'Выберите должность',
                     customRequiredPosition
@@ -412,14 +400,6 @@ async function submit() {
 function onChangeWarning() {
     if (form.warning) form.good = 0;
 }
-
-const onChangePosition = () => {
-    if (form.position) form.position_unknown = 0;
-};
-
-const onChangePositionUnknown = () => {
-    if (form.position_unknown) form.position = null;
-};
 
 const searchCompany = useSearchCompany(
     toRef(props.formdata ? () => props.formdata.company_id : () => props.company_id)

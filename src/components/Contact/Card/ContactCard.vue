@@ -23,7 +23,9 @@
                 <i class="fa-solid fa-arrow-up-right-from-square"></i>
             </HoverActionsButton>
         </a>
-        <p v-if="!isGeneral" class="contact-card__position">{{ position }}</p>
+        <p v-if="!isGeneral" class="contact-card__position">
+            <ContactPositionField :contact />
+        </p>
         <ContactCardWarning
             v-if="contact.warning"
             class="mt-1"
@@ -104,7 +106,7 @@
         </div>
     </div>
 </template>
-<script setup>
+<script setup lang="ts">
 import { computed } from 'vue';
 import { contactOptions } from '@/const/options/contact.options.js';
 import ContactCardAddition from '@/components/Contact/Card/ContactCardAddition.vue';
@@ -113,15 +115,13 @@ import { dayjsFromServer, toDateFormat } from '@/utils/formatters/date.ts';
 import ContactCardWarning from '@/components/Contact/Card/ContactCardWarning.vue';
 import HoverActionsButton from '@/components/common/HoverActions/HoverActionsButton.vue';
 import { getLinkCompany } from '@/utils/url.js';
+import ContactPositionField from '@/components/Contact/ContactPositionField.vue';
+import { Contact } from '@/types/contact/contact';
 
-const props = defineProps({
-    contact: {
-        type: Object,
-        required: true
-    }
-});
+const props = defineProps<{ contact: Contact }>();
 
 const createdAt = computed(() => toDateFormat(props.contact.created_at));
+
 const updatedAt = computed(() => {
     if (props.contact.updated_at) {
         const date = dayjsFromServer(props.contact.updated_at);
@@ -132,12 +132,9 @@ const updatedAt = computed(() => {
     return createdAt.value;
 });
 const isGeneral = computed(() => props.contact.type === contactOptions.typeStatement.GENERAL);
-const position = computed(() => {
-    if (props.contact.position_unknown) return 'Должность неизвестна';
-    return contactOptions.position[props.contact.position];
-});
 
 const companyUrl = computed(() => getLinkCompany(props.contact.company_id));
+
 const wayOfInformings = computed(() =>
     props.contact.wayOfInformings.map(way => contactOptions.wayOfCommunicate[way.way])
 );

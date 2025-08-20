@@ -80,9 +80,7 @@
             <strong v-else class="company-box-contact__name">
                 {{ contact.full_name || 'Имя неизвестно' }}
             </strong>
-            <span class="company-box-contact__position">
-                {{ contact.position_unknown ? 'Должность неизвестна' : position }}
-            </span>
+            <ContactPositionField :contact class="company-box-contact__position" />
             <PhoneNumber
                 v-if="contact.phones.length"
                 class="company-box-contact__phone"
@@ -109,7 +107,6 @@
 </template>
 
 <script setup>
-import { PositionList } from '@/const/const.js';
 import dayjs from 'dayjs';
 import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
 import CopyField from '@/components/common/CopyField.vue';
@@ -123,6 +120,7 @@ import { useAuth } from '@/composables/useAuth.js';
 import { isPersonalContact } from '@/utils/helpers/models/contact.js';
 import UiButtonIcon from '@/components/common/UI/UiButtonIcon.vue';
 import Loader from '@/components/common/Loader.vue';
+import ContactPositionField from '@/components/Contact/ContactPositionField.vue';
 
 defineEmits(['edit', 'disable', 'enable', 'delete', 'change-company']);
 const props = defineProps({
@@ -131,10 +129,6 @@ const props = defineProps({
         required: true
     },
     editable: Boolean
-});
-
-const position = computed(() => {
-    return props.contact.position ? PositionList[props.contact.position].label : '-';
 });
 
 const updatedAt = computed(() => {

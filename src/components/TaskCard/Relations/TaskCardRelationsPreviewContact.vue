@@ -5,8 +5,8 @@
                 <span>{{ contact.full_name ?? '- Без измени' }}</span>
                 <i v-if="contact.isMain" class="fa-solid fa-crown ml-2" />
             </p>
-            <p v-if="contact.position" class="text-grey fs-2">
-                {{ position }}
+            <p class="text-grey fs-2">
+                <ContactPositionField :contact />
             </p>
             <p class="fs-2">
                 Компания: <span class="font-weight-semi">{{ companyName }}</span>
@@ -29,24 +29,20 @@
         </div>
     </div>
 </template>
-<script setup>
+<script setup lang="ts">
 import { computed } from 'vue';
-import { ContactPositionLabels } from '@/types/contact/contact';
 import { getCompanyName } from '@/utils/formatters/models/company.js';
 import { Tippy } from 'vue-tippy';
 import ContactCard from '@/components/Contact/Card/ContactCard.vue';
 import UiButtonIcon from '@/components/common/UI/UiButtonIcon.vue';
+import { Contact } from '@/types/contact/contact';
+import ContactPositionField from '@/components/Contact/ContactPositionField.vue';
 
-defineEmits(['unlink']);
+defineEmits<{ (e: 'unlink'): void }>();
 
-const props = defineProps({
-    contact: {
-        type: Object,
-        required: true
-    }
-});
-
-const position = computed(() => ContactPositionLabels[props.contact.position]);
+const props = defineProps<{
+    contact: Contact;
+}>();
 
 const companyName = computed(() => getCompanyName(props.contact.company, props.contact.company_id));
 

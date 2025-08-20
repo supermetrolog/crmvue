@@ -26,7 +26,7 @@
                             <ContactCard :contact="company.last_survey.contact" />
                         </template>
                     </Tippy>
-                    <span>({{ contactPosition }})</span>
+                    <ContactPositionField :contact="company.last_survey.contact" />
                 </span>
                 <Tippy
                     v-if="callsLabelShouldBeVisible"
@@ -73,7 +73,6 @@
 <script setup>
 import { computed } from 'vue';
 import { getContactFullName } from '@/utils/formatters/models/contact.js';
-import { contactOptions } from '@/const/options/contact.options.js';
 import Loader from '@/components/common/Loader.vue';
 import { Tippy } from 'vue-tippy';
 import ContactCard from '@/components/Contact/Card/ContactCard.vue';
@@ -81,6 +80,7 @@ import CallInlineCard from '@/components/Call/InlineCard/CallInlineCard.vue';
 import { plural } from '@/utils/plural.js';
 import { isNotNullish } from '@/utils/helpers/common/isNotNullish';
 import CompanyTableItemSummaryLinkedMessages from '@/components/Company/Table/Summary/CompanyTableItemSummaryLinkedMessages.vue';
+import ContactPositionField from '@/components/Contact/ContactPositionField.vue';
 
 defineEmits([
     'open-preview',
@@ -101,11 +101,6 @@ const props = defineProps({
 
 const contactName = computed(() => {
     return getContactFullName(props.company.last_survey.contact);
-});
-
-const contactPosition = computed(() => {
-    if (props.company.last_survey.contact.position_unknown) return 'Должность неизвестна';
-    return contactOptions.position[props.company.last_survey.contact.position];
 });
 
 // calls
