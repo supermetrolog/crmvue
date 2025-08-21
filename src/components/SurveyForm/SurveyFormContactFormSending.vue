@@ -75,6 +75,15 @@
                         <UiCol :cols="12">
                             <div class="d-flex gap-2">
                                 <UiButton
+                                    @click="setSubject(SUBJECTS.SUGGESTION)"
+                                    :disabled="subject === SUBJECTS.SUGGESTION"
+                                    mini
+                                    color="light"
+                                    icon="fa-solid fa-tag"
+                                >
+                                    RE: Предложение по помещениям
+                                </UiButton>
+                                <UiButton
                                     @click="setSubject(SUBJECTS.RENEWAL)"
                                     :disabled="subject === SUBJECTS.RENEWAL"
                                     mini
@@ -83,9 +92,20 @@
                                 >
                                     Возобновление сотрудничества
                                 </UiButton>
+                                <UiButton
+                                    @click.prevent="setSubject(null)"
+                                    :disabled="subject === null"
+                                    icon="fa-solid fa-trash"
+                                    mini
+                                    color="danger-light"
+                                    class="ml-auto"
+                                >
+                                    Очистить
+                                </UiButton>
                             </div>
                         </UiCol>
                     </UiFormGroup>
+                    <UiFormDivider />
                     <UiFormGroup>
                         <VueEditor
                             v-model="message"
@@ -96,6 +116,51 @@
                             placeholder="Содержание письма.."
                             class="col-12"
                         />
+                        <UiCol :cols="12">
+                            <div class="d-flex">
+                                <UiCheckbox v-model="showSignature">
+                                    <span class="d-flex align-items-center gap-1">
+                                        <span>Прикрепить автоматическую подпись</span>
+                                        <Tippy :delay="200">
+                                            <UiButtonIcon
+                                                @click.prevent
+                                                icon="fa-solid fa-question"
+                                                color="light"
+                                                mini
+                                            />
+                                            <template #content>
+                                                <p class="mb-3">
+                                                    Подпись генерируется системой. Для изменения
+                                                    подписи воспользуйтесь кнопкой "Вставить подпись
+                                                    вручную".
+                                                </p>
+                                                <p class="mb-2 font-weight-semi">Ваша подпись:</p>
+                                                <div class="signature" v-html="signature"></div>
+                                            </template>
+                                        </Tippy>
+                                    </span>
+                                </UiCheckbox>
+                                <UiButton
+                                    @click.prevent="copySignature"
+                                    mini
+                                    :color="showSignature ? 'light' : 'success-light'"
+                                    icon="fa-solid fa-pen"
+                                    class="ml-auto"
+                                >
+                                    Вставить подпись вручную
+                                </UiButton>
+                                <UiButton
+                                    @click.prevent="message = null"
+                                    mini
+                                    :disabled="!message"
+                                    color="danger-light"
+                                    icon="fa-solid fa-trash"
+                                    class="ml-1"
+                                >
+                                    Очистить текст
+                                </UiButton>
+                            </div>
+                        </UiCol>
                     </UiFormGroup>
                     <UiFormGroup>
                         <UiCol :cols="12">
@@ -122,7 +187,7 @@ import UiFormGroup from '@/components/common/Forms/UiFormGroup.vue';
 import UiForm from '@/components/common/Forms/UiForm.vue';
 import UiInput from '@/components/common/Forms/UiInput.vue';
 import VueEditor from '@/components/common/Forms/VueEditor.vue';
-import { computed, onBeforeMount, ref, watch } from 'vue';
+import { computed, createApp, onBeforeMount, ref, watch } from 'vue';
 import { useAuth } from '@/composables/useAuth.js';
 import UiButton from '@/components/common/UI/UiButton.vue';
 import UiCol from '@/components/common/UI/UiCol.vue';
@@ -137,6 +202,11 @@ import SurveyFormContactFormSendingChecking from '@/components/SurveyForm/Survey
 import SurveyFormContactFormSendingLetter from '@/components/SurveyForm/SurveyFormContactFormSendingLetter.vue';
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
 import Loader from '@/components/common/Loader.vue';
+import UiCheckbox from '@/components/common/Forms/UiCheckbox.vue';
+import { Tippy } from 'vue-tippy';
+import UiButtonIcon from '@/components/common/UI/UiButtonIcon.vue';
+import { useCachedRef } from '@/composables/useCachedRef';
+import EmailTemplate from '@/components/EmailTemplate/EmailTemplate.vue';
 
 defineEmits(['change', 'schedule-call', 'schedule-visit', 'schedule-event']);
 
@@ -194,20 +264,44 @@ const selectedLetter = computed(() =>
     currentLetters.value.find(letter => selectedLetterId.value === letter.id)
 );
 
-// message
+// subject
 
 const SUBJECTS = {
-    RENEWAL: 'Возобновление сотрудничества с RAYS ARMA'
+    RENEWAL: 'Возобновление сотрудничества с RAYS ARMA',
+    SUGGESTION: 'RE: Предложение по складским помещениям от RAYS ARMA'
 };
 
 function setSubject(value) {
     subject.value = value;
 }
 
+const subject = ref(null);
+
+// message
+
 const { currentUser, currentUserIsDirector } = useAuth();
 
-const message = ref(generateLetterMessage());
-const subject = ref(null);
+const message = ref(null);
+
+function generateMessage() {
+    const container = document.createElement('div');
+    const app = createApp(EmailTemplate, {
+        contact: props.contact,
+        user: currentUser.value,
+        company: props.company
+    });
+
+    app.mount(container);
+
+    message.value = container.innerHTML;
+
+    app.unmount();
+    container.innerHTML = '';
+}
+
+onBeforeMount(generateMessage);
+
+// validation
 
 const v$ = useVuelidate(
     {
@@ -224,23 +318,20 @@ const v$ = useVuelidate(
     }
 );
 
-function generateLetterMessage() {
-    const messageAuthor = `<p>С уважением, ${currentUser.value.userProfile.medium_name}</p>`;
-    const messageAuthorPosition = `<p>${currentUserIsDirector.value ? 'Директор' : 'Менеджер'} департамента индустриальной недвижимости</p>`;
+// signature
+
+const signature = computed(() => {
+    const messageAuthor = `<p>С уважением, <strong>${currentUser.value.userProfile.medium_name}</strong></p>`;
+    const messageAuthorPosition = `<p style="color:#c1c1c1">${currentUserIsDirector.value ? 'Директор' : 'Менеджер'} по индустриальной недвижимости</p>`;
 
     let messageText = `<p>`;
 
     if (currentUser.value.userProfile.phones.length) {
         messageText +=
-            'Моб: ' +
-            `<a href="tel:${currentUser.value.userProfile.phones[0].phone.replace(/\D/g, '')}">${currentUser.value.userProfile.phones[0].phone}</a> `;
+            '<strong>Моб: ' + `${currentUser.value.userProfile.phones[0].phone}</strong>, `;
     }
 
-    messageText += 'тел.офис: <a href="tel:74951500323">+7 (495) 150-03-23</a>';
-
-    if (currentUser.value.userProfile.caller_id) {
-        messageText += ' доб. ' + currentUser.value.userProfile.caller_id;
-    }
+    messageText += 'офис: +7 (495) 150-03-23';
 
     messageText += '</p><p>';
 
@@ -251,7 +342,23 @@ function generateLetterMessage() {
     messageText += 'веб.сайт: <a href="www.raysarma.ru">www.raysarma.ru</a></p>';
 
     return `<p></p>` + messageAuthor + messageAuthorPosition + messageText;
+});
+
+const showSignature = useCachedRef('ui:survey:show-signature', true);
+
+function copySignature() {
+    showSignature.value = false;
+
+    if (isNotNullish(message.value)) {
+        message.value += signature.value;
+    } else {
+        message.value = signature.value;
+    }
+
+    notify.info('Подпись прикреплена в сообщение письма');
 }
+
+// letters
 
 const targetLetterActions = computed(() =>
     props.letterActions.filter(action =>
@@ -298,7 +405,8 @@ function createPayload() {
         body: message.value,
         ways: [0],
         subject: subject.value,
-        company_id: props.company?.id ?? props.contact.company_id
+        company_id: props.company?.id ?? props.contact.company_id,
+        show_signature: showSignature.value
     };
 }
 
@@ -344,3 +452,9 @@ watch(selectedLetterId, () => {
     }
 });
 </script>
+<style>
+.signature a {
+    color: #89bbf4;
+    text-decoration: underline;
+}
+</style>
