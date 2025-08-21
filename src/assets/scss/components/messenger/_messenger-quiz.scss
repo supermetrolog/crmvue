@@ -2332,7 +2332,6 @@
         width: 40%;
         flex-shrink: 0;
         overflow-y: auto;
-        max-height: 350px;
         border-right: 1px solid rgb(234, 234, 234);
         @include mixins.flex-box($d: column);
     }
@@ -2340,7 +2339,6 @@
     &__call {
         width: 60%;
         padding: 10px 15px;
-        max-height: 350px;
         min-height: 160px;
         overflow-y: auto;
         @include mixins.transition(height);
