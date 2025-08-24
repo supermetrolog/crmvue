@@ -44,7 +44,7 @@
                         :visit="!!form.visit"
                     />
                     <SurveyFormContactFormSending
-                        v-else-if="hasSelectedWay && selectedWay === 'email'"
+                        v-else-if="formSendingIsVisible"
                         :key="`email-${formKey}`"
                         v-model="form.emails[selectedWayId]"
                         @change="$emit('change')"
@@ -59,6 +59,8 @@
                         :scheduled="!!form.scheduled"
                         :event="!!form.event"
                         :visit="!!form.visit"
+                        :template="emailTemplate"
+                        :template-loading="emailTemplateIsLoading"
                     />
                     <SurveyFormContactFormEmpty v-else />
                 </AnimationTransition>
@@ -70,10 +72,13 @@
 import SurveyFormContactFormCall from '@/components/SurveyForm/SurveyFormContactFormCall.vue';
 import SurveyFormContactFormPhone from '@/components/SurveyForm/SurveyFormContactFormPhone.vue';
 import SurveyFormContactFormEmail from '@/components/SurveyForm/SurveyFormContactFormEmail.vue';
-import { computed, ref } from 'vue';
+import { computed, ref, watch } from 'vue';
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
 import SurveyFormContactFormEmpty from '@/components/SurveyForm/SurveyFormContactFormEmpty.vue';
 import SurveyFormContactFormSending from '@/components/SurveyForm/SurveyFormContactFormSending.vue';
+import { isNullish } from '@/utils/helpers/common/isNullish';
+import api from '@/api/api.js';
+import { MessageTemplateChannelEnum, MessageTemplateKindEnum } from '@/types/message-template';
 
 defineEmits(['schedule-call', 'change', 'close', 'schedule-visit', 'schedule-event']);
 
@@ -111,4 +116,43 @@ function selectWay(way, id) {
 const hasSelectedWay = computed(() => selectedWay.value !== null && selectedWayId.value !== null);
 
 const formKey = computed(() => `${props.contact.id}-${selectedWayId.value}`);
+
+// email
+
+const formSendingIsVisible = computed(() => hasSelectedWay.value && selectedWay.value === 'email');
+
+const emailTemplate = ref(null);
+const emailTemplateIsLoading = ref(false);
+
+watch(formSendingIsVisible, value => {
+    if (value && isNullish(emailTemplate.value)) {
+        generateEmailTemplate();
+    }
+});
+
+async function generateEmailTemplate() {
+    emailTemplateIsLoading.value = true;
+
+    try {
+        const response = await api.messageTemplate.render(
+            MessageTemplateKindEnum.RESUME_COMPANY_COOPERATION,
+            {
+                channel: MessageTemplateChannelEnum.EMAIL,
+                contact_id: props.contact.id,
+                company_id: props.company?.id ?? props.contact.company_id
+            }
+        );
+
+        emailTemplate.value = response.content;
+    } finally {
+        emailTemplateIsLoading.value = false;
+    }
+}
+
+watch(
+    () => props.contact.id,
+    () => {
+        emailTemplate.value = null;
+    }
+);
 </script>

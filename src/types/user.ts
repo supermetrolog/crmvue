@@ -1,5 +1,17 @@
 import { Timestamps } from '@/types/base';
 
+export type UserProfileGender = 'f' | 'm';
+
+export const UserProfileGenderEnum = {
+    FEMALE: 'f',
+    MALE: 'm'
+} as const;
+
+export const UserProfileGenderOptions = [
+    { value: UserProfileGenderEnum.MALE, label: 'Он/его', icon: 'fa-solid fa-person' },
+    { value: UserProfileGenderEnum.FEMALE, label: 'Она/её', icon: 'fa-solid fa-person-dress' }
+];
+
 export interface UserProfile {
     avatar: string | null;
     caller_id: string;
@@ -11,6 +23,7 @@ export interface UserProfile {
     middle_name: string | null;
     short_name: string;
     user_id: number;
+    gender: UserProfileGender;
 }
 
 export const UserRoleEnum = {

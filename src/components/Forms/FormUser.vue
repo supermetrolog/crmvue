@@ -88,6 +88,18 @@
                             />
                         </UiFormGroup>
                     </template>
+                    <UiFormDivider />
+                    <UiFormGroup>
+                        <RadioOptions
+                            v-model="form.userProfile.gender"
+                            :v="v$.form.userProfile.gender"
+                            :options="UserProfileGenderOptions"
+                            :rounded="false"
+                            label="Обращение"
+                            class="col-12"
+                            required
+                        />
+                    </UiFormGroup>
                 </Tab>
                 <Tab name="Email" required>
                     <UiFormGroup>
@@ -179,7 +191,7 @@ import Tabs from '@/components/common/Tabs/Tabs.vue';
 import Tab from '@/components/common/Tabs/Tab.vue';
 import UiFormGroup from '@/components/common/Forms/UiFormGroup.vue';
 import RadioOptions from '@/components/common/Forms/RadioOptions.vue';
-import { helpers, or, requiredIf } from '@vuelidate/validators';
+import { helpers, or, required, requiredIf } from '@vuelidate/validators';
 import api from '@/api/api.js';
 import UiModal from '@/components/common/UI/UiModal.vue';
 import UiButton from '@/components/common/UI/UiButton.vue';
@@ -191,6 +203,7 @@ import UiFormDivider from '@/components/common/Forms/UiFormDivider.vue';
 import UiCol from '@/components/common/UI/UiCol.vue';
 import Switch from '@/components/common/Forms/Switch.vue';
 import { getApiUploads } from '@/utils/url.js';
+import { UserProfileGenderEnum, UserProfileGenderOptions } from '@/types/user';
 
 const emit = defineEmits(['close', 'updated', 'created']);
 const props = defineProps({
@@ -217,7 +230,8 @@ const { form, isEditMode } = useFormData(
             phones: [],
             emails: [],
             caller_id: null,
-            avatar: null
+            avatar: null,
+            gender: UserProfileGenderEnum.MALE
         },
         files: []
     }),
@@ -266,6 +280,9 @@ const { v$, validate } = useValidation(
                         '',
                         or(emptyWithProperty('phone'), everyProperty(validatePhone, 'phone'))
                     )
+                },
+                gender: {
+                    required: helpers.withMessage('Выберите обращение', required)
                 }
             }
         }
