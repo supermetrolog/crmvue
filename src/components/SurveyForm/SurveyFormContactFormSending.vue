@@ -2,7 +2,7 @@
     <div class="survey-form-contact-form-sending">
         <UiForm>
             <UiFormGroup>
-                <UiCol :cols="12">
+                <UiCol :cols="12" data-tour-id="survey-letter-sending:letter-select">
                     <div class="d-flex align-items-end gap-2">
                         <MultiSelect
                             v-model="selectedLetterId"
@@ -59,11 +59,21 @@
                         :event
                     />
                 </div>
-                <div v-else>
+                <div v-else data-tour-id="survey-letter-sending:form">
                     <Loader v-if="isLoading" label="Отправка письма" />
                     <UiFormGroup>
                         <UiCol :cols="12">
-                            <p class="font-weight-semi">Новое письмо клиенту</p>
+                            <div class="d-flex">
+                                <p class="font-weight-semi">Новое письмо клиенту</p>
+                                <UiButtonIcon
+                                    @click.prevent="runTour"
+                                    mini
+                                    class="ml-2 d-inline-block"
+                                    color="light"
+                                    label="Как работать с письмами?"
+                                    icon="fa-solid fa-question"
+                                />
+                            </div>
                         </UiCol>
                         <UiInput
                             v-model="subject"
@@ -71,9 +81,12 @@
                             required
                             placeholder="Тема письма"
                             class="col-12 font-weight-semi"
-                        />
-                        <UiCol :cols="12">
-                            <div class="d-flex gap-2">
+                            data-tour-id="survey-letter-sending:subject"
+                        >
+                            <div
+                                class="d-flex gap-2 mt-2 font-weight-normal"
+                                data-tour-id="survey-letter-sending:subject-templates"
+                            >
                                 <UiButton
                                     @click="setSubject(SUBJECTS.SUGGESTION)"
                                     :disabled="subject === SUBJECTS.SUGGESTION"
@@ -103,7 +116,7 @@
                                     Очистить
                                 </UiButton>
                             </div>
-                        </UiCol>
+                        </UiInput>
                     </UiFormGroup>
                     <UiFormDivider />
                     <UiFormGroup>
@@ -112,55 +125,68 @@
                             :min-height="100"
                             :max-height="300"
                             :v="v$.message"
+                            :loading="templateLoading"
+                            loading-label="Генерация сообщения.."
                             required
                             placeholder="Содержание письма.."
                             class="col-12"
-                        />
-                        <UiCol :cols="12">
-                            <div class="d-flex">
-                                <UiCheckbox v-model="showSignature">
-                                    <span class="d-flex align-items-center gap-1">
-                                        <span>Прикрепить автоматическую подпись</span>
-                                        <Tippy :delay="200">
-                                            <UiButtonIcon
-                                                @click.prevent
-                                                icon="fa-solid fa-question"
-                                                color="light"
-                                                mini
-                                            />
-                                            <template #content>
-                                                <p class="mb-3">
-                                                    Подпись генерируется системой. Для изменения
-                                                    подписи воспользуйтесь кнопкой "Вставить подпись
-                                                    вручную".
-                                                </p>
-                                                <p class="mb-2 font-weight-semi">Ваша подпись:</p>
-                                                <div class="signature" v-html="signature"></div>
-                                            </template>
-                                        </Tippy>
-                                    </span>
-                                </UiCheckbox>
-                                <UiButton
-                                    @click.prevent="copySignature"
-                                    mini
-                                    :color="showSignature ? 'light' : 'success-light'"
-                                    icon="fa-solid fa-pen"
-                                    class="ml-auto"
+                            data-tour-id="survey-letter-sending:message"
+                        >
+                            <template #after>
+                                <div
+                                    class="d-flex mt-2"
+                                    data-tour-id="survey-letter-sending:signature"
                                 >
-                                    Вставить подпись вручную
-                                </UiButton>
-                                <UiButton
-                                    @click.prevent="message = null"
-                                    mini
-                                    :disabled="!message"
-                                    color="danger-light"
-                                    icon="fa-solid fa-trash"
-                                    class="ml-1"
-                                >
-                                    Очистить текст
-                                </UiButton>
-                            </div>
-                        </UiCol>
+                                    <UiCheckbox
+                                        v-model="showSignature"
+                                        data-tour-id="survey-letter-sending:signature-checkbox"
+                                    >
+                                        <span class="d-flex align-items-center gap-1">
+                                            <span>Прикрепить автоматическую подпись</span>
+                                            <Tippy :delay="200">
+                                                <UiButtonIcon
+                                                    @click.prevent
+                                                    icon="fa-solid fa-question"
+                                                    color="light"
+                                                    mini
+                                                />
+                                                <template #content>
+                                                    <p class="mb-3">
+                                                        Подпись генерируется системой. Для изменения
+                                                        подписи воспользуйтесь кнопкой "Вставить
+                                                        подпись вручную".
+                                                    </p>
+                                                    <p class="mb-2 font-weight-semi">
+                                                        Ваша подпись:
+                                                    </p>
+                                                    <div class="signature" v-html="signature"></div>
+                                                </template>
+                                            </Tippy>
+                                        </span>
+                                    </UiCheckbox>
+                                    <UiButton
+                                        @click.prevent="copySignature"
+                                        mini
+                                        :color="showSignature ? 'light' : 'success-light'"
+                                        icon="fa-solid fa-pen"
+                                        class="ml-auto"
+                                        data-tour-id="survey-letter-sending:signature-button"
+                                    >
+                                        Вставить подпись вручную
+                                    </UiButton>
+                                    <UiButton
+                                        @click.prevent="message = null"
+                                        mini
+                                        :disabled="!message"
+                                        color="danger-light"
+                                        icon="fa-solid fa-trash"
+                                        class="ml-1"
+                                    >
+                                        Очистить текст
+                                    </UiButton>
+                                </div>
+                            </template>
+                        </VueEditor>
                     </UiFormGroup>
                     <UiFormGroup>
                         <UiCol :cols="12">
@@ -178,6 +204,7 @@
                 </div>
             </AnimationTransition>
         </UiForm>
+        <SurveyFormContactFormSendingTour ref="tourEl" />
     </div>
 </template>
 <script setup>
@@ -187,7 +214,7 @@ import UiFormGroup from '@/components/common/Forms/UiFormGroup.vue';
 import UiForm from '@/components/common/Forms/UiForm.vue';
 import UiInput from '@/components/common/Forms/UiInput.vue';
 import VueEditor from '@/components/common/Forms/VueEditor.vue';
-import { computed, createApp, onBeforeMount, ref, watch } from 'vue';
+import { computed, onBeforeMount, onMounted, ref, useTemplateRef, watch } from 'vue';
 import { useAuth } from '@/composables/useAuth.js';
 import UiButton from '@/components/common/UI/UiButton.vue';
 import UiCol from '@/components/common/UI/UiCol.vue';
@@ -206,9 +233,9 @@ import UiCheckbox from '@/components/common/Forms/UiCheckbox.vue';
 import { Tippy } from 'vue-tippy';
 import UiButtonIcon from '@/components/common/UI/UiButtonIcon.vue';
 import { useCachedRef } from '@/composables/useCachedRef';
-import EmailTemplate from '@/components/EmailTemplate/EmailTemplate.vue';
+import SurveyFormContactFormSendingTour from '@/components/SurveyForm/SurveyFormContactFormSendingTour.vue';
 
-defineEmits(['change', 'schedule-call', 'schedule-visit', 'schedule-event']);
+const emit = defineEmits(['change', 'schedule-call', 'schedule-visit', 'schedule-event']);
 
 const props = defineProps({
     contact: {
@@ -224,7 +251,9 @@ const props = defineProps({
     },
     scheduled: Boolean,
     visit: Boolean,
-    event: Boolean
+    event: Boolean,
+    template: String,
+    templateLoading: Boolean
 });
 
 const form = defineModel({ type: Object, default: () => ({}) });
@@ -283,23 +312,16 @@ const { currentUser, currentUserIsDirector } = useAuth();
 
 const message = ref(null);
 
-function generateMessage() {
-    const container = document.createElement('div');
-    const app = createApp(EmailTemplate, {
-        contact: props.contact,
-        user: currentUser.value,
-        company: props.company
-    });
-
-    app.mount(container);
-
-    message.value = container.innerHTML;
-
-    app.unmount();
-    container.innerHTML = '';
-}
-
-onBeforeMount(generateMessage);
+watch(
+    () => props.templateLoading,
+    value => {
+        if (value) {
+            message.value = null;
+        } else {
+            message.value = props.template;
+        }
+    }
+);
 
 // validation
 
@@ -391,6 +413,16 @@ onBeforeMount(() => {
 
         selectedLetterId.value = latestLetterAction.target_id;
     }
+
+    if (!props.templateLoading && props.template) {
+        message.value = props.template;
+    }
+});
+
+onMounted(() => {
+    if (!selectedLetterId.value) {
+        softRunTour();
+    }
 });
 
 function createPayload() {
@@ -416,6 +448,8 @@ const notify = useNotify();
 
 async function submit() {
     isLoading.value = true;
+
+    emit('change');
 
     try {
         await api.letter.send(createPayload());
@@ -451,6 +485,18 @@ watch(selectedLetterId, () => {
         form.value.reason = null;
     }
 });
+
+// tour
+
+const tourEl = useTemplateRef('tourEl');
+
+function runTour() {
+    tourEl.value.run();
+}
+
+function softRunTour() {
+    tourEl.value.softRun();
+}
 </script>
 <style>
 .signature a {

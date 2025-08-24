@@ -10,6 +10,7 @@
             <div ref="editor"></div>
             <ValidationMessage v-if="hasValidationError && !disabled" :message="error" />
             <slot name="after" />
+            <Loader v-if="loading" :label="loadingLabel" small />
         </div>
     </div>
 </template>
@@ -29,6 +30,7 @@ import {
 import { useFormControlValidation } from '@/composables/useFormControlValidation.js';
 import ValidationMessage from '@/components/common/Forms/VaildationMessage.vue';
 import { useDebounceFn } from '@vueuse/core';
+import Loader from '@/components/common/Loader.vue';
 
 const emit = defineEmits(['ready', 'change', 'blur', 'focus']);
 
@@ -53,6 +55,11 @@ const props = defineProps({
         default: true
     },
     autofocus: Boolean,
+    loading: Boolean,
+    loadingLabel: {
+        type: String,
+        default: 'Загрузка...'
+    },
     debounce: Number
 });
 

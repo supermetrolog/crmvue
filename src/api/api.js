@@ -37,6 +37,7 @@ import utility from '@/api/utility';
 import phone from '@/api/phone';
 import entityMessageLink from '@/api/entityMessageLink';
 import contactPosition from '@/api/contactPosition';
+import messageTemplate from '@/api/messageTemplate';
 
 export default {
     user,
@@ -77,5 +78,6 @@ export default {
     utility,
     phone,
     entityMessageLink,
-    contactPosition
+    contactPosition,
+    messageTemplate
 };
