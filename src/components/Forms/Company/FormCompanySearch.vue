@@ -19,14 +19,6 @@
                         >
                             Фильтры
                         </UiButton>
-                        <UiButton
-                            @click="resetForm"
-                            :disabled="!filtersCount"
-                            color="danger-light"
-                            icon="fa-solid fa-trash"
-                        >
-                            Очистить фильтры
-                        </UiButton>
                         <AnimationTransition :speed="0.6">
                             <UiButton
                                 v-if="hasSort"
@@ -43,7 +35,7 @@
         </UiFormGroup>
         <UiFormGroup>
             <UiCol v-if="humanizedSelectedQueryFilters.length" :cols="12" class="mb-3">
-                <div class="company-table__filters">
+                <div class="company-table__filters align-items-center">
                     <Chip
                         v-for="item in humanizedSelectedQueryFilters"
                         :key="item.value"
@@ -51,6 +43,37 @@
                         :value="item.value"
                         :html="item.label"
                     />
+                    <span class="text-grey">|</span>
+                    <UiButton
+                        @click="resetForm"
+                        color="danger-light"
+                        icon="fa-solid fa-trash"
+                        tooltip="Нажмите, чтобы очистить фильтры"
+                        small
+                    >
+                        Очистить
+                    </UiButton>
+                    <UiButton
+                        @click="saveFilters"
+                        color="light"
+                        icon="fa-solid fa-cloud-arrow-up"
+                        tooltip="Нажмите, чтобы сохранить фильтры для этой таблицы"
+                        small
+                    >
+                        Сохранить
+                    </UiButton>
+                    <AnimationTransition :speed="0.4">
+                        <UiButton
+                            v-if="hasCachedFilters"
+                            @click="deleteFilters"
+                            color="light"
+                            icon="fa-solid fa-trash"
+                            tooltip="Нажмите, чтобы удалить сохраненные фильтры для таблицы"
+                            small
+                        >
+                            Удалить сохраненные
+                        </UiButton>
+                    </AnimationTransition>
                 </div>
             </UiCol>
         </UiFormGroup>
@@ -328,7 +351,7 @@ import {
 import DoubleInput from '@/components/common/Forms/DoubleInput.vue';
 import { deleteEmptyFields } from '@/utils/helpers/object/deleteEmptyFields.js';
 import Modal from '@/components/common/Modal.vue';
-import { computed, shallowRef, watch } from 'vue';
+import { computed, onBeforeMount, ref, shallowRef, toRaw, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useSearchForm } from '@/composables/useSearchForm.js';
 import CheckboxOptions from '@/components/common/Forms/CheckboxOptions.vue';
@@ -355,6 +378,8 @@ import { companyOptions } from '@/const/options/company.options.js';
 import { toDateFormat } from '@/utils/formatters/date.ts';
 import UiDateInput from '@/components/common/Forms/UiDateInput.vue';
 import dayjs from 'dayjs';
+import { loadCache, removeCache, saveCache } from '@/services/cache';
+import { useNotify } from '@/utils/use/useNotify.js';
 
 const route = useRoute();
 const router = useRouter();
@@ -535,5 +560,32 @@ function clearSort() {
     delete query.sort;
 
     router.replace({ query });
+}
+
+const hasCachedFilters = ref(false);
+
+onBeforeMount(() => {
+    const cachedFilters = loadCache('company-filters', 0);
+
+    hasCachedFilters.value = isNotNullish(cachedFilters);
+
+    if (cachedFilters) {
+        router.replace({ query: cachedFilters });
+    }
+});
+
+const notify = useNotify();
+
+function saveFilters() {
+    saveCache('company-filters', toRaw(form));
+    hasCachedFilters.value = true;
+    notify.info('Фильтры сохранены');
+}
+
+function deleteFilters() {
+    removeCache('company-filters');
+    hasCachedFilters.value = false;
+
+    notify.info('Предустановленные фильтры очищены');
 }
 </script>
