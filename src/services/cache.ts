@@ -22,7 +22,7 @@ export function loadCache<T>(key: string, ttl = 24 * 60 * 60 * 1000): T | null {
         if (!raw) return null;
 
         const parsed: CacheItem<T> = JSON.parse(raw);
-        if (Date.now() - parsed.timestamp > ttl) return null;
+        if (ttl && Date.now() - parsed.timestamp > ttl) return null;
 
         return parsed.data;
     } catch {
