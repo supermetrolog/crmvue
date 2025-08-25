@@ -9,7 +9,10 @@ const Companies = {
         companyGroups: [],
         companyGroupList: [],
         companyProductRangeList: [],
-        companyInTheBankList: []
+        companyInTheBankList: [],
+
+        companiesIsInitialized: false,
+        companyFilters: null
     },
     mutations: {
         updateCompanies(state, { data, concat }) {
@@ -42,6 +45,9 @@ const Companies = {
         },
         setCompanyLogo(state, logo) {
             if (state.company) state.company.logo = logo;
+        },
+        setCompanyTableFilters(state, filters) {
+            state.companyFilters = filters;
         }
     },
     actions: {
@@ -49,7 +55,10 @@ const Companies = {
             const { setHash, confirmHash } = useQueryHash('companies');
             setHash(query);
 
+            commit('setCompanyTableFilters', query);
+
             const data = await api.companies.searchCompanies(query);
+
             if (data) {
                 if (confirmHash(query)) commit('updateCompanies', { data, concat });
                 else return false;
@@ -89,13 +98,13 @@ const Companies = {
         }
     },
     getters: {
-        COMPANIES(state) {
+        companies(state) {
             return state.companies;
         },
         COMPANY(state) {
             return state.company;
         },
-        COMPANIES_PAGINATION(state) {
+        companiesPagination(state) {
             return state.pagination;
         },
         COMPANY_GROUPS(state) {

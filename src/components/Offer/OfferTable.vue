@@ -1,5 +1,5 @@
 <template>
-    <Table fluid shadow class="offer-table">
+    <Table fluid shadow class="offer-table" :refreshing>
         <template #thead>
             <Tr>
                 <Th>#</Th>
@@ -98,7 +98,8 @@ defineProps({
     sortable: {
         type: Boolean,
         default: true
-    }
+    },
+    refreshing: Boolean
 });
 
 // query filters
