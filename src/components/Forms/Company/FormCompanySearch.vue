@@ -541,7 +541,7 @@ const gettersForFilters = {
 const { filtersCount, humanizedSelectedQueryFilters } = useSelectedFilters(
     form,
     gettersForFilters,
-    { ignore: new Set(['sort']) }
+    { ignore: new Set(['sort', 'current_user_id']) }
 );
 
 function removeFilter(filter) {

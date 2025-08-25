@@ -1,17 +1,22 @@
 @use "../../../utils/mixins";
 @use "../../../utils/variables";
 
+
 .ui-button {
+    --padding-x: 15px;
+    --padding-y: 7px;
+
     border-radius: 5px;
     border: none;
-    padding: 7px 15px;
+    padding: var(--padding-y) var(--padding-x);
     background-color: #11698e;
     color: #f7f7f7;
     display: inline-block;
     width: auto;
     height: max-content;
     box-shadow: 0 0 1px 1px rgba(0, 0, 0, 0.1);
-    @include mixins.transition(background-color .2s, opacity .3s, color .3s);
+
+    @include mixins.transition(background-color .2s, opacity .3s, color .3s, width .3s, padding .3s);
 
     &:disabled {
         pointer-events: none;
@@ -31,16 +36,20 @@
     }
 
     &--small {
-        padding: 4px 10px;
+        --padding-x: 10px;
+        --padding-y: 4px;
     }
 
     &--mini {
-        padding: 4px 7px;
+        --padding-x: 7px;
+        --padding-y: 4px;
+
         font-size: 13px;
     }
 
     &--big {
-        padding: 10px 15px;
+        --padding-x: 15px;
+        --padding-y: 10px;
     }
 
     &--shadow {
@@ -163,5 +172,35 @@
             right: unset;
             left: -8px;
         }
+    }
+
+    &__loader {
+        position: absolute;
+        right: var(--padding-x);
+        transition: opacity .3s, transform .3s;
+    }
+
+    &:has(&__loader) {
+        padding-right: 45px;
+        position: relative;
+    }
+
+    &--mini:has(&__loader) {
+        padding-right: 40px;
+    }
+
+    &__check {
+        font-size: 20px;
+    }
+
+    .spinner-fade-enter-active,
+    .spinner-fade-leave-active {
+        transition: opacity 1s, transform 1s;
+    }
+
+    .spinner-fade-enter-from,
+    .spinner-fade-leave-to {
+        opacity: 0;
+        transform: scale(0.6);
     }
 }

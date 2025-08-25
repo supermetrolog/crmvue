@@ -79,6 +79,7 @@
                             @create-task="createTask"
                             :offers="offers"
                             :loader="isLoading"
+                            :refreshing="isSilentLoading"
                         />
                     </AnimationTransition>
                 </div>
@@ -118,7 +119,7 @@ import EmptyData from '@/components/common/EmptyData.vue';
 import Switch from '@/components/common/Forms/Switch.vue';
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
 import { useMobile } from '@/composables/useMobile.js';
-import { computed, ref, shallowRef, useTemplateRef, watch } from 'vue';
+import { computed, onMounted, ref, shallowRef, useTemplateRef, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useTableContent } from '@/composables/useTableContent.js';
 import { ActivePassiveFUCK, GateTypeList, YesNo } from '@/const/const.js';
@@ -152,11 +153,27 @@ const store = useStore();
 const route = useRoute();
 const router = useRouter();
 
+const storeIsInitialized = computed({
+    get() {
+        return store.state.Offers.isInitialized;
+    },
+    set(value) {
+        store.state.Offers.isInitialized = value;
+    }
+});
+
+onMounted(() => {
+    storeIsInitialized.value = true;
+});
+
 const firstPaginationEl = useTemplateRef('firstPaginationEl');
 
 const isCardView = ref(false);
 const formIsVisible = ref(false);
+
 const isLoading = ref(false);
+const isSilentLoading = ref(false);
+
 const searchingIsVisible = ref(false);
 
 const consultants = computed(() => store.getters.CONSULTANT_LIST);
@@ -300,7 +317,11 @@ const formKeysOnlyArray = [
 ];
 
 const getOffers = async (withLoader = true) => {
-    isLoading.value = withLoader;
+    if (isInitialLoading.value && storeIsInitialized.value && offers.value.length) {
+        isSilentLoading.value = withLoader;
+    } else {
+        isLoading.value = withLoader;
+    }
 
     const payload = createPayload();
 
@@ -322,6 +343,7 @@ const getOffers = async (withLoader = true) => {
 
     await store.dispatch('SEARCH_OFFERS', { query: payload });
 
+    isSilentLoading.value = false;
     isLoading.value = false;
 };
 
@@ -331,6 +353,8 @@ function createPayload() {
     const query = { ...route.query };
 
     singleToArrayByKeys(query, formKeysOnlyArray);
+
+    store.state.Offers.offersFilters = { ...query };
 
     if (isNotNullish(query.deal_type) && query.deal_type == 0) {
         delete query.deal_type;
@@ -385,9 +409,19 @@ const removeFilter = async filter => {
     await router.replace({ query });
 };
 
-const { nextWithScroll, next } = useTableContent(getOffers, {
+const { nextWithScroll, next, isInitialLoading } = useTableContent(getOffers, {
     scrollTo: firstPaginationEl,
-    initQuery: () => {}
+    initQuery: async () => {
+        const query = { ...route.query };
+
+        const queryIsEmpty = Object.keys(query).length === 0;
+
+        if (!queryIsEmpty) return;
+
+        if (isNotNullish(store.state.Offers.offersFilters)) {
+            await router.replace({ query: store.state.Offers.offersFilters });
+        }
+    }
 });
 
 // folders

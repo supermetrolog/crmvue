@@ -1,5 +1,5 @@
 <template>
-    <Table shadow fluid class="company-table">
+    <Table :refreshing shadow fluid class="company-table">
         <template #thead>
             <Tr data-tour-id="company-table-filters:header">
                 <Th v-model:filters="consultantFilters" @confirm-filter="confirmConsultantFilters">
@@ -102,7 +102,8 @@ defineProps({
         type: Array,
         default: () => []
     },
-    loader: Boolean
+    loader: Boolean,
+    refreshing: Boolean
 });
 
 // query filters
@@ -210,83 +211,4 @@ function onUpdatedTask(payload) {
     Object.assign(currentTask.value, payload);
     currentTask.value = null;
 }
-
-// // tour
-//
-// const statusThEl = useTemplateRef('statusThEl');
-//
-// const createTourStepElement = createTourStepElementGenerator('company-table-filters');
-//
-// useTour('company-table-filters', {
-//     force: true,
-//     steps: [
-//         {
-//             key: 1,
-//             element: createTourStepElement('header'),
-//             popover: {
-//                 title: 'Новые возможности в таблице',
-//                 description:
-//                     'Сортируйте и фильтруйте компании прямо из таблицы с помощью быстрых фильтров.',
-//                 side: 'top',
-//                 align: 'center'
-//             }
-//         },
-//         {
-//             key: 2,
-//             element: createTourStepElement('column-status', '.th__filter'),
-//             popover: {
-//                 title: 'Сортировка компаний',
-//                 description:
-//                     'Для выбора сортировки просто нажмите на значок сортировки в заголовке столбца.',
-//                 side: 'left',
-//                 align: 'center',
-//                 onNextClick(element, step, { driver }) {
-//                     element?.click();
-//
-//                     useTimeoutFn(() => driver.moveNext(), 100);
-//                 }
-//             }
-//         },
-//         {
-//             key: 3,
-//             element: '.th-dd-content__sort[data-tr-name="status"] .th-dd-content__sort-select',
-//             popover: {
-//                 title: 'Возможности сортировки',
-//                 description: 'Вы можете выбрать сортировку по актуальности, дате внесения и т.д.',
-//                 side: 'left',
-//                 align: 'center'
-//             }
-//         },
-//         {
-//             key: 4,
-//             element: '.th-dd-content__sort[data-tr-name="status"] .th-dd-content__sort-order',
-//             popover: {
-//                 title: 'Порядок сортировки',
-//                 description:
-//                     'Для изменения порядка сортировки просто выберите один из вариантов. Например, показывать сначала добавленные давно или сначала добавленные недавно',
-//                 side: 'left',
-//                 align: 'center',
-//                 onNextClick(element, step, { driver }) {
-//                     statusThEl.value?.closeFilters();
-//
-//                     driver.moveNext();
-//                 }
-//             }
-//         },
-//         {
-//             key: 5,
-//             element: createTourStepElement('column-activity', '.th__filter'),
-//             popover: {
-//                 title: 'Фильтры для удобной работы',
-//                 description:
-//                     'Теперь есть возможность просмотреть только те компании, с которыми необходимо работать прямо сейчас. Например, просмотреть только компании с активными задачами, или только компании без опросов.',
-//                 side: 'top',
-//                 align: 'center'
-//             },
-//             onHighlighted(element) {
-//                 element?.click();
-//             }
-//         }
-//     ]
-// });
 </script>

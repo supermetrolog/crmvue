@@ -82,6 +82,7 @@
                                 >
                                     Очистить
                                 </UiButton>
+                                <slot name="after-actions" />
                             </slot>
                         </div>
                     </div>
