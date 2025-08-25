@@ -8,7 +8,10 @@ const Offers = {
         offer: null,
         pagination: null,
         favoritesOffers: [],
-        favoritesOffersCache: {}
+        favoritesOffersCache: {},
+
+        offersIsInitialized: false,
+        offersFilters: null
     },
     mutations: {
         updateOffers(state, { data, concat }) {
@@ -37,6 +40,7 @@ const Offers = {
             setHash(query);
 
             const data = await api.offers.search(query);
+
             if (data) {
                 if (confirmHash(query)) commit('updateOffers', { data, concat });
                 else return false;

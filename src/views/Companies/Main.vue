@@ -17,8 +17,8 @@
                             <PaginationClassic
                                 ref="firstPagination"
                                 @next="next"
-                                :pagination="COMPANIES_PAGINATION"
-                                :loading="!COMPANIES_PAGINATION && isLoading"
+                                :pagination="companiesPagination"
+                                :loading="!companiesPagination && isLoading"
                                 class="col-xxl-6 col-lg-8 col-2"
                             />
                             <UiCol :cols="4" :xxl="6">
@@ -63,16 +63,17 @@
                             @schedule-event="scheduleEvent"
                             @show-company-comments="showCompanyComments"
                             @show-company-notes="showCompanyNotes"
-                            :companies="COMPANIES"
+                            :companies
                             :loader="isLoading"
+                            :refreshing="isSilentLoading"
                         />
                     </AnimationTransition>
                 </div>
                 <div class="col-12">
                     <PaginationClassic
-                        v-if="COMPANIES_PAGINATION"
+                        v-if="companiesPagination"
                         @next="nextWithScroll"
-                        :pagination="COMPANIES_PAGINATION"
+                        :pagination="companiesPagination"
                     />
                 </div>
             </div>
@@ -143,7 +144,7 @@ import CompanyGrid from '@/components/Company/CompanyGrid.vue';
 import PaginationClassic from '@/components/common/Pagination/PaginationClassic.vue';
 import Switch from '@/components/common/Forms/Switch.vue';
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
-import { computed, ref, shallowRef, watch } from 'vue';
+import { computed, onMounted, ref, shallowRef, watch } from 'vue';
 import { useTableContent } from '@/composables/useTableContent.js';
 import { useRoute, useRouter } from 'vue-router';
 import { useMobile } from '@/composables/useMobile.js';
@@ -170,22 +171,42 @@ import CompanyTablePreviewNotes from '@/components/Company/Table/CompanyTablePre
 import { captureException } from '@sentry/vue';
 
 const route = useRoute();
-// const router = useRouter();
+const router = useRouter();
 const store = useStore();
 
 const { currentUserId } = useAuth();
 
-const COMPANIES = computed(() => store.getters.COMPANIES);
-const COMPANIES_PAGINATION = computed(() => store.getters.COMPANIES_PAGINATION);
+const storeIsInitialized = computed({
+    get() {
+        return store.state.Companies.companiesIsInitialized;
+    },
+    set(value) {
+        store.state.Companies.companiesIsInitialized = value;
+    }
+});
+
+onMounted(() => {
+    storeIsInitialized.value = true;
+});
+
+const companies = computed(() => store.getters.companies);
+const companiesPagination = computed(() => store.getters.companiesPagination);
 
 const isMobile = useMobile();
-const isLoading = ref(true);
+
+const isLoading = ref(false);
+const isSilentLoading = ref(false);
+
 const viewMode = ref(false);
 const companyFormIsVisible = ref(false);
 const firstPagination = ref(null);
 
-const getCompanies = async () => {
-    isLoading.value = true;
+async function getCompanies() {
+    if (isInitialLoading.value && storeIsInitialized.value && companies.value.length) {
+        isSilentLoading.value = true;
+    } else {
+        isLoading.value = true;
+    }
 
     const query = { ...route.query, current_user_id: currentUserId.value };
 
@@ -195,30 +216,37 @@ const getCompanies = async () => {
 
     await store.dispatch('SEARCH_COMPANIES', { query });
 
+    isSilentLoading.value = false;
     isLoading.value = false;
-};
+}
 
 const debouncedFetchCompanies = useDebounceFn(getCompanies, 300);
 
-const router = useRouter();
+const { next, nextWithScroll, queryIsInitialized, isInitialLoading } = useTableContent(
+    getCompanies,
+    {
+        scrollTo: firstPagination,
+        initQuery: async () => {
+            const query = { ...route.query };
 
-const { next, nextWithScroll, queryIsInitialized } = useTableContent(getCompanies, {
-    scrollTo: firstPagination,
-    initQuery: async () => {
-        const query = { ...route.query };
+            const queryIsEmpty = Object.keys(query).length === 0;
 
-        const queryIsEmpty = Object.keys(query).length === 0;
+            if (!queryIsEmpty) return;
 
-        if (queryIsEmpty) {
+            if (isNotNullish(store.state.Companies.companyFilters)) {
+                await router.replace({ query: store.state.Companies.companyFilters });
+                return;
+            }
+
             query.consultant_id = currentUserId.value;
             query.status = 1;
             query.with_active_contacts = 1;
             query.sort = 'activity';
-        }
 
-        await router.replace({ query });
+            await router.replace({ query });
+        }
     }
-});
+);
 
 const currentViewComponentName = computed(() => {
     if (isMobile) return CompanyGrid;
@@ -264,10 +292,10 @@ const notify = useNotify();
 // tasks
 
 function addTaskToCompany(task, company) {
-    const companyIndex = COMPANIES.value.findIndex(c => c.id === company.id);
+    const companyIndex = companies.value.findIndex(c => c.id === company.id);
     if (companyIndex === -1) return;
 
-    COMPANIES.value[companyIndex].tasks.push(task);
+    companies.value[companyIndex].tasks.push(task);
 }
 
 const { createTaskWithTemplate } = useTaskManager();
@@ -426,7 +454,7 @@ async function refreshCompany(company) {
 const bus = useEventBus('survey');
 
 function onCompleteSurvey(payload) {
-    const company = COMPANIES.value.find(company => company.id === payload.companyId);
+    const company = companies.value.find(company => company.id === payload.companyId);
 
     if (company) refreshCompany(company);
 }
