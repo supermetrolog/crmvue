@@ -22,6 +22,23 @@ export interface LetterContact extends Identifiable {
 
     letter?: Letter;
     answers: LetterContactAnswer[];
+    events: LetterContactEvent[];
+}
+
+export const LetterContactEventTypeEnum = {
+    OPEN: 'open',
+    CLICK: 'click'
+} as const;
+
+export type LetterContactEventType =
+    (typeof LetterContactEventTypeEnum)[keyof typeof LetterContactEventTypeEnum];
+
+export interface LetterContactEvent extends Identifiable {
+    letter_contact_id: number;
+    event_type: LetterContactEventType;
+    ip: string;
+    user_agent: string;
+    created_at: string;
 }
 
 export interface LetterContactAnswer extends Identifiable, SoftDelete {
