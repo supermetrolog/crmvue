@@ -14,6 +14,15 @@
                     <span class="mx-1 text-grey">-</span>
                     <span class="text-grey">{{ createdAt }}</span>
                     <span class="mx-1 text-grey">-</span>
+                    <span v-if="isViewed" class="text-success">
+                        <i class="fa-solid fa-check mr-1" />
+                        <span>Прочитано</span>
+                    </span>
+                    <span v-else class="text-danger">
+                        <i class="fa-solid fa-xmark mr-1" />
+                        <span>Не прочитано</span>
+                    </span>
+                    <span class="mx-1 text-grey">-</span>
                     <span v-if="letter.answers.length" class="text-success">
                         <i class="fa-solid fa-check mr-1" />
                         <span>Ответ получен</span>
@@ -67,6 +76,7 @@ import { computed, ref } from 'vue';
 import UiButton from '@/components/common/UI/UiButton.vue';
 import UiModal from '@/components/common/UI/UiModal.vue';
 import SurveyFormContactFormSendingLetterAnswer from '@/components/SurveyForm/SurveyFormContactFormSendingLetterAnswer.vue';
+import { LetterContactEventTypeEnum } from '@/types/letter/letter';
 
 const props = defineProps<{
     letter: LetterContact;
@@ -75,4 +85,8 @@ const props = defineProps<{
 const createdAt = computed(() => toBeautifulDateFormat(props.letter.letter!.created_at));
 
 const answersModalIsVisible = ref(false);
+
+const isViewed = computed(() =>
+    props.letter.events.some(event => event.event_type === LetterContactEventTypeEnum.OPEN)
+);
 </script>
