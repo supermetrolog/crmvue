@@ -16,7 +16,7 @@
                     <span class="mx-1 text-grey">-</span>
                     <span v-if="isViewed" class="text-success">
                         <i class="fa-solid fa-check mr-1" />
-                        <span>Прочитано</span>
+                        <span>Прочитано ({{ viewedDate }})</span>
                     </span>
                     <span v-else class="text-danger">
                         <i class="fa-solid fa-xmark mr-1" />
@@ -25,7 +25,7 @@
                     <span class="mx-1 text-grey">-</span>
                     <span v-if="letter.answers.length" class="text-success">
                         <i class="fa-solid fa-check mr-1" />
-                        <span>Ответ получен</span>
+                        <span>Ответ получен ({{ answerDate }})</span>
                     </span>
                     <span v-else class="text-danger">
                         <i class="fa-solid fa-xmark mr-1" />
@@ -71,7 +71,7 @@
 <script setup lang="ts">
 import { LetterContact } from '@/types/contact/contact';
 import Avatar from '@/components/common/Avatar.vue';
-import { toBeautifulDateFormat } from '@/utils/formatters/date';
+import { toBeautifulDateFormat, toDateFormat } from '@/utils/formatters/date';
 import { computed, ref } from 'vue';
 import UiButton from '@/components/common/UI/UiButton.vue';
 import UiModal from '@/components/common/UI/UiModal.vue';
@@ -86,7 +86,21 @@ const createdAt = computed(() => toBeautifulDateFormat(props.letter.letter!.crea
 
 const answersModalIsVisible = ref(false);
 
+const answerDate = computed(() => {
+    const answer = props.letter.answers[0];
+
+    return toDateFormat(answer.created_at, 'D.MM.YY');
+});
+
 const isViewed = computed(() =>
     props.letter.events.some(event => event.event_type === LetterContactEventTypeEnum.OPEN)
 );
+
+const viewedDate = computed(() => {
+    const event = props.letter.events.find(
+        event => event.event_type === LetterContactEventTypeEnum.OPEN
+    );
+
+    return toDateFormat(event.created_at, 'D.MM.YY');
+});
 </script>
