@@ -307,14 +307,11 @@
                     </UiFormGroup>
                     <UiFormDivider />
                     <UiFormGroup>
-                        <SwitchSlider
-                            v-model="form.status"
-                            class="col-5"
+                        <CheckboxOptions
+                            v-model="form.statuses"
+                            class="col-6"
                             label="Статус"
-                            unknown-title="Любой"
-                            true-title="Только актив"
-                            false-title="Только пассив"
-                            vertical
+                            :options="statusOptions"
                         />
                         <UiDateInput
                             v-model="form.dateStart"
@@ -342,12 +339,7 @@ import UiForm from '@/components/common/Forms/UiForm.vue';
 import UiFormGroup from '@/components/common/Forms/UiFormGroup.vue';
 import UiInput from '@/components/common/Forms/UiInput.vue';
 import MultiSelect from '@/components/common/Forms/MultiSelect.vue';
-import {
-    ActivePassive,
-    ActivityGroupList,
-    ActivityProfileList,
-    CompanyCategories
-} from '@/const/const.js';
+import { ActivityGroupList, ActivityProfileList, CompanyCategories } from '@/const/const.js';
 import DoubleInput from '@/components/common/Forms/DoubleInput.vue';
 import { deleteEmptyFields } from '@/utils/helpers/object/deleteEmptyFields.js';
 import Modal from '@/components/common/Modal.vue';
@@ -364,7 +356,6 @@ import Chip from '@/components/common/Chip.vue';
 import UiCheckbox from '@/components/common/Forms/UiCheckbox.vue';
 import { plural } from '@/utils/plural.js';
 import UiFormDivider from '@/components/common/Forms/UiFormDivider.vue';
-import SwitchSlider from '@/components/common/Forms/SwitchSlider.vue';
 import { useSelectedFilters } from '@/composables/useSelectedFilters.js';
 import UiCol from '@/components/common/UI/UiCol.vue';
 import UiTooltipIcon from '@/components/common/UI/UiTooltipIcon.vue';
@@ -380,6 +371,14 @@ import UiDateInput from '@/components/common/Forms/UiDateInput.vue';
 import dayjs from 'dayjs';
 import { loadCache, removeCache, saveCache } from '@/services/cache';
 import { useNotify } from '@/utils/use/useNotify.js';
+import { CompanyStatusEnum, CompanyStatusLabel } from '@/types/company';
+import { toArray } from '@/utils/helpers/array/toArray';
+
+const statusOptions = {
+    [CompanyStatusEnum.ACTIVE]: 'Активные',
+    [CompanyStatusEnum.PASSIVE]: 'Приостановленные',
+    [CompanyStatusEnum.DELETED]: 'Удаленные'
+};
 
 const route = useRoute();
 const router = useRouter();
@@ -395,7 +394,8 @@ const setQueryFields = async () => {
         'categories',
         'product_ranges',
         'activity_group_ids',
-        'activity_profile_ids'
+        'activity_profile_ids',
+        'statuses'
     ]);
 
     let query = { ...form };
@@ -416,7 +416,7 @@ const { resetForm, form } = useSearchForm(
         activityProfile: null,
         dateStart: null,
         dateEnd: null,
-        status: null,
+        statuses: [],
         product_ranges: [],
         without_product_ranges: null,
         show_product_ranges: null,
@@ -441,6 +441,10 @@ const { resetForm, form } = useSearchForm(
 
             if (value.dateEnd) {
                 value.dateEnd = dayjs(value.dateEnd).toJSON();
+            }
+
+            if (value.statuses) {
+                value.statuses = toArray(value.statuses);
             }
 
             return value;
@@ -519,9 +523,11 @@ const gettersForFilters = {
     activityProfile: value => companyOptions.activityProfile[value],
     dateStart: value => toDateFormat(value, 'DD.MM.YYYY'),
     dateEnd: value => toDateFormat(value, 'DD.MM.YYYY'),
-    status: value => {
-        if (!value) return null;
-        return ActivePassive[value];
+    statuses: value => {
+        if (isArray(value) && !isEmptyArray(value)) {
+            return value.map(status => CompanyStatusLabel[status]).join(', ');
+        }
+        return null;
     },
     productRanges: value => {
         return value.join(', ');
@@ -541,7 +547,7 @@ const gettersForFilters = {
 const { filtersCount, humanizedSelectedQueryFilters } = useSelectedFilters(
     form,
     gettersForFilters,
-    { ignore: new Set(['sort', 'current_user_id']) }
+    { ignore: new Set(['sort', 'current_user_id']), many: new Set(['statuses']) }
 );
 
 function removeFilter(filter) {

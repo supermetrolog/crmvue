@@ -62,7 +62,7 @@ export default {
         return responseHasStatus(response, STATUS_SUCCESS);
     },
     async disable(companyId, payload) {
-        const response = await axios.post(`${URL}/${companyId}/disable`, payload);
+        const response = await axios.post(`${URL}/${companyId}/delete`, payload);
         return responseHasStatus(response, STATUS_SUCCESS);
     },
     async linkMessage(id, payload) {
@@ -75,6 +75,10 @@ export default {
     },
     async createNote(id, payload) {
         const response = await axios.post(`${URL}/${id}/create-note`, payload);
+        return responseToData(response);
+    },
+    async statusHistory(id) {
+        const response = await axios.get(`${URL}/${id}/status-history`);
         return responseToData(response);
     }
 };

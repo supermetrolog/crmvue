@@ -9,6 +9,7 @@ import { isEmptyObject } from '@/utils/helpers/object/isEmptyObject.js';
 import { isNullish } from '@/utils/helpers/common/isNullish.ts';
 import { joinWithFilter } from '@/utils/helpers/array/joinWithFilter.js';
 import { useStore } from 'vuex';
+import { toArray } from '@/utils/helpers/array/toArray';
 
 export const filtersAliases = {
     polygon: 'Область на карте',
@@ -82,7 +83,11 @@ const IGNORING_FILTERS = new Set([
 ]);
 
 export function useSelectedFilters(form = {}, humanizeGetters = {}, options = {}) {
-    const { useFakeRegion = true, ignore: localIgnoringFilters = new Set() } = toValue(options);
+    const {
+        useFakeRegion = true,
+        ignore: localIgnoringFilters = new Set(),
+        many = new Set()
+    } = toValue(options);
 
     const route = useRoute();
 
@@ -112,13 +117,18 @@ export function useSelectedFilters(form = {}, humanizeGetters = {}, options = {}
 
             if (key === 'region' && useFakeRegion) {
                 filters.push({ key, value: route.query.fakeRegion });
-            } else if (
-                isNotNullish(value) &&
-                !isEmpty(value) &&
-                key !== 'fakeRegion' &&
-                !(isArray(value) && isEmptyArray(value))
-            ) {
-                filters.push({ key, value });
+                continue;
+            }
+
+            if (isNotNullish(value) && key !== 'fakeRegion') {
+                if (many.has(key)) {
+                    filters.push({ key, value: toArray(value) });
+                    continue;
+                }
+
+                if (!isEmpty(value) && !(isArray(value) && isEmptyArray(value))) {
+                    filters.push({ key, value });
+                }
             }
         }
 

@@ -16,12 +16,18 @@
                 :href="companyUrl"
                 target="_blank"
                 class="company-short-card__name"
-                :class="{ passive: isPassive }"
+                :class="{ passive: isPassive || isDeleted }"
             >
                 <UiTooltipIcon
                     v-if="isPassive"
-                    tooltip="Компания в архиве"
+                    tooltip="Компания приостановлена"
                     icon="fa-solid fa-ban"
+                    class="mr-1"
+                />
+                <UiTooltipIcon
+                    v-if="isDeleted"
+                    tooltip="Компания удалена"
+                    icon="fa-solid fa-trash"
                     class="mr-1"
                 />
                 <UiTooltipIcon
@@ -61,8 +67,14 @@
                 <template v-if="!showName">
                     <UiTooltipIcon
                         v-if="isPassive"
-                        tooltip="Компания в архиве"
-                        icon="fa-solid fa-ban"
+                        tooltip="Компания приостановлена"
+                        icon="fa-solid fa-pause"
+                        class="mr-1"
+                    />
+                    <UiTooltipIcon
+                        v-if="isDeleted"
+                        tooltip="Компания удалена"
+                        icon="fa-solid fa-trash"
                         class="mr-1"
                     />
                     <UiTooltipIcon
@@ -121,6 +133,7 @@ import { toCorrectUrl } from '@/utils/formatters/string.js';
 import { companyOptions } from '@/const/options/company.options.js';
 import { useRouter } from 'vue-router';
 import { toDateFormat } from '@/utils/formatters/date.ts';
+import { CompanyStatusEnum } from '@/types/company';
 
 defineEmits(['update-logo']);
 const props = defineProps({
@@ -181,7 +194,9 @@ const activityProfiles = computed(() => {
 
 const companyName = computed(() => getCompanyShortName(props.company, props.company.id));
 
-const isPassive = computed(() => !props.company.status);
+const isPassive = computed(() => props.company.status === CompanyStatusEnum.PASSIVE);
+const isDeleted = computed(() => props.company.status === CompanyStatusEnum.DELETED);
+
 const isWithoutActiveContacts = computed(() => props.company.active_contacts_count === 0);
 
 const createdAt = computed(() => toDateFormat(props.company.created_at, 'D.MM.YYг.'));

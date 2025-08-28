@@ -2,7 +2,7 @@
     <UiModal
         @close="$emit('close')"
         custom-close
-        :title="`Архивация компании #${company.id} | ${shortName}`"
+        :title="`Удаление компании #${company.id} | ${shortName}`"
         :close-on-outside-click="false"
         :width="900"
         show
@@ -30,7 +30,7 @@
                     />
                 </UiCol>
                 <UiCol :cols="4" class="modal-aside">
-                    <p class="font-weight-semi mb-2">События при архивации</p>
+                    <p class="font-weight-semi mb-2">События при удалении</p>
                     <Switch
                         v-model="form.disable_requests"
                         true-title="Архивировать запросы"
@@ -109,6 +109,15 @@ const { v$, validate } = useValidation(
     { form }
 );
 
+function createPayload() {
+    return {
+        passive_why: form.passive_why,
+        comment: form.passive_why_comment,
+        disable_requests: form.disable_requests,
+        disable_contacts: form.disable_contacts
+    };
+}
+
 async function submit() {
     const isValid = await validate();
     if (!isValid) return;
@@ -116,7 +125,7 @@ async function submit() {
     isLoading.value = true;
 
     try {
-        const disabled = await api.companies.disable(props.company.id, form);
+        const disabled = await api.companies.disable(props.company.id, createPayload());
         if (disabled) emit('disabled', form);
     } finally {
         isLoading.value = false;
