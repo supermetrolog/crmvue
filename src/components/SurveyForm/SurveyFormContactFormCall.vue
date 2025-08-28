@@ -4,7 +4,18 @@
             class="survey-form-contact-form-call__question"
             data-tour-id="survey-form:stepper-contact-question"
         >
-            <p class="survey-form-contact-form-call__question-text mb-2">Дозвонились?</p>
+            <p class="survey-form-contact-form-call__question-text mb-2">
+                <span>Дозвонились?</span>
+            </p>
+            <UiButton
+                @click="openWhatsapp"
+                small
+                icon="fa-brands fa-whatsapp fs-4"
+                color="success-light"
+                class="survey-form-contact-form-call__whatsapp"
+            >
+                Открыть WhatsApp
+            </UiButton>
             <div class="d-flex gap-1 align-items-center">
                 <RadioChip v-model="available"
 :value="true"
@@ -85,10 +96,59 @@ label="Да"
                 </AnimationTransition>
             </div>
         </AnimationTransition>
+        <teleport to="body">
+            <UiModal
+                v-model:visible="whatsappModalIsVisible"
+                @closed="onCloseWhatsappModal"
+                title="Связь через WhatsApp"
+                :width="500"
+            >
+                <UiForm>
+                    <UiFormGroup>
+                        <UiCol :cols="12">
+                            <p class="font-weight-semi mb-2">Номер привязан к WhatsApp?</p>
+                            <div class="d-flex gap-1 align-items-center">
+                                <RadioChip
+                                    v-model="whatsappForm.has_account"
+                                    :value="true"
+                                    unselect
+                                    label="Да"
+                                    :rounded="false"
+                                />
+                                <RadioChip
+                                    v-model="whatsappForm.has_account"
+                                    :value="false"
+                                    unselect
+                                    label="Нет"
+                                    :rounded="false"
+                                />
+                            </div>
+                        </UiCol>
+                    </UiFormGroup>
+                    <AnimationTransition :speed="0.3">
+                        <UiFormGroup v-if="statusSelectIsVisible">
+                            <MultiSelect
+                                v-model="whatsappForm.status"
+                                placeholder="Выберите статус.."
+                                :options="whatsappStatusOptions"
+                                label="Статус обращения"
+                                required
+                                class="col-12"
+                            />
+                        </UiFormGroup>
+                    </AnimationTransition>
+                </UiForm>
+                <template #actions="{ close }">
+                    <UiButton @click="close" icon="fa-solid fa-ban" color="light">
+                        Закрыть
+                    </UiButton>
+                </template>
+            </UiModal>
+        </teleport>
     </div>
 </template>
 <script setup>
-import { computed, nextTick, useTemplateRef, watch } from 'vue';
+import { computed, nextTick, reactive, ref, useTemplateRef, watch } from 'vue';
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
 import UiTextarea from '@/components/common/Forms/UiTextarea.vue';
 import { isNotNullish } from '@/utils/helpers/common/isNotNullish.ts';
@@ -103,6 +163,11 @@ import UiDropdownActions from '@/components/common/UI/DropdownActions/UiDropdown
 import UiDropdownActionsButton from '@/components/common/UI/DropdownActions/UiDropdownActionsButton.vue';
 import { plural } from '@/utils/plural.js';
 import { getCompanyShortName } from '@/utils/formatters/models/company.js';
+import UiModal from '@/components/common/UI/UiModal.vue';
+import UiForm from '@/components/common/Forms/UiForm.vue';
+import UiFormGroup from '@/components/common/Forms/UiFormGroup.vue';
+import UiCol from '@/components/common/UI/UiCol.vue';
+import { getContactMediumName } from '@/utils/formatters/models/contact.js';
 
 const emit = defineEmits(['schedule-call', 'change', 'schedule-visit', 'schedule-event']);
 const props = defineProps({
@@ -196,6 +261,8 @@ watch(available, value => {
 });
 
 const hasAnyAnswer = computed(() => isNotNullish(available.value));
+
+const currentPhone = computed(() => props.contact.phones.find(phone => phone.id === props.phoneId));
 
 const callStatusMap = {
     MISSED: 0,
@@ -367,4 +434,45 @@ const v$ = useVuelidate(
 const schedulerIsVisible = computed(() => {
     return isNotNullish(available.value) && isNotNullish(reason.value);
 });
+
+// whatsapp
+
+const whatsappStatusOptions = [
+    {
+        value: 'pending',
+        label: 'Ожидание ответа',
+        icon: 'fa-solid fa-clock-rotate-left'
+    },
+    {
+        value: 'answer',
+        label: 'Ответ получен',
+        icon: 'fa-solid fa-check'
+    }
+];
+
+const whatsappModalIsVisible = ref(false);
+
+const whatsappForm = reactive({
+    has_account: null,
+    status: null
+});
+
+const statusSelectIsVisible = computed(() => isNotNullish(whatsappForm.has_account));
+
+function createWhatsappLink() {
+    const message = `Добрый день, ${getContactMediumName(props.contact)}!`.replaceAll(' ', '%20');
+
+    return `https://wa.me/${currentPhone.value.native_phone}?text=${message}`;
+}
+
+function openWhatsapp() {
+    whatsappModalIsVisible.value = true;
+
+    window.open(createWhatsappLink(), '_blank').focus();
+}
+
+function onCloseWhatsappModal() {
+    whatsappForm.has_account = null;
+    whatsappForm.status = null;
+}
 </script>
