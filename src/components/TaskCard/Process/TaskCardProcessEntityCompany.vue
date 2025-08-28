@@ -29,7 +29,7 @@
                 <UiDropdownActionsButton
                     v-else
                     @handle="$emit('disable')"
-                    label="Архивировать"
+                    label="Отправить в корзину"
                     icon="fa-solid fa-ban"
                 />
                 <UiCan moderator-or-higher>

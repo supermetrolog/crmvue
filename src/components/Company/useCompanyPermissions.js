@@ -18,9 +18,7 @@ export function useCompanyPermissions(company) {
 
     const canDisable = computed(() => {
         return (
-            currentUserIsModeratorOrHigher.value ||
-            toValue(company).consultant_id === currentUserId.value ||
-            additionalConsultantIds.has(currentUserId.value)
+            currentUserIsModeratorOrHigher.value || additionalConsultantIds.has(currentUserId.value)
         );
     });
 

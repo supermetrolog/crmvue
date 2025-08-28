@@ -31,16 +31,18 @@
                 <UiDropdownActionsGroup>
                     <template v-if="canDisable">
                         <UiDropdownActionsButton
-                            v-if="isPassive"
+                            v-if="isPassive || isDeleted"
                             @handle="$emit('enable')"
                             icon="fa-solid fa-undo"
-                            label="Восстановить из архива"
+                            :label="
+                                isPassive ? 'Восстановить из архива' : 'Восстановить из корзины'
+                            "
                         />
                         <UiDropdownActionsButton
                             v-else
                             @handle="$emit('disable')"
                             icon="fa-solid fa-ban"
-                            label="Отправить в архив"
+                            label="Отправить в корзину"
                         />
                     </template>
                 </UiDropdownActionsGroup>
@@ -70,6 +72,7 @@ import { useCompanyPermissions } from '@/components/Company/useCompanyPermission
 import UiButtonIcon from '@/components/common/UI/UiButtonIcon.vue';
 import UiDropdownActionsGroup from '@/components/common/UI/DropdownActions/UiDropdownActionsGroup.vue';
 import UiDropdownActionsNested from '@/components/common/UI/DropdownActions/UiDropdownActionsNested.vue';
+import { CompanyStatusEnum } from '@/types/company';
 
 defineEmits<{
     (e: 'deleted-from-folder', folderId: number): void;
@@ -86,7 +89,8 @@ const props = defineProps<{
     company: object;
 }>();
 
-const isPassive = computed(() => props.company.status === 0);
+const isPassive = computed(() => props.company.status === CompanyStatusEnum.ACTIVE);
+const isDeleted = computed(() => props.company.status === CompanyStatusEnum.DELETED);
 
 const companyShortName = computed(() => getCompanyShortName(props.company));
 

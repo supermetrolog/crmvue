@@ -29,6 +29,7 @@
                     </UiCheckbox>
                     <UiButton
                         @click="openModal"
+                        :disabled="disabled || positionUnknownModel"
                         mini
                         color="light"
                         icon="fa-solid fa-plus"
@@ -127,6 +128,5 @@ function onCreated(position: ContactPosition) {
             positionModel.value = position.id;
         });
     });
-
 }
 </script>
