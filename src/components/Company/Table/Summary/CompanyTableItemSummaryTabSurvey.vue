@@ -5,6 +5,7 @@
             :color
             class="fs-2 company-table-item-summary-survey__tab company-table-item-summary-survey__tab-survey"
             small
+            :disabled="isPaused"
             :class="[colorClass, { active: isCurrentUserCompany }]"
         >
             <div v-if="company.has_pending_survey" class="d-flex gap-1 align-items-center">
@@ -47,7 +48,13 @@
             </div>
         </UiButton>
         <template #content>
-            <p>Нажмите, чтобы {{ company.has_pending_survey ? 'продолжить' : 'начать' }} опрос</p>
+            <p v-if="isPaused">
+                Вы не можете {{ company.has_pending_survey ? 'продолжить' : 'начать' }} опрос для
+                этой компании.
+            </p>
+            <p v-else>
+                Нажмите, чтобы {{ company.has_pending_survey ? 'продолжить' : 'начать' }} опрос
+            </p>
             <p v-if="!isCurrentUserCompany" class="text-grey">
                 Вы не являетесь консультантом этой компании
             </p>
@@ -67,6 +74,7 @@ import { isNotNullish } from '@/utils/helpers/common/isNotNullish';
 import IconBadgeCheck from '@/components/common/Icons/IconBadgeCheck.vue';
 import { useAuth } from '@/composables/useAuth.js';
 import { Tippy } from 'vue-tippy';
+import { CompanyStatusEnum } from '@/types/company';
 
 const emit = defineEmits(['to-survey']);
 
@@ -82,6 +90,12 @@ const props = defineProps({
         required: true
     }
 });
+
+const isPaused = computed(
+    () =>
+        props.company.status === CompanyStatusEnum.PASSIVE ||
+        props.company.status === CompanyStatusEnum.DELETED
+);
 
 const { currentUserId } = useAuth();
 

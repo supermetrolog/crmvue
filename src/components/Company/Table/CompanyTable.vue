@@ -81,6 +81,8 @@ import { useTableColumnFilters } from '@/composables/useTableColumnFilters';
 import CompanyTableFiltersActivity from '@/components/Company/Table/Filters/CompanyTableFiltersActivity.vue';
 import CompanyTableFiltersConsultant from '@/components/Company/Table/Filters/CompanyTableFiltersConsultant.vue';
 import CompanyTableItemSkeleton from '@/components/Company/Table/CompanyTableItemSkeleton.vue';
+import { isNotNullish } from '@/utils/helpers/common/isNotNullish';
+import { toArray } from '@/utils/helpers/array/toArray';
 
 defineEmits([
     'deleted-from-folder',
@@ -121,7 +123,7 @@ const { filters: activityFilters, confirmFilters: confirmActivityFilters } = use
         with_active_contacts: null,
         dateStart: null,
         dateEnd: null,
-        status: null
+        statuses: []
     },
     {
         transform: {
@@ -144,10 +146,13 @@ function initFilters() {
         ? dayjs(route.query.dateStart).toDate()
         : null;
     activityFilters.dateEnd = route.query.dateEnd ? dayjs(route.query.dateEnd).toDate() : null;
-    activityFilters.status = route.query.status;
+    activityFilters.statuses = isNotNullish(route.query.statuses)
+        ? toArray(route.query.statuses)
+        : [];
 
     activityFilters.without_surveys = route.query.without_surveys;
     activityFilters.with_current_user_tasks = route.query.with_current_user_tasks;
+    activityFilters.with_active_contacts = route.query.with_active_contacts;
     activityFilters.requests_filter = route.query.requests_filter;
 }
 

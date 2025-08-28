@@ -171,54 +171,19 @@
                     </UiCol>
                 </AnimationTransition>
             </UiFormGroup>
-            <template v-if="isEditMode">
-                <UiFormDivider />
-                <UiFormGroup>
-                    <UiCol :cols="12">
-                        <span class="form__subtitle">Статус</span>
-                        <div class="form__row mt-1">
-                            <RadioChip
-                                v-for="(status, value) in ActivePassive"
-                                :key="value"
-                                v-model="form.status"
-                                :label="status"
-                                :value="Number(value)"
-                                :rounded="false"
-                                show-radio
-                            />
-                        </div>
-                        <AnimationTransition>
-                            <div v-if="!form.status" class="dashboard-bg-light p-2 br-1 mt-2">
-                                <MultiSelect
-                                    v-model="form.passive_why"
-                                    :v="v$.form.passive_why"
-                                    required
-                                    label="Причина архивации"
-                                    :options="PassiveWhyContact"
-                                >
-                                    <UiTextarea
-                                        v-model="form.passive_why_comment"
-                                        placeholder="Опишите причину"
-                                    />
-                                </MultiSelect>
-                            </div>
-                        </AnimationTransition>
-                    </UiCol>
-                </UiFormGroup>
-            </template>
         </UiForm>
         <template #actions="{ close }">
             <UiButton @click="submit" color="success-light" icon="fa-solid fa-check">
                 Сохранить
             </UiButton>
-            <UiButton @click="close" color="light" icon="fa-solid fa-ban"> Отмена</UiButton>
+            <UiButton @click="close" color="light" icon="fa-solid fa-ban">Отмена</UiButton>
         </template>
     </UiModal>
 </template>
 
 <script setup>
 import { helpers, or, required } from '@vuelidate/validators';
-import { ActivePassive, FeedbackIcons, PassiveWhyContact } from '@/const/const.js';
+import { FeedbackIcons } from '@/const/const.js';
 import UiInput from '@/components/common/Forms/UiInput.vue';
 import PropogationInput from '@/components/common/Forms/PropogationInput.vue';
 import UiPhoneInput from '@/components/common/Forms/UiPhoneInput.vue';
@@ -302,11 +267,6 @@ const customRequiredEmailsOrPhones = () => {
     return !emptyWithProperty('email')(form.emails) || form.phones.length > 0;
 };
 
-const customRequiredPassiveWhy = () => {
-    if (form.status) return true;
-    return Boolean(required.$validator(form.passive_why));
-};
-
 const customRequiredWarningWhyComment = () => {
     if (!form.warning) return true;
     return Boolean(required.$validator(form.warning_why_comment));
@@ -342,12 +302,6 @@ const { v$, validate } = useValidation(
                 requiredIsMain: helpers.withMessage(
                     'Выберите главный Email',
                     or(emptyWithProperty('email'), anyHasProperty('isMain', 1))
-                )
-            },
-            passive_why: {
-                customRequiredPassiveWhy: helpers.withMessage(
-                    'Выберите причину',
-                    customRequiredPassiveWhy
                 )
             },
             warning_why_comment: {

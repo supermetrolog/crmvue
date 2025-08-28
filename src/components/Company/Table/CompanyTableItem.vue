@@ -24,6 +24,7 @@
                     :company-id="company.id"
                     :company-name="companyName"
                     :src="company.logo"
+                    :class="{ 'op-5': isDeleted }"
                 />
                 <CompanyTableItemInfo :company />
             </div>
@@ -95,6 +96,7 @@ import CompanyTableDropdown from '@/components/Company/Table/CompanyTableDropdow
 import CompanyTableItemInfo from '@/components/Company/Table/CompanyTableItemInfo.vue';
 import CompanyTableItemSummary from '@/components/Company/Table/Summary/CompanyTableItemSummary.vue';
 import Loader from '@/components/common/Loader.vue';
+import { CompanyStatusEnum } from '@/types/company';
 
 const store = useStore();
 const router = useRouter();
@@ -127,8 +129,7 @@ const dropdownMustBeShown = computed(
 );
 
 // TODO: Как-то внедрить тут пассив
-const isPassive = computed(() => props.company.status === 0);
-const passiveWhyLabel = computed(() => PassiveWhy[props.company.passive_why].short ?? 'Пассив');
+const isDeleted = computed(() => props.company.status === CompanyStatusEnum.DELETED);
 
 const passiveWhyComment = computed(() => {
     if (!props.company.passive_why) return 'Причина не указана';

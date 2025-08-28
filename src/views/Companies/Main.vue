@@ -169,6 +169,8 @@ import EventScheduler from '@/components/EventScheduler/EventScheduler.vue';
 import CompanyTablePreviewComments from '@/components/Company/Table/CompanyTablePreviewComments.vue';
 import CompanyTablePreviewNotes from '@/components/Company/Table/CompanyTablePreviewNotes.vue';
 import { captureException } from '@sentry/vue';
+import { CompanyStatusEnum } from '@/types/company';
+import { toArray } from '@/utils/helpers/array/toArray';
 
 const route = useRoute();
 const router = useRouter();
@@ -210,6 +212,10 @@ async function getCompanies() {
 
     const query = { ...route.query, current_user_id: currentUserId.value };
 
+    if (query.statuses) {
+        query.statuses = toArray(query.statuses);
+    }
+
     if (isNotNullish(currentFolder.value)) {
         query.folder_ids = [currentFolder.value];
     }
@@ -239,7 +245,7 @@ const { next, nextWithScroll, queryIsInitialized, isInitialLoading } = useTableC
             }
 
             query.consultant_id = currentUserId.value;
-            query.status = 1;
+            query.statuses = [CompanyStatusEnum.ACTIVE];
             query.with_active_contacts = 1;
             query.sort = 'activity';
 

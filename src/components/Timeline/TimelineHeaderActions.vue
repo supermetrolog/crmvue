@@ -10,7 +10,7 @@
         <UiButtonIcon
             @click="$emit('disable')"
             :disabled
-            label="Отправить в архив"
+            label="Отправить в корзину"
             icon="fa-solid fa-ban"
             color="light"
         />

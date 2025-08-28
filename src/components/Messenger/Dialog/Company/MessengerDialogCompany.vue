@@ -13,11 +13,19 @@
             </div>
             <div class="messenger-dialog-company__description">
                 <p v-if="hasUndefinedName" class="messenger-warning">[Нет уникального названия]</p>
-                <p class="messenger-dialog-company__company" :class="{ passive: isPassive }">
+                <p
+                    class="messenger-dialog-company__company"
+                    :class="{ passive: isPassive || isDeleted }"
+                >
                     <i
                         v-if="isPassive"
-                        v-tippy="'Компания в пассиве'"
-                        class="fa-solid fa-ban mr-1"
+                        v-tippy="'Компания приостановлена'"
+                        class="fa-solid fa-pause mr-1"
+                    ></i>
+                    <i
+                        v-if="isDeleted"
+                        v-tippy="'Компания удалена'"
+                        class="fa-solid fa-trash mr-1"
                     ></i>
                     <i
                         v-if="isWithoutActiveContacts"
@@ -85,6 +93,7 @@ import { plural } from '@/utils/plural.js';
 import { companyOptions } from '@/const/options/company.options.js';
 import Avatar from '@/components/common/Avatar.vue';
 import MessengerDialogLastMessage from '@/components/Messenger/Dialog/MessengerDialogLastMessage.vue';
+import { CompanyStatusEnum } from '@/types/company';
 
 defineEmits(['update-call']);
 const props = defineProps({
@@ -101,8 +110,11 @@ const props = defineProps({
 
 const { currentUserId } = useAuth();
 
-const isPassive = computed(() => !props.model.status);
+const isPassive = computed(() => props.model.status === CompanyStatusEnum.PASSIVE);
+const isDeleted = computed(() => props.model.status === CompanyStatusEnum.DELETED);
+
 const isDisabled = computed(() => props.model.consultant_id !== currentUserId.value);
+
 const isWithoutActiveContacts = computed(() => props.model.active_contacts_count === 0);
 
 const hasUndefinedName = computed(() => {

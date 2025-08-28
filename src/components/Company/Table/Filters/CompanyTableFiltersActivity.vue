@@ -1,14 +1,11 @@
 <template>
     <div>
         <UiFormGroup>
-            <SwitchSlider
-                v-model="filters.status"
-                class="col-5"
+            <CheckboxOptions
+                v-model="filters.statuses"
+                class="col-12"
                 label="Статус"
-                unknown-title="Любой"
-                true-title="Только актив"
-                false-title="Только пассив"
-                vertical
+                :options="statusOptions"
             />
         </UiFormGroup>
         <UiFormDivider />
@@ -149,7 +146,8 @@ import UiCheckbox from '@/components/common/Forms/UiCheckbox.vue';
 import UiFormDivider from '@/components/common/Forms/UiFormDivider.vue';
 import RadioChip from '@/components/common/Forms/RadioChip.vue';
 import UiDateInput from '@/components/common/Forms/UiDateInput.vue';
-import SwitchSlider from '@/components/common/Forms/SwitchSlider.vue';
+import CheckboxOptions from '@/components/common/Forms/CheckboxOptions.vue';
+import { CompanyStatusEnum } from '@/types/company';
 
 interface CompanyTableFiltersActivity {
     with_current_user_tasks: number | null;
@@ -159,7 +157,15 @@ interface CompanyTableFiltersActivity {
     dateStart: string | null;
     dateEnd: string | null;
     status: number | null | undefined;
+    show_deleted: number | null;
+    statuses: number[];
 }
+
+const statusOptions = {
+    [CompanyStatusEnum.ACTIVE]: 'Активные',
+    [CompanyStatusEnum.PASSIVE]: 'Приостановленные',
+    [CompanyStatusEnum.DELETED]: 'Удаленные'
+};
 
 const filters = defineModel<CompanyTableFiltersActivity>({ default: () => ({}) });
 </script>
