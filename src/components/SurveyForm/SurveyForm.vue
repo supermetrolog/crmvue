@@ -57,10 +57,16 @@
                     class="absolute-center"
                     label="Загрузка компании.."
                 />
+                <SurveyFormCompanySuggest
+                    v-else-if="companySuggestIsVisible"
+                    @create-task="createSuggestCompanyTask"
+                    @closed="$emit('close')"
+                    :company
+                />
                 <SurveyFormStepper
                     v-else-if="canBeCreated || isEditMode"
                     ref="stepper"
-                    @canceled="$emit('close')"
+                    @canceled="onCanceled"
                     @delayed="$emit('close')"
                     @completed="$emit('close')"
                     @draft-expired="surveyDraft = null"
@@ -159,10 +165,10 @@ import { useFormData } from '@/utils/use/useFormData.js';
 import SurveyFormHeader from '@/components/SurveyForm/SurveyFormHeader.vue';
 import api from '@/api/api.js';
 import Spinner from '@/components/common/Spinner.vue';
-import { isNotNullish } from '@/utils/helpers/common/isNotNullish.ts';
+import { isNotNullish } from '@/utils/helpers/common/isNotNullish';
 import SurveyFormStepper from '@/components/SurveyForm/SurveyFormStepper.vue';
 import { useAsync } from '@/composables/useAsync.js';
-import { isNullish } from '@/utils/helpers/common/isNullish.ts';
+import { isNullish } from '@/utils/helpers/common/isNullish';
 import { getCompanyName, getCompanyShortName } from '@/utils/formatters/models/company.js';
 import UiMinimizeModal from '@/components/common/UI/UiMinimizeModal.vue';
 import { contactOptions } from '@/const/options/contact.options.js';
@@ -184,6 +190,7 @@ import SurveyFormWarningPending from '@/components/SurveyForm/SurveyFormWarningP
 import { createTourStepElementGenerator } from '@/composables/useTour/useTourStep';
 import { useTour } from '@/composables/useTour/useTour';
 import dayjs from 'dayjs';
+import SurveyFormCompanySuggest from '@/components/SurveyForm/SurveyFormCompanySuggest.vue';
 
 const emit = defineEmits<{
     (e: 'close'): void;
@@ -616,6 +623,35 @@ function continueSurvey() {
 }
 
 const isDelayedSurvey = computed(() => surveyDraft.value && surveyDraft.value.status === 'delayed');
+
+// cancel
+
+const companySuggestIsVisible = ref(false);
+
+function onCanceled(payload) {
+    const contactsInCallsCount = new Set(payload.calls.map(call => call.contact_id)).size;
+
+    if (contactsInCallsCount === contacts.value.length) {
+        companySuggestIsVisible.value = true;
+    } else {
+        emit('close');
+    }
+}
+
+async function createSuggestCompanyTask(payload = {}) {
+    const taskPayload = await createTaskWithTemplate({
+        ...payload,
+        relations: getTaskRelations()
+    });
+
+    if (!taskPayload) return;
+
+    await api.task.create(taskPayload);
+    notify.success('Задача успешно создана');
+
+    companySuggestIsVisible.value = false;
+    emit('close');
+}
 
 // tour
 

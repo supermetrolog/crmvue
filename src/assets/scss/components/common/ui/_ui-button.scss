@@ -177,6 +177,8 @@
     &__loader {
         position: absolute;
         right: var(--padding-x);
+        top: 50%;
+        transform: translateY(-50%);
         transition: opacity .3s, transform .3s;
     }
 

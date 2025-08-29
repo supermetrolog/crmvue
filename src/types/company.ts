@@ -6,7 +6,8 @@ export const CompanyPassiveWhyEnum = {
     BLOCKED: 1,
     OTHER: 2,
     DESTROYED: 3,
-    INCORRECT: 4
+    INCORRECT: 4,
+    NO_CONTACTS: 5
 } as const;
 
 export const CompanyPassiveWhyLabel = {
@@ -14,7 +15,8 @@ export const CompanyPassiveWhyLabel = {
     [CompanyPassiveWhyEnum.BLOCKED]: 'Заблокировано модератором',
     [CompanyPassiveWhyEnum.OTHER]: 'Иное',
     [CompanyPassiveWhyEnum.DESTROYED]: 'Компания ликвидирована',
-    [CompanyPassiveWhyEnum.INCORRECT]: 'Идентификация невозможна'
+    [CompanyPassiveWhyEnum.INCORRECT]: 'Идентификация невозможна',
+    [CompanyPassiveWhyEnum.NO_CONTACTS]: 'Нет активных контактов'
 };
 
 export const CompanyPassiveWhyLabelShort = {
@@ -22,7 +24,8 @@ export const CompanyPassiveWhyLabelShort = {
     [CompanyPassiveWhyEnum.BLOCKED]: 'Заблокирована',
     [CompanyPassiveWhyEnum.OTHER]: 'Иное',
     [CompanyPassiveWhyEnum.DESTROYED]: 'Ликвидирована',
-    [CompanyPassiveWhyEnum.INCORRECT]: 'Не заполнено'
+    [CompanyPassiveWhyEnum.INCORRECT]: 'Не заполнено',
+    [CompanyPassiveWhyEnum.NO_CONTACTS]: 'Нет контактов'
 };
 
 export type CompanyPassiveWhy = (typeof CompanyPassiveWhyEnum)[keyof typeof CompanyPassiveWhyEnum];

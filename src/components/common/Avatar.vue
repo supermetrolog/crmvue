@@ -14,12 +14,15 @@ import { getLinkUserAvatar } from '@/utils/url.js';
 import LazyImage from '@/components/common/LazyImage.vue';
 import { useTippyText } from '@/composables/useTippyText.js';
 
-const props = defineProps<{
-    src?: string | null;
-    size?: number | string;
-    label?: string;
-    rectangle?: boolean;
-}>();
+const props = withDefaults(
+    defineProps<{
+        src?: string | null;
+        size?: number | string;
+        label?: string;
+        rectangle?: boolean;
+    }>(),
+    { size: 60 }
+);
 
 const url = computed(() => getLinkUserAvatar(props.src));
 
