@@ -854,7 +854,7 @@ async function cancel() {
 
     notify.success('Опрос успешно завершен!', 'Работа с опросом');
     isCreating.value = false;
-    emit('canceled');
+    emit('canceled', { calls });
     bus.emit('canceled', { companyId: props.company.id });
 }
 

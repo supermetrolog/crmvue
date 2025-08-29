@@ -20,7 +20,7 @@
                     <i
                         v-if="isPassive"
                         v-tippy="'Компания приостановлена'"
-                        class="fa-solid fa-pause mr-1"
+                        class="fa-regular fa-circle-pause mr-1"
                     ></i>
                     <i
                         v-if="isDeleted"

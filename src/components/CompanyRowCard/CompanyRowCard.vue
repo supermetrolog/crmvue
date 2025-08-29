@@ -19,22 +19,22 @@
                     <i
                         v-if="isPassive"
                         v-tippy="'Компания приостановлена'"
-                        class="fa-solid fa-pause mr-1"
+                        class="fa-regular fa-circle-pause mr-1 fs-4"
                     ></i>
                     <i
                         v-if="isDeleted"
                         v-tippy="'Компания удалена'"
-                        class="fa-solid fa-trash mr-1"
+                        class="fa-solid fa-trash mr-1 fs-4"
                     ></i>
                     <i
                         v-if="isWithoutActiveContacts"
                         v-tippy="'Компания без контактов'"
-                        class="fa-solid fa-users-slash mr-1"
+                        class="fa-solid fa-users-slash mr-1 fs-4"
                     ></i>
                     <i
                         v-if="company.is_individual"
                         v-tippy="'Физ.лицо'"
-                        class="fa-solid fa-user-tie mr-1"
+                        class="fa-solid fa-user-tie mr-1 fs-4"
                     ></i>
                     <span>{{ companyName }}</span>
                     <Avatar

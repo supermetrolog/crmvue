@@ -65,6 +65,10 @@ export default {
         const response = await axios.post(`${URL}/${companyId}/delete`, payload);
         return responseHasStatus(response, STATUS_SUCCESS);
     },
+    async passive(companyId, payload) {
+        const response = await axios.post(`${URL}/${companyId}/passive`, payload);
+        return responseHasStatus(response, STATUS_SUCCESS);
+    },
     async linkMessage(id, payload) {
         const response = await axios.post(`${URL}/${id}/link-message`, payload);
         return responseToData(response);

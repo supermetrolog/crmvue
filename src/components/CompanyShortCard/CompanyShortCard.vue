@@ -21,20 +21,20 @@
                 <UiTooltipIcon
                     v-if="isPassive"
                     tooltip="Компания приостановлена"
-                    icon="fa-solid fa-ban"
-                    class="mr-1"
+                    icon="fa-regular fa-circle-pause"
+                    class="mr-1 fs-4"
                 />
                 <UiTooltipIcon
                     v-if="isDeleted"
                     tooltip="Компания удалена"
-                    icon="fa-solid fa-trash"
+                    icon="fa-solid fa-trash fs-4"
                     class="mr-1"
                 />
                 <UiTooltipIcon
                     v-if="isWithoutActiveContacts"
                     tooltip="Компания без активных контактов"
                     icon="fa-solid fa-users-slash"
-                    class="mr-1"
+                    class="mr-1 fs-4"
                 />
                 <span v-if="hasUndefinedName" class="company-short-card__warning">
                     НЕТ УНИКАЛЬНОГО НАЗВАНИЯ
@@ -43,7 +43,7 @@
                     <UiTooltipIcon
                         v-if="company.is_individual"
                         tooltip="Физическое лицо"
-                        icon="fa-solid fa-user-tie"
+                        icon="fa-solid fa-user-tie fs-4"
                     />
                     <span>{{ companyName }}</span>
                 </template>
@@ -68,25 +68,25 @@
                     <UiTooltipIcon
                         v-if="isPassive"
                         tooltip="Компания приостановлена"
-                        icon="fa-solid fa-pause"
-                        class="mr-1"
+                        icon="fa-regular fa-circle-pause"
+                        class="mr-1 fs-4"
                     />
                     <UiTooltipIcon
                         v-if="isDeleted"
                         tooltip="Компания удалена"
-                        icon="fa-solid fa-trash"
+                        icon="fa-solid fa-trash fs-4"
                         class="mr-1"
                     />
                     <UiTooltipIcon
                         v-if="isWithoutActiveContacts"
                         tooltip="Компания без активных контактов"
-                        icon="fa-solid fa-users-slash"
+                        icon="fa-solid fa-users-slash fs-4"
                         class="mr-1"
                     />
                     <UiTooltipIcon
                         v-if="company.is_individual"
                         tooltip="Физическое лицо"
-                        icon="fa-solid fa-user-tie"
+                        icon="fa-solid fa-user-tie fs-4"
                     />
                 </template>
             </div>

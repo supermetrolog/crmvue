@@ -217,8 +217,8 @@ const progress = computed(() => {
 });
 
 const title = computed(() => {
-    if (!visibleModel.value) return 'Обработка запроса';
+    if (!visibleModel.value) return 'Обработка опроса';
     if (props.editMode) return 'Завершение редактирования';
-    return `Запрос обработан на ${progress.value}%`;
+    return `Опрос обработан на ${progress.value}%`;
 });
 </script>
