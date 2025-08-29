@@ -44,16 +44,7 @@ const activityProfile = {
     32: 'Маркетплейс'
 };
 
-const passiveWhyList = [
-    { value: 0, label: 'Временно приостановлена', short: 'Приостановлена', readOnly: true },
-    { value: 1, label: 'Заблокировано модератором', short: 'Заблокирована', readOnly: true },
-    { value: 3, label: 'Компания ликвидирована', short: 'Ликвидирована' },
-    { value: 4, label: 'Идентификация невозможна', short: 'Не заполнена' },
-    { value: 2, label: 'Иное' }
-];
-
 export const companyOptions = {
     activityGroup,
-    activityProfile,
-    passiveWhyList
+    activityProfile
 };
