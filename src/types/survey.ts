@@ -36,7 +36,7 @@ export interface Survey<T extends ChatMemberModelType = 'company'> extends Times
     chatMember: ChatMember<T>;
 }
 
-export interface SurveyView<T> extends Survey<T> {
+export interface SurveyView<T extends ChatMemberModelType = 'company'> extends Survey<T> {
     calls: Call[];
     dependentSurveys: Survey[];
     questions: Question[];
