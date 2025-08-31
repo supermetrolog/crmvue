@@ -53,7 +53,8 @@ const answerToLabel = {
     3: 'Не опросил',
     4: 'Обработан',
     5: 'Объект продан',
-    6: 'Объект снесен'
+    6: 'Объект снесен',
+    7: 'Новые предложения'
 };
 
 const answerLabel = computed(() => answerToLabel[answer.value]);
@@ -64,7 +65,8 @@ const answerToColor = {
     3: '#8e8e8e',
     4: '#12b780',
     5: '#f80200',
-    6: '#f80200'
+    6: '#f80200',
+    7: '#fd8422'
 };
 
 const answerColor = computed(() => answerToColor[answer.value]);
