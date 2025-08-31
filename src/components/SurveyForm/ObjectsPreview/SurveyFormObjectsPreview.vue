@@ -187,7 +187,8 @@
                         icon="fa-solid fa-check"
                         color="success-light"
                         :loading="parametersIsLoading"
-                        >Сохранить
+                    >
+                        Сохранить
                     </UiButton>
                     <UiButton
                         @click="parametersFormIsVisible = false"
@@ -404,9 +405,12 @@ function editNewOffer(offer) {
 
 function deleteNewOffer(offer) {
     spliceById(modelValue.value.created, offer.id);
+
     if (modelValue.value.created.length === 0) {
         currenTab.value = TABS.ACTIVE;
     }
+
+    markProgress();
 }
 
 function addNewOffer() {
@@ -438,14 +442,19 @@ function onUpdatedOffer(offer) {
 const answers = computed(() => Object.values(modelValue.value.current));
 
 function markProgress() {
-    if (modelValue.value.checked) return;
-
     if (answers.value.length === 0) {
-        modelValue.value.answer =
-            modelValue.value.created?.length || isOffersNotFound.value ? 4 : null;
+        if (modelValue.value.created?.length) {
+            modelValue.value.answer = 7;
+            return;
+        }
 
-        return;
+        if (isOffersNotFound.value && !modelValue.value.checked) {
+            modelValue.value.answer = 4;
+            return;
+        }
     }
+
+    if (modelValue.value.checked) return;
 
     const allOffersAnswered = answers.value.every(
         answer => isNotNullish(answer.answer) && Number(answer.answer) !== 0
