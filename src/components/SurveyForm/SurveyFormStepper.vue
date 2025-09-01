@@ -131,7 +131,7 @@
     </Stepper>
 </template>
 <script setup>
-import { computed, onBeforeMount, reactive, ref, shallowRef, useTemplateRef, watch } from 'vue';
+import { computed, onBeforeMount, reactive, ref, useTemplateRef, watch } from 'vue';
 import Stepper from '@/components/common/Stepper/Stepper.vue';
 import { isNotNullish } from '@/utils/helpers/common/isNotNullish.ts';
 import { useEventBus, useIntervalFn } from '@vueuse/core';
@@ -330,7 +330,7 @@ const steps = reactive([
     {
         name: 'objects',
         title: computed(() => {
-            if (objectsIsLoading.value) {
+            if (objectsIsLoading.value || relatedObjectsIsLoading.value) {
                 return 'Предложения (загрузка..)';
             }
 
@@ -911,7 +911,7 @@ async function delaySurvey() {
 
 // objects
 
-const objects = shallowRef([]);
+const objects = ref([]);
 const requests = ref([]);
 
 const isLoading = ref(false);
@@ -919,12 +919,18 @@ const isLoading = ref(false);
 async function fetchInitialData() {
     isLoading.value = true;
 
-    await Promise.allSettled([fetchObjects(), fetchRequests(), fetchQuestions()]);
+    await Promise.allSettled([
+        fetchObjects(),
+        fetchRelatedObjects(),
+        fetchRequests(),
+        fetchQuestions()
+    ]);
 
     isLoading.value = false;
 }
 
 const objectsIsLoading = ref(false);
+const relatedObjectsIsLoading = ref(false);
 const requestsIsLoading = ref(false);
 
 async function fetchObjects() {
@@ -936,9 +942,24 @@ async function fetchObjects() {
         expand: 'commercialOffers.blocks,offerMix.offer'
     });
 
-    objects.value = response.data;
+    objects.value.push(...response.data);
 
     objectsIsLoading.value = false;
+}
+
+async function fetchRelatedObjects() {
+    relatedObjectsIsLoading.value = true;
+
+    const response = await api.object.list({
+        offer_company_id: props.company.id,
+        exclude_company_id: props.company.id,
+        'per-page': 0,
+        expand: 'commercialOffers.blocks,offerMix.offer'
+    });
+
+    objects.value.push(...response.data);
+
+    relatedObjectsIsLoading.value = false;
 }
 
 async function fetchRequests() {
