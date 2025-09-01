@@ -35,11 +35,7 @@
                 :company
                 class="mt-2"
             />
-            <TableDateBlock
-                :date="company.updated_at ?? company.created_at"
-                label="Дата обновления"
-                class="mt-1 op-7"
-            />
+            <TableDateBlock :date="company.created_at" label="Дата внесения" class="mt-1 op-7" />
         </Td>
         <Td class="company-table-item__comment">
             <CompanyTableItemSummary
