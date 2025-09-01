@@ -95,7 +95,7 @@
                                     v-if="canBePostponed"
                                     @handle="$emit('postpone')"
                                     icon="fa-solid fa-eye-slash"
-                                    label="Отложить"
+                                    label="Поставить на паузу"
                                     :disabled
                                 />
                                 <UiDropdownActionsButton

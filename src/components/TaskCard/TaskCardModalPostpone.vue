@@ -6,7 +6,7 @@
         relative
         :width="550"
         small
-        title="Отложить задачу"
+        title="Поставить задачу на паузу"
     >
         <Loader v-if="loading" small />
         <UiForm>
@@ -42,7 +42,7 @@
 
 <script setup>
 import { ref } from 'vue';
-import { helpers, required, minValue } from '@vuelidate/validators';
+import { helpers, minValue, required } from '@vuelidate/validators';
 import UiForm from '@/components/common/Forms/UiForm.vue';
 import UiDateInput from '@/components/common/Forms/UiDateInput.vue';
 import UiButton from '@/components/common/UI/UiButton.vue';

@@ -163,7 +163,7 @@ import TaskCardFiles from '@/components/TaskCard/TaskCardFiles.vue';
 import TaskCardContacts from '@/components/TaskCard/TaskCardContactsList.vue';
 import TaskCardModalPostpone from '@/components/TaskCard/TaskCardModalPostpone.vue';
 import { useAsync } from '@/composables/useAsync.js';
-import { dayjsFromServer } from '@/utils/formatters/date.ts';
+import { dayjsFromServer, toServerDate } from '@/utils/formatters/date.ts';
 import dayjs from 'dayjs';
 import TaskCardRelations from '@/components/TaskCard/Relations/TaskCardRelations.vue';
 import TaskCardProcess from '@/components/TaskCard/Process/TaskCardProcess.vue';
@@ -300,7 +300,7 @@ async function postponeTask(date) {
         dayjsFromServer(props.task.start),
         'second'
     );
-    const endDate = dayjs(date).add(dateDiff, 'second').toDate();
+    const endDate = toServerDate(dayjs(date).add(dateDiff, 'second').toDate());
 
     const updatedTask = await executePostponeTask(props.task.id, { start: date, end: endDate });
 
