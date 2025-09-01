@@ -35,7 +35,19 @@
                 :company
                 class="mt-2"
             />
-            <TableDateBlock :date="company.created_at" label="Дата внесения" class="mt-1 op-7" />
+            <TableDateBlock :date="company.created_at" class="mt-1 op-7">
+                <template #label="{ formattedDate }">
+                    <p class="mb-1">
+                        Дата внесения в базу -
+                        <span class="font-weight-semi">{{ formattedDate }}</span>
+                    </p>
+                    <p v-if="company.updated_at">
+                        Дата последнего обновления -
+                        <span class="font-weight-semi">{{ updatedAt }}</span>
+                    </p>
+                    <p v-else class="op-5 text-grey">Дата последнего обновления утеряна</p>
+                </template>
+            </TableDateBlock>
         </Td>
         <Td class="company-table-item__comment">
             <CompanyTableItemSummary
@@ -93,6 +105,7 @@ import CompanyTableItemInfo from '@/components/Company/Table/CompanyTableItemInf
 import CompanyTableItemSummary from '@/components/Company/Table/Summary/CompanyTableItemSummary.vue';
 import Loader from '@/components/common/Loader.vue';
 import { CompanyStatusEnum } from '@/types/company';
+import { toBeautifulDateFormat } from '@/utils/formatters/date';
 
 const store = useStore();
 const router = useRouter();
@@ -119,6 +132,8 @@ const props = defineProps({
     company: { type: Object, required: true },
     odd: { type: Boolean, default: false }
 });
+
+const updatedAt = computed(() => toBeautifulDateFormat(props.company.updated_at));
 
 const dropdownMustBeShown = computed(
     () => props.company.objects.length || props.company.requests.length
