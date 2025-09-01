@@ -216,6 +216,10 @@ async function getCompanies() {
         query.statuses = toArray(query.statuses);
     }
 
+    if (query.cian_regions) {
+        query.cian_regions = toArray(query.cian_regions);
+    }
+
     if (isNotNullish(currentFolder.value)) {
         query.folder_ids = [currentFolder.value];
     }
