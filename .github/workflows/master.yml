@@ -8,9 +8,9 @@ env:
   VITE_VUE_APP_RESERVE_API_URL: https://reserve-api.supermetrolog.ru/
   VITE_VUE_APP_RESERVE_HOST: https://reserve-clients.supermetrolog.ru
   VITE_VUE_APP_OBJECT_URL: https://pennylane.pro/
-  VITE_VUE_APP_API_URL: https://api.pennylane.pro/
-  VITE_VUE_APP_HOST: https://clients.pennylane.pro
-  VITE_VUE_APP_WS_URL: wss://api.pennylane.pro/websocket/
+  VITE_VUE_APP_API_URL: https://api.raysen.ru/
+  VITE_VUE_APP_HOST: https://crm.raysen.ru
+  VITE_VUE_APP_WS_URL: wss://api.raysen.ru/websocket/
   VITE_VUE_APP_UPLOADS_PATH: uploads/
   VITE_VUE_APP_IMAGES_PATH: images/
   VITE_VUE_APP_NOT_FOUND_FILENAME: no-image.jpg
@@ -39,7 +39,7 @@ jobs:
           npm install
           npm run build
 
-      - name: 📂 Sync files with PROD server (clients.pennylane.pro)
+      - name: 📂 Sync files with PROD server (crm.raysen.ru)
         uses: SamKirkland/FTP-Deploy-Action@4.3.0
         with:
           server: 62.113.107.218
