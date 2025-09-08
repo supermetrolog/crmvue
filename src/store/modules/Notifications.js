@@ -84,11 +84,11 @@ const Notifications = {
         async VIEWED_ALL_NOTIFICATIONS({ getters }) {
             return await api.notifications.viewedAll(getters.THIS_USER.id);
         },
-        ACTION_WEBSOCKET_new_notifications(context, data) {
+        _ws_new_notifications(context, data) {
             viewNotify(data.message);
             context.dispatch('FETCH_NOTIFICATIONS_COUNT');
         },
-        ACTION_WEBSOCKET_check_notifications_count(context) {
+        _ws_check_notifications_count(context) {
             context.dispatch('FETCH_NOTIFICATIONS_COUNT');
         }
     },

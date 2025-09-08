@@ -100,14 +100,14 @@ const Call = {
             });
             context.commit('updateSessionCalls', data.data);
         },
-        ACTION_WEBSOCKET_new_calls(context, data) {
+        _ws_new_calls(context, data) {
             viewNotify(data.message);
             context.dispatch('FETCH_CALLS_COUNT');
         },
-        ACTION_WEBSOCKET_check_calls_count(context) {
+        _ws_check_calls_count(context) {
             context.dispatch('FETCH_CALLS_COUNT');
         },
-        ACTION_WEBSOCKET_update_current_calls({ commit, dispatch }, data) {
+        _ws_update_current_calls({ commit, dispatch }, data) {
             commit('updateCurrentCalls', data.message);
             commit('pushSessionCalls', data.message);
             dispatch('UPDATE_SESSION_CALLS');

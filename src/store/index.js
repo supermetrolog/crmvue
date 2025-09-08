@@ -80,4 +80,5 @@ const store = createStore({
 store.checkAction = function (name) {
     return Object.keys(this._actions).includes(name);
 };
+
 export default store;
