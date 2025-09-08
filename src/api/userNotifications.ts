@@ -1,0 +1,49 @@
+import axios from 'axios';
+import { responseToData } from '@/api/helpers/responseToData.js';
+import {
+    ShortUserNotification,
+    UserNotification
+} from '@/types/user-notification/user-notification';
+import { RequestQueryParams } from '@/api/types';
+import { responseToPaginatedData } from '@/api/helpers/responseToPaginatedData';
+
+const URL = '/user-notifications';
+
+async function get(id: number) {
+    const response = await axios.get<UserNotification>(`${URL}/${id}`);
+    return responseToData<UserNotification>(response);
+}
+
+async function list(params: RequestQueryParams = {}) {
+    const response = await axios.get<ShortUserNotification[]>(URL, { params });
+    return responseToPaginatedData(response);
+}
+
+async function count() {
+    const response = await axios.get<number>(`${URL}/count`);
+    return responseToData(response);
+}
+
+async function viewed(id: number) {
+    const response = await axios.post<UserNotification>(`${URL}/${id}/viewed`);
+    return responseToData<UserNotification>(response);
+}
+
+async function acted(id: number) {
+    const response = await axios.post<UserNotification>(`${URL}/${id}/acted`);
+    return responseToData<UserNotification>(response);
+}
+
+async function processAction(notificationId: number, actionId: number) {
+    const response = await axios.post(`${URL}/${notificationId}/actions/${actionId}/process`);
+    return responseToData(response);
+}
+
+export default {
+    get,
+    list,
+    count,
+    viewed,
+    acted,
+    processAction
+};

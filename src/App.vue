@@ -1,5 +1,6 @@
 <template>
     <AppVersionChecker />
+    <AppUserNotifications />
     <notifications position="bottom right" group="app" pause-on-hover />
     <component :is="layoutComponent" v-if="isInitialized" />
 </template>
@@ -17,6 +18,7 @@ import { useStore } from 'vuex';
 import { useTimeoutFn } from '@vueuse/core';
 import AppVersionChecker from '@/components/common/AppVersionChecker.vue';
 import { captureException } from '@sentry/vue';
+import AppUserNotifications from '@/components/common/AppUserNotifications.vue';
 
 const LAYOUTS = {
     login: Login,
