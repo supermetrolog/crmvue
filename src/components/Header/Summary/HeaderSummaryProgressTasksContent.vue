@@ -35,7 +35,7 @@
 <script setup>
 import { onMounted, reactive } from 'vue';
 import api from '@/api/api.js';
-import { useAuth } from '@/composables/useAuth.js';
+import { useAuth } from '@/composables/useAuth';
 import { useDelayedLoader } from '@/composables/useDelayedLoader.js';
 import PaginationClassic from '@/components/common/Pagination/PaginationClassic.vue';
 import DashboardTableTasks from '@/components/Dashboard/Table/DashboardTableTasks.vue';

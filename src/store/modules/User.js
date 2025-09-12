@@ -1,5 +1,5 @@
 import api from '@/api/api';
-import { useAuth } from '@/composables/useAuth.js';
+import { useAuth } from '@/composables/useAuth';
 import {
     getAccessTokenFromLocalStorage,
     getUserFromLocalStorage,

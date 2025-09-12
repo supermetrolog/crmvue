@@ -10,7 +10,7 @@
 import { menu } from '@/const/menu.js';
 import SideBarMenuItem from '@/components/SideBar/SideBarMenuItem.vue';
 import { computed } from 'vue';
-import { useAuth } from '@/composables/useAuth.js';
+import { useAuth } from '@/composables/useAuth';
 import { isNullish } from '@/utils/helpers/common/isNullish.ts';
 
 const { currentUser } = useAuth();

@@ -120,7 +120,11 @@ const props = defineProps({
         default: true
     },
     pinnedTask: Object,
-    containerAttrs: Object
+    containerAttrs: Object,
+    zIndex: {
+        type: Number,
+        default: 4000
+    }
 });
 
 if (props.show) {
@@ -239,6 +243,7 @@ onBeforeUnmount(() => {
 
 .modal {
     --modal-body-min-height: v-bind(minHeightSize);
+    z-index: v-bind(zIndex);
 }
 
 .modal__blackout {

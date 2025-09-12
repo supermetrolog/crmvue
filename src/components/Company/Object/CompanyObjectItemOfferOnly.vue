@@ -274,7 +274,7 @@ import OfferTableItemMobileAddress from '@/components/Offer/TableItem/OfferTable
 import OfferTableItemPreview from '@/components/Offer/TableItem/Preview/OfferTableItemPreview.vue';
 import DashboardCard from '@/components/Dashboard/Card/DashboardCard.vue';
 import { computed, nextTick, onBeforeMount, ref, useTemplateRef } from 'vue';
-import { useAuth } from '@/composables/useAuth.js';
+import { useAuth } from '@/composables/useAuth';
 import { useRoute } from 'vue-router';
 import { getLinkOfferByObject, getLinkPDF } from '@/utils/url.js';
 import CompanyObjectItemProperty from '@/components/Company/Object/CompanyObjectItemProperty.vue';

@@ -50,7 +50,7 @@
 import { Tippy } from 'vue-tippy';
 import { computed } from 'vue';
 import { isNullish } from '@/utils/helpers/common/isNullish.ts';
-import { useAuth } from '@/composables/useAuth.js';
+import { useAuth } from '@/composables/useAuth';
 import { isNotNullish } from '@/utils/helpers/common/isNotNullish.ts';
 
 const props = defineProps({

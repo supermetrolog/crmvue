@@ -132,7 +132,7 @@ import UiDropdownActionsButton from '@/components/common/UI/DropdownActions/UiDr
 import UiDropdownActions from '@/components/common/UI/DropdownActions/UiDropdownActions.vue';
 import UiButtonIcon from '@/components/common/UI/UiButtonIcon.vue';
 import UiCan from '@/components/common/UI/UiCan.vue';
-import { useAuth } from '@/composables/useAuth.js';
+import { useAuth } from '@/composables/useAuth';
 import { computed } from 'vue';
 import { getCompanyShortName } from '@/utils/formatters/models/company.js';
 import dayjs from 'dayjs';

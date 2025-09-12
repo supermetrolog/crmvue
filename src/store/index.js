@@ -15,7 +15,7 @@ import Location from './modules/Location';
 import Complex from './modules/Complex';
 import Messenger from '@/store/modules/Messenger';
 import Task from '@/store/modules/Task.js';
-import { hasAccessToken, login, logout } from '@/composables/useAuth.js';
+import { hasAccessToken, login, logout } from '@/composables/useAuth';
 import Quizz from '@/store/modules/Quiz.js';
 import { getAccessTokenFromLocalStorage } from '@/services/localStorage.js';
 import { setAccessToken } from '@/services/axios.js';

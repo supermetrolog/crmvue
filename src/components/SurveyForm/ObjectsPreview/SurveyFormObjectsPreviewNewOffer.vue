@@ -136,7 +136,7 @@ import { toDateFormat } from '@/utils/formatters/date.ts';
 import SurveyFormObjectsPreviewOfferParameter from '@/components/SurveyForm/ObjectsPreview/SurveyFormObjectsPreviewOfferParameter.vue';
 import VueEditor from '@/components/common/Forms/VueEditor.vue';
 import Avatar from '@/components/common/Avatar.vue';
-import { useAuth } from '@/composables/useAuth.js';
+import { useAuth } from '@/composables/useAuth';
 
 defineEmits(['edit', 'delete']);
 const props = defineProps({

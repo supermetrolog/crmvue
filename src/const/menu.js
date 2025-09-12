@@ -174,6 +174,12 @@ export const menu = [
                 name: 'Сообщения',
                 url: '/admin/messages',
                 icon: 'fa-solid fa-comment'
+            },
+            {
+                id: 2,
+                name: 'Уведомления',
+                url: '/admin/notifications',
+                icon: 'fa-solid fa-bell'
             }
         ]
     },

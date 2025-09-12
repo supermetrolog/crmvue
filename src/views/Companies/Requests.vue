@@ -139,7 +139,7 @@ import FormCompanyRequest from '@/components/Forms/Company/FormCompanyRequest.vu
 import FormModalCompanyRequestDisable from '@/components/Forms/Company/FormModalCompanyRequestDisable.vue';
 import DashboardCardRequestView from '@/components/Dashboard/Card/Request/DashboardCardRequestView.vue';
 import { useMessenger } from '@/components/Messenger/useMessenger.js';
-import { useAuth } from '@/composables/useAuth.js';
+import { useAuth } from '@/composables/useAuth';
 import { singleToArrayByKeys } from '@/utils/helpers/object/singleToArrayByKeys.js';
 import { useAsync } from '@/composables/useAsync.js';
 import { useNotify } from '@/utils/use/useNotify.js';

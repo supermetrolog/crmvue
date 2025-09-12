@@ -45,7 +45,7 @@
 <script setup>
 import { onMounted, reactive } from 'vue';
 import api from '@/api/api.js';
-import { useAuth } from '@/composables/useAuth.js';
+import { useAuth } from '@/composables/useAuth';
 import PaginationClassic from '@/components/common/Pagination/PaginationClassic.vue';
 import MessengerDialogCompany from '@/components/Messenger/Dialog/Company/MessengerDialogCompany.vue';
 import { messenger } from '@/const/messenger.js';

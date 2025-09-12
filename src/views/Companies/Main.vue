@@ -160,7 +160,7 @@ import { useTaskManager } from '@/composables/useTaskManager.js';
 import { getCompanyShortName } from '@/utils/formatters/models/company.js';
 import DashboardTableTasks from '@/components/Dashboard/Table/DashboardTableTasks.vue';
 import { taskOptions } from '@/const/options/task.options.js';
-import { useAuth } from '@/composables/useAuth.js';
+import { useAuth } from '@/composables/useAuth';
 import FormCompanyDisable from '@/components/Forms/Company/FormCompanyDisable.vue';
 import { useCompanyDisable } from '@/components/Company/useCompanyDisable.js';
 import CallScheduler from '@/components/CallScheduler/CallScheduler.vue';

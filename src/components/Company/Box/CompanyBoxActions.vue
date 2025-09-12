@@ -106,7 +106,7 @@ import UiDropdownActions from '@/components/common/UI/DropdownActions/UiDropdown
 import UiDropdownActionsGroup from '@/components/common/UI/DropdownActions/UiDropdownActionsGroup.vue';
 import { useSurveyForm } from '@/composables/useSurveyForm.js';
 import { CompanyStatusEnum } from '@/types/company';
-import { useAuth } from '@/composables/useAuth.js';
+import { useAuth } from '@/composables/useAuth';
 
 defineEmits([
     'change-logo',

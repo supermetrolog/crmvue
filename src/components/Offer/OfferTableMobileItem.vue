@@ -134,7 +134,7 @@ import CompanyElement from '@/components/Company/CompanyElement.vue';
 import { computed } from 'vue';
 import { useStore } from 'vuex';
 import { useMessenger } from '@/components/Messenger/useMessenger.js';
-import { useAuth } from '@/composables/useAuth.js';
+import { useAuth } from '@/composables/useAuth';
 import { getLinkPDF } from '@/utils/url.js';
 import { toDateFormat } from '@/utils/formatters/date.ts';
 import { isNotNullish } from '@/utils/helpers/common/isNotNullish.ts';

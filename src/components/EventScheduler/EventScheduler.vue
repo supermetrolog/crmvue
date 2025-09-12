@@ -14,7 +14,7 @@ import { computed, reactive, ref } from 'vue';
 import { useValidation } from '@/composables/useValidation.js';
 import { helpers, maxLength, minLength, required } from '@vuelidate/validators';
 import dayjs from 'dayjs';
-import { useAuth } from '@/composables/useAuth.js';
+import { useAuth } from '@/composables/useAuth';
 import api from '@/api/api.js';
 import { useNotify } from '@/utils/use/useNotify.js';
 import EventSchedulerModal from '@/components/EventScheduler/EventSchedulerModal.vue';

@@ -1,5 +1,5 @@
 import { computed, toValue } from 'vue';
-import { useAuth } from '@/composables/useAuth.js';
+import { useAuth } from '@/composables/useAuth';
 
 // TODO: Удалить чуть позже и сделать систему выдачи через модератора
 

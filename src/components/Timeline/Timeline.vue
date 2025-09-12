@@ -136,7 +136,7 @@ import TimelineStepDealDecision from '@/components/Timeline/Step/TimelineStepDea
 import TimelineStepDealConfirmation from '@/components/Timeline/Step/TimelineStepDealConfirmation.vue';
 import { Timeline as steps } from '@/const/const.js';
 import { computed, onMounted, ref, watch } from 'vue';
-import { useAuth } from '@/composables/useAuth.js';
+import { useAuth } from '@/composables/useAuth';
 import { useRoute, useRouter } from 'vue-router';
 import { requestOptions } from '@/const/options/request.options.js';
 import { isNotNullish } from '@/utils/helpers/common/isNotNullish.ts';
