@@ -29,7 +29,7 @@ import TheMobileSidebar from '@/components/SideBar/TheMobileSidebar.vue';
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
 import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
 import { useRoute } from 'vue-router';
-import { useAuth } from '@/composables/useAuth.js';
+import { useAuth } from '@/composables/useAuth';
 import { isArray } from '@/utils/helpers/array/isArray.ts';
 
 const { currentUser } = useAuth();

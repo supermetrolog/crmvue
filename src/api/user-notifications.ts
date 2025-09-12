@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { responseToData } from '@/api/helpers/responseToData.js';
+import { responseToData } from '@/api/helpers/responseToData';
 import {
     ShortUserNotification,
     UserNotification
@@ -15,8 +15,15 @@ async function get(id: number) {
 }
 
 async function list(params: RequestQueryParams = {}) {
-    const response = await axios.get<ShortUserNotification[]>(URL, { params });
+    const response = await axios.get<ShortUserNotification[]>(URL, {
+        params: { ...params, paginated: 1 }
+    });
     return responseToPaginatedData(response);
+}
+
+async function load(params: RequestQueryParams = {}) {
+    const response = await axios.get<ShortUserNotification[]>(URL, { params });
+    return responseToData(response);
 }
 
 async function count() {
@@ -45,5 +52,6 @@ export default {
     count,
     viewed,
     acted,
-    processAction
+    processAction,
+    load
 };

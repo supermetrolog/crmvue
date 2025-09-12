@@ -215,7 +215,7 @@ import UiForm from '@/components/common/Forms/UiForm.vue';
 import UiInput from '@/components/common/Forms/UiInput.vue';
 import VueEditor from '@/components/common/Forms/VueEditor.vue';
 import { computed, onBeforeMount, onMounted, ref, useTemplateRef, watch } from 'vue';
-import { useAuth } from '@/composables/useAuth.js';
+import { useAuth } from '@/composables/useAuth';
 import UiButton from '@/components/common/UI/UiButton.vue';
 import UiCol from '@/components/common/UI/UiCol.vue';
 import { isNotNullish } from '@/utils/helpers/common/isNotNullish';

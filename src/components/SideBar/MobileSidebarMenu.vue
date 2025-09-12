@@ -9,7 +9,7 @@
 <script setup>
 import { menu } from '@/const/menu.js';
 import { computed } from 'vue';
-import { useAuth } from '@/composables/useAuth.js';
+import { useAuth } from '@/composables/useAuth';
 import MobileSidebarMenuItem from '@/components/SideBar/MobileSidebarMenuItem.vue';
 
 const { currentUser } = useAuth();

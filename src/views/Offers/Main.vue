@@ -143,7 +143,7 @@ import ObjectTable from '@/components/ObjectTable/ObjectTable.vue';
 import { useMapPreviewer } from '@/composables/useMapPreviewer.js';
 import { useTaskManager } from '@/composables/useTaskManager.js';
 import { userOptions } from '@/const/options/user.options.js';
-import { useAuth } from '@/composables/useAuth.js';
+import { useAuth } from '@/composables/useAuth';
 import { useNotify } from '@/utils/use/useNotify.js';
 import { isNotEmptyString } from '@/utils/helpers/string/isNotEmptyString.js';
 import { ucFirst } from '@/utils/formatters/string.js';

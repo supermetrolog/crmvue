@@ -82,7 +82,7 @@ import { useLinkify } from '@/composables/useLinkify.js';
 import UiClamped from '@/components/common/UiClamped.vue';
 import UiButton from '@/components/common/UI/UiButton.vue';
 import { toDateFormat } from '@/utils/formatters/date';
-import { useAuth } from '@/composables/useAuth.js';
+import { useAuth } from '@/composables/useAuth';
 import { UserRoleEnum } from '@/types/user';
 import UiDropdownActions from '@/components/common/UI/DropdownActions/UiDropdownActions.vue';
 import UiDropdownActionsButton from '@/components/common/UI/DropdownActions/UiDropdownActionsButton.vue';

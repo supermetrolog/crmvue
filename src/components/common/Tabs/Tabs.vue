@@ -14,35 +14,41 @@
         <slot />
     </VTabs>
 </template>
-<script setup>
+<script setup lang="ts">
 import { Tabs as VTabs } from 'vue3-tabs-component';
-import { nextTick, onMounted, provide, ref, toRef } from 'vue';
+import { nextTick, onMounted, provide, toRef, useTemplateRef } from 'vue';
 
-const emit = defineEmits(['changed']);
-const props = defineProps({
-    closed: Boolean,
-    alwaysRender: Boolean,
-    withTransition: Boolean,
-    sticky: Boolean,
-    transitionSpeed: {
-        type: Number,
-        default: 2
-    }
-});
+export type ComputedTabId = number | string;
+
+const emit = defineEmits<{ (e: 'changed', tabId: ComputedTabId): void }>();
+
+const props = withDefaults(
+    defineProps<{
+        closed?: boolean;
+        alwaysRender?: boolean;
+        withTransition?: boolean;
+        sticky?: boolean;
+        transitionSpeed?: number;
+    }>(),
+    { transitionSpeed: 2 }
+);
 
 provide('always-render', props.alwaysRender);
+
 provide('with-transition', props.withTransition);
+
 provide(
     'transition-speed',
     toRef(() => props.transitionSpeed)
 );
 
-const tabs = ref(null);
+const tabs = useTemplateRef('tabs');
 
 const selectTab = hash => {
     tabs.value.selectTab(hash);
+
     nextTick(() => {
-        document.querySelector(hash + '-pane').scrollIntoView({ behavior: 'smooth' });
+        document.querySelector(hash + '-pane')?.scrollIntoView({ behavior: 'smooth' });
     });
 };
 
@@ -51,7 +57,9 @@ defineExpose({
 });
 
 const handler = () => {
-    if (props.closed) tabs.value.selectTab('#hidden-tab');
+    if (props.closed) {
+        tabs.value.selectTab('#hidden-tab');
+    }
 };
 
 const onChange = event => {
@@ -59,6 +67,8 @@ const onChange = event => {
 };
 
 onMounted(() => {
-    if (props.closed) tabs.value.selectTab();
+    if (props.closed) {
+        tabs.value.selectTab();
+    }
 });
 </script>

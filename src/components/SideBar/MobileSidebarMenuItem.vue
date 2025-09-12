@@ -11,7 +11,7 @@
 <script setup>
 import MobileSidebarMenuExtra from '@/components/SideBar/MobileSidebarMenuExtra.vue';
 import { computed } from 'vue';
-import { useAuth } from '@/composables/useAuth.js';
+import { useAuth } from '@/composables/useAuth';
 import { isNullish } from '@/utils/helpers/common/isNullish.ts';
 import { isNotNullish } from '@/utils/helpers/common/isNotNullish.ts';
 

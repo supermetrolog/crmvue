@@ -57,7 +57,7 @@ import { spliceById } from '@/utils/helpers/array/spliceById.js';
 import File from '@/components/common/Forms/File.vue';
 import { usePreviewer } from '@/composables/usePreviewer.js';
 import FileInput from '@/components/common/Forms/FileInput.vue';
-import { useAuth } from '@/composables/useAuth.js';
+import { useAuth } from '@/composables/useAuth';
 
 const emit = defineEmits(['count-changed']);
 const props = defineProps({

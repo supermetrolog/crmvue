@@ -1,7 +1,7 @@
 import { computed, toValue } from 'vue';
 import dayjs from 'dayjs';
 import { dayjsFromServer } from '@/utils/formatters/date.ts';
-import { useAuth } from '@/composables/useAuth.js';
+import { useAuth } from '@/composables/useAuth';
 
 const editTimeLimit = import.meta.env.PROD ? 60 * 24 * 30 : 60;
 

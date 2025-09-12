@@ -45,9 +45,6 @@
 </template>
 
 <script>
-//Передать (модератор) Передать админу только с комментарием - передавать с комментарием всем - Там же переать админу
-//Для брокеров только кнопка ОТКАЗ и причина отказа - комментарий (галочки - далбаеб, пидорас, не берет трубку)
-//Статистика отказов и причина
 import { mapActions, mapGetters } from 'vuex';
 import HeaderNotificationsItem from '@/components/Header/HeaderNotificationsItem.vue';
 import Pagination from '@/components/common/Pagination/Pagination.vue';

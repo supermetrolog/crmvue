@@ -40,7 +40,7 @@ import { useAsyncPopup } from '@/composables/useAsyncPopup.js';
 import SurveyDraftTable from '@/components/SurveyTable/SurveyDraftTable.vue';
 import { useSurveyForm } from '@/composables/useSurveyForm.js';
 import { useAsync } from '@/composables/useAsync.js';
-import { useAuth } from '@/composables/useAuth.js';
+import { useAuth } from '@/composables/useAuth';
 import { spliceById } from '@/utils/helpers/array/spliceById.js';
 
 const route = useRoute();

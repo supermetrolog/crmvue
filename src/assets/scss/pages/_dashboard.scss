@@ -345,15 +345,44 @@
     color: variables.$color_dark;
     max-height: 95%;
     min-width: 300px;
-    overflow: hidden;
     margin: 20px;
     z-index: 4002;
     box-shadow: 0 15px 30px rgba(0, 0, 0, 0.12);
     border-radius: 5px;
     transition: all 0.5s ease;
     min-height: 290px;
-    width: 800px;
+    width: 750px;
     max-width: 100%;
+
+    &__actions {
+        width: 250px;
+        position: absolute;
+        left: calc(100% + 20px);
+        top: 0;
+        background-color: #fff;
+        color: variables.$color_dark;
+        max-height: 95%;
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.12);
+        border-radius: 5px;
+        transition: all 0.5s ease;
+    }
+}
+
+.user-notification-preview-actions {
+    &__header {
+        padding: 5px 10px;
+        border-bottom: 1px solid rgba(0, 0, 0, .1);
+    }
+
+    &__title {
+        font-size: 15px;
+    }
+
+    &__list {
+        padding: 10px;
+        overflow-y: auto;
+        @include mixins.flex-box($gap: 10px, $d: column);
+    }
 }
 
 .user-notification-card {
@@ -369,18 +398,36 @@
     &__content {
         flex-grow: 1;
         padding: 10px;
-        @include mixins.flex-box($a: center, $j: center);
+        @include mixins.flex-box($j: center, $d: column);
+    }
+
+    &__icon {
+        font-size: 26px;
+        margin-right: 7px;
+    }
+
+    &__subject {
+        text-align: center;
+        font-size: 18px;
+        color: variables.$color_grey;
     }
 
     &__message {
         text-align: center;
         font-size: 20px;
-        font-weight: 500;
     }
 
-    &__actions {
+    &__footer {
         padding: 10px;
         border-top: 1px solid rgba(0, 0, 0, .1);
         @include mixins.flex-box($gap: 10px, $a: center);
+    }
+}
+
+.user-notification-card-template {
+    padding: 10px 0;
+
+    &__company {
+        width: 350px;
     }
 }

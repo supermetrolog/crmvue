@@ -66,7 +66,7 @@ import MessengerChatMessageAdditions from '@/components/Messenger/Chat/Message/A
 import UiButtonIcon from '@/components/common/UI/UiButtonIcon.vue';
 import { useAsyncPopup } from '@/composables/useAsyncPopup.js';
 import { useSurveyEditing } from '@/components/Survey/useSurveyEditing.js';
-import { useAuth } from '@/composables/useAuth.js';
+import { useAuth } from '@/composables/useAuth';
 import UiModal from '@/components/common/UI/UiModal.vue';
 import UiField from '@/components/common/UI/UiField.vue';
 import Avatar from '@/components/common/Avatar.vue';

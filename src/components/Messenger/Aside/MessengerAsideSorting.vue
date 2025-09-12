@@ -78,7 +78,7 @@ import FormModalMessengerFilters from '@/components/Forms/FormModalMessengerFilt
 import { computed, ref } from 'vue';
 import { isEmpty } from '@/utils/helpers/common/isEmpty.js';
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
-import { useAuth } from '@/composables/useAuth.js';
+import { useAuth } from '@/composables/useAuth';
 import { useStore } from 'vuex';
 import { messenger } from '@/const/messenger.js';
 

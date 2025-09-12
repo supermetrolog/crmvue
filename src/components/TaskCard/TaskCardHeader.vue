@@ -168,7 +168,7 @@ import dayjs from 'dayjs';
 import { taskOptions } from '@/const/options/task.options.js';
 import { useStore } from 'vuex';
 import { dayjsFromServer, toDateFormat } from '@/utils/formatters/date.ts';
-import { useAuth } from '@/composables/useAuth.js';
+import { useAuth } from '@/composables/useAuth';
 import TaskCardHeaderTargets from '@/components/TaskCard/TaskCardHeaderTargets.vue';
 import { useFavoriteTasks } from '@/composables/useFavoriteTasks.js';
 import UiButtonIcon from '@/components/common/UI/UiButtonIcon.vue';

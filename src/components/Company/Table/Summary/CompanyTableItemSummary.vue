@@ -130,7 +130,7 @@ import DashboardTableTasksItem from '@/components/Dashboard/Table/TasksItem/Dash
 import UiModal from '@/components/common/UI/UiModal.vue';
 import { dayjsFromServer } from '@/utils/formatters/date.ts';
 import { now } from '@vueuse/core';
-import { useAuth } from '@/composables/useAuth.js';
+import { useAuth } from '@/composables/useAuth';
 import CompanyTableItemSummarySuggest from '@/components/Company/Table/Summary/Suggest/CompanyTableItemSummarySuggest.vue';
 import api from '@/api/api.js';
 import { captureException } from '@sentry/vue';

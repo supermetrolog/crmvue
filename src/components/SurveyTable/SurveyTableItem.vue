@@ -153,7 +153,7 @@ import UiDropdownActions from '@/components/common/UI/DropdownActions/UiDropdown
 import { useRouter } from 'vue-router';
 import { plural } from '@/utils/plural.js';
 import UiDropdownActionsGroup from '@/components/common/UI/DropdownActions/UiDropdownActionsGroup.vue';
-import { useAuth } from '@/composables/useAuth.js';
+import { useAuth } from '@/composables/useAuth';
 import { dayjsFromServer } from '@/utils/formatters/date.ts';
 import dayjs from 'dayjs';
 import ContactPositionField from '@/components/Contact/ContactPositionField.vue';

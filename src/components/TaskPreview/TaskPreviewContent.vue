@@ -22,7 +22,7 @@
 import Spinner from '@/components/common/Spinner.vue';
 import TaskCard from '@/components/TaskCard/TaskCard.vue';
 import { useMessenger } from '@/components/Messenger/useMessenger.js';
-import { useAuth } from '@/composables/useAuth.js';
+import { useAuth } from '@/composables/useAuth';
 import { computed, onBeforeMount, ref } from 'vue';
 import api from '@/api/api.js';
 import { toDateFormat } from '@/utils/formatters/date.ts';

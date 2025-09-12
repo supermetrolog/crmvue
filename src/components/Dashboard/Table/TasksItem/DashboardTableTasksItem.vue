@@ -141,7 +141,7 @@ import {
     toDateFormat
 } from '@/utils/formatters/date.ts';
 import { Tippy } from 'vue-tippy';
-import { useAuth } from '@/composables/useAuth.js';
+import { useAuth } from '@/composables/useAuth';
 import DashboardTableTasksItemObserver from '@/components/Dashboard/Table/TasksItem/DashboardTableTasksItemObserver.vue';
 import { isString } from '@/utils/helpers/string/isString.js';
 import { useFavoriteTasks } from '@/composables/useFavoriteTasks.js';

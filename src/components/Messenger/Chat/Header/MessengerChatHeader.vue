@@ -33,7 +33,7 @@ import MessengerChatHeaderRequest from '@/components/Messenger/Chat/Header/Messe
 import MessengerChatHeaderUser from '@/components/Messenger/Chat/Header/MessengerChatHeaderUser.vue';
 import MessengerChatHeaderCompany from '@/components/Messenger/Chat/Header/MessengerChatHeaderCompany.vue';
 import { messenger } from '@/const/messenger.js';
-import { useAuth } from '@/composables/useAuth.js';
+import { useAuth } from '@/composables/useAuth';
 
 const COMPONENTS = {
     MessengerChatHeaderObject: MessengerChatHeaderObject,

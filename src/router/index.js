@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router';
-import { useAuth } from '@/composables/useAuth.js';
+import { useAuth } from '@/composables/useAuth';
 import { useNotify } from '@/utils/use/useNotify.js';
 import { getAccessTokenFromLocalStorage } from '@/services/localStorage.js';
 import { useDocumentTitle } from '@/composables/useDocumentTitle.ts';
@@ -362,6 +362,14 @@ const routes = [
                     title: ['Админка', 'Сообщения']
                 },
                 component: () => import('../views/Admin/ChatMemberMessages.vue')
+            },
+            {
+                path: 'notifications',
+                name: 'admin-notifications',
+                meta: {
+                    title: ['Админка', 'Уведомления']
+                },
+                component: () => import('../views/Admin/Notifications.vue')
             }
         ]
     },

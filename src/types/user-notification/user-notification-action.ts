@@ -1,4 +1,6 @@
 import { Identifiable } from '@/types/base';
+import { ShortUserNotification } from '@/types/user-notification/user-notification';
+import { User } from '@/types/user';
 
 export interface UserNotificationAction extends Identifiable {
     user_notification_id: number;
@@ -19,4 +21,10 @@ export interface UserNotificationActionLog extends Identifiable {
     user_id: number;
     user_notification_id: number;
     executed_at: string;
+}
+
+export interface SearchedUserNotificationActionLog extends UserNotificationActionLog {
+    action: UserNotificationAction;
+    notification: ShortUserNotification;
+    user: User;
 }

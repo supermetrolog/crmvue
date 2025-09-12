@@ -1,5 +1,6 @@
 import { notify } from '@kyvg/vue3-notification';
 import { captureException } from '@sentry/vue';
+import { pushUserNotificationToast } from '@/composables/useUserNotificationToasts';
 
 function showNotify(text, title, type = 'success') {
     notify({
@@ -11,13 +12,17 @@ function showNotify(text, title, type = 'success') {
     });
 }
 
+const stringPriorityToIntMap = {
+    low: 1,
+    normal: 2,
+    high: 3,
+    urgent: 4
+};
+
 function showUserNotification(subject, message, data = null) {
-    notify({
-        group: 'user-notifications',
-        duration: 60000,
-        title: subject,
-        text: message,
-        data
+    void pushUserNotificationToast({
+        notificationId: data.notification_id,
+        priority: stringPriorityToIntMap[data.priority]
     });
 }
 

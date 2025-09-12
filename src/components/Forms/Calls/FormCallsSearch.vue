@@ -149,7 +149,7 @@ import { deleteEmptyFields } from '@/utils/helpers/object/deleteEmptyFields.js';
 import { useRoute, useRouter } from 'vue-router';
 import { useSearchForm } from '@/composables/useSearchForm.js';
 import { cloneObject } from '@/utils/helpers/object/cloneObject.js';
-import { useAuth } from '@/composables/useAuth.js';
+import { useAuth } from '@/composables/useAuth';
 import UiFormDivider from '@/components/common/Forms/UiFormDivider.vue';
 import { isNotNullish } from '@/utils/helpers/common/isNotNullish.ts';
 import { useSelectedFilters } from '@/composables/useSelectedFilters.js';

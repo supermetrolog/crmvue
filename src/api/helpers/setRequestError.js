@@ -2,7 +2,7 @@ import { notify } from '@kyvg/vue3-notification';
 import store from '../../store';
 import router from '../../router';
 import { abortRequests } from '@/services/axios.js';
-import { useAuth } from '@/composables/useAuth.js';
+import { useAuth } from '@/composables/useAuth';
 
 const notifyOptions = {
     group: 'app',

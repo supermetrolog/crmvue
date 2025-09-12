@@ -185,7 +185,7 @@ import UiDropdownActionsTrigger from '@/components/common/UI/DropdownActions/UiD
 import UserFoldersDropdown from '@/components/UserFolder/UserFoldersDropdown.vue';
 import FormUserFolder from '@/components/Forms/FormUserFolder.vue';
 import { useUserFolders } from '@/composables/useUserFolders.js';
-import { useAuth } from '@/composables/useAuth.js';
+import { useAuth } from '@/composables/useAuth';
 import UiDropdownActionsGroup from '@/components/common/UI/DropdownActions/UiDropdownActionsGroup.vue';
 import UiButtonIcon from '@/components/common/UI/UiButtonIcon.vue';
 import { CompanyStatusEnum } from '@/types/company';

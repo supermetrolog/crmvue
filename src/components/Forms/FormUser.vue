@@ -198,7 +198,7 @@ import UiButton from '@/components/common/UI/UiButton.vue';
 import { useFormData } from '@/utils/use/useFormData.js';
 import { useValidation } from '@/composables/useValidation.js';
 import { useAsync } from '@/composables/useAsync.js';
-import { useAuth } from '@/composables/useAuth.js';
+import { useAuth } from '@/composables/useAuth';
 import UiFormDivider from '@/components/common/Forms/UiFormDivider.vue';
 import UiCol from '@/components/common/UI/UiCol.vue';
 import Switch from '@/components/common/Forms/Switch.vue';
