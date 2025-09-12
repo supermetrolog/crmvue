@@ -47,7 +47,7 @@ import AnimationTransition from '@/components/common/AnimationTransition.vue';
 import UiButtonIcon from '@/components/common/UI/UiButtonIcon.vue';
 import { computed, onMounted, ref, watch } from 'vue';
 import api from '@/api/api.js';
-import { useAuth } from '@/composables/useAuth.js';
+import { useAuth } from '@/composables/useAuth';
 import { useDebounceFn, useDocumentVisibility, useIntervalFn, useLocalStorage } from '@vueuse/core';
 import { LOCALSTORAGE_PREFIX } from '@/services/localStorage.js';
 import { isNullish } from '@/utils/helpers/common/isNullish.ts';

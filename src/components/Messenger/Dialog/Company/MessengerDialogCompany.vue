@@ -88,7 +88,7 @@ import { computed } from 'vue';
 import CompanyLogo from '@/components/Company/CompanyLogo.vue';
 import { alg } from '@/utils/alg.js';
 import { getCompanyName } from '@/utils/formatters/models/company.js';
-import { useAuth } from '@/composables/useAuth.js';
+import { useAuth } from '@/composables/useAuth';
 import { plural } from '@/utils/plural.js';
 import { companyOptions } from '@/const/options/company.options.js';
 import Avatar from '@/components/common/Avatar.vue';

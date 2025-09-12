@@ -27,7 +27,7 @@
 </template>
 
 <script setup>
-import { useAuth } from '@/composables/useAuth.js';
+import { useAuth } from '@/composables/useAuth';
 import { computed } from 'vue';
 import { dayjsFromServer, nowInServer } from '@/utils/formatters/date.ts';
 import CompanyTableItemSummarySuggestTask from '@/components/Company/Table/Summary/Suggest/CompanyTableItemSummarySuggestTask.vue';

@@ -72,7 +72,7 @@ import dayjs from 'dayjs';
 import Avatar from '@/components/common/Avatar.vue';
 import { isNotNullish } from '@/utils/helpers/common/isNotNullish';
 import IconBadgeCheck from '@/components/common/Icons/IconBadgeCheck.vue';
-import { useAuth } from '@/composables/useAuth.js';
+import { useAuth } from '@/composables/useAuth';
 import { Tippy } from 'vue-tippy';
 import { CompanyStatusEnum } from '@/types/company';
 

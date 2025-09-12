@@ -228,7 +228,7 @@ import { getCompanyShortName } from '@/utils/formatters/models/company.js';
 import { useStore } from 'vuex';
 import dayjs from 'dayjs';
 import { isArray } from '@/utils/helpers/array/isArray.ts';
-import { useAuth } from '@/composables/useAuth.js';
+import { useAuth } from '@/composables/useAuth';
 
 const modelValue = defineModel({ type: Object });
 

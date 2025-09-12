@@ -19,7 +19,7 @@ import { onMounted, ref } from 'vue';
 
 import HeaderSummarySection from '@/components/Header/Summary/HeaderSummarySection.vue';
 import api from '@/api/api.js';
-import { useAuth } from '@/composables/useAuth.js';
+import { useAuth } from '@/composables/useAuth';
 import { useDelayedLoader } from '@/composables/useDelayedLoader.js';
 import HeaderSummaryProgressTasksContent from '@/components/Header/Summary/HeaderSummaryProgressTasksContent.vue';
 import { useEventBus } from '@vueuse/core';

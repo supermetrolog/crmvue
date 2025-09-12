@@ -29,7 +29,7 @@
 import RequestRowCard from '@/components/RequestRowCard/RequestRowCard.vue';
 import UiDropdownActionsButton from '@/components/common/UI/DropdownActions/UiDropdownActionsButton.vue';
 import { computed } from 'vue';
-import { useAuth } from '@/composables/useAuth.js';
+import { useAuth } from '@/composables/useAuth';
 import UiDropdownActionsGroup from '@/components/common/UI/DropdownActions/UiDropdownActionsGroup.vue';
 
 defineEmits(['open-timeline', 'create-task', 'to-passive']);

@@ -3,6 +3,7 @@ import { noop } from '@vueuse/core';
 import { useConfirm } from '@/composables/useConfirm.js';
 import { isNotNullish } from '@/utils/helpers/common/isNotNullish.ts';
 import { isArray } from '@/utils/helpers/array/isArray.ts';
+import { captureException } from '@sentry/vue';
 
 const supportsAbort = typeof AbortController === 'function';
 
@@ -13,6 +14,7 @@ const supportsAbort = typeof AbortController === 'function';
 export function useAsync(callable, config = {}) {
     const {
         throwOnFailed = false,
+        captured = true,
         onFetchResponse = noop,
         onFetchError = noop,
         onFetchFinally = noop,
@@ -92,7 +94,11 @@ export function useAsync(callable, config = {}) {
             .catch(fetchError => {
                 let errorData = fetchError.message || fetchError.name;
 
-                onFetchError({ error: fetchError, execute });
+                onFetchError(fetchError, execute);
+
+                if (captured) {
+                    captureException(fetchError);
+                }
 
                 isError.value = true;
                 error.value = errorData;

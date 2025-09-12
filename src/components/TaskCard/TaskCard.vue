@@ -157,7 +157,7 @@ import TaskCardHistory from '@/components/TaskCard/History/TaskCardHistory.vue';
 import { useDelayedLoader } from '@/composables/useDelayedLoader.js';
 import { useEventBus } from '@vueuse/core';
 import { TASK_EVENTS } from '@/const/events/task.js';
-import { useAuth } from '@/composables/useAuth.js';
+import { useAuth } from '@/composables/useAuth';
 import { useLinkify } from '@/composables/useLinkify.js';
 import TaskCardFiles from '@/components/TaskCard/TaskCardFiles.vue';
 import TaskCardContacts from '@/components/TaskCard/TaskCardContactsList.vue';

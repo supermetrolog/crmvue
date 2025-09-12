@@ -94,7 +94,7 @@ import dayjs from 'dayjs';
 import { dayjsFromServer, toDateFormat } from '@/utils/formatters/date.ts';
 import { CALL_STATUSES } from '@/components/MessengerQuiz/useMessengerQuiz.js';
 import { isNullish } from '@/utils/helpers/common/isNullish';
-import { useAuth } from '@/composables/useAuth.js';
+import { useAuth } from '@/composables/useAuth';
 
 defineEmits(['to-chat', 'to-survey']);
 

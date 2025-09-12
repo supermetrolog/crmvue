@@ -3,7 +3,7 @@
 </template>
 <script setup>
 import { computed } from 'vue';
-import { useAuth } from '@/composables/useAuth.js';
+import { useAuth } from '@/composables/useAuth';
 
 const props = defineProps({
     moderator: Boolean,

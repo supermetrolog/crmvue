@@ -65,7 +65,7 @@ import TimelineComments from '@/components/Timeline/TimelineComments.vue';
 import LetterViewModal from '@/components/common/Letter/LetterViewModal.vue';
 import { useValidation } from '@/composables/useValidation.js';
 import { computed, onBeforeUnmount, reactive, ref, watch } from 'vue';
-import { useAuth } from '@/composables/useAuth.js';
+import { useAuth } from '@/composables/useAuth';
 
 const emit = defineEmits(['commentAdded']);
 const props = defineProps({

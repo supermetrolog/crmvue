@@ -207,7 +207,7 @@ import dayjs from 'dayjs';
 import { useTagsOptions } from '@/composables/options/useTagsOptions.js';
 import { taskOptions } from '@/const/options/task.options.js';
 import FormModalTaskDescription from '@/components/Forms/FormModalTaskDescription.vue';
-import { useAuth } from '@/composables/useAuth.js';
+import { useAuth } from '@/composables/useAuth';
 import { useDebounceFn, useTimeoutFn } from '@vueuse/core';
 import { isNotNullish } from '@/utils/helpers/common/isNotNullish.ts';
 import FileInput from '@/components/common/Forms/FileInput.vue';

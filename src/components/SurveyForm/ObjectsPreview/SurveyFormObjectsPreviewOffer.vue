@@ -182,7 +182,7 @@ import { useConsultantsOptions } from '@/composables/options/useConsultantsOptio
 import Avatar from '@/components/common/Avatar.vue';
 import { getApiFileNotFound } from '@/utils/url.js';
 import { toDateFormat } from '@/utils/formatters/date.ts';
-import { useAuth } from '@/composables/useAuth.js';
+import { useAuth } from '@/composables/useAuth';
 import { useStore } from 'vuex';
 
 const modelValue = defineModel({ type: Object, default: () => ({}) });

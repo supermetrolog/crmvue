@@ -51,7 +51,7 @@ import Loader from '@/components/common/Loader.vue';
 import EmptyLabel from '@/components/common/EmptyLabel.vue';
 import VirtualDragList from 'vue-virtual-draglist';
 import { useTimeoutFn } from '@vueuse/core';
-import { useAuth } from '@/composables/useAuth.js';
+import { useAuth } from '@/composables/useAuth';
 import HeaderSummaryMessagesContentMessage from '@/components/Header/Summary/Messages/HeaderSummaryMessagesContentMessage.vue';
 import HeaderSummaryMessagesContentNotification from '@/components/Header/Summary/Messages/HeaderSummaryMessagesContentNotification.vue';
 import MessengerChatLabelRow from '@/components/Messenger/Chat/MessengerChatLabelRow.vue';

@@ -49,7 +49,7 @@ import { computed, ref, shallowRef, watch } from 'vue';
 import TaskCard from '@/components/TaskCard/TaskCard.vue';
 import api from '@/api/api.js';
 import { useMessenger } from '@/components/Messenger/useMessenger.js';
-import { useAuth } from '@/composables/useAuth.js';
+import { useAuth } from '@/composables/useAuth';
 import Spinner from '@/components/common/Spinner.vue';
 import { toDateFormat } from '@/utils/formatters/date.ts';
 import { spliceById } from '@/utils/helpers/array/spliceById.js';

@@ -56,7 +56,7 @@ import TimelineHeaderStatus from '@/components/Timeline/TimelineHeaderStatus.vue
 import UiButton from '@/components/common/UI/UiButton.vue';
 import UiButtonIcon from '@/components/common/UI/UiButtonIcon.vue';
 import { computed, ref } from 'vue';
-import { useAuth } from '@/composables/useAuth.js';
+import { useAuth } from '@/composables/useAuth';
 import { useConfirm } from '@/composables/useConfirm.js';
 import { useStore } from 'vuex';
 

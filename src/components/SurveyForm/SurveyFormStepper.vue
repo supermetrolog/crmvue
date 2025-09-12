@@ -137,7 +137,7 @@ import { isNotNullish } from '@/utils/helpers/common/isNotNullish.ts';
 import { useEventBus, useIntervalFn } from '@vueuse/core';
 import api from '@/api/api.js';
 import { surveyConfig } from '@/configs/survey.config.js';
-import { useAuth } from '@/composables/useAuth.js';
+import { useAuth } from '@/composables/useAuth';
 import { isNullish } from '@/utils/helpers/common/isNullish.ts';
 import UiButton from '@/components/common/UI/UiButton.vue';
 import { useAsync } from '@/composables/useAsync.js';

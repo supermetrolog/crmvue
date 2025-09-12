@@ -116,7 +116,7 @@ import UiDropdownActions from '@/components/common/UI/DropdownActions/UiDropdown
 import UiDropdownActionsButton from '@/components/common/UI/DropdownActions/UiDropdownActionsButton.vue';
 import UiDropdownActionsTrigger from '@/components/common/UI/DropdownActions/UiDropdownActionsTrigger.vue';
 import { contactOptions } from '@/const/options/contact.options.js';
-import { useAuth } from '@/composables/useAuth.js';
+import { useAuth } from '@/composables/useAuth';
 import { isPersonalContact } from '@/utils/helpers/models/contact.js';
 import UiButtonIcon from '@/components/common/UI/UiButtonIcon.vue';
 import Loader from '@/components/common/Loader.vue';

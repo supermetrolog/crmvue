@@ -37,7 +37,7 @@ import { useDelayedLoader } from '@/composables/useDelayedLoader.js';
 import api from '@/api/api.js';
 import DashboardTableTasks from '@/components/Dashboard/Table/DashboardTableTasks.vue';
 import PaginationClassic from '@/components/common/Pagination/PaginationClassic.vue';
-import { useAuth } from '@/composables/useAuth.js';
+import { useAuth } from '@/composables/useAuth';
 import HeaderSummaryEmpty from '@/components/Header/Summary/HeaderSummaryEmpty.vue';
 import UiButton from '@/components/common/UI/UiButton.vue';
 

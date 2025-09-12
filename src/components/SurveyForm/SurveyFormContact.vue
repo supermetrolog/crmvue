@@ -85,7 +85,7 @@ import { toBool } from '@/utils/helpers/common/toBool';
 import { TransitionExpand } from '@morev/vue-transitions';
 import IconArrowRight from '@/components/common/Icons/IconArrowRight.vue';
 import dayjs from 'dayjs';
-import { useAuth } from '@/composables/useAuth.js';
+import { useAuth } from '@/composables/useAuth';
 
 defineEmits([
     'edit',

@@ -44,7 +44,7 @@ import { computed, toRef, useTemplateRef } from 'vue';
 import { toBeautifulDateFormat } from '@/utils/formatters/date.ts';
 import Avatar from '@/components/common/Avatar.vue';
 import { useLinkify } from '@/composables/useLinkify.js';
-import { useAuth } from '@/composables/useAuth.js';
+import { useAuth } from '@/composables/useAuth';
 import UiDropdownActions from '@/components/common/UI/DropdownActions/UiDropdownActions.vue';
 import UiDropdownActionsButton from '@/components/common/UI/DropdownActions/UiDropdownActionsButton.vue';
 import UiButton from '@/components/common/UI/UiButton.vue';

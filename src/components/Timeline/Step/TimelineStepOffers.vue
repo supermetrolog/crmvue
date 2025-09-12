@@ -304,7 +304,7 @@ import { useStore } from 'vuex';
 import api from '@/api/api.js';
 import { useTimelineContext } from '@/components/Timeline/useTimelineContext.js';
 import { isNotNullish } from '@/utils/helpers/common/isNotNullish.ts';
-import { useAuth } from '@/composables/useAuth.js';
+import { useAuth } from '@/composables/useAuth';
 import UiModal from '@/components/common/UI/UiModal.vue';
 import UiButton from '@/components/common/UI/UiButton.vue';
 import UiForm from '@/components/common/Forms/UiForm.vue';

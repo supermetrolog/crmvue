@@ -1,70 +1,117 @@
 <template>
-    <notifications position="top right" group="user-notifications" pause-on-hover :width="450">
-        <template #body="{ item, close }">
-            <div class="vue-notification-template vue-notification info app-user-notification">
-                <div class="notification-title app-user-notification-title">
-                    <i class="fa-solid fa-bell fs-4" />
-                    <span>{{ item.title }}</span>
-                </div>
-                <div class="notification-content app-user-notification-content">
-                    {{ item.text }}
-                </div>
-                <UiButton
-                    @click="showUserNotification(item.data?.notification_id, close)"
-                    class="mt-2 app-user-notification-button"
-                    icon="fa-solid fa-external-link"
-                    color="white"
-                    tooltip="Нажмите, чтобы открыть уведомление"
-                >
-                    Просмотреть
-                </UiButton>
-            </div>
-        </template>
-    </notifications>
     <teleport to="body">
-        <UserNotificationPreview
-            v-model:visible="previewIsVisible"
-            @closed="onClosePreview"
-            :notification-id="viewingUserNotificationId"
-        />
+        <transition name="backdrop-fade">
+            <div v-if="isOpen && current" class="important-toast-backdrop">
+                <transition name="toast-spring" mode="out-in" appear>
+                    <UserNotificationPreviewContent
+                        v-if="current"
+                        :key="current.id"
+                        @acted="onActed"
+                        @close="dismissAll"
+                        :notification-id="current.notificationId"
+                    >
+                        <template #additional-actions>
+                            <UiButton
+                                v-if="pending > 1"
+                                @click="onAction('next')"
+                                :color="currentIsActed ? 'success-light' : 'light'"
+                                icon="fa-solid fa-arrow-right"
+                            >
+                                Далее (ещё {{ pending - 1 }})
+                            </UiButton>
+                            <UiButton
+                                v-else-if="!currentIsActed"
+                                @click="onAction('skip')"
+                                color="light"
+                                icon="fa-solid fa-ban"
+                            >
+                                Отложить
+                            </UiButton>
+                            <UiButton
+                                v-else
+                                @click="onAction('close')"
+                                color="light"
+                                icon="fa-solid fa-ban"
+                            >
+                                Закрыть
+                            </UiButton>
+                        </template>
+                        <template #fallback></template>
+                    </UserNotificationPreviewContent>
+                </transition>
+            </div>
+        </transition>
     </teleport>
 </template>
 
 <script setup lang="ts">
-import { Notifications } from '@kyvg/vue3-notification';
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
+import { useUserNotificationToasts } from '@/composables/useUserNotificationToasts';
+import UserNotificationPreviewContent from '@/components/UserNotificationPreview/UserNotificationPreviewContent.vue';
 import UiButton from '@/components/common/UI/UiButton.vue';
-import UserNotificationPreview from '@/components/UserNotificationPreview/UserNotificationPreview.vue';
 
-const previewIsVisible = ref(false);
+const { current, isOpen, action, pending, dismissAll } = useUserNotificationToasts();
 
-const viewingUserNotificationId = ref<number | null>(null);
-
-function showUserNotification(notificationId: number, closeCb: () => void) {
-    closeCb();
-
-    viewingUserNotificationId.value = notificationId;
-    previewIsVisible.value = true;
+function onAction(val: string) {
+    action(val);
 }
 
-function onClosePreview() {
-    viewingUserNotificationId.value = null;
+const currentIsActed = ref(false);
+
+watch(
+    () => current.value?.id,
+    () => {
+        currentIsActed.value = false;
+    }
+);
+
+function onActed() {
+    currentIsActed.value = true;
 }
 </script>
 <style>
-.app-user-notification-title {
-    font-size: 17px;
-    display: flex;
-    align-items: center;
-    gap: 5px;
+.important-toast-backdrop {
+    position: fixed;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    background: rgba(0, 0, 0, 0.7);
+    z-index: 4001;
 }
 
-.app-user-notification-content {
-    font-size: 15px;
+.backdrop-fade-enter-active,
+.backdrop-fade-leave-active {
+    transition: opacity 0.6s ease;
 }
 
-.app-user-notification-button {
-    font-size: 14px;
-    padding: 5px 10px !important;
+.backdrop-fade-enter-from,
+.backdrop-fade-leave-to {
+    opacity: 0;
+}
+
+.toast-spring-enter-active {
+    animation: toastSpringIn 1s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.toast-spring-leave-active {
+    transition:
+        transform 1s ease,
+        opacity 1s ease;
+}
+
+.toast-spring-leave-to {
+    transform: translateY(100px);
+    opacity: 0;
+}
+
+@keyframes toastSpringIn {
+    0% {
+        transform: translateY(-100px) scale(0.98);
+        opacity: 0;
+    }
+    100% {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+    }
 }
 </style>

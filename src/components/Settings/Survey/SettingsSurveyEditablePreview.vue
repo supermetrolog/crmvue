@@ -100,7 +100,7 @@ import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
 import MessengerQuizEditableQuestion from '@/components/MessengerQuiz/Question/MessengerQuizEditableQuestion.vue';
 import { useStore } from 'vuex';
 import FormQuestion from '@/components/Forms/FormQuestion.vue';
-import { useAuth } from '@/composables/useAuth.js';
+import { useAuth } from '@/composables/useAuth';
 
 const { currentUserIsAdmin } = useAuth();
 

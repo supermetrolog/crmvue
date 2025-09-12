@@ -33,7 +33,7 @@
 </template>
 
 <script setup>
-import { useAuth } from '@/composables/useAuth.js';
+import { useAuth } from '@/composables/useAuth';
 import { computed } from 'vue';
 import { isNullish } from '@/utils/helpers/common/isNullish.ts';
 import { isNotNullish } from '@/utils/helpers/common/isNotNullish.ts';
