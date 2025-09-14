@@ -1,6 +1,9 @@
 import { notify } from '@kyvg/vue3-notification';
 import { captureException } from '@sentry/vue';
-import { pushUserNotificationToast } from '@/composables/useUserNotificationToasts';
+import {
+    initNotifications,
+    publishNotificationFromWS
+} from '@/services/notifications/notifications';
 
 function showNotify(text, title, type = 'success') {
     notify({
@@ -9,20 +12,6 @@ function showNotify(text, title, type = 'success') {
         duration: 5000,
         title,
         text
-    });
-}
-
-const stringPriorityToIntMap = {
-    low: 1,
-    normal: 2,
-    high: 3,
-    urgent: 4
-};
-
-function showUserNotification(subject, message, data = null) {
-    void pushUserNotificationToast({
-        notificationId: data.notification_id,
-        priority: stringPriorityToIntMap[data.priority]
     });
 }
 
@@ -183,16 +172,16 @@ const Websocket = {
             }
         },
         _ws_new_user_notification(_, data) {
-            const p = data.message || {};
-
-            showUserNotification(
-                p.subject ?? 'Новое уведомление',
-                p.message ?? 'У вас новое уведомление!',
-                p
-            );
+            publishNotificationFromWS(data.message);
         },
-        _ws_user_setted({ commit }) {
+        _ws_user_set({ commit, rootGetters }) {
             commit('toggleSetedUserIdFlag', true);
+
+            const user = rootGetters.THIS_USER;
+
+            if (user) {
+                initNotifications(user.id);
+            }
         },
         _ws_info() {
             // нераспознанные события

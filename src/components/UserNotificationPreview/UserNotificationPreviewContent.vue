@@ -9,6 +9,7 @@
             <UserNotificationCard
                 @updated="onUpdated"
                 @close="$emit('close')"
+                @acted="$emit('acted')"
                 :notification="currentNotification"
             >
                 <template #additional-actions>
