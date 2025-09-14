@@ -36,6 +36,7 @@ import { useConfirm } from '@/composables/useConfirm';
 import { captureEvent } from '@sentry/vue';
 import { useAuth } from '@/composables/useAuth';
 import TaskPreview from '@/components/TaskPreview/TaskPreview.vue';
+import { isNullish } from '@/utils/helpers/common/isNullish';
 
 const emit = defineEmits<{
     (e: 'acted'): void;
@@ -52,6 +53,12 @@ const hasTaskPreview = computed(() =>
 );
 
 const notificationsBus = useUserNotificationsBus();
+
+const canBeActed = computed(
+    () =>
+        props.notification.user_id === currentUser.value.id &&
+        isNullish(props.notification.acted_at)
+);
 
 async function markAsActed() {
     const notificationId = props.notification.id;
@@ -82,7 +89,10 @@ function handleAction(action: UserNotificationAction) {
 
 function processAction(action: UserNotificationAction) {
     api.userNotifications.processAction(action.user_notification_id, action.id);
-    markAsActed();
+
+    if (canBeActed.value) {
+        markAsActed();
+    }
 }
 
 const router = useRouter();
