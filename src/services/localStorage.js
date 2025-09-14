@@ -6,43 +6,46 @@ export const LS_USER_KEY = 'user';
 export const LS_ACCESS_TOKEN_KEY = 'astn';
 export const LS_ACCESS_TOKEN_ID_KEY = 'astnid';
 
+function createKey(str) {
+    return LOCALSTORAGE_PREFIX + str;
+}
+
+export function getFromLocalstorage(key) {
+    return localStorage.getItem(createKey(key));
+}
+
+export function setInLocalstorage(key, value) {
+    localStorage.setItem(createKey(key), value);
+}
+
+export function removeFromLocalstorage(key) {
+    localStorage.removeItem(createKey(key));
+}
+
 function getUserJSON() {
-    return localStorage.getItem(LOCALSTORAGE_PREFIX + LS_USER_KEY);
+    return getFromLocalstorage(LS_USER_KEY);
 }
 
 function getAccessToken() {
-    return localStorage.getItem(LOCALSTORAGE_PREFIX + LS_ACCESS_TOKEN_KEY);
+    return getFromLocalstorage(LS_ACCESS_TOKEN_KEY);
 }
 
 function getAccessTokenId() {
-    return localStorage.getItem(LOCALSTORAGE_PREFIX + LS_ACCESS_TOKEN_ID_KEY);
+    return getFromLocalstorage(LS_ACCESS_TOKEN_ID_KEY);
 }
 
-/**
- * Соранить пользователя в localStorage
- * @param {User} user
- * @param {string} token
- * @param {int} tokenId
- */
 export function setUserInLocalStorage(user, token, tokenId) {
-    if (user) localStorage.setItem(LOCALSTORAGE_PREFIX + LS_USER_KEY, JSON.stringify(user));
-    if (token) localStorage.setItem(LOCALSTORAGE_PREFIX + LS_ACCESS_TOKEN_KEY, token);
-    if (tokenId) localStorage.setItem(LOCALSTORAGE_PREFIX + LS_ACCESS_TOKEN_ID_KEY, tokenId);
+    if (user) setInLocalstorage(LS_USER_KEY, JSON.stringify(user));
+    if (token) setInLocalstorage(LS_ACCESS_TOKEN_KEY, token);
+    if (tokenId) setInLocalstorage(LS_ACCESS_TOKEN_ID_KEY, tokenId);
 }
 
-/**
- * Очистить данные о пользователе из localStorage
- */
 export function removeUserInLocalStorage() {
-    localStorage.removeItem(LOCALSTORAGE_PREFIX + LS_USER_KEY);
-    localStorage.removeItem(LOCALSTORAGE_PREFIX + LS_ACCESS_TOKEN_KEY);
-    localStorage.removeItem(LOCALSTORAGE_PREFIX + LS_ACCESS_TOKEN_ID_KEY);
+    removeFromLocalstorage(LS_USER_KEY);
+    removeFromLocalstorage(LS_ACCESS_TOKEN_KEY);
+    removeFromLocalstorage(LS_ACCESS_TOKEN_ID_KEY);
 }
 
-/**
- * Получить пользователя из localStorage
- * @return {User | null} - Вернет пользователя, если он валиден в LS, в ином случае - null
- */
 export function getUserFromLocalStorage() {
     const json = getUserJSON();
     try {

@@ -46,24 +46,29 @@
                 </EmptyData>
             </div>
             <div class="task-card__column">
-                <Tabs nav-class="task-card__tabs" nav-item-link-class="task-card__tab-link">
-                    <Tab :name="`Комментарии (${task.comments_count ?? 0})`">
+                <Tabs
+                    ref="tabsEl"
+                    nav-class="task-card__tabs"
+                    nav-item-link-class="task-card__tab-link"
+                >
+                    <Tab id="comments" :name="`Комментарии (${task.comments_count ?? 0})`">
                         <TaskCardComments
                             @created="$emit('added-comment', $event)"
                             @deleted="$emit('deleted-comment', $event)"
                             :task
+                            :active-comment-id
                         />
                     </Tab>
-                    <Tab :name="`История (${task.histories_count})`">
+                    <Tab id="history" :name="`История (${task.histories_count})`">
                         <TaskCardHistory @created="$emit('history-changed', $event)" :task />
                     </Tab>
-                    <Tab :name="`Файлы (${task.files_count ?? 0})`">
+                    <Tab id="files" :name="`Файлы (${task.files_count ?? 0})`">
                         <TaskCardFiles
                             @count-changed="$emit('files-count-changed', $event)"
                             :task
                         />
                     </Tab>
-                    <Tab :name="`Связи (${task.relations_count})`">
+                    <Tab id="relations" :name="`Связи (${task.relations_count})`">
                         <TaskCardRelations
                             @count-changed="$emit('relations-count-changed', $event)"
                             @show-contacts="showContacts"
@@ -184,7 +189,8 @@ const emit = defineEmits([
 const props = defineProps({
     task: Object,
     editable: Boolean,
-    draggable: Boolean
+    draggable: Boolean,
+    activeCommentId: Number
 });
 
 const notify = useNotify();
@@ -205,8 +211,14 @@ const canBeViewed = computed(() => {
     return false;
 });
 
+const tabsEl = useTemplateRef('tabsEl');
+
 onMounted(() => {
     if (canBeViewed.value) debouncedReadTask();
+
+    if (props.activeCommentId) {
+        tabsEl.value.selectTab('#comments');
+    }
 });
 
 const taskReadEvent = useEventBus(TASK_EVENTS.READ);

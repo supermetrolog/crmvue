@@ -430,4 +430,17 @@
     &__company {
         width: 350px;
     }
+
+    &__task-comment {
+        &::before {
+            display: none;
+            content: unset;
+        }
+
+        width: 70%;
+        background-color: variables.$color_light;
+        padding: 5px;
+        border-radius: 5px;
+        border: 1px solid #ededed;
+    }
 }
