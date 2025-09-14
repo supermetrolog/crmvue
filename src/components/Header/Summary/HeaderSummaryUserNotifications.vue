@@ -5,7 +5,7 @@
         :modal-title="`Просмотр уведомлений (${countLabel})`"
         :count
         label="Новые уведомления"
-        class="danger"
+        :class="{ danger: count > 0 }"
         sticky
     >
         <template #modal="{ close }">
