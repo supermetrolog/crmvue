@@ -41,7 +41,8 @@ function resolveRoute() {
     if (props.action.payload?.route_code) {
         return router.resolve({
             name: routeMap[props.action.payload?.route_code],
-            params: props.action.payload?.params
+            params: props.action.payload?.params,
+            query: props.action.payload?.query
         }).href;
     }
 
