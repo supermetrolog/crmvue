@@ -9,7 +9,7 @@ import router from '@/router/index.js';
 
 export function initSentry(app) {
     if (isInitialized()) {
-        console.warn('[Sentry] Sentry already initialized');
+        console.log('[Sentry] Sentry already initialized');
         return;
     }
 
@@ -26,8 +26,8 @@ export function initSentry(app) {
             ignoreErrors: ['canceled', 'Request failed with status code 401', 'Network Error']
         });
 
-        console.warn('[Sentry] Sentry initialized');
+        console.log('[Sentry] Sentry initialized');
     } else {
-        console.warn('[Sentry] Skip Sentry initialization in dev mode');
+        console.log('[Sentry] Skip Sentry initialization in dev mode');
     }
 }

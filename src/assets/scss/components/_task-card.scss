@@ -354,6 +354,15 @@
         top: 35px;
         right: 7px;
     }
+
+    &__comment {
+        @include mixins.transition(background-color, padding);
+
+        &.active {
+            background-color: variables.$bg-success-l;
+            padding: 5px 0;
+        }
+    }
 }
 
 .task-card-comments {
@@ -457,6 +466,11 @@
         position: absolute;
         top: -20px;
         width: 2px;
+    }
+
+    &--skeleton::before {
+        display: none;
+        content: unset;
     }
 
     &:last-of-type {

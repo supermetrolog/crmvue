@@ -1,7 +1,12 @@
 <template>
-    <UiModal v-model:visible="visible" title="Просмотр задачи" :blackout-opacity="0.5">
+    <UiModal v-model:visible="visible" title="Просмотр задачи" :blackout-opacity="0.5" :z-index>
         <template #container="{ close }">
-            <TaskPreviewContent @updated="$emit('updated', $event)" @close="close" :task-id />
+            <TaskPreviewContent
+                @updated="$emit('updated', $event)"
+                @close="close"
+                :task-id
+                :active-comment-id
+            />
         </template>
     </UiModal>
 </template>
@@ -14,6 +19,8 @@ defineEmits(['updated']);
 const visible = defineModel('visible');
 
 defineProps({
-    taskId: Number
+    taskId: Number,
+    zIndex: Number,
+    activeCommentId: Number
 });
 </script>
