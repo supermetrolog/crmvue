@@ -11,15 +11,18 @@
                 class="center"
                 :label="isDeleting ? 'Удаление комментария' : 'Сохранение комментария'"
             />
-            <div class="task-card__list position-relative">
+            <div ref="listEl" class="task-card__list position-relative">
                 <TaskCardComment
                     v-for="comment in comments"
+                    :id="`comment-${comment.id}`"
                     :key="comment.id"
                     @preview="openPreview(comment.files, $event)"
                     @delete="deleteComment(comment.id)"
                     @edit="editComment(comment)"
                     :comment="comment"
+                    :class="{ active: comment.id === activeCommentId && activeCommentIsVisible }"
                     editable
+                    class="task-card__comment"
                 />
                 <InfiniteLoading
                     v-if="infiniteIsActive && task.comments_count > 10"
@@ -92,13 +95,13 @@
 <script setup lang="ts">
 import api from '@/api/api.js';
 import TaskCardComment from '@/components/TaskCard/TaskCardComment.vue';
-import { ref, shallowRef, useTemplateRef, watch } from 'vue';
+import { nextTick, onMounted, ref, shallowRef, useTemplateRef, watch } from 'vue';
 import UiTextarea from '@/components/common/Forms/UiTextarea.vue';
 import { useNotify } from '@/utils/use/useNotify.js';
 import Loader from '@/components/common/Loader.vue';
 import Spinner from '@/components/common/Spinner.vue';
 import InfiniteLoading from 'v3-infinite-loading';
-import { isNullish } from '@/utils/helpers/common/isNullish.ts';
+import { isNullish } from '@/utils/helpers/common/isNullish';
 import { spliceById } from '@/utils/helpers/array/spliceById.js';
 import File from '@/components/common/Forms/File.vue';
 import FileInput from '@/components/common/Forms/FileInput.vue';
@@ -111,6 +114,7 @@ import { useAsync } from '@/composables/useAsync.js';
 import UiButton from '@/components/common/UI/UiButton.vue';
 import { captureException } from '@sentry/vue';
 import { Task, TaskComment } from '@/types/task';
+import { useElementHover, useTimeoutFn } from '@vueuse/core';
 
 const emit = defineEmits<{
     (e: 'created', comment: TaskComment): void;
@@ -119,6 +123,7 @@ const emit = defineEmits<{
 
 interface Props {
     task: Task;
+    activeCommentId?: number;
 }
 
 const props = defineProps<Props>();
@@ -260,4 +265,37 @@ function openPreview(files, id) {
         id
     );
 }
+
+// active comment
+
+const activeCommentIsVisible = ref(true);
+
+const listEl = useTemplateRef('listEl');
+const isHovered = useElementHover(listEl);
+
+const stopHoverWatch = watch(isHovered, value => {
+    if (value) {
+        if (props.activeCommentId) {
+            useTimeoutFn(() => (activeCommentIsVisible.value = false), 2000);
+            stopHoverWatch();
+        }
+    }
+});
+
+function scrollToCommentId(commentId: number) {
+    const comment = listEl.value?.querySelector(`comment-${commentId}`);
+    if (comment) comment.scrollIntoView({ behavior: 'smooth' });
+}
+
+onMounted(() => {
+    if (props.activeCommentId) {
+        scrollToCommentId(props.activeCommentId);
+
+        nextTick(() => {
+            textareaEl.value?.focus();
+        });
+    } else {
+        stopHoverWatch();
+    }
+});
 </script>

@@ -16,6 +16,7 @@
         :task="currentTask"
         :draggable="userCanDrag"
         :editable="userCanEdit"
+        :active-comment-id
     />
 </template>
 <script setup>
@@ -34,7 +35,8 @@ const props = defineProps({
     taskId: {
         type: Number,
         required: true
-    }
+    },
+    activeCommentId: Number
 });
 
 const { openMessenger } = useMessenger();

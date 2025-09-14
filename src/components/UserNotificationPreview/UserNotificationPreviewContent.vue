@@ -21,18 +21,10 @@
                     v-if="currentNotification.actions.length"
                     class="user-notification-preview__actions"
                 >
-                    <div class="user-notification-preview-actions">
-                        <div class="user-notification-preview-actions__header">
-                            <p class="user-notification-preview-actions__title">Действия</p>
-                        </div>
-                        <div class="user-notification-preview-actions__list">
-                            <UserNotificationCardAction
-                                v-for="action in currentNotification.actions"
-                                :key="action.id"
-                                :action="action"
-                            />
-                        </div>
-                    </div>
+                    <UserNotificationPreviewContentActions
+                        @acted="$emit('acted')"
+                        :notification="currentNotification"
+                    />
                 </div>
             </transition>
         </template>
@@ -45,7 +37,7 @@ import api from '@/api/api.js';
 import UserNotificationCard from '@/components/UserNotificationCard/UserNotificationCard.vue';
 import { UserNotification } from '@/types/user-notification/user-notification';
 import { captureException } from '@sentry/vue';
-import UserNotificationCardAction from '@/components/UserNotificationCard/UserNotificationCardAction.vue';
+import UserNotificationPreviewContentActions from '@/components/UserNotificationPreview/UserNotificationPreviewContentActions.vue';
 
 const emit = defineEmits<{
     (e: 'close'): void;
