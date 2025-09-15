@@ -547,7 +547,12 @@ function createSurveyCallsPayload() {
     const payload = Object.values(form.value.calls).reduce((acc, contact) => {
         for (const phone of Object.values(contact?.phones ?? {})) {
             if (isNotNullish(phone.available) && isNotNullish(phone.reason)) {
-                acc.push({ ...phone, phone_id: phone.id, contact_id: contact.contact_id });
+                acc.push({
+                    ...phone,
+                    phone_id: phone.id,
+                    contact_id: contact.contact_id,
+                    full_name: contact.full_name
+                });
             }
         }
 
