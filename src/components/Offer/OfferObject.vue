@@ -26,6 +26,8 @@
                     <CompanyObjectItemOfferOnly
                         v-for="offer in offers"
                         :key="offer.id"
+                        @open-in-survey="openInSurvey(offer)"
+                        @open-in-chat="openInChat(offer)"
                         :offer="offer"
                         class="col-12"
                     />
@@ -44,6 +46,9 @@ import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
 import HoverActionsButton from '@/components/common/HoverActions/HoverActionsButton.vue';
 import { computed, onMounted, ref, shallowRef, watch } from 'vue';
 import api from '@/api/api.js';
+import { messenger } from '@/const/messenger.js';
+import { useSurveyForm } from '@/composables/useSurveyForm.js';
+import { useMessenger } from '@/components/Messenger/useMessenger.js';
 
 const props = defineProps({
     offerIds: {
@@ -124,4 +129,16 @@ const fetchOffers = async () => {
 
     isLoadingOffers.value = false;
 };
+
+// chat
+const { openSurvey } = useSurveyForm();
+const { openChat } = useMessenger();
+
+function openInChat(offer) {
+    openChat(offer.company_id, offer.object_id, messenger.dialogTypes.OBJECT);
+}
+
+function openInSurvey(offer) {
+    openSurvey(offer.company_id);
+}
 </script>

@@ -58,29 +58,53 @@
                     {{ offer.visual_id }}
                 </UiField>
                 <div class="offer-table-item-mobile__actions">
-                    <a :href="offerUrl" target="_blank">
+                    <a v-if="offer.type_id !== 3" :href="pdfUrl" target="_blank">
                         <UiButtonIcon
-                            label="Открыть страницу предложения"
                             class="offer-table-item-mobile__button"
-                            icon="fa-solid fa-eye"
+                            label="Открыть PDF"
+                            icon="fa-solid fa-file-pdf"
                         />
                     </a>
-                    <template v-if="offer.type_id !== 3">
-                        <UiButtonIcon
-                            @click="toggleFavorite"
-                            class="offer-table-item-mobile__button"
-                            :label="isFavorite ? 'Удалить из избранного' : 'Добавить в избранное'"
-                            :active="isFavorite"
-                            icon="fa-solid fa-star"
-                        />
-                        <a :href="pdfUrl" target="_blank">
-                            <UiButtonIcon
-                                class="offer-table-item-mobile__button"
-                                label="Открыть PDF"
-                                icon="fa-solid fa-file-pdf"
-                            />
-                        </a>
-                    </template>
+                    <UiDropdownActions
+                        label="Действия над предложением"
+                        button-class="offer-table-item-mobile__button"
+                        :title="`Предложение ${offer.visual_id}`"
+                    >
+                        <template #menu>
+                            <UiDropdownActionsGroup>
+                                <UiDropdownActionsButton
+                                    @handle="$emit('open-in-survey')"
+                                    icon="fa-solid fa-square-poll-horizontal"
+                                    label="Открыть опрос"
+                                    :disabled="!offer.company_id"
+                                />
+                                <UiDropdownActionsButton
+                                    @handle="$emit('open-in-chat')"
+                                    icon="fa-solid fa-comment"
+                                    label="Открыть в чате"
+                                />
+                                <a :href="offerUrl" target="_blank" class="text-inherit">
+                                    <UiDropdownActionsButton
+                                        @handle="$emit('create-task')"
+                                        icon="fa-solid fa-external-link"
+                                        label="Открыть предложение"
+                                    />
+                                </a>
+                            </UiDropdownActionsGroup>
+                            <UiDropdownActionsGroup v-if="offer.type_id !== 3">
+                                <UiDropdownActionsButton
+                                    @handle="toggleFavorite"
+                                    icon="fa-solid fa-star"
+                                    :active="isFavorite"
+                                    :label="
+                                        isFavorite
+                                            ? 'Удалить из избранного'
+                                            : 'Добавить в избранное'
+                                    "
+                                />
+                            </UiDropdownActionsGroup>
+                        </template>
+                    </UiDropdownActions>
                 </div>
             </div>
             <UiForm v-if="isSelected" class="object-offer__form mb-2">
@@ -281,8 +305,18 @@ import CompanyObjectItemProperty from '@/components/Company/Object/CompanyObject
 import UiForm from '@/components/common/Forms/UiForm.vue';
 import UiField from '@/components/common/UI/UiField.vue';
 import UiButtonIcon from '@/components/common/UI/UiButtonIcon.vue';
+import UiDropdownActions from '@/components/common/UI/DropdownActions/UiDropdownActions.vue';
+import UiDropdownActionsButton from '@/components/common/UI/DropdownActions/UiDropdownActionsButton.vue';
+import UiDropdownActionsGroup from '@/components/common/UI/DropdownActions/UiDropdownActionsGroup.vue';
 
-const emit = defineEmits(['select', 'unselect', 'addComment', 'deleteFavoriteOffer']);
+const emit = defineEmits([
+    'select',
+    'unselect',
+    'addComment',
+    'deleteFavoriteOffer',
+    'open-in-survey',
+    'open-in-chat'
+]);
 const props = defineProps({
     offer: {
         type: Object

@@ -22,6 +22,8 @@
                     @unselect="$emit('unselect', object)"
                     @addComment="addComment"
                     @deleteFavoriteOffer="$emit('deleteFavoriteOffer')"
+                    @open-in-survey="openInSurvey(object)"
+                    @open-in-chat="openInChat(object)"
                     :disabled="disabled"
                     :offer="object"
                     :is-selected="selectedObjects.some(item => item.id === object.id)"
@@ -40,6 +42,9 @@ import CompanyObjectItemOfferOnly from '@/components/Company/Object/CompanyObjec
 import Loader from '@/components/common/Loader.vue';
 import EmptyData from '@/components/common/EmptyData.vue';
 import CompanyObjectItemNoOffer from '@/components/Company/Object/CompanyObjectItemNoOffer.vue';
+import { messenger } from '@/const/messenger.js';
+import { useSurveyForm } from '@/composables/useSurveyForm.js';
+import { useMessenger } from '@/components/Messenger/useMessenger.js';
 
 const emit = defineEmits(['select', 'unselect', 'addComment', 'deleteFavoriteOffer']);
 defineProps({
@@ -91,4 +96,16 @@ defineProps({
 const addComment = (object, comment) => {
     emit('addComment', object, comment);
 };
+
+// chat
+const { openSurvey } = useSurveyForm();
+const { openChat } = useMessenger();
+
+function openInChat(offer) {
+    openChat(offer.company_id, offer.object_id ?? offer.id, messenger.dialogTypes.OBJECT);
+}
+
+function openInSurvey(offer) {
+    openSurvey(offer.company_id);
+}
 </script>
