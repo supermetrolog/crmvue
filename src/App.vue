@@ -2,7 +2,9 @@
     <AppVersionChecker />
     <AppUserNotifications />
     <notifications position="bottom right" group="app" pause-on-hover />
-    <component :is="layoutComponent" v-if="isInitialized" />
+    <ElConfigProvider :locale="ru">
+        <component :is="layoutComponent" v-if="isInitialized" />
+    </ElConfigProvider>
 </template>
 
 <script setup>
@@ -19,6 +21,8 @@ import { useTimeoutFn } from '@vueuse/core';
 import AppVersionChecker from '@/components/common/AppVersionChecker.vue';
 import { captureException } from '@sentry/vue';
 import AppUserNotifications from '@/components/common/AppUserNotifications.vue';
+import { ElConfigProvider } from 'element-plus';
+import ru from 'element-plus/es/locale/lang/ru';
 
 const LAYOUTS = {
     login: Login,

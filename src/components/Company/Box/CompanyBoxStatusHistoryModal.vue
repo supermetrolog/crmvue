@@ -10,13 +10,13 @@
         <p v-else-if="isError" class="text-center font-weight-semi">
             Ошибка при загрузке.. Попробуйте позже
         </p>
-        <div v-else class="d-flex flex-column gap-2">
+        <ElTimeline v-else>
             <CompanyBoxStatusHistory
                 v-for="history in histories"
                 :key="history.id"
                 :history="history"
             />
-        </div>
+        </ElTimeline>
         <template #actions="{ close }">
             <UiButton @click="close" color="light" icon="fa-solid fa-ban">
                 Закрыть просмотр
@@ -34,6 +34,7 @@ import api from '@/api/api.js';
 import { useAsync } from '@/composables/useAsync.js';
 import CompanyBoxStatusHistory from '@/components/Company/Box/CompanyBoxStatusHistory.vue';
 import Spinner from '@/components/common/Spinner.vue';
+import { ElTimeline } from 'element-plus';
 
 const props = defineProps({
     company: {
