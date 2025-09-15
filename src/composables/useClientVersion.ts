@@ -42,7 +42,7 @@ export const useClientVersion = createSharedComposable(() => {
     const currentVersion = __APP_VERSION__;
     const router = useRouter();
 
-    const autoChecking = ref(true);
+    const autoChecking = ref(import.meta.env.PROD);
     const isLoading = ref(false);
 
     const storage = useLocalStorage<StoredData>(`${LOCALSTORAGE_PREFIX}${STORAGE_KEY}`, {
