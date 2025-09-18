@@ -135,6 +135,11 @@ const handlers = {
         taskPreviewCommentId.value = payload.task_comment_id ?? null;
 
         taskPreviewIsVisible.value = true;
+    },
+    open_task(payload: CommandPayload<OpenTaskActionPayload>) {
+        taskPreviewId.value = payload.task_id;
+
+        taskPreviewIsVisible.value = true;
     }
 } as const;
 
