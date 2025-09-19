@@ -128,7 +128,7 @@ const { execute: deleteComplex } = useAsync(
     () => store.dispatch('Complex/DELETE_COMPLEX', complex.value.id),
     {
         onFetchResponse() {
-            router.push({ name: 'OffersMain' });
+            router.push({ name: 'offers.table' });
         },
         confirmation: true,
         confirmationContent: {

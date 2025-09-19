@@ -1,19 +1,35 @@
-import { createRouter, createWebHistory } from 'vue-router';
-import { useAuth } from '@/composables/useAuth';
-import { useNotify } from '@/utils/use/useNotify.js';
-import { getAccessTokenFromLocalStorage } from '@/services/localStorage.js';
-import { useDocumentTitle } from '@/composables/useDocumentTitle.ts';
-import OffersView from '@/views/Offers/Offers.vue';
-import OffersMain from '@/views/Offers/Main.vue';
+import { AUTH_ROLE } from '@/const/role';
 import CompaniesMain from '@/views/Companies/Companies.vue';
 import CompaniesView from '@/views/Companies/Company.vue';
 import CompaniesList from '@/views/Companies/Main.vue';
-import { AUTH_ROLE } from '@/const/role.js';
-import { isNullish } from '@/utils/helpers/common/isNullish.ts';
-import { isNotNullish } from '@/utils/helpers/common/isNotNullish.ts';
+import OffersView from '@/views/Offers/Offers.vue';
+import OffersMain from '@/views/Offers/Main.vue';
 import Unavailable from '@/views/Unavailable.vue';
+import { RouteRecordRaw } from 'vue-router';
 
-const routes = [
+export type AppRouteRecordMeta = {
+    layout?: string;
+    auth?: {
+        isAuth?: boolean;
+        roles?: (string | number)[];
+    };
+};
+
+type AppRouteRecord = Omit<RouteRecordRaw, 'name' | 'children'> & {
+    name: string;
+    children?: readonly AppRouteRecord[];
+    meta?: AppRouteRecordMeta;
+};
+
+export type GetRouteName<T extends AppRouteRecord> = T extends {
+    children: readonly AppRouteRecord[];
+}
+    ? T['name'] | GetRoutesNames<T['children']>
+    : T['name'];
+
+export type GetRoutesNames<T extends readonly AppRouteRecord[]> = GetRouteName<T[number]>;
+
+export const routes = [
     {
         path: '/statistic',
         name: 'statistic',
@@ -32,12 +48,12 @@ const routes = [
             auth: { isAuth: true, roles: [AUTH_ROLE.ADMIN, AUTH_ROLE.OWNER] },
             title: 'Настройки'
         },
-        component: () => import('@/views/Settings/View.vue'),
-        redirect: { name: 'settings-survey' },
+        component: () => import('../views/Settings/View.vue'),
+        redirect: { name: 'settings.survey' },
         children: [
             {
                 path: 'survey',
-                name: 'settings-survey',
+                name: 'settings.survey',
                 meta: {
                     title: ['Опросник', 'Настройки']
                 },
@@ -45,7 +61,7 @@ const routes = [
             },
             {
                 path: 'messenger',
-                name: 'settings-messenger',
+                name: 'settings.messenger',
                 meta: {
                     title: ['Мессенджер', 'Настройки']
                 },
@@ -53,7 +69,7 @@ const routes = [
             },
             {
                 path: 'tasks',
-                name: 'settings-tasks',
+                name: 'settings.tasks',
                 meta: {
                     title: ['Задачи', 'Настройки']
                 },
@@ -110,12 +126,12 @@ const routes = [
             },
             {
                 path: '',
-                name: 'CompaniesMain',
+                name: 'companies.table',
                 component: CompaniesList
             },
             {
                 path: 'requests',
-                name: 'CompaniesRequests',
+                name: 'companies.requests',
                 meta: {
                     title: 'Запросы клиентов'
                 },
@@ -123,7 +139,7 @@ const routes = [
             },
             {
                 path: 'deals',
-                name: 'CompaniesDeals',
+                name: 'companies.deals',
                 meta: {
                     title: 'Сделки'
                 },
@@ -131,7 +147,7 @@ const routes = [
             },
             {
                 path: 'groups',
-                name: 'CompaniesGroups',
+                name: 'companies.groups',
                 meta: {
                     title: 'Группы компаний'
                 },
@@ -151,7 +167,7 @@ const routes = [
         children: [
             {
                 path: '',
-                name: 'users-table',
+                name: 'users.table',
                 meta: {
                     title: ['Управление', 'Сотрудники']
                 },
@@ -159,7 +175,7 @@ const routes = [
             },
             {
                 path: 'sessions',
-                name: 'users-sessions',
+                name: 'users.sessions',
                 meta: {
                     title: ['Безопасность', 'Сотрудники']
                 },
@@ -167,7 +183,7 @@ const routes = [
             },
             {
                 path: ':id',
-                name: 'user',
+                name: 'users.view',
                 component: () => import('../views/Users/User.vue')
             }
         ]
@@ -190,7 +206,7 @@ const routes = [
             },
             {
                 path: 'sessions',
-                name: 'profile-sessions',
+                name: 'profile.sessions',
                 meta: {
                     title: ['Безопасность', 'Личный кабинет']
                 },
@@ -198,7 +214,7 @@ const routes = [
             },
             {
                 path: 'edit',
-                name: 'profile-edit',
+                name: 'profile.edit',
                 meta: {
                     title: ['Редактирование', 'Личный кабинет']
                 },
@@ -206,7 +222,7 @@ const routes = [
             },
             {
                 path: 'edit-password',
-                name: 'profile-edit-password',
+                name: 'profile.edit-password',
                 meta: {
                     title: ['Смена пароля', 'Личный кабинет']
                 },
@@ -214,11 +230,19 @@ const routes = [
             },
             {
                 path: 'consultants',
-                name: 'profile-consultants',
+                name: 'profile.consultants',
                 meta: {
                     title: 'Коллеги'
                 },
                 component: () => import('../views/Account/Consultants.vue')
+            },
+            {
+                path: 'sessions',
+                name: 'profile.integrations',
+                meta: {
+                    title: ['Интеграции', 'Личный кабинет']
+                },
+                component: () => import('../views/Account/Integrations.vue')
             }
         ]
     },
@@ -234,12 +258,12 @@ const routes = [
         children: [
             {
                 path: '',
-                name: 'dashboard-main',
+                name: 'dashboard.main',
                 component: () => import('../views/Dashboard/Main.vue')
             },
             {
                 path: 'requests',
-                name: 'dashboard-requests',
+                name: 'dashboard.requests',
                 meta: {
                     title: ['Запросы', 'Дашборд']
                 },
@@ -269,12 +293,12 @@ const routes = [
         children: [
             {
                 path: '',
-                name: 'OffersMain',
+                name: 'offers.table',
                 component: OffersMain
             },
             {
                 path: 'map',
-                name: 'OffersMap',
+                name: 'offers.map',
                 meta: {
                     title: ['Карта', 'Предложения']
                 },
@@ -284,7 +308,7 @@ const routes = [
     },
     {
         path: '/complex/:complex_id',
-        name: 'ComplexView',
+        name: 'complex.view',
         meta: {
             layout: 'default',
             auth: { isAuth: true },
@@ -314,7 +338,7 @@ const routes = [
     },
     {
         path: '/surveys',
-        name: 'surveys-main',
+        name: 'surveys.main',
         meta: {
             layout: 'default',
             auth: { isAuth: true },
@@ -328,7 +352,7 @@ const routes = [
             },
             {
                 path: 'drafts',
-                name: 'survey-drafts',
+                name: 'surveys.drafts',
                 meta: {
                     title: ['Черновики', 'Список опросов']
                 },
@@ -344,12 +368,12 @@ const routes = [
             auth: { isAuth: true, roles: [AUTH_ROLE.ADMIN] },
             title: 'Админка'
         },
-        component: () => import('@/views/Admin/View.vue'),
-        redirect: { name: 'admin-tours' },
+        component: () => import('../views/Admin/View.vue'),
+        redirect: { name: 'admin.tours' },
         children: [
             {
                 path: 'tours',
-                name: 'admin-tours',
+                name: 'admin.tours',
                 meta: {
                     title: ['Админка', 'Туры']
                 },
@@ -357,7 +381,7 @@ const routes = [
             },
             {
                 path: 'messages',
-                name: 'admin-messages',
+                name: 'admin.messages',
                 meta: {
                     title: ['Админка', 'Сообщения']
                 },
@@ -365,7 +389,7 @@ const routes = [
             },
             {
                 path: 'notifications',
-                name: 'admin-notifications',
+                name: 'admin.notifications',
                 meta: {
                     title: ['Админка', 'Уведомления']
                 },
@@ -396,51 +420,6 @@ const routes = [
     {
         path: '/',
         name: 'root',
-        redirect: { name: 'CompaniesMain' }
+        redirect: { name: 'companies.table' }
     }
-];
-
-const router = createRouter({
-    history: createWebHistory(),
-    routes
-});
-
-const notify = useNotify();
-
-router.beforeEach((to, from) => {
-    if (to.name === 'unavailable') return;
-
-    const { isAuth, setRedirect, login, currentUser } = useAuth();
-    const { accessToken } = getAccessTokenFromLocalStorage();
-
-    if (!isAuth.value && isNotNullish(accessToken)) login();
-
-    if (to.meta.auth?.isAuth) {
-        if (!isAuth.value) {
-            setRedirect(to.fullPath);
-
-            notify.info('Для доступа к запрашиваемой странице необходимо авторизоваться');
-
-            return { name: 'login' };
-        }
-
-        if (to.meta.auth.roles && !to.meta.auth.roles.includes(currentUser.value.role)) {
-            notify.warning('У вас нет доступа к запрашиваемой странице');
-
-            if (isNullish(from.name)) return { name: 'root' };
-            return false;
-        }
-    } else if (isAuth.value) {
-        notify.info('Вы уже авторизованы');
-
-        return { name: 'root' };
-    }
-});
-
-const { setTitle } = useDocumentTitle();
-
-router.afterEach(to => {
-    setTitle(to.meta.title);
-});
-
-export default router;
+] as const satisfies readonly AppRouteRecord[];

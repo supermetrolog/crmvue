@@ -25,7 +25,7 @@
             <hr v-if="modalsCount && draftsCount" />
             <div v-if="draftsCount" class="px-1 d-flex align-items-center justify-content-between">
                 <p>{{ modalsCount ? 'Всего' : 'У вас' }} {{ draftsCountLabel }}</p>
-                <RouterLink :to="{ name: 'survey-drafts' }">
+                <RouterLink :to="{ name: 'surveys.drafts' }">
                     <UiButton
                         small
                         color="success-light"

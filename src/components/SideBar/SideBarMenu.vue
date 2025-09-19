@@ -1,12 +1,12 @@
 <template>
     <nav class="sidebar__nav">
         <ul class="sidebar__menu">
-            <SideBarMenuItem v-for="menuItem in preparedMenu" :key="menuItem.id" :item="menuItem" />
+            <SideBarMenuItem v-for="item in preparedMenu" :key="item.key" :item="item.config" />
         </ul>
     </nav>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { menu } from '@/const/menu.js';
 import SideBarMenuItem from '@/components/SideBar/SideBarMenuItem.vue';
 import { computed } from 'vue';
@@ -18,9 +18,11 @@ const { currentUser } = useAuth();
 const preparedMenu = computed(() => {
     if (isNullish(currentUser.value)) return [];
 
-    return menu.filter(menuItem => {
-        if (menuItem.auth) return menuItem.auth.has(currentUser.value.role);
-        return true;
-    });
+    return menu
+        .filter(menuItem => {
+            if (menuItem.auth) return menuItem.auth.has(currentUser.value.role);
+            return true;
+        })
+        .map((item, key) => ({ key, config: item }));
 });
 </script>
