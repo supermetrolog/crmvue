@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { responseToPaginatedData } from '@/api/helpers/responseToPaginatedData.js';
+import { responseToPaginatedData } from '@/api/helpers/responseToPaginatedData.ts';
 
 export default {
     async fetchComplex(id, params) {

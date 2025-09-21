@@ -63,7 +63,7 @@ import EmptyData from '@/components/common/EmptyData.vue';
 import Loader from '@/components/common/Loader.vue';
 import { useDocumentTitle } from '@/composables/useDocumentTitle.ts';
 import { toDateFormat } from '@/utils/formatters/date.ts';
-import { useAsync } from '@/composables/useAsync.js';
+import { useAsync } from '@/composables/useAsync';
 
 const store = useStore();
 const route = useRoute();

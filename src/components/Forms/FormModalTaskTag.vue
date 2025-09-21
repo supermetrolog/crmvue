@@ -28,10 +28,18 @@
             </UiFormGroup>
         </UiForm>
         <template #actions="{ close }">
-            <UiButton @click="submit" color="success-light" icon="fa-solid fa-check" bolder small>
+            <UiButton @click="submit"
+color="success-light"
+icon="fa-solid fa-check"
+bolder
+small>
                 Сохранить
             </UiButton>
-            <UiButton @click="close" color="light" icon="fa-solid fa-ban" bolder small>
+            <UiButton @click="close"
+color="light"
+icon="fa-solid fa-ban"
+bolder
+small>
                 Отмена
             </UiButton>
             <UiButton
@@ -63,7 +71,7 @@ import UiModal from '@/components/common/UI/UiModal.vue';
 import UiButton from '@/components/common/UI/UiButton.vue';
 import { useValidation } from '@/composables/useValidation.js';
 import { useFormData } from '@/utils/use/useFormData.js';
-import { useAsync } from '@/composables/useAsync.js';
+import { useAsync } from '@/composables/useAsync';
 
 const emit = defineEmits(['created', 'updated', 'close', 'deleted']);
 const props = defineProps({ formData: Object });

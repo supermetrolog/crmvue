@@ -141,7 +141,7 @@ import DashboardCardRequestView from '@/components/Dashboard/Card/Request/Dashbo
 import { useMessenger } from '@/components/Messenger/useMessenger.js';
 import { useAuth } from '@/composables/useAuth';
 import { singleToArrayByKeys } from '@/utils/helpers/object/singleToArrayByKeys.js';
-import { useAsync } from '@/composables/useAsync.js';
+import { useAsync } from '@/composables/useAsync';
 import { useNotify } from '@/utils/use/useNotify.js';
 import FormModalCompanyRequestClone from '@/components/Forms/Company/FormModalCompanyRequestClone.vue';
 import FormModalCompanyRequestChangeConsultant from '@/components/Forms/Company/FormModalCompanyRequestChangeConsultant.vue';

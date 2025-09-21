@@ -237,7 +237,7 @@ export const routes = [
                 component: () => import('../views/Account/Consultants.vue')
             },
             {
-                path: 'sessions',
+                path: 'integrations',
                 name: 'profile.integrations',
                 meta: {
                     title: ['Интеграции', 'Личный кабинет']
@@ -394,6 +394,14 @@ export const routes = [
                     title: ['Админка', 'Уведомления']
                 },
                 component: () => import('../views/Admin/Notifications.vue')
+            },
+            {
+                path: 'integrations',
+                name: 'admin.integrations',
+                meta: {
+                    title: ['Админка', 'Интеграции']
+                },
+                component: () => import('../views/Admin/Integrations.vue')
             }
         ]
     },

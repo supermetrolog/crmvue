@@ -69,7 +69,7 @@ import FileInput from '@/components/common/Forms/FileInput.vue';
 import File from '@/components/common/Forms/File.vue';
 import Loader from '@/components/common/Loader.vue';
 import UiButton from '@/components/common/UI/UiButton.vue';
-import { useAsync } from '@/composables/useAsync.js';
+import { useAsync } from '@/composables/useAsync';
 
 const emit = defineEmits(['updated', 'close']);
 const props = defineProps({

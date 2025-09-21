@@ -78,10 +78,18 @@
             </UiFormGroup>
         </UiForm>
         <template #actions="{ close }">
-            <UiButton @click="submit" color="success-light" icon="fa-solid fa-check" bolder small>
+            <UiButton @click="submit"
+color="success-light"
+icon="fa-solid fa-check"
+bolder
+small>
                 Сохранить
             </UiButton>
-            <UiButton @click="close" color="light" icon="fa-solid fa-ban" bolder small>
+            <UiButton @click="close"
+color="light"
+icon="fa-solid fa-ban"
+bolder
+small>
                 Отмена
             </UiButton>
             <UiButton
@@ -111,7 +119,7 @@ import UiInput from '@/components/common/Forms/UiInput.vue';
 import UiTextarea from '@/components/common/Forms/UiTextarea.vue';
 import { useFormData } from '@/utils/use/useFormData.js';
 import { useValidation } from '@/composables/useValidation.js';
-import { useAsync } from '@/composables/useAsync.js';
+import { useAsync } from '@/composables/useAsync';
 import UiButton from '@/components/common/UI/UiButton.vue';
 import UiModal from '@/components/common/UI/UiModal.vue';
 

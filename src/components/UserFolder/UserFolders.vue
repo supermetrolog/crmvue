@@ -115,7 +115,7 @@ import { useNotify } from '@/utils/use/useNotify.js';
 import { Dropdown, DropdownContent } from 'v-dropdown';
 import UiDropdownActionsButton from '@/components/common/UI/DropdownActions/UiDropdownActionsButton.vue';
 import api from '@/api/api.js';
-import { useAsync } from '@/composables/useAsync.js';
+import { useAsync } from '@/composables/useAsync';
 import { useConfirm } from '@/composables/useConfirm.js';
 
 const FOLDERS_COUNT_LIMIT = 10;

@@ -86,7 +86,7 @@ import EmptyLabel from '@/components/common/EmptyLabel.vue';
 import { nextTick, onMounted, ref, toRef, useTemplateRef } from 'vue';
 import UiButton from '@/components/common/UI/UiButton.vue';
 import ContactComment from '@/components/ContactComment/ContactComment.vue';
-import { useAsync } from '@/composables/useAsync.js';
+import { useAsync } from '@/composables/useAsync';
 import api from '@/api/api.js';
 import { useNotify } from '@/utils/use/useNotify.js';
 import Loader from '@/components/common/Loader.vue';

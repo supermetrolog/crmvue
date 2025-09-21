@@ -167,7 +167,7 @@ import { useLinkify } from '@/composables/useLinkify.js';
 import TaskCardFiles from '@/components/TaskCard/TaskCardFiles.vue';
 import TaskCardContacts from '@/components/TaskCard/TaskCardContactsList.vue';
 import TaskCardModalPostpone from '@/components/TaskCard/TaskCardModalPostpone.vue';
-import { useAsync } from '@/composables/useAsync.js';
+import { useAsync } from '@/composables/useAsync';
 import { dayjsFromServer, toServerDate } from '@/utils/formatters/date.ts';
 import dayjs from 'dayjs';
 import TaskCardRelations from '@/components/TaskCard/Relations/TaskCardRelations.vue';

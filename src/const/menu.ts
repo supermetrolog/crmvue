@@ -164,6 +164,11 @@ export const menu: GeneralMenuItemConfig[] = [
                 name: 'Уведомления',
                 to: 'admin.notifications',
                 icon: 'fa-solid fa-bell'
+            },
+            {
+                name: 'Интеграции',
+                to: 'admin.integrations',
+                icon: 'fa-solid fa-link'
             }
         ]
     },

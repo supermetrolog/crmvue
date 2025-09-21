@@ -165,7 +165,7 @@ import { useDocumentTitle } from '@/composables/useDocumentTitle.ts';
 import { messenger } from '@/const/messenger.js';
 import { useTippyText } from '@/composables/useTippyText.js';
 import { isNotNullish } from '@/utils/helpers/common/isNotNullish.ts';
-import { useAsync } from '@/composables/useAsync.js';
+import { useAsync } from '@/composables/useAsync';
 import api from '@/api/api.js';
 import { useNotify } from '@/utils/use/useNotify.js';
 import FormCompanyDisable from '@/components/Forms/Company/FormCompanyDisable.vue';

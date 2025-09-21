@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { responseToData } from '@/api/helpers/responseToData.ts';
-import { responseToPaginatedData } from '@/api/helpers/responseToPaginatedData.js';
+import { responseToPaginatedData } from '@/api/helpers/responseToPaginatedData.ts';
 import { responseHasStatus } from '@/api/helpers/responseHasStatus.js';
 import { STATUS_SUCCESS } from '@/api/helpers/statuses.js';
 
