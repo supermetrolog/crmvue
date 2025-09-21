@@ -1,75 +1,78 @@
 import { AUTH_ROLE } from '@/const/role.js';
+import { TRoutesNames } from '@/router/router';
 
-export const menu = [
+export type MenuItemConfig = {
+    name: string;
+    icon: string;
+    to: TRoutesNames;
+    key?: string;
+    auth?: Set<string | number>;
+};
+
+export type GeneralMenuItemConfig = MenuItemConfig & {
+    internal?: InternalMenuItemConfig[];
+};
+
+export type InternalMenuItemConfig = MenuItemConfig & {
+    exact?: boolean;
+};
+
+export const menu: GeneralMenuItemConfig[] = [
     {
-        id: 8,
         name: 'Дашборд',
         icon: 'fa-solid fa-chart-line',
-        url: '/dashboard',
-        key: 'dashboard',
+        to: 'dashboard',
         internal: [
             {
-                id: 0,
                 name: 'Сводка',
-                url: '/dashboard',
+                to: 'dashboard',
                 icon: 'fa-solid fa-chart-line',
                 exact: true
             },
             {
-                id: 1,
                 name: 'Запросы',
-                url: '/dashboard/requests',
+                to: 'dashboard.requests',
                 icon: 'fa-solid fa-user-clock'
             }
         ]
     },
     {
-        id: 9,
         name: 'Задачи',
         icon: 'fa-solid fa-list-check',
-        url: '/tasks',
-        key: 'tasks'
+        to: 'tasks'
     },
     {
-        id: 0,
         name: 'Компании',
         icon: 'fa-solid fa-industry',
-        url: '/companies',
-        key: 'company',
+        to: 'companies',
         internal: [
             {
-                id: 0,
                 name: 'Выдача',
-                url: '/companies',
+                to: 'companies',
                 icon: 'fa-solid fa-industry',
                 exact: true
             },
             {
-                id: 1,
                 name: 'Группы компаний',
-                url: '/companies/groups',
+                to: 'companies.groups',
                 icon: 'fa-solid fa-people-group'
             },
             {
-                id: 2,
                 name: 'Запросы',
-                url: '/companies/requests',
+                to: 'companies.requests',
                 icon: 'fa-solid fa-user-clock'
             },
             {
-                id: 3,
                 name: 'Сделки',
-                url: '/companies/deals',
+                to: 'companies.deals',
                 icon: 'fa-regular fa-handshake'
             }
         ]
     },
     {
-        id: 6,
         name: 'Предложка',
         icon: 'fa-solid fa-city',
-        url: '/offers',
-        key: 'offers'
+        to: 'offers'
     },
     // {
     //     id: 7,
@@ -79,33 +82,27 @@ export const menu = [
     //     key: 'equipments'
     // },
     {
-        id: 12,
         name: 'Опросы',
         icon: 'fa-solid fa-square-poll-horizontal',
-        url: '/surveys',
-        key: 'surveys',
+        to: 'surveys.main',
         internal: [
             {
-                id: 0,
                 name: 'Список',
-                url: '/surveys',
+                to: 'surveys.main',
                 icon: 'fa-solid fa-square-poll-horizontal',
                 exact: true
             },
             {
-                id: 1,
                 name: 'Черновики',
-                url: '/surveys/drafts',
+                to: 'surveys.drafts',
                 icon: 'fa-solid fa-pen-ruler'
             }
         ]
     },
     {
-        id: 10,
         name: 'Звонки',
         icon: 'fa-solid fa-phone-volume',
-        url: '/calls',
-        key: 'calls'
+        to: 'calls'
     },
     // {
     //     id: 2,
@@ -115,92 +112,80 @@ export const menu = [
     //     key: 'calendar'
     // },
     {
-        id: 11,
         name: 'Инструменты',
         icon: 'fa-solid fa-screwdriver-wrench',
-        url: '/utilities',
-        key: 'utilities',
+        to: 'utilities',
         auth: new Set([AUTH_ROLE.MODERATOR, AUTH_ROLE.ADMIN, AUTH_ROLE.OWNER])
     },
     {
-        id: 5,
         name: 'Профиль',
         icon: 'fa-solid fa-user-astronaut',
-        url: '/account',
-        key: 'account'
+        to: 'account'
     },
     {
-        id: 3,
         name: 'Настройки',
         icon: 'fas fa-cog',
-        url: '/settings',
-        key: 'settings',
+        to: 'settings',
         internal: [
             {
-                id: 0,
                 name: 'Опросник',
-                url: '/settings/survey',
+                to: 'settings.survey',
                 icon: 'fa-solid fa-square-poll-horizontal',
                 exact: true,
                 auth: new Set([AUTH_ROLE.ADMIN])
             },
             {
-                id: 1,
                 name: 'Мессенджер',
-                url: '/settings/messenger',
+                to: 'settings.messenger',
                 icon: 'fa-solid fa-message'
             },
-            { id: 2, name: 'Задачи', url: '/settings/tasks', icon: 'fa-solid fa-list-check' }
+            { name: 'Задачи', to: 'settings.tasks', icon: 'fa-solid fa-list-check' }
         ],
         auth: new Set([AUTH_ROLE.ADMIN, AUTH_ROLE.OWNER])
     },
     {
-        id: 30,
         name: 'Админка',
         icon: 'fas fa-poop',
-        url: '/admin',
-        key: 'admin',
+        to: 'admin',
         auth: new Set([AUTH_ROLE.ADMIN]),
         internal: [
             {
-                id: 0,
                 name: 'Туры',
-                url: '/admin/tours',
+                to: 'admin.tours',
                 icon: 'fa-solid fa-plane-departure',
                 exact: true
             },
             {
-                id: 1,
                 name: 'Сообщения',
-                url: '/admin/messages',
+                to: 'admin.messages',
                 icon: 'fa-solid fa-comment'
             },
             {
-                id: 2,
                 name: 'Уведомления',
-                url: '/admin/notifications',
+                to: 'admin.notifications',
                 icon: 'fa-solid fa-bell'
+            },
+            {
+                name: 'Интеграции',
+                to: 'admin.integrations',
+                icon: 'fa-solid fa-link'
             }
         ]
     },
     {
-        id: 4,
         name: 'Юзеры',
         icon: 'fas fa-users',
-        url: '/users',
-        key: 'users',
+        to: 'users.table',
         internal: [
             {
-                id: 0,
                 name: 'Управление',
-                url: '/users',
+                to: 'users.table',
                 icon: 'fa-solid fa-users',
                 exact: true
             },
             {
-                id: 1,
                 name: 'Безопасность',
-                url: '/users/sessions',
+                to: 'users.sessions',
                 icon: 'fa-solid fa-shield-halved'
             }
         ],

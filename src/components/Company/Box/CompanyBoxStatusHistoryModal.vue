@@ -31,7 +31,7 @@ import UiButton from '@/components/common/UI/UiButton.vue';
 import UiModal from '@/components/common/UI/UiModal.vue';
 import { getCompanyShortName } from '@/utils/formatters/models/company.js';
 import api from '@/api/api.js';
-import { useAsync } from '@/composables/useAsync.js';
+import { useAsync } from '@/composables/useAsync';
 import CompanyBoxStatusHistory from '@/components/Company/Box/CompanyBoxStatusHistory.vue';
 import Spinner from '@/components/common/Spinner.vue';
 import { ElTimeline } from 'element-plus';

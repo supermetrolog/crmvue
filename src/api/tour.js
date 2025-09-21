@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { responseToData } from '@/api/helpers/responseToData.ts';
-import { responseToPaginatedData } from '@/api/helpers/responseToPaginatedData.js';
+import { responseToPaginatedData } from '@/api/helpers/responseToPaginatedData.ts';
 
 const URL = '/user-tours';
 

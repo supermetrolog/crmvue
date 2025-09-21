@@ -59,7 +59,7 @@ import UiCol from '@/components/common/UI/UiCol.vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useDebounceFn } from '@vueuse/core';
 import { useNotify } from '@/utils/use/useNotify.js';
-import { useAsync } from '@/composables/useAsync.js';
+import { useAsync } from '@/composables/useAsync';
 import AdminChatMemberMessageRelationsForm from '@/components/Admin/ChatMemberMessage/AdminChatMemberMessageRelationsForm.vue';
 import AdminChatMemberMessageTable from '@/components/Admin/ChatMemberMessage/Table/AdminChatMemberMessageTable.vue';
 import AdminChatMemberMessageSearch from '@/components/Admin/ChatMemberMessage/AdminChatMemberMessageSearch.vue';

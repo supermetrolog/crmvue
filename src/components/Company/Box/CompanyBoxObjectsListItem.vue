@@ -111,7 +111,7 @@ export default {
         },
         objectUrl() {
             return this.$router.resolve({
-                name: 'ComplexView',
+                name: 'complex.view',
                 params: { complex_id: this.object.complex_id }
             }).href;
         },

@@ -49,7 +49,7 @@ import { helpers, maxLength, required } from '@vuelidate/validators';
 import Loader from '@/components/common/Loader.vue';
 import { useFormData } from '@/utils/use/useFormData.js';
 import { useValidation } from '@/composables/useValidation.js';
-import { useAsync } from '@/composables/useAsync.js';
+import { useAsync } from '@/composables/useAsync';
 import UiButton from '@/components/common/UI/UiButton.vue';
 import UiModal from '@/components/common/UI/UiModal.vue';
 import ColorPicker from '@/components/common/Forms/ColorPicker.vue';

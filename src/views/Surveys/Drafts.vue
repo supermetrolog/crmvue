@@ -39,7 +39,7 @@ import { useMessenger } from '@/components/Messenger/useMessenger.js';
 import { useAsyncPopup } from '@/composables/useAsyncPopup.js';
 import SurveyDraftTable from '@/components/SurveyTable/SurveyDraftTable.vue';
 import { useSurveyForm } from '@/composables/useSurveyForm.js';
-import { useAsync } from '@/composables/useAsync.js';
+import { useAsync } from '@/composables/useAsync';
 import { useAuth } from '@/composables/useAuth';
 import { spliceById } from '@/utils/helpers/array/spliceById.js';
 

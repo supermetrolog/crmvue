@@ -8,7 +8,7 @@ const __dirname = dirname(__filename);
 
 const meta = {
     version: pkg.version,
-    buildDate: new Date().toISOString()
+    buildDate: new Date().toLocaleString('ru-RU', { timeZone: 'Europe/Moscow' })
 };
 
 writeFileSync(resolve(__dirname, '../public/meta.json'), JSON.stringify(meta, null, 2));

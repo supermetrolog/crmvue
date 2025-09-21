@@ -5,7 +5,7 @@ import {
     init,
     isInitialized
 } from '@sentry/vue';
-import router from '@/router/index.js';
+import { router } from '@/router/router';
 
 export function initSentry(app) {
     if (isInitialized()) {
