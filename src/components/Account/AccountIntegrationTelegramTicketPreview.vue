@@ -8,7 +8,7 @@
             <p class="text-dark mb-2">
                 Вы можете открыть Telegram на мобильном с помощью QR или воспользоваться Web-версией
             </p>
-            <div class="d-flex">
+            <div class="d-flex gap-2">
                 <UiButton
                     as="a"
                     :href="ticket.deep_link"
@@ -23,6 +23,9 @@
                         <span class="mx-1">|</span>
                         <span>{{ time }}</span>
                     </template>
+                </UiButton>
+                <UiButton @click="$emit('check')" color="light" icon="fa-solid fa-magnifying-glass">
+                    Проверить статус
                 </UiButton>
             </div>
             <AnimationTransition :speed="0.4">
@@ -52,6 +55,7 @@ import AnimationTransition from '@/components/common/AnimationTransition.vue';
 
 defineEmits<{
     (e: 'retry'): void;
+    (e: 'check'): void;
 }>();
 
 const props = defineProps<{

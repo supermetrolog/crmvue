@@ -5,6 +5,9 @@ interface ImportMetaEnv {
     readonly VITE_VUE_APP_HOST: string;
     readonly DEV: boolean;
     readonly PROD: boolean;
+
+    readonly VITE_VUE_APP_WHATSAPP_BOT_PHONE: string;
+    readonly VITE_VUE_APP_TELEGRAM_BOT_USERNAME: string;
 }
 
 interface ImportMeta {

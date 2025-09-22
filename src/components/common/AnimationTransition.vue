@@ -3,6 +3,7 @@
         mode="out-in"
         :enter-active-class="enterActiveClass"
         :leave-active-class="leaveActiveClass"
+        :appear
     >
         <slot />
     </transition>
@@ -21,7 +22,8 @@ const props = defineProps({
     speed: {
         type: Number,
         default: 1
-    }
+    },
+    appear: Boolean
 });
 
 const enterActiveClass = computed(() => 'animate__animated animate__' + props.animation.enter);

@@ -8,9 +8,17 @@ import { RequestQueryParams } from '@/api/types';
 
 const URL = '/integration/telegram';
 
+export type StatusUserTelegramLinkResponse = {
+    linked: boolean;
+    username: string | null;
+    first_name: string | null;
+    last_name: string | null;
+    is_login_enabled: boolean;
+};
+
 async function status() {
     const response = await axios.post(`${URL}/status`);
-    return responseToData<UserTelegramLink>(response);
+    return responseToData<StatusUserTelegramLinkResponse>(response);
 }
 
 export type StartTelegramLinkResponse = {

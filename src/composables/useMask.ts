@@ -62,11 +62,21 @@ export function useMask(
         instance?.update(options.value);
     }
 
+    function refreshValue() {
+        const el = unrefElement(element);
+
+        if (el) {
+            instance?.updateValue(el as HTMLInputElement);
+        }
+    }
+
     watch(options, refresh, { deep: true });
 
     return {
         masked,
         unmasked,
-        instance
+        instance,
+        refresh,
+        refreshValue
     };
 }

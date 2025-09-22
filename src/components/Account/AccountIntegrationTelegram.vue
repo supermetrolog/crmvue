@@ -6,6 +6,7 @@
                 :loading="isLoading"
                 icon="fa-solid fa-user"
                 :label="linkLabel"
+                color="light"
             />
             <UiButton
                 v-else
@@ -16,39 +17,46 @@
                 :label="isLoading ? 'Поиск профиля' : 'Не привязан'"
             />
         </AnimationTransition>
-        <UiButton
-            v-if="!link?.linked"
-            @click="startLink"
-            icon="fa-solid fa-plus"
-            color="success-light"
-        >
-            Привязать аккаунт
-        </UiButton>
-        <UiButton
-            v-else
-            @click="revokeLink"
-            :loading="linkIsRevoking"
-            icon="fa-solid fa-ban"
-            color="danger-light"
-        >
-            Отвязать аккаунт
-        </UiButton>
+        <AnimationTransition :speed="0.4">
+            <div v-if="link">
+                <AnimationTransition :speed="0.4">
+                    <UiButton
+                        v-if="!link.linked"
+                        @click="startLink"
+                        icon="fa-solid fa-plus"
+                        color="success-light"
+                    >
+                        Привязать аккаунт
+                    </UiButton>
+                    <UiButton
+                        v-else
+                        @click="revokeLink"
+                        :loading="linkIsRevoking"
+                        icon="fa-solid fa-ban"
+                        color="danger-light"
+                    >
+                        Отвязать аккаунт
+                    </UiButton>
+                </AnimationTransition>
+            </div>
+        </AnimationTransition>
         <teleport to="body">
             <UiModal
+                v-slot="{ close }"
                 v-model:visible="ticketPreviewIsVisible"
                 title="Интеграция c Telegram"
-                :width="700"
+                :width="730"
             >
-                <AccountIntegrationTelegramTicketPreviewSkeleton
-                    v-if="startIsGenerating || isLoading"
-                />
+                <AccountIntegrationTelegramTicketPreviewSkeleton v-if="startIsGenerating" />
                 <AccountIntegrationTelegramTicketPreview
                     v-else-if="ticket && !telegramIsLinked"
                     @retry="executeStartLink"
+                    @check="fetchStatus"
                     :ticket
                 />
                 <AccountIntegrationTelegramTicketSuccessPreview
                     v-else-if="telegramIsLinked && link"
+                    @close="close"
                     :link
                 />
             </UiModal>
@@ -81,7 +89,7 @@ const linkLabel = computed(() => {
             return [link.value!.first_name, link.value!.last_name].filter(isNotNullish).join(' ');
         }
 
-        return `@${link.value!.username ?? link.value.telegram_user_id}`;
+        return `@${link.value!.username}`;
     }
 
     return undefined;
@@ -107,6 +115,7 @@ const { isLoading: linkIsRevoking, execute: revokeLink } = useAsync(api.userTele
     onFetchResponse() {
         link.value = null;
         store.state.telegramIsLinked = false;
+        fetchStatus();
         notify.success('Telegram успешно отвязан');
     },
     confirmation: true,

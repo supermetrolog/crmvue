@@ -8,7 +8,8 @@
             <p class="text-dark mb-2 skeleton">
                 Вы можете открыть Telegram на мобильном с помощью QR или воспользоваться Web-версией
             </p>
-            <div class="d-flex">
+            <div class="d-flex gap-2">
+                <div class="skeleton">Открыть телеграм</div>
                 <div class="skeleton">Открыть телеграм</div>
             </div>
         </div>
