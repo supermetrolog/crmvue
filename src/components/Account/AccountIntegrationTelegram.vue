@@ -51,7 +51,7 @@
                 <AccountIntegrationTelegramTicketPreview
                     v-else-if="ticket && !telegramIsLinked"
                     @retry="executeStartLink"
-                    @check="fetchStatus"
+                    @check="checkStatus"
                     :ticket
                 />
                 <AccountIntegrationTelegramTicketSuccessPreview
@@ -83,6 +83,16 @@ const {
     execute: fetchStatus
 } = useAsync(api.userTelegram.status, { immediate: true });
 
+const telegramIsLinked = ref(false);
+
+async function checkStatus() {
+    await fetchStatus();
+
+    if (link.value?.linked) {
+        telegramIsLinked.value = true;
+    }
+}
+
 const linkLabel = computed(() => {
     if (link.value?.linked) {
         if (link.value!.first_name || link.value!.last_name) {
@@ -100,7 +110,8 @@ const ticketPreviewIsVisible = ref(false);
 function startLink() {
     ticketPreviewIsVisible.value = true;
     executeStartLink();
-    store.state.telegramIsLinked = false;
+
+    store.commit('setTelegramIsLinked', false);
 }
 
 const {
@@ -114,8 +125,11 @@ const notify = useNotify();
 const { isLoading: linkIsRevoking, execute: revokeLink } = useAsync(api.userTelegram.revoke, {
     onFetchResponse() {
         link.value = null;
-        store.state.telegramIsLinked = false;
+
+        store.commit('setTelegramIsLinked', false);
+
         fetchStatus();
+
         notify.success('Telegram успешно отвязан');
     },
     confirmation: true,
@@ -127,11 +141,15 @@ const { isLoading: linkIsRevoking, execute: revokeLink } = useAsync(api.userTele
 
 const store = useStore();
 
-const telegramIsLinked = computed(() => store.state.telegramIsLinked);
-
-watch(telegramIsLinked, value => {
-    if (value) {
-        fetchStatus();
+watch(
+    () => store.state.telegramIsLinked,
+    value => {
+        if (value) {
+            fetchStatus();
+            telegramIsLinked.value = true;
+        } else {
+            telegramIsLinked.value = false;
+        }
     }
-});
+);
 </script>

@@ -8,7 +8,7 @@
         </div>
         <div class="d-flex flex-column">
             <p class="font-weight-semi fs-4">Свяжите Whatsapp аккаунт с системой</p>
-            <p class="text-dark mb-3">Укажите номер телефона, привязанный к Whatsapp</p>
+            <p class="text-dark mb-2">Укажите номер телефона, привязанный к Whatsapp</p>
             <UiForm>
                 <UiInput
                     ref="inputEl"
