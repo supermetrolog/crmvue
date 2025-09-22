@@ -3,7 +3,7 @@
         <label>
             <span v-if="label" class="form__label">{{ label }}</span>
             <input
-                ref="input"
+                ref="inputEl"
                 v-maska="maska"
                 @input="onInput($event.target.value.trim())"
                 @focus="onFocus"
@@ -49,7 +49,7 @@
 <script setup>
 import ValidationInfo from '@/components/common/Forms/ValidationInfo.vue';
 import ValidationMessage from '@/components/common/Forms/VaildationMessage.vue';
-import { computed, onMounted, ref, shallowRef, toRef, watch } from 'vue';
+import { computed, onMounted, ref, shallowRef, toRef, useTemplateRef, watch } from 'vue';
 import { onClickOutside } from '@vueuse/core';
 import { useFormControlValidation } from '@/composables/useFormControlValidation.js';
 import { isNotEmptyString } from '@/utils/helpers/string/isNotEmptyString.js';
@@ -86,7 +86,8 @@ const props = defineProps({
     reactive: Boolean,
     required: Boolean,
     withEnterSubmit: Boolean,
-    maska: String
+    maska: String,
+    lazyValidation: Boolean
 });
 
 const searchableIsVisible = shallowRef(false);
@@ -136,7 +137,9 @@ const { hasValidation, hasValidationError, validate, validationClass } = useForm
 
 const onInput = value => {
     if (value !== modelValue.value) {
-        validate();
+        if (!props.lazyValidation) {
+            validate();
+        }
 
         if (props.type === 'number') {
             modelValue.value = value.length ? Number(value) : null;
@@ -164,4 +167,8 @@ if (props.searchable) onClickOutside(searchableEl, close);
 onMounted(() => {
     if (props.reactive) validate();
 });
+
+const inputEl = useTemplateRef('inputEl');
+
+defineExpose({ inputEl });
 </script>

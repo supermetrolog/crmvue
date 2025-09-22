@@ -3,10 +3,10 @@
         <AnimationTransition :speed="0.4">
             <UiButton
                 v-if="link?.linked"
-                @click="previewIsVisible = true"
                 :loading="isLoading"
                 icon="fa-solid fa-user"
                 :label="linkLabel"
+                color="light"
             />
             <UiButton
                 v-else
@@ -17,20 +17,32 @@
                 :label="isLoading ? 'Поиск профиля' : 'Не привязан'"
             />
         </AnimationTransition>
-        <UiButton @click="startLink" icon="fa-solid fa-plus" color="success-light">
-            Привязать аккаунт
-        </UiButton>
+        <AnimationTransition :speed="0.4">
+            <div v-if="link">
+                <AnimationTransition :speed="0.4">
+                    <UiButton
+                        v-if="!link.linked"
+                        @click="startLink"
+                        icon="fa-solid fa-plus"
+                        color="success-light"
+                    >
+                        Привязать аккаунт
+                    </UiButton>
+                    <UiButton
+                        v-else
+                        @click="revokeLink"
+                        :loading="linkIsRevoking"
+                        icon="fa-solid fa-ban"
+                        color="danger-light"
+                    >
+                        Отвязать аккаунт
+                    </UiButton>
+                </AnimationTransition>
+            </div>
+        </AnimationTransition>
         <teleport to="body">
-            <UiModal v-model:visible="previewIsVisible" title="Связанный профиль в Telegram">
-                <AccountIntegrationTelegramLinkPreview :link />
-            </UiModal>
-            <UiModal
-                v-model:visible="ticketPreviewIsVisible"
-                title="Интеграция c Telegram"
-                :width="700"
-            >
-                <AccountIntegrationTelegramTicketPreviewSkeleton v-if="startIsGenerating" />
-                <AccountIntegrationTelegramTicketPreview v-else-if="ticket" :ticket />
+            <UiModal v-model:visible="formIsVisible" title="Интеграция c Whatsapp" :width="700">
+                <AccountIntegrationWhatsappLinkForm v-if="formIsVisible" @linked="fetchStatus" />
             </UiModal>
         </teleport>
     </div>
@@ -42,36 +54,44 @@ import api from '@/api/api';
 import { computed, ref } from 'vue';
 import { isNotNullish } from '@/utils/helpers/common/isNotNullish';
 import UiModal from '@/components/common/UI/UiModal.vue';
-import AccountIntegrationTelegramLinkPreview from '@/components/Account/AccountIntegrationTelegramLinkPreview.vue';
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
-import AccountIntegrationTelegramTicketPreview from '@/components/Account/AccountIntegrationTelegramTicketPreview.vue';
-import AccountIntegrationTelegramTicketPreviewSkeleton from '@/components/Account/AccountIntegrationTelegramTicketPreviewSkeleton.vue';
+import { useNotify } from '@/utils/use/useNotify';
+import AccountIntegrationWhatsappLinkForm from '@/components/Account/AccountIntegrationWhatsappLinkForm.vue';
 
-const { isLoading, data: link } = useAsync(api.userWhatsapp.status, { immediate: true });
+const {
+    isLoading,
+    data: link,
+    execute: fetchStatus
+} = useAsync(api.userWhatsapp.status, { immediate: true });
 
 const linkLabel = computed(() => {
     if (link.value?.linked) {
-        if (link.value!.first_name || link.value!.last_name) {
-            return [link.value!.first_name, link.value!.last_name].filter(isNotNullish).join(' ');
-        }
-
-        return `@${link.value!.username ?? link.value.telegram_user_id}`;
+        return [link.value.phone, link.value.full_name ?? link.value.first_name]
+            .filter(isNotNullish)
+            .join(', ');
     }
 
     return undefined;
 });
 
-const previewIsVisible = ref(false);
-const ticketPreviewIsVisible = ref(false);
+const formIsVisible = ref(false);
 
 function startLink() {
-    ticketPreviewIsVisible.value = true;
-    executeStartLink();
+    formIsVisible.value = true;
 }
 
-const {
-    isLoading: startIsGenerating,
-    data: ticket,
-    execute: executeStartLink
-} = useAsync(api.userTelegram.start);
+const notify = useNotify();
+
+const { isLoading: linkIsRevoking, execute: revokeLink } = useAsync(api.userWhatsapp.revoke, {
+    onFetchResponse() {
+        link.value = null;
+        notify.success('Whatsapp успешно отвязан');
+        fetchStatus();
+    },
+    confirmation: true,
+    confirmationContent: {
+        title: 'Отвязать Whatsapp',
+        message: 'Вы уверены, что хотите отвязать Whatsapp аккаунт?'
+    }
+});
 </script>

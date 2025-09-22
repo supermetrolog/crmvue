@@ -61,6 +61,9 @@ const Websocket = {
 
         toggleSetedUserIdFlag(state, flag = null) {
             state.setedUserIdFlag = flag === null ? !state.setedUserIdFlag : flag;
+        },
+        setTelegramIsLinked(state, value) {
+            state.telegramIsLinked = value;
         }
     },
 
@@ -187,8 +190,8 @@ const Websocket = {
         _ws_info() {
             // нераспознанные события
         },
-        _ws_telegram_linked({ state }) {
-            state.telegramIsLinked = true;
+        _ws_telegram_linked({ commit }) {
+            commit('setTelegramIsLinked', true);
         }
     },
     getters: {
