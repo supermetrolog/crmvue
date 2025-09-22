@@ -172,7 +172,7 @@ import { messenger } from '@/const/messenger.js';
 import { useMessenger } from '@/components/Messenger/useMessenger.js';
 import FormCompanyDisable from '@/components/Forms/Company/FormCompanyDisable.vue';
 import FormCompany from '@/components/Forms/Company/FormCompany.vue';
-import { useAsync } from '@/composables/useAsync.js';
+import { useAsync } from '@/composables/useAsync';
 import api from '@/api/api.js';
 import { useTippyText } from '@/composables/useTippyText.js';
 import CompanyShortCard from '@/components/CompanyShortCard/CompanyShortCard.vue';

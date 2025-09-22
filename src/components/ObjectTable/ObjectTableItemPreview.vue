@@ -92,7 +92,7 @@ const router = useRouter();
 
 const objectUrl = computed(
     () =>
-        router.resolve({ name: 'ComplexView', params: { complex_id: props.object.complex_id } })
+        router.resolve({ name: 'complex.view', params: { complex_id: props.object.complex_id } })
             ?.href
 );
 

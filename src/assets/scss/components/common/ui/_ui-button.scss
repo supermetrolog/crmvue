@@ -206,3 +206,8 @@
         transform: scale(0.6);
     }
 }
+
+a.ui-button--disabled {
+    opacity: .5;
+    pointer-events: none;
+}

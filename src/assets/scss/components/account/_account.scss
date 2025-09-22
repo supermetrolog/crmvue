@@ -14,7 +14,7 @@
         flex-shrink: 0;
 
         .account-section {
-            padding: 0!important;
+            padding: 0 !important;
         }
     }
 
@@ -27,12 +27,13 @@
     &__link {
         padding: 10px 15px 10px 10px;
         border-left: 5px solid #fff;
+        border-bottom: 1px solid #eee;
         color: inherit;
         @include mixins.transition(background-color, border-color);
 
         &:hover, &.router-link-exact-active {
             background-color: #f0f0f0;
-            border-color: #11698e;
+            border-left-color: #11698e;
         }
 
         &:last-child {
@@ -178,7 +179,7 @@
         }
     }
 
-    &__contacts  {
+    &__contacts {
         @include mixins.text-overflow(2);
     }
 
@@ -194,7 +195,7 @@
 .account-session {
     &__body {
         width: 100%;
-        border: 2px solid variables.$bg-gray-l!important;
+        border: 2px solid variables.$bg-gray-l !important;
         border-radius: 5px;
         padding: 10px;
         @include mixins.transition(background-color);
@@ -204,7 +205,7 @@
         }
 
         &.current {
-            border-color: variables.$bg-success!important;
+            border-color: variables.$bg-success !important;
         }
     }
 
@@ -219,8 +220,8 @@
     }
 
     &__chip {
-        padding: 3px 7px!important;
-        font-size: 12px!important;
+        padding: 3px 7px !important;
+        font-size: 12px !important;
     }
 
     &__footer {

@@ -40,6 +40,7 @@
     "linkify-html": "^4.2.0",
     "linkifyjs": "^4.2.0",
     "maska": "^3.1.1",
+    "qrcode.vue": "^3.6.0",
     "quill": "^2.0.2",
     "splitpanes": "^4.0.4",
     "ua-parser-js": "^1.0.39",

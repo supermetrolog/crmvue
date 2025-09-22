@@ -140,7 +140,7 @@ import { surveyConfig } from '@/configs/survey.config.js';
 import { useAuth } from '@/composables/useAuth';
 import { isNullish } from '@/utils/helpers/common/isNullish.ts';
 import UiButton from '@/components/common/UI/UiButton.vue';
-import { useAsync } from '@/composables/useAsync.js';
+import { useAsync } from '@/composables/useAsync';
 import SurveyFormObjects from '@/components/SurveyForm/SurveyFormObjects.vue';
 import Spinner from '@/components/common/Spinner.vue';
 import { useStore } from 'vuex';

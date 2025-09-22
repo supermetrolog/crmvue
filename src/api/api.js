@@ -41,6 +41,7 @@ import messageTemplate from '@/api/messageTemplate';
 import userNotifications from '@/api/user-notifications';
 import userNotificationActionLogs from '@/api/user-notification-action-logs';
 import userNotificationTemplates from '@/api/user-notification-templates';
+import userTelegram from '@/api/user-telegram';
 
 export default {
     user,
@@ -85,5 +86,6 @@ export default {
     messageTemplate,
     userNotifications,
     userNotificationActionLogs,
-    userNotificationTemplates
+    userNotificationTemplates,
+    userTelegram
 };

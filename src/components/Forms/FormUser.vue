@@ -197,7 +197,7 @@ import UiModal from '@/components/common/UI/UiModal.vue';
 import UiButton from '@/components/common/UI/UiButton.vue';
 import { useFormData } from '@/utils/use/useFormData.js';
 import { useValidation } from '@/composables/useValidation.js';
-import { useAsync } from '@/composables/useAsync.js';
+import { useAsync } from '@/composables/useAsync';
 import { useAuth } from '@/composables/useAuth';
 import UiFormDivider from '@/components/common/Forms/UiFormDivider.vue';
 import UiCol from '@/components/common/UI/UiCol.vue';

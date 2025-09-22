@@ -35,7 +35,7 @@ import EmptyData from '@/components/common/EmptyData.vue';
 import FormCompany from '@/components/Forms/Company/FormCompany.vue';
 import { computed, ref } from 'vue';
 import FormCompanyDisable from '@/components/Forms/Company/FormCompanyDisable.vue';
-import { useAsync } from '@/composables/useAsync.js';
+import { useAsync } from '@/composables/useAsync';
 import api from '@/api/api.js';
 import Loader from '@/components/common/Loader.vue';
 import { useNotify } from '@/utils/use/useNotify.js';

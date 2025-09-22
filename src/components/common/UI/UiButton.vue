@@ -6,13 +6,17 @@
         :class="classes"
         :disabled="disabled || localeLoading"
         :to
+        :href
+        :target
     >
         <slot name="before"></slot>
         <slot name="icon">
             <i v-if="icon" :class="[icon, iconClass]" />
         </slot>
-        <span v-if="$slots.default">
-            <slot></slot>
+        <span v-if="$slots.default || label">
+            <slot>
+                {{ label }}
+            </slot>
         </span>
         <slot v-if="hasLoadingState || localeLoading" name="loading">
             <Transition :duration="500" name="spinner-fade">
@@ -84,6 +88,8 @@ export interface ButtonProps {
     badgeClass?: string | string[] | object;
     badgePosition?: ButtonBadgePosition;
     state?: ButtonState;
+    href?: string;
+    target?: '_blank' | '_self' | '_parent';
 }
 
 const props = withDefaults(defineProps<ButtonProps>(), {
@@ -104,6 +110,7 @@ const classes = computed(() => {
         'ui-button--uppercase': props.uppercase,
         'ui-button--center': props.center,
         'ui-button--big': props.big,
+        'ui-button--disabled': props.disabled,
         [`ui-button--cl-${props.color}`]: isNotNullish(props.color)
     };
 });

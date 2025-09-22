@@ -29,7 +29,7 @@
                 <UiButton
                     :icon="isMap ? 'fa-solid fa-list-ul' : 'fa-solid fa-map-location-dot'"
                     :to="{
-                        name: props.isMap ? 'OffersMain' : 'OffersMap',
+                        name: props.isMap ? 'offers.table' : 'offers.map',
                         query: route.query
                     }"
                     :as="RouterLink"
