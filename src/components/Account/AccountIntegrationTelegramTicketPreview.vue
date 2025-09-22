@@ -47,11 +47,12 @@
 import { StartTelegramLinkResponse } from '@/api/user-telegram';
 import UiQRCode from '@/components/common/UI/UiQRCode.vue';
 import UiButton from '@/components/common/UI/UiButton.vue';
-import { useCountdown } from '@vueuse/core';
+import { useCountdown, useDocumentVisibility } from '@vueuse/core';
 import { dayjsFromServer } from '@/utils/formatters/date';
 import dayjs from 'dayjs';
-import { computed } from 'vue';
+import { computed, watch } from 'vue';
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
+import { toTimeFormat } from '@/utils/formatters/toTimeFormat';
 
 defineEmits<{
     (e: 'retry'): void;
@@ -62,7 +63,7 @@ const props = defineProps<{
     ticket: StartTelegramLinkResponse;
 }>();
 
-const { remaining, stop, isActive } = useCountdown(
+const { remaining, stop, isActive, pause, start } = useCountdown(
     dayjsFromServer(props.ticket.expires_at).diff(dayjs(), 'seconds'),
     {
         immediate: true,
@@ -72,5 +73,15 @@ const { remaining, stop, isActive } = useCountdown(
     }
 );
 
-const time = computed(() => `${Math.floor(remaining.value / 60)}:${remaining.value % 60}`);
+const documentVisibility = useDocumentVisibility();
+
+watch(documentVisibility, value => {
+    if (value) {
+        start(dayjsFromServer(props.ticket.expires_at).diff(dayjs(), 'seconds'));
+    } else {
+        pause();
+    }
+});
+
+const time = computed(() => toTimeFormat(remaining.value));
 </script>
