@@ -32,7 +32,8 @@ const Websocket = {
 
         pingTimer: null,
         sendQueue: [],
-        windowId: getWindowId()
+        windowId: getWindowId(),
+        telegramIsLinked: false
     },
 
     mutations: {
@@ -185,6 +186,9 @@ const Websocket = {
         },
         _ws_info() {
             // нераспознанные события
+        },
+        _ws_telegram_linked({ state }) {
+            state.telegramIsLinked = true;
         }
     },
     getters: {
