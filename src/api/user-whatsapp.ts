@@ -1,27 +1,33 @@
 import axios from 'axios';
 import { responseToData } from '@/api/helpers/responseToData';
 import { responseToPaginatedData } from '@/api/helpers/responseToPaginatedData';
-import { UserTelegramLink } from '@/types/integration/user-telegram-link';
 import { User } from '@/types/user';
 import { UserTelegramLinkTicket } from '@/types/integration/user-telegram-link-ticket';
 import { RequestQueryParams } from '@/api/types';
+import { UserWhatsappLink } from '@/types/integration/user-whatsapp-link';
 
 const URL = '/integration/whatsapp';
 
-async function status() {
-    const response = await axios.post(`${URL}/status`);
-    return responseToData<UserTelegramLink>(response);
-}
-
-export type StartTelegramLinkResponse = {
-    deep_link: string;
-    code: string;
-    expires_at: string;
+type UserWhatsappLinkStatus = {
+    linked: boolean;
+    phone: string;
+    first_name: string | null;
+    full_name: string | null;
+    push_name: string | null;
 };
 
-async function link() {
-    const response = await axios.post(`${URL}/start`);
-    return responseToData<StartTelegramLinkResponse>(response);
+async function status() {
+    const response = await axios.post(`${URL}/status`);
+    return responseToData<UserWhatsappLinkStatus>(response);
+}
+
+type LinkUserWhatsappRequestDto = {
+    phone: string;
+};
+
+async function link(params: LinkUserWhatsappRequestDto) {
+    const response = await axios.post(`${URL}/link`, params);
+    return responseToData<UserWhatsappLinkStatus>(response);
 }
 
 async function revoke() {
@@ -29,13 +35,9 @@ async function revoke() {
     return responseToData(response);
 }
 
-export interface SearchedUserTelegramLink extends UserTelegramLink {
-    user: User;
-}
-
 async function adminList(params: RequestQueryParams = {}) {
     const response = await axios.get(`${URL}/admin/list`, { params });
-    return responseToPaginatedData<SearchedUserTelegramLink>(response);
+    return responseToPaginatedData<UserWhatsappLink>(response);
 }
 
 export interface SearchedUserTelegramLinkTicket extends UserTelegramLinkTicket {

@@ -21,11 +21,11 @@ export const menu: GeneralMenuItemConfig[] = [
     {
         name: 'Дашборд',
         icon: 'fa-solid fa-chart-line',
-        to: 'dashboard',
+        to: 'dashboard.main',
         internal: [
             {
                 name: 'Сводка',
-                to: 'dashboard',
+                to: 'dashboard.main',
                 icon: 'fa-solid fa-chart-line',
                 exact: true
             },
@@ -44,11 +44,11 @@ export const menu: GeneralMenuItemConfig[] = [
     {
         name: 'Компании',
         icon: 'fa-solid fa-industry',
-        to: 'companies',
+        to: 'companies.table',
         internal: [
             {
                 name: 'Выдача',
-                to: 'companies',
+                to: 'companies.table',
                 icon: 'fa-solid fa-industry',
                 exact: true
             },
@@ -72,7 +72,7 @@ export const menu: GeneralMenuItemConfig[] = [
     {
         name: 'Предложка',
         icon: 'fa-solid fa-city',
-        to: 'offers'
+        to: 'offers.table'
     },
     // {
     //     id: 7,

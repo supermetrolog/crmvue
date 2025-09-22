@@ -10,6 +10,9 @@
                         <Tab name="TelegramLinkTicket">
                             <AdminIntegrationsTelegramLinkTickets />
                         </Tab>
+                        <Tab name="WhatsappLink">
+                            <AdminIntegrationsWhatsappLinks />
+                        </Tab>
                     </Tabs>
                 </UiCol>
             </div>
@@ -23,4 +26,5 @@ import Tabs from '@/components/common/Tabs/Tabs.vue';
 import Tab from '@/components/common/Tabs/Tab.vue';
 import AdminIntegrationsTelegramLinks from '@/components/Admin/Integrations/AdminIntegrationsTelegramLinks.vue';
 import AdminIntegrationsTelegramLinkTickets from '@/components/Admin/Integrations/AdminIntegrationsTelegramLinkTickets.vue';
+import AdminIntegrationsWhatsappLinks from '@/components/Admin/Integrations/AdminIntegrationsWhatsappLinks.vue';
 </script>

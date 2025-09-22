@@ -338,7 +338,7 @@ export const routes = [
     },
     {
         path: '/surveys',
-        name: 'surveys.main',
+        name: 'surveys',
         meta: {
             layout: 'default',
             auth: { isAuth: true },
@@ -347,7 +347,7 @@ export const routes = [
         children: [
             {
                 path: '',
-                name: 'surveys',
+                name: 'surveys.main',
                 component: () => import('../views/Surveys/Surveys.vue')
             },
             {
