@@ -3,7 +3,6 @@
         <AnimationTransition :speed="0.4">
             <UiButton
                 v-if="link?.linked"
-                @click="previewIsVisible = true"
                 :loading="isLoading"
                 icon="fa-solid fa-user"
                 :label="linkLabel"
@@ -17,20 +16,35 @@
                 :label="isLoading ? 'Поиск профиля' : 'Не привязан'"
             />
         </AnimationTransition>
-        <UiButton @click="startLink" icon="fa-solid fa-plus" color="success-light">
+        <UiButton
+            v-if="!link?.linked"
+            @click="startLink"
+            icon="fa-solid fa-plus"
+            color="success-light"
+        >
             Привязать аккаунт
         </UiButton>
+        <UiButton
+            v-else
+            @click="revokeLink"
+            :loading="linkIsRevoking"
+            icon="fa-solid fa-ban"
+            color="danger-light"
+        >
+            Отвязать аккаунт
+        </UiButton>
         <teleport to="body">
-            <UiModal v-model:visible="previewIsVisible" title="Связанный профиль в Telegram">
-                <AccountIntegrationTelegramLinkPreview :link />
-            </UiModal>
             <UiModal
                 v-model:visible="ticketPreviewIsVisible"
                 title="Интеграция c Telegram"
                 :width="700"
             >
                 <AccountIntegrationTelegramTicketPreviewSkeleton v-if="startIsGenerating" />
-                <AccountIntegrationTelegramTicketPreview v-else-if="ticket" :ticket />
+                <AccountIntegrationTelegramTicketPreview
+                    v-else-if="ticket"
+                    @retry="executeStartLink"
+                    :ticket
+                />
             </UiModal>
         </teleport>
     </div>
@@ -42,7 +56,6 @@ import api from '@/api/api';
 import { computed, ref } from 'vue';
 import { isNotNullish } from '@/utils/helpers/common/isNotNullish';
 import UiModal from '@/components/common/UI/UiModal.vue';
-import AccountIntegrationTelegramLinkPreview from '@/components/Account/AccountIntegrationTelegramLinkPreview.vue';
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
 import AccountIntegrationTelegramTicketPreview from '@/components/Account/AccountIntegrationTelegramTicketPreview.vue';
 import AccountIntegrationTelegramTicketPreviewSkeleton from '@/components/Account/AccountIntegrationTelegramTicketPreviewSkeleton.vue';
@@ -61,7 +74,6 @@ const linkLabel = computed(() => {
     return undefined;
 });
 
-const previewIsVisible = ref(false);
 const ticketPreviewIsVisible = ref(false);
 
 function startLink() {
@@ -74,4 +86,15 @@ const {
     data: ticket,
     execute: executeStartLink
 } = useAsync(api.userTelegram.start);
+
+const { isLoading: linkIsRevoking, execute: revokeLink } = useAsync(api.userTelegram.revoke, {
+    onFetchResponse() {
+        link.value = null;
+    },
+    confirmation: true,
+    confirmationContent: {
+        title: 'Отвязать Telegram',
+        message: 'Вы уверены, что хотите отвязать Telegram аккаунт?'
+    }
+});
 </script>

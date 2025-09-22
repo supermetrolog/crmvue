@@ -110,6 +110,7 @@ const classes = computed(() => {
         'ui-button--uppercase': props.uppercase,
         'ui-button--center': props.center,
         'ui-button--big': props.big,
+        'ui-button--disabled': props.disabled,
         [`ui-button--cl-${props.color}`]: isNotNullish(props.color)
     };
 });
