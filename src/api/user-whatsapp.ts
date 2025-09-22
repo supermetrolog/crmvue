@@ -4,6 +4,7 @@ import { responseToPaginatedData } from '@/api/helpers/responseToPaginatedData';
 import { User } from '@/types/user';
 import { UserTelegramLinkTicket } from '@/types/integration/user-telegram-link-ticket';
 import { RequestQueryParams } from '@/api/types';
+import { UserWhatsappLink } from '@/types/integration/user-whatsapp-link';
 
 const URL = '/integration/whatsapp';
 
@@ -34,22 +35,9 @@ async function revoke() {
     return responseToData(response);
 }
 
-type UserWhatsappLink = {
-    id: number;
-    user_id: number;
-    whatsapp_profile_id: string;
-    first_name: string | null;
-    full_name: string | null;
-    revoked_at: string | null;
-};
-
-export interface SearchedUserWhatsappLink extends UserWhatsappLink {
-    user: User;
-}
-
 async function adminList(params: RequestQueryParams = {}) {
     const response = await axios.get(`${URL}/admin/list`, { params });
-    return responseToPaginatedData<SearchedUserWhatsappLink>(response);
+    return responseToPaginatedData<UserWhatsappLink>(response);
 }
 
 export interface SearchedUserTelegramLinkTicket extends UserTelegramLinkTicket {

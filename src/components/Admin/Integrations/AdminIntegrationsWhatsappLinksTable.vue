@@ -10,12 +10,12 @@
             />
             <span v-else class="op-5">-</span>
         </ElTableColumn>
-        <ElTableColumn prop="telegram_user_id" label="Telegram User ID" />
-        <ElTableColumn prop="chat_id" label="Chat ID" />
-        <ElTableColumn prop="username" label="Username" />
+        <ElTableColumn prop="whatsapp_profile_id" label="Whatsapp Profile ID" />
+        <ElTableColumn prop="phone" label="Phone" />
         <ElTableColumn prop="first_name" label="First Name" />
-        <ElTableColumn prop="last_name" label="Last Name" />
-        <ElTableColumn prop="is_enabled" label="Is Enabled" />
+        <ElTableColumn prop="full_name" label="Full Name" />
+        <ElTableColumn prop="push_name" label="Push Name" />
+        <ElTableColumn prop="revoked_at" label="Revoked At" />
         <ElTableColumn prop="created_at" label="Created At" />
         <ElTableColumn v-slot="{ row }" label="Actions">
             <UiButton
@@ -38,9 +38,9 @@ import { ElTable, ElTableColumn } from 'element-plus';
 import Avatar from '@/components/common/Avatar.vue';
 import UiButton from '@/components/common/UI/UiButton.vue';
 import Loader from '@/components/common/Loader.vue';
-import { SearchedUserTelegramLink } from '@/api/user-telegram';
+import { UserWhatsappLink } from '@/types/integration/user-whatsapp-link';
 
 defineEmits<{ (e: 'revoke', linkId: number): void }>();
 
-defineProps<{ links: SearchedUserTelegramLink[]; loading?: boolean }>();
+defineProps<{ links: UserWhatsappLink[]; loading?: boolean }>();
 </script>
