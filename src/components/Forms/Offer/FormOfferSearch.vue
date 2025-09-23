@@ -395,6 +395,7 @@ import { isNullish } from '@/utils/helpers/common/isNullish.ts';
 import { isEmptyString } from '@/utils/helpers/string/isEmptyString.js';
 import { deepToRaw } from '@/utils/common/deepToRaw.js';
 import UiButton from '@/components/common/UI/UiButton.vue';
+import { assignQueryToForm } from '@/utils/helpers/forms/assignQueryToForm.js';
 
 const emit = defineEmits(['close', 'search', 'reset', 'resetSelected', 'changed-query']);
 const props = defineProps({
@@ -654,7 +655,7 @@ const hasApproximateDistance = computed(() => {
 });
 
 const setQueryFields = async () => {
-    Object.assign(form, structuredClone(deepToRaw(props.queryParams)));
+    assignQueryToForm(structuredClone(deepToRaw(props.queryParams)), form);
 };
 
 toDefaultForm();

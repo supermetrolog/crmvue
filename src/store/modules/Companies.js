@@ -53,9 +53,11 @@ const Companies = {
     actions: {
         async SEARCH_COMPANIES({ commit }, { query, concat = false }) {
             const { setHash, confirmHash } = useQueryHash('companies');
-            setHash(query);
 
-            commit('setCompanyTableFilters', query);
+            const clonedQuery = structuredClone(query);
+
+            setHash(clonedQuery);
+            commit('setCompanyTableFilters', clonedQuery);
 
             const data = await api.companies.searchCompanies(query);
 
