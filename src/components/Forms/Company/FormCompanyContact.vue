@@ -211,6 +211,7 @@ import UiCol from '@/components/common/UI/UiCol.vue';
 import { captureException } from '@sentry/vue';
 import FormCompanyContactPhones from '@/components/Forms/Company/FormCompanyContactPhones.vue';
 import ContactPositionPicker from '@/components/common/Forms/ContactPositionPicker/ContactPositionPicker.vue';
+import { useUserNotificationsPause } from '@/composables/useUserNotificationsPause';
 
 const emit = defineEmits(['close', 'updated', 'created']);
 const props = defineProps({
@@ -223,6 +224,8 @@ const props = defineProps({
         default: null
     }
 });
+
+useUserNotificationsPause('company-contact-form');
 
 const { getConsultantsOptions } = useConsultantsOptions();
 const { form, isEditMode } = useFormData(

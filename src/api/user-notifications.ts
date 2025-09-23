@@ -56,8 +56,8 @@ export interface SendUserNotificationDto {
     message: string;
     channel: string;
     user_ids: number[];
-    templated_id?: number;
-    expires_at?: string;
+    template_id?: number | null;
+    expires_at?: string | null;
     actions?: SendUserNotificationActionDto[];
 }
 

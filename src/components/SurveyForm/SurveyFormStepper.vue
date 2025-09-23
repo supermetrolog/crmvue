@@ -161,6 +161,7 @@ import SurveyFormStepperHelper from '@/components/SurveyForm/SurveyFormStepperHe
 import SurveyFormStepperSummary from '@/components/SurveyForm/SurveyFormStepperSummary.vue';
 import { useConfirm } from '@/composables/useConfirm.js';
 import { createTourStepElementGenerator, useTourStep } from '@/composables/useTour/useTourStep';
+import { useUserNotificationsPause } from '@/composables/useUserNotificationsPause';
 
 function toBool(value) {
     if (typeof value === 'string') return value === 'true';
@@ -203,6 +204,8 @@ const props = defineProps({
         default: () => []
     }
 });
+
+useUserNotificationsPause('survey-form');
 
 const isEditMode = computed(() => isNotNullish(props.survey));
 

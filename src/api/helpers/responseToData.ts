@@ -19,6 +19,11 @@ interface ResponseStatusData<T = any> {
     data: T;
 }
 
+export interface ResponseStatusWithMessage {
+    message: string;
+    success: boolean;
+}
+
 function setNotify(response: AxiosResponse) {
     const title = response.statusText;
 
@@ -35,10 +40,12 @@ export function responseToData<T = ResponseStatusData | any>(response: AxiosResp
     if (isNullish(response)) return response;
 
     if (isObject(response.data)) {
-        if ('message' in response.data && 'data' in response.data) {
-            setNotify(response);
+        if ('message' in response.data && ('success' in response.data || 'data' in response.data)) {
+            if (response.data.message?.length > 0) {
+                setNotify(response);
+            }
 
-            return response.data.data as T;
+            return (response.data?.data ?? response.data) as T;
         }
     }
 

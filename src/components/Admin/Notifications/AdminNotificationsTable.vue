@@ -12,7 +12,7 @@
             />
             <span v-else class="op-5">System</span>
         </ElTableColumn>
-        <ElTableColumn prop="template_id" label="Template ID" />
+        <ElTableColumn prop="template.id" label="Template ID" />
         <ElTableColumn prop="viewed_at" label="Viewed At" />
         <ElTableColumn prop="acted_at" label="Acted At" />
         <ElTableColumn prop="created_at" label="Created At" />
