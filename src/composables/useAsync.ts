@@ -3,6 +3,8 @@ import { MaybeRefOrGetter, noop } from '@vueuse/core';
 import { useConfirm } from '@/composables/useConfirm';
 import { isNotNullish } from '@/utils/helpers/common/isNotNullish';
 import { captureException } from '@sentry/vue';
+import { useButtonState } from '@/composables/useButtonState';
+import { ButtonState } from '@/components/common/UI/UiButton.vue';
 
 const supportsAbort = typeof AbortController === 'function';
 
@@ -44,6 +46,7 @@ type UseAsyncReturn<Args extends any[], R> = {
     data: ShallowRef<R | null>;
     execute: (...args: Args) => Promise<R | null | false>;
     executeDangerously: (...args: Args) => Promise<R | null>;
+    buttonState: Ref<ButtonState>;
 };
 
 export function useAsync<Args extends any[], R>(
@@ -66,6 +69,8 @@ export function useAsync<Args extends any[], R>(
         },
         payload = null
     } = config;
+
+    const { loading, error: setError, success, state } = useButtonState();
 
     const isLoading = ref(false);
     const isError = ref(false);
@@ -108,6 +113,7 @@ export function useAsync<Args extends any[], R>(
         if (abortBeforeFetch) abort();
 
         setLoading(true);
+        loading();
 
         error.value = null;
         aborted.value = false;
@@ -129,6 +135,7 @@ export function useAsync<Args extends any[], R>(
         return Promise.resolve(callable(...finalArgs))
             .then(response => {
                 onFetchResponse?.({ response, execute, args: finalArgs });
+                success();
 
                 data.value = response;
 
@@ -148,6 +155,7 @@ export function useAsync<Args extends any[], R>(
 
                 isError.value = true;
                 error.value = message;
+                setError();
 
                 if (throwOnFailed) throw fetchError;
 
@@ -174,6 +182,7 @@ export function useAsync<Args extends any[], R>(
         error,
         data,
         execute,
-        executeDangerously
+        executeDangerously,
+        buttonState: state
     };
 }

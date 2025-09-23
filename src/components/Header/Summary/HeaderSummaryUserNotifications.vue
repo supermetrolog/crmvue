@@ -3,13 +3,17 @@
         :loading="isLoading && !isSilentLoading"
         :silent-loading="isSilentLoading"
         :modal-title="`Просмотр уведомлений (${countLabel})`"
-        :count
+        :count="count!"
         label="Новые уведомления"
-        :class="{ danger: count > 0 }"
+        :class="{ danger: count! > 0 }"
         sticky
     >
         <template #modal="{ close }">
-            <HeaderSummaryUserNotificationsContent @close="close" :count />
+            <HeaderSummaryUserNotificationsContent
+                @close="close"
+                @update-count="fetchCount"
+                :count="count!"
+            />
         </template>
     </HeaderSummarySection>
 </template>

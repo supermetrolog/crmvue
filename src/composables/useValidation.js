@@ -27,5 +27,14 @@ export function useValidation(rules, form, config = {}) {
         return null;
     });
 
-    return { v$, validate, error, resetValidation };
+    function withValidation(callable) {
+        return async () => {
+            const isValid = await validate();
+            if (!isValid) return;
+
+            return await callable();
+        };
+    }
+
+    return { v$, validate, error, resetValidation, withValidation };
 }

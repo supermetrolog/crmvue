@@ -17,15 +17,19 @@
                 }"
             />
         </div>
-        <MessengerButton
-            v-if="!single"
-            @click="toggleSelectedAll"
-            :disabled="disabled"
-            class="w-100"
-            :class="{ active: modelValue.length === users.length }"
-        >
-            {{ modelValue.length === users.length ? 'Отменить всех' : 'Выбрать всех' }}
-        </MessengerButton>
+        <div class="d-flex gap-2 flex-wrap">
+            <slot name="actions">
+                <MessengerButton
+                    v-if="!single"
+                    @click="toggleSelectedAll"
+                    :disabled="disabled"
+                    class="w-100"
+                    :class="{ active: modelValue.length === users.length }"
+                >
+                    {{ modelValue.length === users.length ? 'Отменить всех' : 'Выбрать всех' }}
+                </MessengerButton>
+            </slot>
+        </div>
     </div>
 </template>
 <script setup>
