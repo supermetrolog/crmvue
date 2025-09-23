@@ -458,6 +458,7 @@ import { useValidation } from '@/composables/useValidation.js';
 import Switch from '@/components/common/Forms/Switch.vue';
 import { useCompanyPermissions } from '@/components/Company/useCompanyPermissions.js';
 import FormCompanyContactPhones from '@/components/Forms/Company/FormCompanyContactPhones.vue';
+import { useUserNotificationsPause } from '@/composables/useUserNotificationsPause';
 
 const emit = defineEmits(['updated', 'created', 'close']);
 const props = defineProps({
@@ -466,6 +467,8 @@ const props = defineProps({
         default: null
     }
 });
+
+useUserNotificationsPause('company-form');
 
 const { getConsultantsOptions } = useConsultantsOptions();
 const { getCompanyGroupsOptions } = useCompanyGroupsOptions();

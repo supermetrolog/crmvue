@@ -15,6 +15,18 @@
             >
                 Обработанные
             </UiButton>
+            <AnimationTransition :speed="0.4">
+                <UiButton
+                    v-if="count > 0 && currentTab === 'new'"
+                    @click="markAllAsActed"
+                    :state="actedlAllButtonState"
+                    class="ml-auto"
+                    icon="fa-solid fa-check"
+                    color="light"
+                >
+                    Обработать все
+                </UiButton>
+            </AnimationTransition>
         </div>
         <HeaderSummaryUserNotificationsContentList
             v-show="currentTab === 'new'"
@@ -61,8 +73,13 @@ import {
 import HeaderSummaryUserNotificationsContentList, {
     InfiniteLoadingState
 } from '@/components/Header/Summary/HeaderSummaryUserNotificationsContentList.vue';
+import { useAsync } from '@/composables/useAsync';
+import AnimationTransition from '@/components/common/AnimationTransition.vue';
 
-defineEmits<{ (e: 'close'): void }>();
+const emit = defineEmits<{
+    (e: 'close'): void;
+    (e: 'update-count'): void;
+}>();
 
 withDefaults(defineProps<{ count: number }>(), { count: 0 });
 
@@ -187,4 +204,23 @@ function onUpdated(notification: UserNotification) {
         Object.assign(currentNotification, notification);
     }
 }
+
+async function updateNotActedNotifications() {
+    await fetchNotActedNotifications();
+    emit('update-count');
+}
+
+const { buttonState: actedlAllButtonState, execute: markAllAsActed } = useAsync(
+    api.userNotifications.actedAll,
+    {
+        confirmation: true,
+        confirmationContent: {
+            title: 'Отметить все обработанными',
+            message: 'Вы подтверждаете, что ознакомились со всеми уведомлениями из списка!'
+        },
+        onFetchResponse() {
+            updateNotActedNotifications();
+        }
+    }
+);
 </script>

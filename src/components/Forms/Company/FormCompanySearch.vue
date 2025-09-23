@@ -341,13 +341,11 @@ import UiInput from '@/components/common/Forms/UiInput.vue';
 import MultiSelect from '@/components/common/Forms/MultiSelect.vue';
 import { ActivityGroupList, ActivityProfileList, CompanyCategories } from '@/const/const.js';
 import DoubleInput from '@/components/common/Forms/DoubleInput.vue';
-import { deleteEmptyFields } from '@/utils/helpers/object/deleteEmptyFields.js';
 import Modal from '@/components/common/Modal.vue';
 import { computed, onBeforeMount, ref, shallowRef, toRaw, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useSearchForm } from '@/composables/useSearchForm.js';
 import CheckboxOptions from '@/components/common/Forms/CheckboxOptions.vue';
-import { singleToArrayByKeys } from '@/utils/helpers/object/singleToArrayByKeys.js';
 import ConsultantPicker from '@/components/common/Forms/ConsultantPicker/ConsultantPicker.vue';
 import { useConsultantsOptions } from '@/composables/options/useConsultantsOptions.js';
 import SearchableOptionsPicker from '@/components/common/Forms/SearchableOptionsPicker.vue';
@@ -373,6 +371,8 @@ import { loadCache, removeCache, saveCache } from '@/services/cache';
 import { useNotify } from '@/utils/use/useNotify.js';
 import { CompanyStatusEnum, CompanyStatusLabel } from '@/types/company';
 import { toArray } from '@/utils/helpers/array/toArray';
+import { assignQueryToForm } from '@/utils/helpers/forms/assignQueryToForm.js';
+import { formToQuery } from '@/utils/helpers/forms/formToQuery';
 
 const statusOptions = {
     [CompanyStatusEnum.ACTIVE]: 'Активные',
@@ -388,19 +388,11 @@ const emit = defineEmits(['search', 'reset']);
 const extraIsVisible = shallowRef(false);
 
 const setQueryFields = async () => {
-    Object.assign(form, route.query);
+    const query = structuredClone(route.query);
 
-    singleToArrayByKeys(form, [
-        'categories',
-        'product_ranges',
-        'activity_group_ids',
-        'activity_profile_ids',
-        'statuses'
-    ]);
+    assignQueryToForm(query, form);
 
-    let query = { ...form };
-    deleteEmptyFields(query);
-    await router.replace({ query });
+    await router.replace({ query: { ...query, ...formToQuery(form) } });
 };
 
 const onSubmit = query => {
@@ -445,6 +437,10 @@ const { resetForm, form } = useSearchForm(
 
             if (value.statuses) {
                 value.statuses = toArray(value.statuses);
+            }
+
+            if (value.categories) {
+                value.categories = toArray(value.categories);
             }
 
             return value;
@@ -565,7 +561,7 @@ function clearSort() {
 
     delete query.sort;
 
-    router.replace({ query });
+    router.replace({ query: structuredClone(query) });
 }
 
 const hasCachedFilters = ref(false);
@@ -574,9 +570,8 @@ onBeforeMount(() => {
     const cachedFilters = loadCache('company-filters', 0);
 
     hasCachedFilters.value = isNotNullish(cachedFilters);
-
     if (cachedFilters) {
-        router.replace({ query: cachedFilters });
+        router.replace({ query: structuredClone(cachedFilters) });
     }
 });
 

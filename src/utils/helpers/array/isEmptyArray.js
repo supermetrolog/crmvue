@@ -1,3 +1,7 @@
 export function isEmptyArray(value) {
-    return !value.length;
+    if (Array.isArray(value)) {
+        return !value.length;
+    }
+
+    return false;
 }
