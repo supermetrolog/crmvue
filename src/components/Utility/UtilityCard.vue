@@ -8,7 +8,7 @@
         <p>{{ description }}</p>
         <div class="d-flex gap-1 flex-wrap mt-2">
             <slot name="actions" :run="run">
-                <UiButton @click="run" small color="light"> Использовать</UiButton>
+                <UiButton @click="run" color="light">Использовать</UiButton>
                 <slot name="after-actions" :run="run" />
             </slot>
         </div>

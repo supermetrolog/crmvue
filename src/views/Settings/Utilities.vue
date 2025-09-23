@@ -20,6 +20,14 @@
                                 icon="fa-solid fa-shuffle"
                             />
                         </UiCol>
+                        <UiCol :cols="4">
+                            <UtilityCard
+                                @run="formsVisibility.notifications = true"
+                                title="Создать уведомление"
+                                description="Создать важное уведомление для сотрудника в CRM/Whatsapp/Telegram."
+                                icon="fa-solid fa-bell"
+                            />
+                        </UiCol>
                     </div>
                 </DashboardCard>
             </UiCol>
@@ -33,19 +41,25 @@
                 v-if="formsVisibility.transferCompanies"
                 @close="formsVisibility.transferCompanies = false"
             />
+            <FormUtilityCreateNotification
+                v-if="formsVisibility.notifications"
+                @close="formsVisibility.notifications = false"
+            />
         </Teleport>
     </div>
 </template>
-<script setup>
+<script setup lang="ts">
 import DashboardCard from '@/components/Dashboard/Card/DashboardCard.vue';
 import { reactive } from 'vue';
 import UiCol from '@/components/common/UI/UiCol.vue';
 import FormUtilityFixPurposes from '@/components/Forms/Utility/FormUtilityFixPurposes.vue';
 import UtilityCard from '@/components/Utility/UtilityCard.vue';
 import FormUtilityTransferCompanies from '@/components/Forms/Utility/FormUtilityTransferCompanies.vue';
+import FormUtilityCreateNotification from '@/components/Forms/Utility/FormUtilityCreateNotification.vue';
 
 const formsVisibility = reactive({
     purposesFix: false,
-    transferCompanies: false
+    transferCompanies: false,
+    notifications: false
 });
 </script>
