@@ -13,7 +13,6 @@
                     v-model:filters="activityFilters"
                     @confirm-filter="confirmActivityFilters"
                     :sorting-options
-                    default-sort="activity"
                     name="status"
                     data-tour-id="company-table-filters:column-activity"
                     class="text-left"
@@ -132,7 +131,8 @@ const { filters: activityFilters, confirmFilters: confirmActivityFilters } = use
         },
         prepare: {
             dateStart: value => dayjs(value).toDate(),
-            dateEnd: value => dayjs(value).toDate()
+            dateEnd: value => dayjs(value).toDate(),
+            statuses: value => (isNotNullish(value) ? toArray(value) : value)
         }
     }
 );

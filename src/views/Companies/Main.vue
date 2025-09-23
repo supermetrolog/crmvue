@@ -144,7 +144,7 @@ import CompanyGrid from '@/components/Company/CompanyGrid.vue';
 import PaginationClassic from '@/components/common/Pagination/PaginationClassic.vue';
 import Switch from '@/components/common/Forms/Switch.vue';
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
-import { computed, onMounted, ref, shallowRef, watch } from 'vue';
+import { computed, onMounted, ref, shallowRef, toRaw, watch } from 'vue';
 import { useTableContent } from '@/composables/useTableContent.js';
 import { useRoute, useRouter } from 'vue-router';
 import { useMobile } from '@/composables/useMobile.js';
@@ -242,9 +242,10 @@ const { next, nextWithScroll, queryIsInitialized, isInitialLoading } = useTableC
             const queryIsEmpty = Object.keys(query).length === 0;
 
             if (!queryIsEmpty) return;
-
             if (isNotNullish(store.state.Companies.companyFilters)) {
-                await router.replace({ query: store.state.Companies.companyFilters });
+                await router.replace({
+                    query: structuredClone(toRaw(store.state.Companies.companyFilters))
+                });
                 return;
             }
 
@@ -252,7 +253,6 @@ const { next, nextWithScroll, queryIsInitialized, isInitialLoading } = useTableC
             query.statuses = [CompanyStatusEnum.ACTIVE];
             query.with_active_contacts = 1;
             query.sort = 'activity';
-
             await router.replace({ query });
         }
     }
