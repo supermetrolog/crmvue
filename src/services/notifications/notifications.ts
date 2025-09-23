@@ -39,3 +39,11 @@ export function destroyNotifications() {
     broker = null;
     leadership = null;
 }
+
+export function pauseNotifications(scope = 'global') {
+    broker?.pause(scope);
+}
+
+export function resumeNotifications(scope?: string) {
+    broker?.resume(scope);
+}

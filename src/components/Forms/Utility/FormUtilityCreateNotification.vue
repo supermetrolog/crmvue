@@ -62,7 +62,61 @@
                     </template>
                 </ConsultantModalPicker>
             </UiFormGroup>
+            <UiAccordion title="Продвинутые настройки">
+                <template #body>
+                    <UiFormGroup class="mt-2">
+                        <MultiSelect
+                            v-model="form.template_id"
+                            label="Шаблон"
+                            class="col-12"
+                            :options="templatesOptions"
+                            :loading="templatesIsLoading"
+                            placeholder="Выберите шаблон.."
+                        />
+                    </UiFormGroup>
+                    <UiFormDivider />
+                    <UiFormGroup>
+                        <UiCol :cols="12">
+                            <p class="font-weight-semi mb-1">Действия</p>
+                            <div class="d-flex gap-2 flex-wrap">
+                                <UiButton
+                                    @click.prevent="actionFormIsVisible = true"
+                                    small
+                                    color="success-light"
+                                    icon="fa-solid fa-plus"
+                                >
+                                    Добавить действие
+                                </UiButton>
+                                <div
+                                    v-for="action in form.actions"
+                                    :key="action.id"
+                                    class="d-inline-flex align-items-center dashboard-bg-light py-1 px-2 br-1"
+                                >
+                                    <span class="mr-1">{{ action.label }}</span>
+                                    <UiButtonIcon
+                                        @click.prevent="removeActionById(action.id)"
+                                        mini
+                                        icon="fa-solid fa-xmark"
+                                        color="light"
+                                    />
+                                </div>
+                            </div>
+                        </UiCol>
+                    </UiFormGroup>
+                </template>
+            </UiAccordion>
         </UiForm>
+        <teleport to="body">
+            <UiModal
+                v-slot="{ close }"
+                v-model:visible="actionFormIsVisible"
+                title="Добавить действие"
+                :width="600"
+                :blackout-opacity="0.7"
+            >
+                <FormUtilityCreateNotificationAction @close="close" @confirm="addAction" />
+            </UiModal>
+        </teleport>
         <template #actions="{ close }">
             <UiButton
                 @click="submit"
@@ -98,6 +152,12 @@ import { useStore } from 'vuex';
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
 import { SendUserNotificationDto } from '@/api/user-notifications';
 import Loader from '@/components/common/Loader.vue';
+import UiAccordion from '@/components/common/UI/Accordion/UiAccordion.vue';
+import MultiSelect from '@/components/common/Forms/MultiSelect.vue';
+import UiCol from '@/components/common/UI/UiCol.vue';
+import UiButtonIcon from '@/components/common/UI/UiButtonIcon.vue';
+import { spliceById } from '@/utils/helpers/array/spliceById';
+import FormUtilityCreateNotificationAction from '@/components/Forms/Utility/FormUtilityCreateNotificationAction.vue';
 
 const emit = defineEmits<{ (e: 'close'): void }>();
 
@@ -105,7 +165,9 @@ const form = reactive({
     subject: '',
     message: '',
     user_ids: [] as number[],
-    channel: 'web'
+    channel: 'web',
+    template_id: null,
+    actions: []
 } satisfies SendUserNotificationDto);
 
 const { v$, withValidation } = useValidation(
@@ -159,5 +221,39 @@ const allSelected = computed(
 
 function clearUsers() {
     form.user_ids = [];
+}
+
+// templates
+
+const { data: templates, isLoading: templatesIsLoading } = useAsync(
+    api.userNotificationTemplates.list,
+    { immediate: true }
+);
+
+const templatesOptions = computed(() => {
+    if (templatesIsLoading.value) {
+        return [];
+    }
+
+    if (templates.value) {
+        return templates.value.data.map(template => ({
+            label: `${template.kind} | ${template.priority_label} | ${template.category_label}`,
+            value: template.id
+        }));
+    }
+
+    return [];
+});
+
+// actions
+
+const actionFormIsVisible = ref(false);
+
+function removeActionById(id: number) {
+    spliceById(form.actions, id);
+}
+
+function addAction(config) {
+    form.actions.push(config);
 }
 </script>

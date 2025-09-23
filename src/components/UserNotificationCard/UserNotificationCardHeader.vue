@@ -1,6 +1,12 @@
 <template>
     <div class="user-notification-card__header">
-        <i class="fa-solid fa-bell user-notification-card__icon" />
+        <Avatar
+            v-if="notification.createdBy"
+            :src="notification.createdBy.userProfile.avatar"
+            :label="`Отправитель - ${notification.createdBy.userProfile.medium_name}`"
+            :size="30"
+        />
+        <i v-else class="fa-solid fa-bell user-notification-card__icon" />
         <UiField color="light">{{ createdAt }}</UiField>
         <UiField v-if="notification.template" color="light" tooltip="Категория">
             {{ categoryLabel }}
@@ -25,6 +31,7 @@ import UiField from '@/components/common/UI/UiField.vue';
 import { computed } from 'vue';
 import { toBeautifulDateFormat } from '@/utils/formatters/date';
 import UiButtonIcon from '@/components/common/UI/UiButtonIcon.vue';
+import Avatar from '@/components/common/Avatar.vue';
 
 defineEmits<{ (e: 'close'): void }>();
 
