@@ -5,27 +5,27 @@
         :modal-title="`Просмотр уведомлений (${countLabel})`"
         :count="count!"
         label="Новые уведомления"
-        :class="{ danger: count! > 0 }"
+        :class="{ danger: count! > 0, urgent: isUrgent }"
         sticky
     >
         <template #modal="{ close }">
             <HeaderSummaryUserNotificationsContent
                 @close="close"
-                @update-count="fetchCount"
+                @update-count="updateCount"
                 :count="count!"
             />
         </template>
     </HeaderSummarySection>
 </template>
 <script setup lang="ts">
-import { computed, onBeforeMount, onUnmounted, watch } from 'vue';
+import { computed, onBeforeMount, onUnmounted, ref, watch } from 'vue';
 import HeaderSummarySection from '@/components/Header/Summary/HeaderSummarySection.vue';
 import HeaderSummaryUserNotificationsContent from '@/components/Header/Summary/HeaderSummaryUserNotificationsContent.vue';
 import api from '@/api/api.js';
 import { useAsync } from '@/composables/useAsync';
 import { useUserNotificationsBus } from '@/composables/useUserNotificationsBus';
 import { plural } from '@/utils/plural';
-import { useDocumentVisibility, useIntervalFn } from '@vueuse/core';
+import { useDocumentVisibility, useIntervalFn, useTimeoutFn } from '@vueuse/core';
 
 const {
     isLoading,
@@ -47,7 +47,29 @@ const off = notificationsBus.on(event => {
     }
 });
 
-const { isLoading: isSilentLoading, execute: updateCount } = useAsync(fetchCount);
+const isUrgent = ref(false);
+
+const { start, stop } = useTimeoutFn(
+    () => {
+        isUrgent.value = false;
+        stop();
+    },
+    2000,
+    { immediate: false }
+);
+
+function setUrgentStatus() {
+    isUrgent.value = true;
+    start();
+}
+
+const { isLoading: isSilentLoading, execute: updateCount } = useAsync(fetchCount, {
+    onFetchResponse({ response }) {
+        if ((response as number) > 0) {
+            setUrgentStatus();
+        }
+    }
+});
 
 onUnmounted(off);
 
