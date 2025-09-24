@@ -147,6 +147,7 @@ import { useAuth } from '@/composables/useAuth';
 import { useNotify } from '@/utils/use/useNotify.js';
 import { isNotEmptyString } from '@/utils/helpers/string/isNotEmptyString.js';
 import { ucFirst } from '@/utils/formatters/string.js';
+import { isArray } from '@/utils/helpers/array/isArray';
 
 const isMobile = useMobile();
 const store = useStore();
@@ -293,7 +294,7 @@ const gettersForFilters = {
     },
     sort: value => value,
     cian_regions: value => {
-        if (isNotNullish(value) && !isEmptyArray(value)) {
+        if (isArray(value) && !isEmptyArray(value)) {
             return value.map(element => locationOptions.cianRegion[element]).join(', ');
         }
 
@@ -313,7 +314,8 @@ const formKeysOnlyArray = [
     'direction',
     'district_moscow',
     'object_type',
-    'floor_types'
+    'floor_types',
+    'cian_regions'
 ];
 
 const getOffers = async (withLoader = true) => {
