@@ -4,7 +4,7 @@
             <button @click.prevent="toggle" class="mobile-header__button">
                 <i class="fa-solid fa-bars"></i>
             </button>
-            <div class="mobile-header__avatar">
+            <div v-if="currentUser" class="mobile-header__avatar">
                 <router-link to="/account">
                     <Avatar :size="45" :src="currentUser.userProfile?.avatar" />
                 </router-link>
