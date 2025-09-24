@@ -3,10 +3,7 @@ import { responseToData } from '@/api/helpers/responseToData.ts';
 
 export default {
     async getConsultantList() {
-        const url =
-            'users?fields=id,username,status,userProfile,role&expand=userProfile,userProfile.phones,userProfile.emails';
-
-        const response = await axios.get(url);
+        const response = await axios.get('users');
         return responseToData(response);
     },
     async getCompanyGroupList() {

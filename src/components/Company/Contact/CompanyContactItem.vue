@@ -99,6 +99,7 @@
             class="company-contact-item__phones mt-1"
         >
             <PhoneNumber
+                v-if="mainPhone"
                 :phone="mainPhone"
                 :contact="contact"
                 class="company-contact-item__phone"
