@@ -475,8 +475,13 @@ async function createSurveyAction() {
         target_id: selectedLetterId.value
     });
 
-    // eslint-disable-next-line vue/no-mutating-props
-    props.survey.actions.push(action);
+    if (props.survey.actions) {
+        // eslint-disable-next-line vue/no-mutating-props
+        props.survey.actions.push(action);
+    } else {
+        // eslint-disable-next-line vue/no-mutating-props
+        props.survey.actions = [action];
+    }
 }
 
 watch(selectedLetterId, () => {
