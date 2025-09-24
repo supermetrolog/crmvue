@@ -281,6 +281,10 @@ const generateCroppedFileName = () => {
 };
 
 const saveCropped = async () => {
+    if (!cropperEl.value) {
+        return;
+    }
+
     const blob = await cropperEl.value.getBlob();
     const url = cropperEl.value.getUrl();
 

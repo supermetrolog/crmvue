@@ -50,9 +50,13 @@ const props = defineProps<{
     };
 }>();
 
-const currentCalls = computed(() =>
-    props.contact.calls!.filter(call => call.phone_id === props.phone.id)
-);
+const currentCalls = computed(() => {
+    if (props.contact.calls?.length) {
+        return props.contact.calls!.filter(call => call.phone_id === props.phone.id);
+    }
+
+    return [];
+});
 
 const callsCountLabel = computed(() => {
     if (currentCalls.value.length > 0) {

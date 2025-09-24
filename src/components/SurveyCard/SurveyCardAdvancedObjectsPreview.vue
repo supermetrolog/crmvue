@@ -81,9 +81,13 @@ const TABS = {
 
 const currenTab = ref(TABS.ACTIVE);
 
-const tradeOffers = computed(() =>
-    isObject(props.answer.current) ? Object.values(props.answer.current) : []
-);
+const tradeOffers = computed(() => {
+    if (props.answer) {
+        return isObject(props.answer.current) ? Object.values(props.answer.current) : [];
+    }
+
+    return [];
+});
 
 const parametersHasWarnings = ref(true);
 

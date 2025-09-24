@@ -17,8 +17,8 @@
 import MobileSidebarMenuExtra from '@/components/SideBar/MobileSidebarMenuExtra.vue';
 import { computed } from 'vue';
 import { useAuth } from '@/composables/useAuth';
-import { isNullish } from '@/utils/helpers/common/isNullish.ts';
-import { isNotNullish } from '@/utils/helpers/common/isNotNullish.ts';
+import { isNullish } from '@/utils/helpers/common/isNullish';
+import { isNotNullish } from '@/utils/helpers/common/isNotNullish';
 import { GeneralMenuItemConfig } from '@/const/menu';
 
 const props = defineProps<{
@@ -32,7 +32,10 @@ const internalMenu = computed(() => {
 
     return props.item.internal
         .filter(menuItem => {
-            if (isNotNullish(menuItem.auth)) return menuItem.auth.has(currentUser.value.role);
+            if (isNotNullish(menuItem.auth)) {
+                return isNotNullish(currentUser.value) && menuItem.auth.has(currentUser.value.role);
+            }
+
             return true;
         })
         .map((item, key) => ({ key, config: item }));

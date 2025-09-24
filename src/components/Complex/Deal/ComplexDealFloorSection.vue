@@ -13,11 +13,11 @@
             {{ sectionStatus }}
         </p>
         <div class="deal-section__functions">
-            <i
-                v-tippy="`Редактировать`"
-                @click="$emit('editSection', section)"
-                class="fas fa-pen deal-section__button"
-            />
+            <!--            <i-->
+            <!--                v-tippy="`Редактировать`"-->
+            <!--                @click="$emit('editSection', section)"-->
+            <!--                class="fas fa-pen deal-section__button"-->
+            <!--            />-->
             <UiForm v-if="section.is_active" class="deal-section__form">
                 <input
                     :id="checkboxName"

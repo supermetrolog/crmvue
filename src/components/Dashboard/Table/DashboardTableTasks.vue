@@ -50,6 +50,7 @@ import Spinner from '@/components/common/Spinner.vue';
 import { toDateFormat } from '@/utils/formatters/date.ts';
 import { spliceById } from '@/utils/helpers/array/spliceById.js';
 import UiModal from '@/components/common/UI/UiModal.vue';
+import { isObject } from '@/utils/helpers/object/isObject.js';
 
 const emit = defineEmits(['task-updated', 'hide']);
 const props = defineProps({
@@ -138,8 +139,10 @@ function hide() {
 }
 
 function onUpdated(task) {
-    Object.assign(currentTask.value, task);
-    emit('task-updated', task);
+    if (isObject(task)) {
+        Object.assign(currentTask.value, task);
+        emit('task-updated', task);
+    }
 }
 
 function onDeletedComment(commentId) {

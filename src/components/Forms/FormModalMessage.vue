@@ -37,12 +37,16 @@
                 <UiButton @click="attachFile" class="messenger-chat-form__button" color="warning">
                     <i class="fa-solid fa-paperclip"></i>
                 </UiButton>
-                <UiTextarea
-                    v-model.trim="form.message"
-                    @keydown.enter.prevent="keyHandler"
+                <VueEditor
+                    ref="textareaEl"
+                    v-model="form.message"
+                    @paste.prevent
+                    :toolbar="false"
                     placeholder="Напишите сообщение..."
                     class="messenger-chat-form__editor"
-                    auto-height
+                    :min-height="50"
+                    :max-height="140"
+                    autofocus
                 />
                 <UiButton
                     @click="sendMessage"
@@ -61,19 +65,20 @@
 </template>
 <script setup>
 import MessengerChatFormCategories from '@/components/Messenger/Chat/Form/MessengerChatFormCategories.vue';
-import UiTextarea from '@/components/common/Forms/UiTextarea.vue';
 import MessengerChatFormRecipient from '@/components/Messenger/Chat/Form/MessengerChatFormRecipient.vue';
 import UiForm from '@/components/common/Forms/UiForm.vue';
 import { cloneObject } from '@/utils/helpers/object/cloneObject.js';
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
 import MessengerChatFormAttachments from '@/components/Messenger/Chat/Form/MessengerChatFormAttachments.vue';
 import { useAsyncPopup } from '@/composables/useAsyncPopup.js';
-import { computed, inject, onUnmounted, ref, shallowRef } from 'vue';
+import { computed, inject, onUnmounted, ref, shallowRef, useTemplateRef } from 'vue';
 import { useStore } from 'vuex';
 import { MAX_FILES_COUNT } from '@/const/messenger.js';
 import Loader from '@/components/common/Loader.vue';
 import UiModal from '@/components/common/UI/UiModal.vue';
 import UiButton from '@/components/common/UI/UiButton.vue';
+import VueEditor from '@/components/common/Forms/VueEditor.vue';
+import { usePasteFiles } from '@/composables/usePasteFiles.js';
 
 const $openAttachments = inject('$openAttachments');
 const store = useStore();
@@ -183,8 +188,7 @@ const sendMessage = async () => {
     }
 };
 
-const keyHandler = event => {
-    if (event.shiftKey) form.value.message += '\n';
-    else sendMessage();
-};
+const textareaEl = useTemplateRef('textareaEl');
+
+usePasteFiles(textareaEl, form.value.files);
 </script>
