@@ -194,17 +194,28 @@ const isCompleted = computed(() => props.survey.status === surveyStatusesEnum.CO
 const router = useRouter();
 
 const companyUrl = computed(() => {
-    if (props.survey.chatMember.model_type === messenger.dialogTypes.COMPANY) {
-        return router.resolve({ name: 'company', params: { id: props.survey.chatMember.model_id } })
-            .href;
+    let companyId;
+
+    switch (props.survey.chatMember.model_type) {
+        case messenger.dialogTypes.COMPANY: {
+            companyId = props.survey.chatMember.model_id;
+            break;
+        }
+        case messenger.dialogTypes.REQUEST: {
+            companyId = props.survey.chatMember.model.company_id;
+            break;
+        }
+        default: {
+            companyId =
+                props.survey.chatMember.model.object.company?.id ??
+                props.survey.chatMember.model.object.company_id;
+        }
     }
 
     return router.resolve({
         name: 'company',
         params: {
-            id:
-                props.survey.chatMember.model.object.company?.id ??
-                props.survey.chatMember.model.object.company_id
+            id: companyId
         }
     }).href;
 });
