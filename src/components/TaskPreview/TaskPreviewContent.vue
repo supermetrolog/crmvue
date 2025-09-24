@@ -28,6 +28,7 @@ import { computed, onBeforeMount, ref } from 'vue';
 import api from '@/api/api.js';
 import { toDateFormat } from '@/utils/formatters/date.ts';
 import { spliceById } from '@/utils/helpers/array/spliceById.js';
+import { isObject } from '@/utils/helpers/object/isObject.js';
 
 const emit = defineEmits(['updated', 'close']);
 
@@ -101,8 +102,10 @@ async function toChat(payload) {
 }
 
 function onUpdated(task) {
-    Object.assign(currentTask.value, task);
-    emit('updated', task);
+    if (isObject(task)) {
+        Object.assign(currentTask.value, task);
+        emit('updated', task);
+    }
 }
 
 function onDeletedComment(commentId) {
