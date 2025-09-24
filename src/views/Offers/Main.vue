@@ -419,7 +419,7 @@ const { nextWithScroll, next, isInitialLoading } = useTableContent(getOffers, {
         if (!queryIsEmpty) return;
 
         if (isNotNullish(store.state.Offers.offersFilters)) {
-            await router.replace({ query: structuredClone(store.state.Offers.offersFilters) });
+            await router.replace({ query: { ...store.state.Offers.offersFilters } });
         }
     }
 });
