@@ -28,7 +28,12 @@
                                 label="Перейти в чат"
                                 icon="fa-solid fa-comment"
                             />
-                            <a :href="companyUrl" target="_blank" class="text-inherit">
+                            <a
+                                v-if="survey.chatMember"
+                                :href="companyUrl"
+                                target="_blank"
+                                class="text-inherit"
+                            >
                                 <UiDropdownActionsButton
                                     label="Перейти к компании"
                                     icon="fa-solid fa-arrow-up-right-from-square"
@@ -40,7 +45,12 @@
             </div>
         </Td>
         <Td sort="chat_member_id" :width="350" class="py-2">
-            <UiDropdownActions small label="Действия над опросом" class="w-100 d-block">
+            <UiDropdownActions
+                v-if="survey.chatMember"
+                small
+                label="Действия над опросом"
+                class="w-100 d-block"
+            >
                 <template #trigger>
                     <MessengerDialogObject
                         v-if="survey.chatMember.model_type === messenger.dialogTypes.OBJECT"
@@ -48,6 +58,11 @@
                         short
                         motion-slider
                         show-company
+                        class="w-100"
+                    />
+                    <MessengerDialogRequest
+                        v-else-if="survey.chatMember.model_type === messenger.dialogTypes.REQUEST"
+                        :model="survey.chatMember.model"
                         class="w-100"
                     />
                     <MessengerDialogCompany v-else :model="survey.chatMember.model" short />
@@ -65,6 +80,7 @@
                     />
                 </template>
             </UiDropdownActions>
+            <p v-else>{{ survey.chat_member_id ?? 'без привязки' }}</p>
         </Td>
         <Td sort="contact_id" :width="200" class="py-2">
             <template v-if="survey.contact_id">
@@ -157,6 +173,7 @@ import { useAuth } from '@/composables/useAuth';
 import { dayjsFromServer } from '@/utils/formatters/date.ts';
 import dayjs from 'dayjs';
 import ContactPositionField from '@/components/Contact/ContactPositionField.vue';
+import MessengerDialogRequest from '@/components/Messenger/Dialog/MessengerDialogRequest.vue';
 
 defineEmits(['to-chat', 'open-survey', 'edit-survey']);
 const props = defineProps({
