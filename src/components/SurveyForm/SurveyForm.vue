@@ -600,13 +600,13 @@ const minimizeModal = useTemplateRef('minimizeModal');
 
 function minimize() {
     if (minimizeModal.value) {
-        minimizeModal.value.minimize();
+        minimizeModal.value?.minimize();
     }
 }
 
 function expand() {
     if (minimizeModal.value) {
-        minimizeModal.value.expand();
+        minimizeModal.value?.expand();
     }
 }
 

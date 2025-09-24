@@ -28,7 +28,7 @@ function openSurveyForm(companyId) {
             text: 'Опрос с этим клиентом уже запущен. Открыт из свернутого режима.'
         });
 
-        openedSurvey.expand();
+        openedSurvey?.expand();
 
         return;
     }
