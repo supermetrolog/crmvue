@@ -19,25 +19,29 @@
         <div class="mt-1 survey-form-contact-form-card__contacts">
             <p>Телефоны:</p>
             <div class="d-flex flex-column gap-1 align-items-start mb-3">
-                <PhoneNumber
-                    v-for="phone of contact.phones"
-                    :key="phone.id"
-                    :phone="phone"
-                    clickable
-                    class="survey-form-contact-form-card__phone"
-                />
-                <p v-if="!contact.phones.length" class="text-danger">не заполнено</p>
+                <template v-if="contact.phones?.length">
+                    <PhoneNumber
+                        v-for="phone of contact.phones"
+                        :key="phone.id"
+                        :phone="phone"
+                        clickable
+                        class="survey-form-contact-form-card__phone"
+                    />
+                </template>
+                <p v-else class="text-danger">не заполнено</p>
             </div>
             <p>Эл. почта:</p>
             <div class="d-flex flex-column gap-1 align-items-start">
-                <p
-                    v-for="email in contact.emails"
-                    :key="email.id"
-                    class="survey-form-contact-form-card__phone text-info"
-                >
-                    {{ email.email }}
-                </p>
-                <p v-if="!contact.emails.length" class="text-danger">не заполнено</p>
+                <template v-if="contact.emails?.length">
+                    <p
+                        v-for="email in contact.emails"
+                        :key="email.id"
+                        class="survey-form-contact-form-card__phone text-info"
+                    >
+                        {{ email.email }}
+                    </p>
+                </template>
+                <p v-else class="text-danger">не заполнено</p>
             </div>
         </div>
     </div>
@@ -69,13 +73,17 @@ const callsPluralLabel = computed(() => {
 });
 
 const lastCallDate = computed(() => {
+    if (!props.contact.calls?.length) {
+        return null;
+    }
+
     const lastCall = props.contact.calls[0];
 
     return toBeautifulDateFormat(lastCall.created_at);
 });
 
 const lastThreeCallsIsUnavailable = computed(() => {
-    if (props.contact.calls.length >= 3) {
+    if (props.contact.calls?.length >= 3) {
         return props.contact.calls.slice(0, 3).every(element => element.status === 0);
     }
 
@@ -83,8 +91,10 @@ const lastThreeCallsIsUnavailable = computed(() => {
 });
 
 const lastCallHasCompletedStatus = computed(
-    () => props.contact.calls[0].status === callStatusEnum.COMPLETED
+    () => props.contact.calls?.length && props.contact.calls[0].status === callStatusEnum.COMPLETED
 );
 
-const lastCallStatus = computed(() => callStatus[props.contact.calls[0].status]);
+const lastCallStatus = computed(() =>
+    props.contact.calls?.length ? callStatus[props.contact.calls[0].status] : null
+);
 </script>
