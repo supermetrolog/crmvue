@@ -50,7 +50,7 @@
                     <template v-if="descriptionShouldBeVisible">
                         <IconArrowRight class="survey-form-contact__result-arrow" width="60px" />
                         <div class="survey-form-contact__description fs-2">
-                            <p class="fs-1 text-grey">
+                            <p v-if="targetUser" class="fs-1 text-grey">
                                 <i>Задача {{ targetUser.userProfile.middle_name }} => Еськова</i>
                             </p>
                             <i>{{ description }}</i>
@@ -118,7 +118,7 @@ const form = defineModel({ type: Object });
 const { currentUser } = useAuth();
 
 const targetUser = computed(() => {
-    if (props.survey) {
+    if (props.survey.user) {
         return props.survey.user;
     }
 
