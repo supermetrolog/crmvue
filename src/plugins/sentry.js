@@ -23,7 +23,8 @@ export function initSentry(app) {
                 browserProfilingIntegration()
             ],
             skipBrowserExtensionCheck: true,
-            ignoreErrors: ['canceled', 'Request failed with status code 401', 'Network Error']
+            ignoreErrors: ['canceled', 'Request failed with status code 401', 'Network Error'],
+            release: `crm-raysarma@${__APP_VERSION__}`
         });
 
         console.log('[Sentry] Sentry initialized');

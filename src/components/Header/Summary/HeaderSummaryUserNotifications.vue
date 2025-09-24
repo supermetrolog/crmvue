@@ -25,16 +25,12 @@ import api from '@/api/api.js';
 import { useAsync } from '@/composables/useAsync';
 import { useUserNotificationsBus } from '@/composables/useUserNotificationsBus';
 import { plural } from '@/utils/plural';
-import { useDocumentVisibility, useIntervalFn, useTimeoutFn } from '@vueuse/core';
+import { useDocumentVisibility, useEventListener, useIntervalFn, useTimeoutFn } from '@vueuse/core';
 import { useAuth } from '@/composables/useAuth';
 import { publishNotificationFromWS } from '@/services/notifications/notifications';
 import { RequestQueryParams } from '@/api/types';
 
-const {
-    isLoading,
-    execute: fetchCount,
-    data: count
-} = useAsync(() => api.userNotifications.count());
+const { isLoading, execute: fetchCount, data: count } = useAsync(api.userNotifications.count);
 
 onBeforeMount(fetchCount);
 
@@ -79,13 +75,15 @@ onUnmounted(off);
 const countInterval = useIntervalFn(updateCount, 120000);
 const documentVisibility = useDocumentVisibility();
 
-watch(documentVisibility, (current, prev) => {
-    if (current === 'visible' && prev === 'hidden') {
+watch(documentVisibility, current => {
+    if (current === 'visible') {
         countInterval.resume();
     } else {
         countInterval.pause();
     }
 });
+
+useEventListener('beforeunload', () => countInterval.pause());
 
 // urgent notifications
 
