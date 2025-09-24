@@ -22,6 +22,8 @@ const props = defineProps({
 });
 
 const preparedPurposes = computed(() => {
-    return props.purposes.map(purpose => objectPurposesOptions[purpose]);
+    return props.purposes
+        .filter(purpose => purpose !== 0 && purpose !== '0')
+        .map(purpose => objectPurposesOptions[purpose]);
 });
 </script>
