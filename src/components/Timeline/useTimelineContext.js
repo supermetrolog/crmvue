@@ -9,12 +9,13 @@ export function useTimelineContext(step) {
     const route = useRoute();
 
     const company = computed(() => store.state.Companies.company);
+
     const contacts = computed(() => {
         const mainContactIndex = store.state.CompanyContact.companyContacts.findIndex(
             element => element.isMain
         );
 
-        if (mainContactIndex) {
+        if (mainContactIndex !== -1) {
             return [
                 store.state.CompanyContact.companyContacts[mainContactIndex],
                 ...store.state.CompanyContact.companyContacts.toSpliced(mainContactIndex, 1)
