@@ -802,7 +802,7 @@ tr.TableRequestRow {
 }
 
 .confirm {
-    z-index: 4100;
+    z-index: 5000 !important;
 
     &__icon {
         flex-shrink: 0;
@@ -910,4 +910,11 @@ tr.TableRequestRow {
     background: linear-gradient(to right, rgba(130, 130, 130, 0.2) 8%, rgba(130, 130, 130, 0.3) 18%, rgba(130, 130, 130, 0.2) 33%);
     background-size: 800px 100px;
     animation: skeleton .7s infinite ease-out;
+}
+
+.virtual-tbody {
+    tr:first-child, tr:last-child {
+        height: 0;
+        min-height: 0;
+    }
 }
