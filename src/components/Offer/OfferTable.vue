@@ -59,7 +59,7 @@
                     </template>
                 </Th>
                 <Th name="advertisement">реклама</Th>
-                <Th :sort="sortable ? 'last_update' : null" name="date">обновление</Th>
+                <Th :sorting-options name="date">обновление</Th>
             </Tr>
         </template>
         <template #tbody>
@@ -203,4 +203,15 @@ watch(
         priceFilters.rangeMaxPricePerFloor = value;
     }
 );
+
+// sort
+
+const sortingOptions = [
+    { value: 'last_update', label: 'По дате модерации', icon: 'fa-solid fa-pen' },
+    {
+        value: 'last_survey_created_at',
+        label: 'По дате последнего опроса',
+        icon: 'fa-solid fa-square-poll-horizontal'
+    }
+];
 </script>
