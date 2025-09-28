@@ -1,21 +1,36 @@
 <template>
-    <Table :refreshing shadow fluid class="company-table">
+    <Table
+        :refreshing
+        shadow
+        fluid
+        resizable
+        :default-widths="{
+            id: 80
+        }"
+        :constraints
+        storage-key="companies"
+        class="company-table"
+    >
         <template #thead>
             <Tr data-tour-id="company-table-filters:header">
-                <Th v-model:filters="consultantFilters" @confirm-filter="confirmConsultantFilters">
+                <Th
+                    v-model:filters="consultantFilters"
+                    @confirm-filter="confirmConsultantFilters"
+                    name="id"
+                >
                     <template #filter>
                         <CompanyTableFiltersConsultant v-model="consultantFilters" />
                     </template>
                 </Th>
-                <Th class="text-left" sort="nameRu">название компании</Th>
+                <Th class="text-left" sort="nameRu" name="name">название компании</Th>
                 <Th
                     ref="statusThEl"
                     v-model:filters="activityFilters"
                     @confirm-filter="confirmActivityFilters"
                     :sorting-options
-                    name="status"
                     data-tour-id="company-table-filters:column-activity"
                     class="text-left"
+                    name="status"
                 >
                     <template #default>работа с компанией</template>
                     <template #filter>
@@ -82,6 +97,7 @@ import CompanyTableFiltersConsultant from '@/components/Company/Table/Filters/Co
 import CompanyTableItemSkeleton from '@/components/Company/Table/CompanyTableItemSkeleton.vue';
 import { isNotNullish } from '@/utils/helpers/common/isNotNullish';
 import { toArray } from '@/utils/helpers/array/toArray';
+import { useTour } from '@/composables/useTour/useTour';
 
 defineEmits([
     'deleted-from-folder',
@@ -106,6 +122,19 @@ defineProps({
     loader: Boolean,
     refreshing: Boolean
 });
+
+const constraints = {
+    id: {
+        min: 40,
+        max: 160
+    },
+    name: {
+        min: 300
+    },
+    status: {
+        min: 300
+    }
+};
 
 // query filters
 
@@ -216,4 +245,26 @@ function onUpdatedTask(payload) {
     Object.assign(currentTask.value, payload);
     currentTask.value = null;
 }
+
+useTour('company-resize', {
+    autorun: true,
+    steps: [
+        {
+            key: 0,
+            element: '[data-tour-id="company-table-filters:header"]',
+            popover: {
+                title: 'Изменение ширины колонок',
+                description:
+                    'Теперь ширину колонок можно изменять! Для этого наведите мышкой на край нужной колонки и потяните его..'
+            }
+        },
+        {
+            key: 1,
+            popover: {
+                title: 'Сохранение настроек',
+                description: 'Настройки ширины сохраняются на вашем компьютере автоматически'
+            }
+        }
+    ]
+});
 </script>
