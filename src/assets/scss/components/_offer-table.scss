@@ -5,7 +5,7 @@
     vertical-align: top;
 
     .passive {
-        color: variables.$color_warning!important;
+        color: variables.$color_warning !important;
     }
 
     &:nth-child(even) {
@@ -16,11 +16,6 @@
     &:nth-child(odd) {
         background-color: darken(variables.$color_light, 3) !important;
         border-color: darken(variables.$color_light, 3) !important;
-    }
-
-    &__id {
-        width: 90px;
-        height: 1px;
     }
 
     &__aside {
@@ -35,16 +30,14 @@
     &__button {
         margin-bottom: 10px;
         width: 100%;
-        color: #fff!important;
+        color: #fff !important;
     }
 
     &__preview {
-        width: 270px;
         position: relative;
     }
 
     &__region {
-        width: 280px;
         text-transform: capitalize;
 
         a {
@@ -54,30 +47,16 @@
 
     &__from-mkad {
         font-weight: 700;
-        width: 80px;
-    }
-
-    &__area {
-        width: 250px;
-    }
-
-    &__price {
-        width: 250px;
-    }
-
-    &__consultant {
-        width: 80px;
     }
 
     &__company {
-        width: 300px;
         font-size: 15px;
     }
 
     &__company-element {
         max-width: 280px;
-        border: none!important;
-        padding: 0!important;
+        border: none !important;
+        padding: 0 !important;
 
         .company-contact__phone {
             background-color: #e7e7e7;
@@ -96,10 +75,6 @@
         }
     }
 
-    &__advertisement {
-        width: 200px;
-    }
-
     &__advertisements {
         @include mixins.flex-box($gap: 5px, $wrap: wrap, $j: center);
     }
@@ -109,11 +84,6 @@
         bottom: 5px;
         left: 5px;
         @include mixins.flex-box($gap: 5px);
-    }
-
-    &__date {
-        width: 140px;
-        min-width: 140px;
     }
 
     &__icon {
@@ -130,7 +100,7 @@
     }
 
     &__relations {
-        @include mixins.flex-box($gap: 1px,  $a: flex-end);
+        @include mixins.flex-box($gap: 1px, $a: flex-end);
     }
 
     &__relation-button {
@@ -202,7 +172,7 @@
     }
 
     &__chip {
-        width: 100%!important;
+        width: 100% !important;
         text-align: center;
 
         &.danger {
@@ -231,11 +201,11 @@
     }
 
     &.selected {
-        background-color: #a3e9b6!important;
+        background-color: #a3e9b6 !important;
 
         td:not(:last-child) {
-            border-right-color: #a3e9b6!important;
-            border-left-color: #a3e9b6!important;
+            border-right-color: #a3e9b6 !important;
+            border-left-color: #a3e9b6 !important;
         }
 
         .company-contact__phone {
@@ -243,7 +213,7 @@
         }
 
         .offer-table-item-preview__header .ui-field {
-            background-color: variables.$color_grey_light!important;
+            background-color: variables.$color_grey_light !important;
         }
     }
 }
@@ -355,7 +325,7 @@
         font-size: 14px;
         font-weight: 500;
         color: variables.$color_light;
-        background-color: rgba($color:variables.$color_danger, $alpha: 0.7);
+        background-color: rgba($color: variables.$color_danger, $alpha: 0.7);
     }
 
     &__area {
@@ -372,7 +342,7 @@
 .offer-table-item-price {
     @include mixins.flex-box($d: column);
 
-    &__additional  {
+    &__additional {
         color: variables.$color_grey;
         font-size: 14px;
     }
@@ -390,7 +360,7 @@
         position: relative;
 
         &.passive {
-            color: variables.$color_dark!important;
+            color: variables.$color_dark !important;
 
             td {
                 opacity: 0.5;
@@ -411,16 +381,16 @@
     }
 
     td {
-        padding: 10px!important;
+        padding: 10px !important;
     }
 }
 
 .offer-table-item-dropdown {
-    border-top: 3px solid #000!important;
-    border-bottom: 1px solid #000!important;
+    border-top: 3px solid #000 !important;
+    border-bottom: 1px solid #000 !important;
 
     .offer-table-item-dropdown__wrapper {
-        padding: 0!important;
+        padding: 0 !important;
     }
 
 
@@ -429,7 +399,7 @@
         width: 100%;
 
         .offer-table-item {
-            background-color: rgba(#e4eddb, .8)!important;
+            background-color: rgba(#e4eddb, .8) !important;
         }
     }
 }
@@ -452,12 +422,12 @@
     thead {
         color: variables.$color_primary;
         text-transform: unset;
-        height: 40px!important;
+        height: 40px !important;
 
         th {
-            font-weight: 600!important;
+            font-weight: 600 !important;
             text-align: left;
-            font-size: 16px!important;
+            font-size: 16px !important;
         }
 
         tr {
@@ -481,20 +451,20 @@
     }
 
     th, td {
-        padding-left: 20px!important;
+        padding-left: 20px !important;
     }
 }
 
 .offer-mini-list-item {
     background-color: #f3f3f3;
-    height: 50px!important;
+    height: 50px !important;
 
     &.archived {
         opacity: .25;
     }
 
     td {
-        padding: 0 10px 0 20px!important;
+        padding: 0 10px 0 20px !important;
     }
 
     &__functions {
@@ -542,7 +512,7 @@
     }
 
     &__dropdown {
-        width: 100%!important;
+        width: 100% !important;
         text-align: center;
 
         @include mixins.transition(background-color);
@@ -685,7 +655,7 @@
 .offer-table-item-call {
     &__chip {
         text-align: center;
-        width: 100%!important;
+        width: 100% !important;
         cursor: pointer;
         background-color: variables.$bg-success-l;
         justify-content: center;

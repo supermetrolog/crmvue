@@ -6,7 +6,7 @@
             'fade-out': offer.isDeleting
         }"
     >
-        <Td class="offer-table-item__id text-center" :class="{ passive: isPassive }">
+        <Td name="id" class="offer-table-item__id text-center" :class="{ passive: isPassive }">
             <div class="offer-table-item__aside">
                 <p class="mb-1">
                     {{ offer.visual_id }}
@@ -61,7 +61,7 @@
                 />
             </div>
         </Td>
-        <Td class="offer-table-item__preview">
+        <Td name="preview" class="offer-table-item__preview">
             <OfferTableItemPreview
                 @show-map="$emit('show-map')"
                 @show-complex-objects="$emit('show-complex-objects')"
@@ -69,14 +69,14 @@
                 :offer="offer"
             />
         </Td>
-        <Td class="offer-table-item__region text-center">
+        <Td name="region" class="offer-table-item__region text-center">
             <OfferTableItemAddress :offer="offer" />
         </Td>
-        <Td class="offer-table-item__from-mkad text-center" sort="from_mkad">
+        <Td name="from-mkad" class="offer-table-item__from-mkad text-center" sort="from_mkad">
             <p v-if="offer.from_mkad">{{ offer.from_mkad }} <small>км</small></p>
             <p v-else>—</p>
         </Td>
-        <Td class="offer-table-item__area" sort="area">
+        <Td name="area" class="offer-table-item__area" sort="area">
             <div class="d-flex justify-content-center">
                 <OfferTableItemArea
                     @show-blocks="showBlocks"
@@ -88,13 +88,13 @@
                 />
             </div>
         </Td>
-        <Td class="offer-table-item__price" sort="price">
+        <Td name="price" class="offer-table-item__price" sort="price">
             <div class="d-flex justify-content-center">
                 <OfferTableItemPrice v-if="offer.offer" :offer="offer" />
                 <p v-else>—</p>
             </div>
         </Td>
-        <Td class="offer-table-item__company">
+        <Td name="company" class="offer-table-item__company">
             <CompanyElement
                 v-if="offer.company"
                 :company="offer.company"
@@ -108,7 +108,7 @@
                 hidden
             />
         </Td>
-        <Td class="offer-table-item__consultant">
+        <Td name="consultant" class="offer-table-item__consultant">
             <div class="d-flex justify-content-center">
                 <div v-if="offer.consultant" class="d-flex flex-column align-items-center gap-1">
                     <Avatar
@@ -139,10 +139,10 @@
                 <p v-else>—</p>
             </div>
         </Td>
-        <Td class="offer-table-item__advertisement">
+        <Td name="advertisement" class="offer-table-item__advertisement">
             <OfferTableItemAdv :offer />
         </Td>
-        <Td class="offer-table-item__date" sort="last_update">
+        <Td name="date" class="offer-table-item__date" sort="last_update">
             <DashboardChip
                 v-if="isPassive"
                 class="dashboard-bg-danger offer-table-item__chip text-white"

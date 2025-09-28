@@ -1,16 +1,26 @@
 <template>
-    <Table fluid shadow class="offer-table" :refreshing>
+    <Table
+        :refreshing
+        shadow
+        fluid
+        resizable
+        :default-widths
+        :constraints
+        class="offer-table"
+        storage-key="offers"
+    >
         <template #thead>
             <Tr>
-                <Th>#</Th>
-                <Th>Объект</Th>
-                <Th>регион</Th>
-                <Th :sort="sortable ? 'from_mkad' : null">мкад</Th>
-                <Th :sort="sortable ? 'area' : null">площадь</Th>
+                <Th name="id">#</Th>
+                <Th name="preview">Объект</Th>
+                <Th name="region">регион</Th>
+                <Th :sort="sortable ? 'from_mkad' : null" name="from-mkad">мкад</Th>
+                <Th :sort="sortable ? 'area' : null" name="area">площадь</Th>
                 <Th
                     v-model:filters="priceFilters"
                     @confirm-filter="confirmPriceFilters"
                     :sort="sortable ? 'price' : null"
+                    name="price"
                 >
                     <template #default>цена</template>
                     <template #filter>
@@ -28,8 +38,12 @@
                         </UiForm>
                     </template>
                 </Th>
-                <Th>cобственник</Th>
-                <Th v-model:filters="consultantFilters" @confirm-filter="confirmConsultantFilters">
+                <Th name="company">cобственник</Th>
+                <Th
+                    v-model:filters="consultantFilters"
+                    @confirm-filter="confirmConsultantFilters"
+                    name="consultant"
+                >
                     <template #default>консультант</template>
                     <template #filter>
                         <div class="row">
@@ -44,8 +58,8 @@
                         </div>
                     </template>
                 </Th>
-                <Th>реклама</Th>
-                <Th :sort="sortable ? 'last_update' : null">обновление</Th>
+                <Th name="advertisement">реклама</Th>
+                <Th :sorting-options name="date">обновление</Th>
             </Tr>
         </template>
         <template #tbody>
@@ -101,6 +115,34 @@ defineProps({
     },
     refreshing: Boolean
 });
+
+const constraints = {
+    id: {
+        min: 40,
+        max: 160
+    },
+    preview: {
+        min: 180
+    },
+    region: {
+        min: 200
+    },
+    date: {
+        min: 120
+    }
+};
+
+const defaultWidths = {
+    preview: 270,
+    region: 280,
+    from_mkad: 80,
+    area: 250,
+    price: 250,
+    consultant: 80,
+    company: 300,
+    advertisement: 200,
+    date: 140
+};
 
 // query filters
 
@@ -161,4 +203,15 @@ watch(
         priceFilters.rangeMaxPricePerFloor = value;
     }
 );
+
+// sort
+
+const sortingOptions = [
+    { value: 'last_update', label: 'По дате модерации', icon: 'fa-solid fa-pen' },
+    {
+        value: 'last_survey_created_at',
+        label: 'По дате последнего опроса',
+        icon: 'fa-solid fa-square-poll-horizontal'
+    }
+];
 </script>

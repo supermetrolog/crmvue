@@ -7,7 +7,7 @@
             'fade-out': company.isDeleting
         }"
     >
-        <Td class="text-center company-table-item__id">
+        <Td name="id" class="text-center company-table-item__id">
             <Loader v-if="company.isLoading" class="absolute-center" small />
             <p class="mb-2">{{ company.id }}</p>
             <Avatar
@@ -18,7 +18,7 @@
                 class="mx-auto"
             />
         </Td>
-        <Td class="company-table-item__name position-relative">
+        <Td name="name" class="company-table-item__name position-relative">
             <div class="company-table-item__main">
                 <CompanyLogo
                     :company-id="company.id"
@@ -49,7 +49,7 @@
                 </template>
             </TableDateBlock>
         </Td>
-        <Td class="company-table-item__comment">
+        <Td name="status" class="company-table-item__comment">
             <CompanyTableItemSummary
                 @create-task="$emit('create-task')"
                 @schedule-call="$emit('schedule-call')"

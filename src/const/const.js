@@ -1,5 +1,7 @@
 import { unitTypes } from '@/const/unitTypes';
 
+export const __DEV__ = import.meta.env.DEV;
+
 export const Timeline = [
     {
         id: 0,

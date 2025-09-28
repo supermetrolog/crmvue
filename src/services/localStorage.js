@@ -1,5 +1,6 @@
 import { isNotNullish } from '@/utils/helpers/common/isNotNullish.ts';
 import { captureException } from '@sentry/vue';
+import { __DEV__ } from '@/const/const.js';
 
 export const LOCALSTORAGE_PREFIX = 'plr:';
 export const LS_USER_KEY = 'user';
@@ -11,15 +12,27 @@ function createKey(str) {
 }
 
 export function getFromLocalstorage(key) {
+    if (__DEV__) {
+        console.log('[localStorage]', `Get "${key}" key`);
+    }
+
     return localStorage.getItem(createKey(key));
 }
 
 export function setInLocalstorage(key, value) {
     localStorage.setItem(createKey(key), value);
+
+    if (__DEV__) {
+        console.log('[localStorage]', `Set "${key}" key, value: "${value}"`);
+    }
 }
 
 export function removeFromLocalstorage(key) {
     localStorage.removeItem(createKey(key));
+
+    if (__DEV__) {
+        console.log('[localStorage]', `Remove "${key}" key`);
+    }
 }
 
 function getUserJSON() {
