@@ -104,7 +104,7 @@ import UiButton from '@/components/common/UI/UiButton.vue';
 import UiDropdownActionsButton from '@/components/common/UI/DropdownActions/UiDropdownActionsButton.vue';
 import UiDropdownActions from '@/components/common/UI/DropdownActions/UiDropdownActions.vue';
 import UiDropdownActionsGroup from '@/components/common/UI/DropdownActions/UiDropdownActionsGroup.vue';
-import { useSurveyForm } from '@/composables/useSurveyForm.js';
+import { useSurveyForm } from '@/composables/useSurveyForm.ts';
 import { CompanyStatusEnum } from '@/types/company';
 import { useAuth } from '@/composables/useAuth';
 

@@ -39,7 +39,7 @@ import UiButton from '@/components/common/UI/UiButton.vue';
 import { computed, ref } from 'vue';
 import UiModal from '@/components/common/UI/UiModal.vue';
 import api from '@/api/api.js';
-import { useSurveyForm } from '@/composables/useSurveyForm.js';
+import { useSurveyForm } from '@/composables/useSurveyForm.ts';
 import { captureException } from '@sentry/vue';
 import dayjs from 'dayjs';
 import { dayjsFromServer } from '@/utils/formatters/date.ts';

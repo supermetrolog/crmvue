@@ -49,7 +49,7 @@ import SurveyTable from '@/components/SurveyTable/SurveyTable.vue';
 import FormSurveySearch from '@/components/Forms/Survey/FormSurveySearch.vue';
 import { useMessenger } from '@/components/Messenger/useMessenger.js';
 import { useAsyncPopup } from '@/composables/useAsyncPopup.js';
-import { useSurveyForm } from '@/composables/useSurveyForm.js';
+import { useSurveyForm } from '@/composables/useSurveyForm.ts';
 
 const route = useRoute();
 const router = useRouter();

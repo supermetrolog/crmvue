@@ -43,7 +43,7 @@ import Loader from '@/components/common/Loader.vue';
 import EmptyData from '@/components/common/EmptyData.vue';
 import CompanyObjectItemNoOffer from '@/components/Company/Object/CompanyObjectItemNoOffer.vue';
 import { messenger } from '@/const/messenger.js';
-import { useSurveyForm } from '@/composables/useSurveyForm.js';
+import { useSurveyForm } from '@/composables/useSurveyForm.ts';
 import { useMessenger } from '@/components/Messenger/useMessenger.js';
 
 const emit = defineEmits(['select', 'unselect', 'addComment', 'deleteFavoriteOffer']);

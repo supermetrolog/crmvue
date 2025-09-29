@@ -55,7 +55,7 @@ import HeaderSummaryDialogsGrid from '@/components/Header/Summary/Dialogs/Header
 import HeaderSummaryEmpty from '@/components/Header/Summary/HeaderSummaryEmpty.vue';
 import { useDelayedLoader } from '@/composables/useDelayedLoader.js';
 import UiButton from '@/components/common/UI/UiButton.vue';
-import { useSurveyForm } from '@/composables/useSurveyForm.js';
+import { useSurveyForm } from '@/composables/useSurveyForm.ts';
 
 const emit = defineEmits(['close']);
 const props = defineProps({
