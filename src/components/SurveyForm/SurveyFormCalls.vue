@@ -166,7 +166,11 @@ const mostCallableContactId = computed(() => {
         }
     }
 
-    return props.contacts[currentMaxIndex].id;
+    if (props.contacts[currentMaxIndex].calls?.length > 0) {
+        return props.contacts[currentMaxIndex].id;
+    }
+
+    return -1;
 });
 
 const form = defineModel({ type: Object, default: () => ({}) });

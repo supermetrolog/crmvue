@@ -223,7 +223,7 @@ import UiTooltip from '@/components/common/UI/UiTooltip.vue';
 import UiButton from '@/components/common/UI/UiButton.vue';
 import UiButtonIcon from '@/components/common/UI/UiButtonIcon.vue';
 import UserFoldersDropdown from '@/components/UserFolder/UserFoldersDropdown.vue';
-import { useSurveyForm } from '@/composables/useSurveyForm.js';
+import { useSurveyForm } from '@/composables/useSurveyForm.ts';
 import UiDropdownActionsButton from '@/components/common/UI/DropdownActions/UiDropdownActionsButton.vue';
 import UiDropdownActions from '@/components/common/UI/DropdownActions/UiDropdownActions.vue';
 
@@ -351,7 +351,7 @@ const openInChat = () =>
 const { openSurvey } = useSurveyForm();
 
 const openInSurvey = () => {
-    openSurvey(props.offer.company_id);
+    openSurvey(props.offer.company_id, { offer_contact_id: props.offer.contact_id });
 };
 
 const openPDF = () => {

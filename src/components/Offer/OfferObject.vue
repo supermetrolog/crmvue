@@ -47,7 +47,7 @@ import HoverActionsButton from '@/components/common/HoverActions/HoverActionsBut
 import { computed, onMounted, ref, shallowRef, watch } from 'vue';
 import api from '@/api/api.js';
 import { messenger } from '@/const/messenger.js';
-import { useSurveyForm } from '@/composables/useSurveyForm.js';
+import { useSurveyForm } from '@/composables/useSurveyForm.ts';
 import { useMessenger } from '@/components/Messenger/useMessenger.js';
 
 const props = defineProps({

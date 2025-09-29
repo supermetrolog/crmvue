@@ -23,9 +23,9 @@
             <span>{{ companyName }}</span>
             <span class="text-grey fs-3">
                 <span class="mr-1">|</span>
-                <span v-if="targetSurvey"
-                    >Опрос #{{ targetSurvey.id }} от {{ targetSurveyDate }}</span
-                >
+                <span v-if="targetSurvey">
+                    Опрос #{{ targetSurvey.id }} от {{ targetSurveyDate }}
+                </span>
                 <span v-else>Новый опрос</span>
             </span>
         </template>
@@ -84,6 +84,7 @@
                     :draft="surveyDraft"
                     :survey
                     :disabled="isDelayedSurvey"
+                    :options
                 />
                 <MessengerQuizFormWarningNoContacts
                     v-else-if="contacts.length === 0"
@@ -191,6 +192,8 @@ import { createTourStepElementGenerator } from '@/composables/useTour/useTourSte
 import { useTour } from '@/composables/useTour/useTour';
 import dayjs from 'dayjs';
 import SurveyFormCompanySuggest from '@/components/SurveyForm/SurveyFormCompanySuggest.vue';
+import { SurveyFormOptions } from '@/composables/useSurveyForm';
+import { Contact } from '@/types/contact/contact';
 
 const emit = defineEmits<{
     (e: 'close'): void;
@@ -201,6 +204,7 @@ interface Props {
     survey?: SurveyView;
     initialStep?: number;
     companyId?: number;
+    options?: SurveyFormOptions;
 }
 
 const props = defineProps<Props>();
@@ -214,7 +218,7 @@ const title = computed(() => {
 
     if (isNotNullish(company.value)) {
         if (isNotNullish(surveyDraft.value)) {
-            return `Опрос #${surveyDraft.value.id} | ${getCompanyName(company.value)}`;
+            return `Опрос #${surveyDraft.value!.id} | ${getCompanyName(company.value)}`;
         }
 
         return `Новый опрос | ${getCompanyName(company.value)}`;
@@ -247,11 +251,11 @@ async function fetchCompany() {
 }
 
 async function onUpdateCompany() {
-    company.value = await api.companies.getCompany(company.value.id);
+    company.value = await api.companies.getCompany(company.value!.id);
 }
 
 function onUpdateLogo(logo) {
-    company.value.logo = logo;
+    company.value!.logo = logo;
 }
 
 // chat member
@@ -401,11 +405,15 @@ const contactsIsLoading = ref(false);
 const contacts = ref([]);
 const passiveContacts = ref([]);
 
+function getContactCallsCount(contact: Contact) {
+    return contact.calls?.length ?? 0;
+}
+
 async function fetchContacts() {
     contactsIsLoading.value = true;
 
     try {
-        const response = await api.contacts.getByCompany(props.companyId);
+        const response = await api.contacts.getByCompany(props.companyId!);
 
         contacts.value = response
             .filter(
@@ -413,7 +421,25 @@ async function fetchContacts() {
                     contact.status === contactOptions.statusStatement.ACTIVE &&
                     isPersonalContact(contact)
             )
-            .sort((first, second) => second.calls?.length - first.calls?.length);
+            .sort((first, second) => {
+                const offerContactId = props.options?.offer_contact_id;
+
+                console.log(offerContactId);
+
+                if (offerContactId) {
+                    if (first.id === offerContactId && second.id !== offerContactId) return -1;
+                    if (second.id === offerContactId && first.id !== offerContactId) return 1;
+                }
+
+                const firstCallsCount = getContactCallsCount(first);
+                const secondCallsCount = getContactCallsCount(second);
+
+                if (firstCallsCount !== secondCallsCount) {
+                    return secondCallsCount - firstCallsCount;
+                }
+
+                return first.id - second.id;
+            });
 
         passiveContacts.value = response.filter(
             contact => isPassiveContact(contact) && isPersonalContact(contact)
