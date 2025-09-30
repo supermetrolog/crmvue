@@ -33,7 +33,7 @@
                         @click="togglePanel('quizzes')"
                         :class="{ active: currentPanel === 'quizzes' }"
                     >
-                        Завершенные опросы
+                        Обработанные опросы
                     </MessengerChatSettingsLink>
                     <!--                    <MessengerChatSettingsLink-->
                     <!--                        @click="togglePanel('quizzes')"-->
