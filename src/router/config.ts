@@ -342,7 +342,7 @@ export const routes = [
         meta: {
             layout: 'default',
             auth: { isAuth: true },
-            title: 'Список опросов'
+            title: 'Опросы'
         },
         children: [
             {
@@ -354,9 +354,21 @@ export const routes = [
                 path: 'drafts',
                 name: 'surveys.drafts',
                 meta: {
-                    title: ['Черновики', 'Список опросов']
+                    title: ['Черновики', 'Опросы']
                 },
                 component: () => import('../views/Surveys/Drafts.vue')
+            },
+            {
+                path: 'statistics',
+                name: 'surveys.statistics',
+                meta: {
+                    title: ['Результаты', 'Опросы'],
+                    auth: {
+                        isAuth: true,
+                        roles: [AUTH_ROLE.ADMIN, AUTH_ROLE.OWNER, AUTH_ROLE.MODERATOR]
+                    }
+                },
+                component: () => import('../views/Surveys/Statistics.vue')
             }
         ]
     },
