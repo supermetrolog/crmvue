@@ -68,29 +68,25 @@ const getInitialState = () => ({
 
     counts: {
         object: {
-            outdated_call_count: 0,
-            outdated_call_count_all: 0,
+            outdated_company_call_count: 0,
             unread_message_count: 0,
             unread_task_count: 0,
             unread_reminder_count: 0
         },
         request: {
-            outdated_call_count: 0,
-            outdated_call_count_all: 0,
+            outdated_company_call_count: 0,
             unread_message_count: 0,
             unread_task_count: 0,
             unread_reminder_count: 0
         },
         user: {
-            outdated_call_count: 0,
-            outdated_call_count_all: 0,
+            outdated_company_call_count: 0,
             unread_message_count: 0,
             unread_task_count: 0,
             unread_reminder_count: 0
         },
         company: {
-            outdated_call_count: 0,
-            outdated_call_count_all: 0,
+            outdated_company_call_count: 0,
             unread_message_count: 0,
             unread_task_count: 0,
             unread_reminder_count: 0

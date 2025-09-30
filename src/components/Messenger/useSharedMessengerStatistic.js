@@ -53,6 +53,10 @@ function useMessengerStatistic() {
     const isUpdating = ref(false);
 
     const updateStatistics = useCachedAsyncFunction(async () => {
+        if (documentVisibility.value !== 'visible') {
+            return;
+        }
+
         isUpdating.value = true;
 
         await Promise.allSettled([
