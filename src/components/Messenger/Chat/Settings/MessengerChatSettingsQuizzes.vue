@@ -2,7 +2,7 @@
     <div class="messenger-chat-settings-window modal active">
         <div class="modal__container">
             <div class="modal__header">
-                <p>Список завершенных опросов</p>
+                <p>Список обработанных опросов</p>
                 <div class="modal__close">
                     <UiTooltipIcon
                         @click.prevent="$emit('close')"

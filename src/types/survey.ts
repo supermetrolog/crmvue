@@ -16,7 +16,8 @@ export type SurveyType = (typeof SurveyTypeEnum)[keyof typeof SurveyTypeEnum];
 export const SurveyStatusEnum = {
     DRAFT: 'draft',
     COMPLETED: 'completed',
-    CANCELED: 'canceled'
+    CANCELED: 'canceled',
+    DELAYED: 'delayed'
 } as const;
 
 export type SurveyStatus = (typeof SurveyStatusEnum)[keyof typeof SurveyStatusEnum];

@@ -191,19 +191,18 @@ const surveyStatusesEnum = {
 };
 
 const surveyStatuses = {
-    [surveyStatusesEnum.COMPLETED]: 'Завершен',
-    [surveyStatusesEnum.DRAFT]: 'Черновик',
-    [surveyStatusesEnum.CANCELLED]: 'Отменен',
+    [surveyStatusesEnum.COMPLETED]: 'Обработан',
+    [surveyStatusesEnum.DRAFT]: 'В процессе',
+    [surveyStatusesEnum.CANCELLED]: 'Обработан',
     [surveyStatusesEnum.DELAYED]: 'Отложен'
 };
 
 const statusLabel = computed(() => surveyStatuses[props.survey.status]);
 
 const statusColor = computed(() => {
-    if (props.survey.status === surveyStatusesEnum.COMPLETED) return 'text-success';
     if (props.survey.status === surveyStatusesEnum.DRAFT) return 'text-grey';
     if (props.survey.status === surveyStatusesEnum.DELAYED) return 'text-warning';
-    return 'color-danger';
+    return 'text-success';
 });
 
 const isCompleted = computed(() => props.survey.status === surveyStatusesEnum.COMPLETED);

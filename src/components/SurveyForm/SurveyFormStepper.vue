@@ -816,7 +816,7 @@ async function submit() {
         return;
     }
 
-    notify.success('Опрос успешно завершен!', 'Опрос клиента');
+    notify.success('Опрос успешно обработан!', 'Опрос клиента');
     isCreating.value = false;
 
     emit('completed');
@@ -860,7 +860,7 @@ async function cancel() {
         return;
     }
 
-    notify.success('Опрос успешно завершен!', 'Работа с опросом');
+    notify.success('Опрос успешно обработан!', 'Работа с опросом');
     isCreating.value = false;
     emit('canceled', { calls });
     bus.emit('canceled', { companyId: props.company.id });
