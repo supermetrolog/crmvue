@@ -20,7 +20,7 @@ import { useSharedMessengerStatistic } from '@/components/Messenger/useSharedMes
 
 const { companiesCounts, fetchStatistics, someIsLoading } = useSharedMessengerStatistic();
 
-const count = computed(() => companiesCounts?.value?.outdated_call_count ?? 0);
+const count = computed(() => companiesCounts?.value?.outdated_company_call_count ?? 0);
 
 onMounted(fetchStatistics);
 </script>
