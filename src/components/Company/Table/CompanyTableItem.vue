@@ -96,7 +96,7 @@ import { useMessenger } from '@/components/Messenger/useMessenger.js';
 import { getCompanyName } from '@/utils/formatters/models/company.js';
 import CompanyLogo from '@/components/Company/CompanyLogo.vue';
 import { messenger } from '@/const/messenger.js';
-import { useSurveyForm } from '@/composables/useSurveyForm.js';
+import { useSurveyForm } from '@/composables/useSurveyForm.ts';
 import { useTippy } from 'vue-tippy';
 import CompanyTableItemObjects from '@/components/Company/Table/CompanyTableItemObjects.vue';
 import CompanyTableItemRequests from '@/components/Company/Table/CompanyTableItemRequests.vue';

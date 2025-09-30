@@ -201,7 +201,7 @@ import UiTooltipIcon from '@/components/common/UI/UiTooltipIcon.vue';
 import { useTippyText } from '@/composables/useTippyText.js';
 import UiField from '@/components/common/UI/UiField.vue';
 import UiButton from '@/components/common/UI/UiButton.vue';
-import { useSurveyForm } from '@/composables/useSurveyForm.js';
+import { useSurveyForm } from '@/composables/useSurveyForm.ts';
 import CompanyBoxStatus from '@/components/Company/Box/CompanyBoxStatus.vue';
 import CompanyBoxActions from '@/components/Company/Box/CompanyBoxActions.vue';
 import CompanyBoxInfo from '@/components/Company/Box/CompanyBoxInfo.vue';

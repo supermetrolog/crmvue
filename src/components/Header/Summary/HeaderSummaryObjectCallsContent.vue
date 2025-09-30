@@ -56,7 +56,7 @@ import HeaderSummaryDialogsGrid from '@/components/Header/Summary/Dialogs/Header
 import MessengerDialogObject from '@/components/Messenger/Dialog/Object/MessengerDialogObject.vue';
 import HeaderSummaryEmpty from '@/components/Header/Summary/HeaderSummaryEmpty.vue';
 import UiButton from '@/components/common/UI/UiButton.vue';
-import { useSurveyForm } from '@/composables/useSurveyForm.js';
+import { useSurveyForm } from '@/composables/useSurveyForm.ts';
 
 const emit = defineEmits(['close']);
 const props = defineProps({

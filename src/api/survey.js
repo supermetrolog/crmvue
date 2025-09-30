@@ -58,5 +58,9 @@ export default {
     async updateAction(id, payload) {
         const response = await axios.put(`survey-actions/${id}`, payload);
         return responseToData(response);
+    },
+    async statistics(params = {}) {
+        const response = await axios.get(`${URL}/statistics`, { params });
+        return responseToData(response);
     }
 };

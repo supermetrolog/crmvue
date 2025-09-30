@@ -49,7 +49,7 @@ import Table from '@/components/common/Table/Table.vue';
 import Loader from '@/components/common/Loader.vue';
 import CompanyRequestTableItem from '@/components/Company/Request/CompanyRequestTableItem.vue';
 import CompanyRequestTableItemSkeleton from '@/components/Company/Request/CompanyRequestTableItemSkeleton.vue';
-import { useSurveyForm } from '@/composables/useSurveyForm.js';
+import { useSurveyForm } from '@/composables/useSurveyForm.ts';
 
 defineEmits([
     'to-chat',

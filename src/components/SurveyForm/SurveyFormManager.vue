@@ -6,11 +6,12 @@
         @minimized="markAsMinimized(form.id, $event)"
         :survey="form.survey"
         :company-id="form.companyId"
+        :options="form.options"
     />
 </template>
 <script setup>
 import SurveyForm from '@/components/SurveyForm/SurveyForm.vue';
-import { getSurveyFormManager } from '@/composables/useSurveyForm.js';
+import { getSurveyFormManager } from '@/composables/useSurveyForm.ts';
 
 const manager = getSurveyFormManager();
 

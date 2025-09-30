@@ -39,7 +39,7 @@ import { isActiveContact, isPersonalContact } from '@/utils/helpers/models/conta
 import MessengerChatForObjectCallTab from '@/components/Messenger/Chat/MessengerChatForObjectCallTab.vue';
 import { CALL_STATUSES } from '@/components/MessengerQuiz/useMessengerQuiz.js';
 import MessengerChatHeader from '@/components/Messenger/Chat/Header/MessengerChatHeader.vue';
-import { useSurveyForm } from '@/composables/useSurveyForm.js';
+import { useSurveyForm } from '@/composables/useSurveyForm.ts';
 
 const store = useStore();
 const notify = useNotify();

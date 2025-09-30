@@ -96,6 +96,12 @@ export const menu: GeneralMenuItemConfig[] = [
                 name: 'Черновики',
                 to: 'surveys.drafts',
                 icon: 'fa-solid fa-pen-ruler'
+            },
+            {
+                name: 'Статистика',
+                to: 'surveys.statistics',
+                icon: 'fa-solid fa-chart-simple',
+                auth: new Set([AUTH_ROLE.MODERATOR, AUTH_ROLE.ADMIN, AUTH_ROLE.OWNER])
             }
         ]
     },
