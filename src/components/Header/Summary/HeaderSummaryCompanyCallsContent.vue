@@ -1,7 +1,7 @@
 <template>
     <div class="header-summary-messages-content">
         <HeaderSummaryDialogs
-            :title="`Список клиентов для обзвона (${companiesCounts.outdated_call_count})`"
+            :title="`Список клиентов для обзвона (${companiesCounts.outdated_company_call_count})`"
         >
             <template #actions>
                 <UiButton

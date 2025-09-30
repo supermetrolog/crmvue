@@ -5,22 +5,21 @@
                 {{ label }}
             </div>
             <Spinner v-if="loading" class="mini" />
-            <Tippy v-if="counts.outdated_call_count_all > 0">
+            <Tippy v-if="counts.outdated_company_call_count > 0">
                 <template #default>
                     <MessengerBarElement
                         @click.stop="$emit('select', messenger.tabFilters.CALL)"
                         class="messenger-bar-tab__phone"
                         :class="{
-                            disabled: !counts.outdated_call_count,
+                            disabled: !counts.outdated_company_call_count,
                             active: current === messenger.tabFilters.CALL
                         }"
                         icon="fa-solid fa-phone"
-                        :label="counts.outdated_call_count"
+                        :label="counts.outdated_company_call_count"
                     />
                 </template>
                 <template #content>
                     <p>{{ callsButtonTitle }}</p>
-                    <p class="color-light">{{ callsButtonTitleAll }}</p>
                 </template>
             </Tippy>
             <MessengerBarElement
@@ -112,14 +111,8 @@ const alertsButtonTitle = computed(() => {
 });
 
 const callsButtonTitle = computed(() => {
-    if (props.counts.outdated_call_count > 0)
-        return plural(props.counts.outdated_call_count, ...messenger.buttons.calls.plural);
-    return messenger.buttons.calls.empty;
-});
-
-const callsButtonTitleAll = computed(() => {
-    if (props.counts.outdated_call_count_all > 0)
-        return plural(props.counts.outdated_call_count_all, ...messenger.buttons.calls_all.plural);
+    if (props.counts.outdated_company_call_count > 0)
+        return plural(props.counts.outdated_company_call_count, ...messenger.buttons.calls.plural);
     return messenger.buttons.calls.empty;
 });
 
