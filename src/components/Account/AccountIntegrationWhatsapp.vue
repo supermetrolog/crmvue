@@ -25,6 +25,7 @@
                         @click="startLink"
                         icon="fa-solid fa-plus"
                         color="success-light"
+                        disabled
                     >
                         Привязать аккаунт
                     </UiButton>

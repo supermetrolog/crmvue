@@ -2,67 +2,41 @@
     <div></div>
 </template>
 
-<script>
-export default {
-    name: 'YandexMapMarker',
-    inject: ['add', 'remove'],
-    props: {
-        coords: {
-            type: Array,
-            required: true
-        },
-        markerId: {
-            type: [Number, String],
-            required: true
-        },
-        balloonContentBody: String,
-        balloonContentHeader: String,
-        balloonContentFooter: String,
-        hintContent: String
-    },
-    data() {
-        return {
-            geoObject: null
-        };
-    },
-    geoObjects: {},
+<script setup lang="ts">
+import { inject, onBeforeUnmount, onMounted } from 'vue';
 
-    methods: {
-        createGeoObject() {
-            const marker = {
-                type: 'Feature',
-                id: this.markerId,
-                geometry: { type: 'Point', coordinates: this.coords },
-                properties: {
-                    balloonContentHeader: this.balloonContentHeader,
-                    balloonContentBody: this.balloonContentBody,
-                    balloonContentFooter: this.balloonContentFooter,
-                    hintContent: this.hintContent
-                },
-                options: {
-                    preset: 'islands#circleIcon'
-                }
-            };
+const registerMarker = inject('add');
+const deleteMarker = inject('remove');
 
-            this.$options.geoObjects[this.markerId] = marker;
-            this.add(marker);
+const props = defineProps<{
+    coords: number[];
+    markerId: number | string;
+    balloonContentBody?: string;
+    balloonContentHeader?: string;
+    balloonContentFooter?: string;
+    hintContent?: string;
+    clusterCaption?: string;
+}>();
+
+onMounted(() => {
+    registerMarker({
+        type: 'Feature',
+        id: props.markerId,
+        geometry: { type: 'Point', coordinates: props.coords },
+        properties: {
+            balloonContentHeader: props.balloonContentHeader,
+            balloonContentBody: props.balloonContentBody,
+            balloonContentFooter: props.balloonContentFooter,
+            hintContent: props.hintContent,
+            clusterCaption: props.clusterCaption
         },
-        removeGeoObject() {
-            const thisGeoObject = this.$options.geoObjects[this.markerId];
-
-            if (this.$options.geoObjects && thisGeoObject) {
-                this.remove(thisGeoObject);
-                delete this.$options.geoObjects[this.markerId];
-            }
+        options: {
+            preset: 'islands#circleIcon'
         }
-    },
-    mounted() {
-        this.createGeoObject();
-    },
-    beforeUnmount() {
-        this.removeGeoObject();
-    }
-};
-</script>
+    });
+});
 
-<style></style>
+onBeforeUnmount(() => {
+    deleteMarker({ id: props.markerId });
+});
+</script>

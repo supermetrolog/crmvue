@@ -1,19 +1,19 @@
 <template>
     <div class="ymap">
         <yandex-map
-            v-if="mounted"
+            v-if="loaded"
             ref="map"
             :settings="settings"
             :coords="coords"
             :zoom="zoom"
-            :controls="controls"
-            :detailed-controls="detailedControls"
-            :behaviors="behaviors.filter(elem => elem !== 'selection')"
+            :controls="hideControls ? [] : controls"
+            :detailed-controls="hideControls ? [] : detailedControls"
+            :behaviors="hideControls ? [] : behaviors.filter(elem => elem !== 'selection')"
             :style="styles"
             :options="options"
         >
             <YandexMapSelectionBehavior
-                v-if="behaviors.includes('selection')"
+                v-if="!hideControls && behaviors.includes('selection')"
                 @selectionDone="selectionDone"
                 @removedDone="$emit('removedDone')"
                 :map="$refs.map.$options.static.myMap"
@@ -22,6 +22,7 @@
             />
             <slot />
         </yandex-map>
+        <div v-else class="skeleton h-100 w-100 op-5"></div>
     </div>
 </template>
 
@@ -30,7 +31,7 @@ import { loadYmap, yandexMap } from 'vue-yandex-maps';
 import YandexMapSelectionBehavior from '@/components/common/YandexMap/YandexMapSelectionBehavior.vue';
 
 export default {
-    name: 'YandexMapView',
+    name: 'YandexMapContainer',
     components: {
         YandexMapSelectionBehavior,
         yandexMap
@@ -45,12 +46,13 @@ export default {
     props: {
         settings: {
             type: Object,
-            required: true
+            default: () => ({})
         },
         coords: {
             type: Array,
             default: () => [55.75554289958026, 37.619346417968764] // moscow center
         },
+        hideControls: Boolean,
         zoom: {
             type: Number,
             default: 8
@@ -83,6 +85,9 @@ export default {
                     },
                     searchControl: {
                         float: 'right'
+                    },
+                    typeSelector: {
+                        size: 'large'
                     }
                 };
             }
@@ -95,7 +100,6 @@ export default {
             type: Object,
             default: () => {
                 return {
-                    balloonContentLayout: null,
                     gridSize: 32,
                     hasHint: true,
                     hasBalloon: true,
@@ -108,11 +112,18 @@ export default {
                     zoomMargin: null,
                     viewportMargin: null,
                     clusterDisableClickZoom: false,
-                    clusterOpenBalloonOnClick: false,
-                    // clusterIconContentLayout: null
-                    clusterBalloonLayout: null
+                    clusterOpenBalloonOnClick: true,
+                    clusterBalloonContentLayout: 'cluster#balloonAccordion',
+                    clusterBalloonPanelMaxMapArea: 0,
+                    clusterBalloonContentLayoutHeight: 400,
+                    clusterBalloonContentLayoutWidth: 400,
+                    clusterBalloonAccordionShowIcons: false
                 };
             }
+        },
+        gridSize: {
+            type: Number,
+            default: 32
         },
         useObjectManager: {
             type: Boolean,
@@ -154,7 +165,7 @@ export default {
     data() {
         return {
             updateTimeout: null,
-            mounted: false,
+            loaded: false,
             addMarkers: [],
             removeMarkers: [],
             markers: []
@@ -180,7 +191,8 @@ export default {
             if (!objectManager) {
                 objectManager = new window.ymaps.ObjectManager({
                     clusterize: true,
-                    ...this.clusterOptions
+                    ...this.clusterOptions,
+                    gridSize: this.gridSize
                 });
 
                 objectManager.objects.events.add(['click'], this.objectEventHandler);
@@ -259,11 +271,41 @@ export default {
             this.removeMarkers = [];
             this.addMarkers = [];
             this.triggerUpdated();
+        },
+        setCenter(coords, zoom, options = {}) {
+            this.getMap().setCenter(coords, zoom, options);
+        },
+        getZoom() {
+            return Number(this.getMap().getZoom() ?? 0);
+        },
+        increaseZoom() {
+            this.setZoom(this.getZoom() + 1, { duration: 500 });
+        },
+        decreaseZoom() {
+            this.setZoom(this.getZoom() - 1, { duration: 500 });
+        },
+        setZoom(value, options = {}) {
+            const map = this.getMap();
+
+            if (!map) {
+                return;
+            }
+
+            map.setZoom(value, { checkZoomRange: true, ...options });
         }
     },
     async mounted() {
-        await loadYmap({ ...this.settings });
-        this.mounted = true;
+        await loadYmap({
+            apiKey: import.meta.env.VITE_VUE_APP_YANDEX_MAP_KEY,
+            lang: 'ru_RU',
+            coordorder: 'latlong',
+            enterprise: false,
+            version: '2.1',
+            ...this.settings
+        });
+
+        this.loaded = true;
+
         this.$emit('mounted');
     },
     beforeUnmount() {
