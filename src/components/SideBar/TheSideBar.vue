@@ -11,7 +11,7 @@
             ver. {{ currentVersion }}
             <template #content>
                 <p class="mb-1">Версия приложения - {{ currentVersion }}</p>
-                <p>Дата публикации - {{ formattedLastBuildDate }}</p>
+                <p>Дата публикации - {{ lastBuildDate }}</p>
             </template>
         </Tippy>
     </div>
@@ -23,14 +23,8 @@ import Avatar from '@/components/common/Avatar.vue';
 import { useAuth } from '@/composables/useAuth.js';
 import { useClientVersion } from '@/composables/useClientVersion';
 import { Tippy } from 'vue-tippy';
-import { toDateFormat } from '@/utils/formatters/date';
-import { computed } from 'vue';
 
 const { currentUser } = useAuth();
 
 const { currentVersion, lastBuildDate } = useClientVersion();
-
-const formattedLastBuildDate = computed(() => {
-    return toDateFormat(lastBuildDate.value);
-});
 </script>

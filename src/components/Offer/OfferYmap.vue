@@ -1,11 +1,10 @@
 <template>
-    <YandexMapView
+    <YandexMapContainer
         @mounted="$emit('mounted')"
         @selectionDone="$emit('selection-done', $event)"
         @removedDone="$emit('removed-done', $event)"
         @updated="$emit('updated', $event)"
         @objectClick="selectOffers"
-        @cluster-click="onClickCluster"
         :class="{ loading: loading }"
         :settings="yandexMapOptions.settings"
         :styles="styles"
@@ -21,19 +20,21 @@
             :coords="[offer.latitude, offer.longitude]"
             :hint-content="offer.address"
             :balloon-content-body="getFooter(offer)"
+            :balloon-content-header="`#${offer.id} - ${offer.address}`"
+            :cluster-caption="getOfferClusterCaption(offer)"
         />
         <OfferObject :search-type :offer-ids="offers" />
-    </YandexMapView>
+    </YandexMapContainer>
 </template>
 <script setup>
-import YandexMapView from '@/components/common/YandexMap/YandexMapView.vue';
+import YandexMapContainer from '@/components/common/YandexMap/YandexMapContainer.vue';
 import YandexMapMarker from '@/components/common/YandexMap/YandexMapMarker.vue';
 import OfferObject from '@/components/Offer/OfferObject.vue';
 import { ref, watch } from 'vue';
-import { getLinkComplex } from '@/utils/url.js';
+import { getLinkComplex, getLinkOffer } from '@/utils/url.js';
 import YandexMapLoader from '@/components/common/YandexMap/YandexMapLoader.vue';
 import { isNotNullish } from '@/utils/helpers/common/isNotNullish.ts';
-import { captureMessage } from '@sentry/vue';
+import { toNumberFormat } from '@/utils/formatters/number.js';
 
 const yandexMapOptions = {
     settings: {
@@ -51,7 +52,6 @@ const yandexMapOptions = {
         'geolocationControl',
         'searchControl',
         'trafficControl',
-        'typeSelector',
         'zoomControl',
         'rulerControl'
     ]
@@ -95,6 +95,16 @@ const getFooter = offer => {
             </a>`;
 };
 
+function getOfferClusterCaption(offer) {
+    return `<a href="${getLinkOffer(offer.complex_id, offer.original_id)}" target="_blank" class="d-flex align-items-start gap-2 text-inherit">
+                <img src="${offer.thumb}" alt="image" height="80px" width="110px" class="flex-shrink-0" />
+                <div>
+                    <p style="white-space: normal" class="font-weight-bold mb-1">#${offer.object_id}</p>
+                    <p style="white-space: normal">Площадь пола - <span style="font-weight: 600">${toNumberFormat(offer.area_floor_full)} м^2</span></p>
+                </div>
+            </a>`;
+}
+
 // TODO: Сделать лучше превью
 
 const searchType = ref('offers');
@@ -117,15 +127,6 @@ function selectOffers(objectId) {
     offers.value = [objectId];
 }
 
-function selectObjects(objectIds) {
-    const objects = props.list.filter(element => objectIds.includes(Number(element.id)));
-
-    if (objects.length > 0) {
-        searchType.value = 'offers';
-        offers.value = objects.map(el => el.id);
-    }
-}
-
 watch(
     () => props.selected,
     value => {
@@ -133,27 +134,4 @@ watch(
     },
     { immediate: true }
 );
-
-// cluster
-
-function onClickCluster(clusterId, objectManager, event) {
-    const currentZoom = objectManager.getMap().getZoom();
-    const currentZoomRange = objectManager.getMap().zoomRange?.getCurrent() ?? [0, 21];
-
-    if (currentZoom >= currentZoomRange[1]) {
-        const clusterManager = event.currentTarget;
-        const cluster = clusterManager.getById(clusterId);
-
-        if (!cluster) {
-            captureMessage(`Cluster with id "${clusterId}" not found`);
-            return;
-        }
-
-        const features = cluster.features;
-
-        if (features?.length > 1) {
-            selectObjects(features.map(feature => feature.id));
-        }
-    }
-}
 </script>
