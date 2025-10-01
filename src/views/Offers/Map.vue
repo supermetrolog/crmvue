@@ -16,7 +16,7 @@
                     :is-map="true"
                     :loading="isLoading"
                 />
-                <div class="col-12 my-2">
+                <div class="col-12 mt-2">
                     <div class="company-table__filters">
                         <Chip
                             v-for="(item, index) in selectedFilterList"
@@ -27,6 +27,16 @@
                         />
                     </div>
                 </div>
+            </div>
+            <div class="row mb-2">
+                <UserFolders
+                    v-model:selected="currentFolder"
+                    category="offer_mix"
+                    class="col-12"
+                    movable
+                    editable
+                    selectable
+                />
             </div>
             <div class="row">
                 <div class="col-12">
@@ -51,7 +61,16 @@ import FormModalOfferSearch from '@/components/Forms/Offer/FormModalOfferSearch.
 import FormOfferSearchExternal from '@/components/Forms/Offer/FormOfferSearchExternal.vue';
 import OfferYmap from '@/components/Offer/OfferYmap.vue';
 import Chip from '@/components/common/Chip.vue';
-import { computed, onUpdated, ref, shallowReactive, shallowRef, useTemplateRef } from 'vue';
+import {
+    computed,
+    onBeforeMount,
+    onUpdated,
+    ref,
+    shallowReactive,
+    shallowRef,
+    useTemplateRef,
+    watch
+} from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useQueryHash } from '@/utils/use/useQueryHash.js';
 import { dealOptions } from '@/const/options/deal.options.js';
@@ -62,8 +81,10 @@ import { floorOptions } from '@/const/options/floor.options.js';
 import { locationOptions } from '@/const/options/location.options.js';
 import { useTableContent } from '@/composables/useTableContent.js';
 import { useConsultantsOptions } from '@/composables/options/useConsultantsOptions.js';
-import { tryOnMounted } from '@vueuse/core';
+import { tryOnMounted, useDebounceFn } from '@vueuse/core';
 import { filtersAliases } from '@/composables/useSelectedFilters.js';
+import UserFolders from '@/components/UserFolder/UserFolders.vue';
+import { isNotNullish } from '@/utils/helpers/common/isNotNullish';
 
 const yandexMapStyles = shallowReactive({
     width: '100%',
@@ -274,13 +295,15 @@ const fetchCounts = async (query, hash) => {
     }
 };
 
+const currentFolder = ref(isNotNullish(route.query.folder) ? Number(route.query.folder) : null);
+
 const fetchOffers = async (withLoader = true) => {
     isLoading.value = withLoader;
 
     const query = {
         ...route.query,
         type_id: [2, 3],
-        fields: 'latitude,longitude,address,complex_id,status,thumb,test_only,id',
+        fields: 'latitude,longitude,address,complex_id,status,thumb,test_only,id,area_floor_full,object_id,original_id',
         objectsOnly: 1,
         page: 1,
         noWith: 1,
@@ -315,6 +338,10 @@ const fetchOffers = async (withLoader = true) => {
         query.polygon = query.polygon.join(',');
     }
 
+    if (isNotNullish(currentFolder.value)) {
+        query.folder_ids = [currentFolder.value];
+    }
+
     const currentHash = setHash(query);
 
     const response = await api.offers.searchMap(query);
@@ -330,6 +357,10 @@ const fetchOffers = async (withLoader = true) => {
     isLoading.value = false;
     return response;
 };
+
+const debouncedFetchOffers = useDebounceFn(fetchOffers, 300);
+
+watch(currentFolder, () => debouncedFetchOffers());
 
 const removeFilter = async filter => {
     const query = { ...route.query };
@@ -371,6 +402,14 @@ const setYandexMapSize = () => {
 
 onUpdated(() => {
     setYandexMapSize();
+});
+
+onBeforeMount(() => {
+    const query = { ...route.query };
+
+    delete query.folder;
+
+    router.replace({ query });
 });
 
 tryOnMounted(() => {

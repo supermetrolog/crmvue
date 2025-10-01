@@ -33,7 +33,7 @@
                         query: route.query
                     }"
                     :as="RouterLink"
-                    color="dark"
+                    color="light"
                     :loading
                 >
                     <span class="mr-1">{{ isMap ? 'Списком' : 'На карте' }}</span>
@@ -42,7 +42,7 @@
                             ({{ offersCount }} предл. /{{ objectsCount }} объект.)
                         </span>
                     </span>
-                    <span v-else>({{ offersCount ?? objectsCount }})</span>
+                    <span v-else>({{ objectsCount ?? offersCount }})</span>
                 </UiButton>
             </div>
         </div>

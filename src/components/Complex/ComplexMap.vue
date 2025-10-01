@@ -54,7 +54,7 @@
                 <i class="fas fa-map-marker-alt" :class="{ active: mapIsOpened }"></i>
             </div>
         </div>
-        <YandexMapView
+        <YandexMapContainer
             :key="randKey"
             :settings="map.settings"
             :styles="map.styles"
@@ -69,12 +69,12 @@
                 :marker-id="location.id"
                 :coords="[location.latitude, location.longitude]"
             />
-        </YandexMapView>
+        </YandexMapContainer>
     </div>
 </template>
 
 <script setup>
-import YandexMapView from '@/components/common/YandexMap/YandexMapView.vue';
+import YandexMapContainer from '@/components/common/YandexMap/YandexMapContainer.vue';
 import YandexMapMarker from '@/components/common/YandexMap/YandexMapMarker.vue';
 import Tooltip from '@/components/common/Tooltip.vue';
 import ComplexMapDescription from '@/components/Complex/ComplexMapDescription.vue';
