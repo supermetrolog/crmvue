@@ -1,9 +1,6 @@
 import { notify } from '@kyvg/vue3-notification';
 import { captureException } from '@sentry/vue';
-import {
-    initNotifications,
-    publishNotificationFromWS
-} from '@/services/notifications/notifications';
+import { initNotifications } from '@/services/notifications/notifications';
 
 function showNotify(text, title, type = 'success') {
     notify({
@@ -176,7 +173,7 @@ const Websocket = {
             }
         },
         _ws_new_user_notification(_, data) {
-            publishNotificationFromWS(data.message);
+            // publishNotificationFromWS(data.message);
         },
         _ws_user_set({ commit, rootGetters }) {
             commit('toggleSetedUserIdFlag', true);
