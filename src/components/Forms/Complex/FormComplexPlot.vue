@@ -8,26 +8,26 @@
             <Tabs always-render :options="{ useUrlFragment: false, defaultTabHash: 'main' }">
                 <Tab id="main" name="Основное">
                     <div class="row">
-                        <MultiSelect
-                            v-model="form.address"
-                            @change="onChangeAddress"
-                            extra-classes="long-text"
-                            placeholder="Введите адрес.."
-                            label="Адрес строения"
-                            required
-                            class="col-6"
-                            :filterResults="false"
-                            :min-chars="1"
-                            :resolve-on-load="true"
-                            :delay="600"
-                            :searchable="true"
-                            :v="v$.form.address"
-                            :options="
-                                async query => {
-                                    return await searchAddress(query);
-                                }
-                            "
-                        />
+                        <!--                        <MultiSelect-->
+                        <!--                            v-model="form.address"-->
+                        <!--                            @change="onChangeAddress"-->
+                        <!--                            extra-classes="long-text"-->
+                        <!--                            placeholder="Введите адрес.."-->
+                        <!--                            label="Адрес строения"-->
+                        <!--                            required-->
+                        <!--                            class="col-6"-->
+                        <!--                            :filterResults="false"-->
+                        <!--                            :min-chars="1"-->
+                        <!--                            :resolve-on-load="true"-->
+                        <!--                            :delay="600"-->
+                        <!--                            :searchable="true"-->
+                        <!--                            :v="v$.form.address"-->
+                        <!--                            :options="-->
+                        <!--                                async query => {-->
+                        <!--                                    return await searchAddress(query);-->
+                        <!--                                }-->
+                        <!--                            "-->
+                        <!--                        />-->
                         <MultiSelect
                             v-model="form.company_id"
                             @change="onChangeCompany"
@@ -585,7 +585,6 @@ import { validationRulesForComplexPlot } from '@/validators/rules/complex-plot.j
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
 import EmptyData from '@/components/common/EmptyData.vue';
 import { useSearchCompany } from '@/composables/useSearchCompany.js';
-import { useSearchAddress } from '@/composables/useSearchAddress.js';
 import RadioOptions from '@/components/common/Forms/RadioOptions.vue';
 
 const store = useStore();
@@ -672,10 +671,9 @@ const onSubmit = () => {
 const buildings = computed(() => {
     return store.state.Complex.complex.objects.filter(element => !element.is_land);
 });
-const onChangeAddress = () => {};
+
 const onChangeCompany = () => {};
 
-const searchAddress = useSearchAddress(toRef(() => props.plot?.address));
 const searchCompany = useSearchCompany(toRef(() => props.plot?.company_id));
 
 onBeforeMount(() => {

@@ -424,8 +424,6 @@ async function fetchContacts() {
             .sort((first, second) => {
                 const offerContactId = props.options?.offer_contact_id;
 
-                console.log(offerContactId);
-
                 if (offerContactId) {
                     if (first.id === offerContactId && second.id !== offerContactId) return -1;
                     if (second.id === offerContactId && first.id !== offerContactId) return 1;

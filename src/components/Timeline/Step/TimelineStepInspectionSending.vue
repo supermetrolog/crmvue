@@ -117,22 +117,11 @@
                                         <i class="fa-solid fa-pen icon"></i>
                                     </Button>
                                     <AnimationTransition :speed="0.5">
-                                        <MultiSelect
+                                        <AddressAutocomplete
                                             v-if="userLocationFormIsVisible"
                                             v-model="newUserLocation"
-                                            extra-classes="long-text"
+                                            label="Адрес начальной точки"
                                             class="timeline-routes__multiselect"
-                                            :filterResults="false"
-                                            :min-chars="1"
-                                            :resolve-on-load="false"
-                                            :delay="0"
-                                            :searchable="true"
-                                            placeholder="Адрес начальной точки"
-                                            :options="
-                                                async query => {
-                                                    return await getAddress(query);
-                                                }
-                                            "
                                         />
                                     </AnimationTransition>
                                 </div>
@@ -205,7 +194,6 @@ import {
 import TimelineInfo from '@/components/Timeline/TimelineInfo.vue';
 import Button from '@/components/common/Button.vue';
 import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
-import MultiSelect from '@/components/common/Forms/MultiSelect.vue';
 import Ymap from '@/components/common/Ymap.vue';
 import { yandexmap } from '@/utils/yandexMap.js';
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
@@ -217,10 +205,12 @@ import Modal from '@/components/common/Modal.vue';
 import { InspectionSendingRouteComment } from '@/components/Timeline/comments.js';
 import { isNotNullish } from '@/utils/helpers/common/isNotNullish.ts';
 import TimelineButton from '@/components/Timeline/TimelineButton.vue';
+import AddressAutocomplete from '@/components/common/Forms/AddressAutocomplete.vue';
 
 export default {
     name: 'TimelineStepInspectionSending',
     components: {
+        AddressAutocomplete,
         TimelineButton,
         Modal,
         FormLetter,
@@ -229,7 +219,6 @@ export default {
         VirtualDragList,
         AnimationTransition,
         Ymap,
-        MultiSelect,
         DashboardChip,
         Button,
         TimelineInfo
@@ -285,9 +274,6 @@ export default {
                     maximumAge: 0
                 }
             );
-        },
-        async getAddress(query) {
-            return await yandexmap.getAddress(query);
         },
         async getCoords() {
             this.userLocation = await yandexmap.findCoordinates(this.newUserLocation);
