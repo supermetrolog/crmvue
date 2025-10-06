@@ -11,12 +11,12 @@ function createKey(str) {
     return LOCALSTORAGE_PREFIX + str;
 }
 
-export function getFromLocalstorage(key) {
+export function getFromLocalstorage(key, defaultValue = undefined) {
     if (__DEV__) {
         console.log('[localStorage]', `Get "${key}" key`);
     }
 
-    return localStorage.getItem(createKey(key));
+    return localStorage.getItem(createKey(key)) ?? defaultValue;
 }
 
 export function setInLocalstorage(key, value) {

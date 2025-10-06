@@ -29,23 +29,14 @@
                             :transform="Number"
                             :options="equipmentOptions.category"
                         />
-                        <MultiSelect
+                        <AddressAutocomplete
                             v-model="form.address"
-                            :title="form.address"
+                            :current-value="formData?.address"
                             :v="v$.form.address"
+                            :resolve-on-load="Boolean(formData)"
                             required
                             label="Адрес"
                             class="col-sm-6 col-12"
-                            :filterResults="false"
-                            :min-chars="1"
-                            :resolve-on-load="Boolean(formData)"
-                            :delay="600"
-                            :searchable="true"
-                            :options="
-                                async query => {
-                                    return await getAddress(query);
-                                }
-                            "
                         />
                         <MultiSelect
                             v-model="form.consultant_id"
@@ -238,7 +229,6 @@ import UiFormGroup from '@/components/common/Forms/UiFormGroup.vue';
 import RadioOptions from '@/components/common/Forms/RadioOptions.vue';
 import { validationRulesForEquipment } from '@/validators/rules/equipment.js';
 import { computed, reactive, shallowRef, toRef } from 'vue';
-import { useSearchAddress } from '@/composables/useSearchAddress.js';
 import { useSearchCompany } from '@/composables/useSearchCompany.js';
 import { useSearchContacts } from '@/composables/useSearchContacts.ts';
 import Switch from '@/components/common/Forms/Switch.vue';
@@ -249,6 +239,7 @@ import { equipmentOptions } from '@/const/options/equipment.options.js';
 import UiTextarea from '@/components/common/Forms/UiTextarea.vue';
 import { useFormData } from '@/utils/use/useFormData.js';
 import InProgress from '@/components/common/InProgress.vue';
+import AddressAutocomplete from '@/components/common/Forms/AddressAutocomplete.vue';
 
 const store = useStore();
 
@@ -294,7 +285,6 @@ const v$ = useVuelidate({ form: validationRulesForEquipment }, { form });
 const consultantList = computed(() => store.getters.CONSULTANT_LIST);
 const hasDelivery = computed(() => Number(form.delivery) === 1);
 
-const getAddress = useSearchAddress(toRef(() => props.formData?.address));
 const searchCompany = useSearchCompany(toRef(() => props.formData?.company_id));
 const { searchContacts, contacts } = useSearchContacts(toRef(() => props.form?.company_id));
 const { notify } = useNotification();

@@ -20,25 +20,15 @@
                             label="Название"
                             class="col-6"
                         />
-                        <MultiSelect
+                        <AddressAutocomplete
                             v-model="form.address"
+                            :current-value="complex?.address"
                             :v="v$.form.address"
-                            :title="form.address"
-                            placeholder="Введите адрес.."
-                            extra-classes="long-text"
-                            :filterResults="false"
-                            :min-chars="1"
-                            :resolve-on-load="!!complex"
-                            :delay="600"
-                            :searchable="true"
+                            :resolve-on-load="Boolean(complex)"
                             required
                             label="Адрес комплекса"
+                            placeholder="Введите адрес.."
                             class="col-6"
-                            :options="
-                                async query => {
-                                    return await getAddress(query);
-                                }
-                            "
                         />
                         <div class="col-6">
                             <Switch v-model="form.title_novalue" true-title="Без названия" />
@@ -516,7 +506,6 @@
 </template>
 
 <script setup>
-import { yandexmap } from '@/utils/yandexMap.js';
 import Loader from '@/components/common/Loader.vue';
 import Modal from '@/components/common/Modal.vue';
 import UiInput from '@/components/common/Forms/UiInput.vue';
@@ -544,6 +533,7 @@ import { cloneObject } from '@/utils/helpers/object/cloneObject.js';
 import DescriptionEditor from '@/components/common/Forms/DescriptionEditor.vue';
 import RadioOptions from '@/components/common/Forms/RadioOptions.vue';
 import { entityOptions } from '@/const/options/options.js';
+import AddressAutocomplete from '@/components/common/Forms/AddressAutocomplete.vue';
 
 defineEmits(['close']);
 const props = defineProps({
@@ -614,11 +604,6 @@ const v$ = useVuelidate({ form: validationRulesForComplex }, { form });
 
 const onChangeFromMkadNoValue = () => {
     if (form.from_mkad_novalue) form.from_mkad = null;
-};
-
-const getAddress = async query => {
-    if (props.complex) return await yandexmap.getAddress(query, props.complex.address);
-    return await yandexmap.getAddress(query);
 };
 
 const onSubmit = () => {

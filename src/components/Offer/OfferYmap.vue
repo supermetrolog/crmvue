@@ -1,63 +1,43 @@
 <template>
-    <YandexMapContainer
-        @mounted="$emit('mounted')"
-        @selectionDone="$emit('selection-done', $event)"
-        @removedDone="$emit('removed-done', $event)"
-        @updated="$emit('updated', $event)"
-        @objectClick="selectOffers"
-        :class="{ loading: loading }"
-        :settings="yandexMapOptions.settings"
-        :styles="styles"
-        :controls="yandexMapOptions.controls"
-        :behaviors="['drag', 'scrollZoom', 'multiTouch', 'selection']"
-        :polygon-coordinates="polygonCoordinates"
-    >
-        <YandexMapLoader :show="loading" label="Поиск объектов на карте.." />
-        <YandexMapMarker
-            v-for="offer in list"
-            :key="offer.id"
-            :marker-id="offer.id"
-            :coords="[offer.latitude, offer.longitude]"
-            :hint-content="offer.address"
-            :balloon-content-body="getFooter(offer)"
-            :balloon-content-header="`#${offer.id} - ${offer.address}`"
-            :cluster-caption="getOfferClusterCaption(offer)"
+    <MapContainer :style="styles" mini-map :loading>
+        <MapContainerControls position="bottom right">
+            <MapMiniMapBehavior />
+        </MapContainerControls>
+        <!--        <MapContainerControls position="top left">-->
+        <!--            <MapSelectionBehavior-->
+        <!--                @selected="$emit('selection-done', $event)"-->
+        <!--                @removed="$emit('removed-done')"-->
+        <!--                :coordinates="polygonCoordinates"-->
+        <!--                :options="{-->
+        <!--                    accuracy: 3-->
+        <!--                }"-->
+        <!--            />-->
+        <!--        </MapContainerControls>-->
+        <MapMarkerCollection
+            @select="selectOffers"
+            :collection="markers"
+            :grid-size="64"
+            :selected-marker-id="selectedOfferId"
         />
-        <OfferObject :search-type :offer-ids="offers" />
-    </YandexMapContainer>
+        <MapDrawer v-model:open="drawerIsOpen" :width="400" height="100%">
+            <OfferObject @close="drawerIsOpen = false" :search-type :offer-ids="offers" />
+        </MapDrawer>
+    </MapContainer>
 </template>
 <script setup>
-import YandexMapContainer from '@/components/common/YandexMap/YandexMapContainer.vue';
-import YandexMapMarker from '@/components/common/YandexMap/YandexMapMarker.vue';
-import OfferObject from '@/components/Offer/OfferObject.vue';
-import { ref, watch } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { getLinkComplex, getLinkOffer } from '@/utils/url.js';
-import YandexMapLoader from '@/components/common/YandexMap/YandexMapLoader.vue';
 import { isNotNullish } from '@/utils/helpers/common/isNotNullish.ts';
 import { toNumberFormat } from '@/utils/formatters/number.js';
-
-const yandexMapOptions = {
-    settings: {
-        apiKey: import.meta.env.VITE_VUE_APP_YANDEX_MAP_KEY,
-        lang: 'ru_RU',
-        coordorder: 'latlong',
-        enterprise: false,
-        version: '2.1'
-    },
-    styles: {
-        height: '75vh',
-        width: '100%'
-    },
-    controls: [
-        'geolocationControl',
-        'searchControl',
-        'trafficControl',
-        'zoomControl',
-        'rulerControl'
-    ]
-};
+import MapContainer from '@/components/common/Map/MapContainer.vue';
+import MapContainerControls from '@/components/common/Map/MapContainerControls.vue';
+import MapMiniMapBehavior from '@/components/common/Map/Behavior/MapMiniMapBehavior.vue';
+import MapMarkerCollection from '@/components/common/Map/MapMarkerCollection.vue';
+import OfferObject from '@/components/Offer/OfferObject.vue';
+import MapDrawer from '@/components/common/Map/MapDrawer.vue';
 
 defineEmits(['selection-done', 'removed-done', 'updated', 'mounted']);
+
 const props = defineProps({
     list: {
         type: Array,
@@ -82,6 +62,15 @@ const props = defineProps({
     },
     selected: [Object, Number]
 });
+
+const markers = computed(() =>
+    props.list.map(offer => ({
+        id: String(offer.id),
+        coordinates: [offer.longitude, offer.latitude],
+        title: offer.address,
+        preview: offer.thumb
+    }))
+);
 
 const offers = ref([]);
 
@@ -113,10 +102,15 @@ function isObject(object) {
     return isNotNullish(object.morph) && object.morph === 'c_industry';
 }
 
+const drawerIsOpen = ref(false);
+const selectedOfferId = ref(null);
+
 function selectOffers(objectId) {
-    const object = props.list.find(element => element.id === objectId);
+    const object = props.list.find(element => element.id === Number(objectId));
 
     if (!object) return;
+
+    selectedOfferId.value = objectId;
 
     if (isObject(object)) {
         searchType.value = 'objects';
@@ -125,12 +119,16 @@ function selectOffers(objectId) {
     }
 
     offers.value = [objectId];
+
+    drawerIsOpen.value = true;
 }
 
 watch(
     () => props.selected,
     value => {
-        if (isNotNullish(value)) selectOffers(value);
+        if (isNotNullish(value)) {
+            selectOffers(value);
+        }
     },
     { immediate: true }
 );

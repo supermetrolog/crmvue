@@ -93,10 +93,10 @@
                 <div v-else class="row">
                     <div class="col-12 mb-2">
                         <div class="d-flex gap-2">
-                            <Button @click="optimizeRoute" icon>
-                                <span>Оптимизировать маршрут</span>
-                                <i class="fas fa-route icon"></i>
-                            </Button>
+                            <!--                            <Button @click="optimizeRoute" icon>-->
+                            <!--                                <span>Оптимизировать маршрут</span>-->
+                            <!--                                <i class="fas fa-route icon"></i>-->
+                            <!--                            </Button>-->
                             <a class="button button--info" :href="routeLink" target="_blank">
                                 Открыть маршрут на Яндекс.Картах
                             </a>
@@ -116,26 +116,16 @@
                                         <span>Мое местоположение</span>
                                         <i class="fa-solid fa-pen icon"></i>
                                     </Button>
-                                    <AnimationTransition :speed="0.5">
-                                        <MultiSelect
-                                            v-if="userLocationFormIsVisible"
-                                            v-model="newUserLocation"
-                                            extra-classes="long-text"
-                                            class="timeline-routes__multiselect"
-                                            :filterResults="false"
-                                            :min-chars="1"
-                                            :resolve-on-load="false"
-                                            :delay="0"
-                                            :searchable="true"
-                                            placeholder="Адрес начальной точки"
-                                            :options="
-                                                async query => {
-                                                    return await getAddress(query);
-                                                }
-                                            "
-                                        />
-                                    </AnimationTransition>
                                 </div>
+                                <AnimationTransition :speed="0.5">
+                                    <AddressAutocomplete
+                                        v-if="userLocationFormIsVisible"
+                                        v-model="newUserLocation"
+                                        v-model:location="newUserLocationCoords"
+                                        label="Адрес начальной точки"
+                                        class="timeline-routes__multiselect mt-2"
+                                    />
+                                </AnimationTransition>
                                 <DashboardChip class="timeline-routes__chip first">A</DashboardChip>
                             </DashboardCard>
                             <VirtualDragList
@@ -178,13 +168,18 @@
                         </div>
                     </div>
                     <div class="col-7">
-                        <Ymap :manual-route="correctObjects" :user-location="userLocation" />
+                        <MapContainer
+                            :center="[37.619346417968764, 55.75554289958026]"
+                            style="height: 400px"
+                        >
+                            <MapRoute v-if="preparedPoints.length" :points="preparedPoints" />
+                        </MapContainer>
                     </div>
                 </div>
             </div>
             <div v-else-if="!data.objects" class="col-12">
                 <DashboardChip class="dashboard-bg-warning-l timeline-routes-error mx-auto">
-                    Для создания маршрута выполните прыдыдущий этап.
+                    Для создания маршрута выполните предыдущий этап.
                 </DashboardChip>
             </div>
             <div v-else class="col-12">
@@ -205,9 +200,6 @@ import {
 import TimelineInfo from '@/components/Timeline/TimelineInfo.vue';
 import Button from '@/components/common/Button.vue';
 import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
-import MultiSelect from '@/components/common/Forms/MultiSelect.vue';
-import Ymap from '@/components/common/Ymap.vue';
-import { yandexmap } from '@/utils/yandexMap.js';
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
 import VirtualDragList from 'vue-virtual-draglist';
 import DashboardCard from '@/components/Dashboard/Card/DashboardCard.vue';
@@ -217,10 +209,17 @@ import Modal from '@/components/common/Modal.vue';
 import { InspectionSendingRouteComment } from '@/components/Timeline/comments.js';
 import { isNotNullish } from '@/utils/helpers/common/isNotNullish.ts';
 import TimelineButton from '@/components/Timeline/TimelineButton.vue';
+import AddressAutocomplete from '@/components/common/Forms/AddressAutocomplete.vue';
+import MapRoute from '@/components/common/Map/MapRoute.vue';
+import MapContainer from '@/components/common/Map/MapContainer.vue';
+import { toRaw } from 'vue';
 
 export default {
     name: 'TimelineStepInspectionSending',
     components: {
+        MapContainer,
+        MapRoute,
+        AddressAutocomplete,
         TimelineButton,
         Modal,
         FormLetter,
@@ -228,8 +227,6 @@ export default {
         DashboardCard,
         VirtualDragList,
         AnimationTransition,
-        Ymap,
-        MultiSelect,
         DashboardChip,
         Button,
         TimelineInfo
@@ -237,8 +234,9 @@ export default {
     mixins: [TimelineStepWithObjectsMixin, TimelineStepWithLetterMixin],
     data() {
         return {
-            userLocation: false,
+            userLocation: null,
             newUserLocation: '',
+            newUserLocationCoords: null,
             userLocationSearchOption: [],
             userLocationFormIsVisible: false,
             alphabet: 'ABCDEFGHIJKL',
@@ -249,6 +247,24 @@ export default {
         };
     },
     computed: {
+        preparedPoints() {
+            return [
+                {
+                    id: 'start',
+                    coords: toRaw(this.userLocation),
+                    title: 'Старт маршрута',
+                    subtitle: 'Ваше местоположение',
+                    color: 'brightgreen'
+                },
+                ...this.correctObjects.map((object, key) => ({
+                    id: object.offer.id,
+                    coords: [object.offer?.longitude, object.offer?.latitude],
+                    title: `${object.offer.visual_id}, ${object.offer.object_type_name}`,
+                    subtitle: object.offer.address,
+                    color: key === this.correctObjects.length - 1 ? 'red' : undefined
+                }))
+            ];
+        },
         routeLink() {
             const array = this.correctObjects
                 .map(object => `${object.offer?.latitude},${object.offer?.longitude}`)
@@ -276,7 +292,7 @@ export default {
         getLocation() {
             window.navigator.geolocation.getCurrentPosition(
                 pos => {
-                    this.userLocation = [pos.coords.latitude, pos.coords.longitude];
+                    this.userLocation = [pos.coords.longitude, pos.coords.latitude];
                 },
                 () => {},
                 {
@@ -286,24 +302,21 @@ export default {
                 }
             );
         },
-        async getAddress(query) {
-            return await yandexmap.getAddress(query);
-        },
         async getCoords() {
-            this.userLocation = await yandexmap.findCoordinates(this.newUserLocation);
+            this.userLocation = this.newUserLocationCoords;
         },
         async optimizeRoute() {
-            const result = await yandexmap.getOptimizeRoutes(
-                this.correctObjects,
-                this.userLocation
-            );
-
-            const indexCache = this.correctObjects.reduce((acc, element, index) => {
-                acc[element.offer.original_id] = index;
-                return acc;
-            }, {});
-
-            this.correctObjects = result.map(key => this.correctObjects[indexCache[key]]);
+            // const result = await yandexmap.getOptimizeRoutes(
+            //     this.correctObjects,
+            //     this.userLocation
+            // );
+            //
+            // const indexCache = this.correctObjects.reduce((acc, element, index) => {
+            //     acc[element.offer.original_id] = index;
+            //     return acc;
+            // }, {});
+            //
+            // this.correctObjects = result.map(key => this.correctObjects[indexCache[key]]);
         },
         sendRoute(sendToClient) {
             this.prepareLetterMessage(sendToClient);

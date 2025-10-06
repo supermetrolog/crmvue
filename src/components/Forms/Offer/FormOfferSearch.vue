@@ -19,7 +19,7 @@
                     </UiButton>
                     <UiButton
                         @click="resetForm"
-                        :disabled="!resetIsDisabled"
+                        :disabled="resetIsDisabled"
                         color="danger-light"
                         icon="fa-solid fa-trash"
                     >
