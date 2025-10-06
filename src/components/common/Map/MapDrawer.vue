@@ -26,7 +26,6 @@ const settings = computed(() => ({
     open: open.value,
     width: props.width,
     onOpenChange: (value: boolean) => {
-        console.log('on open change', value);
         open.value = !value;
     },
     height: props.height

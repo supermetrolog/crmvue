@@ -9,7 +9,7 @@
             </YandexMapControls>
             <YandexMapControls
                 v-if="geolocationIsEnabled || fullscreenIsEnabled"
-                :settings="{ position: 'top right' }"
+                :settings="{ position: controlsPosition }"
             >
                 <MapLayerControl v-if="layersIsEnabled" v-model="currentLayer" />
                 <YandexMapGeolocationControl v-if="geolocationIsEnabled" />
@@ -17,7 +17,7 @@
                 <MapThemeControl v-if="themeIsEnabled" v-model="currentTheme" />
             </YandexMapControls>
             <YandexMapControls :settings="{ position: 'top left' }">
-                <YandexMapSpinner v-if="loading" :settings="spinnerSettings" />
+                <YandexMapSpinner v-if="loading || contextLoading" :settings="spinnerSettings" />
             </YandexMapControls>
             <slot />
         </YandexMap>
@@ -35,8 +35,14 @@ import {
     YandexMapSpinner,
     YandexMapZoomControl
 } from 'vue-yandex-maps';
-import { computed, onMounted, ref, shallowRef } from 'vue';
-import type { BehaviorType, LngLat, LngLatBounds, YMap } from '@yandex/ymaps3-types';
+import { computed, ref } from 'vue';
+import type {
+    BehaviorType,
+    LngLat,
+    LngLatBounds,
+    YMap,
+    YMapControlsProps
+} from '@yandex/ymaps3-types';
 import MapFullScreenControl from '@/components/common/Map/Control/MapFullScreenControl.vue';
 import MapThemeControl from '@/components/common/Map/Control/MapThemeControl.vue';
 import { getFromLocalstorage } from '@/services/localStorage';
@@ -58,38 +64,40 @@ const props = withDefaults(
         theme?: MapTheme;
         loading?: boolean;
         controls?: MapControlKey[];
+        controlsPosition?: YMapControlsProps['position'];
     }>(),
     {
         center: () => [37.619346417968764, 55.75554289958026], // moscow
         zoom: 8,
         type: 'map',
         theme: getFromLocalstorage('ui:prefer:map-theme', 'dark') ?? 'dark',
-        controls: () => ['zoom', 'geolocation', 'fullscreen', 'layers', 'theme']
+        controls: () => ['zoom', 'geolocation', 'fullscreen', 'layers', 'theme'],
+        controlsPosition: 'top right'
     }
 );
 
-const instance = shallowRef<YMap | null>(null);
+const instance = defineModel<YMap | null>({ default: null });
 
 const settings = computed<YandexMapSettings>(() => ({
     location: {
         center: props.center,
         zoom: currentZoom.value,
-        bounds: currentBounds.value
+        bounds: contextBounds.value
     },
     behaviors: props.behaviors,
-    theme: currentTheme.value
+    theme: contextTheme.value
 }));
 
-const currentBounds = shallowRef<LngLatBounds>(props.bounds);
-
-function setBounds(bounds: LngLatBounds) {
-    currentBounds.value = bounds;
-}
-
-createMapContext({
+const {
+    bounds: contextBounds,
+    loading: contextLoading,
+    theme: contextTheme
+} = createMapContext({
     map: instance,
     settings,
-    setBounds
+    bounds: props.bounds,
+    loading: props.loading,
+    theme: props.theme
 });
 
 // controls
@@ -105,8 +113,6 @@ const themeIsEnabled = computed(() => controlSet.value.has('theme'));
 // layers
 
 const currentLayer = ref<MapType>(props.type);
-
-const currentTheme = ref<MapTheme>(props.theme);
 
 const currentZoom = ref<number>(props.zoom);
 
@@ -137,10 +143,6 @@ const spinnerSettings = {
     animation: 'spinner-line-fade-default',
     direction: 1
 } as const;
-
-onMounted(() => {
-    console.log(instance.value?.container);
-});
 </script>
 <style>
 :deep(svg) {

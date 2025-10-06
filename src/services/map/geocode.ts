@@ -135,7 +135,7 @@ export type AddressSuggestion = {
     value: string;
     kind?: string;
     precision?: string;
-    coords: [number, number]; // [lat, lon]
+    coords: [number, number];
     components: { kind: string; name: string }[];
     raw: any;
 };
@@ -161,6 +161,8 @@ function buildCacheKey(query: string, config: Partial<GeocodeRequestConfig> = {}
 
     return query;
 }
+
+// address
 
 export async function findAddressByText(
     query?: string,
@@ -194,7 +196,7 @@ async function executeRequestAndNormalize(config: GeocodeRequestConfig, cacheKey
     try {
         const response = await client.get(config);
 
-        const normalized = normalizeResponse(responseToData(response), config.sco!);
+        const normalized = normalizeAddressResponse(responseToData(response), config.sco!);
 
         cache.set(cacheKey, normalized);
 
@@ -207,7 +209,7 @@ async function executeRequestAndNormalize(config: GeocodeRequestConfig, cacheKey
     }
 }
 
-function normalizeResponse(
+function normalizeAddressResponse(
     response: GeocodeResponseResult,
     sco: 'longlat' | 'latlong'
 ): AddressSuggestion[] {
@@ -237,7 +239,7 @@ function normalizeResponse(
 
                   if (parts.length >= 2) {
                       const [a, b] = parts;
-                      if (sco === 'latlong') return [a, b];
+                      if (sco === 'longlat') return [a, b];
                       return [b, a];
                   }
 

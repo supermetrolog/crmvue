@@ -211,8 +211,6 @@ async function startInteractiveDrawing() {
         return;
     }
 
-    console.log(points);
-
     const simplified = simplifyCoords(points);
 
     const bounds = map.value.bounds;
@@ -223,8 +221,6 @@ async function startInteractiveDrawing() {
     }
 
     const coords = normalizeToMapBounds(simplified, bounds).map(el => el.toReversed());
-
-    console.log(coords);
 
     emit('selected', coords);
 }

@@ -50,34 +50,30 @@
                     <i class="fas fa-plus" />
                 </button>
             </div>
-            <div v-tippy="'Открыть карту'" @click="openMap" class="complex-map__control">
+            <div v-tippy="'Открыть карту'" @click="toggleMap" class="complex-map__control">
                 <i class="fas fa-map-marker-alt" :class="{ active: mapIsOpened }"></i>
             </div>
         </div>
-        <!--        <YandexMapContainer-->
-        <!--            :key="randKey"-->
-        <!--            :settings="map.settings"-->
-        <!--            :styles="map.styles"-->
-        <!--            :detailed-controls="map.detailedControls"-->
-        <!--            :behaviors="map.behaviors"-->
-        <!--            :controls="map.controls"-->
-        <!--            :coords="[location.latitude, location.longitude]"-->
-        <!--            :zoom="12"-->
-        <!--        >-->
-        <!--            <YandexMapMarker-->
-        <!--                ref="marker"-->
-        <!--                :marker-id="location.id"-->
-        <!--                :coords="[location.latitude, location.longitude]"-->
-        <!--            />-->
-        <!--        </YandexMapContainer>-->
+        <MapContainer
+            :center="[location.longitude, location.latitude]"
+            :zoom="12"
+            :style="mapStyle"
+            :controls
+            controls-position="right bottom"
+            :behaviors
+        >
+            <MapMarker v-if="location" :coordinates="[location.longitude, location.latitude]" />
+        </MapContainer>
     </div>
 </template>
 
 <script setup>
 import Tooltip from '@/components/common/Tooltip.vue';
 import ComplexMapDescription from '@/components/Complex/ComplexMapDescription.vue';
-import { onUnmounted, reactive, shallowRef } from 'vue';
+import { computed, ref } from 'vue';
 import { ucFirst } from '@/utils/formatters/string.js';
+import MapContainer from '@/components/common/Map/MapContainer.vue';
+import MapMarker from '@/components/common/Map/MapMarker.vue';
 
 defineProps({
     location: {
@@ -86,112 +82,30 @@ defineProps({
     }
 });
 
-const map = reactive({
-    settings: {
-        apiKey: import.meta.env.VITE_VUE_APP_YANDEX_MAP_KEY,
-        lang: 'ru_RU',
-        coordorder: 'latlong',
-        enterprise: false,
-        version: '2.1',
-        height: '60px'
-    },
-    controls: [
-        'geolocationControl',
-        'searchControl',
-        'trafficControl',
-        'typeSelector',
-        'zoomControl',
-        'rulerControl'
-    ],
-    styles: {
-        height: '60px',
-        width: '100%'
-    },
-    detailedControls: {
-        zoomControl: {
-            position: {
-                right: '10px',
-                top: '110px'
-            },
-            visible: false
-        },
-        geolocationControl: {
-            position: {
-                top: '70px',
-                left: '10px'
-            },
-            visible: false
-        },
-        trafficControl: {
-            position: {
-                top: '70px',
-                right: '140px'
-            },
-            visible: false
-        },
-        typeSelector: {
-            position: {
-                top: '70px',
-                right: '45px'
-            },
-            visible: false
-        },
-        searchControl: {
-            position: {
-                top: '70px',
-                left: '45px'
-            },
-            visible: false
-        },
-        fullscreenControl: {
-            position: {
-                top: '70px',
-                right: '10px'
-            },
-            visible: false
-        },
-        rulerControl: {
-            visible: false
-        }
-    },
-    behaviors: []
-});
+const mapIsOpened = ref(false);
 
-const mapIsOpened = shallowRef(false);
-const randKey = shallowRef(0);
-let timeout = null;
+const mapStyle = computed(() => ({
+    height: mapIsOpened.value ? '500px' : '60px',
+    width: '100%'
+}));
 
-const openMap = () => {
-    clearTimeout(timeout);
-
+const controls = computed(() => {
     if (mapIsOpened.value) {
-        mapIsOpened.value = false;
-        map.styles.height = '60px';
-        timeout = setTimeout(() => {
-            randKey.value = randKey.value + 1;
-        }, 1000);
-
-        Object.keys(map.detailedControls).forEach(key => {
-            map.detailedControls[key].visible = false;
-        });
-
-        map.behaviors = [];
-    } else {
-        mapIsOpened.value = true;
-        map.styles.height = '500px';
-        timeout = setTimeout(() => {
-            randKey.value = randKey.value + 1;
-        }, 1000);
-
-        Object.keys(map.detailedControls).forEach(key => {
-            map.detailedControls[key].visible = true;
-        });
-
-        map.behaviors = ['drag', 'multiTouch', 'scrollZoom'];
+        return undefined;
     }
-};
 
-onUnmounted(() => {
-    clearTimeout(timeout);
+    return [];
 });
+
+const behaviors = computed(() => {
+    if (mapIsOpened.value) {
+        return undefined;
+    }
+
+    return [];
+});
+
+function toggleMap() {
+    mapIsOpened.value = !mapIsOpened.value;
+}
 </script>

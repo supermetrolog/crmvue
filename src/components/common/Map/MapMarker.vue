@@ -331,7 +331,9 @@ const settings = computed(
             zIndex: props.zIndex,
             color: props.color,
             iconName: props.iconName,
-            size: props.size
+            size: props.size,
+            title: props.title,
+            subtitle: props.subtitle
         }) as const satisfies YandexMapDefaultMarkerSettings
 );
 </script>

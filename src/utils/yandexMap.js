@@ -57,19 +57,5 @@ export const yandexmap = {
         const minDistance = this.getMinimumDistance(distances);
 
         return [...minDistance.map(item => item.id)];
-    },
-    async findCoordinates(query) {
-        if (!query || !window.ymaps || !window.ymaps.geocode) return [];
-
-        const preparedQuery = 'россия ' + query;
-
-        try {
-            const response = await window.ymaps.geocode(preparedQuery);
-
-            const geoObject = response.geoObjects.get(0);
-            return geoObject.geometry.getCoordinates();
-        } catch (e) {
-            return [];
-        }
     }
 };

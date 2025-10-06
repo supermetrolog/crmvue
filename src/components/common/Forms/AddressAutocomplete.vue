@@ -2,6 +2,7 @@
     <MultiSelect
         ref="multiselect"
         v-model="model"
+        @change="onChange"
         extra-classes="long-text"
         :label
         :filterResults="false"
@@ -44,6 +45,7 @@ import { AddressSuggestion, findAddressByText } from '@/services/map/geocode';
 import { useTemplateRef, watch } from 'vue';
 
 const model = defineModel<string>();
+const location = defineModel<[number, number] | null>('location');
 
 const props = withDefaults(
     defineProps<{
@@ -129,5 +131,16 @@ async function fetcher(query?: string) {
     }
 
     return options;
+}
+
+function onChange(
+    _: string,
+    option?: AddressSuggestion | CurrentAddressSuggestion | null | undefined
+) {
+    if (option && isFullAddressSuggestion(option)) {
+        location.value = option.coords;
+    } else {
+        location.value = null;
+    }
 }
 </script>
