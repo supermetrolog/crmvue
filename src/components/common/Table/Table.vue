@@ -17,7 +17,7 @@
 
 <script setup lang="ts">
 import UiButton from '@/components/common/UI/UiButton.vue';
-import { onBeforeMount, ref, watch } from 'vue';
+import { ref, watch } from 'vue';
 import { useTimeoutFn } from '@vueuse/core';
 import { ColumnWidths } from '@/components/common/Table/storage';
 import { createTableColumnWidthContext } from '@/composables/useTableColumnWidth';
@@ -57,16 +57,11 @@ watch(
 );
 
 // storage
-
-const { widths } = createTableColumnWidthContext({
+createTableColumnWidthContext({
     storageKey: () => props.storageKey ?? 'default',
     defaultWidths: () => props.defaultWidths,
     constraints: () => props.constraints ?? {},
     resizable: () => props.resizable
-});
-
-onBeforeMount(() => {
-    console.log(widths);
 });
 </script>
 <style>

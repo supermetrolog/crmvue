@@ -35,15 +35,11 @@
                     class="col-6"
                     :options="objectOptions.class"
                 />
-                <UiTextarea
+                <AddressAutocomplete
                     v-model="form.address"
                     :v="v$.address"
-                    label="Адрес"
-                    class="col-12"
-                    auto-height
-                    :min-height="50"
-                    :max-height="150"
                     required
+                    class="col-12"
                 />
             </UiFormGroup>
             <UiFormDivider />
@@ -81,9 +77,9 @@ import RadioChip from '@/components/common/Forms/RadioChip.vue';
 import { useFormData } from '@/utils/use/useFormData.js';
 import MultiSelect from '@/components/common/Forms/MultiSelect.vue';
 import { objectOptions } from '@/const/options/object.options.js';
-import UiTextarea from '@/components/common/Forms/UiTextarea.vue';
 import { useValidation } from '@/composables/useValidation.js';
 import { helpers, required } from '@vuelidate/validators';
+import AddressAutocomplete from '@/components/common/Forms/AddressAutocomplete.vue';
 
 const emit = defineEmits(['updated', 'created', 'close']);
 

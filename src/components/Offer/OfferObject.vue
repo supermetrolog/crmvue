@@ -1,45 +1,44 @@
 <template>
-    <AnimationTransition :speed="0.5" :animation="{ enter: 'slideInLeft', leave: 'slideOutLeft' }">
-        <div v-if="isShowing" class="object-view scroller">
-            <div class="object-view__header">
-                <DashboardChip class="dashboard-bg-gray-l w-100 text-center">
-                    <span>Просмотр предложений: </span>
-                    <span v-if="isLoadingOffers || isLoadingObject">загрузка..</span>
-                    <span v-else>{{ offers?.length ?? 0 }}</span>
-                </DashboardChip>
-                <HoverActionsButton
-                    @click="close"
-                    label="Закрыть панель"
-                    class="object-view__close"
-                >
-                    <i class="fas fa-times"></i>
-                </HoverActionsButton>
-            </div>
-            <hr />
-            <Spinner
-                v-if="isLoadingObject || isLoadingOffers"
-                class="absolute-center"
-                :label="spinnerLabel"
-            />
-            <div v-else>
-                <div class="row no-gutters">
-                    <CompanyObjectItemOfferOnly
-                        v-for="offer in offers"
-                        :key="offer.id"
-                        @open-in-survey="openInSurvey(offer)"
-                        @open-in-chat="openInChat(offer)"
-                        :offer="offer"
-                        class="col-12"
-                    />
-                </div>
+    <div v-if="isShowing" class="object-view scroller">
+        <div class="object-view__header">
+            <DashboardChip class="dashboard-bg-gray-l w-100 text-center">
+                <span>Просмотр предложений: </span>
+                <span v-if="isLoadingOffers || isLoadingObject">загрузка..</span>
+                <span v-else>{{ offers?.length ?? 0 }}</span>
+            </DashboardChip>
+            <HoverActionsButton @click="close" label="Закрыть панель" class="object-view__close">
+                <i class="fas fa-times"></i>
+            </HoverActionsButton>
+        </div>
+        <hr />
+        <Spinner
+            v-if="isLoadingObject || isLoadingOffers"
+            class="absolute-center"
+            :label="spinnerLabel"
+        />
+        <div v-else>
+            <div class="row no-gutters">
+                <CompanyObjectItemOfferOnly
+                    v-for="offer in offers"
+                    :key="offer.id"
+                    @open-in-survey="openInSurvey(offer)"
+                    @open-in-chat="openInChat(offer)"
+                    :offer="offer"
+                    class="col-12"
+                />
             </div>
         </div>
-    </AnimationTransition>
+    </div>
+    <div
+        v-else
+        class="d-flex align-items-center font-weight-semi fs-4 justify-content-center h-100"
+    >
+        <UiField color="light">Выберите объект на карте</UiField>
+    </div>
 </template>
 
 <script setup>
 import CompanyObjectItemOfferOnly from '@/components/Company/Object/CompanyObjectItemOfferOnly.vue';
-import AnimationTransition from '@/components/common/AnimationTransition.vue';
 import Spinner from '@/components/common/Spinner.vue';
 import { useDelayedLoader } from '@/composables/useDelayedLoader.js';
 import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
@@ -49,7 +48,9 @@ import api from '@/api/api.js';
 import { messenger } from '@/const/messenger.js';
 import { useSurveyForm } from '@/composables/useSurveyForm.ts';
 import { useMessenger } from '@/components/Messenger/useMessenger.js';
+import UiField from '@/components/common/UI/UiField.vue';
 
+const emit = defineEmits(['close']);
 const props = defineProps({
     offerIds: {
         type: Array,
@@ -87,6 +88,7 @@ onMounted(() => {
 const close = () => {
     isShowing.value = false;
     offers.value = [];
+    emit('close');
 };
 
 const spinnerLabel = computed(() => {

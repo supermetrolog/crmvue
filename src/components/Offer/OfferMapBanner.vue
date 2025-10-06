@@ -2,7 +2,7 @@
     <MapBanner
         :to="{ name: 'offers.map', query }"
         :loading="isLoading"
-        :markers="offers"
+        :markers
         :grid-size="128"
         scalable
     >
@@ -35,6 +35,14 @@ const isLoaded = ref(false);
 
 const offers = shallowRef([]);
 const count = ref(0);
+
+const markers = computed(() =>
+    offers.value.map(offer => ({
+        id: String(offer.id),
+        coordinates: [offer.longitude, offer.latitude],
+        title: offer.address
+    }))
+);
 
 const countLabel = computed(() => plural(count.value, '%d объект', '%d объекта', '%d объектов'));
 

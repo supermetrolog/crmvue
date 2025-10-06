@@ -16,7 +16,7 @@
                     :is-map="true"
                     :loading="isLoading"
                 />
-                <div class="col-12 mt-2">
+                <div class="col-12 my-2">
                     <div class="company-table__filters">
                         <Chip
                             v-for="(item, index) in selectedFilterList"

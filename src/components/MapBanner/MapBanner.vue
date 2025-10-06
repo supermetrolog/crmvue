@@ -1,7 +1,7 @@
 <template>
     <div class="map-banner">
         <AnimationTransition :speed="0.4">
-            <div v-if="mapIsInitialized && scalable" class="map-banner__actions">
+            <div v-if="scalable" class="map-banner__actions">
                 <UiButtonIcon
                     @click.stop="decreaseZoom"
                     :disabled="loading"
@@ -23,29 +23,18 @@
             </div>
         </AnimationTransition>
         <RouterLink :to class="map-banner__wrapper">
-            <YandexMapContainer
-                ref="map"
-                @mounted="onLoadMap"
-                hide-controls
-                :zoom
-                :grid-size
-                :coords="center"
-                :class="{ loading }"
-                class="map-banner__map"
-            >
-                <YandexMapMarker
-                    v-for="marker in markers"
-                    :key="marker.id"
-                    :marker-id="marker.id"
-                    :coords="[marker.latitude, marker.longitude]"
-                />
-            </YandexMapContainer>
+            <MapContainer ref="map"
+:zoom
+:center
+:controls="[]"
+class="map-banner__map">
+                <MapMarkerCollection :collection="markers" :grid-size="64" />
+            </MapContainer>
         </RouterLink>
         <div class="map-banner__footer">
-            <slot name="footer" :mapIsInitialized="mapIsInitialized">
+            <slot name="footer">
                 <AnimationTransition :speed="0.4" appear>
                     <UiButton
-                        v-if="mapIsInitialized"
                         :as="RouterLink"
                         :to
                         color="white"
@@ -65,26 +54,20 @@
 </template>
 <script setup lang="ts">
 import UiButton from '@/components/common/UI/UiButton.vue';
-import YandexMapContainer from '@/components/common/YandexMap/YandexMapContainer.vue';
-import YandexMapMarker from '@/components/common/YandexMap/YandexMapMarker.vue';
 import { RouteLocationRaw, RouterLink } from 'vue-router';
-import { ref, useTemplateRef } from 'vue';
+import { useTemplateRef } from 'vue';
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
 import UiButtonIcon from '@/components/common/UI/UiButtonIcon.vue';
+import MapContainer from '@/components/common/Map/MapContainer.vue';
+import MapMarkerCollection, {
+    MapCollectionItem
+} from '@/components/common/Map/MapMarkerCollection.vue';
+import { LngLat } from '@yandex/ymaps3-types';
 
-type MapMarker = {
-    id: number;
-    latitude: string;
-    longitude: string;
-    balloonContentHeader?: string;
-};
-
-type MapCoordPoint = [number, number];
-
-const props = withDefaults(
+withDefaults(
     defineProps<{
-        center?: MapCoordPoint;
-        markers?: MapMarker[];
+        center?: LngLat;
+        markers?: MapCollectionItem[];
         to: RouteLocationRaw;
         zoom?: number;
         gridSize?: number;
@@ -94,13 +77,6 @@ const props = withDefaults(
     }>(),
     { label: 'Показать на карте', markers: () => [], zoom: 8, gridSize: 64 }
 );
-
-const mapIsInitialized = ref(false);
-
-function onLoadMap() {
-    mapIsInitialized.value = true;
-}
-
 // zoom
 
 const map = useTemplateRef('map');
