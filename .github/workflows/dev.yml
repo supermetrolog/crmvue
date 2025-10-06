@@ -19,6 +19,7 @@ env:
   VITE_VUE_APP_MESSENGER_DATE_FROM_CALL_WARNING: 80
   VITE_VUE_APP_MESSENGER_DATE_FROM_CALL_DANGER: 90
   VITE_VUE_APP_YANDEX_MAP_KEY: ${{ secrets.vue_app_yandex_map_key }}
+  VITE_VUE_APP_YANDEX_MAP_GEOSUGGEST_KEY: ${{ secrets.vue_app_yandex_map_geosuggest_key }}
   VITE_VUE_APP_GLITCH_DSN: ${{ secrets.vue_app_glitch_dsn }}
   VITE_VUE_APP_WHATSAPP_BOT_PHONE: 123456789
   VITE_VUE_APP_TELEGRAM_BOT_USERNAME: crm_raysen_bot

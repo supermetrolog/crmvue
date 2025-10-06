@@ -54,28 +54,26 @@
                 <i class="fas fa-map-marker-alt" :class="{ active: mapIsOpened }"></i>
             </div>
         </div>
-        <YandexMapContainer
-            :key="randKey"
-            :settings="map.settings"
-            :styles="map.styles"
-            :detailed-controls="map.detailedControls"
-            :behaviors="map.behaviors"
-            :controls="map.controls"
-            :coords="[location.latitude, location.longitude]"
-            :zoom="12"
-        >
-            <YandexMapMarker
-                ref="marker"
-                :marker-id="location.id"
-                :coords="[location.latitude, location.longitude]"
-            />
-        </YandexMapContainer>
+        <!--        <YandexMapContainer-->
+        <!--            :key="randKey"-->
+        <!--            :settings="map.settings"-->
+        <!--            :styles="map.styles"-->
+        <!--            :detailed-controls="map.detailedControls"-->
+        <!--            :behaviors="map.behaviors"-->
+        <!--            :controls="map.controls"-->
+        <!--            :coords="[location.latitude, location.longitude]"-->
+        <!--            :zoom="12"-->
+        <!--        >-->
+        <!--            <YandexMapMarker-->
+        <!--                ref="marker"-->
+        <!--                :marker-id="location.id"-->
+        <!--                :coords="[location.latitude, location.longitude]"-->
+        <!--            />-->
+        <!--        </YandexMapContainer>-->
     </div>
 </template>
 
 <script setup>
-import YandexMapContainer from '@/components/common/YandexMap/YandexMapContainer.vue';
-import YandexMapMarker from '@/components/common/YandexMap/YandexMapMarker.vue';
 import Tooltip from '@/components/common/Tooltip.vue';
 import ComplexMapDescription from '@/components/Complex/ComplexMapDescription.vue';
 import { onUnmounted, reactive, shallowRef } from 'vue';

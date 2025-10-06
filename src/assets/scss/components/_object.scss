@@ -460,13 +460,10 @@
 }
 
 .object-view {
-    position: absolute;
-    top: 0;
-    left: 0;
-    bottom: 0;
     background-color: #f7f7f7;
     padding: 1rem 1.5rem;
     width: 400px;
+    height: 100%;
     border-right: 1px solid rgba(0, 0, 0, .2);
 
     &__header {
@@ -498,8 +495,8 @@
         @include mixins.transition(color, background-color);
 
         &:hover, &.active {
-           background-color: variables.$bg-success;
-           color: #fff;
+            background-color: variables.$bg-success;
+            color: #fff;
         }
     }
 

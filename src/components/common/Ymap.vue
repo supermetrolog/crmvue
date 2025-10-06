@@ -8,29 +8,27 @@
                 Время в пути: {{ route.time }}
             </DashboardChip>
         </div>
-        <yandex-map
-            v-if="mounted"
-            :key="render"
-            ref="map"
-            :settings="settings"
-            :options="options.mapOptions"
-            :coords="options.coords"
-            :zoom="options.zoom"
-            :controls="options.controls"
-            :detailed-controls="options.detailedControls"
-            style="width: 100%; height: 400px"
-        />
+        <!--        <yandex-map-->
+        <!--            v-if="mounted"-->
+        <!--            :key="render"-->
+        <!--            ref="map"-->
+        <!--            :settings="settings"-->
+        <!--            :options="options.mapOptions"-->
+        <!--            :coords="options.coords"-->
+        <!--            :zoom="options.zoom"-->
+        <!--            :controls="options.controls"-->
+        <!--            :detailed-controls="options.detailedControls"-->
+        <!--            style="width: 100%; height: 400px"-->
+        <!--        />-->
     </div>
 </template>
 
 <script>
-import { loadYmap, yandexMap } from 'vue-yandex-maps';
 import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
-import { mapGetters } from 'vuex';
 
 export default {
     name: 'Ymap',
-    components: { DashboardChip, yandexMap },
+    components: { DashboardChip },
     props: {
         manualRoute: {
             type: Array,
@@ -196,7 +194,7 @@ export default {
         }
     },
     async mounted() {
-        await loadYmap({ ...this.settings, debug: false });
+        // await loadYmap({ ...this.settings, debug: false });
         this.mounted = true;
         this.runBuildRoute();
     }
