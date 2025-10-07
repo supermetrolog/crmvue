@@ -3,12 +3,12 @@
 </template>
 <script setup lang="ts">
 import { YandexMapFeature } from 'vue-yandex-maps';
-import { PolygonGeometry, YMapFeatureProps } from '@yandex/ymaps3-types';
+import { LngLat, YMapFeatureProps } from '@yandex/ymaps3-types';
 import { computed } from 'vue';
 
 const props = withDefaults(
     defineProps<{
-        coordinates: PolygonGeometry['coordinates'];
+        coordinates: LngLat[];
         stroke?: {
             width: number;
             color: string;
@@ -29,7 +29,7 @@ const settings = computed(
         ({
             geometry: {
                 type: 'Polygon',
-                coordinates: [props.coordinates.map(el => el.toReversed())]
+                coordinates: [props.coordinates]
             },
             style: {
                 stroke: [

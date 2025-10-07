@@ -149,8 +149,6 @@ export async function getRoute(coords: LngLat[]) {
         const distance = activeRoute.properties.get('distance')?.text;
         const bounds = activeRoute.properties.get('boundedBy');
 
-        console.log(route);
-
         const paths = activeRoute?.getPaths();
 
         const lines = [];

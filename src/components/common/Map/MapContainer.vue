@@ -16,7 +16,7 @@
                 <MapFullScreenControl v-if="fullscreenIsEnabled" v-model="isFullscreen" />
                 <MapThemeControl v-if="themeIsEnabled" v-model="currentTheme" />
             </YandexMapControls>
-            <YandexMapControls :settings="{ position: 'top left' }">
+            <YandexMapControls :settings="{ position: loadingPosition }">
                 <YandexMapSpinner v-if="loading || contextLoading" :settings="spinnerSettings" />
             </YandexMapControls>
             <slot />
@@ -65,6 +65,7 @@ const props = withDefaults(
         loading?: boolean;
         controls?: MapControlKey[];
         controlsPosition?: YMapControlsProps['position'];
+        loadingPosition?: YMapControlsProps['position'];
     }>(),
     {
         center: () => [37.619346417968764, 55.75554289958026], // moscow
@@ -72,7 +73,8 @@ const props = withDefaults(
         type: 'map',
         theme: getFromLocalstorage('ui:prefer:map-theme', 'dark') ?? 'dark',
         controls: () => ['zoom', 'geolocation', 'fullscreen', 'layers', 'theme'],
-        controlsPosition: 'top right'
+        controlsPosition: 'top right',
+        loadingPosition: 'top left'
     }
 );
 
@@ -172,6 +174,6 @@ const spinnerSettings = {
 }
 
 .ymaps3--drawer-control-container {
-    z-index: 1 !important;
+    z-index: 1001 !important;
 }
 </style>

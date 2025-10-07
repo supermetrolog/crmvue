@@ -15,13 +15,13 @@
                 Обновить
             </UiButton>
         </div>
-        <OfferYmap :list="objects" :styles="yandexMapStyles" :loading />
+        <OfferMap :list="objects" :styles="yandexMapStyles" :loading />
     </div>
 </template>
 
 <script setup>
 import { shallowReactive } from 'vue';
-import OfferYmap from '@/components/Offer/OfferYmap.vue';
+import OfferMap from '@/components/Offer/OfferMap.vue';
 import UiButton from '@/components/common/UI/UiButton.vue';
 import UiField from '@/components/common/UI/UiField.vue';
 
