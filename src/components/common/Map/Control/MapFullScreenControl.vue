@@ -11,10 +11,10 @@
 </template>
 <script setup lang="ts">
 import { YandexMapControlButton } from 'vue-yandex-maps';
-import { onBeforeUnmount, onMounted, ref, shallowRef } from 'vue';
+import { onBeforeUnmount, onMounted, shallowRef } from 'vue';
 import { YMapControlButton } from '@yandex/ymaps3-types';
 
-const isActive = ref(false);
+const isActive = defineModel<boolean>({ default: false });
 
 const button = shallowRef<YMapControlButton | null>(null);
 
