@@ -47,6 +47,10 @@ export const useAuth = createSharedComposable(() => {
         () => currentUser.value?.role === userOptions.roleStatement.DIRECTOR
     );
 
+    const currentUserIsNotGuest = computed(
+        () => currentUser.value?.role > userOptions.roleStatement.VIEW_ONLY
+    );
+
     return {
         isAuth,
         login,
@@ -59,6 +63,7 @@ export const useAuth = createSharedComposable(() => {
         currentUserIsAdmin,
         currentUserIsModerator,
         currentUserIsModeratorOrHigher,
-        currentUserIsDirector
+        currentUserIsDirector,
+        currentUserIsNotGuest
     };
 });
