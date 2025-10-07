@@ -388,7 +388,12 @@
             </Tabs>
         </UiForm>
         <template #actions="{ close }">
-            <UiButton @click="submit" color="success-light" icon="fa-solid fa-check">
+            <UiButton
+                @click="submit"
+                :disabled="!canBeSubmit"
+                color="success-light"
+                icon="fa-solid fa-check"
+            >
                 Сохранить
             </UiButton>
             <UiButton @click="close" color="light" icon="fa-solid fa-ban">Отмена</UiButton>
@@ -440,6 +445,7 @@ import { useCompanyPermissions } from '@/components/Company/useCompanyPermission
 import FormCompanyContactPhones from '@/components/Forms/Company/FormCompanyContactPhones.vue';
 import { useUserNotificationsPause } from '@/composables/useUserNotificationsPause';
 import AddressAutocomplete from '@/components/common/Forms/AddressAutocomplete.vue';
+import { useAuth } from '@/composables/useAuth';
 
 const emit = defineEmits(['updated', 'created', 'close']);
 const props = defineProps({
@@ -561,6 +567,10 @@ async function submit() {
     const isValid = await validate();
     if (!isValid) return;
 
+    if (!canBeSubmit.value) {
+        return;
+    }
+
     try {
         isLoading.value = true;
 
@@ -593,4 +603,6 @@ function activityGroupMultipleLabelFn(elements) {
 // permissions
 
 const { canEdit } = useCompanyPermissions(toRef(props, 'formData'));
+
+const { currentUserIsNotGuest: canBeSubmit } = useAuth();
 </script>

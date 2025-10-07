@@ -85,7 +85,7 @@
                         tooltip="Отложить опрос на 5 дней для дальнейшей попытки созвониться"
                         color="warning"
                         icon="fa-solid fa-phone-slash"
-                        :disabled
+                        :disabled="disabled || !canBeSubmit"
                     >
                         Можно отложить опрос
                     </UiButton>
@@ -94,7 +94,7 @@
                         tooltip='Завершить опрос с отметкой "Не удалось дозвониться"'
                         color="danger-light"
                         icon="fa-solid fa-phone-slash"
-                        :disabled
+                        :disabled="disabled || !canBeSubmit"
                     >
                         Можно сохранить опрос
                     </UiButton>
@@ -106,7 +106,7 @@
                     icon="fa-solid fa-check"
                     class="survey-form__stepper-action"
                     :class="{ disabled: !formIsValid }"
-                    :disabled
+                    :disabled="disabled || !canBeSubmit"
                 >
                     {{ formIsValid ? 'Можно сохранить опрос' : 'Нельзя сохранить опрос' }}
                 </UiButton>
@@ -776,6 +776,10 @@ async function submit() {
     const isValid = await validate();
     if (!isValid) return;
 
+    if (!canBeSubmit.value) {
+        return;
+    }
+
     if (isNotNullish(props.survey)) {
         await updateSurvey();
         return;
@@ -826,6 +830,10 @@ async function submit() {
 const isCancelling = ref(false);
 
 function cancelSurvey() {
+    if (!canBeSubmit.value) {
+        return;
+    }
+
     isCancelling.value = true;
     summaryModalIsVisible.value = true;
 }
@@ -881,6 +889,10 @@ async function delaySurvey() {
     });
 
     if (!confirmed) return;
+
+    if (!canBeSubmit.value) {
+        return;
+    }
 
     isCreating.value = true;
 
@@ -1165,4 +1177,6 @@ addStep({
         step.value = 0;
     }
 });
+
+const { currentUserIsNotGuest: canBeSubmit } = useAuth();
 </script>

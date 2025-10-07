@@ -140,7 +140,12 @@
                     fill
                 />
                 <template #actions>
-                    <UiButton @click="saveCropped" color="success-light" icon="fa-solid fa-check">
+                    <UiButton
+                        @click="saveCropped"
+                        :disabled="!canBeSubmit"
+                        color="success-light"
+                        icon="fa-solid fa-check"
+                    >
                         Сохранить
                     </UiButton>
                     <UiButton @click="closeCropper" color="light" icon="fa-solid fa-ban">
@@ -172,6 +177,7 @@ import UiButton from '@/components/common/UI/UiButton.vue';
 import UiModal from '@/components/common/UI/UiModal.vue';
 import UiField from '@/components/common/UI/UiField.vue';
 import { isNotNullish } from '@/utils/helpers/common/isNotNullish.ts';
+import { useAuth } from '@/composables/useAuth';
 
 const emit = defineEmits(['updated', 'deleted', 'canceled', 'edited']);
 const props = defineProps({
@@ -285,6 +291,10 @@ const saveCropped = async () => {
         return;
     }
 
+    if (!canBeSubmit.value) {
+        return;
+    }
+
     const blob = await cropperEl.value.getBlob();
     const url = cropperEl.value.getUrl();
 
@@ -342,4 +352,6 @@ const pasteHandler = event => {
 };
 
 useEventListener('paste', pasteHandler);
+
+const { currentUserIsNotGuest: canBeSubmit } = useAuth();
 </script>
