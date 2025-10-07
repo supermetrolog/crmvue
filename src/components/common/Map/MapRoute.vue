@@ -114,7 +114,6 @@ const runBuildRoute = useDebounceFn(buildRoute, 500);
 watch(
     () => props.points,
     () => {
-        console.log([...props.points]);
         runBuildRoute();
     },
     { immediate: true, deep: true }

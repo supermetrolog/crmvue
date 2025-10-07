@@ -1,6 +1,12 @@
 <template>
     <teleport v-if="container" :to="container">
-        <canvas v-if="isActive" ref="canvas" class="canvas" :style="canvasStyle"></canvas>
+        <canvas
+            v-if="isActive"
+            ref="canvas"
+            class="canvas"
+            style="pointer-events: none"
+            :style="canvasStyle"
+        ></canvas>
     </teleport>
     <YandexMapControlButton :settings="{ onClick: onClickBehavior, background: backgroundColor }">
         <div class="d-flex align-items-center gap-1">
@@ -26,6 +32,7 @@
         </div>
     </YandexMapControlButton>
     <MapPolygon v-if="coordinates" :coordinates />
+    <YandexMapListener v-if="isActive" :settings="{ onMouseMove, onMouseDown, onMouseUp }" />
 </template>
 <script setup lang="ts">
 import {
@@ -41,9 +48,10 @@ import {
 } from 'vue';
 import { InteractivityModelKey } from 'yandex-maps';
 import { useMapContext } from '@/components/common/Map/useMapContext';
-import { LngLat, LngLatBounds } from '@yandex/ymaps3-types';
-import { getBoundsFromCoords, YandexMapControlButton } from 'vue-yandex-maps';
+import { BehaviorType, DomEvent, DomEventHandlerObject, LngLat } from '@yandex/ymaps3-types';
+import { getBoundsFromCoords, YandexMapControlButton, YandexMapListener } from 'vue-yandex-maps';
 import MapPolygon from '@/components/common/Map/MapPolygon.vue';
+import simplify from 'simplify-js';
 
 export type BehaviorSelectionOptions = {
     strokeColor: string;
@@ -51,7 +59,7 @@ export type BehaviorSelectionOptions = {
     interactivityModel: InteractivityModelKey;
     strokeWidth: number;
     opacity: number;
-    accuracy: number;
+    tolerance: number;
     polygonZoomDuration: number;
 };
 
@@ -61,7 +69,7 @@ const defaultOptions = {
     interactivityModel: 'default#transparent',
     strokeWidth: 4,
     opacity: 0.7,
-    accuracy: 1,
+    tolerance: 1,
     polygonZoomDuration: 100
 } as const satisfies BehaviorSelectionOptions;
 
@@ -171,7 +179,7 @@ const canvasStyle = computed(() => ({
     left: '0',
     top: '0',
     opacity: String(preparedOptions.value.opacity),
-    pointerEvents: 'auto',
+    pointerEvents: 'none',
     zIndex: 100
 }));
 
@@ -192,7 +200,7 @@ function onRemovePolygon() {
 function zoomToPolygon(coordinates: LngLat[]) {
     if (!map.value) return;
 
-    const bounds = getBoundsFromCoords(coordinates.map(el => el.toReversed()));
+    const bounds = getBoundsFromCoords(coordinates);
 
     setBounds(bounds);
 }
@@ -201,31 +209,78 @@ function zoomToPolygon(coordinates: LngLat[]) {
 
 const isActive = ref(false);
 
+const previouslyBehaviors = ref<Readonly<BehaviorType[]>>([]);
+
+watch(
+    isActive,
+    (value, oldValue) => {
+        if (!map.value || oldValue === undefined) {
+            return;
+        }
+
+        if (value) {
+            previouslyBehaviors.value = [...map.value.behaviors];
+
+            map.value.setBehaviors([]);
+        } else {
+            map.value.setBehaviors([...previouslyBehaviors.value]);
+
+            previouslyBehaviors.value = [];
+        }
+    },
+    { immediate: true }
+);
+
 async function startInteractiveDrawing() {
     isActive.value = true;
 
     await nextTick();
 
     const points = await draw();
-    if (!points || !points.length || !map.value) {
+    if (!points || !points.length || !map.value || points?.length < 2) {
+        isActive.value = false;
         return;
     }
 
-    const simplified = simplifyCoords(points);
+    const simplified = simplify(points, preparedOptions.value.tolerance).map(pt => [
+        pt.lng,
+        pt.lat
+    ]) as LngLat[];
 
-    const bounds = map.value.bounds;
-
-    if (!bounds) {
-        emit('selected', []);
-        return;
-    }
-
-    const coords = normalizeToMapBounds(simplified, bounds).map(el => el.toReversed());
-
-    emit('selected', coords);
+    emit('selected', simplified);
 }
 
 const canvasElement = useTemplateRef('canvas');
+
+const eventNoop = (event: DomEvent) => {};
+
+let onPointerMove = eventNoop;
+let onPointerDown = eventNoop;
+let onPointerUp = eventNoop;
+
+function onMouseMove(_: DomEventHandlerObject, event: DomEvent) {
+    if (!isActive.value || !isDrawing.value) {
+        return;
+    }
+
+    onPointerMove(event);
+}
+
+function onMouseDown(_: DomEventHandlerObject, event: DomEvent) {
+    if (!isActive.value) {
+        return;
+    }
+
+    onPointerDown(event);
+}
+
+function onMouseUp(_: DomEventHandlerObject, event: DomEvent) {
+    if (!isActive.value) {
+        return;
+    }
+
+    onPointerUp(event);
+}
 
 function setCanvasSizeToContainer() {
     if (!canvasElement.value || !map.value) return;
@@ -246,6 +301,15 @@ function setCanvasSizeToContainer() {
     }
 }
 
+const isDrawing = ref(false);
+
+type Point = {
+    x: number;
+    y: number;
+    lng: number;
+    lat: number;
+};
+
 async function draw() {
     if (!canvasElement.value || !map.value) return Promise.reject('Canvas not exists');
 
@@ -262,18 +326,21 @@ async function draw() {
     context.lineCap = 'round';
     context.strokeStyle = preparedOptions.value.strokeColor;
 
-    const points: { x: number; y: number }[] = [];
+    const points: Point[] = [];
 
     let drawing = false;
+
+    isDrawing.value = false;
+
     let raf = 0;
 
-    function toLocal(e: PointerEvent) {
+    function toLocal(event: DomEvent) {
         const rect = canvasElement.value!.getBoundingClientRect();
 
-        const x = e.clientX - rect.left;
-        const y = e.clientY - rect.top;
+        const x = event.screenCoordinates[0] - rect.left;
+        const y = event.screenCoordinates[1] - rect.top;
 
-        return { x, y };
+        return { x, y, lng: event.coordinates[0], lat: event.coordinates[1] };
     }
 
     function drawAll() {
@@ -303,21 +370,31 @@ async function draw() {
         context.stroke();
     }
 
-    function onPointerDown(e: PointerEvent) {
-        if (e.button !== 0) return;
-
-        (e.target as Element).setPointerCapture?.(e.pointerId);
-
+    onPointerDown = (event: DomEvent) => {
         drawing = true;
+        isDrawing.value = true;
 
-        const p = toLocal(e);
+        const p = toLocal(event);
 
         points.length = 0;
 
         points.push(p);
 
         scheduleDraw();
-    }
+    };
+
+    onPointerMove = (event: DomEvent) => {
+        if (!drawing) return;
+
+        const p = toLocal(event);
+        const last = points[points.length - 1];
+
+        if (!last || Math.hypot(p.x - last.x, p.y - last.y) >= 0.5) {
+            points.push(p);
+        }
+
+        scheduleDraw();
+    };
 
     function scheduleDraw() {
         if (!raf) {
@@ -328,114 +405,39 @@ async function draw() {
         }
     }
 
-    function onPointerMove(e: PointerEvent) {
-        if (!drawing) return;
-
-        const p = toLocal(e);
-        const last = points[points.length - 1];
-
-        if (!last || Math.hypot(p.x - last.x, p.y - last.y) >= 0.5) {
-            points.push(p);
-        }
-
-        scheduleDraw();
-    }
-
-    function stop(e?: PointerEvent) {
+    function stop() {
         if (!drawing) return;
         drawing = false;
 
-        try {
-            (e?.target as Element).releasePointerCapture?.(e!.pointerId);
-        } catch {
-            /* empty */
-        }
-
-        const rect = canvasElement.value!.getBoundingClientRect();
-
         canvasElement.value!.style.display = 'none';
-
-        const normalized = points.map(
-            pt => [pt.x / rect.width, pt.y / rect.height] as [number, number]
-        );
 
         cleanup();
 
         resetButtonIsEnabled.value = false;
 
-        resolveInteractive(normalized);
+        resolveInteractive(points);
     }
 
-    function onPointerUp(e: PointerEvent) {
-        stop(e);
-    }
-
-    function onCancel() {
-        canvasElement.value!.style.display = 'none';
-
-        resetButtonIsEnabled.value = false;
-
-        cleanup();
-
-        resolveInteractive([]);
-    }
-
-    function onKey(e: KeyboardEvent) {
-        if (e.key === 'Escape') onCancel();
-    }
+    onPointerUp = (event: DomEvent) => {
+        stop();
+    };
 
     function cleanup() {
-        canvasElement.value!.removeEventListener('pointerdown', onPointerDown);
-        window.removeEventListener('pointermove', onPointerMove);
-        window.removeEventListener('pointerup', onPointerUp);
-        window.removeEventListener('keydown', onKey);
+        onPointerMove = eventNoop;
+        onPointerDown = eventNoop;
+        onPointerUp = eventNoop;
 
         if (raf) cancelAnimationFrame(raf);
 
         isActive.value = false;
+        isDrawing.value = false;
     }
 
-    let resolveInteractive: (value: LngLat[]) => void;
+    let resolveInteractive: (value: Point[]) => void;
 
-    const p = new Promise<LngLat[]>(res => {
+    return new Promise<Point[]>(res => {
         resolveInteractive = res;
     });
-
-    canvasElement.value.addEventListener('pointerdown', onPointerDown);
-    window.addEventListener('pointermove', onPointerMove);
-    window.addEventListener('pointerup', onPointerUp);
-    window.addEventListener('keydown', onKey);
-
-    return p;
-}
-
-function normalizeToMapBounds(normalized: LngLat[], bounds: LngLatBounds) {
-    // TODO: Сделать конвертацю
-
-    const leftTopCorner = {
-        lng: bounds[0][0],
-        lat: bounds[0][1]
-    };
-
-    const rightBottomCorner = {
-        lng: bounds[1][0],
-        lat: bounds[1][1]
-    };
-
-    const lngDiff = leftTopCorner.lng - rightBottomCorner.lng;
-    const latDiff = rightBottomCorner.lat - leftTopCorner.lat;
-
-    return normalized.map(point => {
-        return [leftTopCorner.lng - point[1] * lngDiff, leftTopCorner.lat + point[0] * latDiff];
-    });
-}
-
-function simplifyCoords(coords: LngLat[]) {
-    if (!preparedOptions.value.accuracy || preparedOptions.value.accuracy <= 1) {
-        return coords.slice();
-    }
-
-    return coords.filter((_, i) => i % preparedOptions.value.accuracy === 0);
 }
 
 watch(

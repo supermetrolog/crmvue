@@ -8,7 +8,7 @@
         :min-height="400"
     >
         <UiField v-if="isNotFound">Объект не найден..</UiField>
-        <OfferYmap
+        <OfferMap
             :loading="isLoading"
             :selected
             :list="currentList"
@@ -19,7 +19,7 @@
 <script setup>
 import { ref, shallowRef } from 'vue';
 import UiModal from '@/components/common/UI/UiModal.vue';
-import OfferYmap from '@/components/Offer/OfferYmap.vue';
+import OfferMap from '@/components/Offer/OfferMap.vue';
 import api from '@/api/api.js';
 import UiField from '@/components/common/UI/UiField.vue';
 
