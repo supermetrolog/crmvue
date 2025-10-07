@@ -1,18 +1,15 @@
 <template>
-    <MapContainer :style="styles" mini-map :loading>
+    <MapContainer :style="styles" mini-map :loading loading-position="left">
         <MapContainerControls position="bottom right">
             <MapMiniMapBehavior />
         </MapContainerControls>
-        <!--        <MapContainerControls position="top left">-->
-        <!--            <MapSelectionBehavior-->
-        <!--                @selected="$emit('selection-done', $event)"-->
-        <!--                @removed="$emit('removed-done')"-->
-        <!--                :coordinates="polygonCoordinates"-->
-        <!--                :options="{-->
-        <!--                    accuracy: 3-->
-        <!--                }"-->
-        <!--            />-->
-        <!--        </MapContainerControls>-->
+        <MapContainerControls position="top left">
+            <MapSelectionBehavior
+                @selected="$emit('selection-done', $event)"
+                @removed="$emit('removed-done')"
+                :coordinates="polygonCoordinates"
+            />
+        </MapContainerControls>
         <MapMarkerCollection
             @select="selectOffers"
             :collection="markers"
@@ -35,6 +32,7 @@ import MapMiniMapBehavior from '@/components/common/Map/Behavior/MapMiniMapBehav
 import MapMarkerCollection from '@/components/common/Map/MapMarkerCollection.vue';
 import OfferObject from '@/components/Offer/OfferObject.vue';
 import MapDrawer from '@/components/common/Map/MapDrawer.vue';
+import MapSelectionBehavior from '@/components/common/Map/Behavior/MapSelectionBehavior.vue';
 
 defineEmits(['selection-done', 'removed-done', 'updated', 'mounted']);
 

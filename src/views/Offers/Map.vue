@@ -40,7 +40,7 @@
             </div>
             <div class="row">
                 <div class="col-12">
-                    <OfferYmap
+                    <OfferMap
                         @selection-done="filterByPolygon"
                         @removed-done="onRemovePolygonFromFilters"
                         :list="offers"
@@ -59,7 +59,7 @@ import { useStore } from 'vuex';
 import api from '@/api/api';
 import FormModalOfferSearch from '@/components/Forms/Offer/FormModalOfferSearch.vue';
 import FormOfferSearchExternal from '@/components/Forms/Offer/FormOfferSearchExternal.vue';
-import OfferYmap from '@/components/Offer/OfferYmap.vue';
+import OfferMap from '@/components/Offer/OfferMap.vue';
 import Chip from '@/components/common/Chip.vue';
 import {
     computed,
