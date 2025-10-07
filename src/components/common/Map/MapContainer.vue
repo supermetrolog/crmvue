@@ -1,8 +1,8 @@
 <template>
     <div class="ymap position-relative">
-        <YandexMap v-model="instance" :settings style="width: 100%; height: 100%">
+        <YandexMap v-model="instance" :settings :style="mapStyle">
             <YandexMapDefaultSatelliteLayer v-if="currentLayer === 'satellite'" />
-            <YandexMapDefaultSchemeLayer v-else />
+            <YandexMapDefaultSchemeLayer v-else :settings="{ theme: settings.theme }" />
             <YandexMapDefaultFeaturesLayer />
             <YandexMapControls v-if="zoomIsEnabled" :settings="{ position: 'right' }">
                 <YandexMapZoomControl />
@@ -13,7 +13,7 @@
             >
                 <MapLayerControl v-if="layersIsEnabled" v-model="currentLayer" />
                 <YandexMapGeolocationControl v-if="geolocationIsEnabled" />
-                <MapFullScreenControl v-if="fullscreenIsEnabled" />
+                <MapFullScreenControl v-if="fullscreenIsEnabled" v-model="isFullscreen" />
                 <MapThemeControl v-if="themeIsEnabled" v-model="currentTheme" />
             </YandexMapControls>
             <YandexMapControls :settings="{ position: 'top left' }">
@@ -35,7 +35,7 @@ import {
     YandexMapSpinner,
     YandexMapZoomControl
 } from 'vue-yandex-maps';
-import { computed, ref } from 'vue';
+import { computed, ref, watch } from 'vue';
 import type {
     BehaviorType,
     LngLat,
@@ -85,7 +85,7 @@ const settings = computed<YandexMapSettings>(() => ({
         bounds: contextBounds.value
     },
     behaviors: props.behaviors,
-    theme: contextTheme.value
+    theme: currentTheme.value
 }));
 
 const {
@@ -99,6 +99,19 @@ const {
     loading: props.loading,
     theme: props.theme
 });
+
+const currentTheme = ref<MapTheme>(props.theme);
+
+watch(contextTheme, value => {
+    currentTheme.value = value;
+});
+
+const isFullscreen = ref(false);
+
+const mapStyle = computed(() => ({
+    height: isFullscreen.value ? '100vh' : '100%',
+    width: isFullscreen.value ? '100vw' : '100%'
+}));
 
 // controls
 
