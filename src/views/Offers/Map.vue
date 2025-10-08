@@ -40,12 +40,12 @@
             </div>
             <div class="row">
                 <div class="col-12">
-                    <OfferMap
-                        @selection-done="filterByPolygon"
-                        @removed-done="onRemovePolygonFromFilters"
-                        :list="offers"
-                        :polygon-coordinates="polygonCoordinates"
-                        :styles="yandexMapStyles"
+                    <ObjectsMap
+                        @select-polygon="onSelectPolygon"
+                        @clear-polygon="onClearPolygon"
+                        :markers="offers"
+                        :polygon="polygonCoordinates"
+                        :style="mapStyle"
                         :loading="isLoading"
                     />
                 </div>
@@ -59,7 +59,7 @@ import { useStore } from 'vuex';
 import api from '@/api/api';
 import FormModalOfferSearch from '@/components/Forms/Offer/FormModalOfferSearch.vue';
 import FormOfferSearchExternal from '@/components/Forms/Offer/FormOfferSearchExternal.vue';
-import OfferMap from '@/components/Offer/OfferMap.vue';
+import ObjectsMap from '@/components/Object/ObjectsMap.vue';
 import Chip from '@/components/common/Chip.vue';
 import {
     computed,
@@ -86,7 +86,7 @@ import { filtersAliases } from '@/composables/useSelectedFilters.js';
 import UserFolders from '@/components/UserFolder/UserFolders.vue';
 import { isNotNullish } from '@/utils/helpers/common/isNotNullish';
 
-const yandexMapStyles = shallowReactive({
+const mapStyle = shallowReactive({
     width: '100%',
     height: '100vh'
 });
@@ -273,19 +273,21 @@ const humanizeFilter = (key, value) => {
     return option;
 };
 
-const filterByPolygon = async polygon => {
+function onSelectPolygon(polygon) {
     const query = { ...route.query, polygon };
-    await router.replace({ query });
-};
 
-const onRemovePolygonFromFilters = () => {
+    router.replace({ query });
+}
+
+function onClearPolygon() {
     const query = { ...route.query };
 
     if (query.polygon) {
         delete query.polygon;
+
         router.replace({ query });
     }
-};
+}
 
 const fetchCounts = async (query, hash) => {
     const offersCount = await api.offers.searchCount(query);
@@ -303,7 +305,7 @@ const fetchOffers = async (withLoader = true) => {
     const query = {
         ...route.query,
         type_id: [2, 3],
-        fields: 'latitude,longitude,address,complex_id,status,thumb,test_only,id,area_floor_full,object_id,original_id',
+        fields: 'latitude,longitude,address,complex_id,status,test_only,id,area_building,object_id,original_id,is_land,object_type,visual_id,class',
         objectsOnly: 1,
         page: 1,
         noWith: 1,
@@ -396,8 +398,7 @@ useTableContent(fetchOffers, {
 });
 
 const setYandexMapSize = () => {
-    yandexMapStyles.height =
-        window.innerHeight - searchEl.value.getClientRects()[0].height - 105 + 'px';
+    mapStyle.height = window.innerHeight - searchEl.value.getClientRects()[0].height - 105 + 'px';
 };
 
 onUpdated(() => {
