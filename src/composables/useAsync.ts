@@ -28,7 +28,7 @@ type UseAsyncConfig<Args extends any[], R> = {
         error: string | null;
     }) => void;
     immediate?: boolean;
-    initialData?: R | null;
+    initialData?: MaybeRefOrGetter<R | null>;
     abortBeforeFetch?: boolean;
     confirmation?: boolean;
     confirmationContent?: ConfirmationContent;
@@ -78,7 +78,7 @@ export function useAsync<Args extends any[], R>(
     const aborted = ref(false);
 
     const error = shallowRef<string | null>(null);
-    const data = shallowRef<R | null>(initialData);
+    const data = shallowRef<R | null>(toValue(initialData));
 
     const { confirm } = useConfirm();
 

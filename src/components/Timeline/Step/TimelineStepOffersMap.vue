@@ -15,13 +15,12 @@
                 Обновить
             </UiButton>
         </div>
-        <OfferMap :list="objects" :styles="yandexMapStyles" :loading />
+        <ObjectsMap :markers="objects" style="width: 100%; height: 60vh" :loading />
     </div>
 </template>
 
 <script setup>
-import { shallowReactive } from 'vue';
-import OfferMap from '@/components/Offer/OfferMap.vue';
+import ObjectsMap from '@/components/Object/ObjectsMap.vue';
 import UiButton from '@/components/common/UI/UiButton.vue';
 import UiField from '@/components/common/UI/UiField.vue';
 
@@ -33,11 +32,6 @@ defineProps({
         default: () => []
     },
     loading: Boolean
-});
-
-const yandexMapStyles = shallowReactive({
-    width: '100%',
-    height: '60vh'
 });
 
 // TODO: Добавить фильтры

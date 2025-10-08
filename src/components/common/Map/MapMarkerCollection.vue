@@ -4,23 +4,37 @@
 :max-zoom
 :settings
 :zoom-on-cluster-click />
+    <YandexMapPopupMarker v-if="popup && popupSettings" :settings="popupSettings">
+        <slot name="popup" :marker="selectedMarker!" :close="closePopup">
+            {{ selectedMarker!.id }}
+        </slot>
+    </YandexMapPopupMarker>
+    <YandexMapHint v-if="hint" hint-property="hint">
+        <template #default="{ content }">
+            <div class="feature-hint" :class="{ dark: map?.theme === 'dark' }">
+                <slot name="hint" :content="content">
+                    <div v-html="content"></div>
+                </slot>
+            </div>
+        </template>
+    </YandexMapHint>
 </template>
 <script setup lang="ts">
 import { LngLat, YMapMarker } from '@yandex/ymaps3-types';
 import type { Feature, YMapClusterer } from '@yandex/ymaps3-types/packages/clusterer';
-import { computed, shallowRef, useCssModule, watch } from 'vue';
+import { computed, ref, shallowRef, useCssModule, watch } from 'vue';
 import { useMapContext } from '@/components/common/Map/useMapContext';
 import MapClusterer from '@/components/common/Map/MapClusterer.vue';
-import { isString } from '@/utils/helpers/string/isString';
+import { YandexMapHint, YandexMapPopupMarker } from 'vue-yandex-maps';
 
 const emit = defineEmits<{
-    (e: 'select', featureId: string): void;
+    (e: 'select', featureId: string | null): void;
 }>();
 
 export type MapCollectionItem = {
     id: string;
     coordinates: LngLat;
-    title?: string | null;
+    properties?: Record<string, any>;
 };
 
 const props = withDefaults(
@@ -29,7 +43,9 @@ const props = withDefaults(
         zoomOnClusterClick?: boolean;
         maxZoom?: number;
         collection: MapCollectionItem[];
-        selectedMarkerId?: string | number;
+        selectedMarkerId?: string | number | null;
+        popup?: boolean;
+        hint?: boolean;
     }>(),
     {
         zoomOnClusterClick: true
@@ -37,14 +53,67 @@ const props = withDefaults(
 );
 
 const settings = computed(() => ({
-    maxZoom: props.maxZoom,
+    maxZoom: props.maxZoom ?? (map.value?.zoomRange?.max ?? 13) - 1,
     features: points.value,
     marker: createMarker
 }));
 
+const selectedMarker = computed(() => {
+    if (props.selectedMarkerId) {
+        return props.collection.find(item => item.id === props.selectedMarkerId);
+    }
+
+    return null;
+});
+
+function onClosePopup() {
+    emit('select', null);
+}
+
+const popupIsVisible = ref(true);
+
+watch(
+    () => props.selectedMarkerId,
+    value => {
+        if (value) {
+            popupIsVisible.value = true;
+        }
+    }
+);
+
+function closePopup() {
+    popupIsVisible.value = false;
+}
+
+const popupSettings = computed(() => {
+    if (selectedMarker.value) {
+        return {
+            coordinates: selectedMarker.value.coordinates,
+            show: popupIsVisible.value,
+            onClose: onClosePopup,
+            zIndex: 3,
+            position: 'right top'
+        };
+    }
+
+    return null;
+});
+
 const { map } = useMapContext();
 
-const clusterer = shallowRef<YMapClusterer | null>(null);
+const clusterer = shallowRef<YMapClusterer | null | undefined>(null);
+
+function createFeature(id: number | string, coordinates: LngLat, properties = {}) {
+    return {
+        type: 'Feature',
+        id,
+        geometry: {
+            type: 'Point',
+            coordinates
+        },
+        properties
+    };
+}
 
 const points = computed(() => {
     if (!map.value) return [];
@@ -65,17 +134,7 @@ const points = computed(() => {
         if (items.length === 1) {
             const element = items[0];
 
-            features.push({
-                type: 'Feature',
-                id: element.id,
-                geometry: {
-                    type: 'Point',
-                    coordinates: element.coordinates
-                },
-                properties: {
-                    title: element.title
-                }
-            });
+            features.push(createFeature(element.id, element.coordinates, element.properties));
         } else {
             const N = items.length;
             const baseRadius = 4;
@@ -86,17 +145,7 @@ const points = computed(() => {
                 const [lng, lat] = items[i].coordinates;
                 const coordinates = offsetLngLat([lng, lat], radiusMeters, angle);
 
-                features.push({
-                    type: 'Feature',
-                    id: items[i].id,
-                    geometry: {
-                        type: 'Point',
-                        coordinates: coordinates
-                    },
-                    properties: {
-                        title: items[i].title
-                    }
-                });
+                features.push(createFeature(items[i].id, coordinates, items[i].properties));
             }
         }
     }
@@ -171,10 +220,6 @@ function createMarker(feature: Feature) {
 
     featureCircle.classList.add(module['feature-circle']);
 
-    if (isString(feature.properties?.title)) {
-        featureCircle.title = feature.properties.title as string;
-    }
-
     if (feature.id == props.selectedMarkerId) {
         featureCircle.style.background = 'rgb(16, 185, 129)';
     }
@@ -184,7 +229,8 @@ function createMarker(feature: Feature) {
             id: feature.id,
             coordinates: feature.geometry.coordinates,
             onClick: () => onClick(feature),
-            position: 'top left-center'
+            position: 'top left-center',
+            properties: feature.properties
         },
         featureCircle
     );
@@ -212,6 +258,25 @@ function createMarker(feature: Feature) {
         height: 100%;
         width: 100%;
         object-fit: cover;
+    }
+}
+</style>
+<style>
+.feature-hint {
+    position: absolute;
+    max-width: 600px;
+    padding: 8px 12px 8px 20px;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.9);
+    line-height: 16px;
+    z-index: -2;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    transform: translate(7px, -100%);
+    width: max-content;
+
+    &.dark {
+        background: rgba(29, 30, 31, 0.9);
+        color: #fff;
     }
 }
 </style>
