@@ -85,7 +85,6 @@
                                 />
                                 <a :href="offerUrl" target="_blank" class="text-inherit">
                                     <UiDropdownActionsButton
-                                        @handle="$emit('create-task')"
                                         icon="fa-solid fa-external-link"
                                         label="Открыть предложение"
                                     />

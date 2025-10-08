@@ -15,7 +15,7 @@ import { YandexMapClusterer } from 'vue-yandex-maps';
 import { computed } from 'vue';
 import { YMapClusterer } from '@yandex/ymaps3-types/packages/clusterer';
 
-const model = defineModel<YMapClusterer>();
+const model = defineModel<YMapClusterer | null>();
 
 const props = withDefaults(
     defineProps<{

@@ -8,18 +8,17 @@
         :min-height="400"
     >
         <UiField v-if="isNotFound">Объект не найден..</UiField>
-        <OfferMap
-            :loading="isLoading"
-            :selected
-            :list="currentList"
-            :styles="{ width: '100%', height: '80vh' }"
-        />
+        <!--        <ObjectsMap-->
+        <!--            :loading="isLoading"-->
+        <!--            :selected-->
+        <!--            :list="currentList"-->
+        <!--            :styles="{ width: '100%', height: '80vh' }"-->
+        <!--        />-->
     </UiModal>
 </template>
 <script setup>
 import { ref, shallowRef } from 'vue';
 import UiModal from '@/components/common/UI/UiModal.vue';
-import OfferMap from '@/components/Offer/OfferMap.vue';
 import api from '@/api/api.js';
 import UiField from '@/components/common/UI/UiField.vue';
 
