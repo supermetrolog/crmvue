@@ -503,8 +503,8 @@ const { previewInMap } = useMapPreviewer();
 
 function showOfferInMap(offer) {
     previewInMap({
-        list: [offer],
-        selected: offer.id
+        objectId: offer.object_id ?? offer.id,
+        targetId: offer.object_id ?? offer.id
     });
 }
 

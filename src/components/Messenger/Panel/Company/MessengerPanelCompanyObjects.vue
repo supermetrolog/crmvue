@@ -152,7 +152,8 @@ const { previewInMap } = useMapPreviewer();
 
 function showMap(object) {
     previewInMap({
-        objectId: object.id
+        objectId: object.id,
+        targetId: object.id
     });
 }
 </script>
