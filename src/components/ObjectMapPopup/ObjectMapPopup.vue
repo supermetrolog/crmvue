@@ -122,7 +122,7 @@ useTour('object-map-popup', {
 <style lang="scss">
 .object-map-popup {
     &__slider {
-        height: 150px;
+        height: 180px !important;
     }
 
     &__close {
