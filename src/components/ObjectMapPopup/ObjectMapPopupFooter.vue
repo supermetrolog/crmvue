@@ -63,9 +63,15 @@ import UiDropdownActionsButton from '@/components/common/UI/DropdownActions/UiDr
 import { useSurveyForm } from '@/composables/useSurveyForm';
 import { useMessenger } from '@/components/Messenger/useMessenger';
 import { messenger } from '@/const/messenger';
+import { IndustryObject } from '@/components/ObjectMapPopup/types';
+
+const emit = defineEmits<{
+    (e: 'chat-opened'): void;
+    (e: 'survey-opened'): void;
+}>();
 
 const props = defineProps<{
-    object: object;
+    object: IndustryObject;
 }>();
 
 const { openSurvey } = useSurveyForm();
@@ -73,10 +79,12 @@ const { openChat } = useMessenger();
 
 function openInChat() {
     openChat(props.object.company_id, props.object.id, messenger.dialogTypes.OBJECT);
+    emit('chat-opened');
 }
 
 function openInSurvey() {
     openSurvey(props.object.company_id);
+    emit('survey-opened');
 }
 </script>
 <style lang="scss">

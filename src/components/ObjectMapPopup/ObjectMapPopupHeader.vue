@@ -11,9 +11,10 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import { getCompanyName } from '@/utils/formatters/models/company';
+import { IndustryObject } from '@/components/ObjectMapPopup/types';
 
 const props = defineProps<{
-    object: object;
+    object: IndustryObject;
 }>();
 
 const companyName = computed(() => getCompanyName(props.object.company));

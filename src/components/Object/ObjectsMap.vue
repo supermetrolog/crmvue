@@ -27,12 +27,7 @@
             <template #popup="{ close }">
                 <div class="objects-map__popup">
                     <Spinner v-if="objectIsLoading" center class="absolute-center" />
-                    <ObjectMapPopup
-                        v-else-if="selectedMarker"
-                        @close="close"
-                        :object
-                        :marker="selectedMarker"
-                    />
+                    <ObjectMapPopup v-else-if="selectedMarker" @close="close" :object />
                 </div>
             </template>
             <template #hint="{ content }">
@@ -106,11 +101,15 @@ function selectMarker(markerId: string | null) {
         return;
     }
 
+    if (markerId === selectedMarkerId.value) {
+        selectedMarkerId.value = null;
+        return;
+    }
+
     const object = props.markers.find(element => element.id === Number(markerId));
 
     if (!object) {
         selectedMarkerId.value = null;
-
         return;
     }
 

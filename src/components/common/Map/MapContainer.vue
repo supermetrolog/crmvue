@@ -98,7 +98,6 @@ const {
     map: instance,
     settings,
     bounds: props.bounds,
-    loading: props.loading,
     theme: props.theme
 });
 

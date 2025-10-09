@@ -1,8 +1,9 @@
 <template>
-    <div class="object-map-popup">
+    <div class="object-map-popup" data-tour-id="object-map-popup:wrapper">
         <ObjectMapPopupHeader :object class="mb-1" />
         <OfferTableItemPreviewMotionSlider
             class="object-map-popup__slider"
+            data-tour-id="object-map-popup:slider"
             :thumb="object.thumb"
             :photos="object.photo ?? []"
         />
@@ -15,7 +16,12 @@
         />
         <p v-else class="fs-2">Нет активных предложений</p>
         <hr class="op-5 mt-2" />
-        <ObjectMapPopupFooter :object />
+        <ObjectMapPopupFooter
+            @chat-opened="$emit('chat-opened')"
+            @survey-opened="$emit('survey-opened')"
+            :object
+            data-tour-id="object-map-popup:footer"
+        />
         <UiButtonIcon
             @click="$emit('close')"
             icon="fa-solid fa-close"
@@ -31,6 +37,9 @@ import OfferTableItemPreviewMotionSlider from '@/components/Offer/TableItem/Offe
 import ObjectMapPopupOffers from '@/components/ObjectMapPopup/ObjectMapPopupOffers.vue';
 import ObjectMapPopupFooter from '@/components/ObjectMapPopup/ObjectMapPopupFooter.vue';
 import UiButtonIcon from '@/components/common/UI/UiButtonIcon.vue';
+import { IndustryObject } from '@/components/ObjectMapPopup/types';
+import { useTour } from '@/composables/useTour/useTour';
+import { createTourStepElementGenerator } from '@/composables/useTour/useTourStep';
 
 export type ObjectMapMarker = {
     id: number;
@@ -43,7 +52,7 @@ export type ObjectMapMarker = {
     original_id: number;
     status: number;
     visual_id: string;
-    class: number | null;
+    class: number | string | null;
     is_land: number;
     test_only: number | null;
     object_type: number | null;
@@ -51,12 +60,64 @@ export type ObjectMapMarker = {
 
 defineEmits<{
     (e: 'close'): void;
+    (e: 'chat-opened'): void;
+    (e: 'survey-opened'): void;
 }>();
 
 defineProps<{
-    marker: ObjectMapMarker;
-    object: object;
+    object: IndustryObject;
 }>();
+
+const createTourStepElement = createTourStepElementGenerator('object-map-popup');
+
+useTour('object-map-popup', {
+    autorun: true,
+    steps: [
+        {
+            key: 0,
+            element: createTourStepElement('wrapper'),
+            popover: {
+                title: 'Карточка объекта',
+                description: 'Теперь информация об объекте выводится в карточке на карте.',
+                side: 'right',
+                align: 'start'
+            }
+        },
+        {
+            key: 1,
+            element: createTourStepElement('slider'),
+            popover: {
+                title: 'Галерея фотографий',
+                description:
+                    'Просматривать фотографии объекта можно как и в выдаче, с помощью галереи.',
+                side: 'right',
+                align: 'start'
+            }
+        },
+        {
+            key: 2,
+            element: createTourStepElement('offer'),
+            popover: {
+                title: 'Предложение на объекте',
+                description:
+                    'В карточке отображаются только актуальные предложения (площадь и цена). Можно кликнуть на предложение, чтобы узнать больше или скачать презентацию.',
+                side: 'right',
+                align: 'start'
+            }
+        },
+        {
+            key: 3,
+            element: createTourStepElement('footer'),
+            popover: {
+                title: 'Действия',
+                description:
+                    'Перейти в комплекс/чат или начать опрос вы можете с помощью действий в конце карточки.',
+                side: 'right',
+                align: 'start'
+            }
+        }
+    ]
+});
 </script>
 <style lang="scss">
 .object-map-popup {

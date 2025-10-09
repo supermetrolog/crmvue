@@ -305,6 +305,10 @@ export type MarkerColor =
     | 'orange'
     | 'crayola';
 
+const emit = defineEmits<{
+    (e: 'click'): void;
+}>();
+
 const props = withDefaults(
     defineProps<{
         coordinates: LngLat;
@@ -333,7 +337,9 @@ const settings = computed(
             iconName: props.iconName,
             size: props.size,
             title: props.title,
-            subtitle: props.subtitle
+            subtitle: props.subtitle,
+            staticHint: props.staticHint,
+            onClick: () => emit('click')
         }) as const satisfies YandexMapDefaultMarkerSettings
 );
 </script>

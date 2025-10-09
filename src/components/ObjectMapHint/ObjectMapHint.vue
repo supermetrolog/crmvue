@@ -22,7 +22,7 @@ import { toNumberFormat } from '@/utils/formatters/number';
 export type ObjectMapMarkerHint = {
     visual_id: string;
     address: string;
-    class: number | null;
+    class: number | string | null;
     is_land: number;
     area_building: number;
     test_only: number | null;

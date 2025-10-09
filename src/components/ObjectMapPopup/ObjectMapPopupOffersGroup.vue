@@ -6,18 +6,19 @@
                 v-for="offer in offers"
                 :key="offer.id"
                 class="object-map-popup-group__item"
+                data-tour-id="object-map-popup:offer"
                 :offer
             />
         </div>
     </div>
 </template>
 <script setup lang="ts">
-import { ObjectMiniOffer } from '@/components/ObjectMapPopup/types';
+import { IndustryObjectMiniOffer } from '@/components/ObjectMapPopup/types';
 import ObjectMapPopupOffer from '@/components/ObjectMapPopup/ObjectMapPopupOffer.vue';
 
 defineProps<{
     label: string;
-    offers: ObjectMiniOffer[];
+    offers: IndustryObjectMiniOffer[];
 }>();
 </script>
 <style lang="scss">

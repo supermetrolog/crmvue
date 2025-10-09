@@ -25,6 +25,10 @@
                             {{ price }}
                         </WithUnitType>
                     </div>
+                    <UiDropdownActionsTrigger
+                        color="light"
+                        class="object-map-popup-offer__button px-1"
+                    />
                 </UiButton>
             </template>
             <template #menu>
@@ -64,7 +68,7 @@
     </div>
 </template>
 <script setup lang="ts">
-import { ObjectMiniOffer } from '@/components/ObjectMapPopup/types';
+import { IndustryObjectMiniOffer } from '@/components/ObjectMapPopup/types';
 import UiDropdownActions from '@/components/common/UI/DropdownActions/UiDropdownActions.vue';
 import UiDropdownActionsButton from '@/components/common/UI/DropdownActions/UiDropdownActionsButton.vue';
 import UiButton from '@/components/common/UI/UiButton.vue';
@@ -75,9 +79,10 @@ import { unitTypes } from '@/const/unitTypes';
 import UiDropdownActionsGroup from '@/components/common/UI/DropdownActions/UiDropdownActionsGroup.vue';
 import { useStore } from 'vuex';
 import { useAuth } from '@/composables/useAuth';
+import UiDropdownActionsTrigger from '@/components/common/UI/DropdownActions/UiDropdownActionsTrigger.vue';
 
 const props = defineProps<{
-    offer: ObjectMiniOffer;
+    offer: IndustryObjectMiniOffer;
 }>();
 
 const isFake = computed(() => Boolean(props.offer.is_fake));
@@ -139,20 +144,31 @@ async function toggleFavorite() {
 </script>
 <style lang="scss">
 .object-map-popup-offer {
+    position: relative;
+
     &__content {
         display: flex;
         flex-direction: column;
         align-items: flex-start;
-        width: calc(100% - 30px);
     }
 
     &__area {
         font-size: 15px;
         font-weight: 500;
+        width: calc(100% - 30px);
+        margin-left: -2px;
     }
 
     &__price {
         font-size: 14px;
+    }
+
+    &__button {
+        position: absolute;
+        top: 3px;
+        right: 5px;
+        width: 30px;
+        font-size: 16px !important;
     }
 }
 </style>
