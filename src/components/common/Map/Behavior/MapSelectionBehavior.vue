@@ -96,7 +96,7 @@ const preparedOptions = computed(() => {
     return { ...defaultOptions, ...props.options };
 });
 
-const { map, setBounds, settings } = useMapContext();
+const { map, settings } = useMapContext();
 
 const resetButtonIsVisible = ref(false);
 const resetButtonIsEnabled = ref(false);
@@ -202,7 +202,10 @@ function zoomToPolygon(coordinates: LngLat[]) {
 
     const bounds = getBoundsFromCoords(coordinates);
 
-    setBounds(bounds);
+    map.value.setLocation({
+        bounds,
+        duration: 1000
+    });
 }
 
 // draw

@@ -25,11 +25,11 @@
 </template>
 <script setup lang="ts">
 import { computed } from 'vue';
-import { ObjectMiniOffer } from '@/components/ObjectMapPopup/types';
+import { IndustryObjectMiniOffer } from '@/components/ObjectMapPopup/types';
 import ObjectMapPopupOffersGroup from '@/components/ObjectMapPopup/ObjectMapPopupOffersGroup.vue';
 
 const props = defineProps<{
-    offers: ObjectMiniOffer[];
+    offers: IndustryObjectMiniOffer[];
 }>();
 
 const activeOffers = computed(() =>

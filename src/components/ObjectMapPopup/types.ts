@@ -1,6 +1,6 @@
 import { BooleanNumber } from '@/types/base';
 
-export type ObjectMiniOffer = {
+export type IndustryObjectMiniOffer = {
     id: number;
     deal_type: 1 | 2 | 3 | 4;
     deleted: BooleanNumber;
@@ -15,4 +15,17 @@ export type ObjectMiniOffer = {
     original_id: number;
     complex_id: number;
     object_id: number;
+};
+
+export type IndustryObject = {
+    id: number;
+    company_id: number;
+    complex_id: number;
+    thumb: string;
+    photo: string[];
+    address: string;
+    miniOffers?: IndustryObjectMiniOffer[];
+    company: object;
+    object_class: number;
+    object_class_text: string;
 };
