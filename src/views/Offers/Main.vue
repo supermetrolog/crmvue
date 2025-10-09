@@ -39,7 +39,7 @@
             </div>
             <div class="row my-2">
                 <UiCol :cols="12">
-                    <OfferMapBanner :current-folder />
+                    <OfferTableMap :current-folder />
                 </UiCol>
             </div>
             <div class="row justify-content-between">
@@ -154,7 +154,7 @@ import { isNotEmptyString } from '@/utils/helpers/string/isNotEmptyString.js';
 import { ucFirst } from '@/utils/formatters/string.js';
 import { isArray } from '@/utils/helpers/array/isArray';
 import UiCol from '@/components/common/UI/UiCol.vue';
-import OfferMapBanner from '@/components/Offer/OfferMapBanner.vue';
+import OfferTableMap from '@/components/Offer/OfferTableMap.vue';
 
 const isMobile = useMobile();
 const store = useStore();
