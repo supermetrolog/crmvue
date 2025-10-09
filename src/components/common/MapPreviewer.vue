@@ -284,14 +284,12 @@ function normalizeMapBounds() {
     }
 }
 
-const stopWatch = watch(isLoading, value => {
+watch(isLoading, value => {
     if (!value) {
         nextTick(() => {
             if (markers.value) {
                 normalizeMapBounds();
             }
-
-            stopWatch();
         });
     }
 });
