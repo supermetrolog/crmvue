@@ -23,8 +23,10 @@ const isLightTheme = computed(() => theme.value === 'light');
 const button = shallowRef<YMapControlButton | null>(null);
 
 function toggle() {
-    theme.value = isLightTheme.value ? 'dark' : 'light';
+    const value = isLightTheme.value ? 'dark' : 'light';
 
-    setInLocalstorage('ui:prefer:map-theme', theme.value);
+    theme.value = value;
+
+    setInLocalstorage('ui:prefer:map-theme', value);
 }
 </script>

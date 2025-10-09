@@ -2,7 +2,12 @@
     <div class="object-map-popup-offer">
         <UiDropdownActions class="w-100">
             <template #trigger>
-                <UiButton :disabled="isFake" color="transparent" small class="w-100">
+                <UiButton
+                    :disabled="isFake"
+                    color="transparent"
+                    small
+                    class="w-100 object-map-popup-offer__trigger"
+                >
                     <div class="object-map-popup-offer__content">
                         <WithUnitType
                             v-if="hasArea"
@@ -169,6 +174,10 @@ async function toggleFavorite() {
         right: 5px;
         width: 30px;
         font-size: 16px !important;
+    }
+
+    &__trigger {
+        color: inherit !important;
     }
 }
 </style>
