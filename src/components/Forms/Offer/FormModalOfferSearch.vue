@@ -368,6 +368,7 @@ import UiFormDivider from '@/components/common/Forms/UiFormDivider.vue';
 import UiFormGroup from '@/components/common/Forms/UiFormGroup.vue';
 import Switch from '@/components/common/Forms/Switch.vue';
 import { locationOptions } from '@/const/options/location.options.js';
+import { toArray } from '@/utils/helpers/array/toArray';
 
 const emit = defineEmits(['close', 'search', 'reset']);
 
@@ -605,6 +606,8 @@ onBeforeUnmount(() => {
     clearTimeout(timeout);
 });
 
-const hasDirections = computed(() => form.region.includes(1));
-const hasDistricts = computed(() => form.region.includes(6));
+const regions = computed(() => toArray(form.region).map(region => Number(region)));
+
+const hasDirections = computed(() => regions.value.includes(1));
+const hasDistricts = computed(() => regions.value.includes(6));
 </script>
