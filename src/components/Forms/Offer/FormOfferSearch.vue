@@ -396,6 +396,7 @@ import { isEmptyString } from '@/utils/helpers/string/isEmptyString.js';
 import { deepToRaw } from '@/utils/common/deepToRaw.js';
 import UiButton from '@/components/common/UI/UiButton.vue';
 import { assignQueryToForm } from '@/utils/helpers/forms/assignQueryToForm.js';
+import { toArray } from '@/utils/helpers/array/toArray';
 
 const emit = defineEmits(['close', 'search', 'reset', 'resetSelected', 'changed-query']);
 const props = defineProps({
@@ -416,8 +417,10 @@ const props = defineProps({
     }
 });
 
-const hasDirections = computed(() => form.region.includes(1));
-const hasDistricts = computed(() => form.region.includes(6));
+const regions = computed(() => toArray(form.region).map(region => Number(region)));
+
+const hasDirections = computed(() => regions.value.includes(1));
+const hasDistricts = computed(() => regions.value.includes(6));
 
 // other
 
