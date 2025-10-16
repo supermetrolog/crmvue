@@ -71,7 +71,7 @@ const props = withDefaults(
         center: () => [37.619346417968764, 55.75554289958026], // moscow
         zoom: 8,
         type: 'map',
-        theme: () => getFromLocalstorage('ui:prefer:map-theme', 'dark') ?? 'dark',
+        theme: () => getFromLocalstorage('ui:prefer:map:theme', 'light') ?? 'light',
         controls: () => ['zoom', 'geolocation', 'fullscreen', 'layers', 'theme'],
         controlsPosition: 'top right',
         loadingPosition: 'top left'

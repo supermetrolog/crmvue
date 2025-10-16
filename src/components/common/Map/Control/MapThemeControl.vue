@@ -27,6 +27,6 @@ function toggle() {
 
     theme.value = value;
 
-    setInLocalstorage('ui:prefer:map-theme', value);
+    setInLocalstorage('ui:prefer:map:theme', value);
 }
 </script>
