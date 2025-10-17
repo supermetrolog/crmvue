@@ -5,9 +5,11 @@
 :settings
 :zoom-on-cluster-click />
     <YandexMapPopupMarker v-if="popup && popupSettings" :settings="popupSettings">
-        <slot name="popup" :marker="selectedMarker!" :close="closePopup">
-            {{ selectedMarker!.id }}
-        </slot>
+        <div ref="mapMarkerPopup" class="map-marker-popup">
+            <slot name="popup" :marker="selectedMarker!" :close="closePopup">
+                {{ selectedMarker!.id }}
+            </slot>
+        </div>
     </YandexMapPopupMarker>
     <YandexMapHint v-if="hint" hint-property="hint">
         <template #default="{ content }">
@@ -22,13 +24,16 @@
 <script setup lang="ts">
 import { LngLat, YMapMarker } from '@yandex/ymaps3-types';
 import type { Feature, YMapClusterer } from '@yandex/ymaps3-types/packages/clusterer';
-import { computed, ref, shallowRef, useCssModule, watch } from 'vue';
+import { computed, ref, shallowRef, useCssModule, useTemplateRef, watch } from 'vue';
 import { useMapContext } from '@/components/common/Map/useMapContext';
 import MapClusterer from '@/components/common/Map/MapClusterer.vue';
 import { YandexMapHint, YandexMapPopupMarker } from 'vue-yandex-maps';
+import { useElementHover } from '@vueuse/core';
 
 const emit = defineEmits<{
     (e: 'select', featureId: string | null): void;
+    (e: 'popup-opened'): void;
+    (e: 'popup-closed'): void;
 }>();
 
 export type MapCollectionItem = {
@@ -68,6 +73,10 @@ const selectedMarker = computed(() => {
 
 function onClosePopup() {
     emit('select', null);
+
+    emit('popup-closed');
+
+    setBehaviorState('scrollZoom', true);
 }
 
 const popupIsVisible = ref(true);
@@ -81,8 +90,24 @@ watch(
     }
 );
 
+const mapMarkerPopupEl = useTemplateRef('mapMarkerPopup');
+
+const popupIsHovered = useElementHover(mapMarkerPopupEl, { delayEnter: 300 });
+
+watch(popupIsHovered, value => {
+    if (value) {
+        setBehaviorState('scrollZoom', false);
+    } else {
+        setBehaviorState('scrollZoom', true);
+    }
+});
+
 function closePopup() {
     popupIsVisible.value = false;
+}
+
+function onOpenPopup() {
+    emit('popup-opened');
 }
 
 const popupSettings = computed(() => {
@@ -91,15 +116,16 @@ const popupSettings = computed(() => {
             coordinates: selectedMarker.value.coordinates,
             show: popupIsVisible.value,
             onClose: onClosePopup,
+            onOpen: onOpenPopup,
             zIndex: 3,
-            position: 'right top'
+            position: 'right'
         };
     }
 
     return null;
 });
 
-const { map } = useMapContext();
+const { map, setBehaviorState } = useMapContext();
 
 const clusterer = shallowRef<YMapClusterer | null | undefined>(null);
 
@@ -228,7 +254,7 @@ function createMarker(feature: Feature) {
         {
             id: feature.id,
             coordinates: feature.geometry.coordinates,
-            onClick: () => onClick(feature),
+            onFastClick: () => onClick(feature),
             position: 'top left-center',
             properties: feature.properties
         },
@@ -247,9 +273,9 @@ function createMarker(feature: Feature) {
     justify-content: center;
     border-radius: 100%;
     background: #fff;
-    border: 4px solid #1e97fd;
-    width: 32px;
-    height: 32px;
+    border: 2px solid #1e97fd;
+    width: 20px;
+    height: 20px;
     font-size: 12px;
     cursor: pointer;
     overflow: hidden;
@@ -278,5 +304,9 @@ function createMarker(feature: Feature) {
         background: rgba(29, 30, 31, 0.9);
         color: #fff;
     }
+}
+
+.ymaps3--popup-marker.ymaps3--popup-marker__position-right:has(.map-marker-popup) {
+    margin: 10px 0 0 22px;
 }
 </style>
