@@ -35,10 +35,11 @@
             <MapMarkerCollection
                 @select="selectMarker"
                 :collection="preparedMarkers"
-                :grid-size="64"
+                :grid-size="16"
                 :selected-marker-id="selectedMarkerId"
                 :popup="mapIsOpened"
                 :hint="mapIsOpened"
+                :max-zoom="12"
             >
                 <template #popup="{ close }">
                     <div class="objects-map__popup">
@@ -57,6 +58,9 @@
                     :coordinates="polygon"
                 />
             </MapContainerControls>
+            <template #controls.right>
+                <MapRulerBehavior />
+            </template>
         </MapContainer>
         <div class="offer-table-map__footer">
             <AnimationTransition :speed="0.3" appear>
@@ -108,6 +112,7 @@ import ObjectMapHint, { ObjectMapMarkerHint } from '@/components/ObjectMapHint/O
 import Spinner from '@/components/common/Spinner.vue';
 import { useAsync } from '@/composables/useAsync';
 import { getBoundsFromCoords } from 'vue-yandex-maps';
+import MapRulerBehavior from '@/components/common/Map/Behavior/MapRulerBehavior.vue';
 
 const route = useRoute();
 
@@ -141,9 +146,10 @@ const fetchOffers = useDebounceFn(async () => {
     isLoading.value = true;
 
     const query = {
+        status: 3,
         ...route.query,
         type_id: [2, 3],
-        fields: 'latitude,longitude,address,complex_id,status,test_only,id,area_building,object_id,original_id,is_land,object_type,visual_id,class',
+        fields: 'latitude,longitude,address,complex_id,status,test_only,id,area_building,object_id,original_id,is_land,object_type,visual_id,class,offer_state',
         objectsOnly: 1,
         page: 1,
         noWith: 1,
@@ -226,8 +232,23 @@ function createHint(marker: ObjectMapMarker): ObjectMapMarkerHint {
         class: marker.class,
         is_land: marker.is_land,
         area_building: marker.area_building,
-        test_only: marker.test_only
+        test_only: marker.test_only,
+        offer_state: marker.offer_state
     };
+}
+
+const offerStateToColorMap = {
+    0: 'gray',
+    1: 'red',
+    2: '#43c136'
+};
+
+function offerToColor(offer: ObjectMapMarker) {
+    if (isNotNullish(offer.offer_state)) {
+        return offerStateToColorMap[offer.offer_state];
+    }
+
+    return undefined;
 }
 
 const preparedMarkers = computed(() => {
@@ -236,14 +257,18 @@ const preparedMarkers = computed(() => {
             id: String(offer.id),
             coordinates: [offer.longitude, offer.latitude] as LngLat,
             properties: {
-                hint: createHint(offer)
+                hint: createHint(offer),
+                color: offerToColor(offer)
             }
         }));
     }
 
     return offers.value.map(offer => ({
         id: String(offer.id),
-        coordinates: [offer.longitude, offer.latitude] as LngLat
+        coordinates: [offer.longitude, offer.latitude] as LngLat,
+        properties: {
+            color: offerToColor(offer)
+        }
     }));
 });
 

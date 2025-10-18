@@ -6,7 +6,12 @@
 :zoom-on-cluster-click />
     <YandexMapPopupMarker v-if="popup && popupSettings" :settings="popupSettings">
         <div ref="mapMarkerPopup" class="map-marker-popup">
-            <slot name="popup" :marker="selectedMarker!" :close="closePopup">
+            <slot
+                name="popup"
+                :marker="selectedMarker"
+                :close="closePopup"
+                :normalize-bounds="normalizeMapBounds"
+            >
                 {{ selectedMarker!.id }}
             </slot>
         </div>
@@ -24,7 +29,7 @@
 <script setup lang="ts">
 import { LngLat, YMapMarker } from '@yandex/ymaps3-types';
 import type { Feature, YMapClusterer } from '@yandex/ymaps3-types/packages/clusterer';
-import { computed, ref, shallowRef, useCssModule, useTemplateRef, watch } from 'vue';
+import { computed, nextTick, ref, shallowRef, useCssModule, useTemplateRef, watch } from 'vue';
 import { useMapContext } from '@/components/common/Map/useMapContext';
 import MapClusterer from '@/components/common/Map/MapClusterer.vue';
 import { YandexMapHint, YandexMapPopupMarker } from 'vue-yandex-maps';
@@ -50,10 +55,16 @@ const props = withDefaults(
         collection: MapCollectionItem[];
         selectedMarkerId?: string | number | null;
         popup?: boolean;
+        autoPanPopup?: boolean;
+        autoPanPopupOffset?: number;
         hint?: boolean;
+        markerColor?: string;
     }>(),
     {
-        zoomOnClusterClick: true
+        zoomOnClusterClick: true,
+        autoPanPopup: true,
+        autoPanPopupOffset: 50,
+        markerColor: '#1e97fd'
     }
 );
 
@@ -102,12 +113,32 @@ watch(popupIsHovered, value => {
     }
 });
 
+function normalizeMapBounds() {
+    if (!map.value || !selectedMarker.value || !mapMarkerPopupEl.value) {
+        return;
+    }
+
+    const containerBounding = map.value.container.getBoundingClientRect();
+    const popupBounding = mapMarkerPopupEl.value.getBoundingClientRect();
+
+    if (
+        popupBounding.top - props.autoPanPopupOffset <= containerBounding.top ||
+        popupBounding.bottom + props.autoPanPopupOffset >= containerBounding.bottom
+    ) {
+        map.value.setLocation({ center: selectedMarker.value.coordinates, duration: 600 });
+    }
+}
+
 function closePopup() {
     popupIsVisible.value = false;
 }
 
 function onOpenPopup() {
     emit('popup-opened');
+
+    if (props.autoPanPopup) {
+        nextTick(normalizeMapBounds);
+    }
 }
 
 const popupSettings = computed(() => {
@@ -210,8 +241,9 @@ function updateMarker(feature: Feature) {
         return;
     }
 
-    marker.element.style.background =
-        props.selectedMarkerId === feature.id ? 'rgb(16, 185, 129)' : '';
+    marker.element.style.background = props.selectedMarkerId === feature.id ? '#1e97fd' : '';
+    marker.element.style.borderColor =
+        props.selectedMarkerId === feature.id ? '#1e97fd' : getFeatureColor(feature);
 }
 
 watch(
@@ -241,13 +273,30 @@ function onClick(feature: Feature) {
     emit('select', feature.id);
 }
 
+function getFeatureColor(feature: Feature) {
+    if (feature.properties?.color) {
+        return feature.properties.color as string;
+    }
+
+    return props.markerColor;
+}
+
 function createMarker(feature: Feature) {
+    const existingMarker = allMarkers.get(feature.id);
+
+    if (existingMarker) {
+        return existingMarker;
+    }
+
     const featureCircle = document.createElement('div');
 
     featureCircle.classList.add(module['feature-circle']);
 
     if (feature.id == props.selectedMarkerId) {
-        featureCircle.style.background = 'rgb(16, 185, 129)';
+        featureCircle.style.background = '#1e97fd';
+        featureCircle.style.borderColor = '#1e97fd';
+    } else {
+        featureCircle.style.borderColor = getFeatureColor(feature);
     }
 
     const yMapMarker = new window.ymaps3.YMapMarker(
@@ -273,7 +322,7 @@ function createMarker(feature: Feature) {
     justify-content: center;
     border-radius: 100%;
     background: #fff;
-    border: 2px solid #1e97fd;
+    border: 4px solid;
     width: 20px;
     height: 20px;
     font-size: 12px;

@@ -8,7 +8,7 @@
             :style="canvasStyle"
         ></canvas>
     </teleport>
-    <YandexMapControlButton :settings="{ onClick: onClickBehavior, background: backgroundColor }">
+    <MapControl @click="onClickBehavior" :active="buttonIsEnabled">
         <div class="d-flex align-items-center gap-1">
             <svg xmlns="http://www.w3.org/2000/svg" height="20" width="20" viewBox="-2 -2 28 28">
                 <g fill="none" fill-rule="evenodd" stroke="currentColor">
@@ -21,16 +21,17 @@
             </svg>
             <span>Область</span>
         </div>
-    </YandexMapControlButton>
-    <YandexMapControlButton
+    </MapControl>
+    <MapControl
         v-if="resetButtonIsVisible"
-        :settings="{ onClick: onClickResetBehavior, background: resetBackgroundColor }"
+        @click="onClickResetBehavior"
+        :active="resetButtonIsEnabled"
     >
         <div class="d-flex align-items-center gap-2">
             <i class="fa-solid fa-pen" />
             <span>Изменить область</span>
         </div>
-    </YandexMapControlButton>
+    </MapControl>
     <MapPolygon v-if="coordinates" :coordinates />
     <YandexMapListener v-if="isActive" :settings="{ onMouseMove, onMouseDown, onMouseUp }" />
 </template>
@@ -49,9 +50,10 @@ import {
 import { InteractivityModelKey } from 'yandex-maps';
 import { useMapContext } from '@/components/common/Map/useMapContext';
 import { BehaviorType, DomEvent, DomEventHandlerObject, LngLat } from '@yandex/ymaps3-types';
-import { getBoundsFromCoords, YandexMapControlButton, YandexMapListener } from 'vue-yandex-maps';
+import { getBoundsFromCoords, YandexMapListener } from 'vue-yandex-maps';
 import MapPolygon from '@/components/common/Map/MapPolygon.vue';
 import simplify from 'simplify-js';
+import MapControl from '@/components/common/Map/MapControl.vue';
 
 export type BehaviorSelectionOptions = {
     strokeColor: string;
@@ -96,22 +98,12 @@ const preparedOptions = computed(() => {
     return { ...defaultOptions, ...props.options };
 });
 
-const { map, settings } = useMapContext();
+const { map } = useMapContext();
 
 const resetButtonIsVisible = ref(false);
 const resetButtonIsEnabled = ref(false);
-const resetBackgroundColor = computed(() => {
-    if (resetButtonIsEnabled.value) return 'rgba(16, 185, 129, 0.5)';
-
-    return settings.value.theme === 'dark' ? '#111' : '#fff';
-});
 
 const buttonIsEnabled = ref(false);
-const backgroundColor = computed(() => {
-    if (buttonIsEnabled.value) return 'rgba(16, 185, 129, 0.5)';
-
-    return settings.value.theme === 'dark' ? '#111' : '#fff';
-});
 
 function onClickResetBehavior() {
     try {

@@ -4,15 +4,20 @@
             <YandexMapDefaultSatelliteLayer v-if="currentLayer === 'satellite'" />
             <YandexMapDefaultSchemeLayer v-else :settings="{ theme: settings.theme }" />
             <YandexMapDefaultFeaturesLayer />
-            <YandexMapControls v-if="zoomIsEnabled" :settings="{ position: 'right' }">
-                <YandexMapZoomControl />
+            <YandexMapControls
+                v-if="zoomIsEnabled || geolocationIsEnabled"
+                :settings="{ position: 'right' }"
+            >
+                <slot name="controls.right" />
+                <YandexMapZoomControl v-if="zoomIsEnabled" />
+                <YandexMapGeolocationControl v-if="geolocationIsEnabled" />
             </YandexMapControls>
             <YandexMapControls
-                v-if="geolocationIsEnabled || fullscreenIsEnabled"
+                v-if="fullscreenIsEnabled || themeIsEnabled || layersIsEnabled"
                 :settings="{ position: controlsPosition }"
             >
+                <slot name="controls.top" />
                 <MapLayerControl v-if="layersIsEnabled" v-model="currentLayer" />
-                <YandexMapGeolocationControl v-if="geolocationIsEnabled" />
                 <MapFullScreenControl v-if="fullscreenIsEnabled" v-model="isFullscreen" />
                 <MapThemeControl v-if="themeIsEnabled" v-model="currentTheme" />
             </YandexMapControls>
