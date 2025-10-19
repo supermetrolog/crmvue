@@ -5,3 +5,8 @@ export function getContactFullName(contact) {
     if (contact.full_name) return contact.full_name;
     return contact.first_name + (contact.last_name ? ` ${contact.last_name}` : '');
 }
+
+export function getContactMediumName(contact) {
+    if (isGeneralContact(contact)) return 'Общий контакт';
+    return contact.first_name + (contact.last_name ? ` ${contact.last_name}` : '');
+}
