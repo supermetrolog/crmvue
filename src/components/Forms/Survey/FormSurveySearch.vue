@@ -92,7 +92,7 @@
                 <UiFormDivider />
                 <UiFormGroup>
                     <MultiSelect
-                        v-model="form.status"
+                        v-model="form.statuses"
                         label="Статус опроса"
                         class="col-7"
                         :options="surveyStatuses"
@@ -130,13 +130,15 @@ import { deleteEmptyFields } from '@/utils/helpers/object/deleteEmptyFields.js';
 import { useRoute, useRouter } from 'vue-router';
 import { useSearchForm } from '@/composables/useSearchForm.js';
 import { cloneObject } from '@/utils/helpers/object/cloneObject.js';
-import { useAuth } from '@/composables/useAuth.js';
+import { useAuth } from '@/composables/useAuth';
 import UiFormDivider from '@/components/common/Forms/UiFormDivider.vue';
 import { isNotNullish } from '@/utils/helpers/common/isNotNullish.ts';
 import { useSelectedFilters } from '@/composables/useSelectedFilters.js';
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
 import UiDateInput from '@/components/common/Forms/UiDateInput.vue';
 import dayjs from 'dayjs';
+import { singleToArrayByKeys } from '@/utils/helpers/object/singleToArrayByKeys.js';
+import { toArray } from '@/utils/helpers/array/toArray';
 
 const emit = defineEmits(['search']);
 
@@ -146,27 +148,33 @@ const route = useRoute();
 const surveyStatusesEnum = {
     COMPLETED: 'completed',
     DRAFT: 'draft',
-    CANCELLED: 'canceled'
+    CANCELLED: 'canceled',
+    DELAYED: 'delayed'
 };
 
-const surveyStatuses = {
-    [surveyStatusesEnum.COMPLETED]: 'Завершен',
-    [surveyStatusesEnum.DRAFT]: 'Черновик',
-    [surveyStatusesEnum.CANCELLED]: 'Отменен'
-};
+const surveyStatuses = [
+    {
+        label: 'Обработан',
+        value: [surveyStatusesEnum.COMPLETED, surveyStatusesEnum.CANCELLED]
+    },
+    { label: 'В процессе', value: [surveyStatusesEnum.DRAFT] },
+    { label: 'Отложен', value: [surveyStatusesEnum.DELAYED] }
+];
 
 // form
 
 const formTemplate = {
     search: null,
     user_id: null,
-    status: null,
+    statuses: [],
     date_start: null,
     date_end: null
 };
 
 async function setQueryFields() {
     Object.assign(form, route.query);
+
+    singleToArrayByKeys(form, ['statuses']);
 
     let query = { ...form };
     deleteEmptyFields(query);
@@ -208,6 +216,10 @@ const { resetForm, form } = useSearchForm(formTemplate, {
 
         if (value.date_end) {
             value.date_end = dayjs(value.date_end).toJSON();
+        }
+
+        if (value.statuses) {
+            value.statuses = toArray(value.statuses);
         }
 
         return value;

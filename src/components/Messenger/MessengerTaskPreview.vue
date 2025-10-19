@@ -38,6 +38,7 @@ import Spinner from '@/components/common/Spinner.vue';
 import TaskCard from '@/components/TaskCard/TaskCard.vue';
 import { useDelayedLoader } from '@/composables/useDelayedLoader.js';
 import { spliceById } from '@/utils/helpers/array/spliceById.js';
+import { isObject } from '@/utils/helpers/object/isObject.js';
 
 const store = useStore();
 
@@ -86,7 +87,9 @@ function submit() {
 }
 
 function onUpdated(task) {
-    Object.assign(currentTask.value, task);
+    if (isObject(task)) {
+        Object.assign(currentTask.value, task);
+    }
 }
 
 function onAddedComment(comment) {

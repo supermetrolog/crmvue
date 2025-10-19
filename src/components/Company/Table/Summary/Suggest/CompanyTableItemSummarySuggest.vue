@@ -1,6 +1,11 @@
 <template>
     <div class="company-table-item-summary__suggest">
-        <CompanyTableItemSummarySuggestSurvey @open-survey="$emit('open-survey')" :company />
+        <CompanyTableItemSummarySuggestSurvey
+            v-if="isActive"
+            @open-survey="$emit('open-survey')"
+            :company
+        />
+        <CompanyTableItemSummarySuggestContacts v-if="isWithoutActiveContacts" />
         <template v-if="targetTask">
             <CompanyTableItemSummarySuggestCall
                 v-if="targetTaskIsCall"
@@ -22,7 +27,7 @@
 </template>
 
 <script setup>
-import { useAuth } from '@/composables/useAuth.js';
+import { useAuth } from '@/composables/useAuth';
 import { computed } from 'vue';
 import { dayjsFromServer, nowInServer } from '@/utils/formatters/date.ts';
 import CompanyTableItemSummarySuggestTask from '@/components/Company/Table/Summary/Suggest/CompanyTableItemSummarySuggestTask.vue';
@@ -30,6 +35,8 @@ import CompanyTableItemSummarySuggestCall from '@/components/Company/Table/Summa
 import { TaskTypeEnum } from '@/types/task.ts';
 import CompanyTableItemSummarySuggestVisit from '@/components/Company/Table/Summary/Suggest/CompanyTableItemSummarySuggestVisit.vue';
 import CompanyTableItemSummarySuggestSurvey from '@/components/Company/Table/Summary/Suggest/CompanyTableItemSummarySuggestSurvey.vue';
+import { CompanyStatusEnum } from '@/types/company';
+import CompanyTableItemSummarySuggestContacts from '@/components/Company/Table/Summary/Suggest/CompanyTableItemSummarySuggestContacts.vue';
 
 defineEmits(['show-task', 'open-survey']);
 
@@ -73,4 +80,8 @@ const targetTask = computed(() => {
 
 const targetTaskIsCall = computed(() => targetTask.value?.type === TaskTypeEnum.SCHEDULED_CALL);
 const targetTaskIsVisit = computed(() => targetTask.value?.type === TaskTypeEnum.SCHEDULED_VISIT);
+
+const isActive = computed(() => props.company.status === CompanyStatusEnum.ACTIVE);
+
+const isWithoutActiveContacts = computed(() => props.company.active_contacts_count === 0);
 </script>

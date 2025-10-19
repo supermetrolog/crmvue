@@ -1,7 +1,7 @@
 <template>
     <div class="company-preview__header">
-        <UiChip v-if="isPassive" color="danger">
-            <span>Пассив</span>
+        <UiChip v-if="isPassive || isDeleted" color="danger">
+            <span>{{ isPassive ? 'Приостановлена' : 'Удалена' }}</span>
             <i v-tippy="statusTippy" class="fa-regular fa-question-circle" />
         </UiChip>
         <UiChip>#{{ company.id }}</UiChip>
@@ -35,6 +35,7 @@ import {
 import { computed } from 'vue';
 import UiChip from '@/components/common/UI/UiChip.vue';
 import CompanyPreviewRating from '@/components/Company/Preview/CompanyPreviewRating.vue';
+import { CompanyStatusEnum } from '@/types/company';
 
 const props = defineProps({
     company: {
@@ -70,7 +71,8 @@ const productRanges = computed(() => {
     }));
 });
 
-const isPassive = computed(() => !props.company.status);
+const isPassive = computed(() => props.company.status === CompanyStatusEnum.PASSIVE);
+const isDeleted = computed(() => props.company.status === CompanyStatusEnum.DELETED);
 
 const statusTippy = computed(() => {
     let text = PassiveWhy[props.company.passive_why].label;

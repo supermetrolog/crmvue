@@ -9,10 +9,6 @@
                     <span class="account-profile__value">{{ user.userProfile.full_name }}</span>
                 </li>
                 <li class="account-profile__category">
-                    <span class="account-profile__property">Username</span>
-                    <span class="account-profile__value">{{ user.username }}</span>
-                </li>
-                <li class="account-profile__category">
                     <span class="account-profile__property">Email</span>
                     <p v-if="user.userProfile.emails?.length" class="account-profile__value-list">
                         <span
@@ -41,10 +37,6 @@
                 <li class="account-profile__category">
                     <span class="account-profile__property">Рабочий Email</span>
                     <span class="account-profile__value">{{ user.email }}</span>
-                </li>
-                <li class="account-profile__category">
-                    <span class="account-profile__property">Логин от Email</span>
-                    <span class="account-profile__value">{{ user.email_username }}</span>
                 </li>
             </ul>
         </div>

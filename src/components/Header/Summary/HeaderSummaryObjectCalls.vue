@@ -20,7 +20,7 @@ import HeaderSummaryObjectCallsContent from '@/components/Header/Summary/HeaderS
 
 const { objectCounts, fetchStatistics, someIsLoading } = useSharedMessengerStatistic();
 
-const count = computed(() => objectCounts?.value?.outdated_call_count ?? 0);
+const count = computed(() => objectCounts?.value?.outdated_company_call_count ?? 0);
 
 onMounted(fetchStatistics);
 </script>

@@ -9,12 +9,7 @@
                     v-if="searchingIsVisible"
                     @close="searchingIsVisible = false"
                 />
-                <FormOfferSearchExternal
-                    @openFilters="searchingIsVisible = true"
-                    class="col-12"
-                    :offers-count="offersPagination ? offersPagination.totalCount : 0"
-                    :objects-count="offersPagination ? offersPagination.totalCount : 0"
-                />
+                <FormOfferSearchExternal @openFilters="searchingIsVisible = true" class="col-12" />
                 <div class="col-12 my-2">
                     <div class="company-table__filters">
                         <Chip
@@ -27,7 +22,7 @@
                     </div>
                 </div>
             </div>
-            <div class="row mb-2">
+            <div class="row">
                 <UserFolders
                     v-model:selected="currentFolder"
                     category="offer_mix"
@@ -36,6 +31,11 @@
                     editable
                     selectable
                 />
+            </div>
+            <div class="row my-2">
+                <UiCol :cols="12">
+                    <OfferSearchableTableMap :current-folder />
+                </UiCol>
             </div>
             <div class="row justify-content-between">
                 <PaginationClassic
@@ -66,7 +66,7 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-12 offers-page__table">
+                <UiCol :cols="12" class="offers-page__table">
                     <AnimationTransition :speed="0.2">
                         <EmptyData v-if="!offers.length && !isLoading">Ничего не найдено</EmptyData>
                         <component
@@ -82,14 +82,14 @@
                             :refreshing="isSilentLoading"
                         />
                     </AnimationTransition>
-                </div>
-                <div class="col-12">
+                </UiCol>
+                <UiCol :cols="12">
                     <PaginationClassic
                         v-if="offersPagination"
                         @next="nextWithScroll"
                         :pagination="offersPagination"
                     />
-                </div>
+                </UiCol>
             </div>
         </div>
         <teleport to="body">
@@ -143,10 +143,13 @@ import ObjectTable from '@/components/ObjectTable/ObjectTable.vue';
 import { useMapPreviewer } from '@/composables/useMapPreviewer.js';
 import { useTaskManager } from '@/composables/useTaskManager.js';
 import { userOptions } from '@/const/options/user.options.js';
-import { useAuth } from '@/composables/useAuth.js';
+import { useAuth } from '@/composables/useAuth';
 import { useNotify } from '@/utils/use/useNotify.js';
 import { isNotEmptyString } from '@/utils/helpers/string/isNotEmptyString.js';
 import { ucFirst } from '@/utils/formatters/string.js';
+import { isArray } from '@/utils/helpers/array/isArray';
+import UiCol from '@/components/common/UI/UiCol.vue';
+import OfferSearchableTableMap from '@/components/Offer/OfferSearchableTableMap.vue';
 
 const isMobile = useMobile();
 const store = useStore();
@@ -293,7 +296,7 @@ const gettersForFilters = {
     },
     sort: value => value,
     cian_regions: value => {
-        if (isNotNullish(value) && !isEmptyArray(value)) {
+        if (isArray(value) && !isEmptyArray(value)) {
             return value.map(element => locationOptions.cianRegion[element]).join(', ');
         }
 
@@ -313,7 +316,8 @@ const formKeysOnlyArray = [
     'direction',
     'district_moscow',
     'object_type',
-    'floor_types'
+    'floor_types',
+    'cian_regions'
 ];
 
 const getOffers = async (withLoader = true) => {
@@ -419,9 +423,18 @@ const { nextWithScroll, next, isInitialLoading } = useTableContent(getOffers, {
         if (!queryIsEmpty) return;
 
         if (isNotNullish(store.state.Offers.offersFilters)) {
-            await router.replace({ query: store.state.Offers.offersFilters });
+            await router.replace({ query: { ...store.state.Offers.offersFilters } });
         }
     }
+});
+
+const preparedQuery = computed(() => {
+    const q = { ...route.query };
+
+    delete q.page;
+    delete q.sort;
+
+    return JSON.stringify(q);
 });
 
 // folders
@@ -477,8 +490,8 @@ const { previewInMap } = useMapPreviewer();
 
 function showOfferInMap(offer) {
     previewInMap({
-        list: [offer],
-        selected: offer.id
+        objectId: offer.object_id ?? offer.id,
+        targetId: offer.object_id ?? offer.id
     });
 }
 

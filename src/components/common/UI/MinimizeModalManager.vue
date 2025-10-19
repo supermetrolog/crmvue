@@ -25,7 +25,7 @@
             <hr v-if="modalsCount && draftsCount" />
             <div v-if="draftsCount" class="px-1 d-flex align-items-center justify-content-between">
                 <p>{{ modalsCount ? 'Всего' : 'У вас' }} {{ draftsCountLabel }}</p>
-                <RouterLink :to="{ name: 'survey-drafts' }">
+                <RouterLink :to="{ name: 'surveys.drafts' }">
                     <UiButton
                         small
                         color="success-light"
@@ -47,7 +47,7 @@ import AnimationTransition from '@/components/common/AnimationTransition.vue';
 import UiButtonIcon from '@/components/common/UI/UiButtonIcon.vue';
 import { computed, onMounted, ref, watch } from 'vue';
 import api from '@/api/api.js';
-import { useAuth } from '@/composables/useAuth.js';
+import { useAuth } from '@/composables/useAuth';
 import { useDebounceFn, useDocumentVisibility, useIntervalFn, useLocalStorage } from '@vueuse/core';
 import { LOCALSTORAGE_PREFIX } from '@/services/localStorage.js';
 import { isNullish } from '@/utils/helpers/common/isNullish.ts';

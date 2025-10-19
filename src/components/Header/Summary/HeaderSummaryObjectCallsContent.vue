@@ -1,7 +1,7 @@
 <template>
     <div class="header-summary-messages-content">
         <HeaderSummaryDialogs
-            :title="`Список предложений для обзвона (${objectCounts.outdated_call_count})`"
+            :title="`Список предложений для обзвона (${objectCounts.outdated_company_call_count})`"
         >
             <template #actions>
                 <UiButton
@@ -46,7 +46,7 @@
 <script setup>
 import { onMounted, reactive } from 'vue';
 import api from '@/api/api.js';
-import { useAuth } from '@/composables/useAuth.js';
+import { useAuth } from '@/composables/useAuth';
 import { useDelayedLoader } from '@/composables/useDelayedLoader.js';
 import PaginationClassic from '@/components/common/Pagination/PaginationClassic.vue';
 import { messenger } from '@/const/messenger.js';
@@ -56,7 +56,7 @@ import HeaderSummaryDialogsGrid from '@/components/Header/Summary/Dialogs/Header
 import MessengerDialogObject from '@/components/Messenger/Dialog/Object/MessengerDialogObject.vue';
 import HeaderSummaryEmpty from '@/components/Header/Summary/HeaderSummaryEmpty.vue';
 import UiButton from '@/components/common/UI/UiButton.vue';
-import { useSurveyForm } from '@/composables/useSurveyForm.js';
+import { useSurveyForm } from '@/composables/useSurveyForm.ts';
 
 const emit = defineEmits(['close']);
 const props = defineProps({

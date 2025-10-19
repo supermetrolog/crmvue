@@ -263,7 +263,7 @@ import UiField from '@/components/common/UI/UiField.vue';
 import UiDropdownActionsGroup from '@/components/common/UI/DropdownActions/UiDropdownActionsGroup.vue';
 import UiDropdownActions from '@/components/common/UI/DropdownActions/UiDropdownActions.vue';
 import UiDropdownActionsButton from '@/components/common/UI/DropdownActions/UiDropdownActionsButton.vue';
-import { useAuth } from '@/composables/useAuth.js';
+import { useAuth } from '@/composables/useAuth';
 import { toBeautifulDateFormat } from '@/utils/formatters/date.ts';
 import { useTippy } from 'vue-tippy';
 import UiButton from '@/components/common/UI/UiButton.vue';

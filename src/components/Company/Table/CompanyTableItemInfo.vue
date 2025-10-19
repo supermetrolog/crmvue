@@ -1,7 +1,7 @@
 <template>
     <div>
         <a class="company-table-item__title" :href="companyUrl" target="_blank">
-            <h4 :class="{ 'text-warning': isPassive }">
+            <h4 :class="{ 'text-warning': isPassive, 'op-5 text-danger text-through': isDeleted }">
                 <UiTooltipIcon
                     v-if="company.is_individual"
                     tooltip="Физ.лицо"
@@ -39,6 +39,7 @@ import { getLinkCompany } from '@/utils/url.js';
 import { getCompanyName } from '@/utils/formatters/models/company.js';
 import { ucFirst } from '@/utils/formatters/string.js';
 import UiTooltipIcon from '@/components/common/UI/UiTooltipIcon.vue';
+import { CompanyStatusEnum } from '@/types/company';
 
 const props = defineProps({
     company: { type: Object, required: true }
@@ -50,7 +51,8 @@ const activityProfile = computed(() =>
         .join(', ')
 );
 
-const isPassive = computed(() => props.company.status === 0);
+const isPassive = computed(() => props.company.status === CompanyStatusEnum.PASSIVE);
+const isDeleted = computed(() => props.company.status === CompanyStatusEnum.DELETED);
 
 const companyUrl = computed(() => getLinkCompany(props.company.id));
 const companyName = computed(() => getCompanyName(props.company));

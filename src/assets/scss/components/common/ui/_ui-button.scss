@@ -177,6 +177,8 @@
     &__loader {
         position: absolute;
         right: var(--padding-x);
+        top: 50%;
+        transform: translateY(-50%);
         transition: opacity .3s, transform .3s;
     }
 
@@ -203,4 +205,9 @@
         opacity: 0;
         transform: scale(0.6);
     }
+}
+
+a.ui-button--disabled {
+    opacity: .5;
+    pointer-events: none;
 }

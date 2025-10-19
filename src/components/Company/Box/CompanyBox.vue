@@ -1,97 +1,28 @@
 <template>
     <CompanyBoxLayout class="company-box-main">
         <template #before>
-            <div class="d-flex gap-2 justify-content-end mb-2 align-items-center">
-                <UiDropdownActions label="Действия над компанией" :title="companyShortName" small>
-                    <template #trigger>
-                        <UiButton small color="light" icon="fa-solid fa-gear">Действия</UiButton>
-                    </template>
-                    <template #menu>
-                        <UiDropdownActionsGroup>
-                            <UiDropdownActionsButton
-                                @handle="$emit('create-task')"
-                                icon="fa-solid fa-bolt"
-                                label="Создать задачу"
-                            />
-                            <UiDropdownActionsButton
-                                @handle="$emit('schedule-call')"
-                                icon="fa-solid fa-phone"
-                                label="Запланировать звонок"
-                            />
-                            <UiDropdownActionsButton
-                                @handle="$emit('schedule-visit')"
-                                icon="fa-solid fa-people-arrows"
-                                label="Запланировать встречу"
-                            />
-                        </UiDropdownActionsGroup>
-                        <UiDropdownActionsGroup>
-                            <!--                            <UiDropdownActionsButton-->
-                            <!--                                @handle="$emit('create-pinned-message')"-->
-                            <!--                                icon="fa-solid fa-thumbtack"-->
-                            <!--                                label="Добавить сообщение"-->
-                            <!--                            />-->
-                            <UiDropdownActionsButton
-                                @handle="openInSurvey"
-                                :icon="
-                                    company.has_pending_survey
-                                        ? 'fa-solid fa-play'
-                                        : 'fa-solid fa-square-poll-horizontal'
-                                "
-                                :label="
-                                    company.has_pending_survey ? 'Продолжить опрос' : 'Начать опрос'
-                                "
-                            />
-                            <UiDropdownActionsButton
-                                @handle="$emit('open-in-chat')"
-                                icon="fa-solid fa-comment"
-                                label="Открыть в чате"
-                            />
-                        </UiDropdownActionsGroup>
-                        <UiDropdownActionsGroup>
-                            <UiCan moderator-or-higher>
-                                <UiDropdownActionsButton
-                                    v-if="!isPassive"
-                                    @handle="$emit('change-consultant')"
-                                    label="Изменить консультанта"
-                                    icon="fa-solid fa-user-tag"
-                                />
-                            </UiCan>
-                            <UiDropdownActionsButton
-                                v-if="isPassive"
-                                @handle="$emit('enable')"
-                                icon="fa-solid fa-undo"
-                                label="Восстановить из архива"
-                            />
-                            <UiDropdownActionsButton
-                                v-else
-                                @handle="$emit('disable')"
-                                icon="fa-solid fa-ban"
-                                label="Отправить в архив"
-                            />
-                            <UiDropdownActionsButton
-                                @handle="logoFormIsVisible = true"
-                                label="Изменить логотип"
-                                icon="fa-solid fa-image"
-                            />
-                        </UiDropdownActionsGroup>
-                    </template>
-                </UiDropdownActions>
+            <div class="d-flex gap-2 mb-2 align-items-center">
+                <CompanyBoxStatus :company />
+                <CompanyBoxActions
+                    @create-task="$emit('create-task')"
+                    @schedule-call="$emit('schedule-call')"
+                    @schedule-visit="$emit('schedule-visit')"
+                    @open-in-chat="$emit('open-in-chat')"
+                    @open-in-survey="openInSurvey"
+                    @change-consultant="$emit('change-consultant')"
+                    @enable="$emit('enable')"
+                    @delete="$emit('delete')"
+                    @change-logo="logoFormIsVisible = true"
+                    @request-delete="$emit('request-delete')"
+                    @request-enable="$emit('request-enable')"
+                    @request-change-consultant="$emit('request-change-consultant')"
+                    :company
+                />
                 <span>|</span>
                 <UiButton @click="$emit('edit-company')" small color="light" icon="fa-solid fa-pen">
                     Редактировать
                 </UiButton>
             </div>
-            <UiField v-if="isPassive" class="company-page__chip w-100 mb-2" color="danger">
-                <div class="d-flex align-items-center justify-content-center w-100">
-                    <p>Пассив</p>
-                    <UiTooltipIcon
-                        v-if="company.passive_why !== null"
-                        :tooltip="passiveWhyComment"
-                        icon="fa-regular fa-question-circle"
-                        class="ml-2 icon"
-                    />
-                </div>
-            </UiField>
         </template>
         <template #header>
             <div class="company-box-main__header">
@@ -125,56 +56,7 @@
         </template>
         <template #content>
             <div class="company-box-main__content">
-                <div class="company-box-main__block">
-                    <ul class="company-box-main__list">
-                        <CompanyBoxRow label="Вебсайт">
-                            <div v-if="websites.length" class="company-box-main__vertical-list">
-                                <a
-                                    v-for="website in websites"
-                                    :key="website"
-                                    :href="toCorrectUrl(website)"
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                >
-                                    {{ website }}
-                                </a>
-                            </div>
-                        </CompanyBoxRow>
-                        <CompanyBoxRow label="Группа деятельности">
-                            <span v-if="hasActivityGroup">
-                                {{ activityGroups }}
-                            </span>
-                        </CompanyBoxRow>
-                        <CompanyBoxRow label="Профиль деятельности">
-                            <span v-if="hasActivityProfile">
-                                {{ activityProfiles }}
-                            </span>
-                        </CompanyBoxRow>
-                        <CompanyBoxRow
-                            v-if="company.show_product_ranges"
-                            label="Номенклатура товара"
-                        >
-                            <span v-if="company.productRanges?.length">
-                                {{ productRanges }}
-                            </span>
-                        </CompanyBoxRow>
-                        <CompanyBoxRow label="Внес">
-                            <span v-if="company.consultant">
-                                {{ company.consultant.userProfile.short_name }}
-                            </span>
-                        </CompanyBoxRow>
-                        <CompanyBoxRow label="Поступление">
-                            <span v-if="company.created_at">
-                                {{ createdAt }}
-                            </span>
-                        </CompanyBoxRow>
-                        <CompanyBoxRow label="Обновление">
-                            <span v-if="company.updated_at">
-                                {{ updatedAt }}
-                            </span>
-                        </CompanyBoxRow>
-                    </ul>
-                </div>
+                <CompanyBoxInfo :company class="company-box-main__block" />
                 <div class="company-box-main__block">
                     <Tabs nav-item-link-class="company-box-main__tab dashboard-chip">
                         <Tab name="Описание">
@@ -299,12 +181,7 @@
 </template>
 
 <script setup>
-import {
-    ActivityGroupList,
-    ActivityProfileList,
-    CompanyCategories,
-    PassiveWhy
-} from '@/const/const';
+import { CompanyCategories } from '@/const/const';
 import { computed, ref, useTemplateRef } from 'vue';
 import CompanyBoxContactList from '@/components/Company/Box/CompanyBoxContactList.vue';
 import EmptyLabel from '@/components/common/EmptyLabel.vue';
@@ -319,24 +196,20 @@ import FormCompanyLogo from '@/components/Forms/Company/FormCompanyLogo.vue';
 import Modal from '@/components/common/Modal.vue';
 import { useNotify } from '@/utils/use/useNotify.js';
 import { useStore } from 'vuex';
-import { getCompanyName, getCompanyShortName } from '@/utils/formatters/models/company.js';
-import { isNotNullish } from '@/utils/helpers/common/isNotNullish.ts';
-import { toDateFormat } from '@/utils/formatters/date.ts';
-import { toCorrectUrl } from '@/utils/formatters/string.js';
+import { getCompanyName } from '@/utils/formatters/models/company.js';
 import UiTooltipIcon from '@/components/common/UI/UiTooltipIcon.vue';
 import { useTippyText } from '@/composables/useTippyText.js';
 import UiField from '@/components/common/UI/UiField.vue';
 import UiButton from '@/components/common/UI/UiButton.vue';
-import UiDropdownActionsButton from '@/components/common/UI/DropdownActions/UiDropdownActionsButton.vue';
-import UiDropdownActions from '@/components/common/UI/DropdownActions/UiDropdownActions.vue';
-import UiDropdownActionsGroup from '@/components/common/UI/DropdownActions/UiDropdownActionsGroup.vue';
-import { useSurveyForm } from '@/composables/useSurveyForm.js';
-import UiCan from '@/components/common/UI/UiCan.vue';
+import { useSurveyForm } from '@/composables/useSurveyForm.ts';
+import CompanyBoxStatus from '@/components/Company/Box/CompanyBoxStatus.vue';
+import CompanyBoxActions from '@/components/Company/Box/CompanyBoxActions.vue';
+import CompanyBoxInfo from '@/components/Company/Box/CompanyBoxInfo.vue';
 
 defineEmits([
     'create-contact',
     'edit-company',
-    'disable',
+    'delete',
     'enable',
     'enable-contact',
     'disable-contact',
@@ -347,7 +220,10 @@ defineEmits([
     'schedule-call',
     'schedule-visit',
     'change-consultant',
-    'change-company'
+    'change-company',
+    'request-delete',
+    'request-enable',
+    'request-change-consultant'
 ]);
 
 const props = defineProps({
@@ -367,12 +243,6 @@ const store = useStore();
 const logoFormIsVisible = ref(false);
 const logoEdited = ref(false);
 
-const productRanges = computed(() => {
-    return props.company.productRanges
-        .map(range => range.product[0].toUpperCase() + range.product.slice(1))
-        .join(', ');
-});
-
 const categories = computed(() => {
     return props.company.categories.map(item => ({
         id: item.id,
@@ -380,32 +250,7 @@ const categories = computed(() => {
     }));
 });
 
-const websites = computed(() => {
-    let commonContact = props.company.generalContact;
-    if (commonContact) return commonContact.websites.map(item => item.website);
-    return [];
-});
-
-const createdAt = computed(() => toDateFormat(props.company.created_at, 'DD.MM.YYYY'));
-const updatedAt = computed(() => toDateFormat(props.company.updated_at, 'DD.MM.YYYY'));
-
-const hasActivityGroup = computed(() => isNotNullish(props.company.activity_groups?.length));
-const hasActivityProfile = computed(() => isNotNullish(props.company.activity_profiles?.length));
-
-const activityGroups = computed(() => {
-    return props.company.activity_groups
-        .map(el => ActivityGroupList[el.activity_group_id].label)
-        .join(', ');
-});
-
-const activityProfiles = computed(() => {
-    return props.company.activity_profiles
-        .map(el => ActivityProfileList[el.activity_profile_id].label)
-        .join(', ');
-});
-
 const companyName = computed(() => getCompanyName(props.company));
-const companyShortName = computed(() => getCompanyShortName(props.company));
 
 function closeForm() {
     logoFormIsVisible.value = false;
@@ -425,16 +270,6 @@ function onDeleteLogo() {
     notify.success('Логотип компании удален');
     store.commit('setCompanyLogo', null);
 }
-
-// status
-
-const isPassive = computed(() => props.company.status === 0);
-
-const passiveWhyComment = computed(() => {
-    let text = PassiveWhy[props.company.passive_why].label;
-    if (props.company.passive_why_comment) text += ': ' + props.company.passive_why_comment;
-    return text;
-});
 
 // tippy
 

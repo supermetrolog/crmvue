@@ -94,10 +94,6 @@
         padding: 10px !important;
     }
 
-    &__id {
-        width: 80px;
-    }
-
     &__buttons {
         @include mixins.flex-box($d: column, $gap: 5px, $a: center);
     }
@@ -133,7 +129,6 @@
     &__comment {
         min-width: 500px;
         max-width: 1200px;
-        width: 80%;
         position: relative;
 
         &:hover .company-table-item__comment-buttons {

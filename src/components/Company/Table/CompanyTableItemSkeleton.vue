@@ -1,10 +1,10 @@
 <template>
     <Tr class="company-table-item skeleton-body">
-        <Td class="text-center company-table-item__id">
+        <Td name="id" class="text-center company-table-item__id">
             <p class="mb-1 skeleton">#1234</p>
             <div class="avatar skeleton mx-auto" :style="{ '--size': `${35}px` }"></div>
         </Td>
-        <Td class="company-table-item__name position-relative">
+        <Td name="name" class="company-table-item__name position-relative">
             <div class="company-table-item__main">
                 <CompanyLogoSkeleton />
                 <div>
@@ -28,7 +28,7 @@
                 </UiButton>
             </div>
         </Td>
-        <Td class="company-table-item__comment">
+        <Td name="status" class="company-table-item__comment">
             <CompanyTableItemSummarySkeleton />
         </Td>
     </Tr>

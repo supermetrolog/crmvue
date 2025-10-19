@@ -1,22 +1,36 @@
 <template>
-    <Table :refreshing shadow fluid class="company-table">
+    <Table
+        :refreshing
+        shadow
+        fluid
+        resizable
+        :default-widths="{
+            id: 80
+        }"
+        :constraints
+        storage-key="companies"
+        class="company-table"
+    >
         <template #thead>
             <Tr data-tour-id="company-table-filters:header">
-                <Th v-model:filters="consultantFilters" @confirm-filter="confirmConsultantFilters">
+                <Th
+                    v-model:filters="consultantFilters"
+                    @confirm-filter="confirmConsultantFilters"
+                    name="id"
+                >
                     <template #filter>
                         <CompanyTableFiltersConsultant v-model="consultantFilters" />
                     </template>
                 </Th>
-                <Th class="text-left" sort="nameRu">название компании</Th>
+                <Th class="text-left" sort="nameRu" name="name">название компании</Th>
                 <Th
                     ref="statusThEl"
                     v-model:filters="activityFilters"
                     @confirm-filter="confirmActivityFilters"
                     :sorting-options
-                    default-sort="activity"
-                    name="status"
                     data-tour-id="company-table-filters:column-activity"
                     class="text-left"
+                    name="status"
                 >
                     <template #default>работа с компанией</template>
                     <template #filter>
@@ -81,6 +95,9 @@ import { useTableColumnFilters } from '@/composables/useTableColumnFilters';
 import CompanyTableFiltersActivity from '@/components/Company/Table/Filters/CompanyTableFiltersActivity.vue';
 import CompanyTableFiltersConsultant from '@/components/Company/Table/Filters/CompanyTableFiltersConsultant.vue';
 import CompanyTableItemSkeleton from '@/components/Company/Table/CompanyTableItemSkeleton.vue';
+import { isNotNullish } from '@/utils/helpers/common/isNotNullish';
+import { toArray } from '@/utils/helpers/array/toArray';
+import { useTour } from '@/composables/useTour/useTour';
 
 defineEmits([
     'deleted-from-folder',
@@ -106,6 +123,19 @@ defineProps({
     refreshing: Boolean
 });
 
+const constraints = {
+    id: {
+        min: 40,
+        max: 160
+    },
+    name: {
+        min: 300
+    },
+    status: {
+        min: 300
+    }
+};
+
 // query filters
 
 const { filters: consultantFilters, confirmFilters: confirmConsultantFilters } =
@@ -121,7 +151,7 @@ const { filters: activityFilters, confirmFilters: confirmActivityFilters } = use
         with_active_contacts: null,
         dateStart: null,
         dateEnd: null,
-        status: null
+        statuses: []
     },
     {
         transform: {
@@ -130,7 +160,8 @@ const { filters: activityFilters, confirmFilters: confirmActivityFilters } = use
         },
         prepare: {
             dateStart: value => dayjs(value).toDate(),
-            dateEnd: value => dayjs(value).toDate()
+            dateEnd: value => dayjs(value).toDate(),
+            statuses: value => (isNotNullish(value) ? toArray(value) : value)
         }
     }
 );
@@ -144,10 +175,13 @@ function initFilters() {
         ? dayjs(route.query.dateStart).toDate()
         : null;
     activityFilters.dateEnd = route.query.dateEnd ? dayjs(route.query.dateEnd).toDate() : null;
-    activityFilters.status = route.query.status;
+    activityFilters.statuses = isNotNullish(route.query.statuses)
+        ? toArray(route.query.statuses)
+        : [];
 
     activityFilters.without_surveys = route.query.without_surveys;
     activityFilters.with_current_user_tasks = route.query.with_current_user_tasks;
+    activityFilters.with_active_contacts = route.query.with_active_contacts;
     activityFilters.requests_filter = route.query.requests_filter;
 }
 
@@ -211,4 +245,26 @@ function onUpdatedTask(payload) {
     Object.assign(currentTask.value, payload);
     currentTask.value = null;
 }
+
+useTour('company-resize', {
+    autorun: true,
+    steps: [
+        {
+            key: 0,
+            element: '[data-tour-id="company-table-filters:header"]',
+            popover: {
+                title: 'Изменение ширины колонок',
+                description:
+                    'Теперь ширину колонок можно изменять! Для этого наведите мышкой на край нужной колонки и потяните его..'
+            }
+        },
+        {
+            key: 1,
+            popover: {
+                title: 'Сохранение настроек',
+                description: 'Настройки ширины сохраняются на вашем компьютере автоматически'
+            }
+        }
+    ]
+});
 </script>

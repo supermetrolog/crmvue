@@ -31,7 +31,7 @@
             <FormCompanyContact
                 v-if="contactFormIsVisible"
                 @close="closeContactForm"
-                @created="getCompanyContacts"
+                @created="onContactCreated"
                 @updated="getCompanyContacts"
                 :company_id="COMPANY.id"
                 :formdata="editingContact"
@@ -43,9 +43,9 @@
                 :form-data="COMPANY"
             />
             <FormCompanyDisable
-                v-if="disablingFormIsVisible"
-                @close="disablingFormIsVisible = false"
-                @disabled="onDisabledCompany"
+                v-if="deleteFormIsVisible"
+                @close="deleteFormIsVisible = false"
+                @disabled="onDeletedCompany"
                 :company="COMPANY"
             />
             <FormContactDisable
@@ -64,11 +64,11 @@
         <div class="company-page__wrapper">
             <Loader v-if="companyIsLoading || enableIsLoading" />
             <CompanyBox
-                v-if="!companyIsLoading"
+                v-if="!companyIsLoading && COMPANY"
                 @edit-company="companyFormIsVisible = true"
                 @create-contact="createContact"
                 @enable="enableCompany(COMPANY.id)"
-                @disable="disableCompany"
+                @delete="deleteCompany"
                 @enable-contact="enableContact"
                 @disable-contact="disableContact"
                 @edit-contact="editContact"
@@ -79,6 +79,9 @@
                 @schedule-call="scheduleCallModalIsVisible = true"
                 @change-consultant="changeCompanyConsultantModalIsVisible = true"
                 @change-company="changeContactCompany"
+                @request-delete="requestDeleteCompany"
+                @request-enable="requestEnableCompany"
+                @request-change-consultant="requestChangeCompanyConsultant"
                 :company="COMPANY"
                 :contacts="COMPANY_CONTACTS"
                 class="mb-2"
@@ -162,18 +165,19 @@ import { useDocumentTitle } from '@/composables/useDocumentTitle.ts';
 import { messenger } from '@/const/messenger.js';
 import { useTippyText } from '@/composables/useTippyText.js';
 import { isNotNullish } from '@/utils/helpers/common/isNotNullish.ts';
-import { useAsync } from '@/composables/useAsync.js';
+import { useAsync } from '@/composables/useAsync';
 import api from '@/api/api.js';
 import { useNotify } from '@/utils/use/useNotify.js';
 import FormCompanyDisable from '@/components/Forms/Company/FormCompanyDisable.vue';
 import FormContactDisable from '@/components/Forms/FormContactDisable.vue';
 import { contactOptions } from '@/const/options/contact.options.js';
-import { useTaskManager } from '@/composables/useTaskManager.js';
+import { TASK_FORM_STEPS, useTaskManager } from '@/composables/useTaskManager.js';
 import { getCompanyShortName } from '@/utils/formatters/models/company.js';
 import VisitScheduler from '@/components/VisitScheduler/VisitScheduler.vue';
 import CallScheduler from '@/components/CallScheduler/CallScheduler.vue';
 import FormModalCompanyChangeConsultant from '@/components/Forms/Company/FormModalCompanyChangeConsultant.vue';
 import FormContactChangeCompany from '@/components/Forms/FormContactChangeCompany.vue';
+import { captureException } from '@sentry/vue';
 
 provide('openContact', showContact);
 provide('createContactComment', createContactComment);
@@ -237,6 +241,8 @@ function onDisabledContact(payload) {
     Object.assign(disablingContact.value, payload);
 
     disablingContact.value = null;
+
+    getCompany();
 }
 
 async function enableContact(contact) {
@@ -256,6 +262,8 @@ async function enableContact(contact) {
 
     contact.isLoading = false;
 
+    void getCompany();
+
     notify.success('Контакт успешно восстановлен.');
 }
 
@@ -273,6 +281,11 @@ async function deleteContact(contact) {
     contact.isLoading = false;
 
     notify.success('Контакт удален.');
+}
+
+function onContactCreated() {
+    getCompanyContacts();
+    getCompany();
 }
 
 //
@@ -391,6 +404,7 @@ onBeforeMount(() => {
     getCompanyContacts(true);
     getCompanyObjects(true);
     fetchCompanyRequests(true);
+    store.dispatch('FETCH_CONSULTANT_LIST');
 });
 
 onUnmounted(() => {
@@ -434,11 +448,16 @@ function closeTimeline() {
 
 const notify = useNotify();
 
+function increaseCompanyStatusCount() {
+    COMPANY.value.status_history_count = (COMPANY.value.status_history_count ?? 0) + 1;
+}
+
 const { isLoading: enableIsLoading, execute: enableCompany } = useAsync(api.companies.enable, {
     onFetchResponse: () => {
         notify.success('Компания успешно восстановлена.');
         COMPANY.value.status = 1;
         COMPANY.value.status.passive_why = null;
+        increaseCompanyStatusCount();
     },
     confirmation: true,
     confirmationContent: {
@@ -447,18 +466,20 @@ const { isLoading: enableIsLoading, execute: enableCompany } = useAsync(api.comp
     }
 });
 
-const disablingFormIsVisible = ref(false);
+const deleteFormIsVisible = ref(false);
 
-function disableCompany() {
-    disablingFormIsVisible.value = true;
+function deleteCompany() {
+    deleteFormIsVisible.value = true;
 }
 
-function onDisabledCompany(payload) {
-    COMPANY.value.status = 0;
+function onDeletedCompany(payload) {
+    COMPANY.value.status = 2;
     COMPANY.value.passive_why = payload.passive_why;
     COMPANY.value.passive_why_comment = payload.passive_why_comment;
 
-    disablingFormIsVisible.value = false;
+    increaseCompanyStatusCount();
+
+    deleteFormIsVisible.value = false;
 
     if (payload.disable_requests) {
         fetchCompanyRequests(false);
@@ -538,5 +559,71 @@ function closeChangeContactCompanyForm() {
 function onContactCompanyChanged() {
     getCompanyContacts(false);
     closeChangeContactCompanyForm();
+}
+
+// requests
+
+async function createTask(payload) {
+    try {
+        isLoading.value = true;
+
+        return await api.task.create(payload);
+    } catch (error) {
+        captureException(error);
+        return null;
+    } finally {
+        isLoading.value = false;
+    }
+}
+
+async function requestDeleteCompany() {
+    const taskPayload = await createTaskWithTemplate({
+        title: `Удалить компанию "${getCompanyShortName(COMPANY.value)}" (#${COMPANY.value.id})`,
+        user_id: store.getters.moderator?.id,
+        relations: [createTaskRelation('company', COMPANY.value.id)],
+        step: TASK_FORM_STEPS.MESSAGE
+    });
+
+    if (!taskPayload) return;
+
+    const task = await createTask(taskPayload);
+
+    if (task) {
+        notify.success('Запрос успешно создан');
+    }
+}
+
+async function requestEnableCompany() {
+    const taskPayload = await createTaskWithTemplate({
+        title: `Восстановить компанию "${getCompanyShortName(COMPANY.value)}" (#${COMPANY.value.id})`,
+        user_id: store.getters.moderator?.id,
+        relations: [createTaskRelation('company', COMPANY.value.id)],
+        step: TASK_FORM_STEPS.MESSAGE
+    });
+
+    if (!taskPayload) return;
+
+    const task = await createTask(taskPayload);
+
+    if (task) {
+        notify.success('Запрос успешно создан');
+    }
+}
+
+async function requestChangeCompanyConsultant() {
+    const taskPayload = await createTaskWithTemplate({
+        title: `Изменить консультанта компании "${getCompanyShortName(COMPANY.value)}" (#${COMPANY.value.id})`,
+        user_id: store.getters.moderator?.id,
+        relations: [createTaskRelation('company', COMPANY.value.id)],
+        step: TASK_FORM_STEPS.MESSAGE
+    });
+
+    if (!taskPayload) return;
+
+    const task = await createTask(taskPayload);
+
+    if (task) {
+        notify.success('Запрос успешно создан');
+    }
 }
 </script>

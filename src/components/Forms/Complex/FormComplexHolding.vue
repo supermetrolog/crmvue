@@ -8,46 +8,46 @@
             <Tabs :options="{ useUrlFragment: false, defaultTabHash: 'main' }">
                 <Tab id="main" name="Основное">
                     <div class="row">
-                        <MultiSelect
-                            v-model="form.address"
-                            @change="onChangeAddress"
-                            extra-classes="long-text"
-                            placeholder="Введите адрес.."
-                            label="Адрес строения"
-                            required
-                            class="col-6"
-                            :filterResults="false"
-                            :min-chars="1"
-                            :resolve-on-load="true"
-                            :delay="600"
-                            :searchable="true"
-                            :v="v$.form.address"
-                            :options="
-                                async query => {
-                                    return await searchAddress(query);
-                                }
-                            "
-                        />
-                        <MultiSelect
-                            v-model="form.company_id"
-                            @change="onChangeCompany"
-                            placeholder="Введите название компании или ID"
-                            extra-classes="long-text"
-                            label="Компания"
-                            required
-                            class="col-6"
-                            :v="v$.form.company_id"
-                            :filterResults="false"
-                            :min-chars="1"
-                            :resolve-on-load="true"
-                            :delay="500"
-                            :searchable="true"
-                            :options="
-                                async query => {
-                                    return await searchCompany(query);
-                                }
-                            "
-                        />
+                        <!--                        <MultiSelect-->
+                        <!--                            v-model="form.address"-->
+                        <!--                            @change="onChangeAddress"-->
+                        <!--                            extra-classes="long-text"-->
+                        <!--                            placeholder="Введите адрес.."-->
+                        <!--                            label="Адрес строения"-->
+                        <!--                            required-->
+                        <!--                            class="col-6"-->
+                        <!--                            :filterResults="false"-->
+                        <!--                            :min-chars="1"-->
+                        <!--                            :resolve-on-load="true"-->
+                        <!--                            :delay="600"-->
+                        <!--                            :searchable="true"-->
+                        <!--                            :v="v$.form.address"-->
+                        <!--                            :options="-->
+                        <!--                                async query => {-->
+                        <!--                                    return await searchAddress(query);-->
+                        <!--                                }-->
+                        <!--                            "-->
+                        <!--                        />-->
+                        <!--                        <MultiSelect-->
+                        <!--                            v-model="form.company_id"-->
+                        <!--                            @change="onChangeCompany"-->
+                        <!--                            placeholder="Введите название компании или ID"-->
+                        <!--                            extra-classes="long-text"-->
+                        <!--                            label="Компания"-->
+                        <!--                            required-->
+                        <!--                            class="col-6"-->
+                        <!--                            :v="v$.form.company_id"-->
+                        <!--                            :filterResults="false"-->
+                        <!--                            :min-chars="1"-->
+                        <!--                            :resolve-on-load="true"-->
+                        <!--                            :delay="500"-->
+                        <!--                            :searchable="true"-->
+                        <!--                            :options="-->
+                        <!--                                async query => {-->
+                        <!--                                    return await searchCompany(query);-->
+                        <!--                                }-->
+                        <!--                            "-->
+                        <!--                        />-->
                     </div>
                     <div class="row mt-2">
                         <div class="col-12">
@@ -250,7 +250,7 @@
 import Loader from '@/components/common/Loader.vue';
 import Modal from '@/components/common/Modal.vue';
 import { entityOptions } from '@/const/options/options';
-import { onBeforeMount, reactive, shallowRef, toRef } from 'vue';
+import { onBeforeMount, reactive, shallowRef } from 'vue';
 import { cloneObject } from '@/utils/helpers/object/cloneObject.js';
 import UiInput from '@/components/common/Forms/UiInput.vue';
 import FileInput from '@/components/common/Forms/FileInput.vue';
@@ -263,8 +263,6 @@ import { objectPurposesWithSectionsOptions } from '@/const/options/object.option
 import ObjectTypePicker from '@/components/common/Forms/ObjectTypePicker.vue';
 import DescriptionEditor from '@/components/common/Forms/DescriptionEditor.vue';
 import FloorPicker from '@/components/common/Forms/FloorPicker.vue';
-import { useSearchCompany } from '@/composables/useSearchCompany.js';
-import { useSearchAddress } from '@/composables/useSearchAddress.js';
 import RadioOptions from '@/components/common/Forms/RadioOptions.vue';
 import FormSubmit from '@/components/common/Forms/FormSubmit.vue';
 
@@ -311,12 +309,6 @@ const form = reactive({
 });
 
 const v$ = useVuelidate({ form: validationRulesForComplexHolding }, { form });
-
-const searchAddress = useSearchAddress(toRef(() => props.holding?.address));
-const searchCompany = useSearchCompany(toRef(() => props.holding?.company_id));
-const onChangeCompany = () => {};
-
-const onChangeAddress = () => {};
 
 const onSubmit = () => {};
 

@@ -3,7 +3,7 @@ import { responseToData } from '@/api/helpers/responseToData.ts';
 import {
     responseToPaginatedData,
     responseToPagination
-} from '@/api/helpers/responseToPaginatedData.js';
+} from '@/api/helpers/responseToPaginatedData.ts';
 import { responseHasStatus } from '@/api/helpers/responseHasStatus.js';
 import { STATUS_SUCCESS } from '@/api/helpers/statuses.js';
 

@@ -4,7 +4,7 @@
             <button @click.prevent="toggle" class="mobile-header__button">
                 <i class="fa-solid fa-bars"></i>
             </button>
-            <div class="mobile-header__avatar">
+            <div v-if="currentUser" class="mobile-header__avatar">
                 <router-link to="/account">
                     <Avatar :size="45" :src="currentUser.userProfile?.avatar" />
                 </router-link>
@@ -29,7 +29,7 @@ import TheMobileSidebar from '@/components/SideBar/TheMobileSidebar.vue';
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
 import DashboardChip from '@/components/Dashboard/DashboardChip.vue';
 import { useRoute } from 'vue-router';
-import { useAuth } from '@/composables/useAuth.js';
+import { useAuth } from '@/composables/useAuth';
 import { isArray } from '@/utils/helpers/array/isArray.ts';
 
 const { currentUser } = useAuth();

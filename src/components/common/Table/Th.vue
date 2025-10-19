@@ -1,5 +1,16 @@
 <template>
-    <th class="table__th th" :class="{ sortable: !!sort }">
+    <th
+        ref="thEl"
+        class="table__th th"
+        :class="{
+            sortable: !!sort
+        }"
+        :style="{
+            width: columnWidthInPx,
+            minWidth: minColumnWidthInPx,
+            maxWidth: maxColumnWidthInPx
+        }"
+    >
         <div class="th__wrapper">
             <div @click="sortHandle" class="th__content">
                 <slot />
@@ -129,54 +140,67 @@
                 </DropdownContent>
             </VDropdown>
         </div>
+        <ThResizer v-if="effectiveResizable" @mousedown="onMouseDown" @dbclick="onDblClick" />
     </th>
 </template>
 
-<script setup>
-import { computed, ref, toRef, useTemplateRef, watch } from 'vue';
+<script setup lang="ts">
+import { computed, ref, toRef, toValue, useTemplateRef, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useTippy } from 'vue-tippy';
 import { DropdownContent } from 'v-dropdown';
 import VDropdown from '@/components/common/Dropdown/VDropdown.vue';
 import UiButton from '@/components/common/UI/UiButton.vue';
-import { isNotNullish } from '@/utils/helpers/common/isNotNullish.ts';
-import { isNullish } from '@/utils/helpers/common/isNullish.ts';
+import { isNotNullish } from '@/utils/helpers/common/isNotNullish';
+import { isNullish } from '@/utils/helpers/common/isNullish';
 import MultiSelect from '@/components/common/Forms/MultiSelect.vue';
 import { isString } from '@/utils/helpers/string/isString.js';
 import RadioChip from '@/components/common/Forms/RadioChip.vue';
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
+import { useTableColumnWidth } from '@/composables/useTableColumnWidth';
+import { useTableColumnResize } from '@/composables/useTableColumnResize';
+import ThResizer from '@/components/common/Table/ThResizer.vue';
 
 const route = useRoute();
 const router = useRouter();
 
-const emit = defineEmits(['sort', 'confirm-filter']);
+const emit = defineEmits<{
+    (e: 'sort', value: string): void;
+    (e: 'confirm-filter'): void;
+}>();
 
-const filters = defineModel('filters');
+const filters = defineModel<Record<string, any>>('filters');
 
-const props = defineProps({
-    sort: {
-        type: String,
-        default: null
-    },
-    withRouter: {
-        type: Boolean,
-        default: true
-    },
-    filterIcon: {
-        type: String,
-        default: 'fa-solid fa-filter'
-    },
-    filterTooltip: {
-        type: String,
-        default: 'Открыть фильтр'
-    },
-    sortTooltip: {
-        type: String,
-        default: 'Открыть сортировку'
-    },
-    sortingOptions: Array,
-    name: String
-});
+export type TableSortingOption = {
+    value: string;
+    label: string;
+    icon?: string;
+    asc?: string;
+    desc?: string;
+    onlyAsc?: boolean;
+};
+
+const props = withDefaults(
+    defineProps<{
+        sort?: string;
+        withRouter?: boolean;
+        filterIcon?: string;
+        filterTooltip?: string;
+        sortTooltip?: string;
+        sortingOptions?: TableSortingOption[];
+        name?: string;
+        resizable?: boolean;
+        minWidth?: number;
+        maxWidth?: number;
+    }>(),
+    {
+        withRouter: true,
+        filterIcon: 'fa-solid fa-filter',
+        filterTooltip: 'Открыть фильтр',
+        sortTooltip: 'Открыть сортировку',
+        resizable: true
+    }
+);
 
 const isDescSort = computed(() => {
     if (!props.withRouter) return false;
@@ -381,4 +405,83 @@ function closeFilters() {
 }
 
 defineExpose({ closeFilters });
+
+// resize
+
+const {
+    widths,
+    resizable: isResizable,
+    constraints,
+    setColWidth,
+    resetColWidth
+} = useTableColumnWidth();
+
+const thEl = useTemplateRef('thEl');
+
+const effectiveResizable = computed(() => {
+    if (!props.name) return false;
+
+    return props.resizable ?? toValue(isResizable);
+});
+
+const columnWidth = computed(() => {
+    if (!props.name) return undefined;
+    return widths[props.name];
+});
+
+const columnWidthInPx = computed(() => (columnWidth.value ? `${columnWidth.value}px` : undefined));
+
+const minColumnWidth = computed(() => {
+    if (props.minWidth) {
+        return props.minWidth;
+    }
+
+    if (constraints) {
+        return toValue(constraints)[props.name!]?.min;
+    }
+
+    return undefined;
+});
+
+const minColumnWidthInPx = computed(() =>
+    minColumnWidth.value ? `${minColumnWidth.value}px` : undefined
+);
+
+const maxColumnWidth = computed(() => {
+    if (props.maxWidth) {
+        return props.maxWidth;
+    }
+
+    if (constraints) {
+        return toValue(constraints)[props.name!]?.max;
+    }
+
+    return undefined;
+});
+
+const maxColumnWidthInPx = computed(() =>
+    maxColumnWidth.value ? `${maxColumnWidth.value}px` : undefined
+);
+
+const { start } = useTableColumnResize({
+    onResize: ({ col, width }) => {
+        if (!effectiveResizable.value) return;
+
+        setColWidth(col, width);
+    }
+});
+
+function onMouseDown(e: MouseEvent) {
+    if (!props.name || !thEl.value) return;
+
+    const startWidth = thEl.value.getBoundingClientRect().width;
+
+    start(e, props.name, startWidth);
+}
+
+function onDblClick() {
+    if (!effectiveResizable.value) return;
+
+    resetColWidth(props.name);
+}
 </script>

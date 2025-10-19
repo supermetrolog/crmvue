@@ -88,6 +88,19 @@
         @include mixins.transition(background-color);
         @include mixins.flex-box($a: center, $j: center);
     }
+
+    &:has(.header-summary-section.urgent) {
+        animation: header-blink .5s ease infinite alternate;
+    }
+}
+
+@keyframes header-blink {
+    from {
+        background-color: #f7f7f7;
+    }
+    to {
+        background-color: variables.$color_danger;
+    }
 }
 
 .header-link {
@@ -145,7 +158,7 @@
     &__wrapper {
         width: 100%;
         height: 65px;
-        border-bottom: 1px solid  rgba(0, 0, 0, .2);
+        border-bottom: 1px solid rgba(0, 0, 0, .2);
         padding: 10px 15px;
         background-color: #243539;
         @include mixins.flex-box($gap: 10px, $a: center);
@@ -208,7 +221,7 @@
         font-weight: 500;
 
         .dashboard-chip {
-            font-size: 16px!important;
+            font-size: 16px !important;
         }
     }
 }
@@ -229,18 +242,31 @@
         pointer-events: none;
     }
 
-    &.active:hover {
+    &.active:hover, &.danger {
         background-color: variables.$color_danger;
         color: #fff;
     }
 
-    &.active:hover &__indicator {
+    &.active:hover &__indicator, &.danger &__indicator {
         background-color: #fff;
         color: variables.$color_danger;
     }
 
     &:not(.active):hover {
         background-color: variables.$color_grey_alt;
+    }
+
+    &.silent-loading {
+        animation: blink 1s infinite alternate;
+    }
+
+    @keyframes blink {
+        from {
+            opacity: 1;
+        }
+        to {
+            opacity: .5;
+        }
     }
 
     &__label {
@@ -258,9 +284,12 @@
         @include mixins.transition(background-color, color);
     }
 
-    &.active &__indicator {
+    &.active:not(.danger) &__indicator {
         background-color: variables.$color_danger;
         color: #fff;
+    }
+
+    &.active &__indicator {
         font-weight: 500;
     }
 
@@ -316,12 +345,12 @@
     height: 100%;
 
     &__header {
-        background-color: transparent!important;
+        background-color: transparent !important;
     }
 
     &__list {
         overflow-y: scroll;
-        height: 580px!important;
+        height: 580px !important;
     }
 }
 
@@ -367,5 +396,85 @@
         background-color: #fff;
         border-radius: 5px;
         border: 1px solid rgba(0, 0, 0, .2);
+    }
+}
+
+.header-summary-user-notifications {
+    padding: 0 10px;
+
+    &__tabs {
+        @include mixins.flex-box($gap: 10px);
+        padding: 10px 0;
+    }
+
+    &__list {
+        max-height: 500px;
+        min-height: 200px;
+        border-bottom: 1px solid #d6d6d6;
+        border-top: 1px solid #d6d6d6;
+        border-left: 1px solid #d6d6d6;
+    }
+
+    &__card {
+        @include mixins.transition(background-color);
+
+        &:not(:first-child) {
+            border-top: 1px solid #d6d6d6;
+        }
+
+        &:last-child {
+            border-bottom: 1px solid #d6d6d6;
+        }
+
+        &:hover {
+            cursor: pointer;
+            background-color: variables.$color_light;
+        }
+    }
+
+    &__empty {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
+}
+
+.user-notification-inline-card {
+    @include mixins.flex-box();
+
+    &__icon {
+        font-size: 26px;
+    }
+
+    &__preview {
+        padding: 15px 10px 10px;
+    }
+
+    &__content {
+        width: 100%;
+        padding: 10px;
+        position: relative;
+    }
+
+    &__badges {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        z-index: 10;
+        @include mixins.flex-box($gap: 5px);
+    }
+
+    &__header {
+        font-size: 14px;
+        margin-bottom: 10px;
+    }
+
+    &__subject {
+        font-weight: 500;
+    }
+
+    &__date {
+        color: variables.$color_grey;
     }
 }

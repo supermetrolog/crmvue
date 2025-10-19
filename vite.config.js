@@ -3,8 +3,8 @@ import { defineConfig } from 'vite';
 import vue from '@vitejs/plugin-vue';
 import { htmlInjectionPlugin } from 'vite-plugin-html-injection';
 import pkg from './package.json';
+import ElementPlus from 'unplugin-element-plus/vite';
 
-// https://vitejs.dev/config/
 export default defineConfig({
     plugins: [
         vue(),
@@ -15,14 +15,10 @@ export default defineConfig({
                     path: './src/injections/splash-screen.html',
                     injectTo: 'body'
                 }
-                // {
-                //     name: 'Google Analytics',
-                //     path: './src/injections/google-analytics.html',
-                //     type: 'raw',
-                //     injectTo: 'body',
-                //     buildModes: 'prod'
-                // }
             ]
+        }),
+        ElementPlus({
+            defaultLocale: 'ru'
         })
     ],
     resolve: {

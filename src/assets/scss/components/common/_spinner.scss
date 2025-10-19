@@ -2,8 +2,10 @@
 @use '../../utils/variables';
 
 .spinner {
-    text-align: center;
-    @include mixins.flex-box($d: column, $a: center, $j: center);
+    &:not([role="progressbar"]) {
+        text-align: center;
+        @include mixins.flex-box($d: column, $a: center, $j: center);
+    }
 
     &.center {
         margin: 0 auto;

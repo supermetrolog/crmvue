@@ -546,9 +546,10 @@ import UiCheckbox from '@/components/common/Forms/UiCheckbox.vue';
 import UiCol from '@/components/common/UI/UiCol.vue';
 import RadioChip from '@/components/common/Forms/RadioChip.vue';
 import SwitchSlider from '@/components/common/Forms/SwitchSlider.vue';
-import { useAuth } from '@/composables/useAuth.js';
+import { useAuth } from '@/composables/useAuth';
 import { isString } from '@/utils/helpers/string/isString.js';
 import { isNotNullish } from '@/utils/helpers/common/isNotNullish.ts';
+import { useUserNotificationsPause } from '@/composables/useUserNotificationsPause';
 
 const emit = defineEmits(['close', 'created', 'updated']);
 const props = defineProps({
@@ -561,6 +562,8 @@ const props = defineProps({
         default: null
     }
 });
+
+useUserNotificationsPause('company-request-form');
 
 const { getConsultantsOptions } = useConsultantsOptions();
 const { getClearedRegionsOptions } = useRegionsOptions();

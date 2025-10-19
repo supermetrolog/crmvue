@@ -7,7 +7,7 @@
             'fade-out': company.isDeleting
         }"
     >
-        <Td class="text-center company-table-item__id">
+        <Td name="id" class="text-center company-table-item__id">
             <Loader v-if="company.isLoading" class="absolute-center" small />
             <p class="mb-2">{{ company.id }}</p>
             <Avatar
@@ -18,12 +18,13 @@
                 class="mx-auto"
             />
         </Td>
-        <Td class="company-table-item__name position-relative">
+        <Td name="name" class="company-table-item__name position-relative">
             <div class="company-table-item__main">
                 <CompanyLogo
                     :company-id="company.id"
                     :company-name="companyName"
                     :src="company.logo"
+                    :class="{ 'op-5': isDeleted }"
                 />
                 <CompanyTableItemInfo :company />
             </div>
@@ -34,13 +35,21 @@
                 :company
                 class="mt-2"
             />
-            <TableDateBlock
-                :date="company.updated_at ?? company.created_at"
-                label="Дата обновления"
-                class="mt-1 op-7"
-            />
+            <TableDateBlock :date="company.created_at" class="mt-1 op-7">
+                <template #label="{ formattedDate }">
+                    <p class="mb-1">
+                        Дата внесения в базу -
+                        <span class="font-weight-semi">{{ formattedDate }}</span>
+                    </p>
+                    <p v-if="company.updated_at">
+                        Дата последнего обновления -
+                        <span class="font-weight-semi">{{ updatedAt }}</span>
+                    </p>
+                    <p v-else class="op-5 text-grey">Дата последнего обновления утеряна</p>
+                </template>
+            </TableDateBlock>
         </Td>
-        <Td class="company-table-item__comment">
+        <Td name="status" class="company-table-item__comment">
             <CompanyTableItemSummary
                 @create-task="$emit('create-task')"
                 @schedule-call="$emit('schedule-call')"
@@ -87,7 +96,7 @@ import { useMessenger } from '@/components/Messenger/useMessenger.js';
 import { getCompanyName } from '@/utils/formatters/models/company.js';
 import CompanyLogo from '@/components/Company/CompanyLogo.vue';
 import { messenger } from '@/const/messenger.js';
-import { useSurveyForm } from '@/composables/useSurveyForm.js';
+import { useSurveyForm } from '@/composables/useSurveyForm.ts';
 import { useTippy } from 'vue-tippy';
 import CompanyTableItemObjects from '@/components/Company/Table/CompanyTableItemObjects.vue';
 import CompanyTableItemRequests from '@/components/Company/Table/CompanyTableItemRequests.vue';
@@ -95,6 +104,8 @@ import CompanyTableDropdown from '@/components/Company/Table/CompanyTableDropdow
 import CompanyTableItemInfo from '@/components/Company/Table/CompanyTableItemInfo.vue';
 import CompanyTableItemSummary from '@/components/Company/Table/Summary/CompanyTableItemSummary.vue';
 import Loader from '@/components/common/Loader.vue';
+import { CompanyStatusEnum } from '@/types/company';
+import { toBeautifulDateFormat } from '@/utils/formatters/date';
 
 const store = useStore();
 const router = useRouter();
@@ -122,13 +133,14 @@ const props = defineProps({
     odd: { type: Boolean, default: false }
 });
 
+const updatedAt = computed(() => toBeautifulDateFormat(props.company.updated_at));
+
 const dropdownMustBeShown = computed(
     () => props.company.objects.length || props.company.requests.length
 );
 
 // TODO: Как-то внедрить тут пассив
-const isPassive = computed(() => props.company.status === 0);
-const passiveWhyLabel = computed(() => PassiveWhy[props.company.passive_why].short ?? 'Пассив');
+const isDeleted = computed(() => props.company.status === CompanyStatusEnum.DELETED);
 
 const passiveWhyComment = computed(() => {
     if (!props.company.passive_why) return 'Причина не указана';

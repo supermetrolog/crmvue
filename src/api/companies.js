@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { responseToData } from '@/api/helpers/responseToData.ts';
-import { responseToPaginatedData } from '@/api/helpers/responseToPaginatedData.js';
+import { responseToPaginatedData } from '@/api/helpers/responseToPaginatedData.ts';
 import { responseHasStatus } from '@/api/helpers/responseHasStatus.js';
 import { STATUS_SUCCESS } from '@/api/helpers/statuses.js';
 
@@ -62,7 +62,11 @@ export default {
         return responseHasStatus(response, STATUS_SUCCESS);
     },
     async disable(companyId, payload) {
-        const response = await axios.post(`${URL}/${companyId}/disable`, payload);
+        const response = await axios.post(`${URL}/${companyId}/delete`, payload);
+        return responseHasStatus(response, STATUS_SUCCESS);
+    },
+    async passive(companyId, payload) {
+        const response = await axios.post(`${URL}/${companyId}/passive`, payload);
         return responseHasStatus(response, STATUS_SUCCESS);
     },
     async linkMessage(id, payload) {
@@ -75,6 +79,10 @@ export default {
     },
     async createNote(id, payload) {
         const response = await axios.post(`${URL}/${id}/create-note`, payload);
+        return responseToData(response);
+    },
+    async statusHistory(id) {
+        const response = await axios.get(`${URL}/${id}/status-history`);
         return responseToData(response);
     }
 };

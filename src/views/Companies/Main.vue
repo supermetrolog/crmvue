@@ -160,7 +160,7 @@ import { useTaskManager } from '@/composables/useTaskManager.js';
 import { getCompanyShortName } from '@/utils/formatters/models/company.js';
 import DashboardTableTasks from '@/components/Dashboard/Table/DashboardTableTasks.vue';
 import { taskOptions } from '@/const/options/task.options.js';
-import { useAuth } from '@/composables/useAuth.js';
+import { useAuth } from '@/composables/useAuth';
 import FormCompanyDisable from '@/components/Forms/Company/FormCompanyDisable.vue';
 import { useCompanyDisable } from '@/components/Company/useCompanyDisable.js';
 import CallScheduler from '@/components/CallScheduler/CallScheduler.vue';
@@ -169,6 +169,8 @@ import EventScheduler from '@/components/EventScheduler/EventScheduler.vue';
 import CompanyTablePreviewComments from '@/components/Company/Table/CompanyTablePreviewComments.vue';
 import CompanyTablePreviewNotes from '@/components/Company/Table/CompanyTablePreviewNotes.vue';
 import { captureException } from '@sentry/vue';
+import { CompanyStatusEnum } from '@/types/company';
+import { toArray } from '@/utils/helpers/array/toArray';
 
 const route = useRoute();
 const router = useRouter();
@@ -210,6 +212,14 @@ async function getCompanies() {
 
     const query = { ...route.query, current_user_id: currentUserId.value };
 
+    if (query.statuses) {
+        query.statuses = toArray(query.statuses);
+    }
+
+    if (query.cian_regions) {
+        query.cian_regions = toArray(query.cian_regions);
+    }
+
     if (isNotNullish(currentFolder.value)) {
         query.folder_ids = [currentFolder.value];
     }
@@ -232,17 +242,17 @@ const { next, nextWithScroll, queryIsInitialized, isInitialLoading } = useTableC
             const queryIsEmpty = Object.keys(query).length === 0;
 
             if (!queryIsEmpty) return;
-
             if (isNotNullish(store.state.Companies.companyFilters)) {
-                await router.replace({ query: store.state.Companies.companyFilters });
+                await router.replace({
+                    query: { ...store.state.Companies.companyFilters }
+                });
                 return;
             }
 
             query.consultant_id = currentUserId.value;
-            query.status = 1;
+            query.statuses = [CompanyStatusEnum.ACTIVE];
             query.with_active_contacts = 1;
             query.sort = 'activity';
-
             await router.replace({ query });
         }
     }

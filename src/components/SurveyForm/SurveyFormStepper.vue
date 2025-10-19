@@ -85,7 +85,7 @@
                         tooltip="Отложить опрос на 5 дней для дальнейшей попытки созвониться"
                         color="warning"
                         icon="fa-solid fa-phone-slash"
-                        :disabled
+                        :disabled="disabled || !canBeSubmit"
                     >
                         Можно отложить опрос
                     </UiButton>
@@ -94,7 +94,7 @@
                         tooltip='Завершить опрос с отметкой "Не удалось дозвониться"'
                         color="danger-light"
                         icon="fa-solid fa-phone-slash"
-                        :disabled
+                        :disabled="disabled || !canBeSubmit"
                     >
                         Можно сохранить опрос
                     </UiButton>
@@ -106,7 +106,7 @@
                     icon="fa-solid fa-check"
                     class="survey-form__stepper-action"
                     :class="{ disabled: !formIsValid }"
-                    :disabled
+                    :disabled="disabled || !canBeSubmit"
                 >
                     {{ formIsValid ? 'Можно сохранить опрос' : 'Нельзя сохранить опрос' }}
                 </UiButton>
@@ -131,16 +131,16 @@
     </Stepper>
 </template>
 <script setup>
-import { computed, onBeforeMount, reactive, ref, shallowRef, useTemplateRef, watch } from 'vue';
+import { computed, onBeforeMount, reactive, ref, useTemplateRef, watch } from 'vue';
 import Stepper from '@/components/common/Stepper/Stepper.vue';
 import { isNotNullish } from '@/utils/helpers/common/isNotNullish.ts';
 import { useEventBus, useIntervalFn } from '@vueuse/core';
 import api from '@/api/api.js';
 import { surveyConfig } from '@/configs/survey.config.js';
-import { useAuth } from '@/composables/useAuth.js';
+import { useAuth } from '@/composables/useAuth';
 import { isNullish } from '@/utils/helpers/common/isNullish.ts';
 import UiButton from '@/components/common/UI/UiButton.vue';
-import { useAsync } from '@/composables/useAsync.js';
+import { useAsync } from '@/composables/useAsync';
 import SurveyFormObjects from '@/components/SurveyForm/SurveyFormObjects.vue';
 import Spinner from '@/components/common/Spinner.vue';
 import { useStore } from 'vuex';
@@ -161,6 +161,7 @@ import SurveyFormStepperHelper from '@/components/SurveyForm/SurveyFormStepperHe
 import SurveyFormStepperSummary from '@/components/SurveyForm/SurveyFormStepperSummary.vue';
 import { useConfirm } from '@/composables/useConfirm.js';
 import { createTourStepElementGenerator, useTourStep } from '@/composables/useTour/useTourStep';
+import { useUserNotificationsPause } from '@/composables/useUserNotificationsPause';
 
 function toBool(value) {
     if (typeof value === 'string') return value === 'true';
@@ -203,6 +204,8 @@ const props = defineProps({
         default: () => []
     }
 });
+
+useUserNotificationsPause('survey-form');
 
 const isEditMode = computed(() => isNotNullish(props.survey));
 
@@ -330,7 +333,7 @@ const steps = reactive([
     {
         name: 'objects',
         title: computed(() => {
-            if (objectsIsLoading.value) {
+            if (objectsIsLoading.value || relatedObjectsIsLoading.value) {
                 return 'Предложения (загрузка..)';
             }
 
@@ -547,7 +550,12 @@ function createSurveyCallsPayload() {
     const payload = Object.values(form.value.calls).reduce((acc, contact) => {
         for (const phone of Object.values(contact?.phones ?? {})) {
             if (isNotNullish(phone.available) && isNotNullish(phone.reason)) {
-                acc.push({ ...phone, phone_id: phone.id, contact_id: contact.contact_id });
+                acc.push({
+                    ...phone,
+                    phone_id: phone.id,
+                    contact_id: contact.contact_id,
+                    full_name: contact.full_name
+                });
             }
         }
 
@@ -768,6 +776,10 @@ async function submit() {
     const isValid = await validate();
     if (!isValid) return;
 
+    if (!canBeSubmit.value) {
+        return;
+    }
+
     if (isNotNullish(props.survey)) {
         await updateSurvey();
         return;
@@ -808,7 +820,7 @@ async function submit() {
         return;
     }
 
-    notify.success('Опрос успешно завершен!', 'Опрос клиента');
+    notify.success('Опрос успешно обработан!', 'Опрос клиента');
     isCreating.value = false;
 
     emit('completed');
@@ -818,6 +830,10 @@ async function submit() {
 const isCancelling = ref(false);
 
 function cancelSurvey() {
+    if (!canBeSubmit.value) {
+        return;
+    }
+
     isCancelling.value = true;
     summaryModalIsVisible.value = true;
 }
@@ -852,9 +868,9 @@ async function cancel() {
         return;
     }
 
-    notify.success('Опрос успешно завершен!', 'Работа с опросом');
+    notify.success('Опрос успешно обработан!', 'Работа с опросом');
     isCreating.value = false;
-    emit('canceled');
+    emit('canceled', { calls });
     bus.emit('canceled', { companyId: props.company.id });
 }
 
@@ -873,6 +889,10 @@ async function delaySurvey() {
     });
 
     if (!confirmed) return;
+
+    if (!canBeSubmit.value) {
+        return;
+    }
 
     isCreating.value = true;
 
@@ -911,7 +931,7 @@ async function delaySurvey() {
 
 // objects
 
-const objects = shallowRef([]);
+const objects = ref([]);
 const requests = ref([]);
 
 const isLoading = ref(false);
@@ -919,12 +939,18 @@ const isLoading = ref(false);
 async function fetchInitialData() {
     isLoading.value = true;
 
-    await Promise.allSettled([fetchObjects(), fetchRequests(), fetchQuestions()]);
+    await Promise.allSettled([
+        fetchObjects(),
+        fetchRelatedObjects(),
+        fetchRequests(),
+        fetchQuestions()
+    ]);
 
     isLoading.value = false;
 }
 
 const objectsIsLoading = ref(false);
+const relatedObjectsIsLoading = ref(false);
 const requestsIsLoading = ref(false);
 
 async function fetchObjects() {
@@ -936,9 +962,24 @@ async function fetchObjects() {
         expand: 'commercialOffers.blocks,offerMix.offer'
     });
 
-    objects.value = response.data;
+    objects.value.push(...response.data);
 
     objectsIsLoading.value = false;
+}
+
+async function fetchRelatedObjects() {
+    relatedObjectsIsLoading.value = true;
+
+    const response = await api.object.list({
+        offer_company_id: props.company.id,
+        exclude_company_id: props.company.id,
+        'per-page': 0,
+        expand: 'commercialOffers.blocks,offerMix.offer'
+    });
+
+    objects.value.push(...response.data);
+
+    relatedObjectsIsLoading.value = false;
 }
 
 async function fetchRequests() {
@@ -1136,4 +1177,6 @@ addStep({
         step.value = 0;
     }
 });
+
+const { currentUserIsNotGuest: canBeSubmit } = useAuth();
 </script>

@@ -2167,12 +2167,14 @@
     }
 
     &__parameter {
-        color: #484545;
+        color: #000;
+        font-weight: 500;
         @include mixins.flex-box($a: center, $gap: 10px);
 
         i {
             font-size: 19px;
             margin-bottom: 2px;
+            color: variables.$color_grey;
         }
     }
 

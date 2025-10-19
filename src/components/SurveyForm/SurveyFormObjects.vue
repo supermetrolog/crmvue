@@ -295,7 +295,8 @@ const { preview } = usePreviewer();
 
 function showObjectOnMap(object) {
     previewInMap({
-        objectId: object.id
+        objectId: object.id,
+        targetId: object.id
     });
 }
 

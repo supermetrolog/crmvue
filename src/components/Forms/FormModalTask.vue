@@ -8,11 +8,14 @@
         custom-close
         class="task-form"
     >
-        <Stepper v-model:step="step"
-@complete="submit"
-:steps="steps"
-:v="v$.form"
-keep-alive>
+        <Stepper
+            v-model:step="step"
+            @complete="submit"
+            :steps="steps"
+            :v="v$.form"
+            keep-alive
+            :read-only="!canBeSubmit"
+        >
             <template #1>
                 <UiField v-if="isEditing" color="light" class="task-form__warning mb-2 mx-auto">
                     <i class="fa-solid fa-warning" />
@@ -207,7 +210,7 @@ import dayjs from 'dayjs';
 import { useTagsOptions } from '@/composables/options/useTagsOptions.js';
 import { taskOptions } from '@/const/options/task.options.js';
 import FormModalTaskDescription from '@/components/Forms/FormModalTaskDescription.vue';
-import { useAuth } from '@/composables/useAuth.js';
+import { useAuth } from '@/composables/useAuth';
 import { useDebounceFn, useTimeoutFn } from '@vueuse/core';
 import { isNotNullish } from '@/utils/helpers/common/isNotNullish.ts';
 import FileInput from '@/components/common/Forms/FileInput.vue';
@@ -226,7 +229,7 @@ import VueEditor from '@/components/common/Forms/VueEditor.vue';
 
 const store = useStore();
 const { getTagsOptions } = useTagsOptions();
-const { currentUser } = useAuth();
+const { currentUser, currentUserIsNotGuest: canBeSubmit } = useAuth();
 
 const steps = reactive([
     {
@@ -567,6 +570,10 @@ const formToPayload = () => {
 async function submit() {
     const isValid = await validate();
     if (!isValid) return;
+
+    if (!canBeSubmit.value) {
+        return;
+    }
 
     _submit(formToPayload());
     clearForm();

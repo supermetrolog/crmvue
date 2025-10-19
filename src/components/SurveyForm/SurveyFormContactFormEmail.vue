@@ -52,9 +52,13 @@ const props = defineProps<{
 
 // TODO: Количество писем, статусы
 
-const currentLetters = computed(() =>
-    props.contact.letters!.filter(letter => letter.email === props.email.email)
-);
+const currentLetters = computed(() => {
+    if (props.contact.letters?.length) {
+        return props.contact.letters!.filter(letter => letter.email === props.email.email);
+    }
+
+    return [];
+});
 
 const lettersCountLabel = computed(() => {
     if (currentLetters.value.length > 0) {
@@ -84,9 +88,13 @@ const lastLetterDateLabel = computed(() =>
 const lastLetterHasAnswer = computed(() => lastLetter.value.answers.length > 0);
 
 const currentLetterActions = computed(() => {
-    return props.letterActions.filter(action =>
-        currentLetters.value.some(letter => letter.id === action.target_id)
-    );
+    if (props.letterActions?.length) {
+        return props.letterActions.filter(action =>
+            currentLetters.value.some(letter => letter.id === action.target_id)
+        );
+    }
+
+    return [];
 });
 
 const currentLetterAction = computed(() => {

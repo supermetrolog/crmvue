@@ -1,3 +1,9 @@
+import {
+    getFromLocalstorage,
+    removeFromLocalstorage,
+    setInLocalstorage
+} from '@/services/localStorage';
+
 export type CacheItem<T> = {
     timestamp: number;
     data: T;
@@ -13,12 +19,12 @@ export function saveCache<T>(key: string, data: T) {
         data
     };
 
-    localStorage.setItem(createCacheKey(key), JSON.stringify(item));
+    setInLocalstorage(key, JSON.stringify(item));
 }
 
 export function loadCache<T>(key: string, ttl = 24 * 60 * 60 * 1000): T | null {
     try {
-        const raw = localStorage.getItem(createCacheKey(key));
+        const raw = getFromLocalstorage(key);
         if (!raw) return null;
 
         const parsed: CacheItem<T> = JSON.parse(raw);
@@ -31,5 +37,5 @@ export function loadCache<T>(key: string, ttl = 24 * 60 * 60 * 1000): T | null {
 }
 
 export function removeCache(key: string) {
-    localStorage.removeItem(createCacheKey(key));
+    removeFromLocalstorage(key);
 }

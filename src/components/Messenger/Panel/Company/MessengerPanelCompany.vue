@@ -16,18 +16,20 @@
                             label="Редактировать"
                             icon="fa-solid fa-pen"
                         />
-                        <UiDropdownActionsButton
-                            v-if="isPassive"
-                            @handle="$emit('enable')"
-                            label="Восстановить компанию"
-                            icon="fa-solid fa-undo"
-                        />
-                        <UiDropdownActionsButton
-                            v-else
-                            @handle="$emit('disable')"
-                            label="Отправить в архив"
-                            icon="fa-solid fa-ban text-danger"
-                        />
+                        <UiCan moderator-or-higher>
+                            <UiDropdownActionsButton
+                                v-if="isPassive || isDisable"
+                                @handle="$emit('enable')"
+                                label="Восстановить компанию"
+                                icon="fa-solid fa-undo"
+                            />
+                            <UiDropdownActionsButton
+                                v-else
+                                @handle="$emit('disable')"
+                                label="Отправить в корзину"
+                                icon="fa-solid fa-ban text-danger"
+                            />
+                        </UiCan>
                         <UiDropdownActionsButton
                             @handle="toChat"
                             label="Перейти в чат компании"
@@ -60,8 +62,13 @@
                     >
                         <i
                             v-if="isPassive"
-                            v-tippy="'Компания в пассиве'"
-                            class="fa-solid fa-ban mr-1"
+                            v-tippy="'Компания временно приостановлена'"
+                            class="fa-regular fa-circle-pause mr-1"
+                        ></i>
+                        <i
+                            v-if="isDeleted"
+                            v-tippy="'Компания удалена'"
+                            class="fa-solid fa-trash mr-1"
                         ></i>
                         <i
                             v-if="isWithoutActiveContacts"
@@ -190,6 +197,8 @@ import Avatar from '@/components/common/Avatar.vue';
 import UiButtonIcon from '@/components/common/UI/UiButtonIcon.vue';
 import UiDropdownActions from '@/components/common/UI/DropdownActions/UiDropdownActions.vue';
 import UiDropdownActionsButton from '@/components/common/UI/DropdownActions/UiDropdownActionsButton.vue';
+import UiCan from '@/components/common/UI/UiCan.vue';
+import { CompanyStatusEnum } from '@/types/company';
 
 defineEmits(['edit', 'disable', 'enable']);
 const props = defineProps({
@@ -243,7 +252,9 @@ const productRanges = computed(() => {
 
 const companyName = computed(() => getCompanyName(props.company, props.company.id));
 
-const isPassive = computed(() => !props.company.status);
+const isPassive = computed(() => props.company.status === CompanyStatusEnum.PASSIVE);
+const isDeleted = computed(() => props.company.status === CompanyStatusEnum.DELETED);
+
 const isWithoutActiveContacts = computed(() => props.company.active_contacts_count === 0);
 
 const toChat = () => {

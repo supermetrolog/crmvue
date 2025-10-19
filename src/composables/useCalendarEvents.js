@@ -2,7 +2,7 @@ import { ref, shallowRef } from 'vue';
 import dayjs from 'dayjs';
 import api from '@/api/api.js';
 import { taskOptions } from '@/const/options/task.options.js';
-import { useAuth } from '@/composables/useAuth.js';
+import { useAuth } from '@/composables/useAuth';
 import { deduplicate } from '@/utils/deduplicate.js';
 import { dayjsFromServer } from '@/utils/formatters/date.ts';
 import { TaskTypeEnum } from '@/types/task';

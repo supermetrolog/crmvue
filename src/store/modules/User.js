@@ -1,5 +1,5 @@
 import api from '@/api/api';
-import { useAuth } from '@/composables/useAuth.js';
+import { useAuth } from '@/composables/useAuth';
 import {
     getAccessTokenFromLocalStorage,
     getUserFromLocalStorage,
@@ -7,6 +7,7 @@ import {
     setUserInLocalStorage
 } from '@/services/localStorage.js';
 import { userOptions } from '@/const/options/user.options.js';
+import { destroyNotifications } from '@/services/notifications/notifications';
 
 const User = {
     state: {
@@ -99,6 +100,7 @@ const User = {
         },
         dropUser({ commit }) {
             removeUserInLocalStorage();
+            destroyNotifications();
             commit('setUser', null);
         },
         async login({ dispatch }, formData) {

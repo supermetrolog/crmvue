@@ -67,6 +67,7 @@
                 :tasks="baseTasks"
             />
             <CompanyTableItemSummarySuggest
+                v-if="!isDeleted"
                 @show-task="$emit('show-task', $event)"
                 @open-survey="$emit('open-survey')"
                 :company
@@ -129,13 +130,14 @@ import DashboardTableTasksItem from '@/components/Dashboard/Table/TasksItem/Dash
 import UiModal from '@/components/common/UI/UiModal.vue';
 import { dayjsFromServer } from '@/utils/formatters/date.ts';
 import { now } from '@vueuse/core';
-import { useAuth } from '@/composables/useAuth.js';
+import { useAuth } from '@/composables/useAuth';
 import CompanyTableItemSummarySuggest from '@/components/Company/Table/Summary/Suggest/CompanyTableItemSummarySuggest.vue';
 import api from '@/api/api.js';
 import { captureException } from '@sentry/vue';
 import { useNotify } from '@/utils/use/useNotify.js';
 import Loader from '@/components/common/Loader.vue';
 import { useConfirm } from '@/composables/useConfirm.js';
+import { CompanyStatusEnum } from '@/types/company';
 
 const emit = defineEmits([
     'deleted-from-folder',
@@ -161,6 +163,8 @@ const props = defineProps({
         required: true
     }
 });
+
+const isDeleted = computed(() => props.company.status === CompanyStatusEnum.DELETED);
 
 const TABS = {
     SURVEY: 'survey',

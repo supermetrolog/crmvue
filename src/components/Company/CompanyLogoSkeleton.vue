@@ -1,5 +1,5 @@
 <template>
-    <div class="company-logo skeleton"></div>
+    <div class="company-logo skeleton skeleton--rect"></div>
 </template>
 <script setup>
 import { computed } from 'vue';

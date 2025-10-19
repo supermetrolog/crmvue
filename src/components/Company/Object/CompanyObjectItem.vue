@@ -4,7 +4,7 @@
             <div class="col-4" :title="object.description_auto || 'нет описания'">
                 <div class="image-container">
                     <router-link
-                        :to="{ name: 'ComplexView', params: { complex_id: object.complex_id } }"
+                        :to="{ name: 'complex.view', params: { complex_id: object.complex_id } }"
                         target="_blank"
                     >
                         <img :src="object.thumb" alt="image" />

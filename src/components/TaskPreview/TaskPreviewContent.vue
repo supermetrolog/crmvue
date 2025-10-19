@@ -16,17 +16,19 @@
         :task="currentTask"
         :draggable="userCanDrag"
         :editable="userCanEdit"
+        :active-comment-id
     />
 </template>
 <script setup>
 import Spinner from '@/components/common/Spinner.vue';
 import TaskCard from '@/components/TaskCard/TaskCard.vue';
 import { useMessenger } from '@/components/Messenger/useMessenger.js';
-import { useAuth } from '@/composables/useAuth.js';
+import { useAuth } from '@/composables/useAuth';
 import { computed, onBeforeMount, ref } from 'vue';
 import api from '@/api/api.js';
 import { toDateFormat } from '@/utils/formatters/date.ts';
 import { spliceById } from '@/utils/helpers/array/spliceById.js';
+import { isObject } from '@/utils/helpers/object/isObject.js';
 
 const emit = defineEmits(['updated', 'close']);
 
@@ -34,7 +36,8 @@ const props = defineProps({
     taskId: {
         type: Number,
         required: true
-    }
+    },
+    activeCommentId: Number
 });
 
 const { openMessenger } = useMessenger();
@@ -99,8 +102,10 @@ async function toChat(payload) {
 }
 
 function onUpdated(task) {
-    Object.assign(currentTask.value, task);
-    emit('updated', task);
+    if (isObject(task)) {
+        Object.assign(currentTask.value, task);
+        emit('updated', task);
+    }
 }
 
 function onDeletedComment(commentId) {

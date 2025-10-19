@@ -5,11 +5,11 @@ import {
     init,
     isInitialized
 } from '@sentry/vue';
-import router from '@/router/index.js';
+import { router } from '@/router/router';
 
 export function initSentry(app) {
     if (isInitialized()) {
-        console.warn('[Sentry] Sentry already initialized');
+        console.log('[Sentry] Sentry already initialized');
         return;
     }
 
@@ -23,11 +23,12 @@ export function initSentry(app) {
                 browserProfilingIntegration()
             ],
             skipBrowserExtensionCheck: true,
-            ignoreErrors: ['canceled', 'Request failed with status code 401', 'Network Error']
+            ignoreErrors: ['canceled', 'Request failed with status code 401', 'Network Error'],
+            release: `crm-raysarma@${__APP_VERSION__}`
         });
 
-        console.warn('[Sentry] Sentry initialized');
+        console.log('[Sentry] Sentry initialized');
     } else {
-        console.warn('[Sentry] Skip Sentry initialization in dev mode');
+        console.log('[Sentry] Skip Sentry initialization in dev mode');
     }
 }

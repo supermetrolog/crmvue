@@ -12,21 +12,29 @@
                 <span class="messenger-dialog-company__id">{{ company.id }}</span>
             </div>
             <div class="messenger-dialog-company__description">
-                <p class="messenger-dialog-company__company" :class="{ passive: isPassive }">
+                <p
+                    class="messenger-dialog-company__company"
+                    :class="{ passive: isPassive || isDeleted }"
+                >
                     <i
                         v-if="isPassive"
-                        v-tippy="'Компания в пассиве'"
-                        class="fa-solid fa-ban mr-1"
+                        v-tippy="'Компания приостановлена'"
+                        class="fa-regular fa-circle-pause mr-1 fs-4"
+                    ></i>
+                    <i
+                        v-if="isDeleted"
+                        v-tippy="'Компания удалена'"
+                        class="fa-solid fa-trash mr-1 fs-4"
                     ></i>
                     <i
                         v-if="isWithoutActiveContacts"
                         v-tippy="'Компания без контактов'"
-                        class="fa-solid fa-users-slash mr-1"
+                        class="fa-solid fa-users-slash mr-1 fs-4"
                     ></i>
                     <i
                         v-if="company.is_individual"
                         v-tippy="'Физ.лицо'"
-                        class="fa-solid fa-user-tie mr-1"
+                        class="fa-solid fa-user-tie mr-1 fs-4"
                     ></i>
                     <span>{{ companyName }}</span>
                     <Avatar
@@ -83,6 +91,7 @@ import Avatar from '@/components/common/Avatar.vue';
 import UiButtonIcon from '@/components/common/UI/UiButtonIcon.vue';
 import UiDropdownActions from '@/components/common/UI/DropdownActions/UiDropdownActions.vue';
 import { isObject } from '@/utils/helpers/object/isObject.js';
+import { CompanyStatusEnum } from '@/types/company';
 
 const props = defineProps({
     company: {
@@ -91,7 +100,9 @@ const props = defineProps({
     }
 });
 
-const isPassive = computed(() => !props.company.status);
+const isPassive = computed(() => props.company.status === CompanyStatusEnum.PASSIVE);
+const isDeleted = computed(() => props.company.status === CompanyStatusEnum.DELETED);
+
 const isWithoutActiveContacts = computed(() => props.company.active_contacts_count === 0);
 
 const companyName = computed(() => getCompanyName(props.company));

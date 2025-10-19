@@ -1,6 +1,6 @@
 import { createApp } from 'vue';
 import App from './App.vue';
-import router from './router';
+import { router } from './router/router';
 import store from './store';
 import PhoneNumber from '@/components/common/PhoneNumber.vue';
 import Notifications from '@kyvg/vue3-notification';
@@ -22,6 +22,7 @@ import { initAxios } from '@/services/axios.js';
 import { initSentry } from '@/plugins/sentry.js';
 import { initDayjs } from '@/plugins/dayjs.ts';
 import { initTippy } from '@/plugins/tippy.js';
+import { initYandexMap } from '@/plugins/yandex-maps';
 
 const app = createApp(App);
 
@@ -29,6 +30,7 @@ initAxios();
 initSentry(app);
 initDayjs();
 initTippy(app);
+initYandexMap(app);
 
 // TODO: Удалить PhoneNumber, Tab, Tabs из глобала
 // TODO: Удалить $formatter плагин

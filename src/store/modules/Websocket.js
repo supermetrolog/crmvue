@@ -1,135 +1,200 @@
 import { notify } from '@kyvg/vue3-notification';
+import { captureException } from '@sentry/vue';
 
-let notifyOptions = {
-    group: 'app',
-    type: 'success',
-    duration: 5000
-};
+function showNotify(text, title, type = 'success') {
+    notify({
+        group: 'app',
+        type,
+        duration: 5000,
+        title,
+        text
+    });
+}
+
+function getWindowId() {
+    return crypto && crypto.randomUUID
+        ? crypto.randomUUID()
+        : Date.now().toString(36) + Math.random().toString(36).slice(2, 10);
+}
+
+function socketIsOpen(socket) {
+    return socket && socket.readyState === WebSocket.OPEN;
+}
 
 const Websocket = {
     state: {
         socket: null,
         setedUserIdFlag: false,
-        pingLoop: null,
-        reconnectTimeout: null
+
+        pingTimer: null,
+        sendQueue: [],
+        windowId: getWindowId(),
+        telegramIsLinked: false
     },
+
     mutations: {
-        updateSocket(state, data) {
-            state.socket = data;
+        setSocket(state, socket) {
+            state.socket = socket;
         },
+        clearSocket(state) {
+            state.socket = null;
+        },
+
+        setPingTimer(state, id) {
+            state.pingTimer = id;
+        },
+        clearPingTimer(state) {
+            if (state.pingTimer) clearInterval(state.pingTimer);
+            state.pingTimer = null;
+        },
+
+        enqueue(state, payload) {
+            state.sendQueue.push(payload);
+        },
+        clearQueue(state) {
+            state.sendQueue = [];
+        },
+
         toggleSetedUserIdFlag(state, flag = null) {
             state.setedUserIdFlag = flag === null ? !state.setedUserIdFlag : flag;
         },
-        deletePingLoop(state) {
-            if (state.pingLoop) clearInterval(state.pingLoop);
-        },
-        setPingLoop(state, data) {
-            state.pingLoop = data;
-        },
-        deleteSocket(state) {
-            if (state.socket) state.socket.close();
-            state.socket = null;
+        setTelegramIsLinked(state, value) {
+            state.telegramIsLinked = value;
         }
     },
+
     actions: {
-        WEBSOCKET_STOP({ commit }) {
-            commit('deleteSocket');
-            commit('deletePingLoop');
-            commit('toggleSetedUserIdFlag', false);
-        },
         WEBSOCKET_RUN({ state, dispatch, commit, rootGetters }) {
             if (state.socket || !rootGetters.THIS_USER) return;
 
-            let socket = new WebSocket(import.meta.env.VITE_VUE_APP_WS_URL);
-            socket.onopen = function () {
-                return dispatch('EVENT_WEBSOCKET_ON_OPEN');
-            };
-            socket.onmessage = function (event) {
-                return dispatch('EVENT_WEBSOCKET_ON_MESSAGE', event);
-            };
-            socket.onerror = function (error) {
-                return dispatch('EVENT_WEBSOCKET_ON_ERROR', error);
-            };
-            socket.onclose = function (event) {
-                return dispatch('EVENT_WEBSOCKET_ON_CLOSE', event);
-            };
-            commit('updateSocket', socket);
+            const socket = new WebSocket(import.meta.env.VITE_VUE_APP_WS_URL);
+
+            socket.onopen = () => dispatch('EVENT_WEBSOCKET_ON_OPEN');
+            socket.onmessage = event => dispatch('EVENT_WEBSOCKET_ON_MESSAGE', event);
+            socket.onerror = err => dispatch('EVENT_WEBSOCKET_ON_ERROR', err);
+            socket.onclose = evt => dispatch('EVENT_WEBSOCKET_ON_CLOSE', evt);
+
+            commit('setSocket', socket);
         },
-        WEBSOCKET_RUN_PING_LOOP({ dispatch, commit }) {
-            commit(
-                'setPingLoop',
-                setInterval(() => {
-                    dispatch('WEBSOCKET_PING');
-                }, 50000)
-            );
+        WEBSOCKET_STOP({ state, commit }) {
+            commit('clearPingTimer');
+
+            if (socketIsOpen(state.socket)) {
+                try {
+                    state.socket.close(1000, 'client stop');
+                } catch (e) {
+                    captureException(e);
+                }
+            }
+
+            commit('clearSocket');
+            commit('toggleSetedUserIdFlag', false);
         },
-        EVENT_WEBSOCKET_ON_OPEN({ dispatch }) {
-            dispatch('WEBSOCKET_SET_USER');
-            dispatch('WEBSOCKET_RUN_PING_LOOP');
-        },
-        WEBSOCKET_PING({ state }) {
-            state.socket.send(
-                JSON.stringify({
-                    action: 'ping'
-                })
-            );
+        EVENT_WEBSOCKET_ON_OPEN({ dispatch, commit, state, rootGetters }) {
+            dispatch('SEND_JSON', {
+                action: 'setUser',
+                data: { window_id: state.windowId, user_id: rootGetters.THIS_USER?.id }
+            });
+
+            commit('clearPingTimer');
+
+            const id = setInterval(() => {
+                dispatch('PING');
+            }, 30000);
+
+            commit('setPingTimer', id);
+
+            if (state.sendQueue.length) {
+                for (const payload of state.sendQueue) {
+                    dispatch('SEND_JSON', payload);
+                }
+
+                commit('clearQueue');
+            }
         },
         EVENT_WEBSOCKET_ON_MESSAGE({ dispatch }, event) {
-            let data = JSON.parse(event.data);
-            let prefix = 'ACTION_WEBSOCKET_';
-            let actionName = prefix + 'info';
+            const data = JSON.parse(event.data);
+            if (!data) return;
 
-            if (Object.prototype.hasOwnProperty.call(data, 'action'))
-                actionName = prefix + data.action.toLowerCase();
+            if (data.action === 'pong') return;
 
-            if (this.checkAction(actionName)) dispatch(actionName, data);
+            const prefix = '_ws_';
+            const name = data.action
+                ? `${prefix}${String(data.action).toLowerCase()}`
+                : `${prefix}info`;
+
+            if (this.checkAction(name)) {
+                dispatch(name, data);
+            }
         },
         EVENT_WEBSOCKET_ON_ERROR({ dispatch }) {
-            notifyOptions.text =
-                'Не удалось подключиться к Websocket серверу. Обратитесь к администратору.';
-            notifyOptions.title = 'Websocket server';
-            notifyOptions.type = 'error';
-            notify(notifyOptions);
+            showNotify(
+                'Не удалось подключиться к Websocket серверу. Обратитесь к администратору.',
+                'Websocket server',
+                'error'
+            );
 
             dispatch('WEBSOCKET_STOP');
+
             setTimeout(() => {
                 dispatch('WEBSOCKET_RUN');
             }, 30000);
         },
         EVENT_WEBSOCKET_ON_CLOSE({ state, dispatch }, event) {
-            if (event.wasClean) return;
-
-            notifyOptions.text = 'Websocket соединение прервано.';
-            notifyOptions.title = 'Websocket server';
-            notifyOptions.type = 'warn';
+            if (event && event.wasClean) return;
 
             if (state.socket) {
-                notify(notifyOptions);
+                showNotify('Websocket соединение прервано.', 'Websocket server', 'warn');
+
                 dispatch('WEBSOCKET_STOP');
                 dispatch('WEBSOCKET_RUN');
             }
         },
-        WEBSOCKET_SET_USER({ state, rootGetters }) {
-            if (!state.setedUserIdFlag) {
-                state.socket.send(
-                    JSON.stringify({
-                        action: 'setUser',
-                        data: { window_id: window.name, user_id: rootGetters.THIS_USER?.id }
-                    })
-                );
+        PING({ state }) {
+            if (!socketIsOpen(state.socket)) {
+                return;
+            }
+
+            state.socket.send(JSON.stringify({ action: 'ping' }));
+        },
+        SEND_JSON({ state, commit }, payload) {
+            const body = JSON.stringify(payload);
+            const sock = state.socket;
+
+            if (socketIsOpen(sock)) {
+                try {
+                    sock.send(body);
+                } catch {
+                    commit('enqueue', payload);
+                }
+            } else {
+                commit('enqueue', payload);
             }
         },
-        ACTION_WEBSOCKET_user_setted({ commit }) {
+        _ws_new_user_notification(_, data) {
+            // TODO: Сделать не такими надоедливыми
+            // publishNotificationFromWS(data.message);
+        },
+        _ws_user_set({ commit, rootGetters }) {
             commit('toggleSetedUserIdFlag', true);
+
+            const user = rootGetters.THIS_USER;
+
+            if (user) {
+                // TODO: Сделать не такими надоедливыми
+                // initNotifications(user.id);
+            }
+        },
+        _ws_info() {
+            // нераспознанные события
+        },
+        _ws_telegram_linked({ commit }) {
+            commit('setTelegramIsLinked', true);
         }
     },
     getters: {
-        SOCKET(state) {
-            return state.socket;
-        },
-        SETED_USER_ID_FLAG(state) {
-            return state.setedUserIdFlag;
-        }
+        SOCKET: state => state.socket,
+        SETED_USER_ID_FLAG: state => state.setedUserIdFlag
     }
 };
 

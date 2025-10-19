@@ -49,7 +49,7 @@ import { computed, ref, shallowRef, watch } from 'vue';
 import TaskCard from '@/components/TaskCard/TaskCard.vue';
 import api from '@/api/api.js';
 import { useMessenger } from '@/components/Messenger/useMessenger.js';
-import { useAuth } from '@/composables/useAuth.js';
+import { useAuth } from '@/composables/useAuth';
 import Spinner from '@/components/common/Spinner.vue';
 import { toDateFormat } from '@/utils/formatters/date.ts';
 import { spliceById } from '@/utils/helpers/array/spliceById.js';
@@ -58,6 +58,7 @@ import VirtualDragList from 'vue-virtual-draglist';
 import { useFavoriteTasks } from '@/composables/useFavoriteTasks.js';
 import UiModal from '@/components/common/UI/UiModal.vue';
 import Loader from '@/components/common/Loader.vue';
+import { isObject } from '@/utils/helpers/object/isObject.js';
 
 const emit = defineEmits(['task-updated', 'hide', 'position-changed']);
 
@@ -132,8 +133,10 @@ function hide() {
 }
 
 function onUpdated(task) {
-    Object.assign(currentTask.value, task);
-    emit('task-updated', task);
+    if (isObject(task)) {
+        Object.assign(currentTask.value, task);
+        emit('task-updated', task);
+    }
 }
 
 function onDeletedComment(commentId) {

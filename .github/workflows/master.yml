@@ -8,9 +8,9 @@ env:
   VITE_VUE_APP_RESERVE_API_URL: https://reserve-api.supermetrolog.ru/
   VITE_VUE_APP_RESERVE_HOST: https://reserve-clients.supermetrolog.ru
   VITE_VUE_APP_OBJECT_URL: https://pennylane.pro/
-  VITE_VUE_APP_API_URL: https://api.pennylane.pro/
-  VITE_VUE_APP_HOST: https://clients.pennylane.pro
-  VITE_VUE_APP_WS_URL: wss://api.pennylane.pro/websocket/
+  VITE_VUE_APP_API_URL: https://api.raysen.ru/
+  VITE_VUE_APP_HOST: https://crm.raysen.ru
+  VITE_VUE_APP_WS_URL: wss://api.raysen.ru/websocket/
   VITE_VUE_APP_UPLOADS_PATH: uploads/
   VITE_VUE_APP_IMAGES_PATH: images/
   VITE_VUE_APP_NOT_FOUND_FILENAME: no-image.jpg
@@ -20,6 +20,8 @@ env:
   VITE_VUE_APP_MESSENGER_DATE_FROM_CALL_DANGER: 90
   VITE_VUE_APP_YANDEX_MAP_KEY: ${{ secrets.vue_app_yandex_map_key }}
   VITE_VUE_APP_GLITCH_DSN: ${{ secrets.vue_app_glitch_dsn }}
+  VITE_VUE_APP_WHATSAPP_BOT_PHONE: 123456789
+  VITE_VUE_APP_TELEGRAM_BOT_USERNAME: crm_raysen_bot
 jobs:
   web-deploy:
     name: 🎉 Deploy
@@ -39,7 +41,7 @@ jobs:
           npm install
           npm run build
 
-      - name: 📂 Sync files with PROD server (clients.pennylane.pro)
+      - name: 📂 Sync files with PROD server (crm.raysen.ru)
         uses: SamKirkland/FTP-Deploy-Action@4.3.0
         with:
           server: 62.113.107.218

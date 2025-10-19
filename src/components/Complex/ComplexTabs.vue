@@ -75,6 +75,7 @@ import EmptyData from '@/components/common/EmptyData.vue';
 import { computed, inject } from 'vue';
 import { useStore } from 'vuex';
 import { getLinkFile } from '@/utils/url.js';
+import { isArray } from '@/utils/helpers/array/isArray';
 
 const store = useStore();
 
@@ -97,11 +98,13 @@ const servicesLength = computed(() => {
 });
 
 const photos = computed(() => {
-    return props.offer.photos
-        ? props.offer.photos.map(el => ({
-              src: getLinkFile(el)
-          }))
-        : [];
+    if (isArray(props.offer.photos)) {
+        return props.offer.photos.map(el => ({
+            src: getLinkFile(el)
+        }));
+    }
+
+    return [];
 });
 
 const floors = computed(() => {

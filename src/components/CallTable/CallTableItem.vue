@@ -49,9 +49,9 @@
             </p>
         </Td>
         <Td :width="200" class="py-2">
-            <div v-if="call.contact.phones.length" class="call-table-item__phones">
+            <div v-if="phones.length" class="call-table-item__phones">
                 <PhoneNumber
-                    v-for="phone of call.contact.phones"
+                    v-for="phone in phones"
                     :key="phone.id"
                     @click="$emit('open-phone', phone)"
                     :phone="phone"
@@ -115,4 +115,12 @@ const statusColor = computed(() => {
 const companyName = computed(() =>
     getCompanyShortName(props.call.contact.company, props.call.contact.company_id)
 );
+
+const phones = computed(() => {
+    if (props.call.phone_id) {
+        return props.call.contact.phones.filter(phone => phone.id === props.call.phone_id);
+    }
+
+    return props.call.contact.phones;
+});
 </script>

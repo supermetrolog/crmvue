@@ -38,9 +38,9 @@ import { useDebounceFn } from '@vueuse/core';
 import { useMessenger } from '@/components/Messenger/useMessenger.js';
 import { useAsyncPopup } from '@/composables/useAsyncPopup.js';
 import SurveyDraftTable from '@/components/SurveyTable/SurveyDraftTable.vue';
-import { useSurveyForm } from '@/composables/useSurveyForm.js';
-import { useAsync } from '@/composables/useAsync.js';
-import { useAuth } from '@/composables/useAuth.js';
+import { useSurveyForm } from '@/composables/useSurveyForm.ts';
+import { useAsync } from '@/composables/useAsync';
+import { useAuth } from '@/composables/useAuth';
 import { spliceById } from '@/utils/helpers/array/spliceById.js';
 
 const route = useRoute();

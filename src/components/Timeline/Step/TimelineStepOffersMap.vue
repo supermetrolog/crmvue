@@ -1,44 +1,38 @@
 <template>
-    <div>
-        <div class="d-flex align-items-end gap-3 mb-1">
-            <UiField color="danger" class="fs-3">Функция в активной разработке!</UiField>
-            <UiButton
-                @click="$emit('to-list')"
-                class="ml-auto"
-                icon="fa-solid fa-list-ul"
-                :loading
-                color="light"
-            >
-                Показать списком ({{ counts ?? 0 }})
-            </UiButton>
-            <UiButton @click="$emit('refresh')" icon="fa-solid fa-refresh" :loading color="light">
-                Обновить
-            </UiButton>
-        </div>
-        <OfferYmap :list="objects" :styles="yandexMapStyles" :loading />
-    </div>
+    <OfferTableMap
+        @select-polygon="selectPolygon"
+        @clear-polygon="clearPolygon"
+        :objects
+        :polygon
+        :count
+        :center
+        :zoom
+        :loading
+        :selection="false"
+    />
 </template>
+<script setup lang="ts">
+import { LngLat } from '@yandex/ymaps3-types';
+import { ObjectMapMarker } from '@/components/ObjectMapPopup/ObjectMapPopup.vue';
+import OfferTableMap from '@/components/Offer/OfferTableMap.vue';
 
-<script setup>
-import { shallowReactive } from 'vue';
-import OfferYmap from '@/components/Offer/OfferYmap.vue';
-import UiButton from '@/components/common/UI/UiButton.vue';
-import UiField from '@/components/common/UI/UiField.vue';
+defineProps<{
+    center?: LngLat;
+    zoom?: number;
+    objects: ObjectMapMarker[];
+    selectedObjects: object[];
+    currentObjects: object[];
+    count?: number;
+    loading?: boolean;
+}>();
 
-defineEmits(['refresh', 'to-list']);
-defineProps({
-    counts: Number,
-    objects: {
-        type: Array,
-        default: () => []
-    },
-    loading: Boolean
-});
+function selectPolygon(coords: LngLat[]) {
+    // TODO: Сделать полигоны
+}
 
-const yandexMapStyles = shallowReactive({
-    width: '100%',
-    height: '60vh'
-});
+function clearPolygon() {}
 
-// TODO: Добавить фильтры
+const polygon = undefined;
+
+// TODO: Внедрить selectedObjects и currentObjects отображение
 </script>

@@ -16,7 +16,8 @@ export type SurveyType = (typeof SurveyTypeEnum)[keyof typeof SurveyTypeEnum];
 export const SurveyStatusEnum = {
     DRAFT: 'draft',
     COMPLETED: 'completed',
-    CANCELED: 'canceled'
+    CANCELED: 'canceled',
+    DELAYED: 'delayed'
 } as const;
 
 export type SurveyStatus = (typeof SurveyStatusEnum)[keyof typeof SurveyStatusEnum];
@@ -36,7 +37,7 @@ export interface Survey<T extends ChatMemberModelType = 'company'> extends Times
     chatMember: ChatMember<T>;
 }
 
-export interface SurveyView<T> extends Survey<T> {
+export interface SurveyView<T extends ChatMemberModelType = 'company'> extends Survey<T> {
     calls: Call[];
     dependentSurveys: Survey[];
     questions: Question[];

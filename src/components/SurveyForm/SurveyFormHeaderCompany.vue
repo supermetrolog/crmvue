@@ -93,7 +93,7 @@
                             />
                             <template v-if="canBeArchived">
                                 <UiDropdownActionsButton
-                                    v-if="isPassive"
+                                    v-if="isDeleted || isPassive"
                                     @handle="enableCompany(company.id)"
                                     label="Восстановить компанию"
                                     icon="fa-solid fa-undo"
@@ -101,8 +101,8 @@
                                 <UiDropdownActionsButton
                                     v-else
                                     @handle="disableCompanyFormIsVisible = true"
-                                    label="Отправить в архив"
-                                    icon="fa-solid fa-ban text-danger"
+                                    label="Отправить в корзину"
+                                    icon="fa-solid fa-trash text-danger"
                                 />
                             </template>
                             <UiDropdownActionsButton
@@ -172,7 +172,7 @@ import { messenger } from '@/const/messenger.js';
 import { useMessenger } from '@/components/Messenger/useMessenger.js';
 import FormCompanyDisable from '@/components/Forms/Company/FormCompanyDisable.vue';
 import FormCompany from '@/components/Forms/Company/FormCompany.vue';
-import { useAsync } from '@/composables/useAsync.js';
+import { useAsync } from '@/composables/useAsync';
 import api from '@/api/api.js';
 import { useTippyText } from '@/composables/useTippyText.js';
 import CompanyShortCard from '@/components/CompanyShortCard/CompanyShortCard.vue';
@@ -185,9 +185,10 @@ import UiDropdownActionsTrigger from '@/components/common/UI/DropdownActions/UiD
 import UserFoldersDropdown from '@/components/UserFolder/UserFoldersDropdown.vue';
 import FormUserFolder from '@/components/Forms/FormUserFolder.vue';
 import { useUserFolders } from '@/composables/useUserFolders.js';
-import { useAuth } from '@/composables/useAuth.js';
+import { useAuth } from '@/composables/useAuth';
 import UiDropdownActionsGroup from '@/components/common/UI/DropdownActions/UiDropdownActionsGroup.vue';
 import UiButtonIcon from '@/components/common/UI/UiButtonIcon.vue';
+import { CompanyStatusEnum } from '@/types/company';
 
 const emit = defineEmits([
     'update-logo',
@@ -277,7 +278,8 @@ function onDisabledCompany() {
     emit('update-company');
 }
 
-const isPassive = computed(() => !props.company.status);
+const isPassive = computed(() => props.company.status === CompanyStatusEnum.PASSIVE);
+const isDeleted = computed(() => props.company.status === CompanyStatusEnum.DELETED);
 
 // chat
 

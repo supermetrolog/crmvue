@@ -1,5 +1,7 @@
 import { unitTypes } from '@/const/unitTypes';
 
+export const __DEV__ = import.meta.env.DEV;
+
 export const Timeline = [
     {
         id: 0,
@@ -187,7 +189,8 @@ export const PassiveWhy = [
     { value: 1, label: 'Заблокировано модератором', short: 'Заблокирована' },
     { value: 2, label: 'Иное' },
     { value: 3, label: 'Компания ликвидирована', short: 'Ликвидирована' },
-    { value: 4, label: 'Идентификация невозможна', short: 'Не заполнена' }
+    { value: 4, label: 'Идентификация невозможна', short: 'Не заполнена' },
+    { value: 5, label: 'Нет активных контактов', short: 'Нет контактов' }
 ];
 export const PassiveWhyContact = [
     { value: 0, label: 'Телефоны неактуальны' },

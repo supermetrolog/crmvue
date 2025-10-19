@@ -87,7 +87,7 @@ import AnimationTransition from '@/components/common/AnimationTransition.vue';
 import VueEditor from '@/components/common/Forms/VueEditor.vue';
 import UiDropdownActionsButton from '@/components/common/UI/DropdownActions/UiDropdownActionsButton.vue';
 import RequestRowCard from '@/components/RequestRowCard/RequestRowCard.vue';
-import { useAuth } from '@/composables/useAuth.js';
+import { useAuth } from '@/composables/useAuth';
 import { useStore } from 'vuex';
 import { isNotNullish } from '@/utils/helpers/common/isNotNullish';
 import { isNullish } from '@/utils/helpers/common/isNullish';

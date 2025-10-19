@@ -123,22 +123,12 @@
                         />
                     </UiFormGroup>
                     <UiFormGroup>
-                        <MultiSelect
+                        <AddressAutocomplete
                             v-model="form.officeAdress"
-                            :title="form.officeAdress"
-                            extra-classes="long-text"
+                            :current-value="formData?.officeAdress"
                             label="Адрес офиса"
-                            class="col-12"
-                            :filterResults="false"
-                            :min-chars="1"
                             :resolve-on-load="isEditMode"
-                            :delay="600"
-                            :searchable="true"
-                            :options="
-                                async query => {
-                                    return await getAddress(query);
-                                }
-                            "
+                            class="col-12"
                         />
                     </UiFormGroup>
                     <UiFormGroup>
@@ -274,21 +264,12 @@
                 </Tab>
                 <Tab name="Реквизиты">
                     <div class="row">
-                        <MultiSelect
+                        <AddressAutocomplete
                             v-model="form.legalAddress"
-                            :title="form.legalAddress"
+                            :current-value="formData?.legalAddress"
                             label="Юр. адрес"
-                            class="col-12"
-                            :filterResults="false"
-                            :min-chars="1"
                             :resolve-on-load="isEditMode"
-                            :delay="600"
-                            :searchable="true"
-                            :options="
-                                async query => {
-                                    return await getAddress(query);
-                                }
-                            "
+                            class="col-12"
                         />
                     </div>
                     <div class="row mt-2">
@@ -407,7 +388,12 @@
             </Tabs>
         </UiForm>
         <template #actions="{ close }">
-            <UiButton @click="submit" color="success-light" icon="fa-solid fa-check">
+            <UiButton
+                @click="submit"
+                :disabled="!canBeSubmit"
+                color="success-light"
+                icon="fa-solid fa-check"
+            >
                 Сохранить
             </UiButton>
             <UiButton @click="close" color="light" icon="fa-solid fa-ban">Отмена</UiButton>
@@ -430,7 +416,6 @@ import {
     CompanyFormOrganization,
     PassiveWhy
 } from '@/const/const.js';
-import { yandexmap } from '@/utils/yandexMap.js';
 import Loader from '@/components/common/Loader.vue';
 import RadioChip from '@/components/common/Forms/RadioChip.vue';
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
@@ -458,6 +443,9 @@ import { useValidation } from '@/composables/useValidation.js';
 import Switch from '@/components/common/Forms/Switch.vue';
 import { useCompanyPermissions } from '@/components/Company/useCompanyPermissions.js';
 import FormCompanyContactPhones from '@/components/Forms/Company/FormCompanyContactPhones.vue';
+import { useUserNotificationsPause } from '@/composables/useUserNotificationsPause';
+import AddressAutocomplete from '@/components/common/Forms/AddressAutocomplete.vue';
+import { useAuth } from '@/composables/useAuth';
 
 const emit = defineEmits(['updated', 'created', 'close']);
 const props = defineProps({
@@ -466,6 +454,8 @@ const props = defineProps({
         default: null
     }
 });
+
+useUserNotificationsPause('company-form');
 
 const { getConsultantsOptions } = useConsultantsOptions();
 const { getCompanyGroupsOptions } = useCompanyGroupsOptions();
@@ -577,6 +567,10 @@ async function submit() {
     const isValid = await validate();
     if (!isValid) return;
 
+    if (!canBeSubmit.value) {
+        return;
+    }
+
     try {
         isLoading.value = true;
 
@@ -586,11 +580,6 @@ async function submit() {
         isLoading.value = false;
     }
 }
-
-const getAddress = async query => {
-    if (props.formData) return await yandexmap.getAddress(query, props.formData.officeAdress);
-    return await yandexmap.getAddress(query);
-};
 
 if (props.formData) {
     normalizeDataForCompanyForm(form, props.formData);
@@ -614,4 +603,6 @@ function activityGroupMultipleLabelFn(elements) {
 // permissions
 
 const { canEdit } = useCompanyPermissions(toRef(props, 'formData'));
+
+const { currentUserIsNotGuest: canBeSubmit } = useAuth();
 </script>

@@ -58,7 +58,7 @@ import { helpers, minLength, required } from '@vuelidate/validators';
 import Loader from '@/components/common/Loader.vue';
 import { useStore } from 'vuex';
 import { computed, shallowReactive, shallowRef } from 'vue';
-import { useAuth } from '@/composables/useAuth.js';
+import { useAuth } from '@/composables/useAuth';
 import { useRouter } from 'vue-router';
 import UiInput from '@/components/common/Forms/UiInput.vue';
 import UiForm from '@/components/common/Forms/UiForm.vue';

@@ -17,8 +17,8 @@
         <MobileSidebarMenu />
     </div>
 </template>
-<script setup>
+<script setup lang="ts">
 import MobileSidebarMenu from '@/components/SideBar/MobileSidebarMenu.vue';
 
-defineEmits(['close']);
+defineEmits<{ (e: 'close'): void }>();
 </script>

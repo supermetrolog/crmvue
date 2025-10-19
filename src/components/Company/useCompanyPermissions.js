@@ -1,5 +1,5 @@
 import { computed, toValue } from 'vue';
-import { useAuth } from '@/composables/useAuth.js';
+import { useAuth } from '@/composables/useAuth';
 
 // TODO: Удалить чуть позже и сделать систему выдачи через модератора
 
@@ -18,9 +18,7 @@ export function useCompanyPermissions(company) {
 
     const canDisable = computed(() => {
         return (
-            currentUserIsModeratorOrHigher.value ||
-            toValue(company).consultant_id === currentUserId.value ||
-            additionalConsultantIds.has(currentUserId.value)
+            currentUserIsModeratorOrHigher.value || additionalConsultantIds.has(currentUserId.value)
         );
     });
 

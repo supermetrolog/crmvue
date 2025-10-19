@@ -85,9 +85,11 @@ const createPayload = () => {
         request: { ...filters.request }
     };
 
-    payload[store.state.Messenger.currentAsidePanel].sort = props.currentTab.sort
-        ? `${props.currentTab.sort},-default`
-        : '-default';
+    if (store.state.Messenger.currentAsidePanel in payload) {
+        payload[store.state.Messenger.currentAsidePanel].sort = props.currentTab.sort
+            ? `${props.currentTab.sort},-default`
+            : '-default';
+    }
 
     return payload;
 };

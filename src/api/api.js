@@ -38,6 +38,11 @@ import phone from '@/api/phone';
 import entityMessageLink from '@/api/entityMessageLink';
 import contactPosition from '@/api/contactPosition';
 import messageTemplate from '@/api/messageTemplate';
+import userNotifications from '@/api/user-notifications';
+import userNotificationActionLogs from '@/api/user-notification-action-logs';
+import userNotificationTemplates from '@/api/user-notification-templates';
+import userTelegram from '@/api/user-telegram';
+import userWhatsapp from '@/api/user-whatsapp';
 
 export default {
     user,
@@ -79,5 +84,10 @@ export default {
     phone,
     entityMessageLink,
     contactPosition,
-    messageTemplate
+    messageTemplate,
+    userNotifications,
+    userNotificationActionLogs,
+    userNotificationTemplates,
+    userTelegram,
+    userWhatsapp
 };

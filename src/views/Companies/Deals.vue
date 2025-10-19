@@ -54,7 +54,7 @@ import api from '@/api/api.js';
 import FormCompanyDeal from '@/components/Forms/Company/FormCompanyDeal.vue';
 import DealTable from '@/components/Deal/Table/DealTable.vue';
 import { captureException } from '@sentry/vue';
-import { useAsync } from '@/composables/useAsync.js';
+import { useAsync } from '@/composables/useAsync';
 import { useNotify } from '@/utils/use/useNotify.js';
 import { useTimeoutFn } from '@vueuse/core';
 

@@ -1,4 +1,4 @@
-import { onBeforeMount, onScopeDispose, reactive, ref, unref, watch } from 'vue';
+import { onBeforeMount, onScopeDispose, reactive, ref, toValue, watch } from 'vue';
 import { noop } from '@vueuse/core';
 import { useRoute, useRouter } from 'vue-router';
 import { toCleanObject } from '@/utils/helpers/object/toCleanObjects.js';
@@ -56,8 +56,8 @@ export function useSearchForm(template, options) {
     async function onSubmit() {
         let _query = {};
 
-        if (syncWithQuery) _query = toCleanObject({ ...route.query, ...unref(form) });
-        else _query = toCleanObject(unref(form));
+        if (syncWithQuery) _query = toCleanObject({ ...route.query, ...toValue(form) });
+        else _query = toCleanObject(toValue(form));
 
         if (isNotNullish(transform)) {
             _query = transform(_query);

@@ -1,0 +1,364 @@
+<template>
+    <MapClusterer v-model="clusterer"
+:grid-size
+:max-zoom
+:settings
+:zoom-on-cluster-click />
+    <YandexMapPopupMarker v-if="popup && popupSettings" :settings="popupSettings">
+        <div ref="mapMarkerPopup" class="map-marker-popup">
+            <slot
+                name="popup"
+                :marker="selectedMarker"
+                :close="closePopup"
+                :normalize-bounds="normalizeMapBounds"
+            >
+                {{ selectedMarker!.id }}
+            </slot>
+        </div>
+    </YandexMapPopupMarker>
+    <YandexMapHint v-if="hint" hint-property="hint">
+        <template #default="{ content }">
+            <div class="feature-hint" :class="{ dark: map?.theme === 'dark' }">
+                <slot name="hint" :content="content">
+                    <div v-html="content"></div>
+                </slot>
+            </div>
+        </template>
+    </YandexMapHint>
+</template>
+<script setup lang="ts">
+import { LngLat, YMapMarker } from '@yandex/ymaps3-types';
+import type { Feature, YMapClusterer } from '@yandex/ymaps3-types/packages/clusterer';
+import { computed, nextTick, ref, shallowRef, useCssModule, useTemplateRef, watch } from 'vue';
+import { useMapContext } from '@/components/common/Map/useMapContext';
+import MapClusterer from '@/components/common/Map/MapClusterer.vue';
+import { YandexMapHint, YandexMapPopupMarker } from 'vue-yandex-maps';
+import { useElementHover } from '@vueuse/core';
+
+const emit = defineEmits<{
+    (e: 'select', featureId: string | null): void;
+    (e: 'popup-opened'): void;
+    (e: 'popup-closed'): void;
+}>();
+
+export type MapCollectionItem = {
+    id: string;
+    coordinates: LngLat;
+    properties?: Record<string, any>;
+};
+
+const props = withDefaults(
+    defineProps<{
+        gridSize?: 2 | 4 | 8 | 16 | 32 | 64 | 128 | 256 | 512;
+        zoomOnClusterClick?: boolean;
+        maxZoom?: number;
+        collection: MapCollectionItem[];
+        selectedMarkerId?: string | number | null;
+        popup?: boolean;
+        autoPanPopup?: boolean;
+        autoPanPopupOffset?: number;
+        hint?: boolean;
+        markerColor?: string;
+    }>(),
+    {
+        zoomOnClusterClick: true,
+        autoPanPopup: true,
+        autoPanPopupOffset: 50,
+        markerColor: '#1e97fd'
+    }
+);
+
+const settings = computed(() => ({
+    maxZoom: props.maxZoom ?? (map.value?.zoomRange?.max ?? 13) - 1,
+    features: points.value,
+    marker: createMarker
+}));
+
+const selectedMarker = computed(() => {
+    if (props.selectedMarkerId) {
+        return props.collection.find(item => item.id === props.selectedMarkerId);
+    }
+
+    return null;
+});
+
+function onClosePopup() {
+    emit('select', null);
+
+    emit('popup-closed');
+
+    setBehaviorState('scrollZoom', true);
+}
+
+const popupIsVisible = ref(true);
+
+watch(
+    () => props.selectedMarkerId,
+    value => {
+        if (value) {
+            popupIsVisible.value = true;
+        }
+    }
+);
+
+const mapMarkerPopupEl = useTemplateRef('mapMarkerPopup');
+
+const popupIsHovered = useElementHover(mapMarkerPopupEl, { delayEnter: 300 });
+
+watch(popupIsHovered, value => {
+    if (value) {
+        setBehaviorState('scrollZoom', false);
+    } else {
+        setBehaviorState('scrollZoom', true);
+    }
+});
+
+function normalizeMapBounds() {
+    if (!map.value || !selectedMarker.value || !mapMarkerPopupEl.value) {
+        return;
+    }
+
+    const containerBounding = map.value.container.getBoundingClientRect();
+    const popupBounding = mapMarkerPopupEl.value.getBoundingClientRect();
+
+    if (
+        popupBounding.top - props.autoPanPopupOffset <= containerBounding.top ||
+        popupBounding.bottom + props.autoPanPopupOffset >= containerBounding.bottom
+    ) {
+        map.value.setLocation({ center: selectedMarker.value.coordinates, duration: 600 });
+    }
+}
+
+function closePopup() {
+    popupIsVisible.value = false;
+}
+
+function onOpenPopup() {
+    emit('popup-opened');
+
+    if (props.autoPanPopup) {
+        nextTick(normalizeMapBounds);
+    }
+}
+
+const popupSettings = computed(() => {
+    if (selectedMarker.value) {
+        return {
+            coordinates: selectedMarker.value.coordinates,
+            show: popupIsVisible.value,
+            onClose: onClosePopup,
+            onOpen: onOpenPopup,
+            zIndex: 3,
+            position: 'right'
+        };
+    }
+
+    return null;
+});
+
+const { map, setBehaviorState } = useMapContext();
+
+const clusterer = shallowRef<YMapClusterer | null | undefined>(null);
+
+function createFeature(id: number | string, coordinates: LngLat, properties = {}) {
+    return {
+        type: 'Feature',
+        id,
+        geometry: {
+            type: 'Point',
+            coordinates
+        },
+        properties
+    };
+}
+
+const points = computed(() => {
+    if (!map.value) return [];
+
+    const groups = new Map<string, MapCollectionItem[]>();
+
+    for (const element of props.collection) {
+        const [lng, lat] = element.coordinates;
+        const key = `${lng.toFixed(7)},${lat.toFixed(7)}`;
+
+        if (!groups.has(key)) groups.set(key, []);
+        groups.get(key)!.push(element);
+    }
+
+    const features = [];
+
+    for (const [, items] of groups) {
+        if (items.length === 1) {
+            const element = items[0];
+
+            features.push(createFeature(element.id, element.coordinates, element.properties));
+        } else {
+            const N = items.length;
+            const baseRadius = 4;
+            const radiusMeters = Math.min(30, baseRadius + Math.floor(N / 2));
+
+            for (let i = 0; i < N; i++) {
+                const angle = (360 / N) * i;
+                const [lng, lat] = items[i].coordinates;
+                const coordinates = offsetLngLat([lng, lat], radiusMeters, angle);
+
+                features.push(createFeature(items[i].id, coordinates, items[i].properties));
+            }
+        }
+    }
+
+    return features;
+});
+
+const R = 6378137;
+
+function offsetLngLat(
+    [lng, lat]: [number, number],
+    meters: number,
+    bearingDegrees: number
+): [number, number] {
+    const br = (bearingDegrees * Math.PI) / 180;
+    const latRad = (lat * Math.PI) / 180;
+
+    const dx = meters * Math.cos(br);
+    const dy = meters * Math.sin(br);
+
+    const dLat = dy / R;
+    const dLon = dx / (R * Math.cos(latRad));
+
+    const newLat = lat + (dLat * 180) / Math.PI;
+    const newLng = lng + (dLon * 180) / Math.PI;
+
+    return [newLng, newLat];
+}
+
+const allMarkers: Map<string, YMapMarker> = new Map();
+
+function updateMarker(feature: Feature) {
+    const marker = allMarkers.get(feature.id);
+
+    if (!marker) {
+        return;
+    }
+
+    marker.element.style.background = props.selectedMarkerId === feature.id ? '#1e97fd' : '';
+    marker.element.style.borderColor =
+        props.selectedMarkerId === feature.id ? '#1e97fd' : getFeatureColor(feature);
+}
+
+watch(
+    () => props.selectedMarkerId,
+    (newValue, oldValue) => {
+        if (oldValue) {
+            const previousFeature = points.value.find(f => f.id === oldValue);
+
+            if (previousFeature) {
+                updateMarker(previousFeature);
+            }
+        }
+
+        if (newValue) {
+            const feature = points.value.find(f => f.id === newValue);
+
+            if (feature) {
+                updateMarker(feature);
+            }
+        }
+    }
+);
+
+const module = useCssModule();
+
+function onClick(feature: Feature) {
+    emit('select', feature.id);
+}
+
+function getFeatureColor(feature: Feature) {
+    if (feature.properties?.color) {
+        return feature.properties.color as string;
+    }
+
+    return props.markerColor;
+}
+
+function createMarker(feature: Feature) {
+    const existingMarker = allMarkers.get(feature.id);
+
+    if (existingMarker) {
+        existingMarker.update({ properties: feature.properties });
+
+        return existingMarker;
+    }
+
+    const featureCircle = document.createElement('div');
+
+    featureCircle.classList.add(module['feature-circle']);
+
+    if (feature.id == props.selectedMarkerId) {
+        featureCircle.style.background = '#1e97fd';
+        featureCircle.style.borderColor = '#1e97fd';
+    } else {
+        featureCircle.style.borderColor = getFeatureColor(feature);
+    }
+
+    const yMapMarker = new window.ymaps3.YMapMarker(
+        {
+            id: feature.id,
+            coordinates: feature.geometry.coordinates,
+            onFastClick: () => onClick(feature),
+            position: 'top left-center',
+            properties: feature.properties
+        },
+        featureCircle
+    );
+
+    allMarkers.set(feature.id, yMapMarker);
+
+    return yMapMarker;
+}
+</script>
+<style module>
+.feature-circle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 100%;
+    background: #fff;
+    border: 4px solid;
+    width: 20px;
+    height: 20px;
+    font-size: 12px;
+    cursor: pointer;
+    overflow: hidden;
+    transform: translate(-50%, -100%);
+
+    img {
+        height: 100%;
+        width: 100%;
+        object-fit: cover;
+    }
+}
+</style>
+<style>
+.feature-hint {
+    position: absolute;
+    max-width: 600px;
+    padding: 8px 12px 8px 20px;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.9);
+    line-height: 16px;
+    z-index: -2;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    transform: translate(7px, -100%);
+    width: max-content;
+
+    &.dark {
+        background: rgba(29, 30, 31, 0.9);
+        color: #fff;
+    }
+}
+
+.ymaps3--popup-marker.ymaps3--popup-marker__position-right:has(.map-marker-popup) {
+    margin: -10px 0 0 14px;
+}
+</style>
