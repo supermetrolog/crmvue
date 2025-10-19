@@ -56,6 +56,7 @@ export type ObjectMapMarker = {
     is_land: number;
     test_only: number | null;
     object_type: number | null;
+    offer_state: 0 | 1 | 2 | null;
 };
 
 defineEmits<{

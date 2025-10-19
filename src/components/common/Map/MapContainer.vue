@@ -4,15 +4,20 @@
             <YandexMapDefaultSatelliteLayer v-if="currentLayer === 'satellite'" />
             <YandexMapDefaultSchemeLayer v-else :settings="{ theme: settings.theme }" />
             <YandexMapDefaultFeaturesLayer />
-            <YandexMapControls v-if="zoomIsEnabled" :settings="{ position: 'right' }">
-                <YandexMapZoomControl />
+            <YandexMapControls
+                v-if="zoomIsEnabled || geolocationIsEnabled"
+                :settings="{ position: 'right' }"
+            >
+                <slot name="controls-right" />
+                <YandexMapZoomControl v-if="zoomIsEnabled" />
+                <YandexMapGeolocationControl v-if="geolocationIsEnabled" />
             </YandexMapControls>
             <YandexMapControls
-                v-if="geolocationIsEnabled || fullscreenIsEnabled"
+                v-if="fullscreenIsEnabled || themeIsEnabled || layersIsEnabled"
                 :settings="{ position: controlsPosition }"
             >
+                <slot name="controls-top" />
                 <MapLayerControl v-if="layersIsEnabled" v-model="currentLayer" />
-                <YandexMapGeolocationControl v-if="geolocationIsEnabled" />
                 <MapFullScreenControl v-if="fullscreenIsEnabled" v-model="isFullscreen" />
                 <MapThemeControl v-if="themeIsEnabled" v-model="currentTheme" />
             </YandexMapControls>
@@ -48,6 +53,7 @@ import MapThemeControl from '@/components/common/Map/Control/MapThemeControl.vue
 import { getFromLocalstorage } from '@/services/localStorage';
 import MapLayerControl from '@/components/common/Map/Control/MapLayerControl.vue';
 import { createMapContext } from '@/components/common/Map/useMapContext';
+import { isArray } from '@/utils/helpers/array/isArray';
 
 export type MapType = 'map' | 'satellite';
 export type MapTheme = 'light' | 'dark';
@@ -71,14 +77,23 @@ const props = withDefaults(
         center: () => [37.619346417968764, 55.75554289958026], // moscow
         zoom: 8,
         type: 'map',
-        theme: () => getFromLocalstorage('ui:prefer:map-theme', 'dark') ?? 'dark',
+        theme: () => getFromLocalstorage('ui:prefer:map:theme', 'light') ?? 'light',
         controls: () => ['zoom', 'geolocation', 'fullscreen', 'layers', 'theme'],
         controlsPosition: 'top right',
-        loadingPosition: 'top left'
+        loadingPosition: 'top left',
+        behaviors: () => ['drag', 'scrollZoom', 'pinchZoom', 'dblClick']
     }
 );
 
 const instance = defineModel<YMap | null>({ default: null });
+
+const currentBehaviors = computed(() => {
+    if (isArray(props.behaviors)) {
+        return props.behaviors.filter(behavior => behaviorStates[behavior] !== false);
+    }
+
+    return undefined;
+});
 
 const settings = computed<YandexMapSettings>(() => ({
     location: {
@@ -86,14 +101,15 @@ const settings = computed<YandexMapSettings>(() => ({
         zoom: currentZoom.value,
         bounds: contextBounds.value
     },
-    behaviors: props.behaviors,
+    behaviors: currentBehaviors.value,
     theme: currentTheme.value
 }));
 
 const {
     bounds: contextBounds,
     loading: contextLoading,
-    theme: contextTheme
+    theme: contextTheme,
+    behaviorStates
 } = createMapContext({
     map: instance,
     settings,

@@ -4,7 +4,7 @@
             <div v-if="!mapIsOpened" class="offer-table-map__actions">
                 <UiButtonIcon
                     @click.stop.prevent="decreaseZoom"
-                    :disabled="isLoading"
+                    :disabled="loading"
                     icon="fa-solid fa-minus"
                     color="white"
                     rect
@@ -13,7 +13,7 @@
                 />
                 <UiButtonIcon
                     @click.stop.prevent="increaseZoom"
-                    :disabled="isLoading"
+                    :disabled="loading"
                     icon="fa-solid fa-plus"
                     color="white"
                     rect
@@ -29,19 +29,20 @@
             :controls="mapIsOpened ? undefined : []"
             :behaviors="mapIsOpened ? undefined : []"
             :loading-position="mapIsOpened ? 'left' : 'left top'"
-            :loading="isLoading"
+            :loading="loading"
             class="offer-table-map__container"
         >
             <MapMarkerCollection
                 @select="selectMarker"
                 :collection="preparedMarkers"
-                :grid-size="64"
+                :grid-size="32"
                 :selected-marker-id="selectedMarkerId"
                 :popup="mapIsOpened"
                 :hint="mapIsOpened"
+                :max-zoom="12"
             >
                 <template #popup="{ close }">
-                    <div class="objects-map__popup">
+                    <div class="offer-table-map-popup">
                         <Spinner v-if="objectIsLoading" center class="absolute-center" />
                         <ObjectMapPopup v-else-if="selectedMarker" @close="close" :object />
                     </div>
@@ -50,13 +51,17 @@
                     <ObjectMapHint v-if="content" :hint="content" />
                 </template>
             </MapMarkerCollection>
-            <MapContainerControls position="top left">
+            <MapContainerControls v-if="selection" position="top left">
                 <MapSelectionBehavior
-                    @selected="selectPolygon"
-                    @removed="clearPolygon"
+                    @selected="$emit('select-polygon', $event)"
+                    @removed="$emit('clear-polygon')"
                     :coordinates="polygon"
+                    :editable="mapIsOpened"
                 />
             </MapContainerControls>
+            <template #controls-right>
+                <MapRulerBehavior />
+            </template>
         </MapContainer>
         <div class="offer-table-map__footer">
             <AnimationTransition :speed="0.3" appear>
@@ -77,23 +82,20 @@
                     center
                     class="offer-table-map__button"
                     icon="fa-solid fa-map-location-dot"
-                    :disabled="isLoading"
+                    :disabled="loading"
                 >
-                    <span v-if="isLoading || !isLoaded">Поиск объектов..</span>
+                    <span v-if="loading">Поиск объектов..</span>
                     <span v-else-if="count">Показать {{ countLabel }} на карте</span>
-                    <span v-else>Показать {{ countLabel }} на карте</span>
+                    <span v-else>Объектов на карте не найдено</span>
                 </UiButton>
             </AnimationTransition>
         </div>
     </div>
 </template>
 <script setup lang="ts">
-import { useRoute, useRouter } from 'vue-router';
 import api from '@/api/api';
-import { computed, onMounted, ref, shallowRef, useTemplateRef, watch } from 'vue';
+import { computed, ref, shallowRef, useTemplateRef, watch } from 'vue';
 import { plural } from '@/utils/plural';
-import { useDebounceFn } from '@vueuse/core';
-import { singleToArrayByKeys } from '@/utils/helpers/object/singleToArrayByKeys';
 import { isNotNullish } from '@/utils/helpers/common/isNotNullish';
 import UiButton from '@/components/common/UI/UiButton.vue';
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
@@ -108,88 +110,27 @@ import ObjectMapHint, { ObjectMapMarkerHint } from '@/components/ObjectMapHint/O
 import Spinner from '@/components/common/Spinner.vue';
 import { useAsync } from '@/composables/useAsync';
 import { getBoundsFromCoords } from 'vue-yandex-maps';
+import MapRulerBehavior from '@/components/common/Map/Behavior/MapRulerBehavior.vue';
 
-const route = useRoute();
-
-const props = defineProps<{
-    currentFolder?: number;
-    center?: LngLat;
-    zoom?: number;
+defineEmits<{
+    (e: 'select-polygon', coords: LngLat[]): void;
+    (e: 'clear-polygon'): void;
 }>();
 
-const isLoading = ref(false);
-const isLoaded = ref(false);
+const props = withDefaults(
+    defineProps<{
+        center?: LngLat;
+        zoom?: number;
+        objects: ObjectMapMarker[];
+        polygon?: LngLat[];
+        count?: number;
+        loading?: boolean;
+        selection?: boolean;
+    }>(),
+    { selection: true }
+);
 
-const offers = shallowRef<ObjectMapMarker[]>([]);
-const count = ref(0);
-
-const countLabel = computed(() => plural(count.value, '%d объект', '%d объекта', '%d объектов'));
-
-const formKeysOnlyArray = [
-    'purposes',
-    'class',
-    'gates',
-    'region',
-    'direction',
-    'district_moscow',
-    'object_type',
-    'floor_types',
-    'cian_regions'
-];
-
-const fetchOffers = useDebounceFn(async () => {
-    isLoading.value = true;
-
-    const query = {
-        ...route.query,
-        type_id: [2, 3],
-        fields: 'latitude,longitude,address,complex_id,status,test_only,id,area_building,object_id,original_id,is_land,object_type,visual_id,class',
-        objectsOnly: 1,
-        page: 1,
-        noWith: 1,
-        'per-page': 0
-    };
-
-    delete query.page;
-    delete query.sort;
-
-    singleToArrayByKeys(query, formKeysOnlyArray);
-
-    if (isNotNullish(props.currentFolder)) {
-        query.folder_ids = [props.currentFolder];
-    }
-
-    if (query.polygon) {
-        query.polygon = query.polygon.join(',');
-    }
-
-    const response = await api.offers.searchMap(query);
-
-    if (Array.isArray(response.data)) {
-        offers.value = response.data;
-        count.value = response.pagination?.totalCount;
-    }
-
-    isLoaded.value = true;
-    isLoading.value = false;
-}, 100);
-
-const preparedQuery = computed(() => {
-    const q = { ...route.query };
-
-    delete q.page;
-    delete q.sort;
-
-    if (props.currentFolder) {
-        q.folder_ids = [props.currentFolder];
-    }
-
-    return JSON.stringify(q);
-});
-
-watch(preparedQuery, () => fetchOffers());
-
-onMounted(fetchOffers);
+const countLabel = computed(() => plural(props.count, '%d объект', '%d объекта', '%d объектов'));
 
 const map = useTemplateRef('map');
 
@@ -207,7 +148,7 @@ function decreaseZoom() {
 
 // toggle map
 
-const mapIsOpened = ref(false);
+const mapIsOpened = defineModel<boolean>('opened', { default: false });
 
 function toggleButton() {
     mapIsOpened.value = !mapIsOpened.value;
@@ -226,24 +167,33 @@ function createHint(marker: ObjectMapMarker): ObjectMapMarkerHint {
         class: marker.class,
         is_land: marker.is_land,
         area_building: marker.area_building,
-        test_only: marker.test_only
+        test_only: marker.test_only,
+        offer_state: marker.offer_state
     };
 }
 
-const preparedMarkers = computed(() => {
-    if (mapIsOpened.value) {
-        return offers.value.map(offer => ({
-            id: String(offer.id),
-            coordinates: [offer.longitude, offer.latitude] as LngLat,
-            properties: {
-                hint: createHint(offer)
-            }
-        }));
+const offerStateToColorMap = {
+    0: 'gray',
+    1: 'red',
+    2: '#43c136'
+};
+
+function offerToColor(offer: ObjectMapMarker) {
+    if (isNotNullish(offer.offer_state)) {
+        return offerStateToColorMap[offer.offer_state];
     }
 
-    return offers.value.map(offer => ({
+    return undefined;
+}
+
+const preparedMarkers = computed(() => {
+    return props.objects.map(offer => ({
         id: String(offer.id),
-        coordinates: [offer.longitude, offer.latitude] as LngLat
+        coordinates: [offer.longitude, offer.latitude] as LngLat,
+        properties: {
+            hint: createHint(offer),
+            color: offerToColor(offer)
+        }
     }));
 });
 
@@ -251,7 +201,7 @@ const selectedMarkerId = ref<string | number | null>(null);
 
 const selectedMarker = computed(() => {
     if (selectedMarkerId.value) {
-        return offers.value.find(element => element.id == selectedMarkerId.value);
+        return props.objects.find(element => element.id == selectedMarkerId.value);
     }
 
     return null;
@@ -268,7 +218,7 @@ function selectMarker(markerId: string | null) {
         return;
     }
 
-    const object = offers.value.find(element => element.id === Number(markerId));
+    const object = props.objects.find(element => element.id === Number(markerId));
 
     if (!object) {
         selectedMarkerId.value = null;
@@ -289,32 +239,6 @@ const {
     return response.data?.length ? response.data[0] : null;
 });
 
-const polygon = computed(() => {
-    if (route.query.polygon && Array.isArray(route.query.polygon)) {
-        return route.query.polygon.map(element => element.split(','));
-    }
-
-    return [];
-});
-
-const router = useRouter();
-
-function selectPolygon(polygon: LngLat[]) {
-    const query = { ...route.query, polygon };
-
-    router.replace({ query });
-}
-
-function clearPolygon() {
-    const query = { ...route.query };
-
-    if (query.polygon) {
-        delete query.polygon;
-
-        router.replace({ query });
-    }
-}
-
 const mapInstance = shallowRef<YMap | null>(null);
 
 function normalizeMapBounds() {
@@ -328,7 +252,7 @@ function normalizeMapBounds() {
 }
 
 watch(
-    () => offers.value.length,
+    () => props.objects.length,
     value => {
         if (value > 0) {
             normalizeMapBounds();
@@ -407,5 +331,11 @@ watch(
             }
         }
     }
+}
+
+.offer-table-map-popup {
+    min-height: 280px;
+    min-width: 240px;
+    max-width: 380px;
 }
 </style>

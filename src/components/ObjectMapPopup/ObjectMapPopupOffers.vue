@@ -53,6 +53,10 @@ const groups = computed(() => {
         display: flex;
         flex-direction: column;
         gap: 10px;
+        overflow-y: auto;
+        max-height: 230px;
+        padding: 5px;
+        margin: -5px;
     }
 }
 </style>

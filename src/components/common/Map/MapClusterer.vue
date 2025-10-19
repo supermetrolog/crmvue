@@ -41,14 +41,15 @@ const settings = computed(() => ({
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 50px;
-    height: 50px;
+    width: 32px;
+    height: 32px;
     background: #b41efd;
     color: #fff;
     border-radius: 100%;
     cursor: pointer;
-    border: 6px solid #fff;
+    border: 3px solid #fff;
     outline: 3px solid #b41efd;
     text-align: center;
+    font-size: 14px;
 }
 </style>

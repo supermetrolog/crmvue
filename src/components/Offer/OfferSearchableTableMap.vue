@@ -1,50 +1,38 @@
 <template>
-    <MapBanner
-        :to="{ name: 'offers.map', query }"
+    <OfferTableMap
+        @select-polygon="selectPolygon"
+        @clear-polygon="clearPolygon"
+        :objects="offers"
+        :polygon
+        :count
+        :center
+        :zoom
         :loading="isLoading"
-        :markers
-        :grid-size="128"
-        scalable
-    >
-        <template #label>
-            <span v-if="isLoading || !isLoaded">Поиск объектов..</span>
-            <span v-else-if="isLoaded">Показать {{ countLabel }} на карте</span>
-        </template>
-    </MapBanner>
+    />
 </template>
 <script setup lang="ts">
-import MapBanner from '@/components/MapBanner/MapBanner.vue';
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import api from '@/api/api';
 import { computed, onMounted, ref, shallowRef, watch } from 'vue';
-import { plural } from '@/utils/plural';
 import { useDebounceFn } from '@vueuse/core';
 import { singleToArrayByKeys } from '@/utils/helpers/object/singleToArrayByKeys';
 import { isNotNullish } from '@/utils/helpers/common/isNotNullish';
+import { LngLat } from '@yandex/ymaps3-types';
+import { ObjectMapMarker } from '@/components/ObjectMapPopup/ObjectMapPopup.vue';
+import OfferTableMap from '@/components/Offer/OfferTableMap.vue';
 
 const route = useRoute();
 
 const props = defineProps<{
     currentFolder?: number;
+    center?: LngLat;
+    zoom?: number;
 }>();
 
-const query = computed(() => ({ ...route.query, folder: props.currentFolder }));
-
 const isLoading = ref(false);
-const isLoaded = ref(false);
 
-const offers = shallowRef([]);
-const count = ref(0);
-
-const markers = computed(() =>
-    offers.value.map(offer => ({
-        id: String(offer.id),
-        coordinates: [offer.longitude, offer.latitude],
-        title: offer.address
-    }))
-);
-
-const countLabel = computed(() => plural(count.value, '%d объект', '%d объекта', '%d объектов'));
+const offers = shallowRef<ObjectMapMarker[]>([]);
+const count = ref<number | undefined>();
 
 const formKeysOnlyArray = [
     'purposes',
@@ -62,14 +50,17 @@ const fetchOffers = useDebounceFn(async () => {
     isLoading.value = true;
 
     const query = {
+        status: 3,
         ...route.query,
         type_id: [2, 3],
-        fields: 'latitude,longitude,address,complex_id,status,thumb,test_only,id',
+        fields: 'latitude,longitude,address,complex_id,status,test_only,id,area_building,object_id,original_id,is_land,object_type,visual_id,class,offer_state',
         objectsOnly: 1,
-        page: 1,
         noWith: 1,
         'per-page': 0
     };
+
+    delete query.page;
+    delete query.sort;
 
     singleToArrayByKeys(query, formKeysOnlyArray);
 
@@ -88,7 +79,6 @@ const fetchOffers = useDebounceFn(async () => {
         count.value = response.pagination?.totalCount;
     }
 
-    isLoaded.value = true;
     isLoading.value = false;
 }, 100);
 
@@ -108,4 +98,30 @@ const preparedQuery = computed(() => {
 watch(preparedQuery, () => fetchOffers());
 
 onMounted(fetchOffers);
+
+const polygon = computed(() => {
+    if (route.query.polygon && Array.isArray(route.query.polygon)) {
+        return route.query.polygon.map(element => element.split(','));
+    }
+
+    return [];
+});
+
+const router = useRouter();
+
+function selectPolygon(polygon: LngLat[]) {
+    const query = { ...route.query, polygon };
+
+    router.replace({ query });
+}
+
+function clearPolygon() {
+    const query = { ...route.query };
+
+    if (query.polygon) {
+        delete query.polygon;
+
+        router.replace({ query });
+    }
+}
 </script>

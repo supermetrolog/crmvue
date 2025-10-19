@@ -9,12 +9,7 @@
                     v-if="searchingIsVisible"
                     @close="searchingIsVisible = false"
                 />
-                <FormOfferSearchExternal
-                    @openFilters="searchingIsVisible = true"
-                    class="col-12"
-                    :offers-count="offersPagination ? offersPagination.totalCount : 0"
-                    :objects-count="objectsCountInMap"
-                />
+                <FormOfferSearchExternal @openFilters="searchingIsVisible = true" class="col-12" />
                 <div class="col-12 my-2">
                     <div class="company-table__filters">
                         <Chip
@@ -39,7 +34,7 @@
             </div>
             <div class="row my-2">
                 <UiCol :cols="12">
-                    <OfferTableMap :current-folder />
+                    <OfferSearchableTableMap :current-folder />
                 </UiCol>
             </div>
             <div class="row justify-content-between">
@@ -154,7 +149,7 @@ import { isNotEmptyString } from '@/utils/helpers/string/isNotEmptyString.js';
 import { ucFirst } from '@/utils/formatters/string.js';
 import { isArray } from '@/utils/helpers/array/isArray';
 import UiCol from '@/components/common/UI/UiCol.vue';
-import OfferTableMap from '@/components/Offer/OfferTableMap.vue';
+import OfferSearchableTableMap from '@/components/Offer/OfferSearchableTableMap.vue';
 
 const isMobile = useMobile();
 const store = useStore();
@@ -441,14 +436,6 @@ const preparedQuery = computed(() => {
 
     return JSON.stringify(q);
 });
-
-const objectsCountInMap = ref(0);
-
-const fetchObjectsCountInMap = useDebounceFn(async () => {
-    objectsCountInMap.value = Number(await api.offers.searchMapCount(createPayload()));
-}, 100);
-
-watch(preparedQuery, () => fetchObjectsCountInMap(), { immediate: true });
 
 // folders
 

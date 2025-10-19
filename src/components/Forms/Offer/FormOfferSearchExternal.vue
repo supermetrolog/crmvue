@@ -26,24 +26,6 @@
                 >
                     Очистить фильтры
                 </UiButton>
-                <UiButton
-                    :icon="isMap ? 'fa-solid fa-list-ul' : 'fa-solid fa-map-location-dot'"
-                    :to="{
-                        name: props.isMap ? 'offers.table' : 'offers.map',
-                        query: route.query
-                    }"
-                    :as="RouterLink"
-                    color="light"
-                    :loading
-                >
-                    <span class="mr-1">{{ isMap ? 'Списком' : 'На карте' }}</span>
-                    <span v-if="isMap">
-                        <span v-if="!loading">
-                            ({{ offersCount }} предл. /{{ objectsCount }} объект.)
-                        </span>
-                    </span>
-                    <span v-else>({{ objectsCount ?? offersCount }})</span>
-                </UiButton>
             </div>
         </div>
         <div class="col-12">
@@ -65,7 +47,7 @@
 
 <script setup>
 import { computed, onBeforeMount, reactive, watch } from 'vue';
-import { RouterLink, useRoute, useRouter } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import UiForm from '@/components/common/Forms/UiForm.vue';
 import UiInput from '@/components/common/Forms/UiInput.vue';
 import { useDebounceFn } from '@vueuse/core';
@@ -74,7 +56,7 @@ import { toCleanObject } from '@/utils/helpers/object/toCleanObjects.js';
 import UiButton from '@/components/common/UI/UiButton.vue';
 
 defineEmits(['open-filters']);
-const props = defineProps({
+defineProps({
     offersCount: {
         type: Number,
         default: 0
