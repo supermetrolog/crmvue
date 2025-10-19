@@ -103,7 +103,10 @@ watch(
 
 const mapMarkerPopupEl = useTemplateRef('mapMarkerPopup');
 
-const popupIsHovered = useElementHover(mapMarkerPopupEl, { delayEnter: 300 });
+const popupIsHovered = useElementHover(mapMarkerPopupEl, {
+    delayEnter: 300,
+    triggerOnRemoval: true
+});
 
 watch(popupIsHovered, value => {
     if (value) {
@@ -131,6 +134,8 @@ function normalizeMapBounds() {
 
 function closePopup() {
     popupIsVisible.value = false;
+
+    setBehaviorState('scrollZoom', true);
 }
 
 function onOpenPopup() {
