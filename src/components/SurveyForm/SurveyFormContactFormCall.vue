@@ -466,7 +466,7 @@ function createWhatsappLink() {
 }
 
 function openWhatsapp() {
-    whatsappModalIsVisible.value = true;
+    // whatsappModalIsVisible.value = true;
 
     window.open(createWhatsappLink(), '_blank').focus();
 }
