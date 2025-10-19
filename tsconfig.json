@@ -10,7 +10,7 @@
     "allowJs": true,
     "checkJs": false,
     "jsx": "preserve",
-    "strict":  true,
+    "strict": true,
     "noEmit": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
@@ -23,8 +23,10 @@
       ]
     },
     "typeRoots": [
-      "./node_modules/@types",
-      "./node_modules/@yandex/ymaps3-types"
+      "./node_modules/@types"
+    ],
+    "types": [
+      "@yandex/ymaps3-types"
     ]
   },
   "include": [

@@ -2393,6 +2393,8 @@
 }
 
 .survey-form-contact-form-call {
+    position: relative;
+
     &__question-text {
         font-size: 26px;
         font-weight: 500;
@@ -2416,6 +2418,12 @@
             font-style: italic;
             font-size: 15px;
         }
+    }
+
+    &__whatsapp {
+        position: absolute;
+        top: 0;
+        right: 0;
     }
 }
 
