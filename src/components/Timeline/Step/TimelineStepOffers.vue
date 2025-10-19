@@ -165,18 +165,14 @@
             </UiCol>
             <UiCol :cols="12">
                 <TimelineStepOffersMap
-                    v-if="isMapView"
-                    @to-list="isMapView = false"
-                    @refresh="search(searchParams)"
-                    :objects="objects"
+                    :objects="mapObjects"
                     :selected-objects="selectedObjects"
                     :current-objects="step.objects"
-                    :loading="isSearchLoading"
-                    :counts="pagination?.totalCount"
+                    :loading="mapIsLoading"
+                    :count="mapCount"
+                    class="mb-2"
                 />
                 <TimelineStepOffersTable
-                    v-else
-                    @to-map="isMapView = true"
                     @refresh="search(searchParams)"
                     @next-page="toNextPage"
                     @select="select"
@@ -298,7 +294,7 @@ import { regionsToFakeRegion } from '@/utils/normalizeForm.js';
 import TimelineButton from '@/components/Timeline/TimelineButton.vue';
 import TimelineStepOffersButton from '@/components/Timeline/Step/TimelineStepOffersButton.vue';
 import TimelineStepOffersFiltersButton from '@/components/Timeline/Step/TimelineStepOffersFiltersButton.vue';
-import { computed, onBeforeMount, onMounted, reactive, ref, shallowRef, toRef } from 'vue';
+import { computed, onBeforeMount, onMounted, reactive, ref, shallowRef, toRaw, toRef } from 'vue';
 import { useRoute } from 'vue-router';
 import { useStore } from 'vuex';
 import api from '@/api/api.js';
@@ -321,6 +317,8 @@ import { plural } from '@/utils/plural.js';
 import TimelineStepOffersMap from '@/components/Timeline/Step/TimelineStepOffersMap.vue';
 import TimelineStepOffersTable from '@/components/Timeline/Step/TimelineStepOffersTable.vue';
 import { deepToRaw } from '@/utils/common/deepToRaw.js';
+import { singleToArrayByKeys } from '@/utils/helpers/object/singleToArrayByKeys.js';
+import { isEqual } from 'es-toolkit';
 
 const emit = defineEmits(['update-step', 'updated-objects', 'next-step']);
 const props = defineProps({
@@ -507,8 +505,18 @@ function resetForm() {
     currentRecommendedFilter.value = null;
 }
 
+const lastQuery = shallowRef(null);
+
 async function fetchObjects(query = {}, withLoader = true) {
     if (withLoader) isSearchLoading.value = true;
+
+    const clonedQuery = structuredClone(deepToRaw(query));
+
+    if (!isEqual(toRaw(lastQuery.value), clonedQuery)) {
+        void fetchMapObjects(clonedQuery);
+    }
+
+    lastQuery.value = clonedQuery;
 
     const _query = {
         type_id: [1, 2, 3],
@@ -519,7 +527,7 @@ async function fetchObjects(query = {}, withLoader = true) {
             'consultant.userProfile,' +
             'company.mainContact.phones,company.mainContact.emails,company.objects_count,company.active_requests_count,company.active_contacts_count',
         timeline_id: timeline.value.id,
-        ...structuredClone(deepToRaw(query)),
+        ...clonedQuery,
         page: currentPage.value
     };
 
@@ -534,10 +542,6 @@ async function fetchObjects(query = {}, withLoader = true) {
         _query.complex_id = FAVORITES_OFFERS.value.map(item => item.complex_id);
     }
 
-    if (isMapView.value) {
-        fetchMapCounts(_query);
-    }
-
     const data = await api.companyObjects.searchOffers(_query);
 
     setObjects(data);
@@ -547,26 +551,64 @@ async function fetchObjects(query = {}, withLoader = true) {
 
 const debouncedFetchObjects = useDebounceFn(fetchObjects, 300);
 
+const mapIsLoading = ref(false);
+const mapObjects = shallowRef([]);
+const mapCount = ref();
+
+const formKeysOnlyArray = [
+    'purposes',
+    'class',
+    'gates',
+    'region',
+    'direction',
+    'district_moscow',
+    'object_type',
+    'floor_types',
+    'cian_regions'
+];
+
+async function fetchMapObjects(query = {}) {
+    mapIsLoading.value = true;
+
+    const preparedQuery = {
+        status: 3,
+        ...query,
+        type_id: [2, 3],
+        fields: 'latitude,longitude,address,complex_id,status,test_only,id,area_building,object_id,original_id,is_land,object_type,visual_id,class,offer_state',
+        objectsOnly: 1,
+        noWith: 1,
+        'per-page': 0,
+        timeline_id: timeline.value.id
+    };
+
+    delete preparedQuery.page;
+    delete preparedQuery.sort;
+
+    singleToArrayByKeys(preparedQuery, formKeysOnlyArray);
+
+    if (isNotNullish(props.currentFolder)) {
+        preparedQuery.folder_ids = [props.currentFolder];
+    }
+
+    if (preparedQuery.polygon) {
+        preparedQuery.polygon = preparedQuery.polygon.join(',');
+    }
+
+    const response = await api.offers.searchMap(preparedQuery);
+
+    if (Array.isArray(response.data)) {
+        mapObjects.value = response.data;
+        mapCount.value = response.pagination?.totalCount;
+    }
+
+    mapIsLoading.value = false;
+}
+
 async function search(params, withLoader = true) {
     searchParams.value = params;
     searchMode.value = true;
 
     await debouncedFetchObjects(params, withLoader);
-}
-
-// map counts
-
-const mapCounts = reactive({
-    offers: 0
-});
-
-async function fetchMapCounts(query) {
-    try {
-        const offersCount = await api.offers.searchCount(query);
-        counts.offers = Number(offersCount);
-    } catch (error) {
-        counts.offers = 0;
-    }
 }
 
 // selecting
@@ -973,7 +1015,6 @@ async function sendStepObjects() {
 
 // map view
 
-const isMapView = ref(false);
 const isSubmittedView = ref(false);
 
 // pause event

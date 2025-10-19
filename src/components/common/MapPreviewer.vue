@@ -22,7 +22,7 @@
                 hint
             >
                 <template #popup="{ close }">
-                    <div class="objects-map__popup">
+                    <div class="offer-table-map-popup">
                         <Spinner v-if="objectIsLoading" center class="absolute-center" />
                         <ObjectMapPopup
                             v-else-if="object && selectedMarkerId"
@@ -46,7 +46,7 @@
                     color="red"
                 />
                 <YandexMapPopupMarker v-if="targetPopupSettings" :settings="targetPopupSettings">
-                    <div class="objects-map__popup">
+                    <div class="offer-table-map-popup">
                         <Spinner v-if="objectIsLoading" center class="absolute-center" />
                         <ObjectMapPopup
                             v-else-if="object && selectedMarkerId"
@@ -95,7 +95,8 @@ function createHint(marker: ObjectMapMarker): ObjectMapMarkerHint {
         class: marker.class,
         is_land: marker.is_land,
         area_building: marker.area_building,
-        test_only: marker.test_only
+        test_only: marker.test_only,
+        offer_state: marker.offer_state
     };
 }
 
@@ -298,3 +299,10 @@ const stopWatch = watch(isLoading, value => {
 
 defineExpose({ open });
 </script>
+<style>
+.offer-table-map-popup {
+    min-height: 280px;
+    min-width: 240px;
+    max-width: 380px;
+}
+</style>

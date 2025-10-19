@@ -3,13 +3,14 @@ import {
     inject,
     InjectionKey,
     provide,
+    reactive,
     readonly,
     Ref,
     ref,
     shallowRef,
     ShallowRef
 } from 'vue';
-import { LngLatBounds, YMap, YMapLocationRequest } from '@yandex/ymaps3-types';
+import { type BehaviorType, LngLatBounds, YMap, YMapLocationRequest } from '@yandex/ymaps3-types';
 import { YandexMapSettings } from 'vue-yandex-maps';
 import { MapTheme } from '@/components/common/Map/MapContainer.vue';
 
@@ -23,6 +24,8 @@ export type MapContext = {
     theme: Readonly<Ref<MapTheme>>;
     setTheme: (value: MapTheme) => void;
     setLocation: (value: YMapLocationRequest) => void;
+    behaviorStates: Partial<Record<BehaviorType, boolean>>;
+    setBehaviorState: (behavior: BehaviorType, state: boolean) => void;
 };
 
 export type MapContextConfig = {
@@ -60,6 +63,12 @@ export function createMapContext(config: MapContextConfig) {
         }
     }
 
+    const behaviorStates = reactive<Partial<Record<BehaviorType, boolean>>>({});
+
+    function setBehaviorState(behavior: BehaviorType, state: boolean) {
+        behaviorStates[behavior] = state;
+    }
+
     const context = {
         map: config.map,
         settings: config.settings,
@@ -69,7 +78,9 @@ export function createMapContext(config: MapContextConfig) {
         setLoading,
         theme: readonly(theme),
         setTheme,
-        setLocation
+        setLocation,
+        behaviorStates,
+        setBehaviorState
     } as MapContext;
 
     provide(key, context);

@@ -10,6 +10,10 @@
             </span>
         </p>
         <p class="text-grey">{{ hint.address }}</p>
+        <p v-if="hasOfferState" class="mt-2">
+            <i :class="offerStateIcon" class="mr-1" />
+            <span class="op-7">{{ offerStateLabel }}</span>
+        </p>
     </div>
 </template>
 <script setup lang="ts">
@@ -18,6 +22,7 @@ import { objectOptions } from '@/const/options/object.options';
 import WithUnitType from '@/components/common/WithUnitType.vue';
 import { unitTypes } from '@/const/unitTypes';
 import { toNumberFormat } from '@/utils/formatters/number';
+import { isNotNullish } from '@/utils/helpers/common/isNotNullish';
 
 export type ObjectMapMarkerHint = {
     visual_id: string;
@@ -26,6 +31,7 @@ export type ObjectMapMarkerHint = {
     is_land: number;
     area_building: number;
     test_only: number | null;
+    offer_state: number | null;
 };
 
 const props = defineProps<{
@@ -36,4 +42,21 @@ const hasClass = computed(() => props.hint.class && props.hint.class !== '0');
 
 const classLabel = computed(() => objectOptions.class[props.hint.class]);
 const areaBuilding = computed(() => toNumberFormat(props.hint.area_building));
+
+const offerStateLabelMap = {
+    2: 'Есть активные предложения',
+    1: 'Есть пассивные предложения',
+    0: 'Нет предложений'
+};
+
+const offerStateIconMap = {
+    2: 'fa-solid fa-up-long text-success',
+    1: 'fa-solid fa-down-long text-danger',
+    0: 'fa-solid fa-ban text-grey'
+};
+
+const hasOfferState = computed(() => isNotNullish(props.hint.offer_state));
+
+const offerStateLabel = computed(() => offerStateLabelMap[props.hint.offer_state]);
+const offerStateIcon = computed(() => offerStateIconMap[props.hint.offer_state]);
 </script>

@@ -162,6 +162,7 @@ async function toggleFavorite() {
         font-weight: 500;
         width: calc(100% - 30px);
         margin-left: -2px;
+        text-align: start;
     }
 
     &__price {
@@ -178,6 +179,10 @@ async function toggleFavorite() {
 
     &__trigger {
         color: inherit !important;
+
+        > span {
+            width: 100%;
+        }
     }
 }
 </style>

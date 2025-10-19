@@ -5,9 +5,16 @@
 :settings
 :zoom-on-cluster-click />
     <YandexMapPopupMarker v-if="popup && popupSettings" :settings="popupSettings">
-        <slot name="popup" :marker="selectedMarker!" :close="closePopup">
-            {{ selectedMarker!.id }}
-        </slot>
+        <div ref="mapMarkerPopup" class="map-marker-popup">
+            <slot
+                name="popup"
+                :marker="selectedMarker"
+                :close="closePopup"
+                :normalize-bounds="normalizeMapBounds"
+            >
+                {{ selectedMarker!.id }}
+            </slot>
+        </div>
     </YandexMapPopupMarker>
     <YandexMapHint v-if="hint" hint-property="hint">
         <template #default="{ content }">
@@ -22,13 +29,16 @@
 <script setup lang="ts">
 import { LngLat, YMapMarker } from '@yandex/ymaps3-types';
 import type { Feature, YMapClusterer } from '@yandex/ymaps3-types/packages/clusterer';
-import { computed, ref, shallowRef, useCssModule, watch } from 'vue';
+import { computed, nextTick, ref, shallowRef, useCssModule, useTemplateRef, watch } from 'vue';
 import { useMapContext } from '@/components/common/Map/useMapContext';
 import MapClusterer from '@/components/common/Map/MapClusterer.vue';
 import { YandexMapHint, YandexMapPopupMarker } from 'vue-yandex-maps';
+import { useElementHover } from '@vueuse/core';
 
 const emit = defineEmits<{
     (e: 'select', featureId: string | null): void;
+    (e: 'popup-opened'): void;
+    (e: 'popup-closed'): void;
 }>();
 
 export type MapCollectionItem = {
@@ -45,10 +55,16 @@ const props = withDefaults(
         collection: MapCollectionItem[];
         selectedMarkerId?: string | number | null;
         popup?: boolean;
+        autoPanPopup?: boolean;
+        autoPanPopupOffset?: number;
         hint?: boolean;
+        markerColor?: string;
     }>(),
     {
-        zoomOnClusterClick: true
+        zoomOnClusterClick: true,
+        autoPanPopup: true,
+        autoPanPopupOffset: 50,
+        markerColor: '#1e97fd'
     }
 );
 
@@ -68,6 +84,10 @@ const selectedMarker = computed(() => {
 
 function onClosePopup() {
     emit('select', null);
+
+    emit('popup-closed');
+
+    setBehaviorState('scrollZoom', true);
 }
 
 const popupIsVisible = ref(true);
@@ -81,8 +101,44 @@ watch(
     }
 );
 
+const mapMarkerPopupEl = useTemplateRef('mapMarkerPopup');
+
+const popupIsHovered = useElementHover(mapMarkerPopupEl, { delayEnter: 300 });
+
+watch(popupIsHovered, value => {
+    if (value) {
+        setBehaviorState('scrollZoom', false);
+    } else {
+        setBehaviorState('scrollZoom', true);
+    }
+});
+
+function normalizeMapBounds() {
+    if (!map.value || !selectedMarker.value || !mapMarkerPopupEl.value) {
+        return;
+    }
+
+    const containerBounding = map.value.container.getBoundingClientRect();
+    const popupBounding = mapMarkerPopupEl.value.getBoundingClientRect();
+
+    if (
+        popupBounding.top - props.autoPanPopupOffset <= containerBounding.top ||
+        popupBounding.bottom + props.autoPanPopupOffset >= containerBounding.bottom
+    ) {
+        map.value.setLocation({ center: selectedMarker.value.coordinates, duration: 600 });
+    }
+}
+
 function closePopup() {
     popupIsVisible.value = false;
+}
+
+function onOpenPopup() {
+    emit('popup-opened');
+
+    if (props.autoPanPopup) {
+        nextTick(normalizeMapBounds);
+    }
 }
 
 const popupSettings = computed(() => {
@@ -91,15 +147,16 @@ const popupSettings = computed(() => {
             coordinates: selectedMarker.value.coordinates,
             show: popupIsVisible.value,
             onClose: onClosePopup,
+            onOpen: onOpenPopup,
             zIndex: 3,
-            position: 'right top'
+            position: 'right'
         };
     }
 
     return null;
 });
 
-const { map } = useMapContext();
+const { map, setBehaviorState } = useMapContext();
 
 const clusterer = shallowRef<YMapClusterer | null | undefined>(null);
 
@@ -184,8 +241,9 @@ function updateMarker(feature: Feature) {
         return;
     }
 
-    marker.element.style.background =
-        props.selectedMarkerId === feature.id ? 'rgb(16, 185, 129)' : '';
+    marker.element.style.background = props.selectedMarkerId === feature.id ? '#1e97fd' : '';
+    marker.element.style.borderColor =
+        props.selectedMarkerId === feature.id ? '#1e97fd' : getFeatureColor(feature);
 }
 
 watch(
@@ -215,20 +273,39 @@ function onClick(feature: Feature) {
     emit('select', feature.id);
 }
 
+function getFeatureColor(feature: Feature) {
+    if (feature.properties?.color) {
+        return feature.properties.color as string;
+    }
+
+    return props.markerColor;
+}
+
 function createMarker(feature: Feature) {
+    const existingMarker = allMarkers.get(feature.id);
+
+    if (existingMarker) {
+        existingMarker.update({ properties: feature.properties });
+
+        return existingMarker;
+    }
+
     const featureCircle = document.createElement('div');
 
     featureCircle.classList.add(module['feature-circle']);
 
     if (feature.id == props.selectedMarkerId) {
-        featureCircle.style.background = 'rgb(16, 185, 129)';
+        featureCircle.style.background = '#1e97fd';
+        featureCircle.style.borderColor = '#1e97fd';
+    } else {
+        featureCircle.style.borderColor = getFeatureColor(feature);
     }
 
     const yMapMarker = new window.ymaps3.YMapMarker(
         {
             id: feature.id,
             coordinates: feature.geometry.coordinates,
-            onClick: () => onClick(feature),
+            onFastClick: () => onClick(feature),
             position: 'top left-center',
             properties: feature.properties
         },
@@ -247,12 +324,13 @@ function createMarker(feature: Feature) {
     justify-content: center;
     border-radius: 100%;
     background: #fff;
-    border: 4px solid #1e97fd;
-    width: 32px;
-    height: 32px;
+    border: 4px solid;
+    width: 20px;
+    height: 20px;
     font-size: 12px;
     cursor: pointer;
     overflow: hidden;
+    transform: translate(-50%, -100%);
 
     img {
         height: 100%;
@@ -278,5 +356,9 @@ function createMarker(feature: Feature) {
         background: rgba(29, 30, 31, 0.9);
         color: #fff;
     }
+}
+
+.ymaps3--popup-marker.ymaps3--popup-marker__position-right:has(.map-marker-popup) {
+    margin: -10px 0 0 14px;
 }
 </style>

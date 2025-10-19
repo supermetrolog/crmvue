@@ -8,14 +8,6 @@
             />
             <div class="d-flex align-items-end gap-2">
                 <UiButton
-                    @click="$emit('to-map')"
-                    icon="fa-solid fa-map-location-dot"
-                    :loading
-                    color="light"
-                >
-                    Показать на карте ({{ pagination?.totalCount ?? 0 }})
-                </UiButton>
-                <UiButton
                     @click="$emit('refresh')"
                     icon="fa-solid fa-refresh"
                     :loading
@@ -124,7 +116,7 @@ import { computed, ref, shallowRef } from 'vue';
 import UiModal from '@/components/common/UI/UiModal.vue';
 import UiField from '@/components/common/UI/UiField.vue';
 
-defineEmits(['to-map', 'next-page', 'refresh', 'favorite-deleted']);
+defineEmits(['next-page', 'refresh', 'favorite-deleted']);
 const props = defineProps({
     pagination: Object,
     objects: {
