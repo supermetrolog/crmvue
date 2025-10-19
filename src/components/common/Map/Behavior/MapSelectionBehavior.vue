@@ -8,30 +8,37 @@
             :style="canvasStyle"
         ></canvas>
     </teleport>
-    <MapControl @click="onClickBehavior" :active="buttonIsEnabled">
-        <div class="d-flex align-items-center gap-1">
-            <svg xmlns="http://www.w3.org/2000/svg" height="20" width="20" viewBox="-2 -2 28 28">
-                <g fill="none" fill-rule="evenodd" stroke="currentColor">
-                    <path stroke-width="2" d="M17 2l5 11-9 9-11-6L4 4z"></path>
-                    <path
-                        fill="#FFF"
-                        d="M3.3 5.348c.716.414 1.634.168 2.048-.55.414-.716.168-1.634-.55-2.048-.716-.414-1.634-.168-2.048.55-.414.716-.168 1.634.55 2.048zm13-2c.716.414 1.634.168 2.048-.55.414-.716.168-1.634-.55-2.048-.716-.414-1.634-.168-2.048.55-.414.716-.168 1.634.55 2.048zm5 11c.716.414 1.634.168 2.048-.55.414-.716.168-1.634-.55-2.048-.716-.414-1.634-.168-2.048.55-.414.716-.168 1.634.55 2.048zm-9 9c.716.414 1.634.168 2.048-.55.414-.716.168-1.634-.55-2.048-.716-.414-1.634-.168-2.048.55-.414.716-.168 1.634.55 2.048zm-11-6c.716.414 1.634.168 2.048-.55.414-.716.168-1.634-.55-2.048-.716-.414-1.634-.168-2.048.55-.414.716-.168 1.634.55 2.048z"
-                    ></path>
-                </g>
-            </svg>
-            <span>Область</span>
-        </div>
-    </MapControl>
-    <MapControl
-        v-if="resetButtonIsVisible"
-        @click="onClickResetBehavior"
-        :active="resetButtonIsEnabled"
-    >
-        <div class="d-flex align-items-center gap-2">
-            <i class="fa-solid fa-pen" />
-            <span>Изменить область</span>
-        </div>
-    </MapControl>
+    <template v-if="editable">
+        <MapControl @click="onClickBehavior" :active="buttonIsEnabled">
+            <div class="d-flex align-items-center gap-1">
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    height="20"
+                    width="20"
+                    viewBox="-2 -2 28 28"
+                >
+                    <g fill="none" fill-rule="evenodd" stroke="currentColor">
+                        <path stroke-width="2" d="M17 2l5 11-9 9-11-6L4 4z"></path>
+                        <path
+                            fill="#FFF"
+                            d="M3.3 5.348c.716.414 1.634.168 2.048-.55.414-.716.168-1.634-.55-2.048-.716-.414-1.634-.168-2.048.55-.414.716-.168 1.634.55 2.048zm13-2c.716.414 1.634.168 2.048-.55.414-.716.168-1.634-.55-2.048-.716-.414-1.634-.168-2.048.55-.414.716-.168 1.634.55 2.048zm5 11c.716.414 1.634.168 2.048-.55.414-.716.168-1.634-.55-2.048-.716-.414-1.634-.168-2.048.55-.414.716-.168 1.634.55 2.048zm-9 9c.716.414 1.634.168 2.048-.55.414-.716.168-1.634-.55-2.048-.716-.414-1.634-.168-2.048.55-.414.716-.168 1.634.55 2.048zm-11-6c.716.414 1.634.168 2.048-.55.414-.716.168-1.634-.55-2.048-.716-.414-1.634-.168-2.048.55-.414.716-.168 1.634.55 2.048z"
+                        ></path>
+                    </g>
+                </svg>
+                <span>Область</span>
+            </div>
+        </MapControl>
+        <MapControl
+            v-if="resetButtonIsVisible"
+            @click="onClickResetBehavior"
+            :active="resetButtonIsEnabled"
+        >
+            <div class="d-flex align-items-center gap-2">
+                <i class="fa-solid fa-pen" />
+                <span>Изменить область</span>
+            </div>
+        </MapControl>
+    </template>
     <MapPolygon v-if="coordinates" :coordinates />
     <YandexMapListener v-if="isActive" :settings="{ onMouseMove, onMouseDown, onMouseUp }" />
 </template>
@@ -86,11 +93,13 @@ const props = withDefaults(
         options?: Partial<BehaviorSelectionOptions>;
         title?: string;
         resetTitle?: string;
+        editable?: boolean;
     }>(),
     {
         options: () => ({}),
         title: 'Выделить область',
-        resetTitle: 'Изменить область'
+        resetTitle: 'Изменить область',
+        editable: true
     }
 );
 

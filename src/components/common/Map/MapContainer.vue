@@ -8,7 +8,7 @@
                 v-if="zoomIsEnabled || geolocationIsEnabled"
                 :settings="{ position: 'right' }"
             >
-                <slot name="controls.right" />
+                <slot name="controls-right" />
                 <YandexMapZoomControl v-if="zoomIsEnabled" />
                 <YandexMapGeolocationControl v-if="geolocationIsEnabled" />
             </YandexMapControls>
@@ -16,7 +16,7 @@
                 v-if="fullscreenIsEnabled || themeIsEnabled || layersIsEnabled"
                 :settings="{ position: controlsPosition }"
             >
-                <slot name="controls.top" />
+                <slot name="controls-top" />
                 <MapLayerControl v-if="layersIsEnabled" v-model="currentLayer" />
                 <MapFullScreenControl v-if="fullscreenIsEnabled" v-model="isFullscreen" />
                 <MapThemeControl v-if="themeIsEnabled" v-model="currentTheme" />

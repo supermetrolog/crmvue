@@ -295,14 +295,6 @@ export const routes = [
                 path: '',
                 name: 'offers.table',
                 component: OffersMain
-            },
-            {
-                path: 'map',
-                name: 'offers.map',
-                meta: {
-                    title: ['Карта', 'Предложения']
-                },
-                component: () => import('../views/Offers/Map.vue')
             }
         ]
     },

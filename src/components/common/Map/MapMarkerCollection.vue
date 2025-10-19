@@ -285,6 +285,8 @@ function createMarker(feature: Feature) {
     const existingMarker = allMarkers.get(feature.id);
 
     if (existingMarker) {
+        existingMarker.update({ properties: feature.properties });
+
         return existingMarker;
     }
 
@@ -328,6 +330,7 @@ function createMarker(feature: Feature) {
     font-size: 12px;
     cursor: pointer;
     overflow: hidden;
+    transform: translate(-50%, -100%);
 
     img {
         height: 100%;
@@ -356,6 +359,6 @@ function createMarker(feature: Feature) {
 }
 
 .ymaps3--popup-marker.ymaps3--popup-marker__position-right:has(.map-marker-popup) {
-    margin: 10px 0 0 22px;
+    margin: -10px 0 0 14px;
 }
 </style>
