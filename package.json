@@ -70,6 +70,7 @@
     "@typescript-eslint/parser": "^8.34.1",
     "@vitejs/plugin-vue": "^5.0.4",
     "@vue/test-utils": "^2.4.6",
+    "@yandex/ymaps3-types": "^1.0.17734864",
     "clean-jsdoc-theme": "^4.3.0",
     "eslint": "^8.57.0",
     "eslint-config-esnext": "^4.1.0",
