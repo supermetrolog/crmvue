@@ -1,8 +1,5 @@
 <template>
-    <Tr
-        class="company-table-item"
-        :class="{ CompanyTableOdd: odd, CompanyTableEven: !odd, checked: checked }"
-    >
+    <Tr class="company-table-item" :class="{ checked: checked }">
         <Td class="text-center company-table-item__id">
             <p class="mb-1">{{ company.id }}</p>
             <UiCheckbox

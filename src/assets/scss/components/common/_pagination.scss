@@ -1,5 +1,6 @@
 @use '../../utils/variables';
 @use '../../utils/mixins';
+@use 'sass:color';
 
 .pagination-classic {
     @include mixins.flex-box($a: flex-end, $gap: 10px, $wrap: true);
@@ -22,7 +23,7 @@
         border-radius: 2px;
         height: 35px;
         width: 35px;
-        background-color: lighten(variables.$color_grey, 50);
+        background-color: color.adjust(variables.$color_grey, $lightness: 50%);
         color: variables.$color_primary;
         font-size: 14px;
         font-weight: bold;

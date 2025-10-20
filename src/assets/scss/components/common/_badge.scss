@@ -1,4 +1,5 @@
 @use '../../utils/variables';
+@use 'sass:color';
 
 .badge {
     display: inline-block;
@@ -58,7 +59,7 @@
     }
 
     &.badge-light-blue {
-        background-color: darken(variables.$color_info, 10);
+        background-color: color.adjust(variables.$color_info, $lightness: -10%);
         color: white;
     }
 

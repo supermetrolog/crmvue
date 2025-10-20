@@ -1,5 +1,6 @@
 @use "../utils/variables";
 @use "../utils/mixins";
+@use 'sass:color';
 
 .object-offer {
     &__content {
@@ -89,7 +90,7 @@
 
     &__chip {
         background-color: rgba(255, 255, 255, 0.8);
-        font-size: 16px!important;
+        font-size: 16px !important;
     }
 
     &__duplicate {
@@ -133,7 +134,7 @@
 
         &.general {
             .object-offer__info {
-                background-color: lighten($color: variables.$color_secondary, $amount: 40);
+                background-color: color.adjust(variables.$color_secondary, $lightness: 40%);
             }
         }
     }

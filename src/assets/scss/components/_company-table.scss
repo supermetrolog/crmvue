@@ -1,5 +1,6 @@
 @use '../utils/variables';
 @use '../utils/mixins';
+@use 'sass:color';
 
 .company-table {
     width: 100%;
@@ -22,7 +23,7 @@
             &.passive {
                 background-color: rgba(variables.$color_dark, 0.2);
                 border-color: rgba(variables.$color_dark, 0.2);
-                border-left: 2px solid lighten(variables.$color_grey, 30);
+                border-left: 2px solid color.adjust(variables.$color_grey, $lightness: 30%);
             }
 
             td {
@@ -272,16 +273,6 @@
 
 // legacy...
 
-tr.CompanyTableOdd {
-    background-color: darken(variables.$color_light, 3) !important;
-    border-color: darken(variables.$color_light, 3) !important;
-}
-
-tr.CompanyTableEven {
-    background-color: variables.$color_light !important;
-    border-color: variables.$color_light !important;
-}
-
 .dropdown-switcher-row {
     height: 110% !important;
     min-height: 80% !important;
@@ -371,7 +362,7 @@ tr.CompanyTableEven {
 
         &::-webkit-scrollbar {
             height: 3px;
-            background-color: lighten(variables.$color_grey, 30);
+            background-color: color.adjust(variables.$color_grey, $lightness: 30%);
         }
     }
 

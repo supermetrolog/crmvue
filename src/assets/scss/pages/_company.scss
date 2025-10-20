@@ -1,5 +1,6 @@
 @use '../utils/variables';
 @use '../utils/mixins';
+@use 'sass:color';
 
 .company-item-request {
     $request_thin_border: 0.3px solid #aaa;
@@ -8,7 +9,7 @@
     border-radius: 4px;
     width: 100%;
     position: relative;
-    background-color: lighten(variables.$color_light, 3);
+    background-color: color.adjust(variables.$color_light, $lightness: 3%);
     display: grid;
     grid-template-columns: 60% 40%;
     grid-template-areas:
@@ -85,7 +86,7 @@
     }
 
     &__actions {
-       @include mixins.flex-box($gap: 5px);
+        @include mixins.flex-box($gap: 5px);
     }
 
     .deal-item {
@@ -107,7 +108,7 @@
 
     &__unit-type {
         color: variables.$color_grey;
-        font-weight: normal!important;
+        font-weight: normal !important;
         font-size: 14px;
         margin-left: 3px;
     }
@@ -128,7 +129,7 @@
 
 .company-page {
     &__chip {
-        font-size: 16px!important;
+        font-size: 16px !important;
     }
 
     &__row {
@@ -198,7 +199,7 @@
             font-size: 14px;
 
             .general-info {
-                border: 2px solid lighten(variables.$color_grey, 35);
+                border: 2px solid color.adjust(variables.$color_grey, $lightness: 35%);
             }
 
             .deal-info {
@@ -480,15 +481,15 @@
     }
 
     &__contact {
-        border-radius: 0!important;
-        border: none!important;
+        border-radius: 0 !important;
+        border: none !important;
 
         &:not(:hover) {
             background-color: #fff;
         }
 
         &:not(:last-child) {
-            border-bottom: 1px solid rgba(0, 0, 0, 0.1)!important;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1) !important;
         }
     }
 }

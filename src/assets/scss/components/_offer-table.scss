@@ -1,5 +1,6 @@
 @use '../utils/variables';
 @use '../utils/mixins';
+@use 'sass:color';
 
 .offer-table-item {
     vertical-align: top;
@@ -14,8 +15,8 @@
     }
 
     &:nth-child(odd) {
-        background-color: darken(variables.$color_light, 3) !important;
-        border-color: darken(variables.$color_light, 3) !important;
+        background-color: color.adjust(variables.$color_light, $lightness: -3%) !important;
+        border-color: color.adjust(variables.$color_light, $lightness: -3%) !important;
     }
 
     &__aside {
@@ -530,7 +531,7 @@
     }
 
     &.general {
-        background-color: lighten($color: variables.$color_secondary, $amount: 45);;
+        background-color: color.adjust(variables.$color_secondary, $lightness: 45%);;
 
         .offer-table-item-mobile__button {
             border: 1px solid #fff;
