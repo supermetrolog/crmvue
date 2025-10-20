@@ -223,8 +223,8 @@ const setCurrentContact = contact => {
 const attachFile = async () => {
     const attachmentResponse = await $openAttachments();
 
-    if (attachmentResponse?.fileList?.length) {
-        currentFiles.value.push(...attachmentResponse.fileList);
+    if (attachmentResponse?.files?.length) {
+        currentFiles.value.push(...attachmentResponse.files);
     }
 };
 

@@ -163,7 +163,7 @@ const deleteFile = id => {
 
 const attachFile = async () => {
     const files = await $openAttachments();
-    if (files?.fileList?.length) form.value.files.push(...files.fileList);
+    if (files?.files?.length) form.value.files.push(...files.files);
 };
 
 const sendMessage = async () => {

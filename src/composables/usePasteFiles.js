@@ -2,7 +2,7 @@ import { SIZE_TO_COMPRESSION } from '@/const/messenger.js';
 import imageCompression from 'browser-image-compression';
 import { blobToFile } from '@/utils/helpers/forms/blobToFile.js';
 import { ref, toValue } from 'vue';
-import { useEventListener } from '@vueuse/core';
+import { unrefElement, useEventListener } from '@vueuse/core';
 import { useNotify } from '@/utils/use/useNotify.js';
 import { spliceById } from '@/utils/helpers/array/spliceById.js';
 
@@ -12,7 +12,9 @@ const compressionOptions = {
     useWebWorker: true
 };
 
-export function usePasteFiles(node, source) {
+export function usePasteFiles(node, source, options = {}) {
+    const { useEventListener: useEventListenerOpt = true } = options;
+
     const notify = useNotify();
 
     let pastedUniqueIndex = 1;
@@ -81,7 +83,25 @@ export function usePasteFiles(node, source) {
         });
     }
 
-    useEventListener(node, 'paste', pasteHandler);
+    if (useEventListenerOpt) {
+        useEventListener(node, 'paste', pasteHandler);
+    }
 
-    return { loadingFiles };
+    function startHandleEvent() {
+        const element = unrefElement(node);
+
+        if (element) {
+            element.addEventListener('paste', pasteHandler);
+        }
+    }
+
+    function stopHandleEvent() {
+        const element = unrefElement(node);
+
+        if (element) {
+            element.removeEventListener('paste', pasteHandler);
+        }
+    }
+
+    return { loadingFiles, startHandleEvent, stopHandleEvent };
 }
