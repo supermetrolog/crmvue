@@ -1,5 +1,6 @@
 @use '../utils/mixins';
 @use '../utils/variables';
+@use 'sass:color';
 
 .deal-list {
     &__vertical {
@@ -15,7 +16,7 @@
     padding: 10px 0;
     position: relative;
     font-size: 12px;
-    border: 2px dashed lighten(variables.$color_dark, 40);
+    border: 2px dashed color.adjust(variables.$color_dark, $lightness: 40%);
 
     &__delete, &__edit {
         @include mixins.transition(opacity, background-color, color);

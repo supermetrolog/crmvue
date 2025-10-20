@@ -1,8 +1,5 @@
 <template>
-    <Tr
-        class="company-table-item"
-        :class="{ CompanyTableOdd: odd, CompanyTableEven: !odd, 'fade-out': deal.isDeleting }"
-    >
+    <Tr class="company-table-item" :class="{ 'fade-out': deal.isDeleting }">
         <Td class="text-center">
             <p class="mb-1">{{ deal.id }}</p>
             <DealTableItemActions @edit="$emit('edit')" @delete="$emit('delete')" :deal />

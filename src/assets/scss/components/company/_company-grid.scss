@@ -1,5 +1,6 @@
 @use "../../utils/variables";
 @use "../../utils/mixins";
+@use 'sass:color';
 
 .object-grid {
     &-item {
@@ -19,20 +20,20 @@
     overflow: hidden;
 
     &__preview {
-        background-color: darken(variables.$color_primary, 10);
+        background-color: color.adjust(variables.$color_primary, $lightness: -10%);
         color: variables.$color_light;
         letter-spacing: 1px;
         @include mixins.flex-box($d: column, $j: space-between, $gap: 10px);
         @include mixins.transition(background-color);
-        padding: 15px 20px!important;
+        padding: 15px 20px !important;
 
         &:hover {
-            background-color: darken(variables.$color_primary, 3);;
+            background-color: color.adjust(variables.$color_primary, $lightness: -3%);;
         }
     }
 
     &__id {
-        color: lighten(variables.$color_grey, 30);
+        color: color.adjust(variables.$color_grey, $lightness: 30%);
         font-weight: 500;
         font-size: 12px;
     }
@@ -42,18 +43,18 @@
     }
 
     &__date {
-        color: lighten(variables.$color_grey, 30);
+        color: color.adjust(variables.$color_grey, $lightness: 30%);
         font-weight: 500;
         font-size: 12px;
     }
 
     &__body {
         @include mixins.flex-box();
-        padding: 15px 20px!important;
+        padding: 15px 20px !important;
     }
 
     &__category {
-        font-size: 12px!important;
+        font-size: 12px !important;
     }
 
     &__list {

@@ -26,27 +26,6 @@
             />
         </AnimationTransition>
         <UiButtonIcon
-            ref="callsButton"
-            @click="callsIsVisible = !callsIsVisible"
-            :active="callsIsVisible"
-            color="light"
-            class="header__button"
-            :class="{ 'current-call-exist': CURRENT_CALLS.length }"
-        >
-            <Spinner v-if="isLoading" class="mini" />
-            <i v-else class="header__icon fa-solid fa-phone"></i>
-            <span
-                v-if="CALLS_COUNT !== 0"
-                class="header__badge badge badge-danger"
-                :class="{ 'badge-info': CURRENT_CALLS.length }"
-            >
-                {{ CALLS_COUNT }}
-            </span>
-        </UiButtonIcon>
-        <AnimationTransition>
-            <HeaderCalls v-if="callsIsVisible" v-on-click-outside="callsClickOutside" />
-        </AnimationTransition>
-        <UiButtonIcon
             ref="notificationsButton"
             @click="notificationsIsVisible = !notificationsIsVisible"
             :active="notificationsIsVisible"
@@ -69,7 +48,6 @@
 </template>
 <script setup>
 import { vOnClickOutside } from '@vueuse/components';
-import HeaderCalls from '@/components/Header/HeaderCalls.vue';
 import HeaderNotifications from '@/components/Header/HeaderNotifications.vue';
 import { useStore } from 'vuex';
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
@@ -86,11 +64,9 @@ const ONLINE_INTERVAL = 60000;
 const store = useStore();
 const documentVisibility = useDocumentVisibility();
 
-const callsButton = useTemplateRef('callsButton');
 const notificationsButton = useTemplateRef('notificationsButton');
 const activityButton = useTemplateRef('activityButton');
 
-const callsIsVisible = shallowRef(false);
 const notificationsIsVisible = shallowRef(false);
 const activityIsVisible = ref(false);
 const activityCount = ref(1);
@@ -111,14 +87,12 @@ const activityCountLabelPlural = computed(() => {
 });
 
 const NOTIFICATIONS_COUNT = computed(() => store.getters.NOTIFICATIONS_COUNT);
-const CALLS_COUNT = computed(() => store.getters.CALLS_COUNT);
-const CURRENT_CALLS = computed(() => store.getters.CURRENT_CALLS);
 
-const callsClickOutside = [() => (callsIsVisible.value = false), { ignore: [callsButton] }];
 const notificationsClickOutside = [
     () => (notificationsIsVisible.value = false),
     { ignore: [notificationsButton] }
 ];
+
 const activityClickOutside = [
     () => (activityIsVisible.value = false),
     { ignore: [activityButton] }
@@ -152,10 +126,7 @@ const fetchInitialOnline = async () => {
 const fetchInitialData = async () => {
     isLoading.value = true;
 
-    await Promise.all([
-        store.dispatch('FETCH_NOTIFICATIONS_COUNT'),
-        store.dispatch('FETCH_CALLS_COUNT')
-    ]);
+    await store.dispatch('FETCH_NOTIFICATIONS_COUNT');
 
     isLoading.value = false;
 };

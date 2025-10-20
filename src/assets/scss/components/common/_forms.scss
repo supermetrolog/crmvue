@@ -1,5 +1,6 @@
 @use '../../utils/variables';
 @use '../../utils/mixins';
+@use 'sass:color';
 
 .invalid:not(:disabled):not(.is-disabled) {
     border-bottom: 2px solid variables.$color_danger !important;
@@ -58,7 +59,7 @@
                 cursor: pointer;
 
                 &:hover {
-                    background-color: darken(variables.$color_light, 5);
+                    background-color: color.adjust(variables.$color_light, $lightness: -5%);
                 }
             }
         }
@@ -120,7 +121,7 @@
             font-size: 18px;
             font-weight: 500;
             padding: 2px 5px;
-            // color: darken(variables.$color_secondary, 15);
+            // color: color.adjust(variables.$color_secondary, $lightness: -15%);
             color: variables.$color_secondary;
             border: 1px solid variables.$color_grey;
             border-radius: unset;
@@ -363,7 +364,7 @@
     &__block {
         margin-bottom: 15px;
         font-weight: 700;
-        color: darken($color: variables.$color_success, $amount: 12);
+        color: color.adjust(variables.$color_success, $lightness: -12%);
         letter-spacing: 0.4px;
 
         &:nth-child(n + 2) {
@@ -883,7 +884,7 @@
         gap: 5px;
 
         input {
-            background-color: lighten(variables.$color_grey, 40);
+            background-color: color.adjust(variables.$color_grey, $lightness: 40%);
             border-radius: 5px;
             // color: black;
 

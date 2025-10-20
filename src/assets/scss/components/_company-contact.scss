@@ -1,5 +1,6 @@
 @use "../utils/mixins";
 @use "../utils/variables";
+@use 'sass:color';
 
 .company-element {
     padding: 5px;
@@ -58,7 +59,7 @@
 
         &::-webkit-scrollbar {
             height: 3px;
-            background-color: lighten(variables.$color_grey, 30);
+            background-color: color.adjust(variables.$color_grey, $lightness: 30%);
         }
     }
 }

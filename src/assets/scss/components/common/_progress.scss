@@ -1,11 +1,12 @@
 @use "../../utils/variables";
 @use "../../utils/mixins";
+@use 'sass:color';
 
 .progress {
     &__bar {
         height: 4px;
         width: 100%;
-        background-color: lighten(variables.$color_grey, 25);
+        background-color: color.adjust(variables.$color_grey, $lightness: 25%);
         border-radius: 3px;
     }
 

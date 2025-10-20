@@ -12,6 +12,8 @@
 @use 'utils/helpers';
 @use 'utils/mixins';
 
+@use 'sass:color';
+
 @import url("https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;1,400;1,500;1,700&display=swap");
 
 html {
@@ -20,35 +22,35 @@ html {
 
 textarea::-webkit-scrollbar {
     width: 5px;
-    background-color: lighten(variables.$color_grey, 30);
+    background-color: color.adjust(variables.$color_grey, $lightness: 30%);
 }
 
 textarea::-webkit-scrollbar-thumb {
-    background-color: lighten(variables.$color_grey, 5);
+    background-color: color.adjust(variables.$color_grey, $lightness: 5%);
     height: 10px;
 }
 
 *::-webkit-scrollbar {
     width: 5px;
-    background-color: lighten(variables.$color_grey, 30);
+    background-color: color.adjust(variables.$color_grey, $lightness: 30%);
     height: 10px;
 }
 
 *::-webkit-scrollbar-thumb {
-    background-color: lighten(variables.$color_grey, 5);
+    background-color: color.adjust(variables.$color_grey, $lightness: 5%);
     height: 10px;
 
     &:hover {
-        background-color: lighten(variables.$color_dark, 20);
+        background-color: color.adjust(variables.$color_dark, $lightness: 20%);
     }
 
     &:active {
-        background-color: lighten(variables.$color_dark, 10);
+        background-color: color.adjust(variables.$color_dark, $lightness: 10%);
     }
 }
 
 @mixin activeNotification {
-    // background-color: lighten(variables.$color_grey, 20);
+    // background-color: color.adjust(variables.$color_grey, $lightness: 20%);
     cursor: pointer;
     background-color: variables.$color_primary;
 
@@ -124,11 +126,11 @@ tr.TableRequestRow {
 
         label {
             font-weight: bold;
-            color: lighten(variables.$color_dark, 10);
+            color: color.adjust(variables.$color_dark, $lightness: 10%);
         }
 
         p {
-            color: darken(variables.$color_grey, 10);
+            color: color.adjust(variables.$color_grey, $lightness: -10%);
         }
     }
 
@@ -472,7 +474,7 @@ tr.TableRequestRow {
                 background-color: white;
                 padding: 5px 50px;
                 border-radius: 5px;
-                border: 1px solid lighten(variables.$color_grey, 30);
+                border: 1px solid color.adjust(variables.$color_grey, $lightness: 30%);
                 cursor: pointer;
             }
         }
@@ -515,7 +517,7 @@ tr.TableRequestRow {
 // ************** MOBILE COMPANY VIEW *************
 .CompanyViewItem {
     border: 2px solid teal;
-    background-color: darken(variables.$color_light, 3);
+    background-color: color.adjust(variables.$color_light, $lightness: -3%);
 
     .status {
         width: 100%;
@@ -568,7 +570,7 @@ tr.TableRequestRow {
         padding: 0 0 7px;
 
         &::before {
-            background-color: darken($color: variables.$color_success, $amount: 12);
+            background-color: color.adjust(variables.$color_success, $lightness: -12%);
             display: block;
             position: absolute;
             content: "";
@@ -580,7 +582,7 @@ tr.TableRequestRow {
         }
 
         &.is-active {
-            color: darken($color: variables.$color_success, $amount: 12);
+            color: color.adjust(variables.$color_success, $lightness: -12%);
             font-weight: 700;
             transition: background-color 0.3s ease-in-out;
 
@@ -609,7 +611,7 @@ tr.TableRequestRow {
         margin-bottom: 10px;
         font-size: 16px;
         font-weight: 700;
-        color: darken($color: variables.$color_success, $amount: 12);
+        color: color.adjust(variables.$color_success, $lightness: -12%);
         letter-spacing: 0.4px;
     }
 
@@ -642,7 +644,7 @@ tr.TableRequestRow {
         padding: 0 0 7px;
 
         &::before {
-            background-color: darken($color: variables.$color_success, $amount: 12);
+            background-color: color.adjust(variables.$color_success, $lightness: -12%);
             display: block;
             position: absolute;
             content: "";
@@ -654,7 +656,7 @@ tr.TableRequestRow {
         }
 
         &.is-active {
-            color: darken($color: variables.$color_success, $amount: 12);
+            color: color.adjust(variables.$color_success, $lightness: -12%);
             font-weight: 700;
             transition: background-color 0.3s ease-in-out;
 

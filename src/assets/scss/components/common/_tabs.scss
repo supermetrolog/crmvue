@@ -1,5 +1,6 @@
 @use '../../utils/variables';
 @use '../../utils/mixins';
+@use 'sass:color';
 
 .tabs-component {
     &.sticky &-tabs {
@@ -40,7 +41,7 @@
             }
 
             &::before {
-                background-color: darken($color: variables.$color_success, $amount: 12);
+                background-color: color.adjust(variables.$color_success, $lightness: -12%);
                 display: block;
                 position: absolute;
                 content: "";
@@ -52,7 +53,7 @@
             }
 
             &.is-active {
-                color: darken($color: variables.$color_success, $amount: 12);
+                color: color.adjust(variables.$color_success, $lightness: -12%);
 
                 &::before {
                     width: 100%;
