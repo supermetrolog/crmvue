@@ -327,10 +327,7 @@ const getCompany = async (withLoader = false) => {
 
     if (!COMPANY.value) {
         await router.replace('/not-found');
-        return;
     }
-
-    await store.dispatch('ADD_TO_TRANSITION_LIST', COMPANY.value);
 };
 
 async function fetchCompanyRequests(withLoader = false) {

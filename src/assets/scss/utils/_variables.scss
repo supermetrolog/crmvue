@@ -1,3 +1,5 @@
+@use 'sass:color';
+
 $fontfamily: "Roboto";
 $color_sidebar_bg: #243539;
 $color_overflow: #f7faff;
@@ -15,7 +17,7 @@ $color_success: #00b74a;
 $color_success_alt: teal;
 $color_success_dark: #8ec293;
 $color_warning: #f88f01;
-$color_warning_alt: lighten($color_warning, 10);
+$color_warning_alt: color.adjust($color_warning, $lightness: 10%);
 $color_warning_dark: #fcd89f;
 $color_dark: #2d2f34;
 $color_primary: #11698e;

@@ -1,5 +1,6 @@
 @use '../../utils/variables';
 @use '../../utils/mixins';
+@use 'sass:color';
 
 .table {
     border-collapse: collapse;
@@ -112,17 +113,17 @@
             border-color: variables.$color_light;
 
             &:nth-child(odd) {
-                background-color: darken(variables.$color_light, 3);
-                border-color: darken(variables.$color_light, 3);
+                background-color: color.adjust(variables.$color_light, $lightness: -3%);
+                border-color: color.adjust(variables.$color_light, $lightness: -3%);
 
                 &:nth-child(odd) {
                     td.sortable {
                         &.sort_asc {
-                            background-color: lighten(#a02121, 45);
+                            background-color: color.adjust(#a02121, $lightness: 45%);
                         }
 
                         &.sort_desc {
-                            background-color: lighten(variables.$color_warning, 35);
+                            background-color: color.adjust(variables.$color_warning, $lightness: 35%);
                         }
                     }
                 }
@@ -139,14 +140,14 @@
             &.sortable {
                 border-right: 1px solid;
                 border-left: 1px solid;
-                border-color: lighten(variables.$color_grey, 35);
+                border-color: color.adjust(variables.$color_grey, $lightness: 35%);
 
                 &.sort_asc {
-                    background-color: lighten(#a02121, 50);
+                    background-color: color.adjust(#a02121, $lightness: 50%);
                 }
 
                 &.sort_desc {
-                    background-color: lighten(variables.$color_warning, 40);
+                    background-color: color.adjust(variables.$color_warning, $lightness: 40%);
                 }
             }
         }

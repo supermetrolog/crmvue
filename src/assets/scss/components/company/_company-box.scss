@@ -1,5 +1,6 @@
 @use '../../utils/mixins';
 @use '../../utils/variables';
+@use 'sass:color';
 
 .company-box-layout {
     &__inner {
@@ -74,6 +75,7 @@
 
         .tabs-component-tabs {
             overflow-x: auto;
+
             &::-webkit-scrollbar {
                 height: 5px;
             }
@@ -221,7 +223,7 @@
         @include mixins.flex-box($gap: 5px);
 
         .dashboard-chip {
-            font-weight: 600!important;
+            font-weight: 600 !important;
         }
     }
 
@@ -259,7 +261,7 @@
     }
 
     &--danger {
-        background-color: lighten(variables.$color_danger_dark, 6);
+        background-color: color.adjust(variables.$color_danger_dark, $lightness: 6%);
     }
 
     &__info {

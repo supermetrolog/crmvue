@@ -1,5 +1,6 @@
 @use '../../utils/mixins';
 @use '../../utils/variables';
+@use 'sass:color';
 
 .messenger-quiz {
     font-size: 14px;
@@ -466,7 +467,7 @@
 
         &::-webkit-scrollbar {
             height: 5px;
-            background-color: lighten(variables.$color_grey, 30);
+            background-color: color.adjust(variables.$color_grey, $lightness: 30%);
         }
     }
 
@@ -988,7 +989,7 @@
 
     &::-webkit-scrollbar {
         height: 3px;
-        background-color: lighten(variables.$color_grey, 30);
+        background-color: color.adjust(variables.$color_grey, $lightness: 30%);
     }
 
     &__icon {

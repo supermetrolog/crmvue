@@ -1,4 +1,5 @@
 @use '../../utils/variables';
+@use 'sass:color';
 
 .rating {
     letter-spacing: 3px;
@@ -6,19 +7,19 @@
     color: variables.$color_grey;
 
     &.danger i.fill {
-        color: variables.$color_danger!important;
+        color: variables.$color_danger !important;
     }
 
     &.normal i.fill {
-        color: variables.$color_primary!important;
+        color: variables.$color_primary !important;
     }
 
     &.good i.fill {
-        color: variables.$color_warning!important;
+        color: variables.$color_warning !important;
     }
 
     i.fill {
-        color: darken($color: variables.$color_danger, $amount: 25);
+        color: color.adjust(variables.$color_danger, $lightness: -25%);
     }
 
     &--yellow {

@@ -6,11 +6,9 @@ import CompanyLogs from './modules/CompanyLogs';
 import Companies from './modules/Companies';
 import Notifications from './modules/Notifications';
 import Websocket from './modules/Websocket';
-import Call from './modules/Call';
 import User from './modules/User';
 import CompanyObjects from './modules/CompanyObjects';
 import Offers from './modules/Offers';
-import CallerManager from './modules/CallerManager';
 import Location from './modules/Location';
 import Complex from './modules/Complex';
 import Messenger from '@/store/modules/Messenger';
@@ -62,11 +60,9 @@ const store = createStore({
         Companies,
         Notifications,
         Websocket,
-        Call,
         User,
         CompanyObjects,
         Offers,
-        CallerManager,
         Location,
         Complex,
         Messenger,

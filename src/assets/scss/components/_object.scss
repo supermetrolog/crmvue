@@ -1,5 +1,6 @@
 @use '../utils/variables';
 @use '../utils/mixins';
+@use 'sass:color';
 
 .object-holding {
     &::before {
@@ -239,7 +240,7 @@
             width: 100% !important;
 
             &:nth-child(even) {
-                background-color: lighten(variables.$color_grey, 40);
+                background-color: color.adjust(variables.$color_grey, $lightness: 40%);
             }
 
             &.selected {

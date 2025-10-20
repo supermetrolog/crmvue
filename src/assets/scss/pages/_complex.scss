@@ -1,5 +1,6 @@
 @use '../utils/variables';
 @use '../utils/mixins';
+@use 'sass:color';
 
 .complex-map {
     margin: 10px 0;
@@ -120,12 +121,12 @@
     }
 
     &__on {
-        opacity: 1!important;
+        opacity: 1 !important;
         color: #268e50;
     }
 
     &__off {
-        opacity: 1!important;
+        opacity: 1 !important;
         color: #cb1132;
     }
 
@@ -230,7 +231,7 @@
         &--empty {
             border-style: dashed;
             opacity: 0.6;
-            transition: color .5s ease,  background-color .5s ease;
+            transition: color .5s ease, background-color .5s ease;
 
             &:hover {
                 color: #fff;
@@ -296,7 +297,7 @@
         margin-bottom: 10px;
         font-size: 16px;
         font-weight: 700;
-        color: darken($color: variables.$color_success, $amount: 12);
+        color: color.adjust(variables.$color_success, $lightness: -12%);
         letter-spacing: 0.4px;
     }
 
@@ -326,7 +327,7 @@
         color: black;
 
         &::before {
-            background-color: darken($color: variables.$color_success, $amount: 12);
+            background-color: color.adjust(variables.$color_success, $lightness: -12%);
             display: block;
             position: absolute;
             content: "";
@@ -338,7 +339,7 @@
         }
 
         &.is-active {
-            color: darken($color: variables.$color_success, $amount: 12);
+            color: color.adjust(variables.$color_success, $lightness: -12%);
             font-weight: 700;
             transition: background-color 0.3s ease-in-out;
 
@@ -360,7 +361,7 @@
 
 
     &__avatar {
-        @include mixins.flex-box($a: center, $j:  center);
+        @include mixins.flex-box($a: center, $j: center);
         background-color: #d0d9e0;
         border-radius: 50%;
         height: 40px;
@@ -574,12 +575,12 @@
     }
 
     .tabs-component-tab-a::before {
-        background-color: darken($color: variables.$color_success, $amount: 8);
+        background-color: color.adjust(variables.$color_success, $lightness: -12%);
         height: 2px;
     }
 
     .tabs-component-tab-a.is-active {
-        color: darken($color: variables.$color_success, $amount: 8);
+        color: color.adjust(variables.$color_success, $lightness: -8%);
     }
 
     @media screen and (max-width: variables.$laptop_size) {
@@ -661,7 +662,7 @@
         color: black;
 
         &::before {
-            background-color: darken($color: variables.$color_success, $amount: 12);
+            background-color: color.adjust(variables.$color_success, $lightness: -12%);
             display: block;
             position: absolute;
             content: "";
@@ -673,7 +674,7 @@
         }
 
         &.is-active {
-            color: darken($color: variables.$color_success, $amount: 12);
+            color: color.adjust(variables.$color_success, $lightness: -12%);
             font-weight: 700;
             transition: background-color 0.3s ease-in-out;
 
@@ -704,7 +705,7 @@
     }
 
     &__item {
-        margin: 0!important;
+        margin: 0 !important;
         border-bottom: 1px solid rgba(201, 201, 201, 1);
 
         &:first-child {
@@ -1322,7 +1323,6 @@
     }
 
 
-
 }
 
 .complex-photo-downloader {
@@ -1367,7 +1367,7 @@
     }
 
     &__select {
-        width: 100%!important;
+        width: 100% !important;
         margin-bottom: 10px;
     }
 
