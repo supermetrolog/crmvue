@@ -14,40 +14,24 @@
                     :tasks="baseTasks"
                     :name="TABS.TASKS"
                 />
-                <UiButton
+                <CompanyTableItemSummaryTasksButton
                     v-if="scheduledCallTasks.length"
-                    @click="showScheduledCallTasks"
-                    class="fs-2 company-table-item-summary-survey__tab"
-                    color="white"
-                    small
-                    :class="{
-                        danger: lastScheduledCallDateExpired,
-                        primary: !lastScheduledCallDateExpired,
-                        'op-5': !hasCurrentUserScheduledCall
-                    }"
-                >
-                    <span>Звонок {{ nearestScheduledCallDate }}</span>
-                    <span v-if="scheduledCallTasks.length > 1" class="ml-1">
-                        (+ еще {{ scheduledCallTasks.length - 1 }})
-                    </span>
-                </UiButton>
-                <UiButton
+                    @show="$emit('show-task', $event)"
+                    @show-all="scheduledCallTasksIsVisible = true"
+                    @updated="onUpdateTask"
+                    :tasks="scheduledCallTasks"
+                    :nearest-task="nearestScheduledCall"
+                    label="Звонок"
+                />
+                <CompanyTableItemSummaryTasksButton
                     v-if="scheduledVisitTasks.length"
-                    @click="showScheduledVisitTasks"
-                    class="fs-2 company-table-item-summary-survey__tab"
-                    color="white"
-                    small
-                    :class="{
-                        danger: lastScheduledVisitDateExpired,
-                        primary: !lastScheduledVisitDateExpired,
-                        'op-5': !hasCurrentUserScheduledVisit
-                    }"
-                >
-                    <span>Встреча {{ nearestScheduledVisitDate }}</span>
-                    <span v-if="scheduledVisitTasks.length > 1" class="ml-1">
-                        (+ еще {{ scheduledVisitTasks.length - 1 }})
-                    </span>
-                </UiButton>
+                    @show="$emit('show-task', $event)"
+                    @show-all="scheduledVisitTasksIsVisible = true"
+                    @updated="onUpdateTask"
+                    :tasks="scheduledVisitTasks"
+                    :nearest-task="nearestScheduledVisit"
+                    label="Встреча"
+                />
             </div>
             <CompanyTableItemSummarySurvey
                 v-if="currentTab === TABS.SURVEY"
@@ -123,14 +107,9 @@ import CompanyTableItemSummaryTabSurvey from '@/components/Company/Table/Summary
 import { computed, ref, toRef } from 'vue';
 import { useTypedTasks } from '@/composables/task/useTypedTasks';
 import CompanyTableItemSummaryTabTasks from '@/components/Company/Table/Summary/CompanyTableItemSummaryTabTasks.vue';
-import CompanyTableItemSummaryTasks from '@/components/Company/Table/Summary/CompanyTableItemSummaryTasks.vue';
 import CompanyTableItemSummarySurvey from '@/components/Company/Table/Summary/CompanyTableItemSummarySurvey.vue';
-import UiButton from '@/components/common/UI/UiButton.vue';
 import DashboardTableTasksItem from '@/components/Dashboard/Table/TasksItem/DashboardTableTasksItem.vue';
 import UiModal from '@/components/common/UI/UiModal.vue';
-import { dayjsFromServer } from '@/utils/formatters/date.ts';
-import { now } from '@vueuse/core';
-import { useAuth } from '@/composables/useAuth';
 import CompanyTableItemSummarySuggest from '@/components/Company/Table/Summary/Suggest/CompanyTableItemSummarySuggest.vue';
 import api from '@/api/api.js';
 import { captureException } from '@sentry/vue';
@@ -138,8 +117,10 @@ import { useNotify } from '@/utils/use/useNotify.js';
 import Loader from '@/components/common/Loader.vue';
 import { useConfirm } from '@/composables/useConfirm.js';
 import { CompanyStatusEnum } from '@/types/company';
+import CompanyTableItemSummaryTasksButton from '@/components/Company/Table/Summary/CompanyTableItemSummaryTasksButton.vue';
+import CompanyTableItemSummaryTasks from '@/components/Company/Table/Summary/CompanyTableItemSummaryTasks.vue';
 
-const emit = defineEmits([
+defineEmits([
     'deleted-from-folder',
     'create-task',
     'show-created-tasks',
@@ -177,55 +158,23 @@ const {
     scheduledCallTasks,
     scheduledVisitTasks,
     nearestScheduledCall,
-    nearestScheduledCallDate,
     nearestScheduledVisit,
-    nearestScheduledVisitDate,
     baseTasks
 } = useTypedTasks(toRef(() => props.company.tasks ?? []));
 
-const lastScheduledCallDateExpired = computed(
-    () =>
-        nearestScheduledCall.value &&
-        dayjsFromServer(nearestScheduledCall.value.start).isBefore(now(), 'day')
-);
-
-const lastScheduledVisitDateExpired = computed(
-    () =>
-        nearestScheduledVisit.value &&
-        dayjsFromServer(nearestScheduledVisit.value.start).isBefore(now(), 'day')
-);
-
 const scheduledCallTasksIsVisible = ref(false);
-
-function showScheduledCallTasks() {
-    if (scheduledCallTasks.value.length > 1) {
-        scheduledCallTasksIsVisible.value = true;
-    } else {
-        emit('show-task', scheduledCallTasks.value[0]);
-    }
-}
-
 const scheduledVisitTasksIsVisible = ref(false);
 
-function showScheduledVisitTasks() {
-    if (scheduledVisitTasks.value.length > 1) {
-        scheduledVisitTasksIsVisible.value = true;
-    } else {
-        emit('show-task', scheduledVisitTasks.value[0]);
+function onUpdateTask(task) {
+    const targetId = props.company.tasks.findIndex(t => t.id === task.id);
+
+    if (targetId) {
+        console.log(targetId, task);
+        console.log({ ...props.company.tasks[targetId] });
+        Object.assign(props.company.tasks[targetId], task);
+        console.log({ ...props.company.tasks[targetId] });
     }
 }
-
-const { currentUserId } = useAuth();
-
-const hasCurrentUserScheduledCall = computed(() => {
-    return nearestScheduledCall.value && nearestScheduledCall.value.user_id === currentUserId.value;
-});
-
-const hasCurrentUserScheduledVisit = computed(() => {
-    return (
-        nearestScheduledVisit.value && nearestScheduledVisit.value.user_id === currentUserId.value
-    );
-});
 
 // notes
 
