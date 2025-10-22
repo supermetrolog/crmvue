@@ -6,7 +6,7 @@
         class="modal-messenger-attachment"
         width="1200"
     >
-        <div class="messenger-attachment">
+        <div ref="attachmentRef" class="messenger-attachment">
             <UiForm>
                 <FileInput v-model:native="form.files" label="Файлы или фотографии" />
             </UiForm>
@@ -22,8 +22,10 @@ import Modal from '@/components/common/Modal.vue';
 import UiForm from '@/components/common/Forms/UiForm.vue';
 import FileInput from '@/components/common/Forms/FileInput.vue';
 import MessengerButton from '@/components/Messenger/MessengerButton.vue';
-import { reactive, ref, shallowRef, watch } from 'vue';
+import { reactive, ref, shallowRef, useTemplateRef, watch } from 'vue';
 import { usePasteFiles } from '@/composables/usePasteFiles';
+import { useTour } from '@/composables/useTour/useTour';
+import { useTimeoutFn } from '@vueuse/core';
 
 defineEmits<{
     (e: 'close'): void;
@@ -72,8 +74,33 @@ const { startHandleEvent, stopHandleEvent } = usePasteFiles(document, () => form
 watch(isOpened, value => {
     if (value) {
         startHandleEvent();
+
+        if (!tourAlreadyRun.value) {
+            useTimeoutFn(softRun, 1000);
+            tourAlreadyRun.value = true;
+        }
     } else {
         stopHandleEvent();
     }
+});
+
+const tourAlreadyRun = ref(false);
+
+const attachmentRef = useTemplateRef('attachmentRef');
+
+const { softRun } = useTour('messenger-attachment-paste', {
+    steps: [
+        {
+            id: 0,
+            element: () => attachmentRef.value,
+            popover: {
+                title: 'Копирование файлов в форму',
+                description:
+                    'Теперь вы можете вставлять сюда файлы с компьютера с помощью Ctrl C/Ctrl V. Например, вы можете сделать скриншот, потом нажать Ctrl V в этом окне. Фотография автоматически вставится в форму.',
+                side: 'top',
+                align: 'center'
+            }
+        }
+    ]
 });
 </script>
