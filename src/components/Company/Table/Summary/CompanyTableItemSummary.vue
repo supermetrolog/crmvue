@@ -168,11 +168,8 @@ const scheduledVisitTasksIsVisible = ref(false);
 function onUpdateTask(task) {
     const targetId = props.company.tasks.findIndex(t => t.id === task.id);
 
-    if (targetId) {
-        console.log(targetId, task);
-        console.log({ ...props.company.tasks[targetId] });
+    if (targetId !== -1) {
         Object.assign(props.company.tasks[targetId], task);
-        console.log({ ...props.company.tasks[targetId] });
     }
 }
 
