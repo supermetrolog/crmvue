@@ -89,6 +89,7 @@ const tourAlreadyRun = ref(false);
 const attachmentRef = useTemplateRef('attachmentRef');
 
 const { softRun } = useTour('messenger-attachment-paste', {
+    autorun: false,
     steps: [
         {
             id: 0,
