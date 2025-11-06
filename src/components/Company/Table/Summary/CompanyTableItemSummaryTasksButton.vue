@@ -102,6 +102,7 @@ import { TASK_EVENTS } from '@/const/events/task';
 import { useAsync } from '@/composables/useAsync';
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
 import TaskCardModalChangeDates from '@/components/TaskCard/TaskCardModalChangeDates.vue';
+import { useSurveySuggestion } from '@/composables/useSurveySuggestion';
 
 const emit = defineEmits<{
     (e: 'show', task: Task): void;
@@ -147,6 +148,8 @@ function onClick() {
     }
 }
 
+const { suggestSurveyByTask } = useSurveySuggestion();
+
 const notify = useNotify();
 
 const taskCompleteEvent = useEventBus(TASK_EVENTS.COMPLETE);
@@ -168,6 +171,7 @@ const {
             const updatedTask = await api.task.getOne(args[0].id);
 
             if (updatedTask) {
+                void suggestSurveyByTask(updatedTask);
                 emit('updated', updatedTask);
             }
         }
