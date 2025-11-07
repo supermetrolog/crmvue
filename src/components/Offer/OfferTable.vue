@@ -50,7 +50,7 @@
                             <Spinner v-if="consultantsIsLoading" small center />
                             <ConsultantPicker
                                 v-else
-                                v-model="consultantFilters.consultant_id"
+                                v-model="consultantFilters.agent_id"
                                 :options="getConsultantsOptions"
                                 class="col-12"
                                 :append-to-body="false"
@@ -149,7 +149,7 @@ const defaultWidths = {
 const { getConsultantsOptions, isFetching: consultantsIsLoading } = useConsultantsOptions();
 
 const consultantFilters = reactive({
-    consultant_id: null
+    agent_id: null
 });
 
 const priceFilters = reactive({
@@ -158,7 +158,7 @@ const priceFilters = reactive({
 });
 
 function initFilters() {
-    consultantFilters.consultant_id = route.query.consultant_id;
+    consultantFilters.agent_id = route.query.agent_id;
 }
 
 onMounted(initFilters);
@@ -169,15 +169,15 @@ const route = useRoute();
 function confirmConsultantFilters() {
     const query = { ...route.query };
 
-    query.consultant_id = consultantFilters.consultant_id;
+    query.agent_id = consultantFilters.agent_id;
 
     router.replace({ query });
 }
 
 watch(
-    () => route.query.consultant_id,
+    () => route.query.agent_id,
     value => {
-        consultantFilters.consultant_id = value;
+        consultantFilters.agent_id = value;
     }
 );
 
