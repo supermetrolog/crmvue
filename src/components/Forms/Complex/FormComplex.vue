@@ -1,67 +1,109 @@
 <template>
-    <Modal
+    <UiModal
         @close="$emit('close')"
         show
+        custom-close
         :title="complex ? 'Редактирование комплекса' : 'Добавление комплекса'"
         has-tabs
-        width="1200"
+        :width="1200"
     >
         <Loader v-if="isLoading" />
         <UiForm @submit="onSubmit">
             <Tabs :options="{ useUrlFragment: false, defaultTabHash: 'main' }">
                 <Tab id="main" name="Основное">
-                    <div class="row mb-2">
+                    <UiFormGroup>
                         <UiInput
                             v-model.trim="form.title"
                             :v="v$.form.title"
-                            :placeholder="complex && !form.title ? 'Без названия' : ''"
                             :disabled="form.title_novalue"
                             :required="!form.title_novalue"
                             label="Название"
-                            class="col-6"
-                        />
+                            class="col-12"
+                        >
+                            <template #after>
+                                <UiCheckbox
+                                    v-model="form.title_novalue"
+                                    class="mt-1"
+                                    :true-value="1"
+                                    :false-value="null"
+                                >
+                                    Без названия
+                                </UiCheckbox>
+                            </template>
+                        </UiInput>
+                    </UiFormGroup>
+                    <UiFormDivider />
+                    <UiFormGroup>
                         <AddressAutocomplete
                             v-model="form.address"
+                            v-model:location="selectedLocation"
                             :current-value="complex?.address"
                             :v="v$.form.address"
                             :resolve-on-load="Boolean(complex)"
                             required
                             label="Адрес комплекса"
                             placeholder="Введите адрес.."
-                            class="col-6"
+                            class="col-md-9 col-12"
                         />
-                        <div class="col-6">
-                            <Switch v-model="form.title_novalue" true-title="Без названия" />
-                        </div>
-                        <div class="col-6">
-                            <Switch
-                                v-model="locationIsMetro"
-                                false-title="Город"
-                                true-title="Метро"
-                            />
-                        </div>
-                    </div>
-                    <div class="row mb-2">
                         <UiInput
                             v-model="form.from_mkad"
                             :v="v$.form.from_mkad"
                             label="Удаленность от МКАД"
-                            class="col-md-4 col-12"
+                            class="col-md-3 col-12"
                             unit="км"
                             type="number"
                             :disabled="form.from_mkad_novalue"
                             :required="!form.from_mkad_novalue"
+                        >
+                            <template #after>
+                                <UiCheckbox
+                                    v-model="form.from_mkad_novalue"
+                                    @change="onChangeFromMkadNoValue"
+                                    class="mt-1"
+                                    :true-value="1"
+                                    :false-value="null"
+                                >
+                                    Неприменимо
+                                </UiCheckbox>
+                            </template>
+                        </UiInput>
+                    </UiFormGroup>
+                    <UiFormGroup>
+                        <Switch
+                            v-model="locationIsMetro"
+                            false-title="Город"
+                            true-title="Метро"
+                            class="col-12"
                         />
-                    </div>
-                    <div class="row">
-                        <div class="col-12">
-                            <Switch
-                                v-model="form.from_mkad_novalue"
-                                @change="onChangeFromMkadNoValue"
-                                true-title="Неприменимо (регион или Москва внутри МКАД)"
-                            />
-                        </div>
-                    </div>
+                    </UiFormGroup>
+                    <UiFormDivider />
+                    <UiFormGroup>
+                        <UiCol :cols="12">
+                            <MapContainer
+                                v-model="mapModel"
+                                :center="complex ? complexLocation.coords : undefined"
+                                class="form-complex__map"
+                            >
+                                {{ selectedLocation }}
+                                <MapMarker
+                                    v-if="selectedLocation"
+                                    :coordinates="parsedSelectedLocation.coords"
+                                    static-hint
+                                    :title="parsedSelectedLocation.title"
+                                    :subtitle="parsedSelectedLocation.subtitle"
+                                    color="blue"
+                                />
+                                <MapMarker
+                                    v-if="complex"
+                                    :coordinates="complexLocation.coords"
+                                    static-hint
+                                    :title="complexLocation.title"
+                                    :subtitle="complexLocation.subtitle"
+                                    color="red"
+                                />
+                            </MapContainer>
+                        </UiCol>
+                    </UiFormGroup>
                 </Tab>
                 <Tab name="Характеристики">
                     <div class="row mb-2">
@@ -502,12 +544,11 @@
                 <Submit class="col-3 mx-auto" small success>Сохранить</Submit>
             </div>
         </UiForm>
-    </Modal>
+    </UiModal>
 </template>
 
 <script setup>
 import Loader from '@/components/common/Loader.vue';
-import Modal from '@/components/common/Modal.vue';
 import UiInput from '@/components/common/Forms/UiInput.vue';
 import FileInput from '@/components/common/Forms/FileInput.vue';
 import MultiSelect from '@/components/common/Forms/MultiSelect.vue';
@@ -525,7 +566,7 @@ import {
     internetTypes,
     waterTypes
 } from '@/const/types';
-import { onBeforeMount, reactive, shallowRef } from 'vue';
+import { computed, onBeforeMount, reactive, ref, shallowRef, watchEffect } from 'vue';
 import { validationRulesForComplex } from '@/validators/rules/complex.js';
 import Switch from '@/components/common/Forms/Switch.vue';
 import Tab from '@/components/common/Tabs/Tab.vue';
@@ -534,6 +575,12 @@ import DescriptionEditor from '@/components/common/Forms/DescriptionEditor.vue';
 import RadioOptions from '@/components/common/Forms/RadioOptions.vue';
 import { entityOptions } from '@/const/options/options.js';
 import AddressAutocomplete from '@/components/common/Forms/AddressAutocomplete.vue';
+import UiModal from '@/components/common/UI/UiModal.vue';
+import UiCheckbox from '@/components/common/Forms/UiCheckbox.vue';
+import UiFormDivider from '@/components/common/Forms/UiFormDivider.vue';
+import MapContainer from '@/components/common/Map/MapContainer.vue';
+import UiCol from '@/components/common/UI/UiCol.vue';
+import MapMarker from '@/components/common/Map/MapMarker.vue';
 
 defineEmits(['close']);
 const props = defineProps({
@@ -613,4 +660,67 @@ const onSubmit = () => {
 onBeforeMount(() => {
     if (props.complex) Object.assign(form, cloneObject(props.complex));
 });
+
+// location
+
+const complexLocation = computed(() => {
+    if (!props.complex) {
+        return null;
+    }
+
+    return {
+        coords: [props.complex.longitude, props.complex.latitude],
+        title: props.complex.title_novalue ? `Комплекс #${props.complex.id}` : props.complex.title,
+        subtitle: props.complex.address
+    };
+});
+
+const selectedLocation = ref(null);
+
+const parsedSelectedLocation = computed(() => {
+    if (!selectedLocation.value) {
+        return null;
+    }
+
+    return {
+        coords: selectedLocation.value.coords,
+        title: selectedLocation.value.label,
+        subtitle: selectedLocation.value.value
+    };
+});
+
+const currentSelectedLocation = computed(() => {
+    if (parsedSelectedLocation.value) {
+        return parsedSelectedLocation.value;
+    }
+
+    if (props.complex) {
+        return complexLocation.value;
+    }
+
+    return null;
+});
+
+const mapModel = shallowRef(null);
+
+watchEffect(() => {
+    if (!mapModel.value || !currentSelectedLocation.value) {
+        return;
+    }
+
+    mapModel.value.setLocation({
+        center: currentSelectedLocation.value.coords,
+        duration: 1000
+    });
+});
 </script>
+
+<style lang="scss">
+.form-complex {
+    &__map {
+        height: 300px;
+        width: 100%;
+        border: 1px solid rgba(0, 0, 0, 00.1);
+    }
+}
+</style>

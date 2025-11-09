@@ -55,7 +55,7 @@
                     />
                     |
                     <UiButton
-                        @click="searchingIsVisible = true"
+                        @click="formIsVisible = true"
                         color="light"
                         :disabled="isLoading"
                         small

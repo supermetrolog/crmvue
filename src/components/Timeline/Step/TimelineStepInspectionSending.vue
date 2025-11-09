@@ -121,7 +121,7 @@
                                     <AddressAutocomplete
                                         v-if="userLocationFormIsVisible"
                                         v-model="newUserLocation"
-                                        v-model:location="newUserLocationCoords"
+                                        v-model:coords="newUserLocationCoords"
                                         label="Адрес начальной точки"
                                         class="timeline-routes__multiselect mt-2"
                                     />

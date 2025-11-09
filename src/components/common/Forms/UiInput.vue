@@ -43,6 +43,7 @@
             v-if="hasValidationError && !disabled"
             :message="v.$errors[0].$message"
         />
+        <slot name="after" />
     </div>
 </template>
 

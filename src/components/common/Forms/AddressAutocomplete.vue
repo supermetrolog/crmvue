@@ -44,8 +44,13 @@ import { useCachedRef } from '@/composables/useCachedRef';
 import { AddressSuggestion, findAddressByText } from '@/services/map/geocode';
 import { useTemplateRef, watch } from 'vue';
 
+const emit = defineEmits<{
+    (e: 'change', option: AddressSuggestion | CurrentAddressSuggestion | null | undefined): void;
+}>();
+
 const model = defineModel<string>();
-const location = defineModel<[number, number] | null>('location');
+const location = defineModel<AddressSuggestion | null>('location');
+const coords = defineModel<[number, number] | null>('coords');
 
 const props = withDefaults(
     defineProps<{
@@ -138,9 +143,13 @@ function onChange(
     option?: AddressSuggestion | CurrentAddressSuggestion | null | undefined
 ) {
     if (option && isFullAddressSuggestion(option)) {
-        location.value = option.coords;
+        coords.value = option.coords;
+        location.value = option;
     } else {
+        coords.value = null;
         location.value = null;
     }
+
+    emit('change', option);
 }
 </script>
