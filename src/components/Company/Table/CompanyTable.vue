@@ -48,6 +48,7 @@
                 v-for="(company, idx) in companies"
                 :key="company.id"
                 @deleted-from-folder="$emit('deleted-from-folder', company.id, $event)"
+                @create-folder="$emit('create-folder', company)"
                 @schedule-call="$emit('schedule-call', company)"
                 @create-task="$emit('create-task', company)"
                 @show-tasks="$emit('show-tasks', company)"
@@ -101,6 +102,7 @@ import { useTour } from '@/composables/useTour/useTour';
 
 defineEmits([
     'deleted-from-folder',
+    'create-folder',
     'create-task',
     'create-request-task',
     'show-tasks',

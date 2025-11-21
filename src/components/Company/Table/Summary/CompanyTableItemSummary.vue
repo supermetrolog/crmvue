@@ -67,6 +67,7 @@
             @enable="$emit('enable')"
             @open-chat="$emit('open-chat')"
             @deleted-from-folder="$emit('deleted-from-folder', $event)"
+            @create-folder="$emit('create-folder')"
             :company
             class="mt-2"
         />
@@ -122,6 +123,7 @@ import CompanyTableItemSummaryTasks from '@/components/Company/Table/Summary/Com
 
 defineEmits([
     'deleted-from-folder',
+    'create-folder',
     'create-task',
     'show-created-tasks',
     'disable',

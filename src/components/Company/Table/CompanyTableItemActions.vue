@@ -56,8 +56,10 @@
         />
         <UserFoldersDropdown
             @deleted-from-folder="$emit('deleted-from-folder', $event)"
-            morph="company"
+            @create="$emit('create-folder')"
             :entity="company.id"
+            creatable
+            morph="company"
         />
     </div>
 </template>
@@ -76,6 +78,7 @@ import { CompanyStatusEnum } from '@/types/company';
 
 defineEmits<{
     (e: 'deleted-from-folder', folderId: number): void;
+    (e: 'create-folder'): void;
     (e: 'create-task'): void;
     (e: 'schedule-call'): void;
     (e: 'schedule-visit'): void;

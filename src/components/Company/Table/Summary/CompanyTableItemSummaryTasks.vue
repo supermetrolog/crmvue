@@ -20,7 +20,7 @@ import { computed } from 'vue';
 import { taskOptions } from '@/const/options/task.options.js';
 import { Task } from '@/types/task';
 
-defineEmits<{ (e: 'show-task') }>();
+defineEmits<{ (e: 'show-task', task: Task): void }>();
 
 const props = defineProps<{ tasks: Task[] }>();
 

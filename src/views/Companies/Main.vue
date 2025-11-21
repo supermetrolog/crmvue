@@ -53,6 +53,7 @@
                         <component
                             :is="currentViewComponentName"
                             @deleted-from-folder="onDeletedFromFolder"
+                            @create-folder="createCompanyFolder"
                             @create-task="createCompanyTask"
                             @show-tasks="showTasks"
                             @disable-company="disableCompany"
@@ -131,6 +132,12 @@
                 @close="closeCompanyNotes"
                 :company="notesCompany"
             />
+            <FormUserFolder
+                v-if="folderModalIsVisible"
+                @close="closeFolderForm"
+                @created="onCreatedFolder"
+                category="company"
+            />
         </teleport>
     </section>
 </template>
@@ -171,6 +178,8 @@ import CompanyTablePreviewNotes from '@/components/Company/Table/CompanyTablePre
 import { captureException } from '@sentry/vue';
 import { CompanyStatusEnum } from '@/types/company';
 import { toArray } from '@/utils/helpers/array/toArray';
+import { useUserFolders } from '@/composables/useUserFolders.js';
+import FormUserFolder from '@/components/Forms/FormUserFolder.vue';
 
 const route = useRoute();
 const router = useRouter();
@@ -293,6 +302,26 @@ function onDeletedFromFolder(companyId, folderId) {
             store.state.Companies.companies.splice(companyIndex, 1);
         }, 500);
     }
+}
+
+const { folders } = useUserFolders('company');
+
+const folderModalIsVisible = ref(false);
+const creatableFolderCompany = shallowRef(null);
+
+function createCompanyFolder(company) {
+    creatableFolderCompany.value = company;
+    folderModalIsVisible.value = true;
+}
+
+function closeFolderForm() {
+    folderModalIsVisible.value = false;
+    creatableFolderCompany.value = null;
+}
+
+function onCreatedFolder(folder) {
+    closeFolderForm();
+    folders.value.unshift(folder);
 }
 
 // pinned message
