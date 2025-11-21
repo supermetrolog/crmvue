@@ -30,7 +30,7 @@
                     @handle="completeTask(nearestTask)"
                     :loading="isCompleting"
                     icon="fa-solid fa-check text-success"
-                    label="Отметить выполненным"
+                    label="Выполнить"
                 />
                 <UiDropdownActionsButton
                     v-if="canBeEdit && !isDeleted"
@@ -69,7 +69,7 @@
             </UiDropdownActionsGroup>
         </template>
     </UiDropdownActions>
-    <AnimationTransition :speed="0.3">
+    <teleport to="body">
         <TaskCardModalChangeDates
             v-if="changeDatesFormIsVisible"
             @confirm="changeDates(nearestTask, $event)"
@@ -79,7 +79,14 @@
             :end-date="nearestTask.end"
             :pinned-task="nearestTask"
         />
-    </AnimationTransition>
+        <FormModalTaskClone
+            v-if="callTaskFormIsVisible"
+            @created="onCreateCallTask"
+            @close="closeCallTaskForm"
+            :task="nearestTask"
+            title="Планирование звонка"
+        />
+    </teleport>
 </template>
 
 <script setup lang="ts">
@@ -98,10 +105,11 @@ import { taskOptions } from '@/const/options/task.options';
 import { useNotify } from '@/utils/use/useNotify';
 import { TASK_EVENTS } from '@/const/events/task';
 import { useAsync } from '@/composables/useAsync';
-import AnimationTransition from '@/components/common/AnimationTransition.vue';
 import TaskCardModalChangeDates from '@/components/TaskCard/TaskCardModalChangeDates.vue';
-import { useSuggestion } from '@/composables/useSuggestion';
+import { useSurveySuggestion } from '@/composables/useSurveySuggestion';
 import { isCallTask } from '@/modules/task/model';
+import FormModalTaskClone from '@/components/Forms/FormModalTaskClone.vue';
+import { useConfirm } from '@/composables/useConfirm';
 
 const emit = defineEmits<{
     (e: 'show', task: Task): void;
@@ -149,7 +157,32 @@ function onClick() {
 
 const { suggestSurveyByTask } = useSurveySuggestion();
 
+// recall
+
+const callTaskFormIsVisible = ref(false);
+let resolveCallTaskJob = (value?: unknown) => value;
+
+async function suggestCall() {
+    callTaskFormIsVisible.value = true;
+
+    return new Promise(resolve => {
+        resolveCallTaskJob = resolve;
+    });
+}
+
+function onCreateCallTask() {
+    resolveCallTaskJob();
+}
+
+function closeCallTaskForm() {
+    callTaskFormIsVisible.value = false;
+    resolveCallTaskJob();
+}
+
+// task actions
+
 const notify = useNotify();
+const { confirm } = useConfirm();
 
 const taskCompleteEvent = useEventBus(TASK_EVENTS.COMPLETE);
 
@@ -161,13 +194,29 @@ const {
     (task: Task) => api.task.changeStatus(task.id, taskOptions.clearStatusTypes.COMPLETED),
     {
         async onFetchResponse({ args }) {
+            const [task] = args;
+
             notify.success('Статус задачи успешно изменен');
 
-            if (args[0].user_id === currentUserId.value) {
+            if (task.user_id === currentUserId.value) {
                 taskCompleteEvent.emit();
+
+                if (isCallTask(task)) {
+                    const confirmed = await confirm({
+                        title: 'Запланировать повторный звонок клиенту?',
+                        message: 'Задача будет скопирована с возможность выбора даты исполнения',
+                        okButton: 'Запланировать',
+                        cancelButton: 'Пропустить',
+                        okIcon: 'fa-solid fa-phone'
+                    });
+
+                    if (confirmed) {
+                        await suggestCall();
+                    }
+                }
             }
 
-            const updatedTask = await api.task.getOne(args[0].id);
+            const updatedTask = await api.task.getOne(task.id);
 
             if (updatedTask) {
                 void suggestSurveyByTask(updatedTask);
