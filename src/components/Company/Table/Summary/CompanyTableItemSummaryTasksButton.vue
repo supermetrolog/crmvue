@@ -77,9 +77,7 @@
             :loading="datesIsChanging"
             :start-date="nearestTask.start"
             :end-date="nearestTask.end"
-            :lock-scroll="false"
-            title="Изменение сроков задачи"
-            :z-index="7"
+            :pinned-task="nearestTask"
         />
     </AnimationTransition>
 </template>
@@ -102,7 +100,8 @@ import { TASK_EVENTS } from '@/const/events/task';
 import { useAsync } from '@/composables/useAsync';
 import AnimationTransition from '@/components/common/AnimationTransition.vue';
 import TaskCardModalChangeDates from '@/components/TaskCard/TaskCardModalChangeDates.vue';
-import { useSurveySuggestion } from '@/composables/useSurveySuggestion';
+import { useSuggestion } from '@/composables/useSuggestion';
+import { isCallTask } from '@/modules/task/model';
 
 const emit = defineEmits<{
     (e: 'show', task: Task): void;
