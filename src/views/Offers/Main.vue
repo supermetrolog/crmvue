@@ -76,6 +76,7 @@
                             @show-map="showOfferInMap"
                             @favorite-deleted="deleteFavoriteOffer"
                             @deleted-from-folder="onDeletedFromFolder"
+                            @create-folder="createOfferFolder"
                             @create-task="createTask"
                             :offers="offers"
                             :loader="isLoading"
@@ -103,6 +104,12 @@
                     />
                 </div>
             </UiModal>
+            <FormUserFolder
+                v-if="folderModalIsVisible"
+                @close="closeFolderForm"
+                @created="onCreatedFolder"
+                category="offer_mix"
+            />
         </teleport>
     </section>
 </template>
@@ -150,6 +157,8 @@ import { ucFirst } from '@/utils/formatters/string.js';
 import { isArray } from '@/utils/helpers/array/isArray';
 import UiCol from '@/components/common/UI/UiCol.vue';
 import OfferSearchableTableMap from '@/components/Offer/OfferSearchableTableMap.vue';
+import { useUserFolders } from '@/composables/useUserFolders.js';
+import FormUserFolder from '@/components/Forms/FormUserFolder.vue';
 
 const isMobile = useMobile();
 const store = useStore();
@@ -454,6 +463,26 @@ function onDeletedFromFolder(offerId, folderId) {
             store.state.Offers.offers.splice(offerIndex, 1);
         }, 500);
     }
+}
+
+const { folders } = useUserFolders('offer_mix');
+
+const folderModalIsVisible = ref(false);
+const creatableFolderOffer = shallowRef(null);
+
+function createOfferFolder(offer) {
+    creatableFolderOffer.value = offer;
+    folderModalIsVisible.value = true;
+}
+
+function closeFolderForm() {
+    folderModalIsVisible.value = false;
+    creatableFolderOffer.value = null;
+}
+
+function onCreatedFolder(folder) {
+    closeFolderForm();
+    folders.value.unshift(folder);
 }
 
 // complex

@@ -61,6 +61,7 @@
                 @open-survey="openInSurvey"
                 @show-survey="$emit('show-survey')"
                 @deleted-from-folder="$emit('deleted-from-folder', $event)"
+                @create-folder="$emit('create-folder')"
                 @open-preview="$emit('show-survey')"
                 @edit-comment="$emit('edit-survey-comment')"
                 @show-task="$emit('show-task', $event)"
@@ -112,6 +113,7 @@ const router = useRouter();
 
 defineEmits([
     'deleted-from-folder',
+    'create-folder',
     'create-task',
     'create-request-task',
     'show-tasks',

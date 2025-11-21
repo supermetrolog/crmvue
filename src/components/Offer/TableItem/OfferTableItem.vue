@@ -27,9 +27,11 @@
                     </template>
                     <UserFoldersDropdown
                         @deleted-from-folder="$emit('deleted-from-folder', $event)"
+                        @create="$emit('create-folder')"
                         :entity="offer.id"
-                        morph="offer_mix"
                         :small="false"
+                        morph="offer_mix"
+                        creatable
                     />
                     <UiDropdownActions label="Действия над предложением">
                         <template #menu>
@@ -231,6 +233,7 @@ const emit = defineEmits([
     'favorite-deleted',
     'open-survey',
     'deleted-from-folder',
+    'create-folder',
     'show-complex-objects',
     'show-map',
     'create-task'
