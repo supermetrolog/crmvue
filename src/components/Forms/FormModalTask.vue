@@ -354,8 +354,6 @@ onPopupShowed(() => {
     hasCustomDescription.value = props.value?.customDescription ?? false;
     additionalContent.value = props.value?.additionalContent ?? {};
 
-    externalPresets.call = props.value?.callPresets ?? false;
-
     if (!consultants.value.length) fetchConsultants();
 
     generateStartPresets();
@@ -389,10 +387,6 @@ onPopupShowed(() => {
 });
 
 // presets
-
-const externalPresets = reactive({
-    call: false
-});
 
 function getPreparedStartDate(addCount, addUnit = 'day') {
     return dayjs().add(addCount, addUnit).toDate();
