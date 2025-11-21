@@ -73,6 +73,7 @@
                 @show-complex-objects="$emit('show-complex-objects', offer.complex_id)"
                 @favorite-deleted="$emit('favorite-deleted')"
                 @deleted-from-folder="$emit('deleted-from-folder', offer.id, $event)"
+                @create-folder="$emit('create-folder')"
                 @show-map="$emit('show-map', offer)"
                 @create-task="$emit('create-task', offer)"
                 :offer="offer"
@@ -101,6 +102,7 @@ import UiFormGroup from '@/components/common/Forms/UiFormGroup.vue';
 defineEmits([
     'favorite-deleted',
     'deleted-from-folder',
+    'create-folder',
     'show-complex-objects',
     'show-map',
     'create-task'

@@ -7,6 +7,7 @@
         title="Просмотр объекта на карте"
         :width="1400"
         :min-height="400"
+        :z-index="4001"
     >
         <UiField v-if="isNotFound">Объект не найден..</UiField>
         <MapContainer v-model="map" style="height: 80vh; width: 100%" :loading="isLoading">
