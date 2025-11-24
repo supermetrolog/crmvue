@@ -34,15 +34,40 @@
                     <div class="survey-form-object-preview-offer__area">
                         <p class="font-weight-bold fs-3">{{ dealTypeName }}</p>
                         <WithUnitType
-                            class="font-weight-bold mb-1"
+                            class="font-weight-bold"
                             :value="calculatedArea"
                             :unit-type="unitTypes.SQUARE_METERS"
                         />
+                        <div
+                            v-if="!props.object.is_land"
+                            class="survey-form-object-preview-offer-area"
+                        >
+                            <SurveyFormObjectsPreviewOfferAreaRow
+                                label="по полу"
+                                :area-min="props.offer.area_floor_min"
+                                :area-max="props.offer.area_floor_max"
+                            />
+                            <SurveyFormObjectsPreviewOfferAreaRow
+                                label="мезонин"
+                                :area-min="props.offer.area_mezzanine_min"
+                                :area-max="props.offer.area_mezzanine_max"
+                            />
+                            <SurveyFormObjectsPreviewOfferAreaRow
+                                label="офисы"
+                                :area-min="props.offer.area_office_min"
+                                :area-max="props.offer.area_office_max"
+                            />
+                            <SurveyFormObjectsPreviewOfferAreaRow
+                                label="технич."
+                                :area-min="props.offer.area_tech_min"
+                                :area-max="props.offer.area_tech_max"
+                            />
+                        </div>
                         <!--                        <p class="fs-2">-->
                         <!--                            Доступ: <span class="text-grey fs-2">[в разработке]</span>-->
                         <!--                        </p>-->
                         <p
-                            class="fs-2 survey-form-object-preview-offer__advs"
+                            class="fs-2 survey-form-object-preview-offer__advs mt-1"
                             :class="{ 'color-danger': advs.length === 0 }"
                         >
                             <i class="fa-solid fa-bullhorn mr-1"></i>
@@ -51,7 +76,7 @@
                         </p>
                         <p
                             v-if="offer.ad_special"
-                            class="fs-2 survey-form-object-preview-offer__special"
+                            class="fs-2 survey-form-object-preview-offer__special mt-1"
                         >
                             Спецпредложение
                         </p>
@@ -184,6 +209,7 @@ import { getApiFileNotFound } from '@/utils/url.js';
 import { toDateFormat } from '@/utils/formatters/date.ts';
 import { useAuth } from '@/composables/useAuth';
 import { useStore } from 'vuex';
+import SurveyFormObjectsPreviewOfferAreaRow from '@/components/SurveyForm/ObjectsPreview/SurveyFormObjectsPreviewOfferAreaRow.vue';
 
 const modelValue = defineModel({ type: Object, default: () => ({}) });
 
