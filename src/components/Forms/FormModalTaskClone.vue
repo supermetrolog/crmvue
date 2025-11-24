@@ -164,7 +164,7 @@ onBeforeMount(async () => {
                 tags: task.tags.map(tag => tag.id),
                 user_id: task.user_id,
                 status: 1,
-                observers: task.observers.map(obs => obs.id),
+                observers: [],
                 files: [],
                 current_files: [],
                 relations: relations.map(({ entity_id, entity_type }) => ({
