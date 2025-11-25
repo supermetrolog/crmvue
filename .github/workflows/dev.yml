@@ -22,6 +22,8 @@ env:
   VITE_VUE_APP_GLITCH_DSN: ${{ secrets.vue_app_glitch_dsn }}
   VITE_VUE_APP_WHATSAPP_BOT_PHONE: 123456789
   VITE_VUE_APP_TELEGRAM_BOT_USERNAME: crm_raysen_bot
+  VITE_VUE_APP_POSTHOG_API_KEY: phc_9XebzM4ctFz8ytj5XW3YMZv1HBfA8iNOfw6Imq1nmMD
+  VITE_VUE_APP_POSTHOG_API_HOST: https://us.i.posthog.com
 jobs:
   web-deploy:
     name: 🎉 Deploy
