@@ -9,6 +9,8 @@ interface ImportMetaEnv {
     readonly VITE_VUE_APP_WHATSAPP_BOT_PHONE: string;
     readonly VITE_VUE_APP_TELEGRAM_BOT_USERNAME: string;
     readonly VITE_VUE_APP_YANDEX_MAP_KEY: string;
+    readonly VITE_VUE_APP_POSTHOG_API_KEY: string;
+    readonly VITE_VUE_APP_POSTHOG_API_HOST: string;
 }
 
 interface ImportMeta {

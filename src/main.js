@@ -23,6 +23,7 @@ import { initSentry } from '@/plugins/sentry.js';
 import { initDayjs } from '@/plugins/dayjs.ts';
 import { initTippy } from '@/plugins/tippy.js';
 import { initYandexMap } from '@/plugins/yandex-maps';
+import { initPostHog } from '@/plugins/posthog';
 
 const app = createApp(App);
 
@@ -31,6 +32,7 @@ initSentry(app);
 initDayjs();
 initTippy(app);
 initYandexMap(app);
+initPostHog(app);
 
 // TODO: Удалить PhoneNumber, Tab, Tabs из глобала
 // TODO: Удалить $formatter плагин
