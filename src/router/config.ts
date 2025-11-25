@@ -13,6 +13,7 @@ export type AppRouteRecordMeta = {
         isAuth?: boolean;
         roles?: (string | number)[];
     };
+    title?: string | string[];
 };
 
 type AppRouteRecord = Omit<RouteRecordRaw, 'name' | 'children'> & {

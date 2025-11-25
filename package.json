@@ -1,6 +1,6 @@
 {
   "name": "crm",
-  "version": "1.7.5",
+  "version": "1.7.6",
   "private": true,
   "type": "module",
   "scripts": {
@@ -42,6 +42,7 @@
     "linkify-html": "^4.2.0",
     "linkifyjs": "^4.2.0",
     "maska": "^3.1.1",
+    "posthog-js": "^1.298.0",
     "qrcode.vue": "^3.6.0",
     "quill": "^2.0.2",
     "simplify-js": "^1.2.4",
