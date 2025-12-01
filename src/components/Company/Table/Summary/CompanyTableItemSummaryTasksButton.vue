@@ -204,7 +204,7 @@ const {
                 if (isCallTask(task)) {
                     const confirmed = await confirm({
                         title: 'Запланировать повторный звонок клиенту?',
-                        message: 'Задача будет скопирована с возможность выбора даты исполнения',
+                        message: 'Задача будет скопирована с возможностью выбора даты исполнения',
                         okButton: 'Запланировать',
                         cancelButton: 'Пропустить',
                         okIcon: 'fa-solid fa-phone'
