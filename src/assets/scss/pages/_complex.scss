@@ -357,8 +357,8 @@
 }
 
 .object-holding-contact {
+    position: relative;
     @include mixins.flex-box($gap: 10px);
-
 
     &__avatar {
         @include mixins.flex-box($a: center, $j: center);
@@ -399,6 +399,20 @@
             content: ',';
             margin-right: 3px;
         }
+    }
+
+    &__button {
+        opacity: 0;
+        z-index: -1;
+        position: absolute;
+        top: 5px;
+        right: 5px;
+        @include mixins.transition(opacity);
+    }
+
+    &:hover &__button {
+        opacity: 1;
+        z-index: 1;
     }
 }
 

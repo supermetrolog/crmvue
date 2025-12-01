@@ -21,7 +21,7 @@
         </div>
         <p class="object-holding-company__subtitle">Основной контакт:</p>
         <ComplexDealOwnerContact v-if="owner.mainContact" :contact="owner.mainContact" />
-        <p v-else>Отсутсвует</p>
+        <p v-else>Отсутствует</p>
         <DashboardChip
             @click="isOpenListContact = !isOpenListContact"
             class="dashboard-bg-success-l object-holding-company__button"
