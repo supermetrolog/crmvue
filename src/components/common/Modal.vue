@@ -48,9 +48,10 @@
 </template>
 
 <script setup>
-import { computed, onBeforeUnmount, ref, shallowRef, watch } from 'vue';
+import { computed, onBeforeUnmount, ref, watch } from 'vue';
 import { useTimeoutFn } from '@vueuse/core';
 import UiTooltipIcon from '@/components/common/UI/UiTooltipIcon.vue';
+import { useModalScrollLock } from '@/composables/useModalScrollLock.js';
 
 const visibleModel = defineModel('visible');
 const emit = defineEmits(['close']);
@@ -91,7 +92,6 @@ const props = defineProps({
     bodyClass: [String, Array, Object]
 });
 
-const alreadyHidden = shallowRef(false);
 const canBeClosed = ref(true);
 const { start: showCloseErrorAnimation } = useTimeoutFn(() => {
     canBeClosed.value = true;
@@ -120,23 +120,27 @@ const tryShowCloseErrorAnimation = () => {
     }
 };
 
+const { lockScroll: makeScrollLIsLock, unlockScroll } = useModalScrollLock();
+
+const scrollIsLocked = ref(false);
+
 watch(
     () => props.show,
     value => {
         if (value) {
             document.addEventListener('keydown', escapeHandler, true);
 
-            if (document.body.classList.contains('is-modal')) {
-                alreadyHidden.value = true;
-                return;
-            } else alreadyHidden.value = false;
-
-            document.body.classList.add('is-modal');
+            if (!scrollIsLocked.value && props.lockScroll) {
+                makeScrollLIsLock();
+                scrollIsLocked.value = true;
+            }
         } else {
             document.removeEventListener('keydown', escapeHandler, true);
-            if (alreadyHidden.value) return;
 
-            document.body.classList.remove('is-modal');
+            if (scrollIsLocked.value) {
+                unlockScroll();
+                scrollIsLocked.value = false;
+            }
         }
     },
     { immediate: true }
@@ -144,8 +148,7 @@ watch(
 
 onBeforeUnmount(() => {
     document.removeEventListener('keydown', escapeHandler, true);
-    if (alreadyHidden.value) return;
-    document.body.classList.remove('is-modal');
+    if (scrollIsLocked.value) unlockScroll();
 });
 </script>
 <style scoped>

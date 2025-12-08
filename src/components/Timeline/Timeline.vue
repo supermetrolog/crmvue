@@ -1,7 +1,8 @@
 <template>
-    <Modal
+    <UiModal
         @close="$emit('close')"
         :close-on-press-esc="false"
+        custom-close
         show
         class="fullscreen modal-timeline"
     >
@@ -19,10 +20,10 @@
         </template>
         <div class="timeline-page">
             <div v-if="isGeneralLoading || timelineIsChanging" class="timeline-page__wrapper row">
-                <UiCol :cols="2">
+                <UiCol :cols="3" :xxl="2">
                     <TimelineTreeSkeleton />
                 </UiCol>
-                <UiCol :cols="10">
+                <UiCol :cols="9" :xxl="10">
                     <Spinner
                         class="absolute-center"
                         :label="
@@ -33,14 +34,14 @@
             </div>
             <template v-else-if="timeline">
                 <div v-if="currentTab === 'main'" class="timeline-page__wrapper row">
-                    <UiCol :cols="2">
+                    <UiCol :cols="3" :xxl="2">
                         <TimelineTree
                             @select="changeStep"
                             :selected="selectedStep?.number"
                             :current="timeline.steps"
                         />
                     </UiCol>
-                    <UiCol :cols="10">
+                    <UiCol :cols="9" :xxl="10">
                         <div class="timeline-page__content" :class="{ disabled: isDisabled }">
                             <Loader v-if="stepIsLoading || stepIsChanging" />
                             <div v-if="!stepIsChanging" class="timeline-page__current">
@@ -107,7 +108,7 @@
                 :form-data="currentRequest"
             />
         </teleport>
-    </Modal>
+    </UiModal>
 </template>
 
 <script setup>
@@ -116,7 +117,6 @@ import TimelineStepMeetingActivity from '@/components/Timeline/Step/TimelineStep
 import TimelineStepMeetingConfirmation from '@/components/Timeline/Step/TimelineStepMeetingConfirmation.vue';
 import TimelineStepFeedbackInterest from '@/components/Timeline/Step/TimelineStepFeedbackInterest.vue';
 import TimelineHeader from './TimelineHeader.vue';
-import Modal from '@/components/common/Modal.vue';
 import Loader from '@/components/common/Loader.vue';
 import Spinner from '@/components/common/Spinner.vue';
 import EmptyData from '@/components/common/EmptyData.vue';
@@ -147,6 +147,7 @@ import UiButton from '@/components/common/UI/UiButton.vue';
 import { useConfirm } from '@/composables/useConfirm.js';
 import UiCol from '@/components/common/UI/UiCol.vue';
 import TimelineTreeSkeleton from '@/components/Timeline/Tree/Skeleton/TimelineTreeSkeleton.vue';
+import UiModal from '@/components/common/UI/UiModal.vue';
 
 defineEmits(['close']);
 
