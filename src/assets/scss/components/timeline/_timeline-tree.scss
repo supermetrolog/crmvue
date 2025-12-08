@@ -2,6 +2,9 @@
 @use '../../utils/variables';
 
 .timeline-tree {
+    max-height: calc(100vh - 160px);
+    overflow-y: auto;
+    overflow-x: hidden;
     @include mixins.flex-box($d: column);
 
     &__title {
