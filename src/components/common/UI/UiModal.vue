@@ -67,7 +67,7 @@
 </template>
 
 <script setup>
-import { computed, onBeforeUnmount, ref, watch } from 'vue';
+import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue';
 import { useTimeoutFn } from '@vueuse/core';
 import { useModalScrollLock } from '@/composables/useModalScrollLock.js';
 import UiTooltipIcon from '@/components/common/UI/UiTooltipIcon.vue';
@@ -213,6 +213,13 @@ function escapeHandler(event) {
         else tryShowCloseErrorAnimation();
     }
 }
+
+onMounted(() => {
+    if (props.show && !scrollIsLocked.value && props.lockScroll) {
+        makeScrollLIsLock();
+        scrollIsLocked.value = true;
+    }
+});
 
 onBeforeUnmount(() => {
     if (props.escClose) document.removeEventListener('keydown', escapeHandler, true);
