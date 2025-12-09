@@ -48,6 +48,7 @@
                 :objects
                 :survey="survey ?? draft"
                 :disabled
+                :active-object-id="props.options.object_id"
             />
         </template>
         <template #3>
@@ -202,7 +203,8 @@ const props = defineProps({
     passiveContacts: {
         type: Array,
         default: () => []
-    }
+    },
+    options: Object
 });
 
 useUserNotificationsPause('survey-form');
@@ -962,7 +964,16 @@ async function fetchObjects() {
         expand: 'commercialOffers.blocks,offerMix.offer'
     });
 
-    objects.value.push(...response.data);
+    if (props.options.object_id) {
+        const object = response.data.find(obj => obj.id === props.options.object_id);
+        if (object) {
+            objects.value.unshift(object);
+        }
+
+        objects.value.push(...response.data.filter(obj => obj.id !== props.options.object_id));
+    } else {
+        objects.value.push(...response.data);
+    }
 
     objectsIsLoading.value = false;
 }
@@ -977,7 +988,16 @@ async function fetchRelatedObjects() {
         expand: 'commercialOffers.blocks,offerMix.offer'
     });
 
-    objects.value.push(...response.data);
+    if (props.options.object_id) {
+        const object = response.data.find(obj => obj.id === props.options.object_id);
+        if (object) {
+            objects.value.unshift(object);
+        }
+
+        objects.value.push(...response.data.filter(obj => obj.id !== props.options.object_id));
+    } else {
+        objects.value.push(...response.data);
+    }
 
     relatedObjectsIsLoading.value = false;
 }
