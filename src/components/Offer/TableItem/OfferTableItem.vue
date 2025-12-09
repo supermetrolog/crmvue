@@ -354,7 +354,10 @@ const openInChat = () =>
 const { openSurvey } = useSurveyForm();
 
 const openInSurvey = () => {
-    openSurvey(props.offer.company_id, { offer_contact_id: props.offer.contact_id });
+    openSurvey(props.offer.company_id, {
+        offer_contact_id: props.offer.contact_id,
+        object_id: props.offer.object_id
+    });
 };
 
 const openPDF = () => {
