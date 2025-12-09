@@ -142,7 +142,7 @@
                             type="number"
                             :validators="formCeilingHeightValidators"
                             :v-first="v$.form.minCeilingHeight"
-                            required
+                            :required="minCeilingHeightIsRequired"
                         />
                         <DoubleInput
                             v-model:first="form.minArea"
@@ -629,6 +629,8 @@ const pricePerFloorUnit = computed(() => {
 const hasDirections = computed(() => form.region_ids.some(item => Number(item) === 1));
 const hasDistricts = computed(() => form.region_ids.some(item => Number(item) === 6));
 const isPassive = computed(() => form.status === entityOptions.request.statusStatement.PASSIVE);
+
+const minCeilingHeightIsRequired = computed(() => !form.object_type_general_ids.includes(2));
 
 const normalizeForm = () => {
     if (!form.region_ids.some(item => Number(item) === 6)) {

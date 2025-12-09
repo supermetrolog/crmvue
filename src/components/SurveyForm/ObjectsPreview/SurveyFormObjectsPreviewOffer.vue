@@ -329,7 +329,7 @@ const consultant = computed(() => {
 });
 
 const avatar = computed(() => {
-    if (consultant.value) return 0;
+    if (consultant.value) return consultant.value.avatar;
     return getApiFileNotFound();
 });
 

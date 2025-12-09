@@ -25,6 +25,7 @@ function closeSurveyForm(formId: number) {
 
 export type SurveyFormOptions = {
     offer_contact_id?: number;
+    object_id?: number;
 };
 
 function openSurveyForm(companyId: number, options: SurveyFormOptions = {}) {

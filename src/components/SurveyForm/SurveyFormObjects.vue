@@ -248,7 +248,8 @@ const props = defineProps({
         required: true
     },
     survey: Object,
-    disabled: Boolean
+    disabled: Boolean,
+    activeObjectId: Number
 });
 
 const form = defineModel({ type: Object });
@@ -323,6 +324,15 @@ function selectObject(object) {
 
     selectedNewObject.value = null;
 }
+
+onBeforeMount(() => {
+    if (props.activeObjectId) {
+        const object = props.objects.find(obj => obj.id === props.activeObjectId);
+        if (object && selectedObject.value?.id !== object.id) {
+            selectObject(object);
+        }
+    }
+});
 
 // tasks
 
