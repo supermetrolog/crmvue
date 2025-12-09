@@ -40,7 +40,11 @@
             />
         </template>
         <template #2>
-            <Spinner v-if="objectsIsLoading" class="absolute-center" label="Загрузка объектов.." />
+            <Spinner
+                v-if="objectsIsLoading || relatedObjectsIsLoading"
+                class="absolute-center"
+                label="Загрузка объектов.."
+            />
             <SurveyFormObjects
                 v-else
                 v-model="form.objects"
@@ -48,7 +52,7 @@
                 :objects
                 :survey="survey ?? draft"
                 :disabled
-                :active-object-id="props.options.object_id"
+                :active-object-id="props.options?.object_id"
             />
         </template>
         <template #3>
@@ -958,48 +962,52 @@ const requestsIsLoading = ref(false);
 async function fetchObjects() {
     objectsIsLoading.value = true;
 
-    const response = await api.object.list({
-        company_id: props.company.id,
-        'per-page': 0,
-        expand: 'commercialOffers.blocks,offerMix.offer'
-    });
+    try {
+        const response = await api.object.list({
+            company_id: props.company.id,
+            'per-page': 0,
+            expand: 'commercialOffers.blocks,offerMix.offer'
+        });
 
-    if (props.options.object_id) {
-        const object = response.data.find(obj => obj.id === props.options.object_id);
-        if (object) {
-            objects.value.unshift(object);
+        if (props.options?.object_id) {
+            const object = response.data.find(obj => obj.id === props.options.object_id);
+            if (object) {
+                objects.value.unshift(object);
+            }
+
+            objects.value.push(...response.data.filter(obj => obj.id !== props.options.object_id));
+        } else {
+            objects.value.push(...response.data);
         }
-
-        objects.value.push(...response.data.filter(obj => obj.id !== props.options.object_id));
-    } else {
-        objects.value.push(...response.data);
+    } finally {
+        objectsIsLoading.value = false;
     }
-
-    objectsIsLoading.value = false;
 }
 
 async function fetchRelatedObjects() {
     relatedObjectsIsLoading.value = true;
 
-    const response = await api.object.list({
-        offer_company_id: props.company.id,
-        exclude_company_id: props.company.id,
-        'per-page': 0,
-        expand: 'commercialOffers.blocks,offerMix.offer'
-    });
+    try {
+        const response = await api.object.list({
+            offer_company_id: props.company.id,
+            exclude_company_id: props.company.id,
+            'per-page': 0,
+            expand: 'commercialOffers.blocks,offerMix.offer'
+        });
 
-    if (props.options.object_id) {
-        const object = response.data.find(obj => obj.id === props.options.object_id);
-        if (object) {
-            objects.value.unshift(object);
+        if (props.options?.object_id) {
+            const object = response.data.find(obj => obj.id === props.options.object_id);
+            if (object) {
+                objects.value.unshift(object);
+            }
+
+            objects.value.push(...response.data.filter(obj => obj.id !== props.options.object_id));
+        } else {
+            objects.value.push(...response.data);
         }
-
-        objects.value.push(...response.data.filter(obj => obj.id !== props.options.object_id));
-    } else {
-        objects.value.push(...response.data);
+    } finally {
+        relatedObjectsIsLoading.value = false;
     }
-
-    relatedObjectsIsLoading.value = false;
 }
 
 async function fetchRequests() {
