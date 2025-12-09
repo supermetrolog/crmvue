@@ -188,14 +188,17 @@ const objectsIsLoading = ref(false);
 async function fetchObjects() {
     objectsIsLoading.value = true;
 
-    const response = await api.object.list({
-        company_id: props.company.id,
-        'per-page': 0,
-        expand: 'commercialOffers.blocks,offerMix.offer'
-    });
+    try {
+        const response = await api.object.list({
+            company_id: props.company.id,
+            'per-page': 0,
+            expand: 'commercialOffers.blocks,offerMix.offer'
+        });
 
-    objects.value = response.data;
-    objectsIsLoading.value = false;
+        objects.value = response.data;
+    } finally {
+        objectsIsLoading.value = false;
+    }
 }
 
 onBeforeMount(fetchObjects);
