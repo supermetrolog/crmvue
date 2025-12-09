@@ -1,4 +1,4 @@
-import { helpers, required } from '@vuelidate/validators';
+import { helpers, required, requiredIf } from '@vuelidate/validators';
 import dayjs from 'dayjs';
 
 function distanceValidator(value, form) {
@@ -41,7 +41,12 @@ export const validationRulesForRequest = {
         required: helpers.withMessage('Заполните максимальную площадь', required)
     },
     minCeilingHeight: {
-        required: helpers.withMessage('Заполните минимальную высоту', required)
+        required: helpers.withMessage(
+            'Заполните минимальную высоту',
+            requiredIf((_, form) => {
+                return !form.object_type_general_ids.includes(2);
+            })
+        )
     },
     consultant_id: {
         required: helpers.withMessage('Выберите консультанта', required)
