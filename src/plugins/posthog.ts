@@ -15,6 +15,7 @@ export function initPostHog(app: App) {
             web_vitals: false,
             network_timing: true
         },
+        autocapture: !__DEV__,
         debug: __DEV__,
         before_send: captured => {
             if (__DEV__) {
