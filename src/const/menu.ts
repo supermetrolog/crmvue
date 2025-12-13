@@ -118,6 +118,19 @@ export const menu: GeneralMenuItemConfig[] = [
     //     key: 'calendar'
     // },
     {
+        name: 'Формы',
+        icon: 'fa-brands fa-wpforms',
+        to: 'forms',
+        internal: [
+            {
+                name: 'Аттрибуты',
+                to: 'forms.attributes',
+                icon: 'fa-brands fa-wpforms'
+            }
+        ],
+        auth: new Set([AUTH_ROLE.MODERATOR, AUTH_ROLE.ADMIN, AUTH_ROLE.OWNER])
+    },
+    {
         name: 'Инструменты',
         icon: 'fa-solid fa-screwdriver-wrench',
         to: 'utilities',

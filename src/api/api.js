@@ -43,6 +43,8 @@ import userNotificationActionLogs from '@/api/user-notification-action-logs';
 import userNotificationTemplates from '@/api/user-notification-templates';
 import userTelegram from '@/api/user-telegram';
 import userWhatsapp from '@/api/user-whatsapp';
+import { attribute } from '@/api/attribute';
+import { attributeOption } from '@/api/attribute-option';
 
 export default {
     user,
@@ -89,5 +91,7 @@ export default {
     userNotificationActionLogs,
     userNotificationTemplates,
     userTelegram,
-    userWhatsapp
+    userWhatsapp,
+    attribute,
+    attributeOption
 };

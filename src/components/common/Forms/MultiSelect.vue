@@ -323,6 +323,10 @@ const _options = computed(() => {
             return response;
         };
 
+    if (props.searchable) {
+        return async () => props.options;
+    }
+
     return props.options;
 });
 

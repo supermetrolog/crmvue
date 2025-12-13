@@ -411,6 +411,27 @@ export const routes = [
         ]
     },
     {
+        name: 'forms',
+        path: '/forms',
+        meta: {
+            layout: 'default',
+            auth: { isAuth: true, roles: [AUTH_ROLE.ADMIN, AUTH_ROLE.MODERATOR, AUTH_ROLE.OWNER] },
+            title: 'Формы'
+        },
+        component: () => import('../views/Forms/View.vue'),
+        redirect: { name: 'forms.attributes' },
+        children: [
+            {
+                path: 'attributes',
+                name: 'forms.attributes',
+                meta: {
+                    title: ['Формы', 'Аттрибуты']
+                },
+                component: () => import('../views/Forms/Attributes.vue')
+            }
+        ]
+    },
+    {
         path: '/unavailable',
         name: 'unavailable',
         meta: {

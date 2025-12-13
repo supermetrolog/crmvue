@@ -11,6 +11,9 @@ const supportsAbort = typeof AbortController === 'function';
 type ConfirmationContent = {
     title: string;
     message?: string;
+    okButton?: string;
+    okIcon?: string;
+    cancelButton?: string;
 };
 
 type UseAsyncConfig<Args extends any[], R> = {
