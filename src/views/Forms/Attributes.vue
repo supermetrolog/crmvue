@@ -56,10 +56,13 @@
                         :data="attributes"
                         border
                         class="attribute-table"
+                        :row-class-name="({ row }) => (row.deleted_at ? 'op-5' : '')"
                     >
                         <ElTableColumn prop="id" label="ID" />
                         <ElTableColumn prop="label" label="Название" />
-                        <ElTableColumn prop="description" label="Описание" />
+                        <ElTableColumn v-slot="{ row }" prop="description" label="Описание">
+                            {{ row.description ?? '-' }}
+                        </ElTableColumn>
                         <ElTableColumn
                             prop="value_type"
                             label="Тип данных"
@@ -72,6 +75,7 @@
                             column-key="input_types"
                             :filters="inputTypeFilters"
                         />
+                        <ElTableColumn prop="options_count" label="Количество опций" />
                         <ElTableColumn v-slot="{ row }" prop="created_by" label="Автор">
                             <Avatar
                                 v-if="row.created_by"
@@ -81,8 +85,10 @@
                             />
                             <span v-else class="op-5">-</span>
                         </ElTableColumn>
-                        <ElTableColumn prop="created_at" label="Дата создания" />
-                        <ElTableColumn label="Действия">
+                        <ElTableColumn v-slot="{ row }" prop="created_at" label="Дата создания">
+                            {{ new Date(row.created_at).toLocaleString() }}
+                        </ElTableColumn>
+                        <ElTableColumn label="Действия" width="270">
                             <template #default="{ row }">
                                 <div class="d-flex gap-1 flex-wrap">
                                     <UiButton
@@ -132,11 +138,11 @@ import { ElTable, ElTableColumn } from 'element-plus';
 import PaginationClassic from '@/components/common/Pagination/PaginationClassic.vue';
 import { onBeforeMount, reactive, ref, shallowRef, useTemplateRef, watch } from 'vue';
 import api from '@/api/api.js';
-import { useDebounceFn, useTimeoutFn } from '@vueuse/core';
+import { useDebounceFn } from '@vueuse/core';
 import { useNotify } from '@/utils/use/useNotify.js';
 import { useAsync } from '@/composables/useAsync.js';
 import UiButton from '@/components/common/UI/UiButton.vue';
-import FormAttribute from '@/components/Forms/FormAttribute.vue';
+import FormAttribute from '@/components/Forms/Attribute/FormAttribute.vue';
 import {
     Attribute,
     AttributeInputTypeOptions,
@@ -177,7 +183,8 @@ const table = useTemplateRef('table');
 const filters = reactive({
     input_types: null,
     value_types: null,
-    search: null
+    search: null,
+    page: 1
 });
 
 const valueTypeFilters = Object.entries(AttributeValueTypeOptions).map(([value, text]) => ({
@@ -211,7 +218,9 @@ function resetFilters() {
 
 watch(filters, debouncedFetchMessages);
 
-function setNextPage() {}
+function setNextPage(page: number) {
+    filters.page = page;
+}
 
 // actions
 
@@ -230,10 +239,12 @@ function onCreated(attribute: Attribute) {
     closeForm();
 
     attributes.value.unshift(attribute);
+    fetchAttributes();
 }
 
 function onUpdated(attribute: Attribute) {
     closeForm();
+    fetchAttributes();
 
     const index = attributes.value.findIndex(attr => attr.id === attribute.id);
     if (index === -1) return;
@@ -266,14 +277,7 @@ const { isLoading: isDeleting, execute: deleteAttribute } = useAsync(api.attribu
         const index = attributes.value.findIndex(attribute => attribute.id === args[0]);
         if (index === -1) return;
 
-        attributes.value[index].isDeleting = true;
-
-        useTimeoutFn(() => {
-            const index = attributes.value.findIndex(attribute => attribute.id === args[0]);
-            if (index !== -1) {
-                attributes.value.splice(index, 1);
-            }
-        }, 500);
+        attributes.value.splice(index, 1);
     },
     confirmation: true,
     confirmationContent: {

@@ -2,7 +2,7 @@
     <UiModal
         @closed="emit('close')"
         show
-        :width="600"
+        :width="800"
         :title="isEditMode ? `Редактирование атрибута #${formData!.id}` : 'Новый атрибут'"
     >
         <Loader
@@ -11,45 +11,59 @@
         />
         <UiForm>
             <UiFormGroup>
-                <UiInput
-                    v-model="form.label"
-                    :v="v$.label"
-                    label="Название"
-                    class="col-6"
-                    required
-                />
-                <UiInput
-                    v-model="form.kind"
-                    :disabled="isEditMode"
-                    :v="v$.kind"
-                    label="KIND"
-                    class="col-6"
-                    required
-                />
-                <MultiSelect
-                    v-model="form.value_type"
-                    :v="v$.value_type"
-                    label="Тип данных"
-                    class="col-6"
-                    required
-                    searchable
-                    :options="AttributeValueTypeOptions"
-                />
-                <MultiSelect
-                    v-model="form.input_type"
-                    :v="v$.input_type"
-                    label="Тип поля"
-                    class="col-6"
-                    required
-                    searchable
-                    :options="AttributeInputTypeOptions"
-                />
-                <UiTextarea
-                    v-model="form.description"
-                    :v="v$.description"
-                    class="col-12"
-                    label="Описание"
-                />
+                <UiCol :cols="8">
+                    <UiFormGroup>
+                        <UiInput
+                            v-model="form.label"
+                            :v="v$.label"
+                            label="Название"
+                            class="col-6"
+                            required
+                        />
+                        <UiInput
+                            v-model="form.kind"
+                            :disabled="isEditMode"
+                            :v="v$.kind"
+                            label="KIND"
+                            class="col-6"
+                            required
+                        />
+                        <MultiSelect
+                            v-model="form.value_type"
+                            :v="v$.value_type"
+                            label="Тип данных"
+                            class="col-6"
+                            required
+                            searchable
+                            :options="AttributeValueTypeOptions"
+                        />
+                        <MultiSelect
+                            v-model="form.input_type"
+                            :v="v$.input_type"
+                            label="Тип поля"
+                            class="col-6"
+                            required
+                            searchable
+                            :options="AttributeInputTypeOptions"
+                        />
+                        <UiTextarea
+                            v-model="form.description"
+                            :v="v$.description"
+                            class="col-12"
+                            label="Описание"
+                        />
+                    </UiFormGroup>
+                </UiCol>
+                <UiCol :cols="4" class="variants" :class="{ active: isSelectableOptions }">
+                    <UiFormGroup>
+                        <UiCol :cols="12">
+                            <FormAttributeOptions
+                                v-model:options="form.options"
+                                :attribute="formData"
+                            />
+                        </UiCol>
+                    </UiFormGroup>
+                </UiCol>
             </UiFormGroup>
         </UiForm>
         <template #actions="{ close }">
@@ -84,6 +98,7 @@ import { useAsync } from '@/composables/useAsync';
 import Loader from '@/components/common/Loader.vue';
 import {
     Attribute,
+    AttributeInputType,
     AttributeInputTypeOptions,
     AttributeValueTypeOptions
 } from '@/modules/eav/attribute';
@@ -92,23 +107,27 @@ import { useNotify } from '@/utils/use/useNotify';
 import { CreateAttributeDto } from '@/api/attribute';
 import UiTextarea from '@/components/common/Forms/UiTextarea.vue';
 import MultiSelect from '@/components/common/Forms/MultiSelect.vue';
+import UiCol from '@/components/common/UI/UiCol.vue';
+import FormAttributeOptions from '@/components/Forms/Attribute/FormAttributeOptions.vue';
+import { CreateAttributeOptionDto } from '@/api/attribute-option';
 
 const emit = defineEmits<{
     created: [attribute: Attribute];
     updated: [attribute: Attribute];
-    deleted: [];
+    deleted: [attribute: Attribute];
     close: [];
 }>();
 
 const props = defineProps<{ formData?: Attribute | null }>();
 
 const { form, isDeletedEntity, isEditMode } = useFormData(
-    reactive<CreateAttributeDto>({
+    reactive<CreateAttributeDto & { options: CreateAttributeOptionDto[] }>({
         kind: '',
         label: '',
-        description: '',
+        description: null,
         value_type: '',
-        input_type: ''
+        input_type: '',
+        options: []
     }),
     props.formData
 );
@@ -138,12 +157,15 @@ const { v$, validate } = useValidation(
 
 const notify = useNotify();
 
-const { isLoading: isCreating, execute: createQuestion } = useAsync(api.attribute.create, {
-    onFetchResponse: ({ response }) => {
-        notify.success('Атрибут успешно создан.');
-        emit('created', response);
+const { isLoading: isCreating, execute: createQuestion } = useAsync(
+    api.attribute.createWithOptions,
+    {
+        onFetchResponse: ({ response }) => {
+            notify.success('Атрибут успешно создан.');
+            emit('created', response);
+        }
     }
-});
+);
 
 const { isLoading: isUpdating, execute: updateQuestion } = useAsync(api.attribute.update, {
     onFetchResponse: ({ response }) => {
@@ -155,7 +177,7 @@ const { isLoading: isUpdating, execute: updateQuestion } = useAsync(api.attribut
 const { isLoading: isDeleting, execute: deleteQuestion } = useAsync(api.attribute.delete, {
     onFetchResponse: () => {
         notify.success('Атрибут успешно удален.');
-        emit('deleted');
+        emit('deleted', props.formData!);
         emit('close');
     },
     confirmation: true,
@@ -176,4 +198,25 @@ async function submit() {
     if (isEditMode.value) await updateQuestion(props.formData!.id, form);
     else await createQuestion(form);
 }
+
+// options
+
+const isSelectableOptions = computed(() => {
+    return [
+        AttributeInputType.Select,
+        AttributeInputType.MultiSelect,
+        AttributeInputType.Custom
+    ].includes(form.input_type);
+});
 </script>
+<style>
+.variants {
+    border-left: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.variants:not(.active) {
+    opacity: 0.5;
+    pointer-events: none;
+    user-select: none;
+}
+</style>

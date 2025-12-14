@@ -59,6 +59,8 @@ import { isString } from '@/utils/helpers/string/isString.js';
 import { isNotNullish } from '@/utils/helpers/common/isNotNullish.ts';
 import { vMaska } from 'maska/vue';
 
+const emit = defineEmits(['focus']);
+
 const modelValue = defineModel({
     type: [String, Number],
     default: ''
@@ -126,6 +128,7 @@ const search = value => {
 };
 
 const onFocus = () => {
+    emit('focus');
     if (props.searchable) searchableIsVisible.value = true;
 };
 

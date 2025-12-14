@@ -5,6 +5,8 @@ import { RequestQueryParams } from '@/api/types';
 import { Attribute } from '@/modules/eav/attribute';
 import { responseHasStatus } from '@/api/helpers/responseHasStatus';
 import { STATUS_SUCCESS } from '@/api/helpers/statuses';
+import { AttributeOption } from '@/modules/eav/attribute-option';
+import { CreateAttributeOptionDto } from '@/api/attribute-option';
 
 const URL = '/attributes';
 
@@ -21,13 +23,20 @@ async function search(params: RequestQueryParams = {}) {
 export interface CreateAttributeDto {
     kind: string;
     label: string;
-    description: string;
+    description: string | null;
     value_type: string;
     input_type: string;
 }
 
 async function create(dto: CreateAttributeDto) {
     const response = await axios.post(URL, dto);
+    return responseToData<Attribute>(response);
+}
+
+async function createWithOptions(
+    dto: CreateAttributeDto & { options: CreateAttributeOptionDto[] }
+) {
+    const response = await axios.post(`${URL}/with-options`, dto);
     return responseToData<Attribute>(response);
 }
 
@@ -48,10 +57,17 @@ async function update(id: number, dto: UpdateAttributeDto) {
     return responseToData<Attribute>(response);
 }
 
+async function options(id: number) {
+    const response = await axios.get(`${URL}/${id}/options`);
+    return responseToData<AttributeOption[]>(response);
+}
+
 export const attribute = {
     get,
     search,
     create,
+    createWithOptions,
     delete: remove,
-    update
+    update,
+    options
 };

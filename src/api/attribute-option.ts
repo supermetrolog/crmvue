@@ -2,7 +2,6 @@ import axios from 'axios';
 import { responseToData } from '@/api/helpers/responseToData';
 import { responseToPaginatedData } from '@/api/helpers/responseToPaginatedData';
 import { RequestQueryParams } from '@/api/types';
-import { Attribute } from '@/modules/eav/attribute';
 import { responseHasStatus } from '@/api/helpers/responseHasStatus';
 import { STATUS_SUCCESS } from '@/api/helpers/statuses';
 import { AttributeOption } from '@/modules/eav/attribute-option';
@@ -44,7 +43,7 @@ export interface UpdateAttributeOptionDto {
 
 async function update(id: number, dto: UpdateAttributeOptionDto) {
     const response = await axios.put(`${URL}/${id}`, dto);
-    return responseToData<Attribute>(response);
+    return responseToData<AttributeOption>(response);
 }
 
 export const attributeOption = {
